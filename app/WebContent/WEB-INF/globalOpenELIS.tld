@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+  <tlib-version>1.1</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>global</short-name>
+  <uri></uri>
+  <description>Global OpenElis Tag Library</description>
+
+  <tag>
+		<name>DOBAge</name>
+		<tag-class>us.mn.state.health.lims.taglib.DOBAgeTag</tag-class>
+		<body-content>JSP</body-content>
+		
+		<description>
+       </description>
+	
+		<attribute>
+      		<name>dobId</name>
+     		<required>true</required>
+     	 	<rtexprvalue>true</rtexprvalue>
+     	 	<description></description>
+   	 	</attribute>
+   	 	<attribute>
+      		<name>ageId</name>
+     		<required>true</required>
+     	 	<rtexprvalue>true</rtexprvalue>
+     	 	<description></description>
+   	 	</attribute>
+   	 	<attribute>
+      		<name>dobName</name>
+     		<required>true</required>
+     	 	<rtexprvalue>true</rtexprvalue>
+     	 	<description></description>
+   	 	</attribute>
+   	 	<attribute>
+      		<name>ageName</name>
+     		<required>true</required>
+     	 	<rtexprvalue>true</rtexprvalue>
+     	 	<description></description>
+   	 	</attribute>
+  	 	<attribute>
+      		<name>makeDirty</name>
+     		<required>false</required>
+     	 	<rtexprvalue>true</rtexprvalue>
+     	 	<description></description>
+   	 	</attribute>
+	</tag>
+
+</taglib>

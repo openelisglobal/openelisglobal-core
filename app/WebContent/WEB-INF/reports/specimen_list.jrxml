@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="specimen_list" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="16" bottomMargin="16">
+	<property name="com.jasperassistant.designer.HGuides" value="118"/>
+	<property name="com.jasperassistant.designer.Rulers" value="true"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="7"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="7"/>
+	<property name="com.jasperassistant.designer.DataSource" value="spec_labdev"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="true"/>
+	<property name="com.jasperassistant.designer.Margins" value="true"/>
+	<property name="com.jasperassistant.designer.Units" value="Inches"/>
+	<property name="com.jasperassistant.designer.Grid" value="true"/>
+	<property name="com.jasperassistant.designer.SnapToGuides" value="true"/>
+	<parameter name="Param_Received_Date" class="java.util.Date">
+		<defaultValueExpression>new java.util.Date("04/01/2006")</defaultValueExpression>
+	</parameter>
+	<parameter name="Param_Test_Section" class="java.lang.String">
+	    <!--defaultValueExpression><![CDATA["Virology"]]></defaultValueExpression-->
+	</parameter>
+	<queryString><![CDATA[select 
+s.accession_number,
+' '|| o.name as org_name, 
+' '|| o.city as org_city,
+' '|| per.last_name ||', '||per.first_name as patient_name,
+' '|| pat.external_id as patient_id,
+' '||tos.description as specimen_type,  
+' '||sos.description as specimen_source,
+' '||t.local_abbrev as test_name,
+' '||ts.name as test_section_name,
+p.local_abbrev as proj_id,
+s.received_date
+from sample s
+left outer join sample_organization so on so.samp_id = s.id
+left outer join organization o on so.org_id = o.id
+left outer join sample_human sh on sh.samp_id = s.id
+left outer join patient pat on pat.id = sh.patient_id
+left outer join person per on per.id = pat.person_id
+left outer join sample_item si on si.samp_id = s.id
+left outer join type_of_sample tos on tos.id = si.typeosamp_id
+left outer join source_of_sample sos on sos.id = si.source_id
+left outer join sample_projects sp on sp.samp_id = s.id
+left outer join project p on sp.proj_id = p.id
+left outer join analysis a on a.sampitem_id = si.id
+left outer join test t on t.id = a.test_id
+inner join test_section ts on t.test_section_id = ts.id
+
+where s.received_date > $P{Param_Received_Date}
+and ts.name in ($P!{Param_Test_Section})
+and   (
+       (
+         a.SAMPITEM_ID , a.TEST_ID , a.REVISION
+        )IN(
+         select anal2.SAMPITEM_ID, anal2.TEST_ID, max(anal2.REVISION) 
+         from
+         analysis anal2
+         group by
+         anal2.SAMPITEM_ID ,
+         anal2.TEST_ID
+       )
+    ) 
+order by 1,7]]></queryString>
+	<field name="ACCESSION_NUMBER" class="java.math.BigDecimal">
+	</field>
+	<field name="ORG_CITY" class="java.lang.String">
+	</field>
+	<field name="ORG_NAME" class="java.lang.String">
+	</field>
+	<field name="PATIENT_NAME" class="java.lang.String">
+	</field>
+	<field name="PATIENT_ID" class="java.lang.String">
+	</field>
+	<field name="PROJ_ID" class="java.lang.Number">
+	</field>
+	<field name="RECEIVED_DATE" class="java.util.Date">
+	</field>
+	<field name="SPECIMEN_SOURCE" class="java.lang.String">
+	</field>
+	<field name="SPECIMEN_TYPE" class="java.lang.String">
+	</field>
+	<field name="TEST_NAME" class="java.lang.String">
+	</field>
+	<field name="TEST_SECTION_NAME" class="java.lang.String">
+	</field>
+	<pageHeader>
+		<band height="22">
+			<staticText>
+				<reportElement positionType="Float" x="245" y="0" width="169" height="22"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Human Sample List - Generated]]></text>
+			</staticText>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement positionType="Float" x="413" y="0" width="80" height="22"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="29">
+			<staticText>
+				<reportElement positionType="Float" x="1" y="0" width="84" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="1Point" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Specimen ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="84" y="0" width="127" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Submitter Name:
+City]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="210" y="0" width="99" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patient Name/ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="308" y="0" width="113" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sample Type:
+Sample Source]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="420" y="0" width="99" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Test Short Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="518" y="0" width="50" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Project #]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="567" y="0" width="77" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date 
+Received]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="644" y="0" width="155" height="29"/>
+				<box borderColor="#0" topBorder="1Point" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Result/
+Result Date]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="29">
+			<textField>
+				<reportElement positionType="Float" x="1" y="0" width="84" height="29"/>
+				<box borderColor="#0" topBorder="None" leftBorder="1Point" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{ACCESSION_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="84" y="0" width="127" height="15"/>
+				<box borderColor="#0" topBorder="None" leftBorder="None" bottomBorder="None" rightBorder="1Point"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ORG_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="84" y="14" width="127" height="15"/>
+				<box borderColor="#0" topBorder="None" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ORG_CITY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="210" y="0" width="99" height="29"/>
+				<box borderColor="#0" topBorder="None" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PATIENT_NAME} + "\n" + $F{PATIENT_ID}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement positionType="Float" x="567" y="0" width="78" height="29"/>
+				<box borderColor="#0" topBorder="None" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{RECEIVED_DATE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="518" y="0" width="50" height="29"/>
+				<box borderColor="#0" topBorder="None" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{PROJ_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="420" y="0" width="99" height="29"/>
+				<box borderColor="#0" topBorder="None" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TEST_NAME}]]></textFieldExpression>
+			</textField>
+    		<textField>
+				<reportElement positionType="Float" x="308" y="1" width="113" height="14"/>
+				<box topBorder="None" leftBorder="None" bottomBorder="None" rightBorder="1Point"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{SPECIMEN_TYPE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="308" y="14" width="113" height="15"/>
+				<box borderColor="#0" topBorder="None" leftBorder="None" bottomBorder="1Point" rightBorder="1Point"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{SPECIMEN_SOURCE}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="644" y="0" width="155" height="29"/>
+				<graphicElement/>
+			</rectangle>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,107 @@
+#!/bin/bash
+#This shell will build, package and deploy the various demo installations on a test machine
+if [ -z $1 ]
+then
+    echo "Name of branch to build is not given will use master"
+    $1="master"
+fi
+
+echo Will build from $1
+cd source/OESandbox
+git checkout $1
+if [ $? != 0 ]
+then
+    echo
+    echo "branch is not local will try to fetch it from main repository"
+    echo 
+
+    git checkout -b $1 origin/$1
+
+    if [ $? != 0 ]
+	then
+	echo
+	echo "$1 not found in main repository. Check name"
+	exit 1 
+    fi
+fi
+
+git pull
+git rev-list --reverse HEAD | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' >> ../../version.txt 
+cd ../..
+
+#build and package application
+LANG=en_US ant buildpackage
+wait
+
+#stop tomcat
+sudo /etc/init.d/tomcat5.5 stop
+wait
+
+#install haitiOpenElis
+if [ -f ./warRoot/openElis.war ] 
+then
+   echo "installing haitiOpenElis"
+
+   if [ -d /usr/share/tomcat5.5/webapps/haitiOpenElis ]
+   then
+       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/haitiOpenElis
+   fi		
+   
+   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/haitiOpenElis.war
+
+   echo "installing CDIOpenElis"
+
+   if [ -d /usr/share/tomcat5.5/webapps/CDIOpenElis ]
+   then
+       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CDIOpenElis
+   fi		
+
+   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CDIOpenElis.war
+
+   echo "installing LNSP_HaitiOpenElis"
+
+   if [ -d /usr/share/tomcat5.5/webapps/LNSP_HaitiOpenElis ]
+   then
+       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/LNSP_HaitiOpenElis
+   fi		
+
+   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/LNSP_HaitiOpenElis.war
+
+   echo "installing CI_LNSPOpenElis"
+
+   if [ -d /usr/share/tomcat5.5/webapps/CI_LNSPOpenElis ]
+   then
+       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CI_LNSPOpenElis
+   fi		
+
+   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CI_LNSPOpenElis.war
+
+   echo "installing CDI_RegLabOpenElis"
+
+   if [ -d /usr/share/tomcat5.5/webapps/CDI_RegLabOpenElis ]
+   then
+       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CDI_RegLabOpenElis
+   fi		
+
+   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CDI_RegLabOpenElis.war
+
+#for new instance copy-modify from here to end marker 
+   echo "installing CI_IPCIOpenElis"
+
+   if [ -d /usr/share/tomcat5.5/webapps/CI_IPCIOpenElis ]
+   then
+       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CI_IPCIOpenElis
+   fi		
+
+   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CI_IPCIOpenElis.war
+#end marker
+else
+   echo "missing openElis.war file" 
+fi
+
+#update database
+LANG=en_US.UTF-8 ant updateDB
+wait
+
+#restart tomcat
+sudo /etc/init.d/tomcat5.5 start

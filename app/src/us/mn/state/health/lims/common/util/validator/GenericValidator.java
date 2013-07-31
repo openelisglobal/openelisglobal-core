@@ -1,0 +1,58 @@
+/**
+* The contents of this file are subject to the Mozilla Public License
+* Version 1.1 (the "License"); you may not use this file except in
+* compliance with the License. You may obtain a copy of the License at
+* http://www.mozilla.org/MPL/ 
+* 
+* Software distributed under the License is distributed on an "AS IS"
+* basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+* License for the specific language governing rights and limitations under
+* the License.
+* 
+* The Original Code is OpenELIS code.
+* 
+* Copyright (C) The Minnesota Department of Health.  All Rights Reserved.
+*/
+package us.mn.state.health.lims.common.util.validator;
+ 
+import java.io.Serializable; 
+import java.util.Locale; 
+import org.apache.oro.text.perl.Perl5Util;
+import org.apache.commons.validator.*;
+ 
+/** 
+ * This class contains basic methods for performing validations. 
+*/ 
+public class GenericValidator extends org.apache.commons.validator.GenericValidator implements Serializable { 
+ 
+   
+    
+     /** 
+      * &lt;p&gt;Checks if the field is a valid date.  The &lt;code&gt;Locale&lt;/code&gt; is 
+      * used with &lt;code&gt;java.text.DateFormat&lt;/code&gt;.  The setLenient method 
+      * is set to &lt;code&gt;false&lt;/code&gt; for all.&lt;/p&gt; 
+      * 
+      * @param value The value validation is being performed on. 
+      * @param locale The locale to use for the date format, defaults to the default 
+      * system default if null. 
+     */ 
+     public static boolean isDate(String value, Locale locale) { 
+         return us.mn.state.health.lims.common.util.validator.DateValidator.getInstance().isValid(value, locale); 
+     } 
+       
+     /** 
+      * &lt;p&gt;Checks if the field is a valid date.  The pattern is used with 
+      * &lt;code&gt;java.text.SimpleDateFormat&lt;/code&gt;.  If strict is true, then the 
+      * length will be checked so '2/12/1999' will not pass validation with 
+      * the format 'MM/dd/yyyy' because the month isn't two digits. 
+      * The setLenient method is set to &lt;code&gt;false&lt;/code&gt; for all.&lt;/p&gt; 
+      * 
+      * @param value The value validation is being performed on. 
+      * @param datePattern The pattern passed to &lt;code&gt;SimpleDateFormat&lt;/code&gt;. 
+      * @param strict Whether or not to have an exact match of the datePattern. 
+     */ 
+     public static boolean isDate(String value, String datePattern, boolean strict) { 
+         return us.mn.state.health.lims.common.util.validator.DateValidator.getInstance().isValid(value, datePattern, strict); 
+     } 
+     
+ }
