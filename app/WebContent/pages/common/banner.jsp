@@ -77,7 +77,7 @@ function displayHelp(){
   
 
 <%
-	} else {  //haiti, if another style is added use a case statement
+	} else {  //openElisGlobal, if another style is added use a case statement
 %>
 
 <!-- Begin new menu -->
@@ -121,7 +121,7 @@ function displayHelp(){
   		<div id="oe-version" style="display: block">
     		<div id="appVersion">
     		<bean:message key="ellis.version" />:&nbsp;
-		    <%= ConfigurationProperties.getInstance().getPropertyValue(Property.releaseNumber)%> (<%= ConfigurationProperties.getInstance().getPropertyValue(Property.buildNumber) %>)&nbsp;&nbsp;&nbsp;
+		    <%= ConfigurationProperties.getInstance().getPropertyValue(Property.releaseNumber)%>&nbsp;&nbsp;&nbsp;
 		    <bean:message key="ellis.configuration" />:&nbsp;
 		    <%=ConfigurationProperties.getInstance().getPropertyValue(Property.configurationName)%></div>
     
