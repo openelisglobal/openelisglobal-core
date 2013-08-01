@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="us.mn.state.health.lims.messageorganization.valueholder">
+    <class name="MessageOrganization" table="MESSAGE_ORG" optimistic-lock="version" dynamic-update="true">
+        <id name="id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
+            <column name="ID" precision="10" scale="0" />
+            <generator class="sequence">
+               <param name="sequence">message_org_seq</param>
+            </generator>   
+        </id>                                            
+        <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field" />
+        <many-to-one name="organization" class="us.mn.state.health.lims.organization.valueholder.Organization" fetch="select">
+            <column name="ORG_ID" precision="10" scale="0" />
+        </many-to-one>
+        <property name="isActive" type="java.lang.String">
+            <column name="IS_ACTIVE" length="1" />
+        </property>
+        <property name="activeBeginDate" type="java.sql.Date">
+            <column name="ACTIVE_BEGIN" length="7" />
+        </property>
+        <property name="activeEndDate" type="java.sql.Date">
+            <column name="ACTIVE_END" length="7" />
+        </property>
+        <property name="description" type="java.lang.String">
+            <column name="DESCRIPTION" length="60" />
+        </property>
+     </class>
+     
+      <query name="messageorganization.getNext">
+         from MessageOrganization mo order by mo.organization.organizationName, mo.description
+      </query>
+      <query name="messageorganization.getPrevious">
+         from MessageOrganization mo order by mo.organization.organizationName desc, mo.description desc
+      </query>
+</hibernate-mapping>

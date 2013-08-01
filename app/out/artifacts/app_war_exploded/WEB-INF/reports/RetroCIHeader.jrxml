@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RetroCIHeader" pageWidth="550" pageHeight="146" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="550" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["c:/tomcat 5.5/webapps/haitiOpenElis/WEB-INF/reports/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="studyName" class="java.lang.String"/>
+	<parameter name="directorName" class="java.lang.String"/>
+	<parameter name="status" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="contact" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="146" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField-2" x="365" y="0" width="184" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement mode="Transparent" x="1" y="0" width="60" height="55" backcolor="#FFFFFF"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "RetroCILogo.jpg"]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="440" y="127" width="109" height="18" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$P{status} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Bottom"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Résults " + $P{status}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="76" width="549" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Chef du laboratorie: Dr ADJE-TOURE Christiane]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="19" width="407" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LABORATOIRE CDC/RETRO-CI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="37" width="407" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CHU TREICHVILLE 01 BP 1712 ABIDJAN 01]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="57" width="407" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEL: 21 21 42 50/ 21 25 41 89   FAX: 21 24 29 69]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="103" width="110" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Dr TEHE G. A.
+Biologie clinique]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="103" width="110" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Dr. KOHEMUN-E N.
+Sérologe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="103" width="110" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Mme Borget-A M.Y.
+Diagnostic moléculaire]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="103" width="110" height="40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Dr TOURE-A R.
+Assurance qualité]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="0" width="550" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

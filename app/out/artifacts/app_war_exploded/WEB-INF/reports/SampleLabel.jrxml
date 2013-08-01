@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="SampleLabel" whenNoDataType="AllSectionsNoDetail" topMargin="50" leftMargin="15">
+	<import value="net.sourceforge.barbecue.BarcodeFactory"/>
+	<parameter name="Accession_Number" class="java.lang.String" />
+	<pageHeader>
+		<band height="50">
+			<!--textField>
+				<reportElement positionType="Float" x="0" y="0" width="80" height="44"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{Accession_Number}]]></textFieldExpression>
+			</textField-->
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle" isUsingCache="false" evaluationTime="Now">
+				<reportElement positionType="Float" x="0" y="0" width="80" height="44"/>
+				<graphicElement/>
+				<imageExpression class="net.sf.jasperreports.engine.JRRenderable"><![CDATA[new net.sf.jasperreports.renderers.BarbecueRenderer(BarcodeFactory.createCode128B($P{Accession_Number}))]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+</jasperReport>

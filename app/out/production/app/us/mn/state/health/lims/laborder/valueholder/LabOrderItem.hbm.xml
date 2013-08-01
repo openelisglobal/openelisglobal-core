@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="us.mn.state.health.lims.laborder.valueholder.LabOrderItem" table="lab_order_item" optimistic-lock="version" dynamic-update="true" >
+        <id name="id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
+            <column name="ID" precision="10" scale="0" />
+            <generator class="sequence">
+            	<param name="sequence">lab_order_item_seq</param>
+            </generator>
+        </id>
+        <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field"/>
+
+		<property name="labOrderTypeId" column="lab_order_type_id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType" not-null="true"/>		
+		<property name="tableRef" column="table_ref" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType" />		
+		<property name="recordId" column="record_id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType" />		
+		<property name="identifier" column="identifier" type="java.lang.String" />		
+		<property name="action" column="action" type="java.lang.String" />		
+
+    </class>
+</hibernate-mapping>
