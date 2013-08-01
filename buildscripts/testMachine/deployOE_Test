@@ -7,7 +7,7 @@ then
 fi
 
 echo Will build from $1
-cd source/OESandbox
+cd source/openelisglobal-core
 git checkout $1
 if [ $? != 0 ]
 then
@@ -31,7 +31,12 @@ cd ../..
 
 #build and package application
 LANG=en_US ant buildpackage
-wait
+if [ $? != 0 ]
+then
+    echo
+    echo build failed
+    exit $?
+fi
 
 #stop tomcat
 sudo /etc/init.d/tomcat5.5 stop

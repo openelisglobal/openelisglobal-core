@@ -3,8 +3,8 @@
 <project basedir="." default="help" name="openElisGlobal">
     <property environment="env"/>
     <property name="wardir" value="${basedir}/warRoot"/>
-    <property name="projectroot" value="${basedir}/source/OESandbox/app"/>
-    <property name="db_root" value="${basedir}/source/OESandbox/liquibase"/>
+    <property name="projectroot" value="${basedir}/source/openelisglobal-core/app"/>
+    <property name="db_root" value="${basedir}/source/openelisglobal-core/liquibase"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="debug" value="true"/>
