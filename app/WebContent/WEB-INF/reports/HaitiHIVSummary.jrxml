@@ -282,7 +282,9 @@
 	<pageFooter>
 		<band height="28" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="5" width="243" height="20"/>
+				<reportElement x="0" y="5" width="243" height="20">
+					<printWhenExpression><![CDATA[$P{siteId} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
