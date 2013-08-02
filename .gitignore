@@ -1,6 +1,5 @@
 # compiled code #
 *.class
-app/out/
 
 # Package Files #
 *.war
@@ -9,3 +8,5 @@ app/out/
 # IDE files #
 .project
 .idea
+app/out/
+app.iml
