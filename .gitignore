@@ -1,4 +1,6 @@
+# compiled code #
 *.class
+app/out/
 
 # Package Files #
 *.war
