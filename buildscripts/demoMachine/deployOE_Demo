@@ -7,7 +7,7 @@ then
 fi
 
 echo Will build from $1
-cd source/OESandbox
+cd source/openelisglobal-core
 git checkout $1
 if [ $? != 0 ]
 then
@@ -26,12 +26,17 @@ then
 fi
 
 git pull
-git rev-list --reverse HEAD | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' >> ../../version.txt 
+git rev-list HEAD | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' > ../../version.txt 
 cd ../..
 
 #build and package application
 LANG=en_US ant buildpackage
-wait
+if [ $? != 0 ]
+then
+    echo
+    echo build failed
+    exit $?
+fi
 
 #stop tomcat
 sudo /etc/init.d/tomcat5.5 stop

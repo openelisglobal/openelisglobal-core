@@ -26,7 +26,7 @@ then
 fi
 
 git pull
-git rev-list --reverse HEAD | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' >> ../../version.txt 
+git rev-list HEAD | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' > ../../version.txt 
 cd ../..
 
 #build and package application
