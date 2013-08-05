@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+<changeSet author="paulsc" id="1">
+    <comment>Deactivates existing payment options and adds new ones</comment>
+    <update tableName="dictionary" >
+        <column name="is_active" value="N" />
+        <where>dictionary_category_id = ( select id from clinlims.dictionary_category where description = 'patientPayment' )</where>
+    </update>
+    <insert tableName="dictionary" schemaName="clinlims">
+        <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) "/>
+        <column name="is_active" value="Y" />
+        <column name="dict_entry" value="normalCash" />
+        <column name="lastupdated" value="  now() " />
+        <column name="dictionary_category_id" valueNumeric=" (select id from clinlims.dictionary_category where name = 'patientPayment') " />
+        <column name="display_key" value="dictionary.patient.payment.normal.cash" />
+    </insert>
+    <insert tableName="dictionary" schemaName="clinlims">
+        <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) "/>
+        <column name="is_active" value="Y" />
+        <column name="dict_entry" value="reducedCash" />
+        <column name="lastupdated" value="  now() " />
+        <column name="dictionary_category_id" valueNumeric=" (select id from clinlims.dictionary_category where name = 'patientPayment') " />
+        <column name="display_key" value="dictionary.patient.payment.reduced.cash" />
+    </insert>
+    <insert tableName="dictionary" schemaName="clinlims">
+        <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) "/>
+        <column name="is_active" value="Y" />
+        <column name="dict_entry" value="normalInsurance" />
+        <column name="lastupdated" value="  now() " />
+        <column name="dictionary_category_id" valueNumeric=" (select id from clinlims.dictionary_category where name = 'patientPayment') " />
+        <column name="display_key" value="dictionary.patient.payment.normal.insurance" />
+    </insert>
+    <insert tableName="dictionary" schemaName="clinlims">
+        <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) "/>
+        <column name="is_active" value="Y" />
+        <column name="dict_entry" value="reducedInsurance" />
+        <column name="lastupdated" value="  now() " />
+        <column name="dictionary_category_id" valueNumeric=" (select id from clinlims.dictionary_category where name = 'patientPayment') " />
+        <column name="display_key" value="dictionary.patient.payment.reduced.insurance" />
+    </insert>
+</changeSet>
+</databaseChangeLog>

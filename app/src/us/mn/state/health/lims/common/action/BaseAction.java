@@ -17,45 +17,24 @@
  */
 package us.mn.state.health.lims.common.action;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.ActionRedirect;
-import org.apache.struts.action.DynaActionForm;
-
+import org.apache.struts.action.*;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.provider.validation.AccessionNumberValidationProvider;
 import us.mn.state.health.lims.common.security.PageIdentityUtil;
-import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.valueholder.BaseTestComparator;
-import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
-import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
-import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.login.dao.UserModuleDAO;
 import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 import us.mn.state.health.lims.login.valueholder.UserSessionData;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 public abstract class BaseAction extends Action implements IActionConstants {
 	private static final boolean USE_PARAMETERS = true;
@@ -443,26 +422,4 @@ public abstract class BaseAction extends Action implements IActionConstants {
 	protected void setSuccessFlag(HttpServletRequest request) {
 		request.setAttribute(FWD_SUCCESS, Boolean.TRUE);
 	}
-
-	protected void setDictionaryList(BaseActionForm dynaForm, String propertyName, String category, boolean sortById) throws LIMSRuntimeException,
-			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
-		List<IdValuePair> conditionList = new ArrayList<IdValuePair>();
-		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-		// The category is by local_abbrev
-		List<Dictionary> conditionDictionaryList = dictionaryDAO.getDictionaryEntrysByCategory(category);
-
-		Collections.sort(conditionDictionaryList, new Comparator<Dictionary>(){
-			@Override
-			public int compare(Dictionary o1, Dictionary o2) {
-				return (int)(Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
-			}});
-		
-		for (Dictionary dictionary : conditionDictionaryList) {
-			conditionList.add(new IdValuePair(dictionary.getId(), dictionary.getLocalizedName()));
-		}
-
-		PropertyUtils.setProperty(dynaForm, propertyName, conditionList);
-	}
-
 }
