@@ -17,18 +17,14 @@
 */
 package us.mn.state.health.lims.common.util;
 
+import org.apache.commons.validator.GenericValidator;
+import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+
 import java.io.InputStream;
 import java.sql.Date;
 import java.text.DateFormat;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.commons.validator.GenericValidator;
-
-import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import java.util.*;
 
 /**
  * This class represents the configuration properties of the application
@@ -39,6 +35,7 @@ public class SystemConfiguration {
 	private static String propertyFile = "/SystemConfiguration.properties";
 
 	private static SystemConfiguration config = null;
+    private List<LocaleChangeListener> localChangeListeners = new ArrayList<LocaleChangeListener>();
 
 	private Properties properties = null;
 	private Map<String, Locale> localePropertyToLocaleMap = new HashMap<String, Locale>();
@@ -88,6 +85,9 @@ public class SystemConfiguration {
 		return config;
 	}
 
+    public void addLocalChangeListener(LocaleChangeListener listener){
+        localChangeListeners.add(listener);
+    }
 	public int getDefaultPageSize() {
 		String pageSize = properties.getProperty("page.defaultPageSize");
 		if (pageSize != null) {
@@ -132,6 +132,9 @@ public class SystemConfiguration {
 
 	public void setDefaultLocale( String locale ){
 		ConfigurationProperties.getInstance().setPropertyValue(Property.DEFAULT_LANG_LOCALE, locale);
+        for( LocaleChangeListener listener : localChangeListeners){
+            listener.localeChanged(locale);
+        }
 	}
 	
 	public String getDefaultEncoding() {
