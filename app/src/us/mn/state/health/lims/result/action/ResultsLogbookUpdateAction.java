@@ -16,28 +16,11 @@
  */
 package us.mn.state.health.lims.result.action;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.ActionRedirect;
+import org.apache.struts.action.*;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -73,11 +56,7 @@ import us.mn.state.health.lims.referral.daoimpl.ReferralTypeDAOImpl;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.referral.valueholder.ReferralType;
-import us.mn.state.health.lims.result.action.util.ResultSet;
-import us.mn.state.health.lims.result.action.util.ResultUtil;
-import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
-import us.mn.state.health.lims.result.action.util.ResultsPaging;
-import us.mn.state.health.lims.result.action.util.ResultsValidation;
+import us.mn.state.health.lims.result.action.util.*;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.dao.ResultInventoryDAO;
 import us.mn.state.health.lims.result.dao.ResultSignatureDAO;
@@ -103,6 +82,11 @@ import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class ResultsLogbookUpdateAction extends BaseAction implements IResultSaveService{
 
@@ -423,7 +407,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		ResultInventory testKit = createTestKitLinkIfNeeded(testResultItem, ResultsLoadUtility.TESTKIT);
 
 		Note note = NoteUtil.createSavableNote(null, testResultItem.getNote(), testResultItem.getResultId(),
-				ResultsLoadUtility.getResultReferenceTableId(), RESULT_SUBJECT, currentUserId);
+				ResultsLoadUtility.getResultReferenceTableId(), RESULT_SUBJECT, currentUserId, NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
 
 		analysis.setStatusId(getStatusForTestResult(testResultItem, analysis));
 		analysis.setReferredOut(testResultItem.isReferredOut());

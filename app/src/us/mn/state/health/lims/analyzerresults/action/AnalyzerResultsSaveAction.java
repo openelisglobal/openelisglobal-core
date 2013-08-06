@@ -17,26 +17,10 @@
  */
 package us.mn.state.health.lims.analyzerresults.action;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.*;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -97,6 +81,11 @@ import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
+import java.util.*;
+
 public class AnalyzerResultsSaveAction extends BaseAction {
 
 	private static final String REJECT_VALUE = "XXXX";
@@ -116,7 +105,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	private List<SampleGrouping> sampleGroupList;
 
 	private static final String RESULT_SUBJECT = "Analyzer Result Note";
-	private static final String RESULT_TYPE = "I";
+	private static final String DEFAULT_NOTE_TYPE = Note.EXTERNAL;
 	private static final String DBS_SAMPLE_TYPE_ID;
 
 	static {
@@ -791,7 +780,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	private Note createResultNote(String noteText) {
 		Note note = new Note();
 		note.setReferenceTableId(ResultsLoadUtility.getResultReferenceTableId());
-		note.setNoteType(RESULT_TYPE);
+		note.setNoteType(DEFAULT_NOTE_TYPE);
 		note.setSubject(RESULT_SUBJECT);
 		note.setText(noteText);
 		note.setSysUserId(sysUserId);

@@ -39,4 +39,22 @@
         <column name="display_key" value="dictionary.patient.payment.reduced.insurance" />
     </insert>
 </changeSet>
+<changeSet id="paulsc" author="2">
+    <comment>Add notes section to site configuration</comment>
+    <insert tableName="site_information">
+        <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+        <column name="name" value="validationOnlyNotesAreExternal" />
+        <column name="lastupdated" valueDate=" now() " />
+        <column name="description" value="If true note are internal except validation" />
+        <column name="value" value="false" />
+        <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'hiddenProperties' ) " />
+        <column name="value_type" value="boolean" />
+    </insert>
+</changeSet>
+<changeSet id="paulsc" author="3">
+    <comment>Sets all note types to external</comment>
+    <update tableName="note" >
+        <column name="note_type" value="E" />
+    </update>
+</changeSet>
 </databaseChangeLog>

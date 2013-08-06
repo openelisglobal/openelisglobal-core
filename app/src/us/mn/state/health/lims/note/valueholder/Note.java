@@ -22,6 +22,8 @@ import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 
 public class Note extends BaseObject {
+    public static final String EXTERNAL = "E";
+    public static final String INTERNAL = "I";
 
 	private String id;
 
@@ -31,10 +33,6 @@ public class Note extends BaseObject {
     
 	private String referenceId;
 	
-	//bugzilla 1922
-	//bugzilla 2571 go through ReferenceTablesDAO to get reference tables info
-	//private ReferenceTables referenceTables;
-
 	private String referenceTableId;
 
 	//private Date timestamp = null;
@@ -46,11 +44,6 @@ public class Note extends BaseObject {
 	private String subject;
 
 	private String text;
-
-	public Note() {
-		super();
-		//this.referenceTables = new ReferenceTables();
-	}
 
 	public void setId(String id) {
 		this.id = id;

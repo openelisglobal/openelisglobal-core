@@ -16,16 +16,16 @@
 */
 package us.mn.state.health.lims.common.util;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DefaultConfigurationProperties extends ConfigurationProperties {
 
@@ -99,7 +99,8 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.NONCONFORMITY_RECEPTION_AS_UNIT, "Reception as unit", "true");
 		setDBPropertyMappingAndDefault(Property.NONCONFORMITY_SAMPLE_COLLECTION_AS_UNIT, "Collection as unit", "false");
 		setDBPropertyMappingAndDefault(Property.PATIENT_REPORT_NO_ALERTS, "Patient report with no alerts", "false");
-		setDBPropertyMappingAndDefault(Property.ACCESSION_NUMBER_PREFIX, "Accession number prefix", "");
+        setDBPropertyMappingAndDefault(Property.ACCESSION_NUMBER_PREFIX, "Accession number prefix", "");
+        setDBPropertyMappingAndDefault(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION, "validationOnlyNotesAreExternal", "false");
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {
