@@ -17,10 +17,10 @@
 */
 package us.mn.state.health.lims.common.util;
 
+import org.apache.commons.validator.GenericValidator;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.validator.GenericValidator;
 
 /*
  * This is an abstract class which represents the configuration properties of the application.  The derived
@@ -91,7 +91,8 @@ public abstract class ConfigurationProperties {
 							 NONCONFORMITY_RECEPTION_AS_UNIT,
 							 NONCONFORMITY_SAMPLE_COLLECTION_AS_UNIT,
 							 PATIENT_REPORT_NO_ALERTS,
-							 ACCESSION_NUMBER_PREFIX};
+							 ACCESSION_NUMBER_PREFIX,
+                             NOTE_EXTERNAL_ONLY_FOR_VALIDATION}
 
 	
 

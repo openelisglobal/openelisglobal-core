@@ -391,17 +391,17 @@
 		<band height="130" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[""]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName1">
-					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="siteLogo">
 					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName1">
+					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA["Patient Test Statut"]]></subreportParameterExpression>
@@ -428,7 +428,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{areNotes}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" mode="Opaque" x="0" y="14" width="276" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F5F5F5">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="14" width="275" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F5F5F5">
 					<printWhenExpression><![CDATA[$F{col1Note} != null]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="4" rightPadding="4">
@@ -442,7 +442,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{col1Note}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" mode="Opaque" x="276" y="14" width="276" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F5F5F5">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Opaque" x="276" y="14" width="276" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F5F5F5">
 					<printWhenExpression><![CDATA[$F{col2Note} != null]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="6" rightPadding="4">
@@ -456,9 +456,9 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{col2Note}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="556" height="14" isPrintWhenDetailOverflows="true" backcolor="#FFFFFF"/>
+				<reportElement mode="Transparent" x="0" y="0" width="552" height="14" isPrintWhenDetailOverflows="true" backcolor="#FFFFFF"/>
 				<textField isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="169" y="0" width="106" height="14">
+					<reportElement x="169" y="0" width="106" height="14">
 						<printWhenExpression><![CDATA[!$F{col1noUOM}  && $F{col1testName} != null]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="4">
@@ -486,7 +486,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{col1testName}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="446" y="0" width="106" height="14">
+					<reportElement x="446" y="0" width="106" height="14">
 						<printWhenExpression><![CDATA[$F{col2testName} != null && !$F{col2noUOM}]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="4">
@@ -502,7 +502,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{col2range}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToTallestObject" x="277" y="0" width="106" height="14">
+					<reportElement x="277" y="0" width="106" height="14">
 						<printWhenExpression><![CDATA[$F{col2testName} != null]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="4">
@@ -516,7 +516,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{col2testName}]]></textFieldExpression>
 				</textField>
 				<line>
-					<reportElement stretchType="RelativeToBandHeight" x="275" y="0" width="1" height="14" forecolor="#000000">
+					<reportElement x="275" y="0" width="1" height="14" forecolor="#000000">
 						<printWhenExpression><![CDATA[$F{col1testName} != null]]></printWhenExpression>
 					</reportElement>
 					<graphicElement>
@@ -524,7 +524,7 @@
 					</graphicElement>
 				</line>
 				<textField isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="383" y="0" width="63" height="14">
+					<reportElement x="383" y="0" width="63" height="14">
 						<printWhenExpression><![CDATA[$F{col2testName} != null && !$F{col2noUOM}]]></printWhenExpression>
 					</reportElement>
 					<box rightPadding="4">
@@ -538,7 +538,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{col2result}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="106" y="0" width="63" height="14" isPrintWhenDetailOverflows="true">
+					<reportElement x="106" y="0" width="63" height="14" isPrintWhenDetailOverflows="true">
 						<printWhenExpression><![CDATA[!$F{col1noUOM} && $F{col1testName} != null]]></printWhenExpression>
 					</reportElement>
 					<box rightPadding="4">
@@ -552,7 +552,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{col1result}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="106" y="0" width="169" height="14" isPrintWhenDetailOverflows="true">
+					<reportElement x="106" y="0" width="169" height="14" isPrintWhenDetailOverflows="true">
 						<printWhenExpression><![CDATA[$F{col1noUOM} && $F{col1testName} != null]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="4">
@@ -566,7 +566,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{col1result}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="383" y="0" width="169" height="14" isPrintWhenDetailOverflows="true">
+					<reportElement x="383" y="0" width="169" height="14" isPrintWhenDetailOverflows="true">
 						<printWhenExpression><![CDATA[$F{col2testName} != null && $F{col2noUOM}]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="4">

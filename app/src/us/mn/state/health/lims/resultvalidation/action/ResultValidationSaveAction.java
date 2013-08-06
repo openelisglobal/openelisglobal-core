@@ -17,25 +17,10 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.*;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -52,6 +37,7 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
+import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
@@ -81,6 +67,11 @@ import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.DecimalFormat;
+import java.util.*;
+
 public class ResultValidationSaveAction extends BaseResultValidationAction implements IResultSaveService  {
 
 	private static final DecimalFormat TWO_DECIMAL_FORMAT = new DecimalFormat("##.##");
@@ -105,7 +96,6 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 	private List<ResultSet> modifiedResultSet;
 	private List<ResultSet> newResultSet;
 
-	private static final String RESULT_TYPE = "I";
 	private static final String RESULT_SUBJECT = "Result Note";
 	private static final String RESULT_TABLE_ID;
 	private static final String RESULT_REPORT_ID;
@@ -454,7 +444,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 			note = new Note();
 			note.setReferenceId(testResult.getResultId());
 			note.setReferenceTableId(ResultsLoadUtility.getResultReferenceTableId());
-			note.setNoteType(RESULT_TYPE);
+			note.setNoteType(NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.VALIDATION));
 			note.setSubject(RESULT_SUBJECT);
 		}
 
