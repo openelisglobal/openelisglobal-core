@@ -16,23 +16,12 @@
  */
 package us.mn.state.health.lims.referral.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -68,6 +57,10 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 public class ReferredOutAction extends BaseAction {
 
@@ -400,9 +393,9 @@ public class ReferredOutAction extends BaseAction {
 				NonNumericTests nonNumericTests = new NonNumericTests();
 
 				nonNumericTests.testId = testId;
-				String testResultType = testResultList.get(0).getTestResultType();
-				boolean isSelectList = isSelectList(testResultType); 
-				nonNumericTests.testType = testResultType;
+                nonNumericTests.testType = testResultList.get(0).getTestResultType();
+				boolean isSelectList = isSelectList(nonNumericTests.testType);
+
 				if (isSelectList) {
 					List<IdValuePair> dictionaryValues = new ArrayList<IdValuePair>();
 					for (TestResult testResult : testResultList) {
@@ -431,7 +424,7 @@ public class ReferredOutAction extends BaseAction {
      * @return true if it is one of the types which means a list of choices, false otherwise.
      */
 	public static boolean isSelectList(String testResultType) {
-        return "D".equals(testResultType) || "M".equals(testResultType);
+        return "DMQ".contains( testResultType );
     }
 
 	public class NonNumericTests {

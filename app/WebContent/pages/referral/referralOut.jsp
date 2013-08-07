@@ -462,7 +462,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 			<bean:message key="test.testName"/>: <b><bean:write name="referralItems" property="referringTestName"/></b>
 		</td>
 		<td >
-			<bean:message key="result.result"/>: <b><bean:write name="referralItems" property="referralResults"/></b>
+			<bean:message key="result.original.result"/>: <b><bean:write name="referralItems" property="referralResults"/></b>
 		</td>
 		<td colspan="3"  class="leftVertical" >
 			&nbsp;
