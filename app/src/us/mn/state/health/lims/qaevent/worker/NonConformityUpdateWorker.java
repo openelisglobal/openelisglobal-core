@@ -16,17 +16,11 @@
  */
 package us.mn.state.health.lims.qaevent.worker;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.address.dao.AddressPartDAO;
 import us.mn.state.health.lims.address.dao.PersonAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
@@ -108,6 +102,11 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class NonConformityUpdateWorker {
 
 	private Sample sample;
@@ -140,7 +139,7 @@ public class NonConformityUpdateWorker {
 	private boolean useFullProviderInfo;
 	private boolean updateSampleHuman;
 	
-	public static final String NOTE_TYPE = "I";
+	public static final String DEFAULT_NOTE_TYPE = Note.EXTERNAL;
 	public static final String NOTE_SUBJECT = "QaEvent Note";
 	private static final String REFERRING_ORG_TYPE_ID;
 	private static final String COMMUNE_ADDRESS_PART_ID;
@@ -540,8 +539,6 @@ public class NonConformityUpdateWorker {
 
 	/**
 	 * This is for when patients can not be added through the form
-	 * 
-	 * @param dynaForm
 	 */
 	private void setPatient() {
 
@@ -777,7 +774,6 @@ public class NonConformityUpdateWorker {
 	 * @param item
 	 * @param sampleItem
 	 * @param sampleTypeId
-	 * @param sortOrder
 	 * @return if the return is null, the there was already a sampleItem on the
 	 *         Sample for the given sampleTypeId
 	 */
@@ -844,7 +840,7 @@ public class NonConformityUpdateWorker {
 		Note note = new Note();
 		note.setText(noteText);
 		note.setSysUserId(webData.getCurrentSysUserId());
-		note.setNoteType(NOTE_TYPE);
+		note.setNoteType(DEFAULT_NOTE_TYPE);
 		note.setSubject(NOTE_SUBJECT);
 		note.setSystemUser(systemUser);
 		note.setSystemUserId(webData.getCurrentSysUserId());

@@ -16,31 +16,16 @@
  */
 package us.mn.state.health.lims.referral.action;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.DynaActionForm;
+import org.apache.struts.action.*;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -85,6 +70,10 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 public class ReferredOutUpdateAction extends BaseAction {
 
@@ -338,9 +327,10 @@ public class ReferredOutUpdateAction extends BaseAction {
 												 	  referralItem.getCasualResultId(),
 												 	  ResultsLoadUtility.getResultReferenceTableId(),
 												 	  RESULT_SUBJECT,
-												 	  currentUserId);
+                                                      currentUserId,
+                                                      NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
 
-		createReferralResults(referralItem, referralSet);
+        createReferralResults(referralItem, referralSet);
 
 		if (referralItem.getAdditionalTests() != null) {
 			for (ReferredTest existingAdditionalTest : referralItem.getAdditionalTests()) {

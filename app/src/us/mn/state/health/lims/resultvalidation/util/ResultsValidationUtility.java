@@ -16,16 +16,7 @@
  */
 package us.mn.state.health.lims.resultvalidation.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -77,10 +68,12 @@ import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
+import java.util.*;
+
 public class ResultsValidationUtility {
 
 	public enum TestSectionType {
-		UNKNOWN, IMMUNOLOGY, HEMATOLOGY, BIOCHEMISTRY, SEROLOGY, VIROLOGY;
+		UNKNOWN, IMMUNOLOGY, HEMATOLOGY, BIOCHEMISTRY, SEROLOGY, VIROLOGY
 	}
 
 //	private static String VIRAL_LOAD_ID = "";
@@ -477,9 +470,12 @@ public class ResultsValidationUtility {
 			List<Note> noteList = NoteUtil.getNotesForObjectAndTable(result.getId(), RESULT_TABLE_ID);
 
 			if (!(noteList == null || noteList.isEmpty())) {
-				StringBuilder builder = new StringBuilder(noteList.get(noteList.size() - 1).getText());
+				StringBuilder builder = new StringBuilder();
+                builder.append(NoteUtil.getNotePrefix(noteList.get(noteList.size() - 1)));
+                builder.append(noteList.get(noteList.size() - 1).getText());
 				for(int i = noteList.size() - 2; i >= 0; i--){
 					builder.append("<br>");
+                    builder.append(NoteUtil.getNotePrefix(noteList.get(i)));
 					builder.append(noteList.get(i).getText());
 				}
 				
