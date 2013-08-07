@@ -266,11 +266,7 @@ public class ReferredOutAction extends BaseAction {
 		    ReferredTest referralTest = new ReferredTest();
 		    referralTest.setReferralId(referralResult.getReferralId());
 		    referralResults = setReferralItem(referralTest, referralResults); // remove one or more referralResults from the list as needed (for multiResults).
-			if (referralResult.getReferralReportDate() == null) {
-				referralTest.setReferredReportDate(DateUtil.getCurrentDateAsText());
-			} else {
-				referralTest.setReferredReportDate(DateUtil.convertTimestampToStringDate(referralResult.getReferralReportDate()));
-			}
+			referralTest.setReferredReportDate(DateUtil.convertTimestampToStringDate(referralResult.getReferralReportDate()));
 			referralTest.setReferralResultId(referralResult.getId());
 			testList.add(referralTest);
 		}
