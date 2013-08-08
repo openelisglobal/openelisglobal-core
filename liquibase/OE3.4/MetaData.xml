@@ -39,7 +39,7 @@
         <column name="display_key" value="dictionary.patient.payment.reduced.insurance" />
     </insert>
 </changeSet>
-<changeSet id="paulsc" author="2">
+<changeSet id="2" author="paulsc">
     <comment>Add notes section to site configuration</comment>
     <insert tableName="site_information">
         <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
@@ -51,10 +51,24 @@
         <column name="value_type" value="boolean" />
     </insert>
 </changeSet>
-<changeSet id="paulsc" author="3">
+<changeSet id="3" author="paulsc">
     <comment>Sets all note types to external</comment>
     <update tableName="note" >
         <column name="note_type" value="E" />
     </update>
+</changeSet>
+<changeSet id="4" author="paulsc">
+    <comment>Adds configurable phone format</comment>
+    <insert tableName="site_information">
+        <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+        <column name="name" value="phone format" />
+        <column name="lastupdated" valueDate=" now() " />
+        <column name="description" value="The acceptable format for a phone number" />
+        <column name="value" value="(ddd) dddd-dddd" />
+        <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'siteIdentity' ) " />
+        <column name="value_type" value="text" />
+        <column name="tag" value="numericOnly" />
+        <column name="instruction_key" value="instructions.site.phone" />
+    </insert>
 </changeSet>
 </databaseChangeLog>
