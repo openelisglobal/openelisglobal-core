@@ -1223,7 +1223,7 @@
 			validate="false"
 		>
 			<forward name="insertSuccess" path="/SiteInformationMenu.do" redirect="true" />
-			<forward name="fail" path="/SiteInformation.do" />
+			<forward name="fail" path="siteInformationDefinition" />
 		</action>
 
 		<action path="/DeleteSiteInformation" name="siteInformationMenuForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationDeleteAction">

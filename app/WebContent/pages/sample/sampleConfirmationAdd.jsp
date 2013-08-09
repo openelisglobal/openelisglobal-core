@@ -694,6 +694,31 @@ function /*string*/ getNote( sampleIndex ){
 	return ($("note_" + sampleIndex).value.replace(singleQuote, "\\'" ).replace(doubleQuote, '\\"'));
 }
 
+function sc_validatePhoneNumber( phoneElement){
+    validatePhoneNumberOnServer( phoneElement, sc_processPhoneSuccess);
+}
+
+function  sc_processPhoneSuccess(xhr){
+    //alert(xhr.responseText);
+
+    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
+    var message = xhr.responseXML.getElementsByTagName("message").item(0);
+    var success = false;
+
+    if (message.firstChild.nodeValue == "valid"){
+        success = true;
+    }
+    var labElement = formField.firstChild.nodeValue;
+
+    selectFieldErrorDisplay( success, $(labElement));
+    fieldValidator.setFieldValidity(success, labElement  );
+
+    if( !success ){
+        alert( message.firstChild.nodeValue );
+    }
+
+    setSaveButton();
+}
 </script>
 <% if(useInitialSampleCondition){ %>
 <div id="sampleConditionPrototype" style="display: none" >
@@ -822,10 +847,10 @@ function /*string*/ getNote( sampleIndex ){
 			<html:text name='<%=formName%>' property="lastName"  styleId="requesterLastName" />
 		</td>
 		<td>
-			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone" />
+			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone" onchange="sc_validatePhoneNumber(this);" />
 		</td>
 		<td>
-			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" />
+			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" onchange="sc_validatePhoneNumber(this);"/>
 		</td>
 		<td>
 			<html:text name='<%=formName%>' property="e-mail"  styleId="requesterEMail" />

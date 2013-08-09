@@ -97,6 +97,20 @@ function validateNonConformityRecordNumberOnServer( field, success, failure){
 
 }
 
+function validatePhoneNumberOnServer( field, success, failure){
+    if( !failure){failure = defaultFailure;	}
+
+    new Ajax.Request('ajaxXML',
+        {
+            method : 'get',
+            parameters : "provider=PhoneNumberValidationProvider&fieldId=" + field.id +"&value=" + field.value,
+            //indicator: 'throbbing',
+            onSuccess : success,
+            onFailure : failure
+        });
+
+}
+
 function patientSearch(lastName, firstName, STNumber, subjectNumber, nationalId, labNumber, guid, suppressExternalSearch, success, failure){
 	if( !failure){failure = defaultFailure;	}
 	
