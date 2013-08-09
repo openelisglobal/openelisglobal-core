@@ -71,4 +71,17 @@
         <column name="instruction_key" value="instructions.site.phone" />
     </insert>
 </changeSet>
+    <changeSet id="5" author="paulsc">
+        <comment>Adds configurable phone format validation</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name" value="validate phone format" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Should the format for a phone number be validated" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'siteIdentity' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instructions.site.phone.validation" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>

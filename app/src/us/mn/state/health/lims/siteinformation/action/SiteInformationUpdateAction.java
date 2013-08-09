@@ -17,20 +17,13 @@
  */
 package us.mn.state.health.lims.siteinformation.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-
+import org.apache.struts.action.*;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.services.PhoneNumberService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationSideEffects;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -40,6 +33,9 @@ import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDomainDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformationDomain;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class SiteInformationUpdateAction extends BaseAction {
 	private static final SiteInformationDomain SITE_IDENTITY_DOMAIN;
@@ -76,7 +72,7 @@ public class SiteInformationUpdateAction extends BaseAction {
 		//makes the changes take effect immediately
 		ConfigurationProperties.forceReload();
 		
-		return getForward(mapping.findForward(forward), id, start, direction);
+		return FWD_FAIL == forward ? mapping.findForward(forward) : getForward(mapping.findForward(forward), id, start, direction);
 
 	}
 
@@ -84,16 +80,25 @@ public class SiteInformationUpdateAction extends BaseAction {
 			BaseActionForm dynaForm, boolean newSiteInformation) {
 
 		String name = dynaForm.getString("paramName");
+        String value = dynaForm.getString( "value" );
 		ActionMessages errors = new ActionMessages();
 		if (GenericValidator.isBlankOrNull(name)) {
-			errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError("error.SiteInformation.name.required"));
-
+			errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError("error.SiteInformation.phone.format"));
+            request.setAttribute(Globals.ERROR_KEY, errors);
 			saveErrors(request, errors);
 
-		 return FWD_FAIL;
-		 }
+            return FWD_FAIL;
+        }
 
-		String forward = FWD_SUCCESS_INSERT;		
+        if( "phone format".equals( name ) && !PhoneNumberService.validatePhoneFormat( value ) ){
+            errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError( "error.SiteInformation.name.required" ) );
+            request.setAttribute(Globals.ERROR_KEY, errors);
+            saveErrors( request, errors );
+
+            return FWD_FAIL;
+        }
+
+        String forward = FWD_SUCCESS_INSERT;
 		SiteInformationDAO siteInformationDAO = new SiteInformationDAOImpl();
 		SiteInformation siteInformation = new SiteInformation();
 		
@@ -108,7 +113,7 @@ public class SiteInformationUpdateAction extends BaseAction {
 			siteInformationDAO.getData(siteInformation);
 		}
 		
-		siteInformation.setValue(dynaForm.getString("value"));
+		siteInformation.setValue( value );
 		siteInformation.setSysUserId(currentUserId);
 		
 		String domainName = dynaForm.getString("siteInfoDomainName");

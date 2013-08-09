@@ -92,7 +92,9 @@ public abstract class ConfigurationProperties {
 							 NONCONFORMITY_SAMPLE_COLLECTION_AS_UNIT,
 							 PATIENT_REPORT_NO_ALERTS,
 							 ACCESSION_NUMBER_PREFIX,
-                             NOTE_EXTERNAL_ONLY_FOR_VALIDATION}
+                             NOTE_EXTERNAL_ONLY_FOR_VALIDATION,
+                             PHONE_FORMAT,
+                             VALIDATE_PHONE_FORMAT}
 
 	
 

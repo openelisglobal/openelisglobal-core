@@ -16,7 +16,7 @@
 <%@ taglib uri="/tags/labdev-view"		prefix="app" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
 
-
+<script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
 <bean:define id="formName"		value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 <bean:define id="patientProperties" name='<%=formName%>' property='patientProperties' type="PatientManagmentInfo" />
@@ -205,17 +205,6 @@ function /*boolean*/ pt_isSaveEnabled()
 {
 	return !$("saveButtonId").disabled;
 }
-
-function  /*void*/ checkPhoneNumber( phone )
-{
-	var regEx = new RegExp("^\\(?\\d{3}\\)?\\s?\\d{4}-?\\d{4}$");
-	var valid = regEx.test(phone.value);
-
-	setValidIndicaterOnField( valid, phone.name );
-	pt_setFieldValidity( valid, phone.name );
-	pt_setSave();
-}
-
 
 function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 {
@@ -722,7 +711,33 @@ function healthDistrictSuccess( xhr ){
 	if( selected){
 		healthDistrict.selectedIndex = getSelectIndexFor( "healthDistrictID", selected.childNodes[0].nodeValue);
 	}
-}	
+}
+
+function validatePhoneNumber( phoneElement){
+    validatePhoneNumberOnServer( phoneElement, processPhoneSuccess);
+}
+
+function  processPhoneSuccess(xhr){
+    //alert(xhr.responseText);
+
+    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
+    var message = xhr.responseXML.getElementsByTagName("message").item(0);
+    var success = false;
+
+    if (message.firstChild.nodeValue == "valid"){
+        success = true;
+    }
+    var labElement = formField.firstChild.nodeValue;
+
+    setValidIndicaterOnField(success, labElement);
+    pt_setFieldValidity( success, labElement );
+
+    if( !success ){
+        alert( message.firstChild.nodeValue );
+    }
+
+    pt_setSave();
+}
 
 </script>
 <nested:hidden name='<%=formName%>' property="patientProperties.currentDate" styleId="currentDate"/>
@@ -972,7 +987,7 @@ function healthDistrictSuccess( xhr ){
 			<td>&nbsp;</td>
 			<td align="right"><%= StringUtil.getContextualMessageForKey("person.phone") %>:</td>
 			<td>
-				<html:text name='<%= formName %>' property="patientProperties.phone" maxlength="17" />
+				<html:text styleId="patientPhone" name='<%= formName %>' property="patientProperties.phone" maxlength="35" onchange="validatePhoneNumber( this );" />
 			</td>
 		</tr>
 	<% } %>

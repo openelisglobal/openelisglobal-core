@@ -101,6 +101,9 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.PATIENT_REPORT_NO_ALERTS, "Patient report with no alerts", "false");
         setDBPropertyMappingAndDefault(Property.ACCESSION_NUMBER_PREFIX, "Accession number prefix", "");
         setDBPropertyMappingAndDefault(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION, "validationOnlyNotesAreExternal", "false");
+        setDBPropertyMappingAndDefault(Property.PHONE_FORMAT, "phone format", "(ddd) dddd-dddd");
+        setDBPropertyMappingAndDefault(Property.VALIDATE_PHONE_FORMAT, "validate phone format", "true");
+
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

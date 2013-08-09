@@ -178,10 +178,6 @@
 		<put name="searchPanel" value="/pages/workplan/workplanSearch.jsp"/>
 		<put name="resultsPanel" value="/pages/workplan/workplan.jsp"/>
 	</definition>
-	<definition name="workplanResultDefinition" extends="baseDefinition">
-		<put name="body" value="workplanDefinition"/>
-		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
-	</definition>
 	<definition name="workplanByTestSectionDefinition" extends="baseDefinition">
 		<put name="body" value="/pages/workplan/workplan.jsp"/>
 		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
@@ -269,7 +265,8 @@
     </definition>
 
     <definition name="siteInformationDefinition" extends="baseDefinition">
-    	<put name="body" value="/pages/siteinformation/siteInformation.jsp"/>
+        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+        <put name="body" value="/pages/siteinformation/siteInformation.jsp"/>
     </definition>
 
 
