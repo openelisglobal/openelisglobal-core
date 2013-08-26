@@ -16,13 +16,13 @@
  */
 package us.mn.state.health.lims.common.services;
 
-import java.sql.Date;
-import java.util.List;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import java.sql.Date;
+import java.util.List;
 
 
 public class SampleService {
@@ -42,7 +42,9 @@ public class SampleService {
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
 		
 		for( Analysis analysis : analysisList){
-			if( analysis.getCompletedDate() == null ){
+            if( isCanceled( analysis )){
+                 continue;
+            }else if( analysis.getCompletedDate() == null ){
 				return null;
 			}else if(date == null){
 				date = analysis.getCompletedDate();
@@ -53,8 +55,12 @@ public class SampleService {
 		
 		return date;
 	}
-	
-	public Date getOrderedDate(){
+
+    private boolean isCanceled( Analysis analysis ){
+        return StatusService.getInstance().getStatusID( StatusService.AnalysisStatus.Canceled ).equals( analysis.getStatusId() );
+    }
+
+    public Date getOrderedDate(){
 		return sample.getReceivedDate();
 	}
 }
