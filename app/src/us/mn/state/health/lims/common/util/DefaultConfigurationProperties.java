@@ -32,7 +32,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 	private static String propertyFile = "/SystemConfiguration.properties";
 	private java.util.Properties properties = null;
 	protected static Map<ConfigurationProperties.Property, KeyDefaultPair> propertiesFileMap;
-	protected static Map<String, ConfigurationProperties.Property> dbNamePropertiesMap  = new HashMap<String, ConfigurationProperties.Property>();
+	protected static Map<String, ConfigurationProperties.Property> dbNamePropertiesMap;
 	private boolean databaseLoaded = false;
 
 	{
@@ -49,6 +49,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 
 	*/
 		//config from site_information table
+		dbNamePropertiesMap  = new HashMap<String, ConfigurationProperties.Property>();
 		setDBPropertyMappingAndDefault(Property.SiteCode, "siteNumber", "" );
 		setDBPropertyMappingAndDefault(Property.TrainingInstallation, "TrainingInstallation", "false");
 		setDBPropertyMappingAndDefault(Property.PatientSearchURL, "patientSearchURL" , "");
