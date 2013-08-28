@@ -18,6 +18,8 @@ package us.mn.state.health.lims.reports.action.implementation;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 
 public class HaitiLNSPFollowupRequiredByLocation extends HaitiIndicatorReport {
@@ -73,7 +75,7 @@ public class HaitiLNSPFollowupRequiredByLocation extends HaitiIndicatorReport {
 
 	@Override
 	protected String getSiteLogo(){
-		return "labLogo.jpg";
+		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
 	}
 
 }

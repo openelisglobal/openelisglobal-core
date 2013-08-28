@@ -144,7 +144,6 @@ public class ReferredOutHaitiReport extends HaitiPatientReport implements IRepor
     	reportParameters.put("directorName", ConfigurationProperties.getInstance().getPropertyValue(Property.labDirectorName));
 		reportParameters.put("labName1", StringUtil.getContextualMessageForKey("report.labName.one"));
 		reportParameters.put("labName2", StringUtil.getContextualMessageForKey("report.labName.two"));
-		reportParameters.put("siteLogo", useLogo ? "HaitiLNSP.jpg" : null );
     }
 
     @Override
@@ -225,7 +224,7 @@ public class ReferredOutHaitiReport extends HaitiPatientReport implements IRepor
     }
 	@Override
 	protected String getSiteLogo() {
-		return "labLogo.jpg";
+		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
 	}
 	@Override
 	protected void postSampleBuild() {

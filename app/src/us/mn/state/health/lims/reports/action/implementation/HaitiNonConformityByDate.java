@@ -21,10 +21,9 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 public class HaitiNonConformityByDate extends NonConformityByDate implements IReportCreator {
-	private boolean isLNSP = true;
 
-	public HaitiNonConformityByDate(boolean isLNSP) {
-		this.isLNSP = isLNSP;
+	public HaitiNonConformityByDate(){
+
 	}
 
 	@Override
@@ -43,15 +42,11 @@ public class HaitiNonConformityByDate extends NonConformityByDate implements IRe
 		reportParameters.put("supportStudy", "false");
 		reportParameters.put("supportService", "false");
 		reportParameters.put("supportSiteSubject", "false");
-		if (isLNSP) {
-			reportParameters.put("siteLogo", useLogo ? "HaitiLNSP.jpg" : null );
+
+		String logoName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
+		reportParameters.put("siteLogo", useLogo ? logoName : null);
 			reportParameters.put("labName1", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
 			reportParameters.put("labName2", "");
-		} else {
-			reportParameters.put("siteLogo", useLogo ? "labLogo.jpg" : null );
-			reportParameters.put("labName1", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-			reportParameters.put("labName2", " ");
-		}
 		
 		
 	}
