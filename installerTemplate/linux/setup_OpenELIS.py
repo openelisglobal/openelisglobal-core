@@ -35,6 +35,9 @@ BACKUP_SCRIPT_NAME = "DatabaseBackup.pl"
 LOG_FILE_NAME = "installer.log"
 LANG_NAME = "en_US.UTF-8"
 APP_NAME = ""
+REPORT_IMAGE_PATH = "/WEB-INF/reports/images/"
+PREVIEW_IMAGE_PATH = "/images/"
+LAB_LOGO_NAME = "labLogo"
 #maps the application name to the liquibase context name
 APP_CONTEX_MAP = { 'CDI':'CDIRetroCI', 'LNSP_Haiti':'haitiLNSP', 'haiti':'haiti', 'CI_LNSP':'ciLNSP', 'CI_IPCI':'CI_IPCI', 'CDI_RegLab':'ci_regional'}
 CLINLIMS_PWD = ''
@@ -473,6 +476,18 @@ def backup_war_file():
     cmd = 'cp ' + TOMCAT_DIR + '/webapps/' + APP_NAME  + '.war ' + ROLLBACK_DIR + APP_NAME + get_action_time() + '.war'
     os.system(cmd)
 
+def backup_site_logo():
+    log("Backing up labLogo.jpg to "  + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg ', PRINT_TO_CONSOLE)
+    cmd = 'cp ' + TOMCAT_DIR + '/webapps/' + APP_NAME  + REPORT_IMAGE_PATH + LAB_LOGO_NAME + '.jpg ' + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg' 
+    os.system(cmd)    
+
+def restore_site_logo():
+    log("Restoring "  + LAB_LOGO_NAME + '.jpg ', PRINT_TO_CONSOLE)
+    cmd = 'cp '  + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg '   + TOMCAT_DIR + '/webapps/' + APP_NAME  + REPORT_IMAGE_PATH + LAB_LOGO_NAME + '.jpg '
+    os.system(cmd)    
+    cmd = 'cp '  + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg '   + TOMCAT_DIR + '/webapps/' + APP_NAME  + PREVIEW_IMAGE_PATH + LAB_LOGO_NAME + '.jpg '
+    os.system(cmd)    
+
 def delete_war_file_from_tomcat(name):
     war_path = TOMCAT_DIR + '/webapps/' + name + '.war'
     os.remove(war_path)
@@ -721,6 +736,8 @@ def do_update():
     backup_war_file( )
 
     backup_config_file()
+    
+    backup_site_logo()
 
     delete_app_directory_from_tomcat( APP_NAME )
 
@@ -735,6 +752,10 @@ def do_update():
     install_backup()
 
     start_tomcat()
+    
+    time.sleep(10)
+    
+    restore_site_logo()
 
     log("Finished updating " + APP_NAME, PRINT_TO_CONSOLE )
 
