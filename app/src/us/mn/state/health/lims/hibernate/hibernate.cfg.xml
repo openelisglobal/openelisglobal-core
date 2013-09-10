@@ -19,14 +19,7 @@
 	<property name="dialect">
 		org.hibernate.dialect.PostgreSQLDialect
 	</property>
-	<!--  ENABLE FOR JDBC TESTCASE -->
-	<!--
-		<property name="connection.username">CLINLIMS</property>
-		<property name="connection.url">jdbc:oracle:thin:@wsddb01.health.state.mn.us:1521:phldev</property>
-		<property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
-		<property name="connection.password">phld</property>
-		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
-	-->
+
 	<property name="show_sql">false</property>
 	<property name="hibernate.format_sql">true</property>
 	<property name="hibernate.jdbc.batch_size">50</property>
@@ -268,8 +261,10 @@
 		resource="us/mn/state/health/lims/qaevent/valueholder/QaObservationType.hbm.xml" />
 	<mapping
 		resource="us/mn/state/health/lims/qaevent/valueholder/QaObservation.hbm.xml" />
-	<mapping
-        resource="us/mn/state/health/lims/dataexchange/order/valueholder/ElectronicOrder.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/dataexchange/order/valueholder/ElectronicOrder.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/testdictionary/valueholder/TestDictionary.hbm.xml" />
 </session-factory>
 
 </hibernate-configuration>

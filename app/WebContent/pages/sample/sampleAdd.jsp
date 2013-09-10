@@ -53,7 +53,7 @@ var useInitialSampleCondition = <%= useInitialSampleCondition  %>;
 var useCollector = <%= useCollector %>;
 var currentCheckedType = -1;
 var currentTypeForTests = -1;
-var selectedRowId = -1;
+var selectedTypeRowId = -1;
 var sampleChangeListeners = new Array();
 var sampleIdStart = 0;
 var labOrderType = "none"; //if set will be done by other tiles
@@ -177,8 +177,9 @@ function getCollectionTimeHtml( row, time ){
 function getTestsHtml(row){
 	return "<input id='testIds_" + row + "' type='hidden'>" +
 	       "<input id='panelIds_" + row + "' type='hidden'>" +
-	       "<input id='testSectionMap_" + row + "' type='hidden'>" + 
-	       "<textarea name='tests' id='tests_" + row + "' cols='65' class='text' readonly='true'  />";
+            "<input id='testSectionMap_" + row + "' type='hidden'>" +
+            "<input id='testTypeMap_" + row + "' type='hidden'>" +
+            "<textarea name='tests' id='tests_" + row + "' cols='65' class='text' readonly='true'  />";
 
 }
 
@@ -262,7 +263,8 @@ function convertSampleToXml( id ){
 	var typeID = "typeId" + id;
 	var panelID = "panelIds" + id;
 	var testID = "testIds" + id;
-	var sectionMap = "testSectionMap" + id;
+    var sectionMap = "testSectionMap" + id;
+    var sampleTypeMap = "testTypeMap" + id;
 	var collectorID = "collector" + id;
 
 	var xml = "<sample sampleID='" + $(typeID).value +
@@ -270,7 +272,8 @@ function convertSampleToXml( id ){
 			  "' time='" + (useCollectionDate ? $(timeID).value : '') +
 			  "' collector='" + (useCollector ? $(collectorID).value : '') +
 			  "' tests='" + $(testID).value +
-			  "' testSectionMap='" + $(sectionMap).value +
+              "' testSectionMap='" + $(sectionMap).value +
+              "' testSampleTypeMap='" + $(sampleTypeMap).value +
 			  "' panels='" + $(panelID).value + "'";
 
 	if( useInitialSampleCondition ){
@@ -299,7 +302,7 @@ function sampleTypeSelected( element ){
 }
 
 function sampleClicked( id ){
-	selectedRowId = id;
+	selectedTypeRowId = id;
 	var checkedTypeValue = $("typeId_" + id).value;
 	currentCheckedType = checkedTypeValue;
 
@@ -308,22 +311,28 @@ function sampleClicked( id ){
 
 
 function processGetTestSuccess(xhr){
+
     //alert(xhr.responseText);
     var response = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	
     var testTable = $("addTestTable");
     var panelTable = $("addPanelTable");
+    var tests = response.getElementsByTagName("test");
+    var isVariableSampleType = response.getElementsByTagName("variableSampleType").length > 0 ? true : false;
     clearTable( testTable );
-	clearTable( panelTable );
+    clearTable( panelTable );
 
-
-   var tests = response.getElementsByTagName("test");
-   if( tests.length == 0){
-   		alert("<%= StringUtil.getMessageForKey("sample.entry.noTests") %>" );
-		removeRow( selectedRowId );   	
-   }else{
+    if( tests.length == 0){
+        alert("<%= StringUtil.getMessageForKey("sample.entry.noTests") %>" );
+		removeRow( selectedTypeRowId );
+    }else{
+       if( isVariableSampleType){
+           $jq("#userSampleTypeHead").show();
+       }else{
+           $jq("#userSampleTypeHead").hide();
+       }
 	   for( var i = 0; i < tests.length; i++ ){
-	   		insertTestIntoTestTable( tests[i], testTable );
+	   		insertTestIntoTestTable( tests[i], testTable, isVariableSampleType );
 	   }
 	   var panels = response.getElementsByTagName("panel");
 	   for( var i = 0; i < panels.length; i++ ){
@@ -332,11 +341,11 @@ function processGetTestSuccess(xhr){
 	
 		$("testSelections").show();
 	
-		setSampleTests();
+		setSampleTests(isVariableSampleType);
 	}
 }
 
-function insertTestIntoTestTable( test, testTable ){
+function insertTestIntoTestTable( test, testTable, userSampleTypes ){
 	var name = getValueFromXmlElement( test, "name" );
 	var id = getValueFromXmlElement( test, "id" );
 	var userBench = "true" == getValueFromXmlElement( test, "userBenchChoice" );
@@ -345,10 +354,12 @@ function insertTestIntoTestTable( test, testTable ){
 	var newRow = testTable.insertRow(row);
 	var selectionCell = newRow.insertCell(0);
 	var nameCell = newRow.insertCell(1);
-	var selectionCell;
+    var qualifiableId = "";
+    var userSampleTypesList, userVariableSampleTypes;
+
 	newRow.id = "availRow_" + nominalRow;
 
-	selectionCell.innerHTML = getCheckBoxesHtml( nominalRow, userBench );
+	selectionCell.innerHTML = getCheckBoxesHtml( nominalRow, userBench, userSampleTypes);
 	nameCell.innerHTML = getTestDisplayRowHtml( name, id, nominalRow );
 
 	if( userBench ){
@@ -359,6 +370,40 @@ function insertTestIntoTestTable( test, testTable ){
 		selectionClone.children("#testSectionPrototypeID").attr("id", "sectionSelect_" + nominalRow);
 		selectionCell.innerHTML = selectionClone.html();
 	}
+
+    if( userSampleTypes ){
+        userVariableSampleTypes = test.getElementsByTagName("variableSampleTypes");
+        userSampleTypesList  = test.getElementsByTagName("type");
+        if( userVariableSampleTypes[0].attributes.getNamedItem("qualifiableId")){
+            qualifiableId = userVariableSampleTypes[0].attributes.getNamedItem("qualifiableId").nodeValue;
+        }
+        $("userSampleTypeHead").show();
+        selectionCell = newRow.insertCell(2);
+        selectionCell.id = "userSampleType_" + nominalRow;
+        var selectionClone = $jq("#userSampleTypePrototype").clone().show();
+        $jq.each(userSampleTypesList, function (index, value) {
+            selectionClone.children("#userSampleTypePrototypeID").append($jq('<option>', {
+                value: value.attributes.getNamedItem("id").nodeValue,
+                text : value.attributes.getNamedItem("name").nodeValue
+            }));
+        }  );
+
+        selectionClone.children("#userSampleTypePrototypeID").attr("id", "userSampleTypeSelect_" + nominalRow);
+        selectionCell.innerHTML = selectionClone.html();
+        $jq("#userSampleTypeSelect_" + nominalRow).change(function(e){
+            userSampleTypeSelectionChanged( "userSampleTypeSelect_" + nominalRow, nominalRow, qualifiableId  );
+        });
+
+        selectionCell = newRow.insertCell(3);
+        selectionCell.id = "userSampleTypeQualifier_" + nominalRow;
+        selectionClone = $jq("#userSampleTypeQualifierPrototype").clone();
+        selectionClone.children("#userSampleTypeQualifierPrototypeID").removeAttr("disabled");
+        selectionClone.children("#userSampleTypeQualifierPrototypeID").attr("id", "userSampleTypeQualifierID_" + nominalRow);
+        selectionClone.children("#userSampleTypeQualifierPrototypeValueID").val(qualifiableId);
+        selectionClone.children("#userSampleTypeQualifierPrototypeValueID").attr("id", "userSampleTypeQualifierValueID_" + nominalRow);
+        selectionCell.innerHTML = selectionClone.html();
+        selectionCell.hide();
+    }
 }
 
 function insertPanelIntoPanelTable( panel, panelTable ){
@@ -383,9 +428,10 @@ function insertPanelIntoPanelTable( panel, panelTable ){
 	nameCell.innerHTML = name;
 }
 
-function getCheckBoxesHtml( row, userBench){
+function getCheckBoxesHtml( row, userBench, userSampleTypes ){
 	var benchUpdate = userBench ? "setUserSectionSelection(this, \'" + row + "\');" : " ";
-	return "<input name='testSelect' id='test_" + row + "' type='checkbox' onclick=\"" +  benchUpdate + " assignTestsToSelected();" + "\" >";
+    var sampleTypeUpdate =  userSampleTypes ? "setUserSampleTypeSelection(this, \'" + row + "\' );" : " ";
+	return "<input name='testSelect'  class='testCheckbox' id='test_" + row + "' type='checkbox' onclick=\"" +  benchUpdate + sampleTypeUpdate + " assignTestsToSelected();" + "\" >";
 }
 
 function getPanelCheckBoxesHtml(map, row, id ){
@@ -394,7 +440,7 @@ function getPanelCheckBoxesHtml(map, row, id ){
 }
 
 function getTestDisplayRowHtml( name, id, row ){
-	return "<input name='testName' value='" + id + "' id='testName_" + row  + "' type='hidden' >" + name;
+	return "<input name='testName' class='testName'  value='" + id + "' id='testName_" + row  + "' type='hidden' >" + name;
 }
 
 
@@ -444,41 +490,50 @@ function setUserSectionSelection(testCheckbox, row){
 	}	
 }
 
+function setUserSampleTypeSelection(testCheckbox, row){
+
+    if( testCheckbox.checked){
+        $jq("#userSampleType_" + row + " select").removeAttr("disabled");
+        $jq("#userSampleType_" + row + " span").css("visibility", "visible");
+    }else{
+        $jq("#userSampleType_" + row + " select").attr("disabled", "disabled");
+        $jq("#userSampleType_" + row + " span").css("visibility", "hidden");
+    }
+}
+
 function assignTestsToSelected(checkbox, panelId){
 	var testTable = $("addTestTable");
-	var panelTable = $("addPanelTable");
-	var choosenTests = new Array();
-	var choosenIds = new Array();
-	var choosenPanelIds = new Array();
-	var i;
+	var chosenTests = new Array();
+	var chosenIds = new Array();
+	var i, row,nameNode;
 	var displayTests = "";
 	var testIds = "";
-	var panelIds = "";
 
-	var inputs = testTable.getElementsByTagName( "input" );
+	var inputs = testTable.getElementsByClassName("testCheckbox");
 
-	for( i = 0; i < inputs.length; i = i + 2 ){
+	for( i = 0; i < inputs.length; i++ ){
 		if( inputs[i].checked ){
-			//this is fragile.  It depends on the code in getTestDisplayRowHtml()
-			choosenTests.push( inputs[i+1].parentNode.lastChild.nodeValue );
-			choosenIds.push( inputs[i+1].value );
+            row = inputs[i].id.split("_")[1];
+            nameNode = $("testName_" + row);
+			chosenTests.push(nameNode.nextSibling.nodeValue);
+			chosenIds.push( nameNode.value);
 		}
 	}
 
-	if( choosenTests.length > 0 ){
-		displayTests = choosenTests[0]; //this is done to get the ',' right
-		testIds = choosenIds[0];
-		for( var i = 1; i < choosenTests.length; i++ ){
-			displayTests += ", " + choosenTests[i];
-			testIds += ", " + choosenIds[i];
+	if( chosenTests.length > 0 ){
+		displayTests = chosenTests[0]; //this is done to get the ',' right
+		testIds = chosenIds[0];
+		for( var i = 1; i < chosenTests.length; i++ ){
+			displayTests += ", " + chosenTests[i];
+			testIds += ", " + chosenIds[i];
 		}
 	}
 
-	$("tests_" + selectedRowId).value = choosenTests;
-	$("testIds_" + selectedRowId).value = choosenIds;
+	$("tests_" + selectedTypeRowId).value = chosenTests;
+	$("testIds_" + selectedTypeRowId).value = chosenIds;
 
 	if( checkbox){
-		var panelIdElement = $("panelIds_" + selectedRowId);
+		var panelIdElement = $("panelIds_" + selectedTypeRowId);
 		
 		if( checkbox.checked ){
 			panelIdElement.value = addIdToUniqueIdList(panelId, panelIdElement.value);
@@ -516,7 +571,7 @@ function addIdToUniqueIdList(id, list) {
 function sectionSelectionChanged( selectionElement ){
 	var selection = $jq( selectionElement);
 	var testIdNumber = selection.attr("id").split("_")[1];
-	var sectionMap = $jq("#testSectionMap_" + selectedRowId ); 
+	var sectionMap = $jq("#testSectionMap_" + selectedTypeRowId );
 	sectionMap.val( sectionMap.val() + $jq("#testName_" + testIdNumber).val() + ":" + selection.val() + "," );
 	
 	testAndSetSave();
@@ -524,23 +579,23 @@ function sectionSelectionChanged( selectionElement ){
 
 function editSelectedTest( ){
 	if( currentCheckedType == -1 || currentTypeForTests != currentCheckedType  ){
-    	getTestsForSampleType(currentCheckedType, labOrderType, processGetTestSuccess, processGetTestFailure); //this is an asychronise call and setSampleType will be called on the return of the call
+    	getTestsForSampleType(currentCheckedType, labOrderType, processGetTestSuccess, processGetTestFailure); //this is an asynchronous call and setSampleType will be called on the return of the call
     }else{
     	setSampleTests();
     }
 }
 
-function setSampleTests(){
+function setSampleTests(isVariableSampleType ){
 	deselectAllTests();
 
-	var id = selectedRowId;
+	var id = selectedTypeRowId;
 
 	var allTests = $("testIds_" + id ).value;
 	var allPanels = $("panelIds_" + id).value;
 
 	if( allTests.length > 0 ){
 		var tests = allTests.split(",");
-	    checkTests(tests);
+	    checkTests(tests, isVariableSampleType);
 	}		
 	
     if( allPanels.length > 0 ){
@@ -552,25 +607,59 @@ function setSampleTests(){
 	
 }
 
-function checkTests(tests) {
-    inputs = $("addTestTable").getElementsByTagName("input");
+function checkTests(tests, isVariableSampleType) {
+    var inputs = $("addTestTable").getElementsByClassName("testName");
+    var testRow;
 
     for( var i = 0; i < tests.length; i++ ){
-        for( var j = 1; j < inputs.length; j = j + 2 ){ 
+        for( var j = 0; j < inputs.length; j++ ){
         	if( inputs[j].value == tests[i] ){
-	        	if (acceptExternalOrders) {
-                    $(inputs[j - 1].id).click();
-                    inputs[ j - 1].checked = true;
-                    break;
-	        	} else {
-	                inputs[ j - 1].checked = true;
-	                break;
-	            }
+                testRow = inputs[j].id.split("_")[1];
+                $("test_" + testRow).click();
+                if( isVariableSampleType){
+                    populateUserSelectedType(testRow)
+                }
+	            break;
         	}
         }
     }
 }
 
+function populateUserSelectedType( testRow ){
+    var selectedTypes = $jq("#testTypeMap_" + selectedTypeRowId).val();
+    var testId = $jq("#testName_" + testRow).val();
+    var selectedTypeList, selectedTypeListLength, typeSelection, selectedTypeName, selectionFound;
+
+    if(selectedTypes){
+        selectedTypeList = selectedTypes.split(",");
+        selectedTypeListLength = selectedTypeList.length;
+        typeSelection = $jq("#userSampleTypeSelect_" + testRow);
+        for( i = 0; i < selectedTypeListLength; i++ ){
+            selectionFound = true;
+            if( selectedTypeList[i].indexOf(testId) == 0){
+                selectionFound = false;
+                selectedTypeName = selectedTypeList[i].split(":")[1];
+                typeSelection.children("option").each(function(j){
+                    if( selectedTypeName == $jq(this).text() ){
+                        typeSelection.val($jq(this).val());
+                        if( $jq(this).val() == $jq("#userSampleTypeQualifierValueID_" + testRow).val() ){
+                            $jq("#userSampleTypeQualifier_" + testRow).show();
+                        }else{
+                            $jq("#userSampleTypeQualifier_" + testRow).hide();
+                        }
+                        selectionFound = true;
+                        return;
+                    }
+                });
+
+            }
+            //if the selection is not found then it is "other"
+            if( !selectionFound){
+                $jq("#userSampleTypeQualifierID_" + testRow).val( selectedTypeList[i].split(":")[1]);
+            }
+        }
+    }
+}
 function checkPanels(panels) {
     pInputs = $("addPanelTable").getElementsByTagName("input");
     for( var x = 0; x < panels.length; x++ ){
@@ -629,12 +718,45 @@ function /*boolean*/ sampleAddValid( sampleRequired ){
 			return;
 		}
 	});
-	
+
+    //we should move everything to this model
+    $jq(".required:enabled:visible").each( function(i, val){
+        var elValue = $jq(val).val();
+         if( !elValue.trim().length || elValue == 0){
+            enable = false;
+            return;
+        }
+    });
 	return enable;
 }
 
 function samplesHaveBeenAdded(){
 	return $("samplesAddedTable").rows.length > 1;
+}
+
+function userSampleTypeSelectionChanged( userTypeSelectionId, row,  qualifiableId ){
+
+    var sampleType =  $jq("#" + userTypeSelectionId);
+    var typeMap = $jq("#testTypeMap_" + selectedTypeRowId );
+    typeMap.val( typeMap.val() + $jq("#testName_" + row).val() + ":" + $jq("#" + userTypeSelectionId + " :selected").text() + "," );
+
+    //testAndSetSave();
+
+    if(sampleType.val() == qualifiableId){
+        $jq("#userSampleTypeQualifier_" + row).show();
+    }else{
+        $jq("#userSampleTypeQualifier_" + row).hide();
+        $jq("#userSampleTypeQualifierID_" + row).val('');
+    }
+
+    testAndSetSave();
+}
+
+function sampleTypeQualifierChanged(element){
+    var typeMap = $jq("#testTypeMap_" + selectedTypeRowId );
+    typeMap.val( typeMap.val() +  $jq("#testName_" + element.id.split("_")[1]).val() + ":" + element.value + "," );
+
+    testAndSetSave();
 }
 </script>
 <% if(useInitialSampleCondition){ %>
@@ -663,6 +785,20 @@ function samplesHaveBeenAdded(){
 			</logic:iterate>
 	</select>
 </div>
+<div id="userSampleTypePrototype" style="display:none;" >
+    <span class="requiredlabel" style="visibility:hidden;">*</span>
+    <select id="userSampleTypePrototypeID" disabled="disabled" class="required" >
+        <option value='0'></option>
+
+    </select>
+</div>
+<div id="userSampleTypeQualifierPrototype" style="display:none;" >
+    <span class="requiredlabel" >*</span>
+    <input id="userSampleTypeQualifierPrototypeID"  size="12" value="" class="required" disabled="disabled" onchange="sampleTypeQualifierChanged(this)" type="text">
+    <input id="userSampleTypeQualifierPrototypeValueID" value="" type="hidden" >
+</div>
+
+
 
 <div id="crossPanels">
 </div>
@@ -671,7 +807,7 @@ function samplesHaveBeenAdded(){
 	<Table width="100%">
 		<tr>
 			<td>
-				<bean:message  key="sample.entry.sample.type"/>
+                <bean:message  key="sample.entry.sample.type"/>
 			</td>
 		</tr>
 
@@ -681,9 +817,7 @@ function samplesHaveBeenAdded(){
 					value="0">
 					<app:optionsCollection name="<%=formName%>" property="sampleTypes" label="value" value="id" />
 				</html:select>
-				<html:button property="addSamples" styleId="addSampleButton" onclick="addNewSamples()" disabled="true">
-					<bean:message key="sample.entry.addSample" />
-				</html:button>
+                <input type="button" id="addSampleButton" onclick="addNewSamples()"  value="<%=StringUtil.getMessageForKey("sample.entry.addSample")%>"  disabled="disabled">
 			</td>
 		</tr>
 	</Table>
@@ -729,15 +863,13 @@ function samplesHaveBeenAdded(){
 			<tr>
 				<td width=<%=useCollectionDate ? "90%" : "90%" %>>&nbsp;</td>
 				<td width="10%">
-					<html:button property="removeAll" styleClass="textButton"  onclick="removeAllRows();">
-						<bean:message key="sample.entry.removeAllSamples"/>
-					</html:button>
+                    <input type="button" onclick="removeAllRows();" value="<%=StringUtil.getMessageForKey("sample.entry.removeAllSamples")%>" class="textButton">
 				</td>
 			</tr>
 		</table>
 		<br />
 		<div id="testSelections" class="colorFill" style="display:none;" >
-		<table width="50%" style="margin-left: 1%" id="addTables">
+		<table width="60%" style="margin-left: 1%" id="addTables">
 		<tr>
 			<td valign="top" width="30%">
 				<table width="97%" id="addPanelTable" >
@@ -761,7 +893,7 @@ function samplesHaveBeenAdded(){
 						<bean:message key="sample.entry.available.tests"/>
 					</caption>
 					<tr>
-						<th width="10%">&nbsp;
+						<th width="5%">&nbsp;
 							
 						</th>
 						<th width="50%">
@@ -770,6 +902,12 @@ function samplesHaveBeenAdded(){
 						<th width="40%" style="display:none" id="sectionHead">
 							Section
 						</th>
+                        <th width="25%" style="display:none" id="userSampleTypeHead">
+                            <bean:message  key="sample.entry.sample.type"/>
+                        </th>
+                        <th width="20%">
+                              &nbsp;
+                        </th>
 					</tr>
 				</table>
 			</td>

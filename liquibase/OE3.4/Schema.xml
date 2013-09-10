@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+<changeSet author="paulsc" id="1" >
+	<comment>Creates a new table to map tests to dictionary values with arbitrary context</comment>
+    <createSequence sequenceName="test_dictionary_seq" startValue="1" incrementBy="1" />
+    <createTable tableName="test_dictionary">
+        <column name="id" type="numeric(10,0)" >
+            <constraints primaryKey="true" />
+        </column>
+        <column name="test_id" type="numeric(10,0)" >
+            <constraints nullable="false" />
+        </column>
+        <column name="dictionary_category_id" type="numeric(10,0)" >
+            <constraints nullable="false" />
+        </column>
+        <column name="context" type="varchar(20)" >
+            <constraints nullable="false" />
+        </column>
+        <column name="qualifiable_entry_id" type="numeric(10,0)" />
+        <column name="lastupdated" type="timestamp" defaultValueDate=" now() " />
+    </createTable>
+    <addForeignKeyConstraint baseTableName="test_dictionary"
+                             baseColumnNames="test_id"
+                             constraintName="fk_test_dictioanry_test"
+                             referencedTableName="test"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE" />
+    <addForeignKeyConstraint baseTableName="test_dictionary"
+                             baseColumnNames="dictionary_category_id"
+                             constraintName="fk_test_dictionary_dictionary"
+                             referencedTableName="dictionary_category"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE" />
+    <addForeignKeyConstraint baseTableName="test_dictionary"
+                             baseColumnNames="qualifiable_entry_id"
+                             constraintName="fk_test_dictionary_qualifiable"
+                             referencedTableName="dictionary"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE" />
+	<sql>
+        COMMENT ON TABLE clinlims.test_dictionary IS 'Links between tests and dictionary categories.  Intended use is for when a user might have to select dictioanry values for some asspect of a test';
+        COMMENT ON COLUMN clinlims.test_dictionary.test_id IS 'The test part of the linkage';
+        COMMENT ON COLUMN clinlims.test_dictionary.dictionary_category_id IS 'The dictionary category part of the linkage';
+        COMMENT ON COLUMN clinlims.test_dictionary.context IS 'The context of the linkage.  Make it literate';
+        COMMENT ON COLUMN clinlims.test_dictionary.qualifiable_entry_id IS 'This value has to be further qualified.  It''s intended value is ''other''';
+    </sql>
+</changeSet>
+<changeSet id="2" author="paulsc">
+    <comment>Adds a column to the sample_item table which indicates the sample type name.  Used to support arbitrary types</comment>
+    <addColumn tableName="analysis">
+        <column name="type_of_sample_name" type="varchar(40)" />
+    </addColumn>
+    <sql>
+        update analysis a set type_of_sample_name = ( select description from clinlims.type_of_sample tos, clinlims.sample_item si where tos.id = si.typeosamp_id and si.id = a.sampitem_id );
+        COMMENT ON COLUMN clinlims.analysis.type_of_sample_name IS 'Used to support arbitrary sample types.  Usually from type_of_sample table but may be a dictionary value or a response to ''other''';
+    </sql>
+</changeSet>
+</databaseChangeLog>
