@@ -96,4 +96,16 @@
             <column name="is_active" value="N" />
         </insert>
     </changeSet>
+    <changeSet id="7" author="paulsc">
+        <comment>Adds accents</comment>
+        <update tableName="dictionary" >
+            <column name="dict_entry" value="Présence" />
+            <where>dict_entry = 'Presence' </where>
+        </update>
+        <update tableName="type_of_sample" >
+            <column name="description" value="Sérum" />
+            <column name="local_abbrev" value="Sérum" />
+            <where>description = 'Serum' </where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

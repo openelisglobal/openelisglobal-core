@@ -55,4 +55,10 @@
         COMMENT ON COLUMN clinlims.analysis.type_of_sample_name IS 'Used to support arbitrary sample types.  Usually from type_of_sample table but may be a dictionary value or a response to ''other''';
     </sql>
 </changeSet>
+<changeSet id="3" author="paulsc">
+    <comment>Lengths the uom name column</comment>
+    <modifyColumn tableName="unit_of_measure">
+        <column name="name" type="varchar(26)" />
+    </modifyColumn>
+</changeSet>
 </databaseChangeLog>
