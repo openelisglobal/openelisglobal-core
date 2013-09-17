@@ -359,7 +359,7 @@ function insertTestIntoTestTable( test, testTable, userSampleTypes ){
 
 	newRow.id = "availRow_" + nominalRow;
 
-	selectionCell.innerHTML = getCheckBoxesHtml( nominalRow, userBench, userSampleTypes);
+	selectionCell.innerHTML = getTestCheckBoxesHtml( nominalRow, userBench, userSampleTypes);
 	nameCell.innerHTML = getTestDisplayRowHtml( name, id, nominalRow );
 
 	if( userBench ){
@@ -428,7 +428,7 @@ function insertPanelIntoPanelTable( panel, panelTable ){
 	nameCell.innerHTML = name;
 }
 
-function getCheckBoxesHtml( row, userBench, userSampleTypes ){
+function getTestCheckBoxesHtml( row, userBench, userSampleTypes ){
 	var benchUpdate = userBench ? "setUserSectionSelection(this, \'" + row + "\');" : " ";
     var sampleTypeUpdate =  userSampleTypes ? "setUserSampleTypeSelection(this, \'" + row + "\' );" : " ";
 	return "<input name='testSelect'  class='testCheckbox' id='test_" + row + "' type='checkbox' onclick=\"" +  benchUpdate + sampleTypeUpdate + " assignTestsToSelected();" + "\" >";
@@ -491,13 +491,18 @@ function setUserSectionSelection(testCheckbox, row){
 }
 
 function setUserSampleTypeSelection(testCheckbox, row){
+    var sampleTypeSelection = $jq("#userSampleType_" + row + " select");
 
     if( testCheckbox.checked){
-        $jq("#userSampleType_" + row + " select").removeAttr("disabled");
+        sampleTypeSelection.removeAttr("disabled");
         $jq("#userSampleType_" + row + " span").css("visibility", "visible");
     }else{
-        $jq("#userSampleType_" + row + " select").attr("disabled", "disabled");
+        sampleTypeSelection.val(0);
+        sampleTypeSelection.attr("disabled", "disabled");
         $jq("#userSampleType_" + row + " span").css("visibility", "hidden");
+        $jq("#userSampleTypeQualifierID_" + row).val('');
+        $jq("#userSampleTypeQualifier_" + row).hide();
+
     }
 }
 
@@ -687,7 +692,9 @@ function checkPanels(panels) {
 
 function panelSelected(checkBox, tests ){
 	for( var i = 0; i < tests.length; i++ ){
-		$("test_" + tests[i]).checked = checkBox.checked;
+		$jq("#test_" + tests[i]).attr("checked", checkBox.checked );
+        $jq("#test_" + tests[i]).trigger("onclick");
+
 	}
 }
 
