@@ -495,12 +495,15 @@ function setUserSampleTypeSelection(testCheckbox, row){
 
     if( testCheckbox.checked){
         sampleTypeSelection.removeAttr("disabled");
+        sampleTypeSelection.addClass('required');
         $jq("#userSampleType_" + row + " span").css("visibility", "visible");
     }else{
         sampleTypeSelection.val(0);
         sampleTypeSelection.attr("disabled", "disabled");
+        sampleTypeSelection.removeClass('required');
         $jq("#userSampleType_" + row + " span").css("visibility", "hidden");
         $jq("#userSampleTypeQualifierID_" + row).val('');
+        $jq("#userSampleTypeQualifierID_" + row).removeClass('required');
         $jq("#userSampleTypeQualifier_" + row).hide();
 
     }
@@ -727,7 +730,7 @@ function /*boolean*/ sampleAddValid( sampleRequired ){
 	});
 
     //we should move everything to this model
-    $jq(".required:enabled:visible").each( function(i, val){
+    $jq(".required").each( function(i, val){
         var elValue = $jq(val).val();
          if( !elValue.trim().length || elValue == 0){
             enable = false;
@@ -751,9 +754,11 @@ function userSampleTypeSelectionChanged( userTypeSelectionId, row,  qualifiableI
 
     if(sampleType.val() == qualifiableId){
         $jq("#userSampleTypeQualifier_" + row).show();
+        $jq("#userSampleTypeQualifierID_" + row).addClass('required');
     }else{
         $jq("#userSampleTypeQualifier_" + row).hide();
         $jq("#userSampleTypeQualifierID_" + row).val('');
+        $jq("#userSampleTypeQualifierID_" + row).removeClass('required');
     }
 
     testAndSetSave();
@@ -794,14 +799,14 @@ function sampleTypeQualifierChanged(element){
 </div>
 <div id="userSampleTypePrototype" style="display:none;" >
     <span class="requiredlabel" style="visibility:hidden;">*</span>
-    <select id="userSampleTypePrototypeID" disabled="disabled" class="required" >
+    <select id="userSampleTypePrototypeID" disabled="disabled"  >
         <option value='0'></option>
 
     </select>
 </div>
 <div id="userSampleTypeQualifierPrototype" style="display:none;" >
     <span class="requiredlabel" >*</span>
-    <input id="userSampleTypeQualifierPrototypeID"  size="12" value="" class="required" disabled="disabled" onchange="sampleTypeQualifierChanged(this)" type="text">
+    <input id="userSampleTypeQualifierPrototypeID"  size="12" value=""  disabled="disabled" onchange="sampleTypeQualifierChanged(this)" type="text">
     <input id="userSampleTypeQualifierPrototypeValueID" value="" type="hidden" >
 </div>
 
