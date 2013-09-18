@@ -108,4 +108,16 @@
             <where>description = 'Serum' </where>
         </update>
     </changeSet>
+    <changeSet id="8" author="paulsc">
+        <comment>Remove trailing spaces in system_role name</comment>
+        <update tableName="system_role" >
+            <column name="name" value="Results entry" />
+            <where>name like 'Results entry%'</where>
+        </update>
+        <comment>Remove trailing spaces in system_role name</comment>
+        <update tableName="system_role" >
+            <column name="name" value="Validator" />
+            <where>name like 'Validator%'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
