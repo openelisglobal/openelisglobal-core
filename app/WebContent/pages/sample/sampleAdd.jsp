@@ -54,7 +54,7 @@ var useCollector = <%= useCollector %>;
 var currentCheckedType = -1;
 var currentTypeForTests = -1;
 var selectedTypeRowId = -1;
-var sampleChangeListeners = new Array();
+var sampleChangeListeners = [];
 var sampleIdStart = 0;
 var labOrderType = "none"; //if set will be done by other tiles
 
@@ -238,9 +238,7 @@ function removeRow( row ){
 }
 
 function loadSamples(){
-	var xml = convertSamplesToXml();
-	//alert(xml);
-	$("sampleXML").value = xml;
+	$("sampleXML").value = convertSamplesToXml();
 }
 
 function convertSamplesToXml(){
@@ -258,23 +256,15 @@ function convertSamplesToXml(){
 }
 
 function convertSampleToXml( id ){
-	var dateID = "collectionDate" + id;
-	var timeID = "collectionTime" + id;
-	var typeID = "typeId" + id;
-	var panelID = "panelIds" + id;
-	var testID = "testIds" + id;
-    var sectionMap = "testSectionMap" + id;
-    var sampleTypeMap = "testTypeMap" + id;
-	var collectorID = "collector" + id;
 
-	var xml = "<sample sampleID='" + $(typeID).value +
-			  "' date='" + (useCollectionDate ? $(dateID).value : '') +
-			  "' time='" + (useCollectionDate ? $(timeID).value : '') +
-			  "' collector='" + (useCollector ? $(collectorID).value : '') +
-			  "' tests='" + $(testID).value +
-              "' testSectionMap='" + $(sectionMap).value +
-              "' testSampleTypeMap='" + $(sampleTypeMap).value +
-			  "' panels='" + $(panelID).value + "'";
+	var xml = "<sample sampleID='" + $jq("#typeId" + id).val() +
+			  "' date='" + (useCollectionDate ? $jq("#collectionDate" + id).val() : '') +
+			  "' time='" + (useCollectionDate ? $jq("#collectionTime" + id).val() : '') +
+			  "' collector='" + (useCollector ? $jq("#collector" + id).val() : '') +
+			  "' tests='" + $jq("#testIds" + id).val() +
+              "' testSectionMap='" + $jq("#testSectionMap" + id).val() +
+              "' testSampleTypeMap=\"" + $jq("#testTypeMap" + id).val() +
+			  "\" panels='" + $jq("#panelIds" + id).val() + "'";
 
 	if( useInitialSampleCondition ){
 		var initialConditions = $("initialCondition" + id);
@@ -303,8 +293,7 @@ function sampleTypeSelected( element ){
 
 function sampleClicked( id ){
 	selectedTypeRowId = id;
-	var checkedTypeValue = $("typeId_" + id).value;
-	currentCheckedType = checkedTypeValue;
+	currentCheckedType = $("typeId_" + id).value;
 
 	editSelectedTest();
 }
@@ -314,11 +303,11 @@ function processGetTestSuccess(xhr){
 
     //alert(xhr.responseText);
     var response = xhr.responseXML.getElementsByTagName("formfield").item(0);
-	
+	var i;
     var testTable = $("addTestTable");
     var panelTable = $("addPanelTable");
     var tests = response.getElementsByTagName("test");
-    var isVariableSampleType = response.getElementsByTagName("variableSampleType").length > 0 ? true : false;
+    var isVariableSampleType = response.getElementsByTagName("variableSampleType").length > 0;
     clearTable( testTable );
     clearTable( panelTable );
 
@@ -331,11 +320,11 @@ function processGetTestSuccess(xhr){
        }else{
            $jq("#userSampleTypeHead").hide();
        }
-	   for( var i = 0; i < tests.length; i++ ){
+	   for( i = 0; i < tests.length; i++ ){
 	   		insertTestIntoTestTable( tests[i], testTable, isVariableSampleType );
 	   }
 	   var panels = response.getElementsByTagName("panel");
-	   for( var i = 0; i < panels.length; i++ ){
+	   for( i = 0; i < panels.length; i++ ){
 	   		insertPanelIntoPanelTable( panels[i], panelTable );
 	   }
 	
@@ -355,7 +344,7 @@ function insertTestIntoTestTable( test, testTable, userSampleTypes ){
 	var selectionCell = newRow.insertCell(0);
 	var nameCell = newRow.insertCell(1);
     var qualifiableId = "";
-    var userSampleTypesList, userVariableSampleTypes;
+    var userSampleTypesList, userVariableSampleTypes,selectionClone;
 
 	newRow.id = "availRow_" + nominalRow;
 
@@ -366,7 +355,7 @@ function insertTestIntoTestTable( test, testTable, userSampleTypes ){
 		$("sectionHead").show();
 		selectionCell = newRow.insertCell(2);
 		selectionCell.id = "testSection_" + nominalRow;
-		var selectionClone = $jq("#sectionPrototype").clone().show();
+		selectionClone = $jq("#sectionPrototype").clone().show();
 		selectionClone.children("#testSectionPrototypeID").attr("id", "sectionSelect_" + nominalRow);
 		selectionCell.innerHTML = selectionClone.html();
 	}
@@ -380,7 +369,7 @@ function insertTestIntoTestTable( test, testTable, userSampleTypes ){
         $("userSampleTypeHead").show();
         selectionCell = newRow.insertCell(2);
         selectionCell.id = "userSampleType_" + nominalRow;
-        var selectionClone = $jq("#userSampleTypePrototype").clone().show();
+        selectionClone = $jq("#userSampleTypePrototype").clone().show();
         $jq.each(userSampleTypesList, function (index, value) {
             selectionClone.children("#userSampleTypePrototypeID").append($jq('<option>', {
                 value: value.attributes.getNamedItem("id").nodeValue,
@@ -511,8 +500,8 @@ function setUserSampleTypeSelection(testCheckbox, row){
 
 function assignTestsToSelected(checkbox, panelId){
 	var testTable = $("addTestTable");
-	var chosenTests = new Array();
-	var chosenIds = new Array();
+	var chosenTests = [];
+	var chosenIds = [];
 	var i, row,nameNode;
 	var displayTests = "";
 	var testIds = "";
@@ -531,7 +520,7 @@ function assignTestsToSelected(checkbox, panelId){
 	if( chosenTests.length > 0 ){
 		displayTests = chosenTests[0]; //this is done to get the ',' right
 		testIds = chosenIds[0];
-		for( var i = 1; i < chosenTests.length; i++ ){
+		for( i = 1; i < chosenTests.length; i++ ){
 			displayTests += ", " + chosenTests[i];
 			testIds += ", " + chosenIds[i];
 		}
@@ -595,11 +584,8 @@ function editSelectedTest( ){
 
 function setSampleTests(isVariableSampleType ){
 	deselectAllTests();
-
-	var id = selectedTypeRowId;
-
-	var allTests = $("testIds_" + id ).value;
-	var allPanels = $("panelIds_" + id).value;
+	var allTests = $("testIds_" + selectedTypeRowId ).value;
+	var allPanels = $("panelIds_" + selectedTypeRowId).value;
 
 	if( allTests.length > 0 ){
 		var tests = allTests.split(",");
@@ -816,7 +802,7 @@ function sampleTypeQualifierChanged(element){
 </div>
 
 <html:hidden name="<%=formName%>" property="sampleXML"  styleId="sampleXML"/>
-	<Table width="100%">
+	<Table style="width:100%">
 		<tr>
 			<td>
                 <bean:message  key="sample.entry.sample.type"/>
@@ -836,19 +822,19 @@ function sampleTypeQualifierChanged(element){
 
 	<br />
 	<div id="samplesAdded" class="colorFill" style="display: none; ">
-		<hr width="100%" />
+		<hr style="width:100%" />
 
 		<table id="samplesAddedTable" width=<%=useCollectionDate ? "100%" : "80%" %>>
 			<tr>
-				<th width="5%"></th>
-				<th width="10%">
+				<th style="width:5%"></th>
+				<th style="width:10%">
 					<bean:message key="sample.entry.id"/>
 				</th>
-				<th width="10%">
+				<th style="width:10%">
 					<bean:message key="sample.entry.sample.type"/>
 				</th>
 				<% if(useInitialSampleCondition){ %>
-				<th width="15%">
+				<th style="width:15%">
 					<bean:message key="sample.entry.sample.condition"/>
 				</th>
 				<% } %>
@@ -865,59 +851,59 @@ function sampleTypeQualifierChanged(element){
 					<bean:message key="sample.entry.collector" />
 				</th>	
 				<% } %>
-				<th width="35%">
+				<th style="width:35%">
 					<span class='requiredlabel'>*</span>&nbsp;<bean:message key="sample.entry.sample.tests"/>
 				</th>
-				<th width="10%"></th>
+				<th style="width:10%"></th>
 			</tr>
 		</table >
 		<table width=<%=useCollectionDate ? "100%" : "80%" %>>
 			<tr>
 				<td width=<%=useCollectionDate ? "90%" : "90%" %>>&nbsp;</td>
-				<td width="10%">
+				<td style="width:10%">
                     <input type="button" onclick="removeAllRows();" value="<%=StringUtil.getMessageForKey("sample.entry.removeAllSamples")%>" class="textButton">
 				</td>
 			</tr>
 		</table>
 		<br />
 		<div id="testSelections" class="colorFill" style="display:none;" >
-		<table width="60%" style="margin-left: 1%" id="addTables">
+		<table style="margin-left: 1%;width:60%;" id="addTables">
 		<tr>
-			<td valign="top" width="30%">
-				<table width="97%" id="addPanelTable" >
+			<td  style="width:30%;vertical-align:top;">
+				<table style="width:97%" id="addPanelTable" >
 					<caption>
 						<bean:message key="sample.entry.panels"/>
 					</caption>
 					<tr>
-						<th width="20%">&nbsp;
+						<th style="width:20%">&nbsp;
 							
 						</th>
-						<th width="80%">
+						<th style="width:80%">
 							<bean:message key="sample.entry.panel.name"/>
 						</th>
 					</tr>
 
 				</table>
 			</td>
-			<td valign="top" width="70%">
-				<table width="97%" style="margin-left: 3%" id="addTestTable">
+			<td  style="width:70%;vertical-align:top;">
+				<table style="margin-left: 3%;width:97%;" id="addTestTable">
 					<caption>
 						<bean:message key="sample.entry.available.tests"/>
 					</caption>
 					<tr>
-						<th width="5%">&nbsp;
+						<th style="width:5%">&nbsp;
 							
 						</th>
-						<th width="50%">
+						<th style="width:50%">
 							<bean:message key="sample.entry.available.test.names"/>
 						</th>
-						<th width="40%" style="display:none" id="sectionHead">
+						<th style="width:40%;display:none;" id="sectionHead">
 							Section
 						</th>
-                        <th width="25%" style="display:none" id="userSampleTypeHead">
+                        <th style="width:25%" style="display:none" id="userSampleTypeHead">
                             <bean:message  key="sample.entry.sample.type"/>
                         </th>
-                        <th width="20%">
+                        <th style="width:20%">
                               &nbsp;
                         </th>
 					</tr>
