@@ -78,7 +78,7 @@
         <comment>Sets the links between the tests and variable sample types</comment>
         <sqlFile path="OE3.4/testCatalogCI_IPCI/testDictionary.sql"/>
     </changeSet>
-    <changeSet id="14" author="paulsc">
+    <changeSet id="14" author="paulsc" context="CI_IPCI">
         <comment>Adds reflex tests</comment>
         <sqlFile path="OE3.4/testCatalogCI_IPCI/Reflex.sql" />
     </changeSet>
