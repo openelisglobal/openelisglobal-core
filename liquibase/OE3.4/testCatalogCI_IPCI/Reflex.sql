@@ -1,6 +1,7 @@
 INSERT INTO analyte( id, "name", is_active,  lastupdated )
     VALUES ( nextval('analyte_seq'), 'Test encre chine Results', 'Y', now() ),
-           ( nextval('analyte_seq'), 'Levure Result', 'Y', now() );
+           ( nextval('analyte_seq'), 'Levure Superficielle Result', 'Y', now() ),
+           ( nextval('analyte_seq'), 'Levure Profonde Result', 'Y', now() );
 
 INSERT INTO test_analyte(  id, test_id, analyte_id, result_group, sort_order,   lastupdated )
   VALUES ( nextval('test_analyte_seq'),
@@ -9,11 +10,11 @@ INSERT INTO test_analyte(  id, test_id, analyte_id, result_group, sort_order,   
            10, 1, now() ),
           ( nextval('test_analyte_seq'),
             (select id from clinlims.test where description = 'Levure mycose superficielle') ,
-            (select id from clinlims.analyte where name = 'Levure Result'),
+            (select id from clinlims.analyte where name = 'Levure Superficielle Result'),
             10, 1, now() ),
           ( nextval('test_analyte_seq'),
            (select id from clinlims.test where description = 'Levure mycose profonde') ,
-           (select id from clinlims.analyte where name = 'Levure Result'),
+           (select id from clinlims.analyte where name = 'Levure Profonde Result'),
            10, 1, now() );
 
 INSERT INTO test_reflex(  id, tst_rslt_id, flags, lastupdated, test_analyte_id, test_id,  add_test_id, sibling_reflex, scriptlet_id)

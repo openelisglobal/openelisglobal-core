@@ -16,17 +16,7 @@
  */
 package us.mn.state.health.lims.testreflex.action.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -50,6 +40,8 @@ import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import java.util.*;
 
 public class TestReflexUtil {
 	public static final String USER_CHOOSE_FLAG = "UC";
@@ -271,7 +263,7 @@ public class TestReflexUtil {
 
 				for (TestReflex reflexForResult : reflexsForResult) {
 					// filter out handled reflexes
-					if (handledReflexIdList.contains(reflexForResult.getId())) {
+					if ( !GenericValidator.isBlankOrNull( reflexForResult.getSiblingReflexId()) && handledReflexIdList.contains(reflexForResult.getId())) {
 						continue;
 					}
 
@@ -474,7 +466,7 @@ public class TestReflexUtil {
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
 
 		for (Analysis analysis : analysisList) {
-			if (newTestId.equals(analysis.getTest().getId())) {
+			if ( duplicateTest( newTestId, analysis, newAnalysis ) ) {
 				return true;
 			}
 		}
@@ -482,7 +474,11 @@ public class TestReflexUtil {
 		return false;
 	}
 
-	private void markSibAnalysisAsParent(List<Analysis> parentAnalysisList) {
+    private boolean duplicateTest( String newTestId, Analysis existingAnalysis, Analysis newAnalysis ){
+        return newTestId.equals( existingAnalysis.getTest().getId() ) && existingAnalysis.getSampleTypeName().equals( newAnalysis.getSampleTypeName() );
+    }
+
+    private void markSibAnalysisAsParent(List<Analysis> parentAnalysisList) {
 		for (Analysis analysis : parentAnalysisList) {
 			analysis.setSysUserId(currentUserId);
 			analysis.setTriggeredReflex(Boolean.TRUE);
