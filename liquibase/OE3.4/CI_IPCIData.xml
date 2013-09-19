@@ -48,7 +48,7 @@
         </insert>
         <sqlFile path="OE3.4/BiopsyDictionary1.sql" />
     </changeSet>
-    <include file="OE3.4/testCatalogCI_IPCI/testCatalogUpdate.xml" />
+    <include file="OE3.4/testCatalogCI_IPCI/TestCatalogUpdate.xml" />
     <changeSet id="4" author="paulsc" context="CI_IPCI">
         <comment>Add system modules for new test sections</comment>
         <insert tableName="system_module">
