@@ -6,7 +6,7 @@
 
 	<changeSet author="paulsc" id="1" context="CI_IPCI">
 		<comment>Adds needed dictionary values</comment>
-		<sqlFile path="OE3.4/testCatalogCI_IPCI/Dictionary.sql"/>
+		<sqlFile path="OE3.4/testCatalogCI_IPCI/dictionary.sql"/>
 	</changeSet>
 
 	<changeSet author="paulsc" id="2" context="CI_IPCI">
@@ -27,7 +27,7 @@
 
     <changeSet author="paulsc" id="5" context="CI_IPCI">
      <comment>Associates new and existing sample types with new and existing panels</comment>
-     <sqlFile path="OE3.4/testCatalogCI_IPCI/SampleTypePanel.sql" />
+     <sqlFile path="OE3.4/testCatalogCI_IPCI/sampleTypePanel.sql" />
     </changeSet>
 
     <changeSet author="paulsc" id="6" context="CI_IPCI">
@@ -80,7 +80,7 @@
     </changeSet>
     <changeSet id="14" author="paulsc">
         <comment>Adds reflex tests</comment>
-        <sqlFile path="OE3.4/testCatalogCI_IPCI/reflex.sql" />
+        <sqlFile path="OE3.4/testCatalogCI_IPCI/Reflex.sql" />
     </changeSet>
 </databaseChangeLog>
 
