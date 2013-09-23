@@ -84,4 +84,40 @@
             <column name="instruction_key" value="instructions.site.phone.validation" />
         </insert>
     </changeSet>
+    <changeSet id="6" author="paulsc" >
+        <comment>Adds a sample type of variable</comment>
+        <insert tableName="type_of_sample">
+            <column name="id" valueNumeric=" nextval( 'type_of_sample_seq' ) " />
+            <column name="description" value="Actual type will be selected by user" />
+            <column name="domain" value="H" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="local_abbrev" value="Variable" />
+            <column name="display_key" value="sample.type.variable" />
+            <column name="is_active" value="N" />
+        </insert>
+    </changeSet>
+    <changeSet id="7" author="paulsc">
+        <comment>Adds accents</comment>
+        <update tableName="dictionary" >
+            <column name="dict_entry" value="Présence" />
+            <where>dict_entry = 'Presence' </where>
+        </update>
+        <update tableName="type_of_sample" >
+            <column name="description" value="Sérum" />
+            <column name="local_abbrev" value="Sérum" />
+            <where>description = 'Serum' </where>
+        </update>
+    </changeSet>
+    <changeSet id="8" author="paulsc">
+        <comment>Remove trailing spaces in system_role name</comment>
+        <update tableName="system_role" >
+            <column name="name" value="Results entry" />
+            <where>name like 'Results entry%'</where>
+        </update>
+        <comment>Remove trailing spaces in system_role name</comment>
+        <update tableName="system_role" >
+            <column name="name" value="Validator" />
+            <where>name like 'Validator%'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

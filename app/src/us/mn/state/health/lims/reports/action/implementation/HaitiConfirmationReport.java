@@ -16,18 +16,9 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -65,6 +56,8 @@ import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+
+import java.util.*;
 
 public class HaitiConfirmationReport extends HaitiIndicatorReport implements IReportCreator, IReportParameterSetter {
 
@@ -298,7 +291,7 @@ public class HaitiConfirmationReport extends HaitiIndicatorReport implements IRe
 
 	@Override
 	protected String getSiteLogo(){
-		return "HaitiLNSP.jpg";
+		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
 	}
 
 	@Override

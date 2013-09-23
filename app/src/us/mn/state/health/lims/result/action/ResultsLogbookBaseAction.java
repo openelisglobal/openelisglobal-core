@@ -44,7 +44,8 @@ public abstract class ResultsLogbookBaseAction extends BaseAction {
 		CYTOBACTERIOLOGY,
 		MYCOLOGY,
 		HEMATO_IMMUNOLOGY,
-		SEROLOGY_IMMUNOLOGY
+		SEROLOGY_IMMUNOLOGY,
+        MALARIA
 	}
 
 	protected static String DEFAULT_NAME = "Default";
@@ -67,6 +68,7 @@ public abstract class ResultsLogbookBaseAction extends BaseAction {
 	protected static String MYCOLOGY = "mycology";
 	protected static String HEMATO_IMMUNOLOGY = "Hemto-Immunology";
 	protected static String SEROLOGY_IMMUNOLOGY = "Serology-Immunology";
+    protected static String MALARIA = "Malaria";
 	
 	protected String currentDate = "";
 	protected logbooks logbookRequest = logbooks.UNKNOWN;
@@ -115,7 +117,9 @@ public abstract class ResultsLogbookBaseAction extends BaseAction {
 				logbookRequest = logbooks.HEMATO_IMMUNOLOGY;
 			}else if ( requestType.equals("serolo-immunology")){
 				logbookRequest = logbooks.SEROLOGY_IMMUNOLOGY;
-			}
+			}else if( requestType.equals("malaria") ){
+                logbookRequest = logbooks.MALARIA;
+            }
 		}
 	}
 
@@ -204,9 +208,13 @@ public abstract class ResultsLogbookBaseAction extends BaseAction {
 			break;
 		}
 		case SEROLOGY_IMMUNOLOGY:{
-			key = StringUtil.getContextualKeyForKey("banner.menu.results.logbook.serology");
+            key = StringUtil.getContextualKeyForKey("banner.menu.results.logbook.serology");
 			break;
 		}
+        case MALARIA:{
+            key = StringUtil.getContextualKeyForKey("banner.menu.results.logbook.malaria");
+            break;
+        }
 		default: {
 			key = StringUtil.getContextualKeyForKey("banner.menu.results");
 		}
@@ -297,7 +305,10 @@ public abstract class ResultsLogbookBaseAction extends BaseAction {
 		}case HEMATO_IMMUNOLOGY:{
 			name = HEMATO_IMMUNOLOGY;
 			break;
-		}
+		}case MALARIA:{
+            name = MALARIA;
+            break;
+        }
 		default: {
 			// no-op
 		}

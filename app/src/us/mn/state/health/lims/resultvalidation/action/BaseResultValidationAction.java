@@ -17,12 +17,11 @@
 */
 package us.mn.state.health.lims.resultvalidation.action;
 
+import org.apache.commons.validator.GenericValidator;
+import us.mn.state.health.lims.common.action.BaseAction;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.validator.GenericValidator;
-
-import us.mn.state.health.lims.common.action.BaseAction;
 
 
 public abstract class BaseResultValidationAction extends BaseAction {
@@ -53,8 +52,9 @@ public abstract class BaseResultValidationAction extends BaseAction {
 		validationGroupToTitleMap.put("Endocrinologie", "result.validation.endocrinologie.title");
 		validationGroupToTitleMap.put("VCT", "result.validation.vct.title");
 		validationGroupToTitleMap.put("virologie", "result.validation.virologie.title");
-		validationGroupToTitleMap.put("mycology", "result.validation.mycology.title");
-			
+        validationGroupToTitleMap.put("mycology", "result.validation.mycology.title");
+        validationGroupToTitleMap.put("malaria", "result.validation.malaria.title");
+
 		//N.B. The key should always be capitalized
 		validationGroupToSection.put("MolecularBio", "Biologie Moleculaire");
 		validationGroupToSection.put("Mycology", "mycology");

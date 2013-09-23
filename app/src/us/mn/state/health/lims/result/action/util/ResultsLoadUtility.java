@@ -87,6 +87,7 @@ import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -779,7 +780,7 @@ public class ResultsLoadUtility {
 			testKitInactive = kitNotInActiveKitList(testKitInventoryId);
 		}
 
-		String displayTestName = test.getDescription();
+		String displayTestName = getTestName( test, analysis );
 
 		boolean isConclusion = false;
 		boolean isCD4Conclusion = false;
@@ -879,7 +880,19 @@ public class ResultsLoadUtility {
 		return testItem;
 	}
 
-	private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem){
+    private String getTestName( Test test, Analysis analysis ){
+        String name = test.getDescription();
+
+        TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleForTest( test.getId() );
+
+        if( typeOfSample != null && typeOfSample.getId().equals( TypeOfSampleUtil.getTypeOfSampleIdForLocalAbbreviation( "Variable" ))){
+            name += "(" + analysis.getSampleTypeName() + ")";
+        }
+
+        return name;
+    }
+
+    private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem){
 		if( resultLimit != null){
 			testItem.setResultLimitId(resultLimit.getId());
 			testItem.setLowerNormalRange(resultLimit.getLowNormal() == Double.NEGATIVE_INFINITY ? 0 : resultLimit.getLowNormal());

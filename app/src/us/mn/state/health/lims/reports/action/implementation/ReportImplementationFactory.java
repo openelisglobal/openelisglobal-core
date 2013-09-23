@@ -151,15 +151,15 @@ public class ReportImplementationFactory{
 			}else if(report.equals("retroCINonConformityByDate")){
 				return new RetroCINonConformityByDate();
 			}else if(report.equals("haitiNonConformityByDate")){
-				return new HaitiNonConformityByDate(isLNSP);
+				return new HaitiNonConformityByDate();
 			}else if(report.equals("haitiClinicalNonConformityByDate")){
-				return new HaitiNonConformityByDate(!isLNSP);
+				return new HaitiNonConformityByDate();
 			}else if(report.equals("retroCInonConformityBySectionReason")){
 				return new RetroCINonConformityBySectionReason();
 			}else if(report.equals("haitiNonConformityBySectionReason")){
-				return new HaitiNonConformityBySectionReason(isLNSP);
+				return new HaitiNonConformityBySectionReason();
 			}else if(report.equals("haitiClinicalNonConformityBySectionReason")){
-				return new HaitiNonConformityBySectionReason(!isLNSP);
+				return new HaitiNonConformityBySectionReason();
 			}else if(report.equals("indicatorHaitiLNSPSiteTestCount")){
 				return new IndicatorHaitiSiteTestCountReport();
 			}else if(report.equals("retroCIFollowupRequiredByLocation")){

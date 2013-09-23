@@ -96,6 +96,7 @@ public abstract class ReflexAction {
 			generatedAnalysis.setParentResult(result);
 			generatedAnalysis.setSampleItem(currentAnalysis.getSampleItem());
 			generatedAnalysis.setTestSection(currentAnalysis.getTestSection());
+            generatedAnalysis.setSampleTypeName( currentAnalysis.getSampleTypeName() );
 		}
 	}
 

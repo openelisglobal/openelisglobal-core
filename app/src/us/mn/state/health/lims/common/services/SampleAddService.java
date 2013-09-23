@@ -16,19 +16,11 @@
  */
 package us.mn.state.health.lims.common.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import org.apache.commons.validator.GenericValidator;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
@@ -48,6 +40,8 @@ import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
+
+import java.util.*;
 
 public class SampleAddService {
 	private final String xml;
@@ -106,8 +100,8 @@ public class SampleAddService {
 
 				String testIDs = sampleItem.attributeValue("tests");
 				String panelIDs = sampleItem.attributeValue("panels");
-				Map<String, String> testIdToUserSectionMap = getTestIdToUserSectionMap(sampleItem
-						.attributeValue("testSectionMap"));
+				Map<String, String> testIdToUserSectionMap = getTestIdToSelectionMap(sampleItem.attributeValue("testSectionMap"));
+                Map<String, String> testIdToSampleTypeMap = getTestIdToSelectionMap( sampleItem.attributeValue( "testSampleTypeMap" ) );
 				
 				String collectionDate = sampleItem.attributeValue("date").trim();
 				String collectionTime = sampleItem.attributeValue("time").trim();
@@ -141,7 +135,7 @@ public class SampleAddService {
 
 				sampleItemsTests.add(new SampleTestCollection(item,	tests,
 															  USE_RECEIVE_DATE_FOR_COLLECTION_DATE ? collectionDateFromRecieveDate : collectionDateTime,
-															  initialConditionList, testIdToUserSectionMap));
+															  initialConditionList, testIdToUserSectionMap, testIdToSampleTypeMap));
 
 			}
 		} catch (DocumentException e) {
@@ -150,8 +144,8 @@ public class SampleAddService {
 		
 		return sampleItemsTests;
 	}
-	
-	public Panel getPanelForTest(Test test) throws IllegalThreadStateException{ 
+
+    public Panel getPanelForTest(Test test) throws IllegalThreadStateException{
 		if( !xmlProcessed){
 			throw new IllegalThreadStateException("createSampleTestCollection must be called first");
 		}	
@@ -172,7 +166,7 @@ public class SampleAddService {
 		sampleItemIdIndex = initialValue;
 	}
 	
-	private Map<String, String> getTestIdToUserSectionMap(String mapPairs) {
+	private Map<String, String> getTestIdToSelectionMap(String mapPairs) {
 		Map<String, String> sectionMap = new HashMap<String, String>();
 
 		String[] maps = mapPairs.split(",");
@@ -185,8 +179,8 @@ public class SampleAddService {
 
 		return sectionMap;
 	}
-	
-	private void augmentPanelIdToPanelMap(String panelIDs) {
+
+    private void augmentPanelIdToPanelMap(String panelIDs) {
 		if(panelIDs != null){
 			String[] ids = panelIDs.split(",");
 			for( String id : ids){
@@ -230,12 +224,14 @@ public class SampleAddService {
 		public String collectionDate;
 		public List<ObservationHistory> initialSampleConditionIdList;
 		public Map<String,String> testIdToUserSectionMap;
+        public Map<String,String> testIdToUserSampleTypeMap;
 
-		public SampleTestCollection(SampleItem item, List<Test> tests, String collectionDate, List<ObservationHistory> initialConditionList, Map<String,String> testIdToUserSectionMap) {
+		public SampleTestCollection(SampleItem item, List<Test> tests, String collectionDate, List<ObservationHistory> initialConditionList, Map<String,String> testIdToUserSectionMap, Map<String,String> testIdToUserSampleTypeMap) {
 			this.item = item;
 			this.tests = tests;
 			this.collectionDate = collectionDate;
 			this.testIdToUserSectionMap = testIdToUserSectionMap;
+            this.testIdToUserSampleTypeMap = testIdToUserSampleTypeMap;
 			initialSampleConditionIdList = initialConditionList;
 			
 		}

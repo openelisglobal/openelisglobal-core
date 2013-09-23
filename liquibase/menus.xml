@@ -1881,6 +1881,39 @@
 			<column name="display_key" value="banner.menu.workplan.serology-immunology" />
 			<column name="tool_tip_key" value="banner.menu.workplan.serology-immunology" />
 		</insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan_bench' ) " />
+            <column name="presentation_order" valueNumeric="70" />
+            <column name="element_id" value="menu_workplan_malaria" />
+            <column name="action_url"
+                    value="/WorkPlanByTestSection.do?type=malaria" />
+            <column name="display_key" value="banner.menu.workplan.malaria" />
+            <column name="tool_tip_key" value="banner.menu.workplan.malaria" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan_bench' ) " />
+            <column name="presentation_order" valueNumeric="80" />
+            <column name="element_id" value="menu_workplan_parasitology" />
+            <column name="action_url"
+                    value="/WorkPlanByTestSection.do?type=parasitology" />
+            <column name="display_key" value="banner.menu.workplan.parasitology" />
+            <column name="tool_tip_key" value="banner.menu.workplan.parasitology" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan_bench' ) " />
+            <column name="presentation_order" valueNumeric="90" />
+            <column name="element_id" value="menu_workplan_mycology" />
+            <column name="action_url"
+                    value="/WorkPlanByTestSection.do?type=mycology" />
+            <column name="display_key" value="banner.menu.workplan.mycology" />
+            <column name="tool_tip_key" value="banner.menu.workplan.mycology" />
+        </insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="6" />
@@ -1947,6 +1980,36 @@
 			<column name="display_key" value="banner.menu.results.logbook.serology-immunology" />
 			<column name="tool_tip_key" value="banner.menu.results.logbook.serology-immunology" />
 		</insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
+            <column name="presentation_order" valueNumeric="70" />
+            <column name="element_id" value="menu_results_malaria" />
+            <column name="action_url" value="/LogbookResults.do?type=malaria" />
+            <column name="display_key" value="banner.menu.results.logbook.malaria" />
+            <column name="tool_tip_key" value="banner.menu.results.logbook.malaria" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
+            <column name="presentation_order" valueNumeric="80" />
+            <column name="element_id" value="menu_results_parasitology" />
+            <column name="action_url" value="/LogbookResults.do?type=parasitology" />
+            <column name="display_key" value="banner.menu.results.logbook.parasitology" />
+            <column name="tool_tip_key" value="banner.menu.results.logbook.parasitology" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
+            <column name="presentation_order" valueNumeric="90" />
+            <column name="element_id" value="menu_results_mycology" />
+            <column name="action_url" value="/LogbookResults.do?type=mycology" />
+            <column name="display_key" value="banner.menu.results.logbook.mycology" />
+            <column name="tool_tip_key" value="banner.menu.results.logbook.mycology" />
+        </insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -2058,6 +2121,45 @@
 			<column name="tool_tip_key"
 				value="banner.menu.resultvalidation.serology-immunology" />
 		</insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_resultvalidation' ) " />
+            <column name="presentation_order" valueNumeric="70" />
+            <column name="element_id" value="menu_resultvalidation_malaria" />
+            <column name="action_url"
+                    value="/ResultValidation.do?type=malaria&amp;test=" />
+            <column name="display_key"
+                    value="banner.menu.resultvalidation.malaria" />
+            <column name="tool_tip_key"
+                    value="banner.menu.resultvalidation.malaria" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_resultvalidation' ) " />
+            <column name="presentation_order" valueNumeric="80" />
+            <column name="element_id" value="menu_resultvalidation_parasitology" />
+            <column name="action_url"
+                    value="/ResultValidation.do?type=Parasitology&amp;test=" />
+            <column name="display_key"
+                    value="banner.menu.resultvalidation.parasitology" />
+            <column name="tool_tip_key"
+                    value="banner.menu.resultvalidation.parasitology" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_resultvalidation' ) " />
+            <column name="presentation_order" valueNumeric="90" />
+            <column name="element_id" value="menu_resultvalidation_mycology" />
+            <column name="action_url"
+                    value="/ResultValidation.do?type=mycology&amp;test=" />
+            <column name="display_key"
+                    value="banner.menu.resultvalidation.mycology" />
+            <column name="tool_tip_key"
+                    value="banner.menu.resultvalidation.mycology" />
+        </insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="8" />
