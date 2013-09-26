@@ -8,4 +8,8 @@
 		<comment>Change wording of "Indetectable 300"</comment>
         <sqlFile path="OE3.4/UpdateHaitiLNSPResultName.sql" />
 	</changeSet>
+	<changeSet author="jfurlong" id="2" context="haitiLNSP">
+        <comment>Add unit of measure to Plaquettes test</comment>
+        <sqlFile path="OE3.4/UpdateHaitiLNSPUnitOfMeasure.sql" />
+    </changeSet>
 </databaseChangeLog>

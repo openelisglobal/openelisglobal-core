@@ -5,5 +5,6 @@
     <include file="OE3.4/CrosscuttingData.xml"/>
     <include file="OE3.4/CDIRegLabData.xml"/>
     <include file="OE3.4/HaitiLNSPData.xml"/>
+    <include file="OE3.4/HaitiClinicalData.xml"/>
     <include file="OE3.4/CI_IPCIData.xml"/>
 </databaseChangeLog>
