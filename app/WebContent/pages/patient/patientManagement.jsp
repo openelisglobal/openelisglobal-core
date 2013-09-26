@@ -104,7 +104,7 @@ var supportHealthRegion = <%= FormFields.getInstance().useField(Field.PatientHea
 var supportHealthDistrict = <%= FormFields.getInstance().useField(Field.PatientHealthDistrict) %>;
 
 var pt_invalidElements = [];
-var pt_requiredFields = new Array( );
+var pt_requiredFields = [];
 if( patientAgeRequired){
 	pt_requiredFields.push("dateOfBirthID");
 }
@@ -116,7 +116,7 @@ if( patientNamesRequired){
 	pt_requiredFields.push("lastNameID"); 
 }
 
-var pt_requiredOneOfFields = new Array();
+var pt_requiredOneOfFields = [];
 
 if( patientIDRequired){
 	pt_requiredOneOfFields.push("nationalID") ;
@@ -129,7 +129,7 @@ if( patientIDRequired){
 }
 
 var updateStatus = "add";
-var patientInfoChangeListeners = new Array();
+var patientInfoChangeListeners = [];
 var dirty = false;
 
 function  /*bool*/ pt_isFieldValid(fieldname)
@@ -177,14 +177,15 @@ function /*boolean*/ patientFormValid(){
 }
 
 function pt_patientRequiredFieldsAllEmpty() {
-	
-	for( var i = 0; i < pt_requiredFields.length; ++i ){
+	var i;
+
+	for(i = 0; i < pt_requiredFields.length; ++i ){
 		if( !$(pt_requiredFields[i]).value.blank() ){
 			return false;
 		}
 	}
 	
-	for( var i = 0; i < pt_requiredOneOfFields.length; ++i ){
+	for(i = 0; i < pt_requiredOneOfFields.length; ++i ){
 		if( !($(pt_requiredOneOfFields[i]).value.blank()) ){
 			return false;
 		}
@@ -214,8 +215,8 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 }
 
 function  /*void*/ pt_requiredFieldsValid(){
-
-	for( var i = 0; i < pt_requiredFields.length; ++i ){
+    var i;
+	for( i = 0; i < pt_requiredFields.length; ++i ){
 		if( $(pt_requiredFields[i]).value.blank() ){
 			return false;
 		}
@@ -225,7 +226,7 @@ function  /*void*/ pt_requiredFieldsValid(){
 		return true;
 	}
 
-	for( var i = 0; i < pt_requiredOneOfFields.length; ++i ){
+	for( i = 0; i < pt_requiredOneOfFields.length; ++i ){
 		if( !($(pt_requiredOneOfFields[i]).value.blank()) ){
 			return true;
 		}
@@ -240,15 +241,16 @@ function  /*string*/ pt_requiredFieldsValidMessage()
 	var returnMessage = "";
 	var oneOfMembers = "";
 	var requiredField = "";
+    var i;
 
-	for( var i = 0; i < pt_requiredFields.length; ++i ){
+	for( i = 0; i < pt_requiredFields.length; ++i ){
 		if( $(pt_requiredFields[i]).value.blank() ){
 			hasError = true;
 			requiredField += " : " + pt_requiredFields[i];
 		}
 	}
 
-	for( var i = 0; i < pt_requiredOneOfFields.length; ++i ){
+	for( i = 0; i < pt_requiredOneOfFields.length; ++i ){
 		if( !pt_requiredOneOfFields[i].value.blank() ){
 			oneOfFound = true;
 			break;
@@ -323,7 +325,7 @@ function  /*void*/ checkValidAgeDate(dateElement)
 
 function  /*void*/ updatePatientAge( DOB )
 {
-	var date = new String( DOB.value );
+	var date = String( DOB.value );
 
 	var datePattern = '<%=SystemConfiguration.getInstance().getPatternForDateLocale() %>';
 	var splitPattern = datePattern.split("/");
@@ -739,6 +741,31 @@ function  processPhoneSuccess(xhr){
     pt_setSave();
 }
 
+function validateSubjectNumber( el, numberType ){
+
+    validateSubjectNumberOnServer( el.value, numberType, el.id, processSubjectNumberSuccess );
+}
+
+function  processSubjectNumberSuccess(xhr){
+    //alert(xhr.responseText);
+    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
+    var message = xhr.responseXML.getElementsByTagName("message").item(0);
+    var messageParts = message.firstChild.nodeValue.split("#");
+    var valid = messageParts[0] == "valid";
+    var warning = messageParts[0] == "warning";
+    var fail = messageParts[0] == "fail";
+    var success = valid || warning;
+    var labElement = formField.firstChild.nodeValue;
+
+    setValidIndicaterOnField(success, labElement);
+    pt_setFieldValidity( success, labElement );
+
+    if( warning || fail ){
+        alert( messageParts[1] );
+    }
+
+    pt_setSave();
+}
 </script>
 <nested:hidden name='<%=formName%>' property="patientProperties.currentDate" styleId="currentDate"/>
 
@@ -753,97 +780,95 @@ function  processPhoneSuccess(xhr){
 	<nested:hidden name='<%=formName%>' property="patientProperties.guid" styleId="patientGUID_ID" />
 	<br/>
 	<div class="patientSearch">
-		<hr width="100%" />
-		<html:button property="newPatient"  onclick="addPatient()" >
-			<bean:message key="patient.new" />
-		</html:button>
+		<hr style="width:100%" />
+        <input type="button" value="Nouveau Patient" onclick="addPatient()">
 	</div>
 	<div id="PatientDetail"   >
 	<h2><bean:message key="patient.information"/></h2>
-	<table width="80%" border="0">
-	<tr>
-			<% if( !supportSubjectNumber){ %>
-			<td>
-				<bean:message key="patient.externalId"/>
-				<% if( patientIDRequired){ %>
-					<span class="requiredlabel">*</span>
-				<% } %>
-			</td>
-			<%} %>
-			<% if( supportSTNumber){ %>
-			<td align="right">
-				<bean:message key="patient.ST.number"/>:
-			</td>
-			<td>
-				<nested:text name='<%=formName%>'
-						  property="patientProperties.STnumber"
-						  onchange="updatePatientEditStatus();"
-						  styleId="ST_ID"
-						  styleClass="text"
-						  size="60" />
-			</td>
-		</tr>
-		<tr>
-			<td width="5%">&nbsp;
-				
-			</td>
-			<%} %>
-			<% if( supportSubjectNumber){ %>
-			<td>&nbsp;
-				
-			</td>
-			<td align="right">
-				<bean:message key="patient.subject.number"/>:
-				<span class="requiredlabel">*</span>
-			</td>
-			<td>
-				<nested:text name='<%=formName%>'
-						  property="patientProperties.subjectNumber"
-						  onchange="updatePatientEditStatus();"
-						  styleId="subjectNumberID"
-						  styleClass="text"
-						  size="60" />
-			</td>
-		</tr>
-		<tr>
-			<td width="5%">&nbsp;
-				
-			</td>
-        <% } %>
-		<% if( supportNationalID ){ %>
-			<td width="25%" align="right">
-				<%=StringUtil.getContextualMessageForKey("patient.NationalID") %>:
+	<table style="width:80%" border="0">
+    <tr>
+        <% if( !supportSubjectNumber){ %>
+        <td>
+            <bean:message key="patient.externalId"/>
+            <% if( patientIDRequired){ %>
+            <span class="requiredlabel">*</span>
+            <% } %>
+        </td>
+        <%} %>
+        <% if( supportSTNumber){ %>
+        <td style="text-align:right;">
+            <bean:message key="patient.ST.number"/>:
+        </td>
+        <td>
+            <nested:text name='<%=formName%>'
+                         property="patientProperties.STnumber"
+                         onchange="validateSubjectNumber(this, 'STnumber');updatePatientEditStatus();"
+                         styleId="ST_ID"
+                         styleClass="text"
+                         size="60" />
+        </td>
+    </tr>
+    <tr>
+        <td style="width:5%">&nbsp;
 
-			</td>
-			<td width="25%">
-			    <nested:text name='<%=formName%>'
-			    		  property="patientProperties.nationalId"
-			    		  onchange="updatePatientEditStatus();"
-						  styleId="nationalID"
-						  styleClass="text"
-						  size="60"/>
-			</td>
-			<td width="10%">&nbsp;
-				
-			</td>
-			<td width="15%">&nbsp;
-				
-			</td>
-	</tr>
-	<%} %>
-	<tr ><td colspan="2">&nbsp;</td></tr>
+        </td>
+        <%} %>
+        <% if( supportSubjectNumber){ %>
+        <td>&nbsp;
+
+        </td>
+        <td style="text-align:right;">
+            <bean:message key="patient.subject.number"/>:
+            <span class="requiredlabel">*</span>
+        </td>
+        <td>
+            <nested:text name='<%=formName%>'
+                         property="patientProperties.subjectNumber"
+                         onchange="validateSubjectNumber(this, 'subjectNumber');updatePatientEditStatus();"
+                         styleId="subjectNumberID"
+                         styleClass="text"
+                         size="60" />
+        </td>
+    </tr>
+    <tr>
+        <td style="width:5%">&nbsp;
+
+        </td>
+        <% } %>
+        <% if( supportNationalID ){ %>
+        <td style="width:25%;text-align:right;">
+            <%=StringUtil.getContextualMessageForKey("patient.NationalID") %>:
+
+        </td>
+        <td style="width:25%">
+            <nested:text name='<%=formName%>'
+                         property="patientProperties.nationalId"
+                         onchange="validateSubjectNumber(this, 'nationalId');updatePatientEditStatus();"
+                         styleId="nationalID"
+                         styleClass="text"
+                         size="60"/>
+        </td>
+        <td style="width:10%">&nbsp;
+
+        </td>
+        <td style="width:15%">&nbsp;
+
+        </td>
+    </tr>
+    <%} %>
+    <tr ><td colspan="2">&nbsp;</td></tr>
 	<tr>
-		<td width="15%">
+		<td style="width:15%">
 			<bean:message key="patient.name" />
 		</td>
-		<td align="right" width="10%">
+		<td style="width:10%;text-align:right;">
 			<bean:message key="patient.epiLastName" />
 			:
 			<% if( patientNamesRequired){ %>
 				<span class="requiredlabel">*</span>
 			<% } %>
 		</td>
-		<td width="20%">
+		<td style="width:20%">
 			<nested:text name='<%=formName%>'
 					  property="patientProperties.lastName"
 					  styleClass="text"
@@ -851,14 +876,14 @@ function  processPhoneSuccess(xhr){
 				      onchange="updatePatientEditStatus();"
 				      styleId="lastNameID"/>
 		</td>
-		<td width="10%" align="right">
+		<td style="width:10%;text-align:right;">
 			<bean:message key="patient.epiFirstName" />
 			:
 			<% if( patientNamesRequired){ %>
 				<span class="requiredlabel">*</span>
 			<% } %>	
 		</td>
-		<td width="20%">
+		<td style="width:20%">
 			<nested:text name='<%=formName%>'
 					  property="patientProperties.firstName"
 					  styleClass="text"
@@ -870,7 +895,7 @@ function  processPhoneSuccess(xhr){
 	<% if(supportAKA){ %>
 	<tr>
 	<td></td>
-	<td align="right">
+	<td style="text-align:right;">
 		<bean:message key="patient.aka"/>
 	</td>
 	<td>
@@ -886,7 +911,7 @@ function  processPhoneSuccess(xhr){
 	<% if( supportMothersName ){ %>
 	<tr>
 		<td></td>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message key="patient.mother.name"/>
 		</td>
 		<td>
@@ -901,7 +926,7 @@ function  processPhoneSuccess(xhr){
 	<% } if(supportMothersInitial){ %>
 	<tr>
 		<td></td>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message key="patient.mother.initial"/>
 		</td>
 		<td>
@@ -920,7 +945,7 @@ function  processPhoneSuccess(xhr){
 		<td >
 			<bean:message  key="person.streetAddress" />
 		</td>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message  key="person.streetAddress.street" />:
 		</td>
 		<td>
@@ -935,7 +960,7 @@ function  processPhoneSuccess(xhr){
 	<% if( FormFields.getInstance().useField(Field.AddressVillage)) { %>
 	<tr>
 		<td></td>
-		<td align="right">
+		<td style="text-align:right;">
 		    <%= StringUtil.getContextualMessageForKey("person.town") %>:
 		</td>
 		<td>
@@ -951,7 +976,7 @@ function  processPhoneSuccess(xhr){
 	<% if( supportCommune){ %>
 	<tr>
 		<td></td>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message  key="person.commune" />:
 		</td>
 		<td>
@@ -967,7 +992,7 @@ function  processPhoneSuccess(xhr){
 	<% if( supportAddressDepartment){ %>
 	<tr>
 		<td></td>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message  key="person.department" />:
 		</td>
 		<td>
@@ -985,7 +1010,7 @@ function  processPhoneSuccess(xhr){
 	<% if( FormFields.getInstance().useField(Field.PatientPhone)){ %>
 		<tr>
 			<td>&nbsp;</td>
-			<td align="right"><%= StringUtil.getContextualMessageForKey("person.phone") %>:</td>
+			<td style="text-align:right;"><%= StringUtil.getContextualMessageForKey("person.phone") %>:</td>
 			<td>
 				<html:text styleId="patientPhone" name='<%= formName %>' property="patientProperties.phone" maxlength="35" onchange="validatePhoneNumber( this );" />
 			</td>
@@ -995,7 +1020,7 @@ function  processPhoneSuccess(xhr){
 	<% if( FormFields.getInstance().useField(Field.PatientHealthRegion)){ %>
 	<tr>
 	<td>&nbsp;</td>
-	<td align="right"><bean:message key="person.health.region"/>: </td>
+	<td style="text-align:right;"><bean:message key="person.health.region"/>: </td>
 		<td>
 			<nested:hidden name='<%=formName%>' property="patientProperties.healthRegion" styleId="shadowHealthRegion" />
 			<html:select name='<%=formName%>'
@@ -1011,7 +1036,7 @@ function  processPhoneSuccess(xhr){
 	<% if( FormFields.getInstance().useField(Field.PatientHealthDistrict)){ %>
 	<tr>
 	<td>&nbsp;</td>
-	<td align="right"><bean:message key="person.health.district"/>: </td>
+	<td style="text-align:right;"><bean:message key="person.health.district"/>: </td>
 		<td>
 			<html:select name='<%=formName%>'
 						 property="patientProperties.healthDistrict"
@@ -1027,7 +1052,7 @@ function  processPhoneSuccess(xhr){
 
 	<table>
 	<tr>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>:
 			<% if(patientAgeRequired){ %>
 				<span class="requiredlabel">*</span>
@@ -1042,7 +1067,7 @@ function  processPhoneSuccess(xhr){
 					  styleId="dateOfBirthID" />
 			<div id="patientProperties.birthDateForDisplayMessage" class="blank" ></div>
 		</td>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message  key="patient.age" />:
 		</td>
 		<td >
@@ -1051,7 +1076,7 @@ function  processPhoneSuccess(xhr){
 				   maxlength="3" />
 			<div id="ageMessage" class="blank" ></div>
 		</td>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message  key="patient.gender" />:
 			<% if(patientGenderRequired){ %>
 				<span class="requiredlabel">*</span>
@@ -1070,7 +1095,7 @@ function  processPhoneSuccess(xhr){
 	<% if( supportInsurance || supportPatientType){ %>
 	<tr>
 		<% if( supportPatientType ){ %>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message  key="patienttype.type" />:
 		</td>
 		<td>
@@ -1083,7 +1108,7 @@ function  processPhoneSuccess(xhr){
 			</nested:select>
 		</td>
 		<% } if( supportInsurance ){ %>
-		<td align="right">
+		<td style="text-align:right;">
 			<bean:message  key="patient.insuranceNumber" />:
 		</td>
 		<td>
@@ -1094,14 +1119,14 @@ function  processPhoneSuccess(xhr){
 					  styleClass="text"
 					  size="20" />
 		</td>
-		<td align="right">
+		<td style="text-align:right;">
 		</td>
 		<% } %>
 
 	</tr>
 	<% } if( supportOccupation ){ %>
 	<tr>
-	<td align="right">
+	<td style="text-align:right;">
 		<bean:message  key="patient.occupation" />:
 	</td>
 	<td>
@@ -1116,7 +1141,7 @@ function  processPhoneSuccess(xhr){
 	<% } %>
 	<% if( FormFields.getInstance().useField(Field.PatientEducation)){ %>
 		<tr>
-			<td align="right"><bean:message key="patient.education"/>: </td>
+			<td style="text-align:right;"><bean:message key="patient.education"/>: </td>
 				<td>
 					<html:select name='<%=formName%>'
 								 property="patientProperties.education"
@@ -1129,7 +1154,7 @@ function  processPhoneSuccess(xhr){
 	<% } %>
 	<% if( FormFields.getInstance().useField(Field.PatientMarriageStatus)){ %>
 		<tr>
-			<td align="right"><bean:message key="patient.maritialStatus"/>: </td>
+			<td style="text-align:right;"><bean:message key="patient.maritialStatus"/>: </td>
 				<td>
 					<html:select name='<%=formName%>'
 								 property="patientProperties.maritialStatus"
@@ -1142,7 +1167,7 @@ function  processPhoneSuccess(xhr){
 	<% } %>
 	<% if( FormFields.getInstance().useField(Field.PatientNationality)){ %>
 		<tr>
-			<td align="right"><bean:message key="patient.nationality"/>: </td>
+			<td style="text-align:right;"><bean:message key="patient.nationality"/>: </td>
 				<td>
 					<html:select name='<%=formName%>'
 								 property="patientProperties.nationality"

@@ -60,7 +60,7 @@ public class SamplePatientEntryAction extends BaseSampleEntryAction {
 
 		boolean needRequesterList = FormFields.getInstance().useField(FormFields.Field.RequesterSiteList);
 		boolean needSampleInitialConditionList = FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition);
-		boolean needPaymentOptions = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true");
+		boolean needPaymentOptions = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
 
 		PropertyUtils.setProperty(dynaForm, "receivedDateForDisplay", dateAsText);
 		PropertyUtils.setProperty(dynaForm, "requestDate", dateAsText);

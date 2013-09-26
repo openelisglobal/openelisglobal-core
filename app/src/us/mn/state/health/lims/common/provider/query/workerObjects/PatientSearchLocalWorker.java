@@ -17,15 +17,14 @@
 */
 package us.mn.state.health.lims.common.provider.query.workerObjects;
 
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.provider.query.PatientSearchResults;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
 import us.mn.state.health.lims.sample.daoimpl.SearchResultsDAOImp;
+
+import java.util.List;
 
 public class PatientSearchLocalWorker extends PatientSearchWorker {
 
@@ -47,7 +46,7 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
 			return IActionConstants.INVALID;
 		}
 
-		SearchResultsDAO search = createSearchResultDAOImp();
+		SearchResultsDAO search = new SearchResultsDAOImp();
 		List<PatientSearchResults> results = search.getSearchResults(lastName, firstName, STNumber, subjectNumber, nationalID, nationalID, patientID, guid);
 
 		sortPatients(results);
@@ -65,11 +64,4 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
 
 		return success;
 	}
-
-	//Protected for unit tests until we start using JMock
-	protected SearchResultsDAO createSearchResultDAOImp() {
-		return new SearchResultsDAOImp();
-	}
-
-
 }

@@ -50,7 +50,7 @@
     useReferralSiteCode = FormFields.getInstance().useField(FormFields.Field.SampleEntryReferralSiteCode);
     useProviderInfo = FormFields.getInstance().useField(FormFields.Field.ProviderInfo);
     patientRequired = FormFields.getInstance().useField(FormFields.Field.PatientRequired);
-    trackPayment = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true");
+    trackPayment = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     requesterLastNameRequired = FormFields.getInstance().useField(Field.SampleEntryRequesterLastNameRequired);
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ACCEPT_EXTERNAL_ORDERS, "true");
