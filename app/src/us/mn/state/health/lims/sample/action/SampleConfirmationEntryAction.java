@@ -27,7 +27,7 @@ import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.sample.util.SamplePropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +60,7 @@ public class SampleConfirmationEntryAction extends BaseSampleEntryAction {
 		PropertyUtils.setProperty(form, "receivedDate", dateAsText);
 
 		PropertyUtils.setProperty(dynaForm, "requestingOrganizationList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));
-		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagmentInfo());
+		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
 		if (needSampleInitialConditionList) {
             PropertyUtils.setProperty(dynaForm,"initialSampleConditionList", DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
 		}

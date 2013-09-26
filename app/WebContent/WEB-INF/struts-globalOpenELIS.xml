@@ -38,7 +38,7 @@
 			<form-property name="facilityFax" type="java.lang.String" initial="" />
 			<form-property name="sampleXML" type="java.lang.String" initial="" />
 			<form-property name="buttonText" type="java.lang.String" initial="" />
-			<form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo" />
+			<form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
 			<form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
 			<form-property name="initialSampleConditionList" type="java.util.Collection" />
 			<form-property name="referringSiteList" type="java.util.Collection" />
@@ -77,7 +77,7 @@
 			<form-property name="confirmationItems" type="java.util.Collection" />
 			<form-property name="sampleTypes" type="java.util.Collection" />
 			<form-property name="patientPK" type="java.lang.String" initial="" />
-			<form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo" />
+			<form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
 			<form-property name="requestingOrganizationList" type="java.util.Collection" />
 			<form-property name="requestAsXML" type="java.lang.String" />
 			<form-property name="personRequesterId" type="java.lang.String" initial="" />

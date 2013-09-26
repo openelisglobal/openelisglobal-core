@@ -5,7 +5,7 @@
                  us.mn.state.health.lims.common.formfields.FormFields.Field,
                  us.mn.state.health.lims.common.util.StringUtil,
                  us.mn.state.health.lims.common.util.Versioning,
-                 us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo" %>
+                 us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
@@ -19,7 +19,7 @@
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
 <bean:define id="formName"		value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
-<bean:define id="patientProperties" name='<%=formName%>' property='patientProperties' type="PatientManagmentInfo" />
+<bean:define id="patientProperties" name='<%=formName%>' property='patientProperties' type="PatientManagementInfo" />
 
 
 <%!

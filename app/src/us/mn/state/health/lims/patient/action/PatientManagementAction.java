@@ -17,18 +17,17 @@
 */
 package us.mn.state.health.lims.patient.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
-import us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class PatientManagementAction extends BaseAction {
 
@@ -50,7 +49,7 @@ public class PatientManagementAction extends BaseAction {
 		BaseActionForm dynaForm = (BaseActionForm) form;
 
 		dynaForm.initialize(mapping);
-		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagmentInfo());
+		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
 
 		return mapping.findForward(forward);
 	}
