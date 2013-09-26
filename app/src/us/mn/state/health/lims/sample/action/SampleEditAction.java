@@ -113,7 +113,7 @@ public class SampleEditAction extends BaseAction {
 
 		dynaForm.initialize(mapping);
 
-		isEditable = "readwrite".equals((String) request.getSession().getAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE))
+		isEditable = "readwrite".equals(request.getSession().getAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE))
 				|| "readwrite".equals(request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "isEditable", isEditable);
 		if (!GenericValidator.isBlankOrNull(accessionNumber)) {
@@ -139,8 +139,8 @@ public class SampleEditAction extends BaseAction {
 			request.getSession().setAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE, request.getParameter("type"));
 		}
 
-		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true")) {
-            PropertyUtils.setProperty(dynaForm,"paymentOption", DisplayListService.getList(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS));
+		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true")) {
+            PropertyUtils.setProperty(dynaForm,"paymentOptions", DisplayListService.getList(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS));
 
 			if (sample != null) {
 				ObservationHistory paymentObservation = new ObservationHistoryDAOImpl().getObservationHistoriesBySampleIdAndType(sample.getId(), PAYMENT_STATUS_OBSERVATION_ID);

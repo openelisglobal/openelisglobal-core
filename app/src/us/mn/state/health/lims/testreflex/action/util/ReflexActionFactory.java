@@ -10,15 +10,11 @@ public class ReflexActionFactory {
 	public static ReflexAction getReflexAction() {
 			String reflexAction = ConfigurationProperties.getInstance().getPropertyValue(Property.ReflexAction);
 			
-			if( "Haiti".equals(reflexAction)){
-				return new HaitiReflexActions();
-			}else if( "LNSP_Haiti".equals(reflexAction)){
-				return new LNSPHaitiReflexActions();
-			}else if( "RetroCI".equals(reflexAction)){
+			if( "RetroCI".equals(reflexAction)){
 				return new RetroCIReflexActions();
-			}
-		
-		return null;
+			}else{
+                return new DefaultReflexActions();
+            }
 	}
 	
 	

@@ -10,6 +10,7 @@
                  us.mn.state.health.lims.common.util.Versioning,
                  us.mn.state.health.lims.common.util.StringUtil,
                  us.mn.state.health.lims.common.util.IdValuePair" %>
+<%@ page import="us.mn.state.health.lims.common.services.PhoneNumberService" %>
 
 
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
@@ -49,7 +50,7 @@
     useReferralSiteCode = FormFields.getInstance().useField(FormFields.Field.SampleEntryReferralSiteCode);
     useProviderInfo = FormFields.getInstance().useField(FormFields.Field.ProviderInfo);
     patientRequired = FormFields.getInstance().useField(FormFields.Field.PatientRequired);
-    trackPayment = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true");
+    trackPayment = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     requesterLastNameRequired = FormFields.getInstance().useField(Field.SampleEntryRequesterLastNameRequired);
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ACCEPT_EXTERNAL_ORDERS, "true");
@@ -217,19 +218,6 @@ function checkAccessionNumber( accessionNumber )
     setSave();
 }
 
-//Note this is hard wired for Haiti -- do not use
-function checkEntryPhoneNumber( phone )
-{
-
-    var regEx = new RegExp("^\\(?\\d{3}\\)?\\s?\\d{4}[- ]?\\d{4}\\s*$");
-
-    var valid = regEx.test(phone.value);
-
-    selectFieldErrorDisplay( valid, phone );
-    setValidIndicaterOnField(valid, phone.name);
-
-    setSave();
-}
 
 function setSampleFieldValidity( valid, fieldName ){
 
@@ -717,6 +705,30 @@ function parseCrossTests(crosstests, crossSampleTypeMap, crossSampleTypeOrderMap
 
 }
 
+function validatePhoneNumber( phoneElement){
+    validatePhoneNumberOnServer( phoneElement, processPhoneSuccess);
+}
+
+function  processPhoneSuccess(xhr){
+    //alert(xhr.responseText);
+
+    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
+    var message = xhr.responseXML.getElementsByTagName("message").item(0);
+    var success = false;
+
+    if (message.firstChild.nodeValue == "valid"){
+        success = true;
+    }
+    var labElement = formField.firstChild.nodeValue;
+    selectFieldErrorDisplay( success, $(labElement));
+    setSampleFieldValidity( success, labElement);
+
+    if( !success ){
+        alert( message.firstChild.nodeValue );
+    }
+
+    setSave();
+}
 </script>
 
 <bean:define id="orderTypeList"  name='<%=formName%>' property="orderTypes" type="java.util.Collection"/>
@@ -939,16 +951,16 @@ function parseCrossTests(crosstests, crossSampleTypeMap, crossSampleTypeOrderMap
                 </tr>
                 <tr>
                     <td>
-                        <%= StringUtil.getContextualMessageForKey("humansampleone.provider.workPhone") + ": " +  StringUtil.getContextualMessageForKey("humansampleone.phone.additionalFormat")%>
+                        <%= StringUtil.getContextualMessageForKey("humansampleone.provider.workPhone") + ": " + PhoneNumberService.getPhoneFormat()%>
                     </td>
                     <td>
                         <app:text name="<%=formName%>"
                                   property="providerWorkPhone"
                                   styleId="providerWorkPhoneID"
-                                  size="20"
-                                  maxlength="17"
+                                  size="30"
+                                  maxlength="30"
                                   styleClass="text"
-                                  onchange="makeDirty()" />
+                                  onchange="makeDirty(); validatePhoneNumber(this)" />
                     </td>
                 </tr>
                 <% } %>
@@ -1009,7 +1021,7 @@ function parseCrossTests(crosstests, crossSampleTypeMap, crossSampleTypeOrderMap
                                property="facilityPhone" 
                                styleClass="text"
                                maxlength="17"
-                               onchange="makeDirty()"/>
+                               onchange="makeDirty(); validatePhoneNumber( this );"/>
                     </td>  
                 </tr>
                 <tr>

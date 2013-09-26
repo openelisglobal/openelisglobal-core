@@ -8,11 +8,13 @@ fi
 
 echo Will build from $1
 cd source/openelisglobal-core
+git checkout -- app/src/build.properties
+git pull origin
 git checkout $1
 if [ $? != 0 ]
 then
     echo
-    echo "branch is not local will try to fetch it from main repository"
+    echo "branch is not local will try to create"
     echo 
 
     git checkout -b $1 origin/$1
@@ -25,7 +27,6 @@ then
     fi
 fi
 
-git pull
 git rev-list HEAD | tac | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' > ../../version.txt 
 cd ../..
 
@@ -40,6 +41,8 @@ fi
 
 #stop tomcat
 sudo /etc/init.d/tomcat5.5 stop
+#this will insure that we don't have stale compiled jsp files
+sudo -u tomcat55 rm -r /usr/share/tomcat5.5/work/Catalina/localhost/
 wait
 
 #install haitiOpenElis

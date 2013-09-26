@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+
+    <changeSet author="paulsc" id="1" context="ci_regional">
+        <comment>adds tests</comment>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_Labs/Test.sql" />
+    </changeSet>
+    <changeSet author="paulsc" id="2" context="ci_regional">
+        <comment>Add tests to sample types</comment>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_Labs/TestSampleTypes.sql" />
+    </changeSet>
+    <changeSet author="paulsc" id="3" context="ci_regional">
+        <comment>Adds to test_result table</comment>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_Labs/TestResults.sql"/>
+    </changeSet>
+    <changeSet author="paulsc" id="4" context="ci_regional">
+        <comment>Adds result limits to test</comment>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_Labs/ResultLimits.sql"/>
+    </changeSet>
+    <changeSet author="paulsc" id="5" context="ci_regional" >
+        <comment>Adds lab order type bindings and test codes</comment>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_Labs/orderTypeResult.sql"/>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_Labs/testCodeResult.sql"/>
+    </changeSet>
+    <changeSet id="6" author="paulsc" context="ci_regional">
+        <comment>Adds reflex tests</comment>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_Labs/Reflex.sql" />
+    </changeSet>
+    <changeSet id="7" author="paulsc" context="ci_regional">
+        <comment>Removes Genie III as an orderable test</comment>
+        <update tableName="test" >
+            <column name="orderable" valueBoolean="false" />
+            <where>name = 'Genie III'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>
+

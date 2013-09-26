@@ -17,12 +17,12 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.formfields.AdminFormFields.Field;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.formfields.AdminFormFields.Field;
+
+import java.util.HashMap;
 
 public class DefaultAdminFormFields extends AAdminFormFields {
 	private HashMap<AdminFormFields.Field, Boolean> defaultAttributes = new HashMap<AdminFormFields.Field, Boolean>();
@@ -83,6 +83,7 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.PRINTED_REPORTS_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.WORKPLAN_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.NON_CONFORMITY_CONFIGURATION, Boolean.TRUE);
+        defaultAttributes.put( Field.PATIENT_ENTRY_CONFIGURATION, Boolean.TRUE );
 	}
 
 	@Override

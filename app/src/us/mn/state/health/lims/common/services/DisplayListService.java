@@ -64,6 +64,7 @@ public class DisplayListService implements LocaleChangeListener {
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
+    private static Map<String, List<IdValuePair>> dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
 
 	static {
 		typeToListMap.put(ListType.HOURS, createHourList());
@@ -103,14 +104,36 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.QA_EVENTS, createSortedQAEvents());
         typeToListMap.put(ListType.TEST_SECTION, createTestSectionList());
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
+        dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
     }
 
     public static List<IdValuePair> getList(ListType listType) {
 		return typeToListMap.get(listType);
 	}
 
+    public static List<IdValuePair> getDictionaryListByCategory(String category) {
+       List<IdValuePair> list = dictionaryToListMap.get( category );
+        if( list == null){
+            list = createDictionaryListForCategory( category );
+            if( !list.isEmpty()){
+                dictionaryToListMap.put(category, list);
+            }
+        }
 
-	public static List<IdValuePair> getFreshList(ListType listType) {
+        return list;
+    }
+
+    private static List<IdValuePair> createDictionaryListForCategory( String category ){
+        List<IdValuePair> list = new ArrayList<IdValuePair>( );
+        List<Dictionary> dictionaryList = new DictionaryDAOImpl().getDictionaryEntrysByCategory("categoryName", category, false);
+        for( Dictionary dictionary : dictionaryList){
+            list.add( new IdValuePair( dictionary.getId(), dictionary.getLocalizedName()  ) );
+        }
+
+        return list;
+    }
+
+    public static List<IdValuePair> getFreshList(ListType listType) {
 		// note this should be expanded but the only use case we have is for
 		// referring clinics
 		switch (listType) {

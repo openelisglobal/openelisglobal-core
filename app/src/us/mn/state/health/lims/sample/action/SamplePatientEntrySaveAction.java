@@ -17,23 +17,11 @@
  */
 package us.mn.state.health.lims.sample.action;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.*;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.address.dao.OrganizationAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
 import us.mn.state.health.lims.address.daoimpl.OrganizationAddressDAOImpl;
@@ -84,7 +72,7 @@ import us.mn.state.health.lims.organization.valueholder.OrganizationType;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.patient.action.IPatientUpdate;
 import us.mn.state.health.lims.patient.action.PatientManagementUpdateAction;
-import us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.patient.util.PatientUtil;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
@@ -119,6 +107,12 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SamplePatientEntrySaveAction extends BaseAction {
 
@@ -206,7 +200,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		observations = new ArrayList<ObservationHistory>();
 		boolean useInitialSampleCondition = FormFields.getInstance().useField(Field.InitialSampleCondition);
 		BaseActionForm dynaForm = (BaseActionForm) form;
-		PatientManagmentInfo patientInfo = (PatientManagmentInfo) dynaForm.get("patientProperties");
+		PatientManagementInfo patientInfo = (PatientManagementInfo ) dynaForm.get("patientProperties");
 
 		ActionMessages errors = new ActionMessages();
 
@@ -214,7 +208,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		useReceiveDateForCollectionDate = !FormFields.getInstance().useField(Field.CollectionDate);
 
 		useReferringSiteId = FormFields.getInstance().useField(Field.RequesterSiteList);
-		boolean trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true");
+		boolean trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
 
 		String receivedTime = dynaForm.getString("recievedTime");
 		if (!GenericValidator.isBlankOrNull(receivedTime)) {
@@ -427,7 +421,6 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 	}
 
 	private void initSampleData(BaseActionForm dynaForm, String receivedDate, boolean useInitialSampleCondition, boolean trackPayments) {
-		sampleItemsTests = new ArrayList<SampleTestCollection>();
 		createPopulatedSample(dynaForm, receivedDate);
 
 		addObservations(dynaForm, trackPayments);
@@ -520,7 +513,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		sampleHuman.setSysUserId(currentUserId);
 	}
 
-	private void testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagmentInfo patientInfo,
+	private void testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagementInfo patientInfo,
 			IPatientUpdate patientUpdate) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		patientUpdate.setPatientUpdateStatus(patientInfo);
@@ -626,9 +619,12 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 			for (Test test : sampleTestCollection.tests) {
 				testDAO.getData(test);
 
-				Analysis analysis = populateAnalysis(analysisRevision, sampleTestCollection, test, sampleTestCollection.testIdToUserSectionMap.get(test.getId()) );
-				analysisDAO.insertData(analysis, false); // false--do not check
-				// for duplicates
+				Analysis analysis = populateAnalysis(analysisRevision,
+                                                     sampleTestCollection,
+                                                     test,
+                                                     sampleTestCollection.testIdToUserSectionMap.get(test.getId()),
+                                                     sampleTestCollection.testIdToUserSampleTypeMap.get(test.getId()));
+				analysisDAO.insertData(analysis, false); // false--do not check for duplicates
 			}
 
 		}
@@ -697,7 +693,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		}
 	}
 
-	private Analysis populateAnalysis(String analysisRevision, SampleTestCollection sampleTestCollection, Test test, String userSelectedTestSection) {
+	private Analysis populateAnalysis(String analysisRevision, SampleTestCollection sampleTestCollection, Test test, String userSelectedTestSection, String sampleTypeName) {
 	    java.sql.Date collectionDateTime = DateUtil.convertStringDateTimeToSqlDate(sampleTestCollection.collectionDate);
 	    TestSection testSection = test.getTestSection();
 		if( !GenericValidator.isBlankOrNull(userSelectedTestSection)){
@@ -716,6 +712,9 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		analysis.setRevision(analysisRevision);
 		analysis.setStartedDate(collectionDateTime == null ? DateUtil.getNowAsSqlDate() : collectionDateTime );
 		analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted));
+        if( !GenericValidator.isBlankOrNull( sampleTypeName )){
+            analysis.setSampleTypeName( sampleTypeName );
+        }
 		analysis.setTestSection(testSection);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 		return analysis;
 	}

@@ -1,13 +1,6 @@
 package us.mn.state.health.lims.typeofsample.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.laborder.daoimpl.LabOrderItemDAOImpl;
 import us.mn.state.health.lims.laborder.valueholder.LabOrderItem;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
@@ -27,10 +20,13 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSamplePanel;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 
+import java.util.*;
+
 public class TypeOfSampleUtil {
 
 	private static Map<String, List<Test>> sampleIdTestMap = new HashMap<String, List<Test>>();
-	private static Map<String, String> typeOfSampleIdToNameMap;
+    private static Map<String, String> typeOfSampleIdToNameMap;
+    private static Map<String, String> typeOfSampleWellKnownNameToIdMap;
 	private static Map<String, List<String>> labOrderTypeToTestMap = null;
 	private static Map<String, TypeOfSample> testIdToTypeOfSampleMap = null;
 	private static Map<String, List<TypeOfSample>> panelIdToTypeOfSampleMap = null;
@@ -157,6 +153,7 @@ public class TypeOfSampleUtil {
 	    sampleIdTestMap.clear();
 	    createTypeOfSampleIdentityMap();
 	    typeOfSampleIdToNameMap = null;
+        typeOfSampleWellKnownNameToIdMap = null;
 	    testIdToTypeOfSampleMap = null;
 	}
 
@@ -171,22 +168,36 @@ public class TypeOfSampleUtil {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static String getTypeOfSampleNameForId( String id){
 		if( typeOfSampleIdToNameMap == null){
-			typeOfSampleIdToNameMap = new HashMap<String, String>();
-
-			TypeOfSampleDAO tosDAO = new TypeOfSampleDAOImpl();
-			List<TypeOfSample> allTypes = tosDAO.getAllTypeOfSamples();
-			for( TypeOfSample typeOfSample : allTypes){
-				typeOfSampleIdToNameMap.put(typeOfSample.getId(), typeOfSample.getLocalizedName());
-			}
+            createSampleNameIDMaps();
 		}
 
 		return typeOfSampleIdToNameMap.get(id);
 	}
 
-	public static List<TypeOfSample> getTypeOfSampleForPanelId(String id){
+    public static String getTypeOfSampleIdForLocalAbbreviation( String name ){
+        if( typeOfSampleWellKnownNameToIdMap == null){
+            createSampleNameIDMaps();
+        }
+
+        return typeOfSampleWellKnownNameToIdMap.get( name );
+    }
+
+
+    private static void createSampleNameIDMaps(){
+        typeOfSampleIdToNameMap = new HashMap<String, String>();
+        typeOfSampleWellKnownNameToIdMap = new HashMap<String, String>( );
+
+        TypeOfSampleDAO tosDAO = new TypeOfSampleDAOImpl();
+        List<TypeOfSample> allTypes = tosDAO.getAllTypeOfSamples();
+        for( TypeOfSample typeOfSample : allTypes){
+            typeOfSampleIdToNameMap.put(typeOfSample.getId(), typeOfSample.getLocalizedName());
+            typeOfSampleWellKnownNameToIdMap.put( typeOfSample.getLocalAbbreviation(), typeOfSample.getId() );
+        }
+    }
+
+    public static List<TypeOfSample> getTypeOfSampleForPanelId(String id){
 		if( panelIdToTypeOfSampleMap == null){
 			panelIdToTypeOfSampleMap = new HashMap<String, List<TypeOfSample>>();
 			

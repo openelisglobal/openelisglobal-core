@@ -65,7 +65,6 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		String pageSubtitle = null;
 		String pageTitle = null;
 
-		// 'Save successful' set from action forwarding to this action
 		if (FWD_SUCCESS.equals(request.getParameter("forward"))) {
 			setSuccessFlag(request);
 		}
@@ -79,17 +78,14 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		String pageTitleKeyParameter = getPageTitleKeyParameter(request, form);
 		String pageSubtitleKeyParameter = getPageSubtitleKeyParameter(request, form);
 
-		// bugzilla 1512 internationalization
 		request.getSession().setAttribute(Globals.LOCALE_KEY, SystemConfiguration.getInstance().getDefaultLocale());
 
-		// bugzilla 1348
 		if (StringUtil.isNullorNill(pageTitleKeyParameter)) {
 			pageTitle = getMessageForKey(pageTitleKey);
 		} else {
 			pageTitle = getMessageForKey(request, pageTitleKey, pageTitleKeyParameter);
 		}
 
-		// bugzilla 1348
 		if (StringUtil.isNullorNill(pageSubtitleKeyParameter)) {
 			pageSubtitle = getMessageForKey(pageSubtitleKey);
 		} else {
@@ -101,11 +97,8 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		if (null != pageSubtitle)
 			request.setAttribute(PAGE_SUBTITLE_KEY, pageSubtitle);
 
-		// Set the form attributes
 		setFormAttributes(form, request);
 
-		// check for account disabled
-		// bugzilla 2160
 		if (userModuleDAO.isAccountDisabled(request)) {
 			ActionMessages errors = new ActionMessages();
 			ActionError error = new ActionError("login.error.account.disable", null, null);
@@ -114,8 +107,6 @@ public abstract class BaseAction extends Action implements IActionConstants {
 			return mapping.findForward(LOGIN_PAGE);
 		}
 
-		// check for account locked
-		// bugzilla 2160
 		if (userModuleDAO.isAccountLocked(request)) {
 			ActionMessages errors = new ActionMessages();
 			ActionError error = new ActionError("login.error.account.lock", null, null);
@@ -124,8 +115,6 @@ public abstract class BaseAction extends Action implements IActionConstants {
 			return mapping.findForward(LOGIN_PAGE);
 		}
 
-		// check for password expired
-		// bugzilla 2160
 		if (userModuleDAO.isPasswordExpired(request)) {
 			ActionMessages errors = new ActionMessages();
 			ActionError error = new ActionError("login.error.password.expired", null, null);
@@ -138,7 +127,6 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		// System.out.println("actionName: " + PageIdentityUtil.getActionName(request, USE_PARAMETERS));
 
 		// check for user type (admin or non-admin)
-
 		if (!userModuleDAO.isUserAdmin(request)) {
 			if (SystemConfiguration.getInstance().getPermissionAgent().equals("ROLE")) {
 				if (!PageIdentityUtil.isMainPage(request)) {
@@ -177,7 +165,7 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		ActionError error = new ActionError("login.error.module.not.allow", null, null);
 		errors.add(ActionMessages.GLOBAL_MESSAGE, error);
 		saveErrors(request, errors);
-		// bugzilla 2154
+
 		LogEvent.logInfo("BaseAction", "execute()", "======> NOT ALLOWED ACCESS TO THIS MODULE");
 
 		return sessionExpired ? mapping.findForward(LOGIN_PAGE) : mapping.findForward(HOME_PAGE);
@@ -277,11 +265,10 @@ public abstract class BaseAction extends Action implements IActionConstants {
 				String actionName = name.substring(1, name.length() - 4);
 				actionName = name.substring(0, 1).toUpperCase() + actionName;
 				request.setAttribute(ACTION_KEY, actionName);
-				// bugzilla 2154
+
 				LogEvent.logInfo("BaseAction", "setFormAttributes()", actionName);
 			}
 		} catch (ClassCastException e) {
-			// bugzilla 2154
 			LogEvent.logError("BaseAction", "setFormAttributes()", e.toString());
 			throw new ClassCastException("Error Casting form into DynaForm");
 		}
@@ -306,10 +293,8 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		return redirect;
 	}
 
-	// added for bugzilla 1467
 	protected ActionForward getForward(ActionForward forward, String id, String startingRecNo, String direction) {
 		ActionRedirect redirect = new ActionRedirect(forward);
-		// bugzilla 2154
 		LogEvent.logInfo("BaseAction", "getForward()", "This is forward " + forward.getRedirect() + " " + forward.getPath());
 
 		if (id != null)
@@ -318,7 +303,6 @@ public abstract class BaseAction extends Action implements IActionConstants {
 			redirect.addParameter("startingRecNo", startingRecNo);
 		if (direction != null)
 			redirect.addParameter("direction", direction);
-		// bugzilla 2154
 		LogEvent.logInfo("BaseAction", "getForward()", "This is redirect " + redirect.getPath());
 
 		return redirect;
@@ -332,15 +316,11 @@ public abstract class BaseAction extends Action implements IActionConstants {
 
 		String formName = dynaForm.getDynaClass().getName().toString();
 
-		// accession number validation against database (reusing ajax
-		// validation logic)
 		AccessionNumberValidationProvider accessionNumberValidator = new AccessionNumberValidationProvider();
 
-		// this was not validating before...
 		String accessionNumber = "";
 		String result = "";
-		// if routing from another module accessionNumber is not a form variable
-		// but a request parameter
+
 		if (!StringUtil.isNullorNill((String) request.getParameter(ACCESSION_NUMBER))) {
 			accessionNumber = (String) request.getParameter(ACCESSION_NUMBER);
 		} else {
@@ -364,7 +344,6 @@ public abstract class BaseAction extends Action implements IActionConstants {
 	// be moved to a utility
 	protected List<Analysis> sortTests(List<Analysis> analyses) {
 
-		// find root level nodes and fill in children for each Test_TestAnalyte
 		List<Analysis> rootLevelNodes = new ArrayList<Analysis>();
 		for (int i = 0; i < analyses.size(); i++) {
 			Analysis analysis = (Analysis) analyses.get(i);

@@ -16,12 +16,7 @@
 */
 package us.mn.state.health.lims.testreflex.action.util;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
@@ -31,7 +26,11 @@ import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 
-public class LNSPHaitiReflexActions extends ReflexAction {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class DefaultReflexActions extends ReflexAction {
 
 
 	private static final String HIV_N_SCRIPT = "HIV N";
@@ -39,12 +38,12 @@ public class LNSPHaitiReflexActions extends ReflexAction {
 	private static final String HIV_POSITIVE_SCRIPT = "HIV Positive";
 
 	private static Analyte ANALYTE_CONCLUSION;
-	private static Map<String, String> hivStatusToDictonaryIDMap;
+	private static Map<String, String> hivStatusToDictionaryIDMap;
 
 
 	static {
 
-		hivStatusToDictonaryIDMap = new HashMap<String, String>();
+		hivStatusToDictionaryIDMap = new HashMap<String, String>();
 
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 
@@ -52,11 +51,11 @@ public class LNSPHaitiReflexActions extends ReflexAction {
 
 		for (Dictionary dictionary : dictionaryList) {
 			if (dictionary.getDictEntry().equals("Positive")) {
-				hivStatusToDictonaryIDMap.put(HIV_POSITIVE_SCRIPT, dictionary.getId());
+				hivStatusToDictionaryIDMap.put( HIV_POSITIVE_SCRIPT, dictionary.getId() );
 			} else if (dictionary.getDictEntry().equals("Negative")) {
-				hivStatusToDictonaryIDMap.put(HIV_N_SCRIPT, dictionary.getId());
+				hivStatusToDictionaryIDMap.put( HIV_N_SCRIPT, dictionary.getId() );
 			} else if (dictionary.getDictEntry().equals("Indeterminate")) {
-				hivStatusToDictonaryIDMap.put(HIV_INDETERMINATE_SCRIPT, dictionary.getId());
+				hivStatusToDictionaryIDMap.put( HIV_INDETERMINATE_SCRIPT, dictionary.getId() );
 			}
 		}
 
@@ -84,7 +83,7 @@ public class LNSPHaitiReflexActions extends ReflexAction {
 	private void addHIVConclusion(String action) {
 
 		finalResult = new Result();
-		finalResult.setValue(hivStatusToDictonaryIDMap.get(action));
+		finalResult.setValue( hivStatusToDictionaryIDMap.get( action ) );
 		finalResult.setResultType("D");
 		finalResult.setIsReportable("T");
 		finalResult.setAnalyte(ANALYTE_CONCLUSION);

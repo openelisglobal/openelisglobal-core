@@ -16,7 +16,9 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
@@ -56,7 +58,7 @@ public class IndicatorCDIHIVLNSP extends IndicatorHaitiHIVClinical implements IR
 	
 	@Override
 	protected String getSiteLogo(){
-		return "HaitiLNSP.jpg";
+		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
 	}
 
 	@Override

@@ -38,7 +38,7 @@
 	editableAccession = AccessionNumberUtil.getChangeableLength();
 	nonEditableAccession = AccessionNumberUtil.getInvarientLength();
 	maxAccessionLength = editableAccession + nonEditableAccession;
-	trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true");
+	trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
 %>
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>

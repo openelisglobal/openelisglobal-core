@@ -32,7 +32,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 	private static String propertyFile = "/SystemConfiguration.properties";
 	private java.util.Properties properties = null;
 	protected static Map<ConfigurationProperties.Property, KeyDefaultPair> propertiesFileMap;
-	protected static Map<String, ConfigurationProperties.Property> dbNamePropertiesMap  = new HashMap<String, ConfigurationProperties.Property>();
+	protected static Map<String, ConfigurationProperties.Property> dbNamePropertiesMap;
 	private boolean databaseLoaded = false;
 
 	{
@@ -49,6 +49,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 
 	*/
 		//config from site_information table
+		dbNamePropertiesMap  = new HashMap<String, ConfigurationProperties.Property>();
 		setDBPropertyMappingAndDefault(Property.SiteCode, "siteNumber", "" );
 		setDBPropertyMappingAndDefault(Property.TrainingInstallation, "TrainingInstallation", "false");
 		setDBPropertyMappingAndDefault(Property.PatientSearchURL, "patientSearchURL" , "");
@@ -79,7 +80,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.StatusRules , "statusRules", "CI");
 		setDBPropertyMappingAndDefault(Property.ReflexAction , "reflexAction", "Haiti");
 		setDBPropertyMappingAndDefault(Property.AccessionFormat , "acessionFormat", "SITEYEARNUM"); //spelled wrong in DB
-		setDBPropertyMappingAndDefault(Property.trackPatientPayment, "trackPayment", "false");
+		setDBPropertyMappingAndDefault(Property.TRACK_PATIENT_PAYMENT, "trackPayment", "false");
 		setDBPropertyMappingAndDefault(Property.ALERT_FOR_INVALID_RESULTS, "alertWhenInvalidResult", "false");
 		setDBPropertyMappingAndDefault(Property.DEFAULT_DATE_LOCALE, "default date locale", "fr-FR");
 		setDBPropertyMappingAndDefault(Property.DEFAULT_LANG_LOCALE, "default language locale", "fr-FR");
@@ -101,6 +102,10 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.PATIENT_REPORT_NO_ALERTS, "Patient report with no alerts", "false");
         setDBPropertyMappingAndDefault(Property.ACCESSION_NUMBER_PREFIX, "Accession number prefix", "");
         setDBPropertyMappingAndDefault(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION, "validationOnlyNotesAreExternal", "false");
+        setDBPropertyMappingAndDefault(Property.PHONE_FORMAT, "phone format", "(ddd) dddd-dddd");
+        setDBPropertyMappingAndDefault(Property.VALIDATE_PHONE_FORMAT, "validate phone format", "true");
+        setDBPropertyMappingAndDefault( Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "Allow duplicate subject number", "true" );
+
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

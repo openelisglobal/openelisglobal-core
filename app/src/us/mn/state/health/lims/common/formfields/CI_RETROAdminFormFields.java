@@ -17,9 +17,9 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
-
 import us.mn.state.health.lims.common.formfields.AdminFormFields.Field;
+
+import java.util.HashMap;
 
 public class CI_RETROAdminFormFields implements IAdminFormFieldsForImplementation {
 
@@ -32,6 +32,7 @@ public class CI_RETROAdminFormFields implements IAdminFormFieldsForImplementatio
 		settings.put(Field.SiteInformationMenu,  Boolean.TRUE);
 		settings.put(Field.ResultInformationMenu, Boolean.TRUE);
 		settings.put(Field.SampleEntryMenu, Boolean.FALSE);
+        settings.put( Field.PATIENT_ENTRY_CONFIGURATION, Boolean.FALSE );
 		return settings;
 	}
 

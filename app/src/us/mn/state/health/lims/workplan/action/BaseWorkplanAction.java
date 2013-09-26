@@ -17,19 +17,10 @@
  */
 package us.mn.state.health.lims.workplan.action;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.formfields.FormFields;
@@ -45,6 +36,13 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BaseWorkplanAction extends BaseAction {
 
@@ -70,7 +68,8 @@ public class BaseWorkplanAction extends BaseAction {
 		ENDOCRINOLOGY, 
 		CYTOBACTERIOLOGY,
 		MYCOLOGY,
-		SEROLOGY_IMMUNOLOGY
+		SEROLOGY_IMMUNOLOGY,
+        MALARIA
 	}
 
 	protected WorkplanType workplanType = WorkplanType.UNKNOWN;
@@ -108,7 +107,8 @@ public class BaseWorkplanAction extends BaseAction {
 		workplanGroupMap.put("endocrin", new TypeNameGroup("Endocrinologie", "workplan.endocrin.title", WorkplanType.ENDOCRINOLOGY));
 		workplanGroupMap.put("HIV", new TypeNameGroup("VCT", "workplan.vct.title", WorkplanType.HIV));
 		workplanGroupMap.put("hemato-immunology", new TypeNameGroup("Hemto-Immunology", "workplan.hemato.imunology.title", WorkplanType.HEMATO_IMMUNOLOGY));
-		workplanGroupMap.put("serology-immunology", new TypeNameGroup("Serology-Immunology", "workplan.serology.immunology.title", WorkplanType.SEROLOGY_IMMUNOLOGY));
+        workplanGroupMap.put("serology-immunology", new TypeNameGroup("Serology-Immunology", "workplan.serology.immunology.title", WorkplanType.SEROLOGY_IMMUNOLOGY));
+        workplanGroupMap.put("malaria", new TypeNameGroup("Malaria", "workplan.malaria.title", WorkplanType.MALARIA));
 		
 		
 		statusList = new ArrayList<Integer>();

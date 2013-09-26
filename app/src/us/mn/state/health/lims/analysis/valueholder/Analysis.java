@@ -18,10 +18,7 @@
 */
 package us.mn.state.health.lims.analysis.valueholder;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
-
+import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
@@ -32,6 +29,10 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
 
 public class Analysis extends BaseObject {
 
@@ -75,26 +76,9 @@ public class Analysis extends BaseObject {
 	private String statusId;
 	private String assignedSortedTestTreeDisplayValue;
 	private boolean referredOut = false;
-	
-	public String getAssignedSortedTestTreeDisplayValue() {
-		return assignedSortedTestTreeDisplayValue;
-	}
-
-	public void setAssignedSortedTestTreeDisplayValue(
-			String assignedSortedTestTreeDisplayValue) {
-		this.assignedSortedTestTreeDisplayValue = assignedSortedTestTreeDisplayValue;
-	}
-
+    private String sampleTypeName;
 	private List<Analysis> children;
 
-
-	public List<Analysis> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<Analysis> children) {
-		this.children = children;
-	}
 
 	public Analysis() {
 		super();
@@ -114,7 +98,32 @@ public class Analysis extends BaseObject {
 		return id;
 	}
 
-	public String getAnalysisType() {
+    public String getSampleTypeName(){
+        return sampleTypeName;
+    }
+
+    public void setSampleTypeName( String sampleTypeName ){
+        this.sampleTypeName = sampleTypeName;
+    }
+
+    public String getAssignedSortedTestTreeDisplayValue() {
+        return assignedSortedTestTreeDisplayValue;
+    }
+
+    public List<Analysis> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Analysis> children) {
+        this.children = children;
+    }
+
+    public void setAssignedSortedTestTreeDisplayValue(
+            String assignedSortedTestTreeDisplayValue) {
+        this.assignedSortedTestTreeDisplayValue = assignedSortedTestTreeDisplayValue;
+    }
+
+    public String getAnalysisType() {
 		return analysisType;
 	}
 
@@ -128,6 +137,10 @@ public class Analysis extends BaseObject {
 
 	public void setSampleItem(SampleItem sampleItem) {
 		this.sampleItem.setValue(sampleItem);
+
+        if( GenericValidator.isBlankOrNull( sampleTypeName ) && sampleItem != null && sampleItem.getTypeOfSample() != null ){
+            setSampleTypeName( sampleItem.getTypeOfSample().getLocalizedName() );
+        }
 	}
 
 	public Date getCompletedDate() {

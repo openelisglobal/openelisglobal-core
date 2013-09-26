@@ -39,7 +39,7 @@
         <column name="display_key" value="dictionary.patient.payment.reduced.insurance" />
     </insert>
 </changeSet>
-<changeSet id="paulsc" author="2">
+<changeSet id="2" author="paulsc">
     <comment>Add notes section to site configuration</comment>
     <insert tableName="site_information">
         <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
@@ -51,10 +51,94 @@
         <column name="value_type" value="boolean" />
     </insert>
 </changeSet>
-<changeSet id="paulsc" author="3">
+<changeSet id="3" author="paulsc">
     <comment>Sets all note types to external</comment>
     <update tableName="note" >
         <column name="note_type" value="E" />
     </update>
 </changeSet>
+<changeSet id="4" author="paulsc">
+    <comment>Adds configurable phone format</comment>
+    <insert tableName="site_information">
+        <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+        <column name="name" value="phone format" />
+        <column name="lastupdated" valueDate=" now() " />
+        <column name="description" value="The acceptable format for a phone number" />
+        <column name="value" value="(ddd) dddd-dddd" />
+        <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'siteIdentity' ) " />
+        <column name="value_type" value="text" />
+        <column name="tag" value="numericOnly" />
+        <column name="instruction_key" value="instructions.site.phone" />
+    </insert>
+</changeSet>
+    <changeSet id="5" author="paulsc">
+        <comment>Adds configurable phone format validation</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name" value="validate phone format" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Should the format for a phone number be validated" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'siteIdentity' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instructions.site.phone.validation" />
+        </insert>
+    </changeSet>
+    <changeSet id="6" author="paulsc" >
+        <comment>Adds a sample type of variable</comment>
+        <insert tableName="type_of_sample">
+            <column name="id" valueNumeric=" nextval( 'type_of_sample_seq' ) " />
+            <column name="description" value="Actual type will be selected by user" />
+            <column name="domain" value="H" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="local_abbrev" value="Variable" />
+            <column name="display_key" value="sample.type.variable" />
+            <column name="is_active" value="N" />
+        </insert>
+    </changeSet>
+    <changeSet id="7" author="paulsc">
+        <comment>Adds accents</comment>
+        <update tableName="dictionary" >
+            <column name="dict_entry" value="Présence" />
+            <where>dict_entry = 'Presence' </where>
+        </update>
+        <update tableName="type_of_sample" >
+            <column name="description" value="Sérum" />
+            <column name="local_abbrev" value="Sérum" />
+            <where>description = 'Serum' </where>
+        </update>
+    </changeSet>
+    <changeSet id="8" author="paulsc">
+        <comment>Remove trailing spaces in system_role name</comment>
+        <update tableName="system_role" >
+            <column name="name" value="Results entry" />
+            <where>name like 'Results entry%'</where>
+        </update>
+        <comment>Remove trailing spaces in system_role name</comment>
+        <update tableName="system_role" >
+            <column name="name" value="Validator" />
+            <where>name like 'Validator%'</where>
+        </update>
+    </changeSet>
+    <changeSet id="9" author="paulsc">
+        <comment>Adds patient entry as configuration domain</comment>
+        <insert tableName="site_information_domain">
+            <column name="id" valueNumeric=" nextval( 'site_information_domain_seq' ) "  />
+            <column name="name" value="patientEntryConfig" />
+            <column name="description" value="Configuration items for patient entry" />
+        </insert>
+    </changeSet>
+    <changeSet id="10" author="paulsc">
+        <comment>Adds allowing duplicate subject numbers as configurable item</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name" value="Allow duplicate subject number" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Allow more than one patient to have same subject number" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'patientEntryConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instructions.patient.duplicate.subject" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
