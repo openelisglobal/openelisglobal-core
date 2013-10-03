@@ -61,4 +61,10 @@
         <column name="name" type="varchar(26)" />
     </modifyColumn>
 </changeSet>
+<changeSet id="4" author="paulsc">
+    <comment>lengthens the street address column to match what is in iSante</comment>
+    <modifyColumn tableName="person">
+        <column name="street_address" type="varchar(255)" />
+    </modifyColumn>
+</changeSet>
 </databaseChangeLog>
