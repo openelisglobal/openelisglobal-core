@@ -1,10 +1,7 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="java.util.Date, java.util.List,
-	org.apache.struts.Globals,
-	us.mn.state.health.lims.common.util.SystemConfiguration,
+	import="java.util.List,
 	us.mn.state.health.lims.common.action.IActionConstants,
-	java.util.Collection,
 	java.util.ArrayList,
 	java.text.DecimalFormat,
 	org.apache.commons.validator.GenericValidator,
@@ -19,7 +16,7 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
 	us.mn.state.health.lims.common.util.StringUtil,
     us.mn.state.health.lims.common.util.Versioning,
-	us.mn.state.health.lims.testreflex.action.util.TestReflexResolver" %>
+    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -75,7 +72,11 @@
 
 	searchTerm = request.getParameter("searchTerm");
 
+    try{
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
+    }catch( LIMSInvalidConfigurationException e ){
+        //no-op
+    }
 	useSTNumber = FormFields.getInstance().useField(Field.StNumber);
 	useNationalID = FormFields.getInstance().useField(Field.NationalID);
 	useSubjectNumber = FormFields.getInstance().useField(Field.SubjectNumber);
@@ -146,14 +147,23 @@ $jq(document).ready( function() {
 				 pageSearch.highlightSearch( searchTerm, false );
 			}
 			
+            $jq('#modal_ok').on('click',function(e){
+                addReflexToTests();
+                e.preventDefault();
+                $jq('#reflexSelect').modal('hide');
+			});
 			});
 
 function handleMultiSelectChange( e, data ){
+
 	var id = "#multi" + e.target.id;
 	var selection = $jq(id)[0];
 
 	if( data.type == "add"){
 		appendValueToElementValue( selection, data.value );
+        if( $jq("#" + e.target.id).hasClass("userSelection")){
+            showUserReflexChoices( e.target.id.split("_")[1], data.value )
+        }
 	}else{ //drop
 		var splitValues =  selection.value.split(",");
 		selection.value = "";
@@ -197,11 +207,10 @@ function toggleKitDisplay( button ){
 }
 
 
-function /*void*/ markUpdated( index, userChoiceReflex, siblingReflexKey ){
-
+function markUpdated( index, userChoiceReflex, siblingReflexKey ){
 	if( userChoiceReflex ){
 		var siblingId = siblingReflexKey != 'null' ? $(siblingReflexKey).value : null;
-		showUserReflexChoices( index, siblingId );
+		showUserReflexChoices( index, $("resultId_" + index).value, siblingId );
 	}
 
 	$("modified_" + index).value = "true";
@@ -305,27 +314,26 @@ function updateReflexChild( group){
 
 }
 
-function /*void*/ processTestReflexCD4Failure(xhr){
+function processTestReflexCD4Failure(){
 	alert("failed");
 }
 
-function /*void*/ processTestReflexCD4Success(xhr)
+function processTestReflexCD4Success(parameters)
 {
+    var xhr = parameters.xhr;
 	//alert( xhr.responseText );
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = false, childRow, value;
+	var childRow, value;
 
 
 	if (message.firstChild.nodeValue == "valid"){
-		success = true;
 		childRow = formField.getElementsByTagName("childRow").item(0).childNodes[0].nodeValue;
 		value = formField.getElementsByTagName("value").item(0).childNodes[0].nodeValue;
 		
 		if( value && value.length > 0){
 			$("results_" + childRow).value = value;
 		}
-
 	}
 
 }
@@ -344,25 +352,24 @@ function forceTechApproval(checkbox, index ){
 
 }
 
-function showReflexSelection( element ){
-    $jq('#myModal').modal('show');
-}
 
 </script>
 
 
-<!-- Modal -->
-<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Modal popup-->
+<div id="reflexSelect" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Modal header</h3>
+        <h3 id="headerLabel"></h3>
     </div>
     <div class="modal-body">
-        <p>One fine body…</p>
+        <input type="hidden" id="testRow" />
+        <input type="hidden" id="targetIds" />
+        <p ><input style='vertical-align:text-bottom' id='selectAll' type='checkbox' onchange='modalSelectAll(this);' >&nbsp;&nbsp;&nbsp;<b>Select all</b></p><hr>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-primary">Save changes</button>
+        <button id="modal_ok" class="btn btn-primary" disabled="disabled">OK</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
     </div>
 </div>
 
@@ -372,74 +379,74 @@ function showReflexSelection( element ){
 
 <logic:notEqual name="testCount" value="0">
 <logic:equal name="<%=formName%>" property="displayTestKit" value="true">
-	<hr width="100%" />
-	<html:button property="showKit" onclick="toggleKitDisplay(this)" >+</html:button>
+	<hr style="width:100%" />
+    <input type="button" onclick="toggleKitDisplay(this)" value="+">
 	<bean:message key="inventory.testKits"/>
 	<div id="kitView" style="display: none;" class="colorFill" >
 		<tiles:insert attribute="testKitInfo" />
 		<br/>
-		<hr width="100%" />
+		<hr style="width:100%" />
 	</div>
 </logic:equal>
 
         <logic:equal  name='<%=formName%>' property="singlePatient" value="true">
 <% if(!depersonalize){ %>        
-<table width="100%" >
+<table style="width:100%" >
 	<tr>
 		
-		<th width="20%">
+		<th style="width:20%">
 			<bean:message key="person.lastName" />
 		</th>
-		<th width="20%">
+		<th style="width:20%">
 			<bean:message key="person.firstName" />
 		</th>
-		<th width="10%">
+		<th style="width:10%">
 			<bean:message key="patient.gender" />
 		</th>
-		<th width="15%">
+		<th style="width:15%">
 			<bean:message key="patient.birthDate" />
 		</th>
 		<% if(useSTNumber){ %>
-		<th width="15%">
+		<th style="width:15%">
 			<bean:message key="patient.ST.number" />
 		</th>
 		<% } %>
 		<% if(useNationalID){ %>
-		<th width="20%">
+		<th style="width:20%">
 			<%= StringUtil.getContextualMessageForKey("patient.NationalID") %>
 		</th>
 		<% } %>
 		<% if(useSubjectNumber){ %>
-		<th width="20%">
+		<th style="width:20%">
 			<bean:message key="patient.subject.number" />
 		</th>
 		<% } %>
 	</tr>
 	<tr>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="lastName" />
 		</td>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="firstName" />
 		</td>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="gender" />
 		</td>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="dob" />
 		</td>
 		<% if(useSTNumber){ %>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="st" />
 		</td>
 		<% } %>
 		<% if(useNationalID){ %>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="nationalId" />
 		</td>
 		<% } %>
 		<% if(useSubjectNumber){ %>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="subjectNumber" />
 		</td>
 		<% } %>
@@ -488,7 +495,7 @@ function showReflexSelection( element ){
 
 </div>
 
-<Table width="100%" border="0" cellspacing="0" >
+<Table style="width:100%" border="0" cellspacing="0" >
 	<!-- header -->
 	<tr >
 		<% if( !compactHozSpace ){ %>
@@ -514,9 +521,9 @@ function showReflexSelection( element ){
 		<th style="text-align: left">
 			<bean:message key="result.test"/>
 		</th>
-		<th width="16px">&nbsp;</th>
+		<th style="width:16px">&nbsp;</th>
 		<th style="width: 56px; padding-right: 10px; text-align: left"><%= StringUtil.getContextualMessageForKey("result.forceAccept.header") %></th>
-		<th width="165px" style="text-align: left">
+		<th style="width:165px" style="text-align: left">
 			<bean:message key="result.result"/>
 		</th>
 		<% if( ableToRefer ){ %>
@@ -533,7 +540,7 @@ function showReflexSelection( element ){
 			<% } %>
 		</th>
 		<% }%>
-		<th width="2%" style="text-align: left">
+		<th style="width:2%;text-align: left">
 			<bean:message key="result.notes"/>
 		</th>
 	</tr>
@@ -552,7 +559,7 @@ function showReflexSelection( element ){
 			<%=StringUtil.getContextualMessageForKey("resultsentry.accessionNumber")%><br/>
 			<bean:write name="testResult" property="accessionNumber"/>
 		</th>
-		<th colspan="8" />
+		<th colspan="8" ></th>
 	</tr>
 	</logic:equal>
 	<logic:equal name="testResult" property="isGroupSeparator" value="false">
@@ -592,7 +599,7 @@ function showReflexSelection( element ){
 		</tr>
 	</logic:equal>
     <% } %>
-	<tr class='<%= rowColor %>'  >
+	<tr class='<%= rowColor %>'  id='<%="row_" + index %>'>
 			<html:hidden name="testResult" property="isModified"  indexed="true" styleId='<%="modified_" + index%>' />
 			<html:hidden name="testResult" property="analysisId"  indexed="true" styleId='<%="analysisId_" + index%>' />
 			<html:hidden name="testResult" property="resultId"  indexed="true" styleId='<%="hiddenResultId_" + index%>'/>
@@ -639,7 +646,7 @@ function showReflexSelection( element ){
 		</logic:equal>
 		<!-- results -->
 		<logic:equal name="testResult" property="resultDisplayType" value="HIV">
-			<td valign="top" class="ruled">
+			<td style="vertical-align:top" class="ruled">
 				<html:hidden name="testResult" property="testMethod" indexed="true"/>
 				<bean:write name="testResult" property="testName"/>
 				<logic:greaterThan name="testResult" property="reflexStep" value="0">
@@ -666,7 +673,7 @@ function showReflexSelection( element ){
 			</td>
 		</logic:equal>
 		<logic:equal name="testResult" property="resultDisplayType" value="SYPHILIS">
-			<td valign="middle" class="ruled">
+			<td style="vertical-align:middle" class="ruled">
 				<html:hidden name="testResult" property="testMethod" indexed="true"/>
 				<bean:write name="testResult" property="testName"/>
 				<logic:greaterThan name="testResult" property="reflexStep" value="0">
@@ -693,7 +700,7 @@ function showReflexSelection( element ){
 			</td>
 		</logic:equal>
 		<logic:notEqual name="testResult" property="resultDisplayType" value="HIV"><logic:notEqual name="testResult" property="resultDisplayType" value="SYPHILIS">
-			<td valign="middle" class="ruled">
+			<td style="vertical-align:middle" class="ruled">
 				<bean:write name="testResult" property="testName"/>
 				<logic:equal  name="bound"  value="true" >
 					<br/><bean:write name="testResult" property="normalRange"/>&nbsp;
@@ -799,10 +806,11 @@ function showReflexSelection( element ){
 			<!-- multiple results -->
 			<select name="<%="testResult[" + index + "].multiSelectResultValues" %>"
 					id='<%="resultId_" + index%>'
+                    class="<%=testResult.isUserChoiceReflex() ? "userSelection" : "" %>"
 					multiple="multiple"
 					<%=testResult.isReadOnly()? "disabled=\'disabled\'" : "" %> 
 						 title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
-						 onchange='<%="markUpdated(" + index + ");"  +
+						 onchange='<%="markUpdated(" + index + ")"  +
 						               ((noteRequired && !GenericValidator.isBlankOrNull(testResult.getMultiSelectResultValues())) ? "showNote( " + index + ");" : "") %>' >
 						<logic:iterate id="optionValue" name="testResult" property="dictionaryResults" type="IdValuePair" >
 						<option value='<%=optionValue.getId()%>'
@@ -871,18 +879,18 @@ function showReflexSelection( element ){
 					   onchange='<%="markUpdated(" + index + ");"%>'/>
 		</td>
 		<% } %>
-		<td align="left" class="ruled">
+		<td style="text-align:left" class="ruled">
 						 	<img src="./images/note-add.gif"
 						 	     onclick='<%= "showHideNotes( " + index + ");" %>'
 						 	     id='<%="showHideButton_" + index %>'
 						    />
-			<html:hidden property="hideShowFlag"  styleId='<%="hideShow_" + index %>' value="hidden" />
+            <input type="hidden" name="hideShowFlag" value="hidden" id="hideShow_0">
 		</td>
 	</tr>
 	<logic:notEmpty name="testResult" property="pastNotes">
 		<tr class='<%= rowColor %>' >
-			<td colspan="2" align="right" valign="top"><bean:message key="label.prior.note" />: </td>
-			<td colspan="6" align="left">
+			<td colspan="2" style="text-align:right;vertical-align:top"><bean:message key="label.prior.note" />: </td>
+			<td colspan="6" style="text-align:left">
 				<%= testResult.getPastNotes() %>
 			</td>
 		</tr>
@@ -890,7 +898,7 @@ function showReflexSelection( element ){
 	<tr id='<%="noteRow_" + index %>'
 		class='<%= rowColor %>'
 		style="display: none;">
-		<td colspan="3" valign="top" align="right"><% if(noteRequired && 
+		<td colspan="3" style="vertical-align:top;text-align:right"><% if(noteRequired &&
 														 !(GenericValidator.isBlankOrNull(testResult.getMultiSelectResultValues()) && 
 														   GenericValidator.isBlankOrNull(testResult.getResultValue()))){ %>
 													  <bean:message key="note.required.result.change"/>		
@@ -898,7 +906,7 @@ function showReflexSelection( element ){
 													<bean:message key="note.note"/>
 													<% } %>
 													:</td>
-		<td colspan="6" align="left" >
+		<td colspan="6" style="text-align:left" >
 			<html:textarea styleId='<%="note_" + index %>'
 						   onchange='<%="markUpdated(" + index + ");"%>'
 					   	   name="testResult"
@@ -912,29 +920,8 @@ function showReflexSelection( element ){
 	<logic:match name="testResult" property="userChoiceReflex"  value="true">
 		<tr id='<%="reflexInstruction_" + index %>' class='<%= rowColor %>' style="display: none;">
             <td colspan="4" >&nbsp;</td>
-			<td colspan="4" valign="top"  ><bean:message key="testreflex.actionselection.instructions" /></td>
+			<td colspan="5" style="vertical-align:top"  ><bean:message key="testreflex.actionselection.instructions" /></td>
 		</tr>
-		<tr id='<%="reflexSelection_" + index %>' class='<%= rowColor %>' style="display: none;">
-		<td colspan="4" >&nbsp;</td>
-		<td colspan="4" >
-				<html:radio name="testResult"
-						    styleId = '<%="selectionOne_" + index %>'
-							property="reflexSelectionId"
-							indexed="true"
-							value=''
-							onchange='<%="reflexChoosen(" + index + ", \'" + rowColor + "\', \'" + testResult.getSiblingReflexKey() +  "\');"%>' />
-							<label id='<%="selectionOneLabel_" + index %>'  for='<%="selectionOne_" + index %>' > </label>
-				<br/>
-				<html:radio name="testResult"
-							styleId = '<%="selectionTwo_" + index %>'
-							property="reflexSelectionId"
-							indexed="true"
-							value=''
-							onchange='<%="reflexChoosen(" + index + ", \'" + rowColor + "\', \'" + testResult.getSiblingReflexKey() +  "\');"%>' />
-							<label id='<%="selectionTwoLabel_" + index %>'  for='<%="selectionTwo_" + index %>' > </label>
-			</td>
-		</tr>
-
 	</logic:match>
 
 	</logic:equal>

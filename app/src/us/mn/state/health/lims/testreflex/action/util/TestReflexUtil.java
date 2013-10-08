@@ -23,7 +23,6 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
-import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
@@ -44,7 +43,7 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import java.util.*;
 
 public class TestReflexUtil {
-	public static final String USER_CHOOSE_FLAG = "UC";
+	private static final String USER_CHOOSE_FLAG = "UC";
 	
 	private static String CONCLUSION_ANAYLETE_ID = null;
 	private static Analyte CD4_ANAYLETE = null;
@@ -109,7 +108,10 @@ public class TestReflexUtil {
 	public static boolean isTriggeringUserChoiceReflexTestId(String testId){
 		return TRIGGERING_UC_REFLEX_TEST_IDS.contains(testId);
 	}
-	
+
+    public static boolean isUserChoiceReflex( TestReflex reflex){
+        return USER_CHOOSE_FLAG.equals(reflex.getFlags());
+    }
 	public static boolean testIsTriggeringReflexWithSibs(String testId){
 		if( isTriggeringReflexTestId(testId)){
 			List<TestReflex> reflexes = TEST_TO_REFLEX_MAP.get(testId);
@@ -125,11 +127,11 @@ public class TestReflexUtil {
 	}
 	
 	public static String makeReflexTestName(TestReflex testReflex) {
-		return StringUtil.getMessageForKey("reflexTest.test") + " -- " + testReflex.getAddedTest().getLocalizedName();
+		return testReflex.getAddedTest().getLocalizedName();
 	}
 
 	public static String makeReflexScriptName(TestReflex testReflex) {
-		return StringUtil.getMessageForKey("reflexTest.conclusion") + " -- " + testReflex.getActionScriptlet().getScriptletName();
+		return  testReflex.getActionScriptlet().getScriptletName();
 	}
 
 	public static String makeReflexTestValue(TestReflex testReflex) {

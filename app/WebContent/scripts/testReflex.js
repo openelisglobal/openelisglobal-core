@@ -2,9 +2,8 @@
 var unSelectedReflexs = new HashObj();
 
 
-function showUserReflexChoices( index, sibIndex )
+function showUserReflexChoices( index, resultId, sibIndex )
 {
-	var resultId = $("resultId_" + index).value;
 	var analysisElement = $("analysisId_" + index );
 	var analysisId =  analysisElement ? analysisElement.value : "";
 	var accessionElement = $("accessionNumberId_" + index);
@@ -15,15 +14,15 @@ function showUserReflexChoices( index, sibIndex )
 	var sibAnalysisId = sibIndex ? $("analysisId_" + sibIndex ).value : null;
 	var sibTestId = sibIndex ? $("testId_" + sibIndex ).value : null;
 
-	showHideReflexInstructions( index, false );
-	$("userChoicePendingId_" + index).value = false;
-	if( $("userChoicePendingId_" + sibIndex) ){
+//	showHideReflexInstructions( index, false );
+//	$("userChoicePendingId_" + index).value = false;
+/*	if( $("userChoicePendingId_" + sibIndex) ){
 		$("userChoicePendingId_" + sibIndex).value = false;
 	}
 	clearReflexChoice( index );
 
 	if( sibIndex ){
-		showHideReflexInstructions( sibIndex, false );
+//		showHideReflexInstructions( sibIndex, false );
 		clearReflexChoice( sibIndex );
 		if(sibResultId == 0){
 			return;
@@ -33,8 +32,8 @@ function showUserReflexChoices( index, sibIndex )
 			testId += ',' + sibTestId;
 		}
 	}
-
-	getReflexUserChoice( resultId, analysisId, testId, accessionNumber, index, processTestReflexSuccess, processTestReflexFailure);
+ */
+	getReflexUserChoice( resultId, analysisId, testId, accessionNumber, index, processTestReflexSuccess);
 }
 
 function /*void*/ processTestReflexSuccess(xhr)
@@ -42,37 +41,79 @@ function /*void*/ processTestReflexSuccess(xhr)
 	//alert( xhr.responseText );
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-
+    var response = JSON.parse( formField.firstChild.textContent);
 
 	if (message.firstChild.nodeValue == "valid"){
-		var choiceNode = formField.getElementsByTagName("userchoice").item(0);
-		var rowIndex = getReflexValueFromXmlElement( choiceNode, "rowIndex" );
+		var rowIndex = response["rowIndex"];
+        var selections = response["selections"];
+        var i;
 
-		$("selectionOneLabel_" + rowIndex).innerHTML = getReflexValueFromXmlElement( choiceNode, "selectionOneText" );
-		$("selectionOne_" + rowIndex).value = getReflexValueFromXmlElement( choiceNode, "selectionOneId" );
-		$("selectionTwoLabel_" + rowIndex).innerHTML = getReflexValueFromXmlElement( choiceNode, "selectionTwoText" );
-		$("selectionTwo_" + rowIndex).value = getReflexValueFromXmlElement( choiceNode, "selectionTwoId" );
-		$("userChoicePendingId_" + rowIndex).value = true;
-		
-		unSelectedReflexs.setItem( rowIndex, null );
-		$("reflexInstruction_" + rowIndex ).className = "alert alert-info";
-		$("reflexSelection_" + rowIndex ).className = "alert alert-info";
+        $jq(".modal-body #testRow").val(rowIndex);
+        $jq(".modal-body #targetIds").val(response["triggerIds"]);
+        $jq(".selection_element").remove();
+        $jq("#modal_ok").attr('disabled','disabled');
+        for( i = 0; i < selections.length; i++){
+           $jq(".modal-body").append(getSelectionRow(selections[i]["name"], selections[i]["value"], i));
+        }
+        $jq(".modal-body #selectAll").prop('checked', false);
+        $jq(".selection_element").change( function(){ checkForCheckedReflexes(); });
+        $jq("#headerLabel").text(response["triggers"]);
 
-		showHideReflexInstructions( rowIndex, true );
-		$("saveButtonId").disabled = true;
+        showReflexSelection();
+//		$("saveButtonId").disabled = true;
 	}
 
 }
 
-function getReflexValueFromXmlElement( parent, tag ){
-	var element = parent.getElementsByTagName( tag ).item(0);
-
-	return element ? element.firstChild.nodeValue : "";
+function getSelectionRow(name, value, index){
+    return "<p class='selection_element'><input style='vertical-align:text-bottom' id='selection_" + index + "' class='selectionCheckbox' value='" + value +  "' type='checkbox' >&nbsp;&nbsp;&nbsp;" + name + "</p>";
 }
 
-function /*void*/ processTestReflexFailure(xhr){
-	//alert("failed");
+function modalSelectAll(selectBox){
+    if( $jq(selectBox).prop('checked')){
+        $jq(selectBox).click(function(){ $jq('.selectionCheckbox').prop('checked', true); });
+        $jq("#modal_ok").removeAttr('disabled');
+    } else{
+        $jq(selectBox).click(function(){ $jq('.selectionCheckbox').prop('checked', false); });
+        $jq("#modal_ok").attr('disabled','disabled');
+    }
 }
+
+function checkForCheckedReflexes(){
+    var disable = true;
+    $jq(".selectionCheckbox").each(function(index, value){
+           if( value.checked){
+               disable = false;
+           }
+    });
+
+    if( disable){
+        $jq("#modal_ok").attr('disabled','disabled');
+    }else{
+        $jq("#modal_ok").removeAttr('disabled');
+    }
+}
+
+function addReflexToTests(){
+    var index = $jq(".modal-body #testRow").val();
+    var tests = '';
+    var parentRow = $jq('#reflexInstruction_' + index);
+
+
+
+    $jq(".selectionCheckbox").each(function(index, value){
+        if(value.checked){
+            tests += $jq.trim($jq(value).parent().text()) + ", ";
+        }
+    });
+    tests = tests.substr(0, tests.length - 2 );
+
+    parentRow.after(getSelectedTestDisplay(parentRow.attr("class"), index, $jq(".modal-body #targetIds" ).val(), $jq("#headerLabel").text().split(":")[1], tests));
+//    $jq("#reflexedTests_" + index).text(tests);
+ //   $jq("#reflexTestsParent_" + index).text($jq("#headerLabel").text().split(":")[1])
+  //  $jq("#reflexSelection_" + index + ",#reflexInstruction_" + index).show();
+}
+
 
 function /*void*/ showHideReflexInstructions( rowIndex, show ){
 	if( show ){
@@ -85,13 +126,10 @@ function /*void*/ showHideReflexInstructions( rowIndex, show ){
 }
 
 function /*void*/ clearReflexChoice( index ){
-	$("selectionOne_" + index).checked = false;
-	$("selectionTwo_" + index).checked = false;
-	unSelectedReflexs.removeItem( index );
-	$("saveButtonId").disabled = !unSelectedReflexs.isEmpty();
+
 }
 
-function /*void*/ reflexChoosen(index, rowColor, sibReflexKey ){
+function reflexChoosen(index, rowColor, sibReflexKey ){
 	$("reflexInstruction_" + index ).className=rowColor;
 	$("reflexSelection_" + index ).className=rowColor;
 
@@ -108,4 +146,14 @@ function /*void*/ reflexChoosen(index, rowColor, sibReflexKey ){
 	}
 
 	$("saveButtonId").disabled = !unSelectedReflexs.isEmpty();
+}
+
+function getSelectedTestDisplay( classValue, index, targetIds, parent, tests){
+    return "<tr id='reflexSelection_'" + index + "_" + targetIds + " class='" + classValue + " reflexSelection_" + index + "'  >" +
+        "<td colspan='4' style='text-align:right'>" + parent + "</td>" +
+        "<td colspan='5'><textarea  readonly='true' id='reflexedTests' rows='2' style='width:80%' onclick='alert('gotcha');'>" + tests + "</textarea></td>" +
+    "</tr>";
+}
+function showReflexSelection( element ){
+    $jq('#reflexSelect').modal('show');
 }

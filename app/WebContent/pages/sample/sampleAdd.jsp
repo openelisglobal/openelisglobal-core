@@ -401,7 +401,7 @@ function insertPanelIntoPanelTable( panel, panelTable ){
 	var id = getValueFromXmlElement( panel, "id");
 	var testMap = getValueFromXmlElement( panel, "testMap" );
 
-	//This sillyness is because a single value will be interperted as an array size rather than a member
+	//This sillyness is because a single value will be interpreted as an array size rather than a member
 	if( testMap.indexOf( "," ) == -1 ){
 		testMap += ", " + testMap;
 	}
