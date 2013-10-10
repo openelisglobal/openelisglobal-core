@@ -17,13 +17,13 @@
 */
 package us.mn.state.health.lims.test.beanItems;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.result.action.util.ResultItem;
 import us.mn.state.health.lims.result.valueholder.Result;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestResultItem implements ResultItem, Serializable{
 
@@ -47,7 +47,15 @@ public class TestResultItem implements ResultItem, Serializable{
 	@SuppressWarnings("unused")
 	private static String YES = "yes";
 
-	public enum Method{ DNA, MANUAL, AUTO; }
+    public String getReflexServerResult(){
+        return reflexServerResult;
+    }
+
+    public void setReflexServerResult( String reflexServerResult ){
+        this.reflexServerResult = reflexServerResult;
+    }
+
+    public enum Method{ DNA, MANUAL, AUTO; }
 	public enum ResultDisplayType { TEXT, POS_NEG, POS_NEG_IND, HIV, SYPHILIS; }
 
 	private String sampleSource;
@@ -119,6 +127,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	private String qualifiedResultId;
 	private String nextVisitDate;
 	private String forceTechApproval;
+    private String reflexServerResult;
 	
 	public String getAccessionNumber() {
 		return accessionNumber;

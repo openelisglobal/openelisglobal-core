@@ -91,7 +91,6 @@
 	autofillTechBox = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameBox, "true");
 %>
 
-<!-- N.B. testReflex.js is dependent on utilities.js so order is important  -->
 <link rel="stylesheet" type="text/css" href="css/bootstrap.css?ver=<%= Versioning.getBuildNumber() %>" />
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -148,7 +147,7 @@ $jq(document).ready( function() {
 			}
 			
             $jq('#modal_ok').on('click',function(e){
-                addReflexToTests();
+                addReflexToTests( '<%= StringUtil.getMessageForKey("button.label.edit")%>' );
                 e.preventDefault();
                 $jq('#reflexSelect').modal('hide');
 			});
@@ -165,6 +164,7 @@ function handleMultiSelectChange( e, data ){
             showUserReflexChoices( e.target.id.split("_")[1], data.value )
         }
 	}else{ //drop
+        removeReflexesFor( data.value, id.split("_")[1])
 		var splitValues =  selection.value.split(",");
 		selection.value = "";
 
@@ -173,6 +173,8 @@ function handleMultiSelectChange( e, data ){
 				appendValueToElementValue( selection, splitValues[i] );
 			}
 		}
+
+
 	}
 }
 
@@ -216,8 +218,6 @@ function markUpdated( index, userChoiceReflex, siblingReflexKey ){
 	$("modified_" + index).value = "true";
 
 	makeDirty();
-
-	$("saveButtonId").disabled = !unSelectedReflexs.isEmpty();
 }
 
 function updateLogValue(element, index ){
@@ -365,6 +365,7 @@ function forceTechApproval(checkbox, index ){
     <div class="modal-body">
         <input type="hidden" id="testRow" />
         <input type="hidden" id="targetIds" />
+        <input type="hidden" id="serverResponse" />
         <p ><input style='vertical-align:text-bottom' id='selectAll' type='checkbox' onchange='modalSelectAll(this);' >&nbsp;&nbsp;&nbsp;<b>Select all</b></p><hr>
     </div>
     <div class="modal-footer">
@@ -611,7 +612,8 @@ function forceTechApproval(checkbox, index ){
 			<html:hidden name="testResult" property="valid" indexed="true"  styleId='<%="valid_" + index %>'/>
 			<html:hidden name="testResult" property="referralId" indexed="true" />
 			<html:hidden name="testResult" property="referralCanceled" indexed="true" />
-			<html:hidden name="testResult" property="userChoicePending"  styleId='<%="userChoicePendingId_" + index%>' indexed="true"/>
+            <html:hidden name="testResult" property="userChoicePending"  styleId='<%="userChoicePendingId_" + index%>' indexed="true"/>
+            <html:hidden name="testResult" property="reflexServerResult"  styleId='<%="reflexServerResultId_" + index%>' indexed="true"/>
 			<logic:notEmpty name="testResult" property="thisReflexKey">
 					<input type="hidden" id='<%= testResult.getThisReflexKey() %>' value='<%= index %>' />
 			</logic:notEmpty>
@@ -916,14 +918,6 @@ function forceTechApproval(checkbox, index ){
 			           	   rows="3" />
 		</td>
 	</tr>
-
-	<logic:match name="testResult" property="userChoiceReflex"  value="true">
-		<tr id='<%="reflexInstruction_" + index %>' class='<%= rowColor %>' style="display: none;">
-            <td colspan="4" >&nbsp;</td>
-			<td colspan="5" style="vertical-align:top"  ><bean:message key="testreflex.actionselection.instructions" /></td>
-		</tr>
-	</logic:match>
-
 	</logic:equal>
 	</logic:iterate>
 </Table>

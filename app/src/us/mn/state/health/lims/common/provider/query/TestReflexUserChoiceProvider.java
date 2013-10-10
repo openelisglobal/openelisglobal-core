@@ -45,9 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 
@@ -160,7 +158,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
                     if (GenericValidator.isBlankOrNull( candidateReflex.getSiblingReflexId() )) {
                         selectableReflexes.add( candidateReflex );
                         reflexTriggers.add( candidateReflex.getTest().getLocalizedName() + ":" + dictionaryResult.getDictEntry() );
-                        reflexTriggerIds.add( candidateReflex.getTest().getId() );
+          //              reflexTriggerIds.add( candidateReflex.getTest().getId() );
                     } else {
                         // find if the sibling reflex is satisfied
                         TestReflex sibTestReflex = new TestReflex();
@@ -182,7 +180,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
                                 if (testResult != null && testResult.getId().equals(sibTestReflex.getTestResultId())) {
                                     selectableReflexes.add(candidateReflex);
                                     reflexTriggers.add( candidateReflex.getTest().getLocalizedName() + ":" + dictionaryResult.getDictEntry() );
-                                    reflexTriggerIds.add( candidateReflex.getTest().getId() );
+                       //             reflexTriggerIds.add( candidateReflex.getTest().getId() );
                                 }
                             }
                         }
@@ -195,16 +193,20 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 
         if (  selectableReflexes.size() > 1) {
             jsonResult.put( "rowIndex", rowIndex );
-            createTriggerList( reflexTriggers, reflexTriggerIds, jsonResult);
+            createTriggerList( reflexTriggers, resultIds, jsonResult);
             createChoiceElement(selectableReflexes, jsonResult);
-
+            createPlaceholderForSelectedReflexes(jsonResult) ;
             return VALID;
         }
 
         return INVALID;
     }
 
-    private void createTriggerList( HashSet<String> reflexTriggers, HashSet<String> reflexTriggerIds, JSONObject jsonResult ){
+    private void createPlaceholderForSelectedReflexes( JSONObject jsonResult ){
+        jsonResult.put( "selected", new JSONArray());
+    }
+
+    private void createTriggerList( HashSet<String> reflexTriggers, String reflexTriggerIds, JSONObject jsonResult ){
         StringBuilder triggers = new StringBuilder( );
         for( String trigger : reflexTriggers){
             triggers.append( trigger );
@@ -213,8 +215,12 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
         jsonResult.put( "triggers", triggers.deleteCharAt( triggers.length() -1 ).toString() );
 
         triggers = new StringBuilder( );
-        for( String trigger : reflexTriggerIds){
-            triggers.append( trigger );
+
+        String[] sortedTriggerIds = reflexTriggerIds.split( "," );
+        Arrays.sort( sortedTriggerIds);
+
+        for( String trigger : sortedTriggerIds){
+            triggers.append( trigger.trim() );
             triggers.append( "_" );
         }
         jsonResult.put( "triggerIds", triggers.deleteCharAt( triggers.length() -1 ).toString() );

@@ -1,6 +1,9 @@
-// HashObj is in utilities.js
-var unSelectedReflexs = new HashObj();
-
+if(window.Prototype) {
+    delete Object.prototype.toJSON;
+    delete Array.prototype.toJSON;
+    delete Hash.prototype.toJSON;
+    delete String.prototype.toJSON;
+}
 
 function showUserReflexChoices( index, resultId, sibIndex )
 {
@@ -14,7 +17,7 @@ function showUserReflexChoices( index, resultId, sibIndex )
 	var sibAnalysisId = sibIndex ? $("analysisId_" + sibIndex ).value : null;
 	var sibTestId = sibIndex ? $("testId_" + sibIndex ).value : null;
 
-//	showHideReflexInstructions( index, false );
+
 //	$("userChoicePendingId_" + index).value = false;
 /*	if( $("userChoicePendingId_" + sibIndex) ){
 		$("userChoicePendingId_" + sibIndex).value = false;
@@ -22,7 +25,6 @@ function showUserReflexChoices( index, resultId, sibIndex )
 	clearReflexChoice( index );
 
 	if( sibIndex ){
-//		showHideReflexInstructions( sibIndex, false );
 		clearReflexChoice( sibIndex );
 		if(sibResultId == 0){
 			return;
@@ -41,32 +43,40 @@ function /*void*/ processTestReflexSuccess(xhr)
 	//alert( xhr.responseText );
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-    var response = JSON.parse( formField.firstChild.textContent);
 
 	if (message.firstChild.nodeValue == "valid"){
-		var rowIndex = response["rowIndex"];
-        var selections = response["selections"];
-        var i;
-
-        $jq(".modal-body #testRow").val(rowIndex);
-        $jq(".modal-body #targetIds").val(response["triggerIds"]);
-        $jq(".selection_element").remove();
-        $jq("#modal_ok").attr('disabled','disabled');
-        for( i = 0; i < selections.length; i++){
-           $jq(".modal-body").append(getSelectionRow(selections[i]["name"], selections[i]["value"], i));
-        }
-        $jq(".modal-body #selectAll").prop('checked', false);
-        $jq(".selection_element").change( function(){ checkForCheckedReflexes(); });
-        $jq("#headerLabel").text(response["triggers"]);
-
-        showReflexSelection();
-//		$("saveButtonId").disabled = true;
+        buildPopUp(formField.firstChild.textContent);
 	}
-
 }
 
-function getSelectionRow(name, value, index){
-    return "<p class='selection_element'><input style='vertical-align:text-bottom' id='selection_" + index + "' class='selectionCheckbox' value='" + value +  "' type='checkbox' >&nbsp;&nbsp;&nbsp;" + name + "</p>";
+function buildPopUp(rawResponse){
+    var response = JSON.parse( rawResponse);
+    var rowIndex = response["rowIndex"];
+    var selections = response["selections"];
+    var i, selected;
+
+    $jq(".modal-body #testRow").val(rowIndex);
+    $jq(".modal-body #targetIds").val(response["triggerIds"]);
+    $jq(".modal-body #serverResponse").val(rawResponse.replace(/\"/g, "'"));
+    $jq(".selection_element").remove();
+    $jq("#modal_ok").attr('disabled','disabled');
+    for( i = 0; i < selections.length; i++){
+        selected = jQuery.inArray(selections[i]["value"], response["selected"]) != -1;
+        $jq(".modal-body").append(getSelectionRow(selections[i]["name"], selections[i]["value"], i, selected));
+    }
+    $jq(".modal-body #selectAll").prop('checked', false);
+    $jq(".selection_element").change( function(){ checkForCheckedReflexes(); });
+    $jq("#headerLabel").text(response["triggers"]);
+
+    showReflexSelection();
+}
+function getSelectionRow(name, value, index, selected ){
+    var check = selected ? "checked='checked' " : "";
+    return "<p class='selection_element'><input style='vertical-align:text-bottom' id='selection_" +
+        index + "' class='selectionCheckbox' value='" +
+        value +  "' type='checkbox' " +
+        check + ">&nbsp;&nbsp;&nbsp;" +
+        name + "</p>";
 }
 
 function modalSelectAll(selectBox){
@@ -94,66 +104,52 @@ function checkForCheckedReflexes(){
     }
 }
 
-function addReflexToTests(){
+function addReflexToTests( editLabel ){
     var index = $jq(".modal-body #testRow").val();
     var tests = '';
-    var parentRow = $jq('#reflexInstruction_' + index);
+    var parentRow = $jq('#noteRow_' + index);
+    var rawResponse = $jq(".modal-body #serverResponse").val().replace(/'/g, "\"");
 
+    var response = JSON.parse(rawResponse);
 
+    var selectedReflexes = [];//
 
     $jq(".selectionCheckbox").each(function(index, value){
         if(value.checked){
             tests += $jq.trim($jq(value).parent().text()) + ", ";
+            selectedReflexes.push(value.value);
         }
     });
+
+    response["selected"] = selectedReflexes;
+
+    rawResponse = JSON.stringify(response).replace(/\"/g, "'");
     tests = tests.substr(0, tests.length - 2 );
 
-    parentRow.after(getSelectedTestDisplay(parentRow.attr("class"), index, $jq(".modal-body #targetIds" ).val(), $jq("#headerLabel").text().split(":")[1], tests));
+    parentRow.after(getSelectedTestDisplay(parentRow.attr("class"), index, $jq(".modal-body #targetIds" ).val(), $jq("#headerLabel").text().split(":")[1], tests, editLabel, rawResponse));
+//    $jq("#reflexServerResultId_" + index).val($jq(".modal-body #serverResponse").val());
 //    $jq("#reflexedTests_" + index).text(tests);
  //   $jq("#reflexTestsParent_" + index).text($jq("#headerLabel").text().split(":")[1])
-  //  $jq("#reflexSelection_" + index + ",#reflexInstruction_" + index).show();
 }
 
 
-function /*void*/ showHideReflexInstructions( rowIndex, show ){
-	if( show ){
-		$("reflexInstruction_" + rowIndex ).show();
-		$("reflexSelection_" + rowIndex ).show();
-	}else{
-		$("reflexInstruction_" + rowIndex ).hide();
-		$("reflexSelection_" + rowIndex ).hide();
-	}
-}
-
-function /*void*/ clearReflexChoice( index ){
-
-}
-
-function reflexChoosen(index, rowColor, sibReflexKey ){
-	$("reflexInstruction_" + index ).className=rowColor;
-	$("reflexSelection_" + index ).className=rowColor;
-
-	$("userChoicePendingId_" + index).value = false;
-	
-	unSelectedReflexs.removeItem( index );
-	if( sibReflexKey ){
-		var siblingElement = $(sibReflexKey);
-		if( siblingElement ){
-			var sibIndex = siblingElement.value;
-			$("selectionOne_" + sibIndex).checked = $("selectionOne_" + index).checked;
-			$("selectionTwo_" + sibIndex).checked = $("selectionTwo_" + index).checked;
-		}
-	}
-
-	$("saveButtonId").disabled = !unSelectedReflexs.isEmpty();
-}
-
-function getSelectedTestDisplay( classValue, index, targetIds, parent, tests){
-    return "<tr id='reflexSelection_'" + index + "_" + targetIds + " class='" + classValue + " reflexSelection_" + index + "'  >" +
-        "<td colspan='4' style='text-align:right'>" + parent + "</td>" +
-        "<td colspan='5'><textarea  readonly='true' id='reflexedTests' rows='2' style='width:80%' onclick='alert('gotcha');'>" + tests + "</textarea></td>" +
+function getSelectedTestDisplay( classValue, index, targetIds, parent, tests, editLabel, response){
+     return "<tr id='reflexSelection_" + index + "_" + targetIds + "' class='" + classValue + " reflexSelection_" + index + "'  >" +
+        "<td colspan='5' style='text-align:right'>" + parent + "<input type='hidden' class='rawResponse' value=\"" + response + "\" /></td>" +
+        "<td colspan='3'><textarea  readonly='true' id='reflexedTests' rows='2' style='width:98%' >" + tests + "</textarea></td>" +
+        "<td colspan='1' style='text-align: left'><input type='button' value='" + editLabel + "' onclick=\"editReflexes('reflexSelection_" + index + "_" + targetIds  + "');\"></td>"
     "</tr>";
 }
+
+function removeReflexesFor( triggers, row){
+    $jq("#reflexSelection_" + row + "_" + triggers).remove();
+}
+
+function editReflexes(rowId){
+    var rawResponse = $jq("#" + rowId + " .rawResponse").val();
+    buildPopUp(rawResponse.replace(/'/g, "\"").replace(/\'/g, "\""));
+}
+
 function showReflexSelection( element ){
     $jq('#reflexSelect').modal('show');
 }
