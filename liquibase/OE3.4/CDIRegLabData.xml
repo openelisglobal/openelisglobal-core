@@ -10,5 +10,5 @@
 			<where>name = 'validationOnlyNotesAreExternal'</where>
 		</update>
 	</changeSet>
-    <include file="OE3.4/testCatalogCI_Regional_Labs/KorhogoTestCatalogUpdate.xml" />
+    <include file="OE3.4/testCatalogCI_Regional_labs/KorhogoTestCatalogUpdate.xml" />
 </databaseChangeLog>
