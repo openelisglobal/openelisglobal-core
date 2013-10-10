@@ -80,7 +80,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.StatusRules , "statusRules", "CI");
 		setDBPropertyMappingAndDefault(Property.ReflexAction , "reflexAction", "Haiti");
 		setDBPropertyMappingAndDefault(Property.AccessionFormat , "acessionFormat", "SITEYEARNUM"); //spelled wrong in DB
-		setDBPropertyMappingAndDefault(Property.trackPatientPayment, "trackPayment", "false");
+		setDBPropertyMappingAndDefault(Property.TRACK_PATIENT_PAYMENT, "trackPayment", "false");
 		setDBPropertyMappingAndDefault(Property.ALERT_FOR_INVALID_RESULTS, "alertWhenInvalidResult", "false");
 		setDBPropertyMappingAndDefault(Property.DEFAULT_DATE_LOCALE, "default date locale", "fr-FR");
 		setDBPropertyMappingAndDefault(Property.DEFAULT_LANG_LOCALE, "default language locale", "fr-FR");
@@ -104,6 +104,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION, "validationOnlyNotesAreExternal", "false");
         setDBPropertyMappingAndDefault(Property.PHONE_FORMAT, "phone format", "(ddd) dddd-dddd");
         setDBPropertyMappingAndDefault(Property.VALIDATE_PHONE_FORMAT, "validate phone format", "true");
+        setDBPropertyMappingAndDefault( Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "Allow duplicate subject number", "true" );
 
 	}
 

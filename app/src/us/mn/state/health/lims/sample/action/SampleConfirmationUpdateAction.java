@@ -56,7 +56,7 @@ import us.mn.state.health.lims.organization.daoimpl.OrganizationContactDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.OrganizationContact;
 import us.mn.state.health.lims.patient.action.IPatientUpdate;
 import us.mn.state.health.lims.patient.action.PatientManagementUpdateAction;
-import us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
@@ -169,7 +169,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 			return mapping.findForward(FWD_FAIL);
 		}
 		
-		PatientManagmentInfo patientInfo = (PatientManagmentInfo) dynaForm.get("patientProperties");
+		PatientManagementInfo patientInfo = (PatientManagementInfo ) dynaForm.get("patientProperties");
 		IPatientUpdate patientUpdate = new PatientManagementUpdateAction();
 		testAndInitializePatientForSaving(mapping, request, patientInfo, patientUpdate);
 
@@ -266,7 +266,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 
 	}
 	
-	private void testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagmentInfo patientInfo,
+	private void testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagementInfo patientInfo,
 			IPatientUpdate patientUpdate) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		patientUpdate.setPatientUpdateStatus(patientInfo);

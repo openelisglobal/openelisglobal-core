@@ -72,7 +72,7 @@ import us.mn.state.health.lims.organization.valueholder.OrganizationType;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.patient.action.IPatientUpdate;
 import us.mn.state.health.lims.patient.action.PatientManagementUpdateAction;
-import us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.patient.util.PatientUtil;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
@@ -200,7 +200,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		observations = new ArrayList<ObservationHistory>();
 		boolean useInitialSampleCondition = FormFields.getInstance().useField(Field.InitialSampleCondition);
 		BaseActionForm dynaForm = (BaseActionForm) form;
-		PatientManagmentInfo patientInfo = (PatientManagmentInfo) dynaForm.get("patientProperties");
+		PatientManagementInfo patientInfo = (PatientManagementInfo ) dynaForm.get("patientProperties");
 
 		ActionMessages errors = new ActionMessages();
 
@@ -208,7 +208,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		useReceiveDateForCollectionDate = !FormFields.getInstance().useField(Field.CollectionDate);
 
 		useReferringSiteId = FormFields.getInstance().useField(Field.RequesterSiteList);
-		boolean trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true");
+		boolean trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
 
 		String receivedTime = dynaForm.getString("recievedTime");
 		if (!GenericValidator.isBlankOrNull(receivedTime)) {
@@ -513,7 +513,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		sampleHuman.setSysUserId(currentUserId);
 	}
 
-	private void testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagmentInfo patientInfo,
+	private void testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagementInfo patientInfo,
 			IPatientUpdate patientUpdate) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		patientUpdate.setPatientUpdateStatus(patientInfo);

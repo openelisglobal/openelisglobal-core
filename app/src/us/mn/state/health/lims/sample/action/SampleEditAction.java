@@ -139,7 +139,7 @@ public class SampleEditAction extends BaseAction {
 			request.getSession().setAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE, request.getParameter("type"));
 		}
 
-		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true")) {
+		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true")) {
             PropertyUtils.setProperty(dynaForm,"paymentOptions", DisplayListService.getList(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS));
 
 			if (sample != null) {

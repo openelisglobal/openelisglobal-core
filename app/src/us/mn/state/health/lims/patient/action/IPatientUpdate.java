@@ -17,28 +17,26 @@
 */
 package us.mn.state.health.lims.patient.action;
 
-import java.lang.reflect.InvocationTargetException;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.patient.action.PatientManagementUpdateAction.PatientUpdateStatus;
-import us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
+
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
 
 public interface IPatientUpdate {
 
 	public abstract ActionMessages preparePatientData(ActionMapping mapping, HttpServletRequest request,
-			PatientManagmentInfo patientInfo) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
+			PatientManagementInfo patientInfo) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
-	public abstract void setPatientUpdateStatus(PatientManagmentInfo patientInfo);
+	public abstract void setPatientUpdateStatus(PatientManagementInfo patientInfo);
 
 	public abstract PatientUpdateStatus getPatientUpdateStatus();
 
-	public abstract void persistPatientData(PatientManagmentInfo patientInfo) throws LIMSRuntimeException;
+	public abstract void persistPatientData(PatientManagementInfo patientInfo) throws LIMSRuntimeException;
 
 	public abstract String getPatientId(BaseActionForm dynaForm);
 }

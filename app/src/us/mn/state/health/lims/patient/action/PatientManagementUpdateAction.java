@@ -17,14 +17,6 @@
  */
 package us.mn.state.health.lims.patient.action;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
@@ -34,7 +26,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.address.dao.AddressPartDAO;
 import us.mn.state.health.lims.address.dao.PersonAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
@@ -44,9 +35,11 @@ import us.mn.state.health.lims.address.valueholder.PersonAddress;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.provider.query.PatientSearchResults;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.patient.action.bean.PatientManagmentInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
 import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
 import us.mn.state.health.lims.patient.valueholder.Patient;
@@ -61,6 +54,15 @@ import us.mn.state.health.lims.patienttype.valueholder.PatientPatientType;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
+import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
+import us.mn.state.health.lims.sample.daoimpl.SearchResultsDAOImp;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PatientManagementUpdateAction extends BaseAction implements IPatientUpdate {
 
@@ -68,8 +70,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	protected Person person;
 	private List<PatientIdentity> patientIdentities;
 	private String patientID = "";
-	private Boolean initializeFormOnSave = true;
-	private static PatientIdentityDAO identityDAO = new PatientIdentityDAOImpl();
+    private static PatientIdentityDAO identityDAO = new PatientIdentityDAOImpl();
 	private static PatientDAO patientDAO = new PatientDAOImpl();
 	private static PersonAddressDAO personAddressDAO = new PersonAddressDAOImpl();
 	protected PatientUpdateStatus patientUpdateStatus = PatientUpdateStatus.NO_ACTION;
@@ -80,7 +81,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 
 	public static enum PatientUpdateStatus {
 		NO_ACTION, UPDATE, ADD
-	};
+	}
 
 	static{
 		AddressPartDAO addressPartDAO = new AddressPartDAOImpl();
@@ -104,7 +105,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		String forward = FWD_SUCCESS;
 
 		BaseActionForm dynaForm = (BaseActionForm) form;
-		PatientManagmentInfo patientInfo = (PatientManagmentInfo) dynaForm.get("patientProperties");
+		PatientManagementInfo patientInfo = (PatientManagementInfo ) dynaForm.get("patientProperties");
 		setPatientUpdateStatus(patientInfo);
 
 		if (patientUpdateStatus != PatientUpdateStatus.NO_ACTION) {
@@ -113,7 +114,9 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 
 			errors = preparePatientData(mapping, request, patientInfo);
 
-			if (errors.size() > 0) {
+			if (!errors.isEmpty()) {
+                saveErrors(request, errors);
+                request.setAttribute(Globals.ERROR_KEY, errors);
 				return mapping.findForward(FWD_FAIL);
 			}
 
@@ -128,14 +131,14 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 			} catch (LIMSRuntimeException lre) {
 				tx.rollback();
 				errors = new ActionMessages();
-				ActionError error = null;
+
 				if (lre.getException() instanceof StaleObjectStateException) {
-					error = new ActionError("errors.OptimisticLockException", null, null);
+                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.OptimisticLockException", null, null));
 				} else {
 					lre.printStackTrace();
-					error = new ActionError("errors.UpdateException", null, null);
+                    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.UpdateException", null, null));
 				}
-				errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+
 				saveErrors(request, errors);
 				request.setAttribute(Globals.ERROR_KEY, errors);
 				request.setAttribute(ALLOW_EDITS_KEY, "false");
@@ -145,9 +148,8 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 				HibernateUtil.closeSession();
 			}
 
-			if (initializeFormOnSave) {
-				dynaForm.initialize(mapping);
-			}
+ 			dynaForm.initialize(mapping);
+
 		}
 
 		setSuccessFlag(request, forward);
@@ -164,15 +166,17 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	 * javax.servlet.http.HttpServletRequest,
 	 * us.mn.state.health.lims.common.action.BaseActionForm)
 	 */
-	public ActionMessages preparePatientData(ActionMapping mapping, HttpServletRequest request, PatientManagmentInfo patientInfo)
+	public ActionMessages preparePatientData(ActionMapping mapping, HttpServletRequest request, PatientManagementInfo patientInfo)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		if( currentUserId == null){
 			currentUserId = getSysUserId(request);
 		}
 
-		ActionMessages errors = new ActionMessages();// dynaForm.validate(mapping,
-		// request);
+		ActionMessages errors = validatePatientInfo(patientInfo);
+        if( !errors.isEmpty()){
+            return errors;
+        }
 
 		initMembers();
 
@@ -189,7 +193,38 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		return errors;
 	}
 
-	private void setLastUpdatedTimeStamps(PatientManagmentInfo patientInfo) {
+    private ActionMessages validatePatientInfo( PatientManagementInfo patientInfo ){
+        ActionMessages errors = new ActionMessages();
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "false" )){
+            String newSTNumber = GenericValidator.isBlankOrNull( patientInfo.getSTnumber() ) ? null :patientInfo.getSTnumber();
+            String newSubjectNumber = GenericValidator.isBlankOrNull( patientInfo.getSubjectNumber() ) ? null :patientInfo.getSubjectNumber();
+            String newNationalId = GenericValidator.isBlankOrNull( patientInfo.getNationalId() ) ? null :patientInfo.getNationalId();
+
+            SearchResultsDAO search = new SearchResultsDAOImp();
+            List<PatientSearchResults> results = search.getSearchResults(null, null, newSTNumber, newSubjectNumber, newNationalId, null, null, null);
+
+            if(  !results.isEmpty() ){
+
+                for( PatientSearchResults result : results){
+                    if( !result.getPatientID().equals( patientInfo.getPatientPK() )){
+                        if( newSTNumber != null && newSTNumber.equals( result.getSTNumber() )){
+                            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("error.duplicate.STNumber", null, null));
+                        }
+                        if( newSubjectNumber != null && newSubjectNumber.equals( result.getSubjectNumber() )){
+                            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("error.duplicate.subjectNumber", null, null));
+                        }
+                        if( newNationalId != null && newNationalId.equals( result.getNationalId() )){
+                            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("error.duplicate.nationalId", null, null));
+                        }
+                    }
+                }
+            }
+        }
+
+        return errors;
+    }
+
+    private void setLastUpdatedTimeStamps(PatientManagementInfo patientInfo) {
 		String patientUpdate = patientInfo.getPatientLastUpdated();
 		if (!GenericValidator.isBlankOrNull(patientUpdate)) {
 			Timestamp timeStamp = Timestamp.valueOf(patientUpdate);
@@ -209,7 +244,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		patientIdentities = new ArrayList<PatientIdentity>();
 	}
 
-	private void loadForUpdate(PatientManagmentInfo patientInfo) {
+	private void loadForUpdate(PatientManagementInfo patientInfo) {
 
 		patientID = patientInfo.getPatientPK();
 		patient = patientDAO.readPatient(patientID);
@@ -225,7 +260,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	 * us.mn.state.health.lims.patient.action.IPatientUpdate#setPatientUpdateStatus
 	 * (us.mn.state.health.lims.common.action.BaseActionForm)
 	 */
-	public void setPatientUpdateStatus(PatientManagmentInfo patientInfo) {
+	public void setPatientUpdateStatus(PatientManagementInfo patientInfo) {
 
 		String status = patientInfo.getPatientProcessingStatus();
 
@@ -249,7 +284,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		return patientUpdateStatus;
 	}
 
-	private void copyFormBeanToValueHolders(PatientManagmentInfo patientInfo) throws IllegalAccessException, InvocationTargetException,
+	private void copyFormBeanToValueHolders(PatientManagementInfo patientInfo) throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
 
 		PropertyUtils.copyProperties(patient, patientInfo);
@@ -265,7 +300,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		}
 	}
 
-	public void persistPatientData(PatientManagmentInfo patientInfo) throws LIMSRuntimeException {
+	public void persistPatientData(PatientManagementInfo patientInfo) throws LIMSRuntimeException {
 		PersonDAO personDAO = new PersonDAOImpl();
 
 		if (patientUpdateStatus == PatientUpdateStatus.ADD) {
@@ -285,13 +320,13 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		patientID = patient.getId();
 	}
 
-	protected void persistPatientRelatedInformation(PatientManagmentInfo patientInfo) {
+	protected void persistPatientRelatedInformation(PatientManagementInfo patientInfo) {
 		persistIndentityTypes(patientInfo);
 		persistExtraPatientAddressInfo( patientInfo );
 		persistPatientType(patientInfo);
 	}
 
-	protected void persistIndentityTypes(PatientManagmentInfo patientInfo) {
+	protected void persistIndentityTypes(PatientManagementInfo patientInfo) {
 
 		persistIdentityType(patientInfo.getSTnumber(), "ST");
 		persistIdentityType(patientInfo.getMothersName(), "MOTHER");
@@ -308,7 +343,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		persistIdentityType(patientInfo.getOtherNationality(), "OTHER NATIONALITY");
 	}
 
-	private void persistExtraPatientAddressInfo(PatientManagmentInfo patientInfo) {
+	private void persistExtraPatientAddressInfo(PatientManagementInfo patientInfo) {
 		PersonAddress village = null;
 		PersonAddress commune = null;
 		PersonAddress dept = null;
@@ -396,7 +431,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		}
 	}
 
-	protected void persistPatientType(PatientManagmentInfo patientInfo) {
+	protected void persistPatientType(PatientManagementInfo patientInfo) {
 
 		PatientPatientTypeDAO patientPatientTypeDAO = new PatientPatientTypeDAOImpl();
 
@@ -407,7 +442,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		} catch (Exception ignored) {
 		}
 
-		if (!GenericValidator.isBlankOrNull(typeName) && !typeName.equals("0")) {
+		if (!GenericValidator.isBlankOrNull(typeName) && !"0".equals(typeName)) {
 			String typeID = PatientTypeMap.getInstance().getIDForType(typeName);
 
 			PatientPatientType patientPatientType = patientPatientTypeDAO.getPatientPatientTypeForPatient(patient.getId());
@@ -438,6 +473,6 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	}
 
 	public String getPatientId(BaseActionForm dynaForm) {
-		return GenericValidator.isBlankOrNull(patientID) ? (String) dynaForm.getString("patientPK") : patientID;
+		return GenericValidator.isBlankOrNull(patientID) ? dynaForm.getString("patientPK") : patientID;
 	}
 }

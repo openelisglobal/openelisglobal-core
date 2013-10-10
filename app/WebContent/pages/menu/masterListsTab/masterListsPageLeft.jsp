@@ -233,6 +233,14 @@
   </html:link>
 </li>
 <% } %>
+<% if(adminFields.useField(Field.PATIENT_ENTRY_CONFIGURATION)){ %>
+<li>
+    <html:link action="/PatientConfigurationMenu">
+        <bean:message key="patientEntryConfiguration.browse.title" />
+    </html:link>
+</li>
+<% } %>
+
 <% if(adminFields.useField(Field.ResultInformationMenu)){  %>
 <li>
   <html:link action="/ResultConfigurationMenu">
