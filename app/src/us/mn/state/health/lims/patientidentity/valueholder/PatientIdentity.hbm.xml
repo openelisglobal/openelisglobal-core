@@ -19,7 +19,7 @@
             <column name="PATIENT_ID" precision="10" scale="0" not-null="true" />
         </property>
         <property name="identityData" type="java.lang.String">
-            <column name="IDENTITY_DATA" length="40" />
+            <column name="IDENTITY_DATA"  />
         </property>
     </class>
 </hibernate-mapping>

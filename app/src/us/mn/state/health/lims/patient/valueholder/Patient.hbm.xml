@@ -41,7 +41,7 @@
             <column name="DEATH_DATE" length="7" />
         </property>
         <property name="nationalId" type="java.lang.String">
-            <column name="NATIONAL_ID" length="240" />
+            <column name="NATIONAL_ID"  />
         </property>
         <property name="ethnicity" type="java.lang.String">
             <column name="ETHNICITY" length="1" />
@@ -56,10 +56,10 @@
             <column name="MEDICAID_ID" length="240" />
         </property>
         <property name="birthPlace" type="java.lang.String">
-            <column name="BIRTH_PLACE" length="35" />
+            <column name="BIRTH_PLACE"  />
         </property>
         <property name="externalId" type="java.lang.String">
-            <column name="EXTERNAL_ID" length="20" />
+            <column name="EXTERNAL_ID"  />
         </property>
         <property name="chartNumber" type="java.lang.String">
             <column name="CHART_NUMBER" length="20" />
