@@ -151,6 +151,8 @@ $jq(document).ready( function() {
                 e.preventDefault();
                 $jq('#reflexSelect').modal('hide');
 			});
+
+            loadPagedReflexSelections('<%= StringUtil.getMessageForKey("button.label.edit")%>');
 			});
 
 function handleMultiSelectChange( e, data ){
@@ -618,7 +620,9 @@ function forceTechApproval(checkbox, index ){
 			<html:hidden name="testResult" property="valid" indexed="true"  styleId='<%="valid_" + index %>'/>
 			<html:hidden name="testResult" property="referralId" indexed="true" />
 			<html:hidden name="testResult" property="referralCanceled" indexed="true" />
-            <html:hidden name="testResult" property="reflexJSONResult"  styleId='<%="reflexServerResultId_" + index%>' indexed="true"/>
+            <logic:equal name="testResult" property="userChoiceReflex" value="true">
+                <html:hidden name="testResult" property="reflexJSONResult"  styleId='<%="reflexServerResultId_" + index%>'  styleClass="reflexJSONResult" indexed="true"/>
+            </logic:equal>
 			<logic:notEmpty name="testResult" property="thisReflexKey">
 					<input type="hidden" id='<%= testResult.getThisReflexKey() %>' value='<%= index %>' />
 			</logic:notEmpty>
@@ -656,10 +660,14 @@ function forceTechApproval(checkbox, index ){
 			<td style="vertical-align:top" class="ruled">
 				<html:hidden name="testResult" property="testMethod" indexed="true"/>
 				<bean:write name="testResult" property="testName"/>
-				<logic:greaterThan name="testResult" property="reflexStep" value="0">
-				&nbsp;--&nbsp;
-				<bean:message key="reflexTest.step" />&nbsp;<bean:write name="testResult" property="reflexStep"/>
-				</logic:greaterThan>
+                <logic:equal name="testResult" property="reflexStep" value="1" >
+                    &nbsp;&ndash;&nbsp;
+                    <bean:message key="reflexTest.initial" />
+                </logic:equal>
+                <logic:greaterThan name="testResult" property="reflexStep" value="1">
+                    &nbsp;&ndash;&nbsp;
+                    <bean:message key="reflexTest.step" />&nbsp;<%= testResult.getReflexStep() - 1 %>
+                </logic:greaterThan>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<bean:message key="inventory.testKit"/>
 				<html:select name="testResult"
@@ -719,7 +727,7 @@ function forceTechApproval(checkbox, index ){
                 </logic:equal>
 				<logic:greaterThan name="testResult" property="reflexStep" value="1">
 				&nbsp;&ndash;&nbsp;
-				<bean:message key="reflexTest.step" />&nbsp;<bean:write name="testResult" property="reflexStep"/>
+				<bean:message key="reflexTest.step" />&nbsp;<%= testResult.getReflexStep() - 1 %>
 				</logic:greaterThan>
 			</td>
 		</logic:notEqual></logic:notEqual>

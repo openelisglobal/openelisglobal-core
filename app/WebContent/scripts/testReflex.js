@@ -27,11 +27,11 @@ function processTestReflexSuccess(xhr)
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
 
 	if (message.firstChild.nodeValue == "valid"){
-        buildPopUp(formField.firstChild.textContent);
+        buildPopUp(formField.firstChild.textContent, true);
 	}
 }
 
-function buildPopUp(rawResponse){
+function buildPopUp(rawResponse, showPopup){
 
     var response = JSON.parse( rawResponse);
     var rowIndex = response["rowIndex"];
@@ -51,7 +51,9 @@ function buildPopUp(rawResponse){
     $jq(".selection_element").change( function(){ checkForCheckedReflexes(); });
     $jq("#headerLabel").text(response["triggers"]);
 
-    showReflexSelection();
+    if( showPopup){
+        showReflexSelection();
+    }
 }
 function getSelectionRow(name, value, index, selected ){
     var check = selected ? "checked='checked' " : "";
@@ -131,9 +133,25 @@ function removeReflexesFor( triggers, row){
 
 function editReflexes(index, targetIds){
     var JSONResponses = JSON.parse(encodeHTMLToJSONString( $jq("#reflexServerResultId_" + index ).val()));
-    buildPopUp( JSON.stringify(JSONResponses[index + "_" + targetIds] ));
+    buildPopUp( JSON.stringify(JSONResponses[index + "_" + targetIds] ), true);
 }
 
+function loadPagedReflexSelections( editLabel){
+    var JSONResponse;
+    //get collection of fields and send to buildpopup with new flag to stop actual popup
+    $jq(".reflexJSONResult").each( function(){
+        if($jq(this).val() ){
+            JSONResponse = JSON.parse(encodeHTMLToJSONString( $jq(this ).val()));
+            for (var member in JSONResponse) {
+                if (!JSONResponse.hasOwnProperty(member) || typeof(JSONResponse[member]) === "function"){
+                    continue;
+                }
+                buildPopUp( JSON.stringify(JSONResponse[member] ), false);
+                addReflexToTests( editLabel )
+            }
+        }
+    });
+}
 function showReflexSelection( element ){
     $jq('#reflexSelect').modal('show');
 }
