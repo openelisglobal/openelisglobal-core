@@ -24,6 +24,9 @@ import us.mn.state.health.lims.result.valueholder.ResultInventory;
 import us.mn.state.health.lims.result.valueholder.ResultSignature;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 
+import java.util.List;
+import java.util.Map;
+
 public class ResultSet {
 	public Result result;
 	public ResultSignature signature;
@@ -31,21 +34,21 @@ public class ResultSet {
 	public Note note;
 	public Patient patient;
 	public Sample sample;
-	public String actionSelectionId;
+	public Map<String,List<String>> parentToSelectedReflexMap;
 	public Referral newReferral;
 	public Referral existingReferral;
 	public boolean alwaysInsertSignature = false;
 
 
 	public ResultSet(Result result, ResultSignature signature, ResultInventory testKit, Note note, Patient patient, Sample sample,
-			String actionSelectionId, Referral newReferral, Referral existingReferral) {
+                     Map<String,List<String>> parentToSelectedReflexMap , Referral newReferral, Referral existingReferral) {
 		this.result = result;
 		this.signature = signature;
 		this.testKit = testKit;
 		this.note = note;
 		this.patient = patient;
 		this.sample = sample;
-		this.actionSelectionId = actionSelectionId;
+		this.parentToSelectedReflexMap = parentToSelectedReflexMap;
 		this.newReferral = newReferral;
 		this.existingReferral = existingReferral;
 		

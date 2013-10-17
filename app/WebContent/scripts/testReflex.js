@@ -17,28 +17,10 @@ function showUserReflexChoices( index, resultId, sibIndex )
 	var sibAnalysisId = sibIndex ? $("analysisId_" + sibIndex ).value : null;
 	var sibTestId = sibIndex ? $("testId_" + sibIndex ).value : null;
 
-
-//	$("userChoicePendingId_" + index).value = false;
-/*	if( $("userChoicePendingId_" + sibIndex) ){
-		$("userChoicePendingId_" + sibIndex).value = false;
-	}
-	clearReflexChoice( index );
-
-	if( sibIndex ){
-		clearReflexChoice( sibIndex );
-		if(sibResultId == 0){
-			return;
-		}else{
-			resultId += ',' + sibResultId;
-			analysisId += ',' + sibAnalysisId;
-			testId += ',' + sibTestId;
-		}
-	}
- */
 	getReflexUserChoice( resultId, analysisId, testId, accessionNumber, index, processTestReflexSuccess);
 }
 
-function /*void*/ processTestReflexSuccess(xhr)
+function processTestReflexSuccess(xhr)
 {
 	//alert( xhr.responseText );
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
@@ -50,6 +32,7 @@ function /*void*/ processTestReflexSuccess(xhr)
 }
 
 function buildPopUp(rawResponse){
+
     var response = JSON.parse( rawResponse);
     var rowIndex = response["rowIndex"];
     var selections = response["selections"];
@@ -109,11 +92,9 @@ function addReflexToTests( editLabel ){
     var existingDisplay = $jq("#reflexSelection_" + index + "_" + targetIds );
     var selectedReflexes = [];
 
-    $jq(".selectionCheckbox").each(function(index, value){
-        if(value.checked){
+    $jq(".selectionCheckbox:checked").each(function(index, value){
             tests += $jq.trim($jq(value).parent().text()) + ", ";
             selectedReflexes.push(value.value);
-        }
     });
 
     tests = tests.substr(0, tests.length - 2 );

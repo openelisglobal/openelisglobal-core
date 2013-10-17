@@ -84,4 +84,10 @@
         alter table clinlims.patient alter column birth_place type varchar(255);
     </sql>
 </changeSet>
+<changeSet id="5" author="paulsc">
+    <comment>Widen dictionary abbrev column</comment>
+    <sql>
+        alter table clinlims.dictionary alter column local_abbrev type varchar(60);
+    </sql>
+</changeSet>
 </databaseChangeLog>

@@ -505,6 +505,10 @@ public class ResultsLoadUtility {
 			testResultType = testResults.get(0).getTestResultType();
 		}
 
+        //If it really should be Q it will be over written in setDictionaryResult
+        if( "Q".equals( testResultType )){
+            testResultType = "D";
+        }
 		return testResultType;
 	}
 
@@ -872,7 +876,6 @@ public class ResultsLoadUtility {
 		}
 		testItem.setReflexGroup(analysis.getTriggeredReflex());
 		testItem.setChildReflex(analysis.getTriggeredReflex() && isConclusion(result, analysis));
-		testItem.setUserChoicePending(false);
 		addNotes(notes, testItem);
 
 		testItem.setDisplayResultAsLog(hasLogValue(analysis, testItem.getResultValue()));
@@ -887,6 +890,17 @@ public class ResultsLoadUtility {
 
         if( typeOfSample != null && typeOfSample.getId().equals( TypeOfSampleUtil.getTypeOfSampleIdForLocalAbbreviation( "Variable" ))){
             name += "(" + analysis.getSampleTypeName() + ")";
+        }
+
+        if( analysis.getParentResult() != null && "M".equals( analysis.getParentResult().getResultType() )){
+            Dictionary dictionary = dictionaryDAO.getDictionaryById( analysis.getParentResult().getValue() );
+            if( dictionary != null){
+                String parentResult = dictionary.getLocalAbbreviation();
+                if( GenericValidator.isBlankOrNull( parentResult )){
+                    parentResult = dictionary.getDictEntry();
+                }
+                name = parentResult + " &rarr; " + name;
+            }
         }
 
         return name;
@@ -904,8 +918,7 @@ public class ResultsLoadUtility {
 		}
 	}
 
-	private void setDictionaryResults(TestResultItem testItem, boolean isConclusion, Result result,
-			List<TestResult> testResults) {
+	private void setDictionaryResults(TestResultItem testItem, boolean isConclusion, Result result,	List<TestResult> testResults) {
 		if (isConclusion) {
 			testItem.setDictionaryResults(getAnyDictonaryValues(result));
 		} else {

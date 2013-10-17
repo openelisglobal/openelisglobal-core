@@ -285,11 +285,11 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 				for (Result result : sampleGroup.resultList) {
 					TestReflexBean reflex = new TestReflexBean();
 					reflex.setPatient(sampleGroup.patient);
-					reflex.setReflexSelectionId(null);
 					reflex.setResult(result);
 					reflex.setSample(sampleGroup.sample);
 					reflexBeanList.add(reflex);
-					reflex.setReflexSelectionId(sampleGroup.resultToUserserSelectionMap.get(result));
+                    //TODO - fix for analyzers
+					//reflex.setReflexSelectionId(sampleGroup.resultToUserserSelectionMap.get(result));
 				}
 			}
 		}

@@ -85,18 +85,18 @@ public class TestReflexUtil {
 		@SuppressWarnings("unchecked")
 		List<TestReflex> reflexes = new TestReflexDAOImpl().getAllTestReflexs();
 		
-		for( TestReflex reflex : reflexes){
-			String testId = reflex.getTest().getId();
+		for( TestReflex testReflex : reflexes){
+			String testId = testReflex.getTest().getId();
 			List<TestReflex> reflexValues = TEST_TO_REFLEX_MAP.get(testId);
 			if( reflexValues == null){
 				reflexValues = new ArrayList<TestReflex>();
 				TEST_TO_REFLEX_MAP.put(testId, reflexValues);
 			}
 			
-			reflexValues.add(reflex);
+			reflexValues.add(testReflex);
 			TRIGGERING_REFLEX_TEST_IDS.add(testId);
-			if( USER_CHOOSE_FLAG.equals(reflex.getFlags())){
-				TRIGGERING_UC_REFLEX_TEST_IDS.add(reflex.getTest().getId());
+			if( isUserChoiceReflex( testReflex )){
+				TRIGGERING_UC_REFLEX_TEST_IDS.add(testReflex.getTest().getId());
 			}
 		}
 	}
@@ -207,26 +207,22 @@ public class TestReflexUtil {
 		this.currentUserId = currentUserId;
 	}
 
-	
-	/**
-	 * 
-	 * @param newResults
-	 * @throws IllegalStateException
-	 */
 	public void addNewTestsToDBForReflexTests(List<TestReflexBean> newResults) throws IllegalStateException {
 		if (currentUserId == null) {
 			throw new IllegalStateException("currentUserId not set");
 		}
 
 		/*
-		 * There are several use cases 1. A single result triggers a single
-		 * reflex 2. A single result triggers more than one reflex 3. Multiple
-		 * new results triggers a single reflex 4. A mixture of new result and a
-		 * previous results triggers a single reflex 5. Multiple new results
-		 * trigger a more than one reflex 6. A mixture of new and previous
-		 * results trigger more than one reflex 7. A single result forced the
-		 * user to select the reflex 8. A mixture of new and previous results
-		 * forced the user to select the reflex
+		 * There are several use cases
+		 * 1. A single result triggers a single reflex
+		 * 2. A single result triggers more than one reflex
+		 * 3. Multiple new results triggers a single reflex
+		 * 4. A mixture of new result and a previous results triggers a single reflex
+		 * 5. Multiple new results trigger a more than one reflex
+		 * 6. A mixture of new and previous results trigger more than one reflex
+		 * 7. A single result forced the user to select reflexes
+		 * 8. A mixture of new and previous results forced the user to select reflexes
+		 * 9. Multiselect results forced the user to select reflexes for each result
 		 */
 
 		/*
@@ -235,130 +231,125 @@ public class TestReflexUtil {
 		Collections.sort(newResults, new Comparator<TestReflexBean>(){
 
 			public int compare(TestReflexBean o1, TestReflexBean o2) {
-				if( GenericValidator.isBlankOrNull(o1.getReflexSelectionId())){
-					return GenericValidator.isBlankOrNull(o2.getReflexSelectionId()) ? 0 : 1;
+				if( o1.getParentToSelectedReflexMap().isEmpty()){
+					return o2.getParentToSelectedReflexMap().isEmpty() ? 0 : 1;
 				}else{
-					return GenericValidator.isBlankOrNull(o2.getReflexSelectionId()) ? -1 : 0;
+					return o2.getParentToSelectedReflexMap().isEmpty() ? -1 : 0;
 				}
 			}});
 		
 		/*
-		 * For each sample we want to track which test reflexes have already
+		 * For each sample we want to track which testReflexes have already
 		 * been evaluated. If we don't track them and two parents are being
 		 * updated then we would trigger the same reflex twice
 		 */
-		Map<String, List<String>> handledReflexsBySample = new HashMap<String, List<String>>();
+		Map<String, List<String>> sampleIdToHandledTestReflexIds = new HashMap<String, List<String>>();
 
 		// keep track of analysis which have triggered reflexes
 		List<Analysis> parentAnalysisList = new ArrayList<Analysis>();
 
 		for (TestReflexBean reflexBean : newResults) {
-
 			// list may be empty or have previous handled reflexes
-			List<String> handledReflexIdList = getHandledReflexesForSample(handledReflexsBySample, reflexBean);
+			List<String> handledReflexIdList = getHandledReflexesForSample(sampleIdToHandledTestReflexIds, reflexBean);
 
 			// use cases 1-6
-			if (GenericValidator.isBlankOrNull(reflexBean.getReflexSelectionId())) {
-				// More than one reflex may be returned if more than one action
-				// should be taken by the result
-				List<TestReflex> reflexsForResult = reflexResolver.getTestReflexsForResult(reflexBean.getResult());
+			if (reflexBean.getParentToSelectedReflexMap().isEmpty()) {
+                handleAutomaticReflexes( parentAnalysisList, reflexBean, handledReflexIdList );
+            } else { // use cases 7,8,9
+                handleUserSelectedReflexes( parentAnalysisList, reflexBean );
 
-				for (TestReflex reflexForResult : reflexsForResult) {
-					// filter out handled reflexes
-					if ( !GenericValidator.isBlankOrNull( reflexForResult.getSiblingReflexId()) && handledReflexIdList.contains(reflexForResult.getId())) {
-						continue;
-					}
-
-					handledReflexIdList.add(reflexForResult.getId());
-
-					List<TestReflex> siblingsOfResultReflex = getSiblings(reflexForResult);
-
-					// no reflexes triggered so no parents
-					parentAnalysisList.clear();
-
-					boolean siblingsSatisfied = true;
-
-					// side effect of populating parent list and
-					// handledRefleIdList
-					siblingsSatisfied = checkIfSiblingsSatisfiedAndPopulateParentList(parentAnalysisList, reflexBean, handledReflexIdList,
-							siblingsOfResultReflex);
-
-					// All the conditions are satisfied so we can handle the
-					// reflexes
-					if (siblingsSatisfied) {
-						boolean allSibAnalysisCausedReflex = doAllAnalysisHaveReflex(parentAnalysisList, reflexBean);
-
-						addReflexTest(reflexForResult, reflexBean.getResult(), reflexBean.getPatient().getId(), reflexBean.getSample(),
-								true, true, null, allSibAnalysisCausedReflex);
-						// there may be multiple reflexes
-						for (TestReflex siblingReflex : siblingsOfResultReflex) {
-							// we want to make sure we don't add the same test
-							// or observation twice
-							boolean addTest = siblingReflex.getAddedTestId() != null
-									&& !siblingReflex.getAddedTestId().equals(reflexForResult.getAddedTestId());
-							boolean handleAction = siblingReflex.getActionScriptletId() != null
-									&& !siblingReflex.getActionScriptletId().equals(reflexForResult.getActionScriptletId());
-
-							addReflexTest(siblingReflex, reflexBean.getResult(), reflexBean.getPatient().getId(), reflexBean.getSample(),
-									addTest, handleAction, null, allSibAnalysisCausedReflex);
-
-						}
-
-						if (reflexBean.getResult().getAnalysis() != null) {
-							parentAnalysisList.add(reflexBean.getResult().getAnalysis());
-						}
-
-						markSibAnalysisAsParent(parentAnalysisList);
-					}
-				}
-
-			} else { // use cases 7,8
-				// There will be several reflexes which satisfied the result,
-				// they should all be marked as handled
-				List<TestReflex> reflexsForResult = reflexResolver.getTestReflexsForResult(reflexBean.getResult());
-				boolean choiceAdded = false;
-				for (TestReflex reflexForResult : reflexsForResult) {
-					// filter out handled reflexes
-					if (handledReflexIdList.contains(reflexForResult.getId())) {
-						continue;
-					}
-
-					handledReflexIdList.add(reflexForResult.getId());
-
-					List<TestReflex> siblingsOfResultReflex = getSiblings(reflexForResult);
-
-					// no reflexes triggered so no parents
-					parentAnalysisList.clear();
-
-					// side effect of populating parent list and
-					// handledRefleIdList
-					checkIfSiblingsSatisfiedAndPopulateParentList(parentAnalysisList, reflexBean, handledReflexIdList,
-							siblingsOfResultReflex);
-
-					//this comes after checkIfSib..... because of the side effects of PopulatingParentList
-					if( !USER_CHOOSE_FLAG.equals(reflexForResult.getFlags())){
-						continue;
-					}
-					
-					boolean allSibAnalysisCausedReflex = doAllAnalysisHaveReflex(parentAnalysisList, reflexBean);
-
-					if (!choiceAdded) {
-						addReflexTest(reflexForResult, reflexBean.getResult(), reflexBean.getPatient().getId(), reflexBean.getSample(),
-								true, true, reflexBean.getReflexSelectionId(), allSibAnalysisCausedReflex);
-						choiceAdded = true;
-					}
-
-					if (reflexBean.getResult().getAnalysis() != null) {
-						parentAnalysisList.add(reflexBean.getResult().getAnalysis());
-					}
-
-					markSibAnalysisAsParent(parentAnalysisList);
-				}
-			}
+            }
 		}
 	}
 
-	private boolean doAllAnalysisHaveReflex(List<Analysis> parentAnalysisList, TestReflexBean reflexBean) {
+    private void handleUserSelectedReflexes( List<Analysis> parentAnalysisList, TestReflexBean reflexBean ){
+        //The reflexes and the triggering tests have already been identified by TestReflexUserChoiceProvider, if all of the parents are not being
+        //picked up fix it there
+
+
+        for (String triggeringTests : reflexBean.getParentToSelectedReflexMap().keySet()) {
+            List<String> addedActionIds = reflexBean.getParentToSelectedReflexMap().get( triggeringTests );
+            // no reflexes triggered so no parents
+            parentAnalysisList.clear();
+
+            for( String addedActionId : addedActionIds){
+                TestReflex reflex = new TestReflex();
+                reflex.setFlags( USER_CHOOSE_FLAG );
+                reflex.setTestId( triggeringTests.split( "_" )[0] );
+                String[] splitActionId = addedActionId.split( "_" );
+                if("test".equals( splitActionId[0] )){
+                    reflex.setAddedTestId( splitActionId[1] );
+                }else{
+                    reflex.setActionScriptletId( splitActionId[1] );
+                }
+
+            	addReflexTest(reflex, reflexBean.getResult(), reflexBean.getPatient().getId(), reflexBean.getSample(),
+            			true, true, addedActionId, false);
+
+            }
+
+            if (reflexBean.getResult().getAnalysis() != null) {
+                parentAnalysisList.add(reflexBean.getResult().getAnalysis());
+            }
+
+            markSibAnalysisAsParent(parentAnalysisList);
+        }
+    }
+
+    private void handleAutomaticReflexes( List<Analysis> parentAnalysisList, TestReflexBean reflexBean, List<String> handledReflexIdList ){
+        // More than one reflex may be returned if more than one action
+        // should be taken by the result
+        List<TestReflex> reflexesForResult = reflexResolver.getTestReflexesForResult( reflexBean.getResult() );
+
+        for (TestReflex reflexForResult : reflexesForResult) {
+            // filter out handled reflexes
+            if ( !GenericValidator.isBlankOrNull( reflexForResult.getSiblingReflexId() ) && handledReflexIdList.contains(reflexForResult.getId())) {
+                continue;
+            }
+
+            handledReflexIdList.add(reflexForResult.getId());
+
+            List<TestReflex> siblingsOfResultReflex = getSiblings(reflexForResult);
+
+            // no reflexes triggered so no parents
+            parentAnalysisList.clear();
+
+            // side effect of populating parent list and
+            // handledRefleIdList
+            boolean siblingsSatisfied = checkIfSiblingsSatisfiedAndPopulateParentList(parentAnalysisList, reflexBean, handledReflexIdList,
+                    siblingsOfResultReflex);
+
+            // All the conditions are satisfied so we can handle the
+            // reflexes
+            if (siblingsSatisfied) {
+                boolean allSibAnalysisCausedReflex = doAllAnalysisHaveReflex(parentAnalysisList, reflexBean);
+
+                addReflexTest(reflexForResult, reflexBean.getResult(), reflexBean.getPatient().getId(), reflexBean.getSample(),
+                        true, true, null, allSibAnalysisCausedReflex);
+                // there may be multiple reflexes
+                for (TestReflex siblingReflex : siblingsOfResultReflex) {
+                    // we want to make sure we don't add the same test
+                    // or observation twice
+                    boolean addTest = siblingReflex.getAddedTestId() != null
+                            && !siblingReflex.getAddedTestId().equals(reflexForResult.getAddedTestId());
+                    boolean handleAction = siblingReflex.getActionScriptletId() != null
+                            && !siblingReflex.getActionScriptletId().equals(reflexForResult.getActionScriptletId());
+
+                    addReflexTest(siblingReflex, reflexBean.getResult(), reflexBean.getPatient().getId(), reflexBean.getSample(),
+                            addTest, handleAction, null, allSibAnalysisCausedReflex);
+
+                }
+
+                if (reflexBean.getResult().getAnalysis() != null) {
+                    parentAnalysisList.add(reflexBean.getResult().getAnalysis());
+                }
+
+                markSibAnalysisAsParent(parentAnalysisList);
+            }
+        }
+    }
+
+    private boolean doAllAnalysisHaveReflex(List<Analysis> parentAnalysisList, TestReflexBean reflexBean) {
 		if (reflexBean.getResult().getAnalysis() == null || !reflexBean.getResult().getAnalysis().getTriggeredReflex()) {
 			return false;
 		}
@@ -552,9 +543,7 @@ public class TestReflexUtil {
 								resultDAO.updateData(cd4Result);
 							}
 						}
-					} else { // It is a HIV conclusion
-
-					}
+					} // else It is a HIV conclusion
 				}
 			}
 		}
@@ -581,7 +570,7 @@ public class TestReflexUtil {
 
 	private TestReflex getScriptletReflex(List<TestReflexBean> reflexBeanList) {
 		for (TestReflexBean bean : reflexBeanList) {
-			List<TestReflex> reflexList = reflexResolver.getTestReflexsForResult(bean.getResult());
+			List<TestReflex> reflexList = reflexResolver.getTestReflexesForResult( bean.getResult() );
 
 			if (!reflexList.isEmpty()) {
 				for (TestReflex testReflex : reflexList) {
@@ -608,12 +597,8 @@ public class TestReflexUtil {
 	private boolean isConclusion(Result result) {
 		Analyte analyte = result.getAnalyte();
 
-		if (analyte == null) {
-			return false;
-		}
+        return analyte != null && ( CONCLUSION_ANAYLETE_ID.equals( analyte.getId() ) || CD4_ANAYLETE.getId().equals( analyte.getId() ) );
 
-		return CONCLUSION_ANAYLETE_ID.equals(analyte.getId()) || CD4_ANAYLETE.getId().equals(analyte.getId());
-
-	}
+    }
 
 }

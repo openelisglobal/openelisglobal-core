@@ -91,7 +91,7 @@
 	autofillTechBox = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameBox, "true");
 %>
 
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css?ver=<%= Versioning.getBuildNumber() %>" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap_simple.css?ver=<%= Versioning.getBuildNumber() %>" />
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/testResults.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -173,9 +173,13 @@ function handleMultiSelectChange( e, data ){
 				appendValueToElementValue( selection, splitValues[i] );
 			}
 		}
-
-
 	}
+
+    $jq("#modified_" + id.split("_")[1]).val("true");
+
+    makeDirty();
+
+    $jq("#saveButtonId").removeAttr("disabled");
 }
 
 function appendValueToElementValue( e, addString ){
@@ -218,6 +222,8 @@ function markUpdated( index, userChoiceReflex, siblingReflexKey ){
 	$("modified_" + index).value = "true";
 
 	makeDirty();
+
+    $jq("#saveButtonId").removeAttr("disabled");
 }
 
 function updateLogValue(element, index ){
@@ -612,8 +618,7 @@ function forceTechApproval(checkbox, index ){
 			<html:hidden name="testResult" property="valid" indexed="true"  styleId='<%="valid_" + index %>'/>
 			<html:hidden name="testResult" property="referralId" indexed="true" />
 			<html:hidden name="testResult" property="referralCanceled" indexed="true" />
-            <html:hidden name="testResult" property="userChoicePending"  styleId='<%="userChoicePendingId_" + index%>' indexed="true"/>
-            <html:hidden name="testResult" property="reflexServerResult"  styleId='<%="reflexServerResultId_" + index%>' indexed="true"/>
+            <html:hidden name="testResult" property="reflexJSONResult"  styleId='<%="reflexServerResultId_" + index%>' indexed="true"/>
 			<logic:notEmpty name="testResult" property="thisReflexKey">
 					<input type="hidden" id='<%= testResult.getThisReflexKey() %>' value='<%= index %>' />
 			</logic:notEmpty>
@@ -703,13 +708,17 @@ function forceTechApproval(checkbox, index ){
 		</logic:equal>
 		<logic:notEqual name="testResult" property="resultDisplayType" value="HIV"><logic:notEqual name="testResult" property="resultDisplayType" value="SYPHILIS">
 			<td style="vertical-align:middle" class="ruled">
-				<bean:write name="testResult" property="testName"/>
+                <%= testResult.getTestName() %>
 				<logic:equal  name="bound"  value="true" >
 					<br/><bean:write name="testResult" property="normalRange"/>&nbsp;
 					<bean:write name="testResult" property="unitsOfMeasure"/>
 				</logic:equal>
-								<logic:greaterThan name="testResult" property="reflexStep" value="0">
-				&nbsp;--&nbsp;
+                <logic:equal name="testResult" property="reflexStep" value="1" >
+                    &nbsp;&ndash;&nbsp;
+                    <bean:message key="reflexTest.initial" />
+                </logic:equal>
+				<logic:greaterThan name="testResult" property="reflexStep" value="1">
+				&nbsp;&ndash;&nbsp;
 				<bean:message key="reflexTest.step" />&nbsp;<bean:write name="testResult" property="reflexStep"/>
 				</logic:greaterThan>
 			</td>
@@ -746,7 +755,7 @@ function forceTechApproval(checkbox, index ){
 			           title='<%= (testResult.isValid() ? testResult.isNormal() ? "" : StringUtil.getMessageForKey("result.value.abnormal") : StringUtil.getMessageForKey("result.value.invalid")) %>' 
 					   <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
 					   class='<%= (testResult.isReflexGroup() ? "reflexGroup_" + testResult.getReflexParentGroup()  : "")  +  (testResult.isChildReflex() ? " childReflex_" + testResult.getReflexParentGroup() : "") %> ' 
-					   onchange='<%="showReflexSelection(this);validateResults( this," + index + "," + lowerBound + "," + upperBound + "," + lowerAbnormalBound + "," + upperAbnormalBound + ", \"XXXX\" );" +
+					   onchange='<%="validateResults( this," + index + "," + lowerBound + "," + upperBound + "," + lowerAbnormalBound + "," + upperAbnormalBound + ", \"XXXX\" );" +
 						               "markUpdated(" + index + "); " +
 						                (testResult.isReflexGroup() && !testResult.isChildReflex() ? "updateReflexChild(" + testResult.getReflexParentGroup()  +  " ); " : "") +
 						                ( noteRequired && !"".equals(testResult.getResultValue())  ? "showNote( " + index + ");" : ""  ) + 
