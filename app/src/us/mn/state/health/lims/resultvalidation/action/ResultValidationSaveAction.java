@@ -497,7 +497,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 				Result quantifiedResult = new Result();
 				quantifiedResult.setAnalysis(analysis);
 				quantifiedResult.setAnalysisId(analysisItem.getAnalysisId());
-				quantifiedResult.setResultType(analysisItem.getResultType());
+				// alphanumeric is the only supported resultType currently
+				quantifiedResult.setResultType("A");
 				TestAnalyte testAnalyte = getTestAnalyteForResult(quantifiedResult);
 
 				if(testAnalyte != null){
