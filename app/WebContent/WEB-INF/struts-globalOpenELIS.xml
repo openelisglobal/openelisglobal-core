@@ -7,55 +7,23 @@
 
 		<!-- SAMPLE ENTRY -->
 		<form-bean name="samplePatientEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
-			<form-property name="currentDate" type="java.lang.String" initial="" />
-			<form-property name="labNo" type="java.lang.String" initial="" />
-			<form-property name="receivedDateForDisplay" type="java.lang.String" initial="" />
-			<form-property name="recievedTime" type="java.lang.String" initial="" />
-   			<form-property name="requestDate" type="java.lang.String" initial="" />
-			<form-property name="nextVisitDate" type="java.lang.String" initial="" />
-			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
-			<form-property name="sampItemCount" type="java.lang.Integer" initial="" />
-			<form-property name="requesterSampleID" type="java.lang.String" initial="" />
-			<form-property name="providerLastName" type="java.lang.String" initial="" />
-			<form-property name="providerFirstName" type="java.lang.String" initial="" />
-			<form-property name="providerWorkPhone" type="java.lang.String" initial="" />
-			<form-property name="project" type="java.lang.String" initial="" />
-			<form-property name="projects" type="java.util.Collection" />
-			<form-property name="patientSearchSelection" type="java.lang.String" initial="" />
-			<form-property name="patientSearchList" type="java.util.List" />
-			<form-property name="patientProcessingStatus" type="java.lang.String" initial="Add" />
-			<form-property name="patientPK" type="java.lang.String" initial="" />
-			<form-property name="sampleTypes" type="java.util.List" />
-			<form-property name="requesters" type="java.util.Collection" />
-			<form-property name="requesterSelection" type="java.lang.String" initial="" />
-			<form-property name="newRequesterName" type="java.lang.String" initial="" />
-			<form-property name="referringSiteCode" type="java.lang.String" initial="" />
-			<form-property name="providerFax" type="java.lang.String" initial=""/>
-			<form-property name="providerEmail" type="java.lang.String" initial=""/>
-			<form-property name="facilityAddressStreet" type="java.lang.String" initial="" />
-			<form-property name="facilityAddressCommune" type="java.lang.String" initial="" />
-			<form-property name="facilityPhone" type="java.lang.String" initial="" />
-			<form-property name="facilityFax" type="java.lang.String" initial="" />
-			<form-property name="sampleXML" type="java.lang.String" initial="" />
-			<form-property name="buttonText" type="java.lang.String" initial="" />
-			<form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
-			<form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
-			<form-property name="initialSampleConditionList" type="java.util.Collection" />
-			<form-property name="referringSiteList" type="java.util.Collection" />
-			<form-property name="referringSiteId" type="java.lang.String" />
-			<form-property name="paymentOptions" type="java.util.Collection" />
-			<form-property name="paymentOptionSelection" type="java.lang.String" />
-			<form-property name="orderTypes" type="java.util.Collection" />
-			<form-property name="orderType" type="java.lang.String" initial=""/>
-			<form-property name="followupPeriodOrderTypes" type="java.util.Collection" />
-			<form-property name="followupPeriodOrderType" type="java.lang.String" initial=""/>
-			<form-property name="initialPeriodOrderTypes" type="java.util.Collection" />
-			<form-property name="initialPeriodOrderType" type="java.lang.String" initial=""/>
-			<form-property name="otherPeriodOrder"  type="java.lang.String" initial="" />
-			<form-property name="testSectionList"  type="java.util.Collection" />
-			<form-property name="externalOrderNumber"  type="java.lang.String" initial="" />
-			<form-property name="referringPatientNumber"  type="java.lang.String" initial="" />
-		</form-bean>
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="patientSearchSelection" type="java.lang.String" initial="" />
+            <form-property name="patientSearchList" type="java.util.List" />
+            <form-property name="patientProcessingStatus" type="java.lang.String" initial="Add" />
+            <form-property name="patientPK" type="java.lang.String" initial="" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="buttonText" type="java.lang.String" initial="" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+        </form-bean>
 
 		<form-bean name="SampleConfirmationEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
@@ -98,14 +66,13 @@
             <form-property name="existingTests" type="java.util.Collection"/>
             <form-property name="possibleTests" type="java.util.Collection"/>
 			<form-property name="searchFinished" type="java.lang.Boolean" initial="false" />
-			<form-property name="paymentOptions" type="java.util.Collection" />
-			<form-property name="paymentOptionSelection" type="java.lang.String" />
 			<form-property name="sampleTypes" type="java.util.Collection" />
 			<form-property name="maxAccessionNumber" type="java.lang.String" initial=""/>
 			<form-property name="sampleXML" type="java.lang.String" initial="" />
 			<form-property name="initialSampleConditionList" type="java.util.Collection" />
 			<form-property name="currentDate" type="java.lang.String" initial="" />
 			<form-property name="testSectionList" type="java.util.Collection" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
 		</form-bean>
 
 
@@ -898,11 +865,6 @@
 		<action path="/ResultValidation" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ResultValidationAction">
 			<forward name="success" path="resultValidationDefinition" />
 			<forward name="elisaSuccess" path="elisaAlgorithmResultValidationDefinition" />
-			<forward name="fail" path="homePageDefinition" />
-		</action>
-
-		<action path="/ElisaAlgorithmResultValidation" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ElisaAlgorithmResultValidationAction">
-			<forward name="success" path="elisaAlgorithmResultValidationDefinition" />
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 

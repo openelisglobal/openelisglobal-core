@@ -296,7 +296,7 @@ public class NonConformityUpdateWorker {
 				if(insertNewOrganizaiton){
 					sampleRequester.setRequesterId(newOrganization.getId());
 				}
-				sampleRequester.setSampleId(sample.getId());
+				sampleRequester.setSampleId(Long.parseLong( sample.getId()));
 				sampleRequesterDAO.insertData(sampleRequester);
 			}
 

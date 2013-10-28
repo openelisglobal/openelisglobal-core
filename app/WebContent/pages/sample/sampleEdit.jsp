@@ -30,7 +30,6 @@
 	int editableAccession = 0;
 	int nonEditableAccession = 0;
 	int maxAccessionLength = 0;
-	boolean trackPayments = false;
 %>
 <%
 	String path = request.getContextPath();
@@ -38,18 +37,24 @@
 	editableAccession = AccessionNumberUtil.getChangeableLength();
 	nonEditableAccession = AccessionNumberUtil.getInvarientLength();
 	maxAccessionLength = editableAccession + nonEditableAccession;
-	trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
 %>
 
+<script src="scripts/ui/jquery.ui.core.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.widget.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.button.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.menu.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.position.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.autocomplete.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/customAutocomplete.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 
 <script type="text/javascript" >
 
 var checkedCount = 0;
-var paymentChanged = false;
 var currentSampleType;
 var sampleIdStart = 0;
+var orderChanged = false;
 
 $jq(function() {
    	var maxAccessionNumber = $("maxAccessionNumber").value;
@@ -61,13 +66,6 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 {
 	//first turn off any further validation
 	setAction(window.document.forms[0], 'Cancel', 'no', '');
-}
-
-function setPaymentChanged(){
-
-	paymentChanged = true;
-	
-	setSaveButton();
 }
 
 function /*void*/ addRemoveRequest( checkbox ){
@@ -85,7 +83,7 @@ function setSaveButton(){
 	var newAccession = $("newAccessionNumber").value;
 	var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>"; 
 
-    $("saveButtonId").disabled = errorsOnForm() || !sampleAddValid(false) || (checkedCount == 0  && !accessionChanged && !paymentChanged && !samplesHaveBeenAdded() );
+    $("saveButtonId").disabled = errorsOnForm() || !sampleAddValid(false) || (checkedCount == 0  && !accessionChanged && !samplesHaveBeenAdded() && !orderChanged );
 }
 
 // Adds warning when leaving page if tests are checked
@@ -93,7 +91,7 @@ function formWarning(){
 	var newAccession = $("newAccessionNumber").value;
 	var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>"; 
 
-  	if ( checkedCount > 0 || accessionChanged || paymentChanged || samplesHaveBeenAdded()) {
+  	if ( checkedCount > 0 || accessionChanged || samplesHaveBeenAdded()) {
     	return "<bean:message key="banner.menu.dataLossWarning"/>";
 	}
 }
@@ -139,7 +137,7 @@ function checkAccessionNumber(changeElement){
 		return;
 	}
 	
-	validateAccessionNumberOnServer(true, changeElement.id, accessionNumber, processAccessionSuccess, processAccessionFailure);
+	validateAccessionNumberOnServer(true, changeElement.id, accessionNumber, processAccessionSuccess, null);
 }
 
 function processAccessionSuccess(xhr)
@@ -184,12 +182,6 @@ function updateSampleItemNumbers(newAccessionNumber){
 		}
 }
 
-function processAccessionFailure(xhr)
-{
-	//unhandled error: someday we should be nicer to the user
-}
-
-
 </script>
 
 <hr/>
@@ -209,27 +201,7 @@ function processAccessionFailure(xhr)
 <html:hidden name="<%=formName%>" property="newAccessionNumber" styleId="newAccessionNumber"/>
 <html:hidden name="<%=formName%>" property="isEditable"/>
 <html:hidden name="<%=formName%>" property="maxAccessionNumber" styleId="maxAccessionNumber"/>
-<bean:define id="paymentSelection" name="<%=formName %>"  property="paymentOptionSelection"/>
 
-<% if( trackPayments){ %>
-	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.patientPayment") %></h1>  
-	<bean:message key="sample.entry.patientPayment"/>: 
-		<html:select name="<%=formName %>" 
-		             property="paymentOptionSelection" 
-		             onchange="setPaymentChanged();"
-		             >
-					<option value='' ></option>
-		<logic:iterate id="optionValue" name='<%=formName%>' property="paymentOptions" type="IdValuePair" >
-						<% if( optionValue.getId().equals(paymentSelection) ){ %>
-							   	<option value='<%=optionValue.getId()%>' selected="selected" >	
-						<% }else {%>
-								<option value='<%=optionValue.getId()%>' >	
-						<% } %>
-						<bean:write name="optionValue" property="value"/>
-					</option>
-		</logic:iterate>
-		</html:select>
-<% } %>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
 	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.accessionNumber") %></h1>  
 	<div id="accessionEditDiv" class="TableMatch">
@@ -245,21 +217,24 @@ function processAccessionFailure(xhr)
 	<br/><br/><hr/>
 	</div>
 </logic:equal>
+    <div id="sampleOrder" class="colorFill" >
+        <tiles:insert attribute="sampleOrder" />
+    </div>
 
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
 	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.tests") %></h1>
 </logic:equal>
-<table width="60%">
+<table style="width:60%">
 <caption><bean:message key="sample.edit.existing.tests"/></caption>
 <tr>
 <th><%= StringUtil.getContextualMessageForKey("quick.entry.accession.number") %></th>
 <th><bean:message key="sample.entry.sample.type"/></th>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
-	<th width="16px"><bean:message key="sample.edit.remove.sample" /></th>
+	<th style="width:16px"><bean:message key="sample.edit.remove.sample" /></th>
 </logic:equal>
 <th><bean:message key="test.testName"/></th>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
-	<th width="16px"><bean:message key="sample.edit.remove.tests" /></th>
+	<th style="width:16px"><bean:message key="sample.edit.remove.tests" /></th>
 </logic:equal>
 <logic:equal name='<%=formName%>' property="isEditable" value="false" >
 	<th><bean:message key="analysis.status" /></th>
@@ -308,7 +283,7 @@ function processAccessionFailure(xhr)
 <hr/>
 <br/>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
-<table id="availableTestTable" width="80%">
+<table id="availableTestTable" style="width:80%">
 <caption><bean:message key="sample.edit.available.tests"/></caption>
 <tr>
 <th><%= StringUtil.getContextualMessageForKey("quick.entry.accession.number") %></th>

@@ -30,13 +30,13 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
+import us.mn.state.health.lims.common.services.RequesterService;
 import us.mn.state.health.lims.common.services.SampleAddService;
 import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -44,18 +44,23 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
-import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory.ValueType;
-import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
-import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
+import us.mn.state.health.lims.organization.dao.OrganizationDAO;
+import us.mn.state.health.lims.organization.dao.OrganizationOrganizationTypeDAO;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationOrganizationTypeDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
-import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.person.dao.PersonDAO;
+import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
+import us.mn.state.health.lims.person.valueholder.Person;
+import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
+import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
+import us.mn.state.health.lims.requester.valueholder.SampleRequester;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
+import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
@@ -80,23 +85,19 @@ public class SampleEditUpdateAction extends BaseAction {
 	private SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 	private SampleDAO sampleDAO = new SampleDAOImpl();
 	private TestDAO testDAO = new TestDAOImpl();
-	private static String PAYMENT_STATUS_OBSERVATION_ID = null;
 	private static String CANCELED_TEST_STATUS_ID = null;
 	private static String CANCELED_SAMPLE_STATUS_ID = null;
 	private boolean deletePaymentHistory = false;
 	private ObservationHistory paymentObservation = null;
 	private ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
 	private TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
+    private PersonDAO personDAO = new PersonDAOImpl();
+    private SampleRequesterDAO sampleRequesterDAO = new SampleRequesterDAOImpl();
+    private OrganizationDAO organizationDAO = new OrganizationDAOImpl();
+    private OrganizationOrganizationTypeDAO orgOrgTypeDAO = new OrganizationOrganizationTypeDAOImpl();
 	private SampleAddService sampleAddService; 
 
 	static {
-		ObservationHistoryTypeDAO ohtDAO = new ObservationHistoryTypeDAOImpl();
-		ObservationHistoryType observationType = ohtDAO.getByName("paymentStatus");
-		if (observationType != null) {
-			PAYMENT_STATUS_OBSERVATION_ID = observationType.getId();
-		}
-
-
 		CANCELED_TEST_STATUS_ID = StatusService.getInstance().getStatusID(AnalysisStatus.Canceled);
 		CANCELED_SAMPLE_STATUS_ID = StatusService.getInstance().getStatusID(SampleStatus.Canceled);
 	}
@@ -105,125 +106,166 @@ public class SampleEditUpdateAction extends BaseAction {
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		String forward = "success";
-
-		ActionMessages errors = null;
+		ActionMessages errors;
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 
-		boolean accessionNumberChanged = accessionNumberChanged(dynaForm);
+		boolean sampleChanged = accessionNumberChanged(dynaForm);
 		Sample updatedSample = null;
-		if (accessionNumberChanged) {
+
+		if (sampleChanged) {
 			errors = validateNewAccessionNumber(dynaForm.getString("newAccessionNumber"));
 			if (!errors.isEmpty()) {
 				saveErrors(request, errors);
 				request.setAttribute(Globals.ERROR_KEY, errors);
-				forward = FWD_FAIL;
 				return mapping.findForward(FWD_FAIL);
 			} else {
 				updatedSample = updateAccessionNumberInSample(dynaForm);
 			}
 		}
 
-		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true")) {
-			setPaymentObservation(dynaForm, updatedSample);
-		}
+        List<Analysis> cancelAnalysisList = createRemoveList((List<SampleEditItem>) dynaForm.get("existingTests"));
+        List<SampleItem> cancelSampleItemList = createCancelSampleList((List<SampleEditItem>) dynaForm.get("existingTests"),
+                cancelAnalysisList);
+        List<Analysis> addAnalysisList = createAddAanlysisList((List<SampleEditItem>) dynaForm.get("possibleTests"));
 
-		if (forward == FWD_SUCCESS) {
 
-			List<Analysis> cancelAnalysisList = createRemoveList((List<SampleEditItem>) dynaForm.get("existingTests"));
-			List<SampleItem> cancelSampleItemList = createCancelSampleList((List<SampleEditItem>) dynaForm.get("existingTests"),
-					cancelAnalysisList);
-			List<Analysis> addAnalysisList = createAddAanlysisList((List<SampleEditItem>) dynaForm.get("possibleTests"));
+        List<SampleTestCollection> addedSamples = createAddSampleList(dynaForm, updatedSample);
 
-			List<SampleTestCollection> addedSamples = createAddSampleList(dynaForm, addAnalysisList, updatedSample);
-			Transaction tx = HibernateUtil.getSession().beginTransaction();
+        SampleOrderService sampleOrderService = new SampleOrderService( (SampleOrderItem )dynaForm.get("sampleOrderItems") );
+        SampleOrderService.SampleOrderPersistenceArtifacts orderArtifacts = sampleOrderService.getPersistenceArtifacts( updatedSample, currentUserId);
 
-			try {
+        if( orderArtifacts.getSample() != null){
+            sampleChanged = true;
+            updatedSample = orderArtifacts.getSample();
+        }
 
-				for (Analysis analysis : cancelAnalysisList) {
-					analysisDAO.updateData(analysis);
-				}
+        Person referringPerson = orderArtifacts.getProviderPerson();
 
-				for (Analysis analysis : addAnalysisList) {
-					if (analysis.getId() == null) {
-						analysisDAO.insertData(analysis, false); // don't check
-																	// for
-																	// duplicates
-					} else {
-						analysisDAO.updateData(analysis);
-					}
-				}
+        Transaction tx = HibernateUtil.getSession().beginTransaction();
 
-				for (SampleItem sampleItem : cancelSampleItemList) {
-					sampleItemDAO.updateData(sampleItem);
-				}
+        try {
 
-				if (accessionNumberChanged) {
-					sampleDAO.updateData(updatedSample);
-				}
+            for (Analysis analysis : cancelAnalysisList) {
+                analysisDAO.updateData(analysis);
+            }
 
-				if (paymentObservation != null) {
-					if (deletePaymentHistory) {
-						List<ObservationHistory> shortList = new ArrayList<ObservationHistory>();
-						shortList.add(paymentObservation);
-						observationDAO.delete(shortList);
-					} else if (GenericValidator.isBlankOrNull(paymentObservation.getId())) {
-						observationDAO.insertData(paymentObservation);
-					} else {
-						observationDAO.updateData(paymentObservation);
-					}
-				}
+            for (Analysis analysis : addAnalysisList) {
+                if (analysis.getId() == null) {
+                    analysisDAO.insertData(analysis, false); // don't check
+                                                                // for
+                                                                // duplicates
+                } else {
+                    analysisDAO.updateData(analysis);
+                }
+            }
 
-				for( SampleTestCollection sampleTestCollection : addedSamples){
-					sampleItemDAO.insertData(sampleTestCollection.item);
+            for (SampleItem sampleItem : cancelSampleItemList) {
+                sampleItemDAO.updateData(sampleItem);
+            }
 
-					for (Test test : sampleTestCollection.tests) {
-						testDAO.getData(test);
+            if (sampleChanged ) {
+                sampleDAO.updateData(updatedSample);
+            }
 
-						Analysis analysis = populateAnalysis(sampleTestCollection, test, sampleTestCollection.testIdToUserSectionMap.get(test.getId()) );
-						analysisDAO.insertData(analysis, false); // false--do not check
-						// for duplicates
-					}
-					
-					if( sampleTestCollection.initialSampleConditionIdList != null){
-						for( ObservationHistory observation : sampleTestCollection.initialSampleConditionIdList){
-							observation.setSampleItemId(sampleTestCollection.item.getId());
-							observationDAO.insertData(observation);
-						}
-					}
-				}
-				
-				tx.commit();
-			} catch (LIMSRuntimeException lre) {
-				tx.rollback();
-				errors = new ActionMessages();
-				if (lre.getException() instanceof StaleObjectStateException) {
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.OptimisticLockException", null, null));
-				} else {
-					lre.printStackTrace();
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.UpdateException", null, null));
-				}
+            if (paymentObservation != null) {
+                if (deletePaymentHistory) {
+                    List<ObservationHistory> shortList = new ArrayList<ObservationHistory>();
+                    shortList.add(paymentObservation);
+                    observationDAO.delete(shortList);
+                } else if (GenericValidator.isBlankOrNull(paymentObservation.getId())) {
+                    observationDAO.insertData(paymentObservation);
+                } else {
+                    observationDAO.updateData(paymentObservation);
+                }
+            }
 
-				saveErrors(request, errors);
-				request.setAttribute(Globals.ERROR_KEY, errors);
+            for( SampleTestCollection sampleTestCollection : addedSamples){
+                sampleItemDAO.insertData(sampleTestCollection.item);
 
-				return mapping.findForward(FWD_FAIL);
+                for (Test test : sampleTestCollection.tests) {
+                    testDAO.getData(test);
 
-			} finally {
-				HibernateUtil.closeSession();
-			}
-		}
+                    Analysis analysis = populateAnalysis(sampleTestCollection, test, sampleTestCollection.testIdToUserSectionMap.get(test.getId()) );
+                    analysisDAO.insertData(analysis, false); // false--do not check
+                    // for duplicates
+                }
 
-		String sampleEditWritability = (String) request.getSession().getAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE);
+                if( sampleTestCollection.initialSampleConditionIdList != null){
+                    for( ObservationHistory observation : sampleTestCollection.initialSampleConditionIdList){
+                        observation.setSampleItemId(sampleTestCollection.item.getId());
+                        observationDAO.insertData(observation);
+                    }
+                }
+            }
 
-		if (GenericValidator.isBlankOrNull(sampleEditWritability)) {
-			return mapping.findForward(forward);
+            if( referringPerson != null){
+                if(referringPerson.getId() == null){
+                    personDAO.insertData( referringPerson );
+                }else{
+                    personDAO.updateData( referringPerson );
+                }
+            }
+
+            for(ObservationHistory observation : orderArtifacts.getObservations()){
+                observationDAO.insertOrUpdateData( observation );
+            }
+
+            if( orderArtifacts.getSamplePersonRequester() != null){
+                SampleRequester samplePersonRequester = orderArtifacts.getSamplePersonRequester();
+                samplePersonRequester.setRequesterId( orderArtifacts.getProviderPerson().getId() );
+                sampleRequesterDAO.insertOrUpdateData( samplePersonRequester );
+            }
+
+            if( orderArtifacts.getProviderOrganization() != null ){
+                boolean link = orderArtifacts.getProviderOrganization().getId() == null;
+                organizationDAO.insertOrUpdateData( orderArtifacts.getProviderOrganization() );
+                if( link){
+                    orgOrgTypeDAO.linkOrganizationAndType( orderArtifacts.getProviderOrganization(), RequesterService.REFERRAL_ORG_TYPE_ID );
+                }
+            }
+
+            if( orderArtifacts.getSampleOrganizationRequester() != null){
+                if(orderArtifacts.getProviderOrganization() != null ){
+                    orderArtifacts.getSampleOrganizationRequester().setRequesterId( orderArtifacts.getProviderOrganization().getId() );
+                }
+                sampleRequesterDAO.insertOrUpdateData( orderArtifacts.getSampleOrganizationRequester());
+            }
+
+            if( orderArtifacts.getDeletableSampleOrganizationRequester() != null){
+                sampleRequesterDAO.delete(orderArtifacts.getDeletableSampleOrganizationRequester());
+            }
+
+            tx.commit();
+        } catch (LIMSRuntimeException lre) {
+            tx.rollback();
+            errors = new ActionMessages();
+            if (lre.getException() instanceof StaleObjectStateException) {
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.OptimisticLockException", null, null));
+            } else {
+                lre.printStackTrace();
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.UpdateException", null, null));
+            }
+
+            saveErrors(request, errors);
+            request.setAttribute(Globals.ERROR_KEY, errors);
+
+            return mapping.findForward(FWD_FAIL);
+
+        } finally {
+            HibernateUtil.closeSession();
+        }
+
+
+		String sampleEditWritable = (String) request.getSession().getAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE);
+
+		if (GenericValidator.isBlankOrNull(sampleEditWritable)) {
+			return mapping.findForward(FWD_SUCCESS);
 		} else {
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("type", sampleEditWritability);
-			return getForwardWithParameters(mapping.findForward(forward), params);
+			params.put("type", sampleEditWritable);
+			return getForwardWithParameters(mapping.findForward(FWD_SUCCESS), params);
 		}
 
 	}
@@ -251,7 +293,7 @@ public class SampleEditUpdateAction extends BaseAction {
 		return analysis;
 	}
 	
-	private List<SampleTestCollection> createAddSampleList(DynaActionForm dynaForm, List<Analysis> addAnalysisList, Sample sample) {
+	private List<SampleTestCollection> createAddSampleList(DynaActionForm dynaForm, Sample sample) {
 		if( sample == null){
 			sample = sampleDAO.getSampleByAccessionNumber(dynaForm.getString("accessionNumber"));
 		}
@@ -330,49 +372,6 @@ public class SampleEditUpdateAction extends BaseAction {
 		return false;
 	}
 
-	private void setPaymentObservation(DynaActionForm dynaForm, Sample updatedSample) {
-		deletePaymentHistory = false;
-		paymentObservation = null;
-		String paymentValue = dynaForm.getString("paymentOptionSelection");
-
-		/*
-		 * Cases to handle 1. value in DB no selected value 2. value in DB
-		 * selected value different 3. value in DB selected value same 4. no
-		 * value in DB selected value 5. no value in DB no selected value
-		 */
-
-		if (updatedSample == null) {
-			updatedSample = sampleDAO.getSampleByAccessionNumber(dynaForm.getString("accessionNumber"));
-		}
-
-		paymentObservation = observationDAO.getObservationHistoriesBySampleIdAndType(updatedSample.getId(), PAYMENT_STATUS_OBSERVATION_ID);
-		if (paymentObservation != null) {
-			if (GenericValidator.isBlankOrNull(paymentValue)) {
-				deletePaymentHistory = true;
-			} else {
-				if (paymentObservation.getValue().equals(paymentValue)) {
-					paymentObservation = null;
-				} else {
-					paymentObservation.setValue(paymentValue);
-				}
-			}
-		} else if (!GenericValidator.isBlankOrNull(paymentValue)) {
-			Patient patient = new SampleHumanDAOImpl().getPatientForSample(updatedSample);
-			if (patient != null) {
-				paymentObservation = new ObservationHistory();
-				paymentObservation.setSampleId(updatedSample.getId());
-				paymentObservation.setObservationHistoryTypeId(PAYMENT_STATUS_OBSERVATION_ID);
-				paymentObservation.setValueType(ValueType.DICTIONARY);
-				paymentObservation.setPatientId(patient.getId());
-				paymentObservation.setValue(paymentValue);
-			}
-		}
-
-		if (paymentObservation != null) {
-			paymentObservation.setSysUserId(currentUserId);
-		}
-
-	}
 
 	private ActionMessages validateNewAccessionNumber(String accessionNumber) {
 		ActionMessages errors = new ActionMessages();
@@ -401,12 +400,9 @@ public class SampleEditUpdateAction extends BaseAction {
 	private boolean accessionNumberChanged(DynaActionForm dynaForm) {
 		String newAccessionNumber = dynaForm.getString("newAccessionNumber");
 
-		if (GenericValidator.isBlankOrNull(newAccessionNumber)) {
-			return false;
-		}
+        return !GenericValidator.isBlankOrNull( newAccessionNumber ) && !newAccessionNumber.equals( dynaForm.getString( "accessionNumber" ) );
 
-		return !newAccessionNumber.equals(dynaForm.getString("accessionNumber"));
-	}
+    }
 
 	private List<Analysis> createRemoveList(List<SampleEditItem> tests) {
 		List<Analysis> removeAnalysisList = new ArrayList<Analysis>();

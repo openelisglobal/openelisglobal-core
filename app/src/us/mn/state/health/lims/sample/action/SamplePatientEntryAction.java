@@ -25,8 +25,7 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 
@@ -49,42 +48,23 @@ public class SamplePatientEntryAction extends BaseSampleEntryAction {
 
 		BaseActionForm dynaForm = (BaseActionForm) form;
 
-		// Initialize the form.
 		dynaForm.initialize(mapping);
 
-		// Set received date and entered date to today's date
-		//Date today = Calendar.getInstance().getTime();
-		String dateAsText = DateUtil.getCurrentDateAsText();
-		PropertyUtils.setProperty(form, "currentDate", dateAsText);
-		
-
-		boolean needRequesterList = FormFields.getInstance().useField(FormFields.Field.RequesterSiteList);
 		boolean needSampleInitialConditionList = FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition);
-		boolean needPaymentOptions = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
 
-		PropertyUtils.setProperty(dynaForm, "receivedDateForDisplay", dateAsText);
-		PropertyUtils.setProperty(dynaForm, "requestDate", dateAsText);
+        SampleOrderService sampleOrderService = new SampleOrderService();
+        PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
 		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
 		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE));
-		PropertyUtils.setProperty(dynaForm, "orderTypes", DisplayListService.getList(ListType.SAMPLE_PATIENT_PRIMARY_ORDER_TYPE));
-		PropertyUtils.setProperty(dynaForm, "followupPeriodOrderTypes", DisplayListService.getList(ListType.SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE));
-		PropertyUtils.setProperty(dynaForm, "initialPeriodOrderTypes", DisplayListService.getList(ListType.SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE));
 		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
-		PropertyUtils.setProperty(dynaForm, "labNo", "");
+        PropertyUtils.setProperty( dynaForm, "currentDate", DateUtil.getCurrentDateAsText());
 
-		addProjectList(dynaForm);
-
-		if (needRequesterList) {
-			PropertyUtils.setProperty(dynaForm, "referringSiteList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));
-		}
+		addProjectList( dynaForm );
 
 		if (needSampleInitialConditionList) {
 			PropertyUtils.setProperty(dynaForm, "initialSampleConditionList", DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
 		}
 
-		if (needPaymentOptions) {
-            PropertyUtils.setProperty(dynaForm,"paymentOptions", DisplayListService.getList(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS));
-		}
 		return mapping.findForward(forward);
 	}
 

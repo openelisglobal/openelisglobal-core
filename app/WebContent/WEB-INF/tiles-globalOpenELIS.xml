@@ -26,6 +26,7 @@
     </definition>
 
     <definition name="samplePatientEntryCore" path="/pages/sample/samplePatientEntry.jsp">
+        <put name="sampleOrder" value="/pages/sample/sampleOrder.jsp" />
 		<put name="addSample" value="/pages/sample/sampleAdd.jsp"/>
 		<put name="patientInfo" value="patientManagementCore"/>
 		<put name="patientClinicalInfo" value="/pages/patient/patientClinicalInfo.jsp"/>
@@ -99,6 +100,7 @@
 	</definition>
 
 	<definition name="sampleEditCore" path="/pages/sample/sampleEdit.jsp">
+        <put name="sampleOrder" value="/pages/sample/sampleOrder.jsp" />
 		<put name="addSample" value="/pages/sample/sampleAdd.jsp"/>
 	</definition>
 

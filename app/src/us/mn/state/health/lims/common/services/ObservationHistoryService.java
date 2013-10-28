@@ -16,11 +16,7 @@
  */
 package us.mn.state.health.lims.common.services;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
@@ -29,7 +25,9 @@ import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory
 import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
 import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
-import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ObservationHistoryService{
 
@@ -67,14 +65,8 @@ public class ObservationHistoryService{
 	}
 
 	
-	public static String getValue(ObservationType type, Sample sample){
-		if(observationTypeToIdMap.isEmpty()){
-			initialize();
-		}
-		String typeId = getIdForType(type);
-		
-		if(!GenericValidator.isBlankOrNull(typeId)){
-			ObservationHistory observation = observationDAO.getObservationHistoriesBySampleIdAndType(sample.getId(), getIdForType(type));
+	public static String getValue(ObservationType type, String sampleId){
+			ObservationHistory observation =  getObservation( type, sampleId );
 			if(observation != null){
 				if(observation.getValueType().equals(ObservationHistory.ValueType.LITERAL.getCode())){
 					return observation.getValue();
@@ -83,13 +75,31 @@ public class ObservationHistoryService{
 						return dictionaryDAO.getDataForId(observation.getValue()).getDictEntry();
 					}
 				}
-
 			}
-		}
-		return null;
+
+			return null;
 	}
 
-	
+    public static String getRawValue(ObservationType type, String sampleId){
+        ObservationHistory observation =  getObservation( type, sampleId );
+        return observation != null ? observation.getValue( ) : null;
+    }
+
+
+    public static ObservationHistory getObservation( ObservationType type, String sampleId){
+        if(observationTypeToIdMap.isEmpty()){
+            initialize();
+        }
+        String typeId = getIdForType(type);
+
+        if(!GenericValidator.isBlankOrNull(typeId)){
+            return observationDAO.getObservationHistoriesBySampleIdAndType(sampleId, typeId);
+        }else{
+            return null;
+        }
+
+    }
+
 	private static void initialize(){
 		ObservationHistoryType oht;
 		ObservationHistoryTypeDAO ohtDAO = new ObservationHistoryTypeDAOImpl();

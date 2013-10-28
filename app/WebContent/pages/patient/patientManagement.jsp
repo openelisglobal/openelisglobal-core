@@ -17,6 +17,7 @@
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
 
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 
 <bean:define id="formName"		value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 <bean:define id="patientProperties" name='<%=formName%>' property='patientProperties' type="PatientManagementInfo" />
@@ -71,8 +72,6 @@
 	
 	patientNamesRequired = FormFields.getInstance().useField(Field.PatientNameRequired);
 %>
-
-<script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 
 <script type="text/javascript" >
 
