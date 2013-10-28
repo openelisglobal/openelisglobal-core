@@ -9,8 +9,9 @@
                  us.mn.state.health.lims.common.formfields.FormFields,
                  us.mn.state.health.lims.common.util.Versioning,
                  us.mn.state.health.lims.common.util.StringUtil,
-                 us.mn.state.health.lims.common.util.IdValuePair" %>
-<%@ page import="us.mn.state.health.lims.common.services.PhoneNumberService" %>
+                 us.mn.state.health.lims.common.util.IdValuePair,
+                 us.mn.state.health.lims.common.services.PhoneNumberService,
+                 us.mn.state.health.lims.sample.bean.SampleOrderItem" %>
 
 
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
@@ -24,6 +25,7 @@
 <bean:define id="idSeparator"   value='<%=SystemConfiguration.getInstance().getDefaultIdSeparator()%>' />
 <bean:define id="accessionFormat" value='<%= ConfigurationProperties.getInstance().getPropertyValue(Property.AccessionFormat)%>' />
 <bean:define id="genericDomain" value='' />
+<bean:define id="sampleOrderItems" name='<%=formName%>' property='sampleOrderItems' type="SampleOrderItem" />
 <bean:define id="entryDate" name="<%=formName%>" property="currentDate" />
 
 
@@ -31,8 +33,7 @@
     String basePath = "";
     boolean useSTNumber = true;
     boolean useMothersName = true;
-    boolean useReferralSiteList = false;
-    boolean useReferralSiteCode = false;
+
     boolean useProviderInfo = false;
     boolean patientRequired = false;
     boolean trackPayment = false;
@@ -46,8 +47,6 @@
     basePath = request.getScheme() + "://" + request.getServerName() + ":"  + request.getServerPort() + path + "/";
     useSTNumber =  FormFields.getInstance().useField(FormFields.Field.StNumber);
     useMothersName = FormFields.getInstance().useField(FormFields.Field.MothersName);
-    useReferralSiteList = FormFields.getInstance().useField(FormFields.Field.RequesterSiteList);
-    useReferralSiteCode = FormFields.getInstance().useField(FormFields.Field.SampleEntryReferralSiteCode);
     useProviderInfo = FormFields.getInstance().useField(FormFields.Field.ProviderInfo);
     patientRequired = FormFields.getInstance().useField(FormFields.Field.PatientRequired);
     trackPayment = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
@@ -72,17 +71,16 @@
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/laborder.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
+
 <script type="text/javascript" >
 
 var useSTNumber = <%= useSTNumber %>;
 var useMothersName = <%= useMothersName %>;
-var useReferralSiteList = <%= useReferralSiteList%>;
-var useReferralSiteCode = <%= useReferralSiteCode %>;
-var requesterLastNameRequired = <%= requesterLastNameRequired %>
-var dirty = false;
-var invalidSampleElements = new Array();
-var requiredFields = new Array("labNo", "receivedDateForDisplay" );
+var requesterLastNameRequired = <%= requesterLastNameRequired %>;
 var acceptExternalOrders = <%= acceptExternalOrders %>;
+var dirty = false;
+var invalidSampleElements = [];
+var requiredFields = new Array("labNo", "receivedDateForDisplay" );
 
 if( requesterLastNameRequired ){
     requiredFields.push("providerLastNameID");
@@ -172,50 +170,6 @@ function checkValidEntryDate(date, dateRange, blankAllowed)
     
     //ajax call from utilites.js
     isValidDate( date.value, processValidateEntryDateSuccess, date.id, dateRange );
-}
-
-
-function processAccessionSuccess(xhr)
-{
-    //alert(xhr.responseText);
-    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-    var message = xhr.responseXML.getElementsByTagName("message").item(0);
-    var success = false;
-
-    if (message.firstChild.nodeValue == "valid"){
-        success = true;
-    }
-    var labElement = formField.firstChild.nodeValue;
-    selectFieldErrorDisplay( success, $(labElement));
-    setSampleFieldValidity( success, labElement);
-
-    if( !success ){
-        alert( message.firstChild.nodeValue );
-    }
-
-    setSave();
-}
-
-function processAccessionFailure(xhr)
-{
-    //unhandled error: someday we should be nicer to the user
-}
-
-
-function checkAccessionNumber( accessionNumber )
-{
-    //check if empty
-    if ( !fieldIsEmptyById( "labNo" ) )
-    {
-        validateAccessionNumberOnServer(false, accessionNumber.id, accessionNumber.value, processAccessionSuccess, processAccessionFailure );
-    }
-    else
-    {
-        setSampleFieldInvalid(accessionNumber.name );
-        setValidIndicaterOnField(false, accessionNumber.name);
-    }
-
-    setSave();
 }
 
 
@@ -316,52 +270,6 @@ function saveItToParentForm(form) {
  submitTheForm(form);
 }
 
-function getNextAccessionNumber() {
-    generateNextScanNumber();
-}
-
-function generateNextScanNumber(){
-
-    new Ajax.Request (
-                          'ajaxQueryXML',  //url
-                           {//options
-                             method: 'get', //http method
-                             parameters: "provider=SampleEntryGenerateScanProvider",
-                             //indicator: 'throbbing'
-                             onSuccess:  processScanSuccess,
-                             onFailure:  processScanFailure
-                           }
-                          );
-}
-
-function processScanSuccess(xhr){
-    //alert(xhr.responseText);
-    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-    var returnedData = formField.firstChild.nodeValue;
-
-    var message = xhr.responseXML.getElementsByTagName("message").item(0);
-
-    var success = message.firstChild.nodeValue == "valid";
-
-    if( success ){
-        $("labNo").value = returnedData;
-
-    }else{
-        alert( "<%= StringUtil.getMessageForKey("error.accession.no.next") %>");
-        $("labNo").value = "";
-    }
-
-    var targetName = $("labNo").name;
-    selectFieldErrorDisplay(success, $(targetName));
-    setValidIndicaterOnField( success, targetName );
-
-    setSave();
-}
-
-function processScanFailure(xhr){
-    //some user friendly response needs to be given to the user
-}
-
 function addPatientInfo(  ){
     $("patientInfo").show();
 }
@@ -434,38 +342,8 @@ function orderTypeSelected( radioElement){
         $("initialLabOrderPeriodId").show();
         $("followupLabOrderPeriodId").hide();
     }
-    
+
     $("sampleEntryPage").show();
-}
-function labPeriodChanged( labOrderPeriodElement){
-    if( labOrderPeriodElement.length - 1 ==  labOrderPeriodElement.selectedIndex  ){
-        $("labOrderPeriodOtherId").show();
-    }else{
-        $("labOrderPeriodOtherId").hide();
-        $("labOrderPeriodOtherId").value = "";
-    }
-    
-}
-
-function siteListChanged(textValue){
-    var siteList = $("requesterId");
-    
-    //if the index is 0 it is a new entry, if it is not then the textValue may include the index value
-    if( siteList.selectedIndex == 0 || siteList.options[siteList.selectedIndex].label != textValue){
-          $("newRequesterName").value = textValue;
-    }else if(useReferralSiteCode){
-        getCodeForOrganization( siteList.options[siteList.selectedIndex].value, processCodeSuccess);
-    }
-}
-
-function processCodeSuccess(xhr){
-    //alert(xhr.responseText);
-    var code = xhr.responseXML.getElementsByTagName("code").item(0);
-    var success = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue == "valid";
-
-    if( success ){
-        $jq("#requesterCodeId").val(code.getAttribute("value"));
-    }
 }
 
 function capitalizeValue( text){
@@ -473,14 +351,14 @@ function capitalizeValue( text){
 }
 
 function checkOrderReferral( value ){
-    
+
     getLabOrder(value, processLabOrderSuccess);
     showSection( $("orderSectionId"), 'orderDisplay');
 }
 
 function clearOrderData() {
-    
-    removeAllRows();    
+
+    removeAllRows();
     clearTable(addTestTable);
     clearTable(addPanelTable);
     clearSearchResultTable();
@@ -493,13 +371,13 @@ function clearOrderData() {
 
 function processLabOrderSuccess(xhr){
     //alert(xhr.responseText);
-    
+
     clearOrderData();
-    
+
     var message = xhr.responseXML.getElementsByTagName("message").item(0);
     var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
     var order = formField.getElementsByTagName("order").item(0);
-    
+
     SampleTypes = [];
     CrossPanels = [];
     CrossTests = [];
@@ -511,12 +389,12 @@ function processLabOrderSuccess(xhr){
         if (patienttag) {
             parsePatient(patienttag);
         }
-        
+
         var requester = order.getElementsByTagName('requester');
         if (requester) {
             parseRequester(requester);
         }
-        
+
         var useralert = order.getElementsByTagName("user_alert");
         var alertMessage = "";
         if (useralert) {
@@ -531,29 +409,29 @@ function processLabOrderSuccess(xhr){
         sampleTypeOrder = -1;
         crossSampleTypeMap = {};
         crossSampleTypeOrderMap = {};
-        
+
         parseSampletypes(sampletypes, SampleTypes);
-        var crosspanels = order.getElementsByTagName("crosspanel"); 
-        parseCrossPanels(crosspanels, crossSampleTypeMap, crossSampleTypeOrderMap);  
+        var crosspanels = order.getElementsByTagName("crosspanel");
+        parseCrossPanels(crosspanels, crossSampleTypeMap, crossSampleTypeOrderMap);
         var crosstests = order.getElementsByTagName("crosstest");
-        parseCrossTests(crosstests, crossSampleTypeMap, crossSampleTypeOrderMap);  
-        
-        showSection( $("samplesSectionId"), 'samplesDisplay');  
+        parseCrossTests(crosstests, crossSampleTypeMap, crossSampleTypeOrderMap);
+
+        showSection( $("samplesSectionId"), 'samplesDisplay');
         $("samplesAdded").show();
 
         notifyChangeListeners();
         testAndSetSave();
         populateCrossPanelsAndTests(CrossPanels, CrossTests, '<%=entryDate%>');
         displaySampleTypes('<%=entryDate%>');
-        
+
         if (SampleTypes.length > 0)
              sampleClicked(1);
-        
+
         } else {
             $jq(".patientSearch").show();
             alert(message.firstChild.nodeValue);
         }
-        
+
 }
 
 function parsePatient(patienttag) {
@@ -575,7 +453,7 @@ function clearRequester() {
     $("providerLastNameID").value = '';
     $("labNo").value = '';
     $("receivedDateForDisplay").value = '<%=entryDate%>';
-    $("recievedTime").value = '';
+    $("receivedTime").value = '';
     $("referringPatientNumber").value = '';
 
 }
@@ -586,7 +464,7 @@ function parseRequester(requester) {
     if (firstName.length > 0) {
             first = firstName[0].firstChild.nodeValue;
             $("providerFirstNameID").value = first;
-    };
+    }
     var lastName = requester.item(0).getElementsByTagName("lastName");
     var last = "";
     if (lastName.length > 0) {
@@ -680,14 +558,14 @@ function parseCrossPanels(crosspanels, crossSampleTypeMap, crossSampleTypeOrderM
 function parseCrossTests(crosstests, crossSampleTypeMap, crossSampleTypeOrderMap) {
     for (x = 0; x < crosstests.length; x = x + 1) {
         var crossTestName = crosstests.item(x).getElementsByTagName("name")[0].firstChild.nodeValue;
-        var crossTestId   = crosstests.item(x).getElementsByTagName("id")[0].firstChild.nodeValue;
+   //     var crossTestId   = crosstests.item(x).getElementsByTagName("id")[0].firstChild.nodeValue;
         var crossSampleTypes  = crosstests.item(x).getElementsByTagName("crosssampletypes")[0];
         
         CrossTests[x] = new CrossTest(crossTestName);
         CrossTests[x].sampleTypes = getNodeNamesByTagName(crossSampleTypes, "crosssampletype");
         CrossTests[x].typeMap = new Array(CrossTests[x].sampleTypes.length);    
-        var sTypes = new Array();                                                                                                                                                                                                                       
-        for (y = 0; y < CrossTests[x].sampleTypes.length; y = y + 1) {
+        var sTypes = [];
+        for (var y = 0; y < CrossTests[x].sampleTypes.length; y++) {
         
             //alert(crossTestName + " " + CrossTests[x].sampleTypes[y].id + " testid=" + CrossTests[x].sampleTypes[y].testId);
             sTypes[y] = CrossTests[x].sampleTypes[y];
@@ -731,18 +609,17 @@ function  processPhoneSuccess(xhr){
 }
 </script>
 
-<bean:define id="orderTypeList"  name='<%=formName%>' property="orderTypes" type="java.util.Collection"/>
+<!-- This define may not be needed, look at usages (not in any other jsp or js page-->
+<bean:define id="orderTypeList"  name='<%=formName%>' property="sampleOrderItems.orderTypes" type="java.util.Collection"/>
 <html:hidden property="currentDate" name="<%=formName%>" styleId="currentDate"/>
-<html:hidden property="domain" name="<%=formName%>" value="<%=genericDomain%>" styleId="domain"/>
-<html:hidden property="removedSampleItem" value="" styleId="removedSampleItem"/>
-<html:hidden property="newRequesterName" name='<%=formName %>' styleId="newRequesterName" />
+<html:hidden property="sampleOrderItems.newRequesterName" name='<%=formName%>' styleId="newRequesterName" />
 
 
 <% if( FormFields.getInstance().useField(Field.SampleEntryLabOrderTypes)) {%>
-    <logic:iterate indexId="index" id="orderTypes"  type="IdValuePair" name='<%=formName%>' property="orderTypes">
+    <logic:iterate indexId="index" id="orderTypes"  type="IdValuePair" name='<%=formName%>' property="sampleOrderItems.orderTypes">
         <input id='<%="orderType_" + index %>' 
                type="radio" 
-               name="orderType" 
+               name="sampleOrderItems.orderType"
                onclick='orderTypeSelected(this);'
                value='<%=orderTypes.getId() %>' />
         <label for='<%="orderType_" + index %>' ><%=orderTypes.getValue() %></label>
@@ -751,353 +628,27 @@ function  processPhoneSuccess(xhr){
 <% } %>
 
 <% if( acceptExternalOrders){ %>
-<%= StringUtil.getContextualMessageForKey("referring.order.number") %>: <html:text name='<%=formName %>' 
-                                   styleId="externalOrderNumber"
-                                   property="externalOrderNumber"
-                                   onchange="checkOrderReferral(this.value);makeDirty();"/> 
-                                   
-                                   <html:button property="searchExternalButton" onclick="checkOrderReferral($(externalOrderNumber).value);makeDirty();" >
-                                   <bean:message key="label.button.search" />
-                                   </html:button> <%= StringUtil.getContextualMessageForKey("referring.order.not.found") %>
-<hr style="width: 100%; height: 5px" />                                   
+<%= StringUtil.getContextualMessageForKey( "referring.order.number" ) %>:
+<html:text name='<%=formName %>'
+           styleId="externalOrderNumber"
+           property="sampleOrderItems.externalOrderNumber"
+           onchange="checkOrderReferral(this.value);makeDirty();"/>
+<input type="button" name="searchExternalButton" value='<%= StringUtil.getMessageForKey("label.button.search")%>'
+       onclick="checkOrderReferral($(externalOrderNumber).value);makeDirty();">
+<%= StringUtil.getContextualMessageForKey( "referring.order.not.found" ) %>
+<hr style="width:100%;height:5px"/>
 
 <% } %>
             
 <div id=sampleEntryPage <%= (orderTypeList == null || orderTypeList.size() == 0)? "" : "style='display:none'"  %>>
-<html:button property="showHide" value='<%= acceptExternalOrders ? "+" : "-" %>' onclick="showHideSection(this, 'orderDisplay');" styleId="orderSectionId" />
-
+<input type="button" name="showHide" value='<%= acceptExternalOrders ? "+" : "-" %>' onclick="showHideSection(this, 'orderDisplay');" id="orderSectionId">
 <%= StringUtil.getContextualMessageForKey("sample.entry.order.label") %>
 <span class="requiredlabel">*</span>
 
+<tiles:insert attribute="sampleOrder" />
 
-<div id=orderDisplay <%= acceptExternalOrders ? "style='display:none'" : ""  %>>
-<table  style="width:90%" >
-
-    <tr>
-        <td>
-            <table >
-                    <tr>
-                    <td width="35%">
-                        <%=StringUtil.getContextualMessageForKey("quick.entry.accession.number")%>
-                        :
-                        <span class="requiredlabel">*</span>
-                    </td>
-                    <td width="65%">
-                        <app:text name="<%=formName%>" property="labNo"
-                            maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-                            onchange="checkAccessionNumber(this);makeDirty();"
-                            styleClass="text"
-                            styleId="labNo" />
-                
-                        <bean:message key="sample.entry.scanner.instructions"/>
-                        <html:button property="generate"
-                                     styleClass="textButton"
-                                     onclick="getNextAccessionNumber(); makeDirty();" >
-                        <bean:message key="sample.entry.scanner.generate"/>
-                        </html:button>
-                    </td>
-                    </tr>
-                    <% if( FormFields.getInstance().useField(Field.SampleEntryUseRequestDate)){ %>
-                    <tr>
-                        <td><bean:message key="sample.entry.requestDate" />:
-                        <span class="requiredlabel">*</span><font size="1"><bean:message key="sample.date.format" /></font></td>
-                        <td><html:text name='<%=formName %>' 
-                                       property="requestDate" 
-                                       styleId="requestDate"
-                                       onchange="makeDirty();checkValidEntryDate(this, 'past')" 
-                                       onkeyup="addDateSlashes(this, event);" 
-                                       maxlength="10"/>
-                    </tr>
-                    <% } %>
-                    <tr>
-                    <td >
-                        <%= StringUtil.getContextualMessageForKey("quick.entry.received.date") %>
-                        :
-                        <span class="requiredlabel">*</span>
-                        <font size="1"><bean:message key="sample.date.format" />
-                        </font>
-                    </td>
-                    <td colspan="2">
-                        <app:text name="<%=formName%>" 
-                            property="receivedDateForDisplay"
-                            onchange="checkValidEntryDate(this, 'past');makeDirty();"
-                            onkeyup="addDateSlashes(this, event);" 
-                            maxlength="10"
-                            styleClass="text"
-                            styleId="receivedDateForDisplay" />
-                    
-                    <% if( FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour)){ %>
-                        <bean:message key="sample.receptionTime" />:
-                            <html:text name="<%=formName %>" 
-                            onkeyup="filterTimeKeys(this, event);" 
-                            property="recievedTime" 
-                            styleId="recievedTime"
-                            maxlength="5"
-                            onblur="makeDirty(); checkValidTime(this, true);"/>
-                    
-                    <% } %>
-                        </td>
-                </tr>     
-                
-                <% if( FormFields.getInstance().useField(Field.SampleEntryNextVisitDate)){ %>
-                <tr>
-                    <td><bean:message key="sample.entry.nextVisit.date" />&nbsp;<font size="1"><bean:message key="sample.date.format" /></font>:</td>
-                    <td>
-                        <html:text name='<%= formName %>'
-                                   property="nextVisitDate" 
-                                   onchange="makeDirty();checkValidEntryDate(this, 'future', true)"
-                                   onkeyup="addDateSlashes(this, event);" 
-                                   styleId="nextVisitDate"
-                                   maxlength="10"/>
-                    </td>
-                </tr>
-                <% } %>
-                
-                <tr>
-                <td>&nbsp;</td>
-                </tr>
-                <% if( FormFields.getInstance().useField(Field.SampleEntryRequestingSiteSampleId)) {%>
-                <tr>
-                    <td >
-                        <%= StringUtil.getContextualMessageForKey("sample.clientReference") %>:
-                    </td>
-                    <td >
-                        <app:text name="<%=formName%>"
-                                  property="requesterSampleID"
-                                  size="50"
-                                  maxlength="50"
-                                  onchange="makeDirty();"/>
-                    </td>
-                    <td width="10%" >&nbsp;</td>
-                    <td width="45%" >&nbsp;</td>
-                </tr>
-                <% } %>
-                <% if( FormFields.getInstance().useField(Field.SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER)) {%>
-                <tr>
-                    <td >
-                        <%= StringUtil.getContextualMessageForKey("sample.referring.patientNumber") %>:
-                    </td>
-                    <td >
-                        <app:text name="<%=formName%>"
-                                  property="referringPatientNumber"
-                                  styleId="referringPatientNumber"
-                                  size="50"
-                                  maxlength="50"
-                                  onchange="makeDirty();"/>
-                    </td>
-                    <td width="10%" >&nbsp;</td>
-                    <td width="45%" >&nbsp;</td>
-                </tr>
-                <% } %>
-                <% if( useReferralSiteList){ %>
-                <tr>
-                    <td >
-                        <%= StringUtil.getContextualMessageForKey("sample.entry.project.siteName") %>:
-                        <% if( FormFields.getInstance().useField(Field.SampleEntryReferralSiteNameRequired)) {%>
-                        <span class="requiredlabel">*</span>
-                        <% } %>
-                    </td>
-                    <td colspan="3">
-                        <html:select styleId="requesterId"
-                                     name="<%=formName%>"
-                                     property="referringSiteId"
-                                     onchange="makeDirty();siteListChanged(this);setSave();" 
-                                     onkeyup="capitalizeValue( this.value );"
-                                     >
-                            <option value=""></option>
-                            <html:optionsCollection name="<%=formName%>" property="referringSiteList" label="value" value="id" />
-                        </html:select>
-                    </td>
-                </tr>
-                <% } %>
-                <% if( useReferralSiteCode ){ %>
-                <tr>
-                    <td >
-                        <%= StringUtil.getContextualMessageForKey("sample.entry.referringSite.code") %>:
-                    </td>
-                    <td>    
-                        <html:text styleId="requesterCodeId"
-                                     name="<%=formName%>"
-                                     property="referringSiteCode"
-                                     onchange="makeDirty();setSave();">
-                        </html:text>
-                    </td>
-                </tr>
-                <% } %>
-                <tr>
-                <td>&nbsp;</td>
-                </tr>
-                <%  if (useProviderInfo) { %>
-                <tr>
-                    <td >
-                        <%= StringUtil.getContextualMessageForKey("sample.entry.provider.name") %>:
-                        <% if(requesterLastNameRequired ){ %>
-                        <span class="requiredlabel">*</span>
-                        <% } %>
-                    </td>
-                    <td >
-                        <html:text name="<%=formName%>"
-                                  property="providerLastName"
-                                  styleId="providerLastNameID"
-                                  onchange="makeDirty();setSave()"
-                                  size="30" />
-                        <bean:message key="humansampleone.provider.firstName.short"/>:
-                        <html:text name="<%=formName%>"
-                                  property="providerFirstName"
-                                  styleId="providerFirstNameID"
-                                  onchange="makeDirty();"
-                                  size="30" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <%= StringUtil.getContextualMessageForKey("humansampleone.provider.workPhone") + ": " + PhoneNumberService.getPhoneFormat()%>
-                    </td>
-                    <td>
-                        <app:text name="<%=formName%>"
-                                  property="providerWorkPhone"
-                                  styleId="providerWorkPhoneID"
-                                  size="30"
-                                  maxlength="30"
-                                  styleClass="text"
-                                  onchange="makeDirty(); validatePhoneNumber(this)" />
-                    </td>
-                </tr>
-                <% } %>
-                <% if( FormFields.getInstance().useField(Field.SampleEntryProviderFax)){ %>
-                    <tr>
-                    <td>
-                        <%= StringUtil.getContextualMessageForKey("sample.entry.project.faxNumber")%>:
-                    </td>
-                    <td>
-                        <app:text name="<%=formName%>"
-                                  property="providerFax"
-                                  styleId="providerFaxID"
-                                  size="20"
-                                  styleClass="text"
-                                  onchange="makeDirty()" />
-                    </td>
-                </tr>
-                <% } %>
-                <% if( FormFields.getInstance().useField(Field.SampleEntryProviderEmail)){ %>
-                    <tr>
-                    <td>
-                        <%= StringUtil.getContextualMessageForKey("sample.entry.project.email")%>:
-                    </td>
-                    <td>
-                        <app:text name="<%=formName%>"
-                                  property="providerEmail"
-                                  styleId="providerEmailID"
-                                  size="20"
-                                  styleClass="text"
-                                  onchange="makeDirty()" />
-                    </td>
-                </tr>
-                <% } %>
-                <% if( FormFields.getInstance().useField(Field.SampleEntryHealthFacilityAddress)) {%>
-                <tr>
-                    <td><bean:message key="sample.entry.facility.address"/>:</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;&nbsp;<bean:message key="sample.entry.facility.street"/>
-                    <td>    
-                    <html:text name='<%=formName %>'
-                               property="facilityAddressStreet" 
-                               styleClass="text"
-                               onchange="makeDirty()"/>
-                    </td>            
-                </tr>
-                <tr>
-                    <td>&nbsp;&nbsp;<bean:message key="sample.entry.facility.commune"/>:<td>    
-                    <html:text name='<%=formName %>'
-                               property="facilityAddressCommune" 
-                               styleClass="text"
-                               onchange="makeDirty()"/>
-                    </td>  
-                </tr>
-                <tr>
-                    <td><bean:message key="sample.entry.facility.phone"/>:<td>  
-                    <html:text name='<%=formName %>'
-                               property="facilityPhone" 
-                               styleClass="text"
-                               maxlength="17"
-                               onchange="makeDirty(); validatePhoneNumber( this );"/>
-                    </td>  
-                </tr>
-                <tr>
-                    <td><bean:message key="sample.entry.facility.fax"/>:<td>    
-                    <html:text name='<%=formName %>'
-                               property="facilityFax" 
-                               styleClass="text"
-                               onchange="makeDirty()"/>
-                    </td>  
-                </tr>
-                <% } %>
-                <tr><td>&nbsp;</td></tr>
-                <% if( trackPayment){ %>
-                <tr>
-                    <td><bean:message key="sample.entry.patientPayment"/>: </td>
-                    <td>
-                        
-                    <html:select name="<%=formName %>" property="paymentOptionSelection" >
-                                <option value='' ></option>
-                    <logic:iterate id="optionValue" name='<%=formName%>' property="paymentOptions" type="IdValuePair" >
-                                <option value='<%=optionValue.getId()%>' >
-                                    <bean:write name="optionValue" property="value"/>
-                                </option>
-                    </logic:iterate>
-                    </html:select>
-                    </td>
-                </tr>
-                <% } %>
-                <% if( FormFields.getInstance().useField(Field.SampleEntryLabOrderTypes)) {%>
-                <tr >
-                    <td><bean:message key="sample.entry.sample.period"/>:</td>
-                    <td>
-                        <html:select name="<%=formName %>" 
-                                     property="followupPeriodOrderType" 
-                                     onchange="makeDirty(); labPeriodChanged( this, '8' )" 
-                                     styleId="followupLabOrderPeriodId" 
-                                     style="display:none">
-                        <option value='' ></option>
-                        <logic:iterate id="optionValue" name='<%=formName%>' property="followupPeriodOrderTypes" type="IdValuePair" >
-                        <option value='<%=optionValue.getId()%>' >
-                            <bean:write name="optionValue" property="value"/>
-                        </option>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                        </logic:iterate>
-                        </html:select>
-                        <html:select name="<%=formName %>" 
-                                     property="initialPeriodOrderType" 
-                                     onchange="makeDirty(); labPeriodChanged( this, '2' )" 
-                                     styleId="initialLabOrderPeriodId" 
-                                     style="display:none">
-                        <option value='' ></option>
-                        <logic:iterate id="optionValue" name='<%=formName%>' property="initialPeriodOrderTypes" type="IdValuePair" >
-                        <option value='<%=optionValue.getId()%>' >
-                            <bean:write name="optionValue" property="value"/>
-                        </option>
-                        </logic:iterate>
-                        </html:select>
-                        &nbsp;
-                        <html:text name='<%= formName %>' 
-                                   property="otherPeriodOrder" 
-                                   styleId="labOrderPeriodOtherId" 
-                                   style="display:none" />
-                    </td>                           
-                </tr>
-                <% } %>
-                <tr>
-                    <td>
-                        &nbsp;
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-</div>      
-<hr style="width: 100%; height: 5px" />
-<html:button property="showHide" value="+" onclick="showHideSection(this, 'samplesDisplay');" styleId="samplesSectionId" />
+<hr style="width:100%;height:5px" />
+<input type="button" name="showHide" value="+" onclick="showHideSection(this, 'samplesDisplay');" id="samplesSectionId">
 <%= StringUtil.getContextualMessageForKey("sample.entry.sampleList.label") %>
 <span class="requiredlabel">*</span>
 
@@ -1106,26 +657,26 @@ function  processPhoneSuccess(xhr){
 </div>
 
 <br />
-<hr style="width: 100%; height: 5px" />
+<hr style="width:100%;height:5px" />
 <html:hidden name="<%=formName%>" property="patientPK" styleId="patientPK"/>
 
 <table style="width:100%">
     <tr>
-        <td width="15%" align="left">
-            <html:button property="showPatient" onclick="showHideSection(this, 'patientInfo');" >+</html:button>
+        <td style="width:15%;text-align:left">
+            <input type="button" name="showHide" value="+" onclick="showHideSection(this, 'patientInfo');" id="orderSectionId">
             <bean:message key="sample.entry.patient" />:
             <% if ( patientRequired ) { %><span class="requiredlabel">*</span><% } %>
         </td>
-        <td width="15%" id="firstName"><b>&nbsp;</b></td>
-        <td width="15%">
+        <td style="width:15%" id="firstName"><b>&nbsp;</b></td>
+        <td style="width:15%">
             <% if(useMothersName){ %><bean:message key="patient.mother.name"/>:<% } %>
         </td>
-        <td width="15%" id="mother"><b>&nbsp;</b></td>
-        <td width="10%">
+        <td style="width:15%" id="mother"><b>&nbsp;</b></td>
+        <td style="width:10%">
             <% if( useSTNumber){ %><bean:message key="patient.ST.number"/>:<% } %>
         </td>
-        <td width="15%" id="st"><b>&nbsp;</b></td>
-        <td width="5%">&nbsp;</td>
+        <td style="width:15%" id="st"><b>&nbsp;</b></td>
+        <td style="width:5%">&nbsp;</td>
     </tr>
     <tr>
         <td>&nbsp;</td>
@@ -1248,22 +799,5 @@ function /*void*/ registerSampleChangedForSampleEntry(){
 registerPatientChangedForSampleEntry();
 registerSampleChangedForSampleEntry();
 
-// Moving autocomplete to end - needs to be at bottom for IE to trigger properly
-$jq(document).ready(function(){
-        var dropdown = $jq( "select#requesterId" );
-        autoCompleteWidth = dropdown.width() + 66 + 'px';
-        clearNonMatching = false;
-        capitialize = true;
-        // Actually executes autocomplete
-        dropdown.combobox();
-       // invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add badmessage icon
-        maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>'; 
-        
-        resultCallBack = function( textValue) {
-                siteListChanged(textValue);
-                makeDirty();
-                setSave();
-                };
-});
 
 </script>

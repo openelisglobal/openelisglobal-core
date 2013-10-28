@@ -18,12 +18,12 @@
 
 package us.mn.state.health.lims.observationhistory.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import java.util.List;
 
 /**
  * Record of survey/interview questions.  First used for Côte d'Ivoire RetroCI Study forms.
@@ -35,6 +35,8 @@ public interface ObservationHistoryDAO {
     public boolean insertData(ObservationHistory observation) throws LIMSRuntimeException;
 
     public void updateData(ObservationHistory observation) throws LIMSRuntimeException;
+
+    public void insertOrUpdateData(ObservationHistory observation) throws LIMSRuntimeException;
 
 	public List<ObservationHistory> getAll(Patient patient, Sample sample);
 

@@ -16,10 +16,10 @@
 */
 package us.mn.state.health.lims.requester.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
+
+import java.util.List;
 
 
 public interface SampleRequesterDAO{
@@ -28,4 +28,9 @@ public interface SampleRequesterDAO{
 
 	public List<SampleRequester> getRequestersForSampleId(String sampleId) throws LIMSRuntimeException;
 
+    void updateData( SampleRequester sampleRequester )  throws LIMSRuntimeException;
+
+    void insertOrUpdateData( SampleRequester sampleRequester )  throws LIMSRuntimeException;;
+
+    void delete( SampleRequester sampleRequester  ) throws LIMSRuntimeException;
 }

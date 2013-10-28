@@ -6,10 +6,9 @@
     <class name="us.mn.state.health.lims.requester.valueholder.SampleRequester" table="sample_requester" optimistic-lock="version" dynamic-update="true">
         <composite-id>
         	<key-property name="sampleId" column="sample_id"  />
-        	<key-property name="requesterId" column="requester_id" />
         	<key-property name="requesterTypeId" column="requester_type_id" />
        </composite-id>
-        
         <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field"/>
+        <property name="requesterId"  column="requester_id" />
     </class>
 </hibernate-mapping>

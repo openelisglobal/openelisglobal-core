@@ -780,7 +780,7 @@ public abstract class HaitiPatientReport extends Report{
 		data.setHealthRegion(getLazyPatientIdentity(healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID));
 		data.setHealthDistrict(getLazyPatientIdentity(healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID));
 		data.setTestName(testName);
-		data.setPatientSiteNumber(ObservationHistoryService.getValue(ObservationType.REFERRERS_PATIENT_ID, reportSample));
+		data.setPatientSiteNumber(ObservationHistoryService.getValue(ObservationType.REFERRERS_PATIENT_ID, reportSample.getId()));
 
 		if(doAnalysis){
 			data.setPanel(reportAnalysis.getPanel());

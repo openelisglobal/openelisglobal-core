@@ -1,10 +1,7 @@
 package us.mn.state.health.lims.observationhistory.daoimpl;
 
-import java.util.List;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.common.daoimpl.GenericDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -12,6 +9,8 @@ import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import java.util.List;
 
 public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, ObservationHistory> implements ObservationHistoryDAO {
 
@@ -26,7 +25,16 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 	}
 
 
-	public List<ObservationHistory> getAll(Patient patient, Sample sample) {
+    @Override
+    public void insertOrUpdateData( ObservationHistory observation ) throws LIMSRuntimeException{
+        if(observation.getId() == null){
+            insertData( observation );
+        }else{
+            updateData( observation );
+        }
+    }
+
+    public List<ObservationHistory> getAll(Patient patient, Sample sample) {
 		ObservationHistory dh = new ObservationHistory();
 		dh.setPatientId(patient.getId());
 		dh.setSampleId(sample.getId());
