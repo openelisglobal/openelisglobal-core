@@ -27,7 +27,7 @@ public class TestReflexBean {
 	private Sample sample;
 	private Result result;
 	private Patient patient;
-	private Map<String,List<String>> parentToSelectedReflexMap;
+	private Map<String,List<String>> triggersToSelectedReflexesMap;
 	
 	public Sample getSample() {
 		return sample;
@@ -48,11 +48,11 @@ public class TestReflexBean {
 		this.patient = patient;
 	}
 
-    public Map<String, List<String>> getParentToSelectedReflexMap(){
-        return parentToSelectedReflexMap;
+    public Map<String, List<String>> getTriggersToSelectedReflexesMap(){
+        return triggersToSelectedReflexesMap;
     }
 
-    public void setParentToSelectedReflexMap( Map<String, List<String>> parentToSelectedReflexMap ){
-        this.parentToSelectedReflexMap = parentToSelectedReflexMap;
+    public void setTriggersToSelectedReflexesMap( Map<String, List<String>> triggersToSelectedReflexesMap ){
+        this.triggersToSelectedReflexesMap = triggersToSelectedReflexesMap;
     }
 }

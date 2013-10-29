@@ -285,11 +285,10 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 				for (Result result : sampleGroup.resultList) {
 					TestReflexBean reflex = new TestReflexBean();
 					reflex.setPatient(sampleGroup.patient);
+                    reflex.setTriggersToSelectedReflexesMap( sampleGroup.triggersToSelectedReflexesMap );
 					reflex.setResult(result);
 					reflex.setSample(sampleGroup.sample);
 					reflexBeanList.add(reflex);
-                    //TODO - fix for analyzers
-					//reflex.setReflexSelectionId(sampleGroup.resultToUserserSelectionMap.get(result));
 				}
 			}
 		}
@@ -333,10 +332,11 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 
 		// for the last set of results the grouping number will not change
 		SampleGrouping sampleGrouping = createRecordsForNewResult(groupedResultList);
+        //TODO currently there are no user selections of reflexes on the analyzer result page so for now this is ok
+        sampleGrouping.triggersToSelectedReflexesMap = new HashMap<String, List<String>>( );
 
-		if (sampleGrouping != null) {
-			sampleGroupList.add(sampleGrouping);
-		}
+		sampleGroupList.add(sampleGrouping);
+
 	}
 
 	private SampleGrouping createRecordsForNewResult(List<AnalyzerResultItem> groupedAnalyzerResultItems) {
@@ -747,7 +747,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 
 	private TestResult getTestResultForResult(AnalyzerResultItem resultItem) {
 		if ("D".equals(resultItem.getTestResultType())) {
-			TestResult testResult = null;
+			TestResult testResult;
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(resultItem.getTestId(), resultItem.getResult());
 			return testResult;
 		} else {
@@ -914,6 +914,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		private SampleItem sampleItem;
 		private List<Analysis> analysisList;
 		public List<Result> resultList;
+        public Map<String,List<String>> triggersToSelectedReflexesMap;
 		private StatusSet statusSet;
 		private boolean addSample = false; // implies adding patient
 		private boolean updateSample = false;

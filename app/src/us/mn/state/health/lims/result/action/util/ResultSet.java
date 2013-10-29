@@ -34,21 +34,21 @@ public class ResultSet {
 	public Note note;
 	public Patient patient;
 	public Sample sample;
-	public Map<String,List<String>> parentToSelectedReflexMap;
+	public Map<String,List<String>> triggersToSelectedReflexesMap;
 	public Referral newReferral;
 	public Referral existingReferral;
 	public boolean alwaysInsertSignature = false;
 
 
 	public ResultSet(Result result, ResultSignature signature, ResultInventory testKit, Note note, Patient patient, Sample sample,
-                     Map<String,List<String>> parentToSelectedReflexMap , Referral newReferral, Referral existingReferral) {
+                     Map<String,List<String>> triggersToSelectedReflexesMap , Referral newReferral, Referral existingReferral) {
 		this.result = result;
 		this.signature = signature;
 		this.testKit = testKit;
 		this.note = note;
 		this.patient = patient;
 		this.sample = sample;
-		this.parentToSelectedReflexMap = parentToSelectedReflexMap;
+		this.triggersToSelectedReflexesMap = triggersToSelectedReflexesMap;
 		this.newReferral = newReferral;
 		this.existingReferral = existingReferral;
 		

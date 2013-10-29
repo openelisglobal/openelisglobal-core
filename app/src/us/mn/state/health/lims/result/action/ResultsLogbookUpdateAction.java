@@ -321,7 +321,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		for(ResultSet resultSet : resultSetList){
 			TestReflexBean reflex = new TestReflexBean();
 			reflex.setPatient(resultSet.patient);
-            reflex.setParentToSelectedReflexMap( resultSet.parentToSelectedReflexMap );
+            reflex.setTriggersToSelectedReflexesMap( resultSet.triggersToSelectedReflexesMap );
 			reflex.setResult(resultSet.result);
 			reflex.setSample(resultSet.sample);
 			reflexBeanList.add(reflex);
@@ -464,22 +464,22 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			}
 		}
 
-        Map<String,List<String>> parentToReflexMap = new HashMap<String, List<String>>(  );
+        Map<String,List<String>> triggersToReflexesMap = new HashMap<String, List<String>>(  );
 
-        getSelectedReflexes( testResultItem.getReflexJSONResult(), parentToReflexMap );
+        getSelectedReflexes( testResultItem.getReflexJSONResult(), triggersToReflexesMap );
 
         if(newResult){
-			newResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, parentToReflexMap, referral,
+			newResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, triggersToReflexesMap, referral,
 					existingReferral));
 		}else{
-			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, parentToReflexMap,
+			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, triggersToReflexesMap,
 					referral, existingReferral));
 		}
 
 		previousAnalysis = analysis;
 	}
 
-    private void getSelectedReflexes( String reflexJSONResult, Map<String, List<String>> parentToReflexMap ){
+    private void getSelectedReflexes( String reflexJSONResult, Map<String, List<String>> triggersToReflexesMap ){
         if( !GenericValidator.isBlankOrNull( reflexJSONResult )){
             JSONParser parser=new JSONParser();
             try{
@@ -492,7 +492,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
                     for( Object selectedReflex : selectedReflexes){
                         selectedReflexIds.add (((String)selectedReflex));
                     }
-                    parentToReflexMap.put( triggerIds.trim(), selectedReflexIds );
+                    triggersToReflexesMap.put( triggerIds.trim(), selectedReflexIds );
                 }
             }catch( ParseException e ){
                 e.printStackTrace();
@@ -556,12 +556,12 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		// This needs to be refactored -- part of the logic is in
 		// getStatusForTestResult
 		if(statusRuleSet.equals(IActionConstants.STATUS_RULES_RETROCI)){
-			if(analysis.getStatusId() != StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)){
+			if( !StatusService.getInstance().getStatusID(AnalysisStatus.Canceled).equals(analysis.getStatusId() )){
 				analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 				analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance));
 			}
-		}else if(analysis.getStatusId() == StatusService.getInstance().getStatusID(AnalysisStatus.Finalized) ||
-				analysis.getStatusId() == StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance) ||
+		}else if(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized).equals(analysis.getStatusId()) ||
+				StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance).equals(analysis.getStatusId()) ||
 				(analysis.isReferredOut() && !GenericValidator.isBlankOrNull(testResultItem.getResultValue()))){
 			analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 		}
@@ -577,10 +577,10 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			String[] multiResults = testResultItem.getMultiSelectResultValues().split(",");
 			List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
 
-			for(int i = 0; i < multiResults.length; i++){
+            for( String resultAsString : multiResults){
 				Result existingResultFromDB = null;
 				for(Result existingResult : existingResults){
-					if(multiResults[i].equals(existingResult.getValue())){
+					if(resultAsString.equals(existingResult.getValue())){
 						existingResultFromDB = existingResult;
 						break;
 					}
@@ -594,9 +594,9 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 				}
 				Result result = new Result();
 
-				setTestResultsForDictionaryResult(testResultItem.getTestId(), multiResults[i], result);
+				setTestResultsForDictionaryResult(testResultItem.getTestId(), resultAsString, result);
 				setNewResultValues(testResultItem, analysis, result);
-				setStandardResultValues(multiResults[i], result);
+				setStandardResultValues(resultAsString, result);
 				result.setSortOrder(getResultSortOrder(analysis, result.getValue()));
 
 				results.add(result);
