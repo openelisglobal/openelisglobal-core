@@ -17,20 +17,11 @@
  */
 package us.mn.state.health.lims.workplan.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -47,6 +38,13 @@ import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class WorkplanByPanelAction extends BaseWorkplanAction {
 
@@ -117,7 +115,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 						Sample sample = analysis.getSampleItem().getSample();
 						testResultItem.setAccessionNumber(sample.getAccessionNumber());
 						testResultItem.setPatientInfo(getSubjectNumber(analysis));
-						testResultItem.setNextVisitDate(ObservationHistoryService.getValue(ObservationType.NEXT_VISIT_DATE, sample));
+						testResultItem.setNextVisitDate(ObservationHistoryService.getValue(ObservationType.NEXT_VISIT_DATE, sample.getId()));
 						testResultItem.setReceivedDate(getReceivedDateDisplay(sample));
 						testResultItem.setTestName(analysis.getTest().getTestName());
 						testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));

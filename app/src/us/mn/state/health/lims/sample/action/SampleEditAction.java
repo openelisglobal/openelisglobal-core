@@ -28,21 +28,12 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.formfields.FormFields;
-import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
-import us.mn.state.health.lims.common.services.IPatientService;
-import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
-import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
-import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -78,7 +69,6 @@ public class SampleEditAction extends BaseAction {
 	private boolean isEditable = false;
 	private static Set<Integer> excludedAnalysisStatusList;
 	private static Set<Integer> includedSampleStatusList;
-	private static String PAYMENT_STATUS_OBSERVATION_ID = null;
 	private String maxAccessionNumber;
 
 	static {
@@ -88,12 +78,6 @@ public class SampleEditAction extends BaseAction {
 
 		includedSampleStatusList = new HashSet<Integer>();
 		includedSampleStatusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(SampleStatus.Entered)));
-		
-		ObservationHistoryType observationType = new ObservationHistoryTypeDAOImpl().getByName("paymentStatus");
-		if (observationType != null) {
-			PAYMENT_STATUS_OBSERVATION_ID = observationType.getId();
-		}
-
 	}
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -130,6 +114,7 @@ public class SampleEditAction extends BaseAction {
 				setCurrentTestInfo(dynaForm);
 				setAddableTestInfo(dynaForm);
 				setAddableSampleTypes(dynaForm);
+                setSampleOrderInfo(dynaForm);
 				PropertyUtils.setProperty(dynaForm, "maxAccessionNumber", maxAccessionNumber);
 			} else {
 				PropertyUtils.setProperty(dynaForm, "noSampleFound", Boolean.TRUE);
@@ -137,17 +122,6 @@ public class SampleEditAction extends BaseAction {
 		} else {
 			PropertyUtils.setProperty(dynaForm, "searchFinished", Boolean.FALSE);
 			request.getSession().setAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE, request.getParameter("type"));
-		}
-
-		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true")) {
-            PropertyUtils.setProperty(dynaForm,"paymentOptions", DisplayListService.getList(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS));
-
-			if (sample != null) {
-				ObservationHistory paymentObservation = new ObservationHistoryDAOImpl().getObservationHistoriesBySampleIdAndType(sample.getId(), PAYMENT_STATUS_OBSERVATION_ID);
-				if (paymentObservation != null) {
-					PropertyUtils.setProperty(dynaForm, "paymentOptionSelection", paymentObservation.getValue() );
-				}
-			}
 		}
 
 		if (FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition)) {
@@ -159,7 +133,12 @@ public class SampleEditAction extends BaseAction {
 		return mapping.findForward(forward);
 	}
 
-	private String getMostRecentAccessionNumberForPaitient(String patientID) {
+    private void setSampleOrderInfo( DynaActionForm dynaForm ) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        SampleOrderService sampleOrderService = new SampleOrderService( sample );
+        PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
+    }
+
+    private String getMostRecentAccessionNumberForPaitient(String patientID) {
 		String accessionNumber = null;
 		if( !GenericValidator.isBlankOrNull(patientID)){
 			List<Sample> samples = new SampleHumanDAOImpl().getSamplesForPatient(patientID);

@@ -63,4 +63,16 @@ public class SampleService {
     public Date getOrderedDate(){
 		return sample.getReceivedDate();
 	}
+
+    public String getAccessionNumber(){
+        return sample.getAccessionNumber();
+    }
+
+    public String getReceivedDateForDisplay(){
+        return sample.getReceivedDateForDisplay();
+    }
+
+    public String getReceivedTimeForDisplay(){
+        return sample.getReceivedTimeForDisplay();
+    }
 }

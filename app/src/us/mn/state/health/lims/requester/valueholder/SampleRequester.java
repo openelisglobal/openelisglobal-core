@@ -35,10 +35,10 @@ public class SampleRequester extends BaseObject {
 		this.sampleId = sampleId;
 	}
 
-	public void setSampleId(String sampleId) {
+/*	public void setSampleId(String sampleId) {
 		this.sampleId = Long.parseLong(sampleId);
 	}
-
+  */
 	public long getRequesterId() {
 		return requesterId;
 	}
@@ -81,5 +81,4 @@ public class SampleRequester extends BaseObject {
 	public String getId() {
 		return id;
 	}
-
 }

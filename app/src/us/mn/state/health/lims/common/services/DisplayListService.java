@@ -150,7 +150,7 @@ public class DisplayListService implements LocaleChangeListener {
 		List<IdValuePair> requesterList = new ArrayList<IdValuePair>();
 
 		OrganizationDAO organizationDAO = new OrganizationDAOImpl();
-		List<Organization> orgList = organizationDAO.getOrganizationsByTypeName("shortName", "referring clinic");
+		List<Organization> orgList = organizationDAO.getOrganizationsByTypeName("shortName", RequesterService.REFERRAL_ORG_TYPE );
 
 		for (Organization organization : orgList) {
 			if (GenericValidator.isBlankOrNull(organization.getShortName())) {

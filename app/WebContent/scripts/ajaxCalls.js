@@ -71,7 +71,7 @@ function testConnectionOnServer(connectionId, url, success, failure) {
 }
 
 function validateAccessionNumberOnServer(checkformatAndUsed, fieldId, accessionNumber, success, failure) {
-	if( !failure ){	failure = defaultFailure;}
+    if( !failure ){	failure = defaultFailure;}
 	new Ajax.Request(
 			'ajaxXML', // url
 			{// options
@@ -83,6 +83,20 @@ function validateAccessionNumberOnServer(checkformatAndUsed, fieldId, accessionN
 			});
 }
 
+function generateNextScanNumber(success, failure){
+    if( !failure ){	failure = defaultFailure;}
+
+    new Ajax.Request (
+        'ajaxQueryXML',  //url
+        {//options
+            method: 'get', //http method
+            parameters: "provider=SampleEntryGenerateScanProvider",
+            //indicator: 'throbbing'
+            onSuccess:  success,
+            onFailure:  failure
+        }
+    );
+}
 function validateNonConformityRecordNumberOnServer( field, success, failure){
 	if( !failure){failure = defaultFailure;	}
 

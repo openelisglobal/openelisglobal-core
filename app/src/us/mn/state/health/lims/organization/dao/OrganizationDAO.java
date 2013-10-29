@@ -15,12 +15,12 @@
 */
 package us.mn.state.health.lims.organization.dao;
 
-import java.util.List;
-import java.util.Set;
-
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.organization.valueholder.Organization;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author diane benz
@@ -57,17 +57,13 @@ public interface OrganizationDAO extends BaseDAO {
 	public Organization getOrganizationByName(Organization organization, boolean ignoreCase)
 			throws LIMSRuntimeException;
 
-	//bugzilla 1411
 	public Integer getTotalOrganizationCount() throws LIMSRuntimeException;
 
-	//bugzilla 2069
 	public Organization getOrganizationByLocalAbbreviation(Organization organization, boolean ignoreCase)
 	throws LIMSRuntimeException;
 
-	//bugzilla 2372
 	public List getPagesOfSearchedOrganizations (int startRecNo, String searchString)
                           throws LIMSRuntimeException;
-	// bugzilla 2372
 	public Integer getTotalSearchedOrganizationCount(String searchString) throws LIMSRuntimeException;
 
 	/**
@@ -85,6 +81,8 @@ public interface OrganizationDAO extends BaseDAO {
 	public List<Organization> getOrganizationsByTypeNameAndLeadingChars(String partialName, String typeName) throws LIMSRuntimeException;
 
 	public Organization getOrganizationById(String organizationId) throws LIMSRuntimeException;
-
+    public void insertOrUpdateData( Organization organization ) throws LIMSRuntimeException;
 	public List<Organization> getOrganizationsByParentId( String parentId) throws LIMSRuntimeException;
+
+
 }

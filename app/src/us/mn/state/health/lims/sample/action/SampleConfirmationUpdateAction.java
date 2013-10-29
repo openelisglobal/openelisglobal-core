@@ -192,7 +192,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 			sampleHumanDAO.insertData(sampleHuman);
 
 			if (orgSampleRequester != null) {
-				orgSampleRequester.setSampleId(sample.getId());
+				orgSampleRequester.setSampleId(Long.parseLong( sample.getId()));
 				sampleRequesterDAO.insertData(orgSampleRequester);
 			}
 
@@ -206,7 +206,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 
 			if (personSampleRequester != null) {
 				personSampleRequester.setRequesterId(personRequester.getId());
-				personSampleRequester.setSampleId(sample.getId());
+				personSampleRequester.setSampleId(Long.parseLong( sample.getId()));
 				sampleRequesterDAO.insertData(personSampleRequester);
 			}
 

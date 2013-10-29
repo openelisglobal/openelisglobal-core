@@ -16,12 +16,7 @@
 */
 package us.mn.state.health.lims.common.services;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
 import us.mn.state.health.lims.address.daoimpl.PersonAddressDAOImpl;
 import us.mn.state.health.lims.address.valueholder.AddressPart;
@@ -29,6 +24,10 @@ import us.mn.state.health.lims.address.valueholder.PersonAddress;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PersonService {
 	
@@ -119,7 +118,26 @@ public class PersonService {
 		
 		return phone;
 	}
-	
+
+    public String getWorkPhone(){
+        return person.getWorkPhone();
+    }
+
+    public String getCellPhone(){
+        return person.getCellPhone();
+    }
+
+    public String getHomePhone(){
+        return person.getHomePhone();
+    }
+
+    public String getFax(){
+        return person.getFax();
+    }
+
+    public String getEmail(){
+        return person.getEmail();
+    }
 	public Person getPerson(){
 		return person;
 	}
