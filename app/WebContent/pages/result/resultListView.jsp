@@ -903,7 +903,7 @@ function forceTechApproval(checkbox, index ){
 						 	     onclick='<%= "showHideNotes( " + index + ");" %>'
 						 	     id='<%="showHideButton_" + index %>'
 						    />
-            <input type="hidden" name="hideShowFlag" value="hidden" id="hideShow_0">
+            <input type="hidden" name="hideShowFlag" value="hidden" id='<%="hideShow_" + index %>' >
 		</td>
 	</tr>
 	<logic:notEmpty name="testResult" property="pastNotes">
