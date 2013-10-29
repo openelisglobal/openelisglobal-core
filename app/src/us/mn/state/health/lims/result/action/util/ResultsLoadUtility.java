@@ -246,9 +246,7 @@ public class ResultsLoadUtility {
 
 		List<Analysis> analysisList = analysisDAO.getAllAnalysisByTestSectionAndStatus(testSectionId, analysisStatusList, sampleStatusList);
 
-		List<TestResultItem> selectedTest = getGroupedTestsForAnalysisList(analysisList, SORT_FORWARD);
-
-		return selectedTest;
+		return getGroupedTestsForAnalysisList(analysisList, SORT_FORWARD);
 	}
 
 	public List<TestResultItem> getGroupedTestsForAnalysisList(List<Analysis> filteredAnalysisList, boolean forwardSort)

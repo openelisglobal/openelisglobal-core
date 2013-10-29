@@ -119,7 +119,7 @@ function getSelectedTestDisplay( classValue, index, targetIds, parent, tests, ed
      return "<tr id='reflexSelection_" + index + "_" + targetIds + "' class='" + classValue + " reflexSelection_" + index + "'  >" +
         "<td colspan='5' style='text-align:right'>" + parent + "</td>" +
         "<td colspan='3'><textarea  readonly='true' id='reflexedTests' rows='2' style='width:98%' >" + tests + "</textarea></td>" +
-        "<td colspan='1' style='text-align: left'><input type='button' value='" + editLabel + "' onclick=\"editReflexes('" + index + "', '" + targetIds  + "');\"></td>"
+        "<td colspan='1' style='text-align: left'><input type='button' value='" + editLabel + "' onclick=\"editReflexes('" + index + "', '" + targetIds  + "');\"></td>"   +
     "</tr>";
 }
 

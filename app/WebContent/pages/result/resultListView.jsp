@@ -166,7 +166,7 @@ function handleMultiSelectChange( e, data ){
             showUserReflexChoices( e.target.id.split("_")[1], data.value )
         }
 	}else{ //drop
-        removeReflexesFor( data.value, id.split("_")[1])
+        removeReflexesFor( data.value, id.split("_")[1]);
 		var splitValues =  selection.value.split(",");
 		selection.value = "";
 

@@ -76,19 +76,16 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 			jString = "Internal error, please contact Admin and file bug report";
 		} else {
             jResult = createJsonTestReflex( resultIds, analysisIds, testIds, accessionNumber, rowIndex, jsonResult );
-		}
-
-
-        StringWriter out = new StringWriter();
-        try{
-            jsonResult.writeJSONString( out );
-            jString = out.toString();
-        }catch( IOException e ){
-            e.printStackTrace();
-            jResult = INVALID;
-            jString = "Internal error, please contact Admin and file bug report";
+            StringWriter out = new StringWriter();
+            try{
+                jsonResult.writeJSONString( out );
+                jString = out.toString();
+            }catch( IOException e ){
+                e.printStackTrace();
+                jResult = INVALID;
+                jString = "Internal error, please contact Admin and file bug report";
+            }
         }
-
 		ajaxServlet.sendData(jString, jResult, request, response);
 
 	}

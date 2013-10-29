@@ -147,7 +147,7 @@ public class AnalyzerResultsAction extends BaseAction {
 					}
 				}
 
-				PropertyUtils.setProperty(dynaForm, "missingTestMsg", new Boolean(missingTest));
+				PropertyUtils.setProperty(dynaForm, "missingTestMsg", missingTest);
 
 				paging.setDatabaseResults(request, dynaForm, analyzerResultItemList);
 			}
@@ -329,8 +329,7 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private Sample getSampleForAnalyzerResult(AnalyzerResults result) {
-		Sample sample = sampleDAO.getSampleByAccessionNumber(result.getAccessionNumber());
-		return sample;
+		return sampleDAO.getSampleByAccessionNumber(result.getAccessionNumber());
 	}
 
 	private void setChoiceForCurrentValue(AnalyzerResultItem resultItem, AnalyzerResults analyzerResult) {
@@ -488,7 +487,7 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	protected String getPageSubtitleKey() {
-		String key = null;
+		String key;
 
 		switch (analyzerType) {
 		case COBAS_INTEGRA400: {
