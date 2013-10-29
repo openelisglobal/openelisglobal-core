@@ -231,10 +231,10 @@ public class TestReflexUtil {
 		Collections.sort(newResults, new Comparator<TestReflexBean>(){
 
 			public int compare(TestReflexBean o1, TestReflexBean o2) {
-				if( o1.getParentToSelectedReflexMap().isEmpty()){
-					return o2.getParentToSelectedReflexMap().isEmpty() ? 0 : 1;
+				if( o1.getTriggersToSelectedReflexesMap().isEmpty()){
+					return o2.getTriggersToSelectedReflexesMap().isEmpty() ? 0 : 1;
 				}else{
-					return o2.getParentToSelectedReflexMap().isEmpty() ? -1 : 0;
+					return o2.getTriggersToSelectedReflexesMap().isEmpty() ? -1 : 0;
 				}
 			}});
 		
@@ -253,7 +253,7 @@ public class TestReflexUtil {
 			List<String> handledReflexIdList = getHandledReflexesForSample(sampleIdToHandledTestReflexIds, reflexBean);
 
 			// use cases 1-6
-			if (reflexBean.getParentToSelectedReflexMap().isEmpty()) {
+			if (reflexBean.getTriggersToSelectedReflexesMap().isEmpty()) {
                 handleAutomaticReflexes( parentAnalysisList, reflexBean, handledReflexIdList );
             } else { // use cases 7,8,9
                 handleUserSelectedReflexes( parentAnalysisList, reflexBean );
@@ -267,8 +267,8 @@ public class TestReflexUtil {
         //picked up fix it there
 
 
-        for (String triggeringTests : reflexBean.getParentToSelectedReflexMap().keySet()) {
-            List<String> addedActionIds = reflexBean.getParentToSelectedReflexMap().get( triggeringTests );
+        for (String triggeringTests : reflexBean.getTriggersToSelectedReflexesMap().keySet()) {
+            List<String> addedActionIds = reflexBean.getTriggersToSelectedReflexesMap().get( triggeringTests );
             // no reflexes triggered so no parents
             parentAnalysisList.clear();
 
@@ -554,10 +554,9 @@ public class TestReflexUtil {
 		Map<Sample, List<TestReflexBean>> groupedBeans = new HashMap<Sample, List<TestReflexBean>>();
 
 		for (TestReflexBean bean : reflexBeanList) {
-			List<TestReflexBean> beanList;
-			if (groupedBeans.containsKey(bean.getSample())) {
-				beanList = groupedBeans.get(bean);
-			} else {
+			List<TestReflexBean> beanList = groupedBeans.get(bean.getSample());
+
+			if (beanList == null) {
 				beanList = new ArrayList<TestReflexBean>();
 				groupedBeans.put(bean.getSample(), beanList);
 			}
