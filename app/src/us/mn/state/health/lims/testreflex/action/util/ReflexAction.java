@@ -104,7 +104,7 @@ public abstract class ReflexAction {
 	 * This method should respond to directions from the flag
 	 */
 	protected void handleFlagAction(TestReflex reflex, String actionSelectionId) {
-		if (TestReflexUtil.USER_CHOOSE_FLAG.equals(reflex.getFlags()) && actionSelectionId != null) {
+		if (TestReflexUtil.isUserChoiceReflex( reflex ) && actionSelectionId != null) {
 			String[] parsedSelection = actionSelectionId.split("_");
 			
 			if( "script".equals(parsedSelection[0])){

@@ -21,6 +21,10 @@ import org.apache.struts.Globals;
 import org.apache.struts.action.*;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -242,7 +246,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}catch(LIMSRuntimeException lre){
 			tx.rollback();
 
-			ActionError error = null;
+			ActionError error;
 			if(lre.getException() instanceof StaleObjectStateException){
 				error = new ActionError("errors.OptimisticLockException", null, null);
 			}else{
@@ -317,7 +321,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		for(ResultSet resultSet : resultSetList){
 			TestReflexBean reflex = new TestReflexBean();
 			reflex.setPatient(resultSet.patient);
-			reflex.setReflexSelectionId(resultSet.actionSelectionId);
+            reflex.setParentToSelectedReflexMap( resultSet.parentToSelectedReflexMap );
 			reflex.setResult(resultSet.result);
 			reflex.setSample(resultSet.sample);
 			reflexBeanList.add(reflex);
@@ -409,7 +413,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		Note note = NoteUtil.createSavableNote(null, testResultItem.getNote(), testResultItem.getResultId(),
 				ResultsLoadUtility.getResultReferenceTableId(), RESULT_SUBJECT, currentUserId, NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
 
-		analysis.setStatusId(getStatusForTestResult(testResultItem, analysis));
+		analysis.setStatusId(getStatusForTestResult(testResultItem));
 		analysis.setReferredOut(testResultItem.isReferredOut());
 		analysis.setEnteredDate(DateUtil.getNowAsTimestamp());
 
@@ -460,20 +464,43 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			}
 		}
 
-		String actionSelectionId = testResultItem.getReflexSelectionId();
+        Map<String,List<String>> parentToReflexMap = new HashMap<String, List<String>>(  );
 
-		if(newResult){
-			newResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, actionSelectionId, referral,
+        getSelectedReflexes( testResultItem.getReflexJSONResult(), parentToReflexMap );
+
+        if(newResult){
+			newResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, parentToReflexMap, referral,
 					existingReferral));
 		}else{
-			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, actionSelectionId,
+			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, parentToReflexMap,
 					referral, existingReferral));
 		}
 
 		previousAnalysis = analysis;
 	}
 
-	private String getStatusForTestResult(TestResultItem testResult, Analysis analysis){
+    private void getSelectedReflexes( String reflexJSONResult, Map<String, List<String>> parentToReflexMap ){
+        if( !GenericValidator.isBlankOrNull( reflexJSONResult )){
+            JSONParser parser=new JSONParser();
+            try{
+                JSONObject jsonResult = ( JSONObject ) parser.parse( reflexJSONResult.replaceAll( "'", "\"" ) );
+
+                for(Object compoundReflexes : jsonResult.values()){
+                    String triggerIds = (String)((JSONObject)compoundReflexes).get( "triggerIds" );
+                    List<String> selectedReflexIds = new ArrayList<String>(  );
+                    JSONArray selectedReflexes = (JSONArray)( ( JSONObject ) compoundReflexes ).get( "selected" );
+                    for( Object selectedReflex : selectedReflexes){
+                        selectedReflexIds.add (((String)selectedReflex));
+                    }
+                    parentToReflexMap.put( triggerIds.trim(), selectedReflexIds );
+                }
+            }catch( ParseException e ){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String getStatusForTestResult(TestResultItem testResult){
 		if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance);
 		}else if(noResults(testResult.getResultValue(), testResult.getMultiSelectResultValues(), testResult.getResultType())){
@@ -669,7 +696,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	}
 
 	private TestResult setTestResultsForDictionaryResult(String testId, String dictValue, Result result){
-		TestResult testResult = null;
+		TestResult testResult;
 		testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(testId, dictValue);
 
 		if(testResult != null){

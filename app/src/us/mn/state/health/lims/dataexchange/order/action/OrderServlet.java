@@ -150,7 +150,7 @@ public class OrderServlet extends HohServlet{
 
 					}
 				}else{
-					response = (ACK)omlMessage.generateACK(AcknowledgmentCode.AE, new HL7Exception("Unknow result thrown"));
+					response = (ACK)omlMessage.generateACK(AcknowledgmentCode.AE, new HL7Exception("Unknown result thrown"));
 				}
 
 			}catch(IOException e){
