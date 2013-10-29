@@ -17,20 +17,15 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
-import us.mn.state.health.lims.common.util.XMLUtil;
+import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
+import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -45,12 +40,23 @@ import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.*;
+
 public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 
-	private static final String ID_SEPERATOR = ",";
+    private static final String ID_SEPERATOR = ",";
 	protected AjaxServlet ajaxServlet = null;
+    private static final AnalysisDAO ANALYSIS_DAO = new AnalysisDAOImpl();
+    private static final TestReflexDAO TEST_REFLEX_DAO = new TestReflexDAOImpl();
+    private static final TestResultDAO TEST_RESULT_DAO = new TestResultDAOImpl();
+    private static final ResultDAO RESULT_DAO = new ResultDAOImpl();
 
-	@Override
+    @Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String resultIds = request.getParameter("resultIds");
@@ -59,38 +65,47 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 		String rowIndex = request.getParameter("rowIndex");
 		String accessionNumber = request.getParameter("accessionNumber");
 
-		StringBuilder xml = new StringBuilder();
-
-		String result = VALID;
-
+        String jResult = "";
+        JSONObject jsonResult =new JSONObject();
+        String jString = "";
 		if (GenericValidator.isBlankOrNull(resultIds) || 
 				GenericValidator.isBlankOrNull(testIds) || 
 				GenericValidator.isBlankOrNull(rowIndex) ||
 				(GenericValidator.isBlankOrNull(analysisIds) && GenericValidator.isBlankOrNull(accessionNumber))) {
-			result = INVALID;
-			xml.append("Internal error, please contact Admin and file bug report");
+			jResult = INVALID;
+			jString = "Internal error, please contact Admin and file bug report";
 		} else {
-			result = createTestReflexXML(resultIds, analysisIds, testIds, accessionNumber, rowIndex, xml);
-		}
-
-		ajaxServlet.sendData(xml.toString(), result, request, response);
+            jResult = createJsonTestReflex( resultIds, analysisIds, testIds, accessionNumber, rowIndex, jsonResult );
+            StringWriter out = new StringWriter();
+            try{
+                jsonResult.writeJSONString( out );
+                jString = out.toString();
+            }catch( IOException e ){
+                e.printStackTrace();
+                jResult = INVALID;
+                jString = "Internal error, please contact Admin and file bug report";
+            }
+        }
+		ajaxServlet.sendData(jString, jResult, request, response);
 
 	}
 
-	private String createTestReflexXML(String resultIds, String analysisIds, String testIds, String accessionNumber, String rowIndex, StringBuilder xml) {
-		TestReflexUtil reflexUtil = new TestReflexUtil();
-		String[] resultIdSeries = resultIds.split(ID_SEPERATOR);
+    private String createJsonTestReflex( String resultIds, String analysisIds, String testIds, String accessionNumber, String rowIndex, JSONObject jsonResult ){
+
+        TestReflexUtil reflexUtil = new TestReflexUtil();
+        String[] resultIdSeries = resultIds.split(ID_SEPERATOR);
 
 		/*
 		 * Here's the deal. If the UC test reflex has both an add_test_id and a
 		 * scriptlet_id then we are done. If it has only one Then we need to
 		 * look for the other
 		 */
-		TestReflex testReflexOne = null;
-		TestReflex testReflexTwo = null;
-		// Both test given results on client
-		if (resultIdSeries.length > 1) {
-			String[] testIdSeries = testIds.split(ID_SEPERATOR);
+        ArrayList<TestReflex> selectableReflexes = new ArrayList<TestReflex>( );
+        HashSet<String> reflexTriggers = new HashSet<String>(  );
+        HashSet<String> reflexTriggerIds = new HashSet<String>(  );
+        // Both test given results on client
+        if (resultIdSeries.length > 1) {
+/*			String[] testIdSeries = testIds.split(ID_SEPERATOR);
 
 			List<TestReflex> testReflexesForResultOne = reflexUtil.getTestReflexsForDictioanryResultTestId(resultIdSeries[0],
 					testIdSeries[0], true);
@@ -103,7 +118,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 				for (TestReflex reflexFromResultOne : testReflexesForResultOne) {
 					for (TestReflex sibReflex : sibTestReflexList) {
 						if (areSibs(reflexFromResultOne, sibReflex)
-								&& TestReflexUtil.USER_CHOOSE_FLAG.equals(reflexFromResultOne.getFlags())) {
+								&& TestReflexUtil.isUserChoiceReflex( reflexFromResultOne )) {
 							if (reflexFromResultOne.getActionScriptlet() != null) {
 								testReflexOne = reflexFromResultOne;
 								allChoicesFound = true;
@@ -122,84 +137,93 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 					}
 				}
 			}
-			// One test given results on client, the other is in the DB
-		} else {
-			// for each reflex we are going to try and find a sibling reflex
-			// which is currently satisfied
-			// get their common sample
-			AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-			TestReflexDAO testReflexDAO = new TestReflexDAOImpl();
-			TestResultDAO testResultDAO = new TestResultDAOImpl();
-			ResultDAO resultDAO = new ResultDAOImpl();
+*/			// One test given results on client, the other is in the DB
+        } else {
+            // for each reflex we are going to try and find a sibling reflex
+            // which is currently satisfied
+            // get their common sample
 
-			Sample sample = getSampleForKnownTest(analysisIds, accessionNumber, analysisDAO);
-			
-			List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
+            Sample sample = getSampleForKnownTest(analysisIds, accessionNumber, ANALYSIS_DAO );
+            Dictionary dictionaryResult = new DictionaryDAOImpl().getDictionaryById( resultIds );
 
-			List<TestReflex> possibleTestReflexList = reflexUtil.getTestReflexsForDictioanryResultTestId(resultIds, testIds, true);
+            List<Analysis> analysisList = ANALYSIS_DAO.getAnalysesBySampleId( sample.getId() );
 
-			for (TestReflex possibleTestReflex : possibleTestReflexList) {
-				if (TestReflexUtil.USER_CHOOSE_FLAG.equals(possibleTestReflex.getFlags())) {
-					if (GenericValidator.isBlankOrNull(possibleTestReflex.getSiblingReflexId())) {
-						if (possibleTestReflex.getActionScriptlet() != null) {
-							testReflexOne = possibleTestReflex;
-							break;
-						} else if (testReflexOne == null) {
-							testReflexOne = possibleTestReflex;
-						} else {
-							testReflexTwo = possibleTestReflex;
-							break;
-						}
-					} else {
-						// find if the sibling reflex is satisfied
-						TestReflex sibTestReflex = new TestReflex();
-						sibTestReflex.setId(possibleTestReflex.getSiblingReflexId());
+            List<TestReflex> candidateReflexList = reflexUtil.getTestReflexsForDictioanryResultTestId(resultIds, testIds, true);
 
-						testReflexDAO.getData(sibTestReflex);
+            for (TestReflex candidateReflex : candidateReflexList) {
+                if (TestReflexUtil.isUserChoiceReflex( candidateReflex )) {
+                    if (GenericValidator.isBlankOrNull( candidateReflex.getSiblingReflexId() )) {
+                        selectableReflexes.add( candidateReflex );
+                        reflexTriggers.add( candidateReflex.getTest().getLocalizedName() + ":" + dictionaryResult.getDictEntry() );
+          //              reflexTriggerIds.add( candidateReflex.getTest().getId() );
+                    } else {
+                        // find if the sibling reflex is satisfied
+                        TestReflex sibTestReflex = new TestReflex();
+                        sibTestReflex.setId(candidateReflex.getSiblingReflexId() );
 
-						TestResult sibTestResult = new TestResult();
-						sibTestResult.setId(sibTestReflex.getTestResultId());
-						testResultDAO.getData(sibTestResult);
+                        TEST_REFLEX_DAO.getData( sibTestReflex );
 
-						for (Analysis analysis : analysisList) {
-							List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
-							Test test = analysis.getTest();
+                        TestResult sibTestResult = new TestResult();
+                        sibTestResult.setId(sibTestReflex.getTestResultId());
+                        TEST_RESULT_DAO.getData( sibTestResult );
 
-							for (Result result : resultList) {
-								TestResult testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(test.getId(),
-										result.getValue());
-								if (testResult != null && testResult.getId().equals(sibTestReflex.getTestResultId())) {	
-									if (possibleTestReflex.getActionScriptlet() != null) {
-										testReflexOne = possibleTestReflex;
-										break;
-									} else if (testReflexOne == null) {
-										testReflexOne = possibleTestReflex;
-									} else {
-										testReflexTwo = possibleTestReflex;
-										break;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                        for (Analysis analysis : analysisList) {
+                            List<Result> resultList = RESULT_DAO.getResultsByAnalysis( analysis );
+                            Test test = analysis.getTest();
 
-		if (testReflexOne != null) {
-			xml.append("<userchoice>");
-			XMLUtil.appendKeyValue("rowIndex", rowIndex, xml);
-			createChoiceElement(testReflexOne, testReflexTwo, xml);
-			xml.append("</userchoice>");
+                            for (Result result : resultList) {
+                                TestResult testResult = TEST_RESULT_DAO.getTestResultsByTestAndDictonaryResult( test.getId(),
+                                        result.getValue() );
+                                if (testResult != null && testResult.getId().equals(sibTestReflex.getTestResultId())) {
+                                    selectableReflexes.add(candidateReflex);
+                                    reflexTriggers.add( candidateReflex.getTest().getLocalizedName() + ":" + dictionaryResult.getDictEntry() );
+                       //             reflexTriggerIds.add( candidateReflex.getTest().getId() );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-			return VALID;
-		}
-		
-		xml.append("<userchoice/>");
-		return INVALID;
-	}
 
-	private Sample getSampleForKnownTest(String analysisIds, String accessionNumber, AnalysisDAO analysisDAO) {
+        }
+
+        if (  selectableReflexes.size() > 1) {
+            jsonResult.put( "rowIndex", rowIndex );
+            createTriggerList( reflexTriggers, resultIds, jsonResult);
+            createChoiceElement(selectableReflexes, jsonResult);
+            createPlaceholderForSelectedReflexes(jsonResult) ;
+            return VALID;
+        }
+
+        return INVALID;
+    }
+
+    private void createPlaceholderForSelectedReflexes( JSONObject jsonResult ){
+        jsonResult.put( "selected", new JSONArray());
+    }
+
+    private void createTriggerList( HashSet<String> reflexTriggers, String reflexTriggerIds, JSONObject jsonResult ){
+        StringBuilder triggers = new StringBuilder( );
+        for( String trigger : reflexTriggers){
+            triggers.append( trigger );
+            triggers.append( "," );
+        }
+        jsonResult.put( "triggers", triggers.deleteCharAt( triggers.length() -1 ).toString() );
+
+        triggers = new StringBuilder( );
+
+        String[] sortedTriggerIds = reflexTriggerIds.split( "," );
+        Arrays.sort( sortedTriggerIds);
+
+        for( String trigger : sortedTriggerIds){
+            triggers.append( trigger.trim() );
+            triggers.append( "_" );
+        }
+        jsonResult.put( "triggerIds", triggers.deleteCharAt( triggers.length() -1 ).toString() );
+    }
+
+    private Sample getSampleForKnownTest(String analysisIds, String accessionNumber, AnalysisDAO analysisDAO) {
 		//We use the analysisId for logbook results and accessionNumber for analysis results, we should accessionNumber for both.
 		if( GenericValidator.isBlankOrNull(analysisIds)){
 			return new SampleDAOImpl().getSampleByAccessionNumber(accessionNumber);
@@ -220,35 +244,26 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 
 	}
 
-	private void createChoiceElement(TestReflex testReflexOne, TestReflex testReflexTwo, StringBuilder xml) {
-		if (testReflexTwo == null) { //one has both test and script
-			XMLUtil.appendKeyValue("selectionOneText", TestReflexUtil.makeReflexScriptName(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionOneId", TestReflexUtil.makeReflexScriptValue(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionTwoText", TestReflexUtil.makeReflexTestName(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionTwoId", TestReflexUtil.makeReflexTestValue(testReflexOne), xml);
-		}else if(testReflexOne.getActionScriptlet() == null && testReflexTwo.getActionScriptlet() == null){ //both tests
-			XMLUtil.appendKeyValue("selectionOneText", TestReflexUtil.makeReflexTestName(testReflexTwo), xml);
-			XMLUtil.appendKeyValue("selectionOneId", TestReflexUtil.makeReflexTestValue(testReflexTwo), xml);
-			XMLUtil.appendKeyValue("selectionTwoText", TestReflexUtil.makeReflexTestName(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionTwoId", TestReflexUtil.makeReflexTestValue(testReflexOne), xml);
-		}else if(testReflexOne.getAddedTest() == null && testReflexTwo.getAddedTest() == null ){ //both scripts
-			XMLUtil.appendKeyValue("selectionOneText", TestReflexUtil.makeReflexScriptName(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionOneId", TestReflexUtil.makeReflexScriptValue(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionTwoText", TestReflexUtil.makeReflexScriptName(testReflexTwo), xml);
-			XMLUtil.appendKeyValue("selectionTwoId", TestReflexUtil.makeReflexScriptValue(testReflexTwo), xml);
-		}else if( testReflexOne.getAddedTest() == null ){ //these two are redundant if db has been set up correctly
-			XMLUtil.appendKeyValue("selectionOneText", TestReflexUtil.makeReflexScriptName(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionOneId", TestReflexUtil.makeReflexScriptValue(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionTwoText", TestReflexUtil.makeReflexTestName(testReflexTwo), xml);
-			XMLUtil.appendKeyValue("selectionTwoId", TestReflexUtil.makeReflexTestValue(testReflexTwo), xml);
-		}else{
-			XMLUtil.appendKeyValue("selectionOneText", TestReflexUtil.makeReflexScriptName(testReflexTwo), xml);
-			XMLUtil.appendKeyValue("selectionOneId", TestReflexUtil.makeReflexScriptValue(testReflexTwo), xml);
-			XMLUtil.appendKeyValue("selectionTwoText", TestReflexUtil.makeReflexTestName(testReflexOne), xml);
-			XMLUtil.appendKeyValue("selectionTwoId", TestReflexUtil.makeReflexTestValue(testReflexOne), xml);			
-		}
-	}
+    private void createChoiceElement(List<TestReflex> reflexList, JSONObject jsonResult) {
+        JSONArray jsonArray = new JSONArray();
+        for(TestReflex reflex : reflexList){
+            if( reflex.getActionScriptlet() != null){
+                JSONObject selectionObject = new JSONObject();
+                selectionObject.put( "name", TestReflexUtil.makeReflexScriptName( reflex ) );
+                selectionObject.put( "value", TestReflexUtil.makeReflexScriptValue( reflex ));
+                jsonArray.add( selectionObject );
+            }
 
+            if(reflex.getAddedTest() != null){
+                JSONObject selectionObject = new JSONObject();
+                selectionObject.put( "name", TestReflexUtil.makeReflexTestName( reflex ) );
+                selectionObject.put( "value", TestReflexUtil.makeReflexTestValue( reflex ));
+                jsonArray.add( selectionObject );
+            }
+        }
+
+        jsonResult.put( "selections", jsonArray );
+    }
 	@Override
 	public void setServlet(AjaxServlet as) {
 		this.ajaxServlet = as;

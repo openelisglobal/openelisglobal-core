@@ -12,4 +12,15 @@
         <comment>Add unit of measure to Plaquettes test</comment>
         <sqlFile path="OE3.4/UpdateHaitiLNSPUnitOfMeasure.sql" />
     </changeSet>
+    <changeSet id="2" author="paulsc" context="haitiLNSP">
+        <comment>Add Stool culture with all it's artifacts</comment>
+        <sqlFile path="OE3.4/HaitiLNSPStoolCulture.sql" />
+    </changeSet>
+    <changeSet id="3" author="paulsc" context="haitiLNSP" >
+        <comment>Adding local abbreviations to dictionary for bacteriology positive results</comment>
+        <sql>
+            update clinlims.dictionary set local_abbrev=trim(leading 'Positive pour ' from dict_entry )
+            where dictionary_category_id = ( select id from clinlims.dictionary_category where description = 'Positive bacteriology results' );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

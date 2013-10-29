@@ -1,12 +1,7 @@
 package us.mn.state.health.lims.result.action.util;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.provider.validation.DateValidationProvider;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -16,6 +11,10 @@ import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ResultsValidation {
 
@@ -94,10 +93,6 @@ public class ResultsValidation {
 				ResultUtil.areResults(testResultItem) || 
 				ResultUtil.isForcedToAcceptance(testResultItem))) { 
 			errors.add(new ActionError("errors.result.required"));
-		}
-
-		if ( testResultItem.isUserChoicePending()) { 
-			errors.add(new ActionError("error.reflexStep.notChosen"));
 		}
 		
 		if (!GenericValidator.isBlankOrNull(testResultItem.getResultValue()) && "N".equals(testResultItem.getResultType())) {

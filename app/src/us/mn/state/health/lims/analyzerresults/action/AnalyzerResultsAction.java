@@ -17,16 +17,6 @@
  */
 package us.mn.state.health.lims.analyzerresults.action;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
@@ -34,7 +24,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -71,6 +60,10 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 public class AnalyzerResultsAction extends BaseAction {
 
@@ -154,7 +147,7 @@ public class AnalyzerResultsAction extends BaseAction {
 					}
 				}
 
-				PropertyUtils.setProperty(dynaForm, "missingTestMsg", new Boolean(missingTest));
+				PropertyUtils.setProperty(dynaForm, "missingTestMsg", missingTest);
 
 				paging.setDatabaseResults(request, dynaForm, analyzerResultItemList);
 			}
@@ -336,8 +329,7 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private Sample getSampleForAnalyzerResult(AnalyzerResults result) {
-		Sample sample = sampleDAO.getSampleByAccessionNumber(result.getAccessionNumber());
-		return sample;
+		return sampleDAO.getSampleByAccessionNumber(result.getAccessionNumber());
 	}
 
 	private void setChoiceForCurrentValue(AnalyzerResultItem resultItem, AnalyzerResults analyzerResult) {
@@ -371,7 +363,7 @@ public class AnalyzerResultsAction extends BaseAction {
 			List<TestReflex> reflexesForDisplayedTest = reflexUtil.getTestReflexsForDictioanryResultTestId(analyzerResult.getResult(), analyzerResult.getTestId(), true);
 			
 			for (TestReflex possibleTestReflex : reflexesForDisplayedTest) {
-				if (TestReflexUtil.USER_CHOOSE_FLAG.equals(possibleTestReflex.getFlags())) {
+				if (TestReflexUtil.isUserChoiceReflex( possibleTestReflex )) {
 					if (GenericValidator.isBlankOrNull(possibleTestReflex.getSiblingReflexId())) {
 						if (possibleTestReflex.getActionScriptlet() != null) {
 							selectionOne = possibleTestReflex;
@@ -495,7 +487,7 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	protected String getPageSubtitleKey() {
-		String key = null;
+		String key;
 
 		switch (analyzerType) {
 		case COBAS_INTEGRA400: {
