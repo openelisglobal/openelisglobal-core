@@ -107,7 +107,7 @@ function checkAccessionNumber( accessionNumber )
 	//check if empty
 	if ( !fieldIsEmptyById( accessionNumber.id ) )
 	{
-		validateAccessionNumberOnServer(true, accessionNumber.id, accessionNumber.value, processAccessionSuccess, processAccessionFailure);
+		validateAccessionNumberOnServer(true, accessionNumber.id, accessionNumber.value, processAccessionSuccess);
 	}
 	else
 	{
@@ -122,8 +122,6 @@ function processAccessionSuccess(xhr)
 	//alert(xhr.responseText);
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = false;
-	var labElement;
 	var messageValue = message.firstChild.nodeValue;
 	var	success = messageValue == "SAMPLE_NOT_FOUND" || messageValue == "valid";  
 	var labElement = $(formField.firstChild.nodeValue);
@@ -141,27 +139,9 @@ function processAccessionSuccess(xhr)
 	setSaveButton();
 }
 
-function processAccessionFailure(xhr)
-{
-	//unhandled error: someday we should be nicer to the user
-}
-
 
 function getNextAccessionNumber() {
-	generateNextScanNumber();
-}
-
-function generateNextScanNumber(){
-	new Ajax.Request (
-                          'ajaxQueryXML',  //url
-                           {//options
-                             method: 'get', //http method
-                             parameters: "provider=SampleEntryGenerateScanProvider",
-                             //indicator: 'throbbing'
-                             onSuccess:  processScanSuccess,
-                             onFailure:  processScanFailure
-                           }
-                          );
+	generateNextScanNumber(processScanSuccess);
 }
 
 function processScanSuccess(xhr){
@@ -172,7 +152,7 @@ function processScanSuccess(xhr){
 	var success = message.firstChild.nodeValue == "valid";
 	var target = $("labNo");
 	
-	$("labNo").value = success ? returnedData : "";
+	target.value = success ? returnedData : "";
 
 	selectFieldErrorDisplay( success, target);
 	fieldValidator.setFieldValidity( success, target.id);
@@ -180,9 +160,6 @@ function processScanSuccess(xhr){
 	setSaveButton();
 }
 
-function processScanFailure(xhr){
-	//some user friendly response needs to be given to the user
-}
 
 var requesterInfoHash = {};
 
@@ -310,7 +287,7 @@ function processGetTestSuccess(xhr){
    }
 
 	fieldValidator.setFieldValidity( false, "requestedTests_" + currentRequestSampleIndex );
-	$("requestedTests_" + currentRequestSampleIndex).style.border = "1px solid black";
+	requestedTestTable.style.border = "1px solid black";
 	setSaveButton();
 }
 
@@ -457,17 +434,12 @@ function addNewRequesterTestResult(addButtonElement, sampleIndex){  //request fo
 	maxReferralElement.value = newTestIndex;
 }
 
-function addNewRequesterSample( newSampleButton ){ // a new sample which came in with the request
-	var cell;
+function addNewRequesterSample( ){ // a new sample which came in with the request
 	var maxSampleElement = $("maxSampleIndex");
 	var sampleIndex = parseInt(maxSampleElement.value) + 1;
-	var requestedTestRow = $("requestedTestRow_0" );
 	var protoSampleIDPattern = /_0/g;
 	var protoFunction = /this, '0'\)/g;
-	var protoMaxValue = /input value=\".\"/;
 	var protoIDPattern = /[0-9]_[0-9]/g; //this has to do with the order of replacements
-	var optionPattern = /<option .*<\/option>/gi;
-	var textAreaPattern = />.*<\/textarea>/i;
 	var selectPrototype;
 
  	var clone = $jq("#div_0" ).clone(true, true);
@@ -475,10 +447,11 @@ function addNewRequesterSample( newSampleButton ){ // a new sample which came in
 	clone.find(".sampleIndex").val( sampleIndex );
 	clone.find("#requesterSampleId_0").val("");
 	clone.find("#collectionDate_0").val("");
-        clone.find("#interviewTime_0").val("");
+    clone.find("#interviewTime_0").val("");
 	clone.find("#maxReferralTestIndex_0").val(0);
 	clone.find("#hideShow_0").val("hidden");
 	clone.find("#showHideButton_0").attr("src", "./images/note-add.gif");
+    clone.find("#showHideButton_0").attr("onclick", "showHideNotes( '"+ sampleIndex + "' )");
 	clone.find("tr:first").append("<td><input type=\"button\" value=\"" +
 				                  "<%= StringUtil.getMessageForKey("label.button.remove") %>" +
 	                              "\" class=\"textButton\"  onclick=\"removeRequesterTest( this, \'" + sampleIndex +  "\' );\" ></td>");
@@ -560,7 +533,7 @@ function requestedTestChanged( sampleIndex ){
 		}
 	}
 
-	$("requestedTests_" + sampleIndex ).style.border = somethingChecked ? "1px solid black" : "1px solid red";
+	requestedTests.style.border = somethingChecked ? "1px solid black" : "1px solid red";
 	fieldValidator.setFieldValidity( somethingChecked, "requestedTests_" + sampleIndex );
 
 	setSaveButton();
@@ -734,13 +707,13 @@ function  sc_processPhoneSuccess(xhr){
 
 <input type="hidden" id="maxSampleIndex" value="0" />
 <html:hidden name='<%=formName %>' property="requestAsXML" styleId="xmlWad" />
-<table width="70%" border="0">
+<table style="width:70%" border="0">
 	<tr>
 		<td>
 			<%=StringUtil.getContextualMessageForKey("quick.entry.accession.number")%>:
 			<span class="requiredlabel">*</span>
 		</td>
-		<td width="15%">
+		<td style="width:15%">
 			<app:text name="<%=formName%>" property="labno"
 				maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
 				onchange="checkAccessionNumber(this);makeDirty();" styleClass="text"
@@ -748,10 +721,8 @@ function  sc_processPhoneSuccess(xhr){
 		</td>
 		<td id="generate">
 			<bean:message key="sample.entry.scanner.instructions" />
-			<html:button property="generate" styleClass="textButton"
-				onclick="getNextAccessionNumber(); makeDirty();">
-				<bean:message key="sample.entry.scanner.generate" />
-			</html:button>
+            <input type="button" value='<%=StringUtil.getMessageForKey("sample.entry.scanner.generate")%>'
+                   onclick="getNextAccessionNumber(); makeDirty();" class="textButton">
 		</td>
 	</tr>
 	<tr>
@@ -759,8 +730,8 @@ function  sc_processPhoneSuccess(xhr){
 			<bean:message key="quick.entry.received.date" />
 			:
 			<span class="requiredlabel">*</span>
-			<font size="1"><bean:message key="sample.date.format" />
-			</font>
+			<span style="font-size: xx-small; "><bean:message key="sample.date.format" />
+			</span>
 		</td>
 		<td colspan="2">
 			<app:text name="<%=formName%>" property="receivedDate"
@@ -895,7 +866,7 @@ function  sc_processPhoneSuccess(xhr){
 						 	     onclick="showHideNotes( '0');"
 						 	     id="showHideButton_0"
 						    />
-				<html:hidden property="hideShowFlag"  styleId="hideShow_0" value="hidden" />
+                <input type="hidden" name="hideShowFlag" value="hidden" id="hideShow_0" >
 			</td>
 	</tr>
 	<tr id="requesterSampleRowTwo">	
@@ -931,7 +902,7 @@ function  sc_processPhoneSuccess(xhr){
 			</td>
 		</tr>
 		<tr id="noteRow_0"	style="display: none;">
-			<td valign="top" align="right"><bean:message key="note.note"/>:</td>
+			<td style="vertical-align:top" align="right"><bean:message key="note.note"/>:</td>
 			<td colspan="6" align="left" >
 				<textarea id="note_0"
 						   onchange="makeDirty();"
@@ -975,7 +946,7 @@ function  sc_processPhoneSuccess(xhr){
 			</td>
 		</tr>
 		<tr id="requestedTestRow_0">
-			<td valign="top"><bean:message key="sample.entry.confirmation.requested.tests"/> : <span class="requiredlabel">*</span></td>
+			<td style="vertical-align:top"><bean:message key="sample.entry.confirmation.requested.tests"/> : <span class="requiredlabel">*</span></td>
 
 			<td colspan="5">
 			<table style="background-color:#EEEEEE; color: black; border : 1px solid red" id="requestedTests_0" >
@@ -996,21 +967,21 @@ function  sc_processPhoneSuccess(xhr){
 <html:hidden name="<%=formName%>" property="patientPK" styleId="patientPK"/>
 <table style="width:100%">
 	<tr>
-		<td width="15%" align="left">
-			<html:button property="showPatient" onclick="showHideSamples(this, 'patientInfo');" >+</html:button>
+		<td style="width:15%" align="left">
+            <input type="button" value="+" onclick="showHideSamples(this, 'patientInfo');">
 			<bean:message key="sample.entry.patient" />:
 			<% if ( patientRequired ) { %><span class="requiredlabel">*</span><% } %>
 		</td>
-		<td width="15%" id="firstName"><b>&nbsp;</b></td>
-		<td width="15%">
+		<td style="width:15%" id="firstName"><b>&nbsp;</b></td>
+		<td style="width:15%">
 			<% if(useMothersName){ %><bean:message key="patient.mother.name"/>:<% } %>
 		</td>
-		<td width="15%" id="mother"><b>&nbsp;</b></td>
-		<td width="10%">
+		<td style="width:15%" id="mother"><b>&nbsp;</b></td>
+		<td style="width:10%">
 			<% if( useSTNumber){ %><bean:message key="patient.ST.number"/>:<% } %>
 		</td>
-		<td width="15%" id="st"><b>&nbsp;</b></td>
-		<td width="5%">&nbsp;</td>
+		<td style="width:15%" id="st"><b>&nbsp;</b></td>
+		<td style="width:5%">&nbsp;</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
