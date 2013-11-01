@@ -93,7 +93,6 @@ public class TestResultItem implements ResultItem, Serializable{
 	private boolean valid = true;
 	private boolean normal = true;
 	private boolean notIncludedInWorkplan = false;
-	private int reflexStep = 0;
 	private boolean isUserChoiceReflex = false;
 	private String siblingReflexKey;
 	private String thisReflexKey;
@@ -420,12 +419,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	public String getReceivedDate() {
 		return receivedDate;
 	}
-	public void setReflexStep(int reflexStep) {
-		this.reflexStep = reflexStep;
-	}
-	public int getReflexStep() {
-		return reflexStep;
-	}
+
 	public void setResult(Result result) {
 		setResultId(result == null ? "" : result.getId());
 		this.result = result;

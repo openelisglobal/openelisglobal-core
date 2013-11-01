@@ -74,8 +74,6 @@ import us.mn.state.health.lims.statusofsample.util.StatusRules;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-import us.mn.state.health.lims.systemusermodule.dao.PermissionAgentModuleDAO;
-import us.mn.state.health.lims.systemusermodule.daoimpl.PermissionAgentFactory;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.beanItems.TestResultItem.ResultDisplayType;
 import us.mn.state.health.lims.test.dao.TestDAO;
@@ -106,8 +104,7 @@ public class ResultsLoadUtility {
 	public static final String SYPHILIS_TYPE = "SYPHILIS_TEST_KIT";
 
 	private static String RESULT_REFERENCE_TABLE_ID = null;
-	private static String ANALYZER_RESULT_REFERENCE_TABLE_ID = null;
-	
+
 	private List<Sample> samples;
 	private String currentDate = "";
 	private Patient currPatient;
@@ -119,10 +116,6 @@ public class ResultsLoadUtility {
 	private List<Integer> sampleStatusList = new ArrayList<Integer>();
 
 	private List<InventoryKitItem> activeKits;
-
-	private Map<String, String> techLoginNameIdMap;
-	private Map<String, String> supervisorLoginNameIdMap;
-	private Map<String, String> userIdLoginNameMap;
 
 	private final ResultDAO resultDAO = DAOImplFactory.getInstance().getResultDAOImpl();
 	private final TestResultDAO testResultDAO = new TestResultDAOImpl();
@@ -154,11 +147,6 @@ public class ResultsLoadUtility {
 		referenceTable.setTableName("RESULT");
 		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
 		RESULT_REFERENCE_TABLE_ID = referenceTable.getId();
-
-		referenceTable = new ReferenceTables();
-		referenceTable.setTableName("ANALYZER_RESULTS");
-		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-		ANALYZER_RESULT_REFERENCE_TABLE_ID = referenceTable.getId();
 
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
 		Analyte analyte = new Analyte();
@@ -264,7 +252,7 @@ public class ResultsLoadUtility {
 			currPatientAge = INVALID_PATIENT_AGE; // force recalculation of age
 
 			String patientName = "";
-			String patientInfo = "";
+			String patientInfo;
 			if (depersonalize) {
 				patientInfo = GenericValidator.isBlankOrNull(currPatient.getNationalId()) ? currPatient.getExternalId() : currPatient
 						.getNationalId();
@@ -472,7 +460,7 @@ public class ResultsLoadUtility {
 	private String getInitialSampleConditionString(SampleItem sampleItem) {
 		if (useInitialSampleCondition) {
 			List<ObservationHistory> observationList = observationHistoryDAO.getObservationHistoriesBySampleItemId(sampleItem.getId());
-			StringBuffer conditions = new StringBuffer();
+			StringBuilder conditions = new StringBuilder();
 
 			for (ObservationHistory observation : observationList) {
 				Dictionary dictionary = dictionaryDAO.getDictionaryById(observation.getValue());
@@ -523,21 +511,21 @@ public class ResultsLoadUtility {
 
 		String currentAccessionNumber = "";
 
-		for (int i = 0; i < tests.length; i++) {
-			if (!currentAccessionNumber.equals(tests[i].getAccessionNumber())) {
+		for ( TestResultItem testItem : tests) {
+			if (!currentAccessionNumber.equals(testItem.getAccessionNumber())) {
 
 				TestResultItem seperatorItem = new TestResultItem();
 				seperatorItem.setIsGroupSeparator(true);
-				seperatorItem.setAccessionNumber(tests[i].getAccessionNumber());
-				seperatorItem.setReceivedDate(tests[i].getReceivedDate());
+				seperatorItem.setAccessionNumber(testItem.getAccessionNumber());
+				seperatorItem.setReceivedDate(testItem.getReceivedDate());
 				testList.add(seperatorItem);
 
-				currentAccessionNumber = tests[i].getAccessionNumber();
+				currentAccessionNumber = testItem.getAccessionNumber();
 				reflexGroup++;
 
 			}
 
-			testList.add(tests[i]);
+			testList.add(testItem);
 		}
 
 		return testList;
@@ -859,7 +847,6 @@ public class ResultsLoadUtility {
 		testItem.setTestKitId(testKitId);
 		testItem.setTestKitInventoryId(testKitInventoryId);
 		testItem.setTestKitInactive(testKitInactive);
-		testItem.setReflexStep((isConclusion || isCD4Conclusion) ? 0 : calculateReflexStep(analysis));
 		testItem.setReadOnly(isLockCurrentResults() && result != null && result.getId() != null);
 		testItem.setReferralId(referralId);
 		testItem.setReferredOut(!GenericValidator.isBlankOrNull(referralId) && !referralCanceled);
@@ -958,7 +945,7 @@ public class ResultsLoadUtility {
 					}
 					values.add(new IdValuePair(testResult.getValue(), displayValue));
 					if (testResult.getTestResultType().equals("Q")) {
-						if( qualifiedDictionaryIds != ""){
+						if( !GenericValidator.isBlankOrNull( qualifiedDictionaryIds )){
 							qualifiedDictionaryIds += ",";
 						}
 						qualifiedDictionaryIds += testResult.getValue();
@@ -967,7 +954,7 @@ public class ResultsLoadUtility {
 				}
 			}
 			
-			if( qualifiedDictionaryIds != ""){
+			if( !GenericValidator.isBlankOrNull( qualifiedDictionaryIds )){
 				testItem.setQualifiedDictonaryId("[" + qualifiedDictionaryIds + "]");
 			}
 		}
@@ -1114,27 +1101,6 @@ public class ResultsLoadUtility {
 		return testResultDAO.getAllTestResultsPerTest(test);
 	}
 
-	private int calculateReflexStep(Analysis analysis) {
-		int step = 0;
-
-		Analysis parentAnalysis = analysis.getParentAnalysis();
-
-		if (parentAnalysis != null) {
-			step = 1;
-
-			do {
-				step++;
-				parentAnalysis = parentAnalysis.getParentAnalysis();
-			} while (parentAnalysis != null);
-		} else {
-			if (analysis.getTriggeredReflex()) {
-				step = 1;
-			}
-		}
-
-		return step;
-	}
-
 	private boolean getIsValid(String resultValue, ResultLimit resultLimit) {
 		boolean valid = true;
 
@@ -1202,36 +1168,6 @@ public class ResultsLoadUtility {
 		return currentDate;
 	}
 
-	@SuppressWarnings("unchecked")
-	private void createNameToIdMaps() throws LIMSRuntimeException {
-		SystemUserDAO systemUserDAO = new SystemUserDAOImpl();
-		PermissionAgentModuleDAO symDAO = PermissionAgentFactory.getPermissionAgentImpl();
-
-		techLoginNameIdMap = new HashMap<String, String>();
-		supervisorLoginNameIdMap = new HashMap<String, String>();
-		userIdLoginNameMap = new HashMap<String, String>();
-
-		List<SystemUser> users = systemUserDAO.getAllSystemUsers();
-
-		for (SystemUser user : users) {
-			techLoginNameIdMap.put(user.getLoginName(), user.getId());
-			userIdLoginNameMap.put(user.getId(), user.getLoginName());
-
-			if (symDAO.isAgentAllowedAccordingToName(user.getId(), "ResultSupervisor")) {
-				supervisorLoginNameIdMap.put(user.getLoginName(), user.getId());
-			}
-		}
-	}
-
-	public String getIdForSupervisorsName(String supervisor) {
-
-		if (supervisorLoginNameIdMap == null) {
-			createNameToIdMaps();
-		}
-
-		return supervisorLoginNameIdMap.get(supervisor);
-	}
-
 	private ResultDisplayType getDisplayTypeForTestMethod(String methodName) {
 		ResultDisplayType resultType = ResultDisplayType.TEXT;
 
@@ -1273,10 +1209,6 @@ public class ResultsLoadUtility {
 
 	public static String getResultReferenceTableId() {
 		return RESULT_REFERENCE_TABLE_ID;
-	}
-
-	public static String getAnalyzerResultsReferenceTableId() {
-		return ANALYZER_RESULT_REFERENCE_TABLE_ID;
 	}
 
 	public void setLockCurrentResults(boolean lockCurrentResults) {

@@ -660,14 +660,6 @@ function forceTechApproval(checkbox, index ){
 			<td style="vertical-align:top" class="ruled">
 				<html:hidden name="testResult" property="testMethod" indexed="true"/>
 				<bean:write name="testResult" property="testName"/>
-                <logic:equal name="testResult" property="reflexStep" value="1" >
-                    &nbsp;&ndash;&nbsp;
-                    <bean:message key="reflexTest.initial" />
-                </logic:equal>
-                <logic:greaterThan name="testResult" property="reflexStep" value="1">
-                    &nbsp;&ndash;&nbsp;
-                    <bean:message key="reflexTest.step" />&nbsp;<%= testResult.getReflexStep() - 1 %>
-                </logic:greaterThan>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<bean:message key="inventory.testKit"/>
 				<html:select name="testResult"
@@ -721,14 +713,6 @@ function forceTechApproval(checkbox, index ){
 					<br/><bean:write name="testResult" property="normalRange"/>&nbsp;
 					<bean:write name="testResult" property="unitsOfMeasure"/>
 				</logic:equal>
-                <logic:equal name="testResult" property="reflexStep" value="1" >
-                    &nbsp;&ndash;&nbsp;
-                    <bean:message key="reflexTest.initial" />
-                </logic:equal>
-				<logic:greaterThan name="testResult" property="reflexStep" value="1">
-				&nbsp;&ndash;&nbsp;
-				<bean:message key="reflexTest.step" />&nbsp;<%= testResult.getReflexStep() - 1 %>
-				</logic:greaterThan>
 			</td>
 		</logic:notEqual></logic:notEqual>
 
