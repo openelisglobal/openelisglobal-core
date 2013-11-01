@@ -87,7 +87,6 @@ public class SampleEditUpdateAction extends BaseAction {
 	private TestDAO testDAO = new TestDAOImpl();
 	private static String CANCELED_TEST_STATUS_ID = null;
 	private static String CANCELED_SAMPLE_STATUS_ID = null;
-	private boolean deletePaymentHistory = false;
 	private ObservationHistory paymentObservation = null;
 	private ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
 	private TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
@@ -170,15 +169,7 @@ public class SampleEditUpdateAction extends BaseAction {
             }
 
             if (paymentObservation != null) {
-                if (deletePaymentHistory) {
-                    List<ObservationHistory> shortList = new ArrayList<ObservationHistory>();
-                    shortList.add(paymentObservation);
-                    observationDAO.delete(shortList);
-                } else if (GenericValidator.isBlankOrNull(paymentObservation.getId())) {
-                    observationDAO.insertData(paymentObservation);
-                } else {
-                    observationDAO.updateData(paymentObservation);
-                }
+                observationDAO.insertOrUpdateData( paymentObservation );
             }
 
             for( SampleTestCollection sampleTestCollection : addedSamples){

@@ -20,6 +20,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.laborder.dao.LabOrderTypeDAO;
 import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
 import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
@@ -181,6 +182,10 @@ public class SampleOrderService{
     private void createPersonProviderArtifacts( SampleOrderItem sampleOrder, String currentUserId, SampleOrderPersistenceArtifacts artifacts, RequesterService requesterService ){
         Person providerPerson = requesterService.getPerson();
 
+        if( namesDiffer( providerPerson, sampleOrder)){
+            providerPerson = null;
+        }
+
         if( providerPerson == null){
             providerPerson = new Person();
             SampleRequester samplePersonRequester =requesterService.getSampleRequesterByType( RequesterService.Requester.PERSON );
@@ -198,6 +203,15 @@ public class SampleOrderService{
         artifacts.setProviderPerson( providerPerson );
     }
 
+    private boolean namesDiffer( Person providerPerson, SampleOrderItem sampleOrder ){
+        if( providerPerson == null){
+            return true;
+        }
+
+        return StringUtil.compareWithNulls(providerPerson.getFirstName(), sampleOrder.getProviderFirstName()) != 0 ||
+                StringUtil.compareWithNulls(providerPerson.getLastName(), sampleOrder.getProviderLastName()) != 0;
+    }
+
     private void createObservationHistoryArtifacts( SampleOrderItem sampleOrder, String currentUserId, SampleOrderPersistenceArtifacts artifacts ){
         List<ObservationHistory> observations = new ArrayList<ObservationHistory>(  );
         PatientService patientService = new PatientService( artifacts.getSample() );
@@ -208,9 +222,9 @@ public class SampleOrderService{
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.OTHER_SECONDARY_ORDER_TYPE, sampleOrder.getOtherPeriodOrder(), ValueType.LITERAL  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.PAYMENT_STATUS, sampleOrder.getPaymentOptionSelection(), ValueType.DICTIONARY  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.REQUEST_DATE, sampleOrder.getRequestDate(), ValueType.LITERAL  );
-        if( sampleOrder.getOrderType().equals( "HIV_firstVisit" )){
+        if( "HIV_firstVisit".equals( sampleOrder.getOrderType() )){
             createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.SECONDARY_ORDER_TYPE, valueForLabOrderType( sampleOrder.getInitialPeriodOrderType() ), ValueType.LITERAL  );
-        }else if(sampleOrder.getOrderType().equals( "HIV_followupVisit" )){
+        }else if("HIV_followupVisit".equals( sampleOrder.getOrderType() )){
             createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.SECONDARY_ORDER_TYPE, valueForLabOrderType(sampleOrder.getFollowupPeriodOrderType()), ValueType.LITERAL  );
         }
 

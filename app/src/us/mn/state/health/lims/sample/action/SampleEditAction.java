@@ -68,7 +68,7 @@ public class SampleEditAction extends BaseAction {
 	private static final SampleEditItemComparator testComparator = new SampleEditItemComparator();
 	private boolean isEditable = false;
 	private static Set<Integer> excludedAnalysisStatusList;
-	private static Set<Integer> includedSampleStatusList;
+	private static final Set<Integer> ENTERED_STATUS_SAMPLE_LIST = new HashSet<Integer>();
 	private String maxAccessionNumber;
 
 	static {
@@ -76,8 +76,7 @@ public class SampleEditAction extends BaseAction {
 		excludedAnalysisStatusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)));
 		excludedAnalysisStatusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
 
-		includedSampleStatusList = new HashSet<Integer>();
-		includedSampleStatusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(SampleStatus.Entered)));
+		ENTERED_STATUS_SAMPLE_LIST.add( Integer.parseInt( StatusService.getInstance().getStatusID( SampleStatus.Entered ) ) );
 	}
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -116,6 +115,7 @@ public class SampleEditAction extends BaseAction {
 				setAddableSampleTypes(dynaForm);
                 setSampleOrderInfo(dynaForm);
 				PropertyUtils.setProperty(dynaForm, "maxAccessionNumber", maxAccessionNumber);
+                PropertyUtils.setProperty( dynaForm, "isConfirmationSample", new SampleService( sample ).isConfirmationSample() );
 			} else {
 				PropertyUtils.setProperty(dynaForm, "noSampleFound", Boolean.TRUE);
 			}
@@ -163,7 +163,7 @@ public class SampleEditAction extends BaseAction {
 	private void getSampleItems() {
 		SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 
-		sampleItemList = sampleItemDAO.getSampleItemsBySampleIdAndStatus(sample.getId(), includedSampleStatusList);
+		sampleItemList = sampleItemDAO.getSampleItemsBySampleIdAndStatus(sample.getId(), ENTERED_STATUS_SAMPLE_LIST );
 	}
 
 	private void setPatientInfo(DynaActionForm dynaForm) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {

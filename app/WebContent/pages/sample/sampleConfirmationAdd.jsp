@@ -101,150 +101,6 @@ function appendValueToElementValue( elem, addString ){
 	elem.val( elem.val() + addString);
 }
 
-function checkAccessionNumber( accessionNumber )
-{
-
-	//check if empty
-	if ( !fieldIsEmptyById( accessionNumber.id ) )
-	{
-		validateAccessionNumberOnServer(true, accessionNumber.id, accessionNumber.value, processAccessionSuccess);
-	}
-	else
-	{
-		fieldValidator.setFieldValidity( false, accessionNumber.id);
-		setFieldErrorDisplay( accessionNumber);
-		setSaveButton();
-	}
-}
-
-function processAccessionSuccess(xhr)
-{
-	//alert(xhr.responseText);
-	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var messageValue = message.firstChild.nodeValue;
-	var	success = messageValue == "SAMPLE_NOT_FOUND" || messageValue == "valid";  
-	var labElement = $(formField.firstChild.nodeValue);
-	
-	selectFieldErrorDisplay( success, labElement);
-	
-	if( !success ){
-		if(messageValue == "SAMPLE_FOUND"){
-			alert("<%= StringUtil.getMessageForKey("sample.entry.invalid.accession.number.used") %>");
-		}else{
-			alert( message.firstChild.nodeValue );
-		}
-	}
-
-	setSaveButton();
-}
-
-
-function getNextAccessionNumber() {
-	generateNextScanNumber(processScanSuccess);
-}
-
-function processScanSuccess(xhr){
-	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-	var returnedData = formField.firstChild.nodeValue;
-
-	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = message.firstChild.nodeValue == "valid";
-	var target = $("labNo");
-	
-	target.value = success ? returnedData : "";
-
-	selectFieldErrorDisplay( success, target);
-	fieldValidator.setFieldValidity( success, target.id);
-	
-	setSaveButton();
-}
-
-
-var requesterInfoHash = {};
-
-function getRequestersForOrg( ){
-    var orgEnteredValue = $("siteId").value,
-    	orgSelectList = $("orgRequesterId").options,
-    	orgKey = 0,
-    	searchCount = 0;
-
-	for( searchCount; searchCount < orgSelectList.length; searchCount++){
-		if( orgSelectList[searchCount].text.toUpperCase() == orgEnteredValue){
-			orgKey = orgSelectList[searchCount].value;
-			break;
-		}
-	}    
-
-	if( orgKey == 0 ){ //if no match with site list
-		var requesterList = $("personRequesterId");
-		requesterList.options.length = 0;
-		addOptionToSelect( requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>' , "0" );
-	}else{
-		new Ajax.Request (
-                          'ajaxQueryXML',  //url
-                           {//options
-                             method: 'get', //http method
-                             parameters: "provider=RequestersForOrganizationProvider&orgId=" + orgKey,
-                             //indicator: 'throbbing'
-                             onSuccess:  processRequestersSuccess,
-                             onFailure:  null
-                           }
-                          );
-	}
-}
-
-function processRequestersSuccess(xhr){
-	//alert(xhr.responseText);
-
-	var requesters = xhr.responseXML.getElementsByTagName("requester");
-	var requesterList = $("personRequesterId");
-	requesterList.options.length = 0;
-
-	if( requesters.length == 0 ){
-		addOptionToSelect( requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>' , "0" );
-	}else{
-		requesterInfoHash = {};
-		addOptionToSelect( requesterList, '' , '' );
-		for(var i = 0; i < requesters.length; ++i ){
-			addRequester(requesterList, requesters[i] );
-		}
-		addOptionToSelect( requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>' , "0" );
-	}
-}
-
-function addRequester(requesterList, requesterXml ){
-	addOptionToSelect( requesterList,
-	                   requesterXml.getAttribute("lastName") + ', ' + requesterXml.getAttribute("firstName") ,
-	                   requesterXml.getAttribute("id") );
-
-	requesterInfoHash[requesterXml.getAttribute("id")] = {'firstName': requesterXml.getAttribute("firstName"),
-														  'lastName': requesterXml.getAttribute("lastName"),
-														  'phone': requesterXml.getAttribute("phone"),
-														  'fax': requesterXml.getAttribute("fax"),
-														  'email': requesterXml.getAttribute("email")};
-}
-
-function populateRequesterDetail(requesterSelector){
-	var requesterId = requesterSelector[requesterSelector.selectedIndex].value;
-
-	var details = requesterInfoHash[requesterId];
-
-	if( details ){
-		setRequesterDetails( details );
-	}else{
-		setRequesterDetails( {'firstName': '', 'lastName': '', 'phone': '', 'fax': '', 'email': ''}  );
-	}
-}
-
-function setRequesterDetails( details ){
-	$("requesterFirstName").value = details["firstName"];
-	$("requesterLastName").value = details["lastName"];
-	$("requesterPhone").value = details["phone"];
-	$("requesterFax").value = details["fax"];
-	$("requesterEMail").value = details["email"];
-}
-
 function populateRequestForSampleType( selector, sampleIndex){
 	var selectIndex = selector.selectedIndex;
 	var selection;
@@ -258,7 +114,7 @@ function populateRequestForSampleType( selector, sampleIndex){
 	}else{
 		selection = selector.options[selectIndex];
 		currentRequestSampleIndex = sampleIndex;
-		getTestsForSampleType(selection.value, "none", processGetTestSuccess, processGetTestFailure);
+		getTestsForSampleType(selection.value, "none", processGetTestSuccess );
 	}
 
 	setSaveButton();
@@ -523,7 +379,8 @@ function getTestDisplayRowHtml( name, i ){
 }
 
 function requestedTestChanged( sampleIndex ){
-	var requestedTests = $("requestedTests_" + sampleIndex ).getElementsByTagName("input");
+    var requestedTestsTable =  $("requestedTests_" + sampleIndex );
+	var requestedTests = requestedTestsTable.getElementsByTagName("input");
 	var somethingChecked = false;
 
 	for(var i = 0; i < requestedTests.length; ++i ){
@@ -533,14 +390,10 @@ function requestedTestChanged( sampleIndex ){
 		}
 	}
 
-	requestedTests.style.border = somethingChecked ? "1px solid black" : "1px solid red";
+    requestedTestsTable.style.border = somethingChecked ? "1px solid black" : "1px solid red";
 	fieldValidator.setFieldValidity( somethingChecked, "requestedTests_" + sampleIndex );
 
 	setSaveButton();
-}
-
-function processGetTestFailure(xhr){
-	//alert(xhr.responseText);
 }
 
 function getValueFromXmlElement( parent, tag ){
@@ -667,31 +520,6 @@ function /*string*/ getNote( sampleIndex ){
 	return ($("note_" + sampleIndex).value.replace(singleQuote, "\\'" ).replace(doubleQuote, '\\"'));
 }
 
-function sc_validatePhoneNumber( phoneElement){
-    validatePhoneNumberOnServer( phoneElement, sc_processPhoneSuccess);
-}
-
-function  sc_processPhoneSuccess(xhr){
-    //alert(xhr.responseText);
-
-    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-    var message = xhr.responseXML.getElementsByTagName("message").item(0);
-    var success = false;
-
-    if (message.firstChild.nodeValue == "valid"){
-        success = true;
-    }
-    var labElement = formField.firstChild.nodeValue;
-
-    selectFieldErrorDisplay( success, $(labElement));
-    fieldValidator.setFieldValidity(success, labElement  );
-
-    if( !success ){
-        alert( message.firstChild.nodeValue );
-    }
-
-    setSaveButton();
-}
 </script>
 <% if(useInitialSampleCondition){ %>
 <div id="sampleConditionPrototype" style="display: none" >
@@ -707,128 +535,9 @@ function  sc_processPhoneSuccess(xhr){
 
 <input type="hidden" id="maxSampleIndex" value="0" />
 <html:hidden name='<%=formName %>' property="requestAsXML" styleId="xmlWad" />
-<table style="width:70%" border="0">
-	<tr>
-		<td>
-			<%=StringUtil.getContextualMessageForKey("quick.entry.accession.number")%>:
-			<span class="requiredlabel">*</span>
-		</td>
-		<td style="width:15%">
-			<app:text name="<%=formName%>" property="labno"
-				maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-				onchange="checkAccessionNumber(this);makeDirty();" styleClass="text"
-				styleId="labNo" />
-		</td>
-		<td id="generate">
-			<bean:message key="sample.entry.scanner.instructions" />
-            <input type="button" value='<%=StringUtil.getMessageForKey("sample.entry.scanner.generate")%>'
-                   onclick="getNextAccessionNumber(); makeDirty();" class="textButton">
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<bean:message key="quick.entry.received.date" />
-			:
-			<span class="requiredlabel">*</span>
-			<span style="font-size: xx-small; "><bean:message key="sample.date.format" />
-			</span>
-		</td>
-		<td colspan="2">
-			<app:text name="<%=formName%>" property="receivedDate"
-				onchange="checkValidDate(this);makeDirty();"
-				onkeyup="addDateSlashes(this,event);"
-				styleClass="text"
-				maxlength="10"
-				styleId="receivedDate" />
-				
-           <% if( FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour)){ %>
-               <bean:message key="sample.receptionTime" />:
-                   <html:text name="<%=formName %>" 
-                   onkeyup="filterTimeKeys(this, event);" 
-                   property="recievedTime"
-                   styleId="receivedTime" 
-                   maxlength="5"
-                   onblur="makeDirty(); updateFieldValidity(checkValidTimeEntry(this, true), this.id );"/>
-           
-           <% } %>
-				
-		</td>
-	</tr>
-</table>
-<hr />
-<h3>
-	<bean:message key="sample.entry.requester"/>
-</h3>
-<table>
-	<tr>
-		<td>
-			<bean:message key="organization.site" />
-		</td>
-		<td colspan="5">
-		<!-- N.B. this is replaced by auto repeate -->
-		<html:select styleId="orgRequesterId" 
-								     name="<%=formName%>"
-								     property="requestingOrganization"
-								     onchange="getRequestersForOrg();makeDirty();setSaveButton();"
-								     >
-							<option value=""></option>
-							<logic:iterate name="<%=formName %>" property="requestingOrganizationList" id="org" type="us.mn.state.health.lims.common.util.IdValuePair">
-							    <option value="<%=org.getId() %>" ><%= org.getValue() %></option>
-							</logic:iterate>
-		</html:select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<bean:message key="sample.entry.contact" />
-		</td>
-		<td colspan="5">
-			<html:select name='<%= formName %>'
-			             property="personRequesterId"
-			             styleId="personRequesterId"
-			             onchange="populateRequesterDetail(this); makeDirty();">
-				<option value="0"><bean:message key="sample.entry.requester.new" /></option>
-			</html:select>
-		</td>
-	</tr>
-	<tr><td>&nbsp;</td>
-		<td>
-			<bean:message key="person.firstName" />
-		</td>
-		<td>
-			<bean:message key="person.lastName" />
-		</td>
-		<td>
-			<bean:message key="person.phone"/>
-		</td>
-		<td>
-			<bean:message key="person.fax"/>
-		</td>
-		<td>
-			<bean:message key="person.email"/>
-		</td>
 
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-			<html:text name='<%=formName%>' property="firstName" styleId="requesterFirstName" />
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="lastName"  styleId="requesterLastName" />
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone" onchange="sc_validatePhoneNumber(this);" />
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" onchange="sc_validatePhoneNumber(this);"/>
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="e-mail"  styleId="requesterEMail" />
-		</td>
+<tiles:insert attribute="sampleConfirmationOrder" />
 
-	</tr>
-</table>
 <hr/>
 
 <h3><bean:message key="sample.entry.confirmation.test.request"/></h3>
@@ -893,9 +602,9 @@ function  sc_processPhoneSuccess(xhr){
 				<logic:iterate id="sampleTypes"
 							   name='<%=formName %>'
 							   property="sampleTypes"
-							   type="TypeOfSample">
+							   type="IdValuePair">
 					<option value='<%= sampleTypes.getId() %>'>
-						<%=sampleTypes.getLocalizedName() %>
+						<%=sampleTypes.getValue() %>
 					</option>
 				</logic:iterate>
 			</select>
@@ -967,7 +676,7 @@ function  sc_processPhoneSuccess(xhr){
 <html:hidden name="<%=formName%>" property="patientPK" styleId="patientPK"/>
 <table style="width:100%">
 	<tr>
-		<td style="width:15%" align="left">
+		<td style="width:15%;text-align:left;">
             <input type="button" value="+" onclick="showHideSamples(this, 'patientInfo');">
 			<bean:message key="sample.entry.patient" />:
 			<% if ( patientRequired ) { %><span class="requiredlabel">*</span><% } %>
@@ -1063,24 +772,6 @@ $jq(document).ready( function() {
         $jq("select[multiple]").change(function(e, data) {
                 // handleMultiSelectChange( e, data );
                 });
-
-        //dropdown defined in customAutocomplete.js
-        autoCompId = 'siteId'; //needs to be set before the dropdown is created N.B. shouuld be passed in as arg
-        var dropdown = $jq( "select#orgRequesterId" );
-        autoCompleteWidth = dropdown.width() + 66 + 'px';
-        clearNonMatching = false;
-        capitialize = true;
-        dropdown.combobox();
-        invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIXME - add badmessage icon
-        maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>'; 
-        //$jq( "select#orgRequesterId" ).show();
-
-        //resultCallBack defined in customAutocomplete.js
-        resultCallBack = function( ) {
-                getRequestersForOrg( );
-                makeDirty();
-                setSaveButton();
-                };
 
 });
 

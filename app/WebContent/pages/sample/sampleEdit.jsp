@@ -217,8 +217,13 @@ function updateSampleItemNumbers(newAccessionNumber){
 	<br/><br/><hr/>
 	</div>
 </logic:equal>
+    <bean:define id="confirmationSample" name='<%=formName%>' property="isConfirmationSample" type="java.lang.Boolean" />
     <div id="sampleOrder" class="colorFill" >
+        <% if( confirmationSample ){ %>
+        <tiles:insert attribute="sampleConfirmationOrder" />
+        <% }else{ %>
         <tiles:insert attribute="sampleOrder" />
+        <% } %>
     </div>
 
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >

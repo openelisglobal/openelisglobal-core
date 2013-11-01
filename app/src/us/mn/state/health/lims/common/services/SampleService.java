@@ -22,17 +22,24 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class SampleService {
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+    private static final Set<Integer> CONFIRMATION_STATUS_SET = new HashSet<Integer>(  );
+
 	private Sample sample;
 	
 	public SampleService( Sample sample){
 		this.sample = sample;
 	}
 
+    static {
+        CONFIRMATION_STATUS_SET.add( Integer.parseInt( StatusService.getInstance().getStatusID( StatusService.AnalysisStatus.ReferredIn ) ) );
+    }
 	/**
 	 * Gets the date of when the order was completed
 	 * @return The date of when it was completed, null if it was not yet completed
@@ -40,20 +47,19 @@ public class SampleService {
 	public Date getCompletedDate(){
 		Date date = null;
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
-		
-		for( Analysis analysis : analysisList){
-            if( isCanceled( analysis )){
-                 continue;
-            }else if( analysis.getCompletedDate() == null ){
-				return null;
-			}else if(date == null){
-				date = analysis.getCompletedDate();
-			}else if( analysis.getCompletedDate().after(date)){
-				date = analysis.getCompletedDate();
-			}
-		}
-		
-		return date;
+
+        for( Analysis analysis : analysisList ){
+            if( !isCanceled( analysis ) ){
+                if( analysis.getCompletedDate() == null ){
+                    return null;
+                }else if( date == null ){
+                    date = analysis.getCompletedDate();
+                }else if( analysis.getCompletedDate().after( date ) ){
+                    date = analysis.getCompletedDate();
+                }
+            }
+        }
+        return date;
 	}
 
     private boolean isCanceled( Analysis analysis ){
@@ -74,5 +80,9 @@ public class SampleService {
 
     public String getReceivedTimeForDisplay(){
         return sample.getReceivedTimeForDisplay();
+    }
+
+    public boolean isConfirmationSample(){
+        return !analysisDAO.getAnalysesBySampleIdAndStatusId( sample.getId(), CONFIRMATION_STATUS_SET ).isEmpty();
     }
 }
