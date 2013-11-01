@@ -16,6 +16,7 @@
     </definition>
 
   <definition name="sampleConfirmationCore" path="/pages/sample/sampleConfirmationAdd.jsp">
+      <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
   		<put name="patientInfo" value="patientManagementCore"/>
   </definition>
 
@@ -101,6 +102,7 @@
 
 	<definition name="sampleEditCore" path="/pages/sample/sampleEdit.jsp">
         <put name="sampleOrder" value="/pages/sample/sampleOrder.jsp" />
+        <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
 		<put name="addSample" value="/pages/sample/sampleAdd.jsp"/>
 	</definition>
 

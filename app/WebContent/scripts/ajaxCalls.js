@@ -160,7 +160,7 @@ function patientSearch(lastName, firstName, STNumber, subjectNumber, nationalId,
 }
 
 function getReflexUserChoice( resultId, analysisId, testId, accessionNumber, index, success, failure){
-	if( !failure){failure = defaultFailure;	}
+    if( !failure){failure = defaultFailure;	}
 	
 	new Ajax.Request (
             'ajaxQueryXML',  //url
@@ -179,6 +179,19 @@ function getReflexUserChoice( resultId, analysisId, testId, accessionNumber, ind
 	
 }
 
+function getProvidersForOrg( orgKey, success, failure){
+    if( !failure){failure = defaultFailure;	}
+    new Ajax.Request(
+        'ajaxQueryXML',  //url
+        {//options
+            method: 'get', //http method
+            parameters: "provider=RequestersForOrganizationProvider&orgId=" + orgKey,
+            //indicator: 'throbbing'
+            onSuccess: success,
+            onFailure: failure
+        }
+    );
+}
 function defaultFailure(xhr){
 	//alert(xhr.responseText);
 }

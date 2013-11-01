@@ -25,10 +25,10 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
-import us.mn.state.health.lims.sample.util.SamplePropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,15 +57,15 @@ public class SampleConfirmationEntryAction extends BaseSampleEntryAction {
 		Date today = Calendar.getInstance().getTime();
 		String dateAsText = DateUtil.formatDateAsText(today );
 		PropertyUtils.setProperty(form, "currentDate", dateAsText);
-		PropertyUtils.setProperty(form, "receivedDate", dateAsText);
 
+        SampleOrderService sampleOrder = new SampleOrderService(  );
+        PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrder.getSampleOrderItem() );
 		PropertyUtils.setProperty(dynaForm, "requestingOrganizationList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));
 		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
-		if (needSampleInitialConditionList) {
+        PropertyUtils.setProperty( dynaForm, "sampleTypes", DisplayListService.getList( ListType.SAMPLE_TYPE ) );
+			if (needSampleInitialConditionList) {
             PropertyUtils.setProperty(dynaForm,"initialSampleConditionList", DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
 		}
-
-		SamplePropertyUtil.loadSampleTypes(dynaForm, "sampleTypes");
 
 		return mapping.findForward(forward);
 	}

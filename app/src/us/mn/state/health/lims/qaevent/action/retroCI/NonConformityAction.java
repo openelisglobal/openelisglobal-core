@@ -16,26 +16,11 @@
  */
 package us.mn.state.health.lims.qaevent.action.retroCI;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException;
@@ -84,7 +69,6 @@ import us.mn.state.health.lims.requester.valueholder.SampleRequester;
 import us.mn.state.health.lims.sample.action.SamplePatientEntrySaveAction;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
-import us.mn.state.health.lims.sample.util.SamplePropertyUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
@@ -103,6 +87,11 @@ import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class NonConformityAction extends BaseAction{
 
@@ -194,7 +183,7 @@ public class NonConformityAction extends BaseAction{
 			PropertyUtils.setProperty(dynaForm, "qaEventTypes", DisplayListService.getList(ListType.QA_EVENTS));
 			PropertyUtils.setProperty(dynaForm, "qaEvents", getSampleQaEventItems(sample));
 
-			SamplePropertyUtil.loadSampleTypes(dynaForm, "typeOfSamples");
+            PropertyUtils.setProperty( dynaForm, "typeOfSamples", DisplayListService.getList( ListType.SAMPLE_TYPE ) );
 
 			PropertyUtils.setProperty(dynaForm, "readOnly", readOnly);
 			PropertyUtils.setProperty(dynaForm, "siteList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));
@@ -320,10 +309,6 @@ public class NonConformityAction extends BaseAction{
 		return providerPerson;
 	}
 
-	/**
-	 * @param sampleHuman
-	 * @return
-	 */
 	private Provider getProvider(){
 		if(sample == null){
 			return null;

@@ -71,6 +71,7 @@ import us.mn.state.health.lims.requester.valueholder.SampleRequester;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
+import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
@@ -158,10 +159,10 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		request.getSession().setAttribute(IActionConstants.SAVE_DISABLED, IActionConstants.TRUE);
 
 		BaseActionForm dynaForm = (BaseActionForm) form;
-		String accessionNumber = dynaForm.getString("labno");
-		
+        SampleOrderItem sampleOrder = (SampleOrderItem)dynaForm.get("sampleOrderItems");
+
 		ActionMessages errors = new ActionMessages();
-		validateSample(errors, accessionNumber);
+		validateSample(errors, sampleOrder.getLabNo());
 
 		if (errors.size() > 0) {
 			saveErrors(request, errors);
@@ -173,9 +174,9 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		IPatientUpdate patientUpdate = new PatientManagementUpdateAction();
 		testAndInitializePatientForSaving(mapping, request, patientInfo, patientUpdate);
 
-		createSample(dynaForm, accessionNumber);
+		createSample(sampleOrder);
 		createSampleItemSets(dynaForm);
-		createRequesters(dynaForm);
+		createRequesters(sampleOrder);
 
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
@@ -277,16 +278,16 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		}
 	}
 
-	private void createSample(BaseActionForm dynaForm, String accessionNumber) {
+	private void createSample(SampleOrderItem sampleOrder) {
 		
-		String receivedDate = dynaForm.getString("receivedDate");
-		String receivedTime = dynaForm.getString("recievedTime");
+		String receivedDate = sampleOrder.getReceivedDateForDisplay();
+		String receivedTime = sampleOrder.getReceivedTime();
 
 		receivedDate += GenericValidator.isBlankOrNull(receivedTime) ? " 00:00" : ( " " + receivedTime); 
 
 		
 		sample = new Sample();
-		sample.setAccessionNumber(accessionNumber);
+		sample.setAccessionNumber(sampleOrder.getLabNo());
 		sample.setReceivedTimestamp(DateUtil.convertStringDateToTimestamp(receivedDate));
 		sample.setCollectionDate(sample.getReceivedTimestamp()); //note there really is no collection date but other code thinks there is
 		sample.setSysUserId(currentUserId);
@@ -332,12 +333,9 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 			sampleItem.setSysUserId(currentUserId);
 			sampleItem.setSample(sample);
 
-			sampleItemSet.note = createNote(sampleItemElement, sampleItem);
+			sampleItemSet.note = createNote(sampleItemElement);
 			sampleItemSet.requestedAnalysisList = createRequestedAnalysisSet(sampleItemElement, sampleItem);
-
-			List<ReferrerAnalysisSet> referrerSet = createReferrarAnalysisSets(sampleItemElement, sampleItem);
-
-			sampleItemSet.referrerAnalysisSet = referrerSet;
+			sampleItemSet.referrerAnalysisSet = createReferrerAnalysisSets( sampleItemElement, sampleItem );
 
 			List<ObservationHistory> initialConditionList = null;
 			if (useInitialSampleCondition) {
@@ -346,9 +344,9 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 					String[] initialSampleConditionIds = initialSampleConditionIdString.split(",");
 					initialConditionList = new ArrayList<ObservationHistory>();
 
-					for (int j = 0; j < initialSampleConditionIds.length; ++j) {
+					for ( String initialSampleConditionId : initialSampleConditionIds) {
 						ObservationHistory initialSampleConditions = new ObservationHistory();
-						initialSampleConditions.setValue(initialSampleConditionIds[j]);
+						initialSampleConditions.setValue(initialSampleConditionId);
 						initialSampleConditions.setValueType(ObservationHistory.ValueType.DICTIONARY);
 						initialSampleConditions.setObservationHistoryTypeId(INITIAL_CONDITION_OBSERVATION_ID);
 						initialConditionList.add(initialSampleConditions);
@@ -361,7 +359,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		}
 	}
 
-	private Note createNote(Element sampleItemElement, SampleItem sampleItem) {
+	private Note createNote(Element sampleItemElement) {
 		String noteText = sampleItemElement.attributeValue("note");
 
 		if (!GenericValidator.isBlankOrNull(noteText)) {
@@ -371,7 +369,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		return null;
 	}
 
-	private List<ReferrerAnalysisSet> createReferrarAnalysisSets(Element sampleItemElement, SampleItem sampleItem) {
+	private List<ReferrerAnalysisSet> createReferrerAnalysisSets( Element sampleItemElement, SampleItem sampleItem ) {
 		List<ReferrerAnalysisSet> referrerSetList = new ArrayList<ReferrerAnalysisSet>();
 
 		for (Object element : sampleItemElement.element("tests").elements("test")) {
@@ -423,9 +421,9 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		if (!GenericValidator.isBlankOrNull(requestedAanlysisIds)) {
 			String[] splitIds = requestedAanlysisIds.split(",");
 
-			for (int i = 0; i < splitIds.length; ++i) {
+			for (String id :splitIds ) {
 				Analysis analysis = new Analysis();
-				Test test = testDAO.getTestById(splitIds[i]);
+				Test test = testDAO.getTestById(id);
 				if (test != null) {
 					analysis.setTest(test);
 					analysis.setTestSection(test.getTestSection());
@@ -445,8 +443,8 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		return analysisList;
 	}
 
-	private void createRequesters(BaseActionForm dynaForm) {
-		String orgId = dynaForm.getString("requestingOrganization");
+	private void createRequesters( SampleOrderItem sampleOrder ) {
+		String orgId =  sampleOrder.getReferringSiteId();
 		orgSampleRequester = null;
 		personSampleRequester = null;
 		organizationContact = null;
@@ -458,7 +456,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 			orgSampleRequester.setSysUserId(currentUserId);
 		}
 
-		String personId = dynaForm.getString("personRequesterId");
+		String personId = sampleOrder.getProviderId();
 		if (!(GenericValidator.isBlankOrNull(personId) || "0".equals(personId))) {
 			personRequester = personDAO.getPersonById(personId);
 		} else {
@@ -474,11 +472,11 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		personSampleRequester.setRequesterTypeId(PERSON_REQUESTER_TYPE_ID);
 		personSampleRequester.setSysUserId(currentUserId);
 
-		personRequester.setEmail(dynaForm.getString("e-mail"));
-		personRequester.setFax(dynaForm.getString("fax"));
-		personRequester.setWorkPhone(dynaForm.getString("phone"));
-		personRequester.setFirstName(dynaForm.getString("firstName"));
-		personRequester.setLastName(dynaForm.getString("lastName"));
+		personRequester.setEmail(sampleOrder.getProviderEmail());
+		personRequester.setFax( sampleOrder.getProviderFax());
+		personRequester.setWorkPhone( sampleOrder.getProviderWorkPhone());
+		personRequester.setFirstName( sampleOrder.getProviderFirstName());
+		personRequester.setLastName( sampleOrder.getProviderLastName());
 		personRequester.setSysUserId(currentUserId);
 	}
 

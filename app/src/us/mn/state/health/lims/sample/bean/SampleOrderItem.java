@@ -36,6 +36,7 @@ public class SampleOrderItem implements Serializable{
     private String referringSiteId;
     private String referringSiteCode;
     private Collection referringSiteList;
+    private String providerId;
     private String providerFirstName;
     private String providerLastName;
     private String providerWorkPhone;
@@ -165,6 +166,14 @@ public class SampleOrderItem implements Serializable{
 
     public void setReferringSiteList( Collection referringSiteList ){
         this.referringSiteList = referringSiteList;
+    }
+
+    public String getProviderId(){
+        return providerId;
+    }
+
+    public void setProviderId( String providerId ){
+        this.providerId = providerId;
     }
 
     public String getProviderFirstName(){

@@ -27,33 +27,25 @@
 
 		<form-bean name="SampleConfirmationEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
-			<form-property name="labno" type="java.lang.String" initial="" />
-			<form-property name="receivedDate" type="java.lang.String" initial="" />
-			<form-property name="recievedTime" type="java.lang.String" initial="" />
             <form-property name="interviewDate" type="java.lang.String" initial="" />
             <form-property name="interviewTime" type="java.lang.String" initial="" />
 			<form-property name="currentDate" type="java.lang.String" initial="" />
 			<form-property name="patientLastUpdated" type="java.lang.String" initial="" />
 			<form-property name="personLastUpdated" type="java.lang.String" initial="" />
 			<form-property name="buttonText" type="java.lang.String" initial="" />
-			<form-property name="requestingOrganization" type="java.lang.String" initial="" />
-			<form-property name="firstName" type="java.lang.String" initial="" />
-			<form-property name="lastName" type="java.lang.String" initial="" />
-			<form-property name="phone" type="java.lang.String" initial="" />
-			<form-property name="fax" type="java.lang.String" initial="" />
-			<form-property name="e-mail" type="java.lang.String" initial="" />
 			<form-property name="confirmationItems" type="java.util.Collection" />
 			<form-property name="sampleTypes" type="java.util.Collection" />
 			<form-property name="patientPK" type="java.lang.String" initial="" />
 			<form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
 			<form-property name="requestingOrganizationList" type="java.util.Collection" />
 			<form-property name="requestAsXML" type="java.lang.String" />
-			<form-property name="personRequesterId" type="java.lang.String" initial="" />
 			<form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
 		</form-bean>
 
 		<form-bean name="SampleEditForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="noSampleFound" type="java.lang.Boolean" initial="Boolean.FALSE" />
+            <form-property name="isConfirmationSample" type="java.lang.Boolean"  initial="Boolean.FALSE" />
 			<form-property name="isEditable" type="java.lang.Boolean" initial="Boolean.TRUE" />
 			<form-property name="firstName" type="java.lang.String" initial="" />
 			<form-property name="lastName" type="java.lang.String" initial="" />

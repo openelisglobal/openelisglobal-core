@@ -101,7 +101,7 @@ function /*void*/onChangeSearchNumber() {
 		searchButton.disable();
 	} else {
 	    // validateAccessionNumberOnServer( field );
-	    $("searchButtonId").enable();
+        searchButton.enable();
 	    //searchButton.focus();
 	}
 }
@@ -136,7 +136,7 @@ function processAccessionSuccess(xhr)
 	}
 
 	var searchButton = $("searchButtonId");
-	$("searchButtonId").enable();
+	searchButton.enable();
 	searchButton.focus();
 }
 
@@ -230,10 +230,7 @@ function areNewTypesOfSamples() {
 	var isNew = fields.detect(function(field) {
 		var ids = $("sampleItemsTypeOfSampleIds").value;
 		var val = field.value;
-		if (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1) {
-			return true;
-		}
-		return false;
+		return (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1);
 	}) != null;
 	return isNew;
 }
@@ -735,7 +732,7 @@ function  processPhoneSuccess(xhr){
 						style="width: 99%">
 						<option value="0"></option>
 						<html:optionsCollection name="<%=formName%>"
-							property="typeOfSamples" label="localizedName" value="id" />
+							property="typeOfSamples" label="value" value="id" />
 					</html:select>
 				</td>
 				<td>
@@ -805,7 +802,7 @@ function makeDirty() {
 	setSave();
 }
 
-function /*void*/savePage() {
+function savePage() {
 	if (areNewTypesOfSamples() && !confirm(confirmNewTypeMessage)) {
 		return false;
 	}
