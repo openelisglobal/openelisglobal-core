@@ -487,13 +487,19 @@ public class ResultsValidationUtility {
 	}
 
 	private String getQualifiedDictionaryId(List<TestResult> testResults){
-		for( TestResult testResult : testResults){
+	    String qualDictionaryIds = "";
+	    for( TestResult testResult : testResults){
 			if( "Q".equals(testResult.getTestResultType())){
-				return "[" + testResult.getValue() + "]";
+			    
+		        if (testResult.getTestResultType().equals("Q")) {
+		            if( qualDictionaryIds != ""){
+		                qualDictionaryIds += ",";
+		            }
+		            qualDictionaryIds += testResult.getValue();
+		        }
 			}
 		}
-		
-		return null;
+		return qualDictionaryIds == "" ?  null : "[" + qualDictionaryIds + "]";
 	}
 
 	private String augmentUOMWithRange(String uom,	Result result) {

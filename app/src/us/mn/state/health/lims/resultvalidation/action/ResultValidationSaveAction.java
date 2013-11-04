@@ -220,6 +220,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		for (AnalysisItem item : resultItemList) {
 			List<ActionError> errorList = new ArrayList<ActionError>();
 			validateQuantifiableItems(item, errorList);
+			
 
 			if (errorList.size() > 0) {
 				StringBuilder augmentedAccession = new StringBuilder(item.getAccessionNumber());
@@ -244,7 +245,24 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 				analysisItemWillBeUpdated(analysisItem)){
 			errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
 		}
+		// verify that qualifiedResultValue has been entered if required
+		if (!GenericValidator.isBlankOrNull(analysisItem.getQualifiedDictionaryId())) {
+		    String[] qualifiedDictionaryIds = analysisItem.getQualifiedDictionaryId().replace("[", "").replace("]", "").split(",");
+		    Set<String> qualifiedDictIdsSet = new HashSet<String>(Arrays.asList(qualifiedDictionaryIds));
+		    
+		    
+		    if (qualifiedDictIdsSet.contains(analysisItem.getResult()) &&
+		            GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue())) {
+		        errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
+		        System.out.println("<~Error");
+		    }
+
+		}
+				
+		
 	}
+
+
 	
 	private void createUpdateList(List<AnalysisItem> analysisItems, boolean areListeners){
 
