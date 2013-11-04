@@ -254,6 +254,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		    if (qualifiedDictIdsSet.contains(analysisItem.getResult()) &&
 		            GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue())) {
 		        errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
+		      
 		    }
 
 		}
@@ -482,7 +483,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		if(GenericValidator.isBlankOrNull(analysisItem.getResultId())){
 			result.setAnalysis(analysis);
 			result.setAnalysisId(analysisItem.getAnalysisId());
-			result.setResultType(analysisItem.getResultType());
+			// alphanumeric is the only supported resultType currently
+			result.setResultType("A");
 			TestAnalyte testAnalyte = getTestAnalyteForResult(result);
 
 			if(testAnalyte != null){
