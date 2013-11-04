@@ -199,6 +199,8 @@ public class SampleEditAction extends BaseAction {
 
 		List<SampleEditItem> analysisSampleItemList = new ArrayList<SampleEditItem>();
 
+        String collectionDate = DateUtil.convertTimestampToStringDate( sampleItem.getCollectionDate() );
+        String collectionTime = DateUtil.convertTimestampToStringTime( sampleItem.getCollectionDate() );
 		boolean canRemove = true;
 		for (Analysis analysis : analysisList) {
 			SampleEditItem sampleEditItem = new SampleEditItem();
@@ -223,10 +225,13 @@ public class SampleEditAction extends BaseAction {
 
 		if (!analysisSampleItemList.isEmpty()) {
 			Collections.sort(analysisSampleItemList, testComparator);
+            SampleEditItem firstItem = analysisSampleItemList.get( 0 );
 
-			analysisSampleItemList.get(0).setAccessionNumber(accessionNumber + "-" + sampleItem.getSortOrder());
-			analysisSampleItemList.get(0).setSampleType(typeOfSample.getLocalizedName());
-			analysisSampleItemList.get(0).setCanRemoveSample(canRemove);
+            firstItem.setAccessionNumber(accessionNumber + "-" + sampleItem.getSortOrder());
+            firstItem.setSampleType(typeOfSample.getLocalizedName());
+            firstItem.setCanRemoveSample(canRemove);
+            firstItem.setCollectionDate( collectionDate == null ? "" : collectionDate );
+            firstItem.setCollectionTime( collectionTime );
 			maxAccessionNumber = analysisSampleItemList.get(0).getAccessionNumber();
 			currentTestList.addAll(analysisSampleItemList);
 		}

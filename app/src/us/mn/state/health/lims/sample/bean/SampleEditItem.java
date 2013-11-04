@@ -14,6 +14,9 @@ public class SampleEditItem {
 	private String sortOrder;
 	private boolean canRemoveSample = false;
 	private boolean removeSample;
+    private String collectionDate;
+    private String collectionTime;
+    private boolean sampleItemChanged = false;
 
 	public String getAccessionNumber() {
 		return accessionNumber;
@@ -95,4 +98,27 @@ public class SampleEditItem {
 		this.removeSample = removeSample;
 	}
 
+    public String getCollectionDate(){
+        return collectionDate;
+    }
+
+    public void setCollectionDate( String collectionDate ){
+        this.collectionDate = collectionDate;
+    }
+
+    public String getCollectionTime(){
+        return collectionTime;
+    }
+
+    public void setCollectionTime( String collectionTime ){
+        this.collectionTime = collectionTime;
+    }
+
+    public boolean isSampleItemChanged(){
+        return sampleItemChanged;
+    }
+
+    public void setSampleItemChanged( boolean sampleItemChanged ){
+        this.sampleItemChanged = sampleItemChanged;
+    }
 }
