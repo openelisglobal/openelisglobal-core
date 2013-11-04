@@ -124,9 +124,10 @@ public class SampleEditUpdateAction extends BaseAction {
 			}
 		}
 
-        List<Analysis> cancelAnalysisList = createRemoveList((List<SampleEditItem>) dynaForm.get("existingTests"));
-        List<SampleItem> cancelSampleItemList = createCancelSampleList((List<SampleEditItem>) dynaForm.get("existingTests"),
-                cancelAnalysisList);
+        List<SampleEditItem> existingTests = (List<SampleEditItem>)dynaForm.get( "existingTests" );
+        List<Analysis> cancelAnalysisList = createRemoveList(existingTests);
+        List<SampleItem> updateSampleItemList = createSampleItemUpdateList( existingTests);
+        List<SampleItem> cancelSampleItemList = createCancelSampleList(existingTests, cancelAnalysisList);
         List<Analysis> addAnalysisList = createAddAanlysisList((List<SampleEditItem>) dynaForm.get("possibleTests"));
 
 
@@ -146,15 +147,17 @@ public class SampleEditUpdateAction extends BaseAction {
 
         try {
 
+            for( SampleItem sampleItem : updateSampleItemList){
+                sampleItemDAO.updateData( sampleItem );
+            }
+
             for (Analysis analysis : cancelAnalysisList) {
                 analysisDAO.updateData(analysis);
             }
 
             for (Analysis analysis : addAnalysisList) {
                 if (analysis.getId() == null) {
-                    analysisDAO.insertData(analysis, false); // don't check
-                                                                // for
-                                                                // duplicates
+                    analysisDAO.insertData(analysis, false); // don't check for duplicates
                 } else {
                     analysisDAO.updateData(analysis);
                 }
@@ -179,8 +182,7 @@ public class SampleEditUpdateAction extends BaseAction {
                     testDAO.getData(test);
 
                     Analysis analysis = populateAnalysis(sampleTestCollection, test, sampleTestCollection.testIdToUserSectionMap.get(test.getId()) );
-                    analysisDAO.insertData(analysis, false); // false--do not check
-                    // for duplicates
+                    analysisDAO.insertData(analysis, false); // false--do not check for duplicates
                 }
 
                 if( sampleTestCollection.initialSampleConditionIdList != null){
@@ -261,7 +263,30 @@ public class SampleEditUpdateAction extends BaseAction {
 
 	}
 
-	private Analysis populateAnalysis(SampleTestCollection sampleTestCollection, Test test, String userSelectedTestSection) {
+    private List<SampleItem> createSampleItemUpdateList( List<SampleEditItem> existingTests ){
+        List<SampleItem> modifyList = new ArrayList<SampleItem>(  );
+
+        for( SampleEditItem editItem : existingTests){
+            if(editItem.isSampleItemChanged()){
+                SampleItem sampleItem = sampleItemDAO.getData( editItem.getSampleItemId() );
+                if( sampleItem != null ){
+                    String collectionTime = editItem.getCollectionDate();
+                    if(GenericValidator.isBlankOrNull( collectionTime )){
+                        sampleItem.setCollectionDate( null );
+                    } else {
+                        collectionTime += " " + (GenericValidator.isBlankOrNull(editItem.getCollectionTime()) ? "00:00" : editItem.getCollectionTime());
+                        sampleItem.setCollectionDate( DateUtil.convertStringDateToTimestamp( collectionTime ));
+                    }
+                    sampleItem.setSysUserId( currentUserId );
+                    modifyList.add( sampleItem );
+                }
+            }
+        }
+
+        return modifyList;
+    }
+
+    private Analysis populateAnalysis(SampleTestCollection sampleTestCollection, Test test, String userSelectedTestSection) {
 		java.sql.Date collectionDateTime = DateUtil.convertStringDateTimeToSqlDate(sampleTestCollection.collectionDate);
 		TestSection testSection = test.getTestSection();
 		if( !GenericValidator.isBlankOrNull(userSelectedTestSection)){

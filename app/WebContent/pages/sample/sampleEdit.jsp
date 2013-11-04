@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
-			us.mn.state.health.lims.common.util.SystemConfiguration,
+			us.mn.state.health.lims.common.formfields.FormFields,
 			us.mn.state.health.lims.common.util.ConfigurationProperties,
 			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	        us.mn.state.health.lims.common.formfields.FormFields,
 	        us.mn.state.health.lims.common.util.StringUtil,
+	        us.mn.state.health.lims.common.util.SystemConfiguration,
             us.mn.state.health.lims.common.util.Versioning,
-	        us.mn.state.health.lims.sample.bean.SampleEditItem,
-	        us.mn.state.health.lims.sample.util.AccessionNumberUtil,
-	        us.mn.state.health.lims.common.util.IdValuePair" %>
+            us.mn.state.health.lims.sample.bean.SampleEditItem,
+	        us.mn.state.health.lims.sample.util.AccessionNumberUtil" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -22,14 +21,15 @@
 <bean:define id="idSeparator"	value='<%=SystemConfiguration.getInstance().getDefaultIdSeparator()%>' />
 <bean:define id="accessionFormat" value='<%=ConfigurationProperties.getInstance().getPropertyValue(Property.AccessionFormat)%>' />
 <bean:define id="genericDomain" value='' />
-<bean:define id="accessionNumber " name="<%=formName %>" property="accessionNumber"/>
-<bean:define id="newAccessionNumber " name="<%=formName %>" property="newAccessionNumber"/>
+<bean:define id="accessionNumber" name="<%=formName %>" property="accessionNumber"/>
+<bean:define id="newAccessionNumber" name="<%=formName %>" property="newAccessionNumber"/>
 
 <%!
 	String basePath = "";
 	int editableAccession = 0;
 	int nonEditableAccession = 0;
 	int maxAccessionLength = 0;
+    boolean useCollectionDate = true;
 %>
 <%
 	String path = request.getContextPath();
@@ -37,6 +37,7 @@
 	editableAccession = AccessionNumberUtil.getChangeableLength();
 	nonEditableAccession = AccessionNumberUtil.getInvarientLength();
 	maxAccessionLength = editableAccession + nonEditableAccession;
+    useCollectionDate = FormFields.getInstance().useField( FormFields.Field.CollectionDate);
 %>
 
 <script src="scripts/ui/jquery.ui.core.js?ver=<%= Versioning.getBuildNumber() %>"></script>
@@ -81,9 +82,10 @@ function /*void*/ addRemoveRequest( checkbox ){
 
 function setSaveButton(){
 	var newAccession = $("newAccessionNumber").value;
-	var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>"; 
+	var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>";
+    var sampleItemChanged = $jq(".sampleItemChanged[value='true']").length > 0;
 
-    $("saveButtonId").disabled = errorsOnForm() || !sampleAddValid(false) || (checkedCount == 0  && !accessionChanged && !samplesHaveBeenAdded() && !orderChanged );
+    $("saveButtonId").disabled = errorsOnForm() || !sampleAddValid(false) || (checkedCount == 0  && !accessionChanged && !samplesHaveBeenAdded() && !orderChanged && !sampleItemChanged );
 }
 
 // Adds warning when leaving page if tests are checked
@@ -182,6 +184,78 @@ function updateSampleItemNumbers(newAccessionNumber){
 		}
 }
 
+function checkValidEntryDate(date, dateRange, blankAllowed)
+{
+    $jq("#sampleItemChanged_" + date.id.split("_")[1]).val(true);
+    if((!date.value || date.value == "") && !blankAllowed){
+        setSaveButton();
+        return;
+    } else if ((!date.value || date.value == "") && blankAllowed) {
+        setValidIndicaterOnField(true, date.id);
+        setSaveButton();
+        return;
+    }
+
+
+    if( !dateRange || dateRange == ""){
+        dateRange = 'past';
+    }
+
+    //ajax call from utilites.js
+    isValidDate( date.value, processValidateEntryDateSuccess, date.id, dateRange );
+}
+
+function  /*void*/ processValidateEntryDateSuccess(xhr){
+
+    //alert(xhr.responseText);
+
+    var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
+    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
+
+    var isValid = message == "<%=IActionConstants.VALID%>";
+
+    //utilites.js
+    selectFieldErrorDisplay( isValid, $(formField));
+    setSaveButton();
+
+    if( message == '<%=IActionConstants.INVALID_TO_LARGE%>' ){
+        alert( '<bean:message key="error.date.inFuture"/>' );
+    }else if( message == '<%=IActionConstants.INVALID_TO_SMALL%>' ){
+        alert( '<bean:message key="error.date.inPast"/>' );
+    }
+}
+
+
+function checkValidTime(time, blankAllowed)
+{
+    var lowRangeRegEx = new RegExp("^[0-1]{0,1}\\d:[0-5]\\d$");
+    var highRangeRegEx = new RegExp("^2[0-3]:[0-5]\\d$");
+
+    $jq("#sampleItemChanged_" + time.id.split("_")[1]).val(true);
+    if (time.value.blank() && blankAllowed == true) {
+        clearFieldErrorDisplay(time);
+        setSaveButton();
+        return;
+    }
+
+    if( lowRangeRegEx.test(time.value) ||
+            highRangeRegEx.test(time.value) )
+    {
+        if( time.value.length == 4 )
+        {
+            time.value = "0" + time.value;
+        }
+        clearFieldErrorDisplay(time);
+    }
+    else
+    {
+        setFieldErrorDisplay(time);
+        setSampleFieldInvalid(time.name);
+    }
+
+    setSaveButton();
+}
+
 </script>
 
 <hr/>
@@ -234,6 +308,14 @@ function updateSampleItemNumbers(newAccessionNumber){
 <tr>
 <th><%= StringUtil.getContextualMessageForKey("quick.entry.accession.number") %></th>
 <th><bean:message key="sample.entry.sample.type"/></th>
+<% if( useCollectionDate ){ %>
+<th >
+    <bean:message key="sample.collectionDate"/>
+</th>
+<th >
+    <bean:message key="sample.collectionTime"/>
+</th>
+<% } %>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
 	<th style="width:16px"><bean:message key="sample.edit.remove.sample" /></th>
 </logic:equal>
@@ -246,7 +328,8 @@ function updateSampleItemNumbers(newAccessionNumber){
 </logic:equal>
 
 </tr>
-	<logic:iterate id="existingTests" name="<%=formName%>"  property="existingTests" indexId="index" type="SampleEditItem">
+	<logic:iterate id="existingTests" name="<%=formName%>"  property="existingTests" indexId="index" type="us.mn.state.health.lims.sample.bean.SampleEditItem">
+        <html:hidden property="sampleItemChanged" name="existingTests" styleId='<%= "sampleItemChanged_" + index %>' styleClass="sampleItemChanged" indexed="true"/>
 	<tr>
 		<td>
 			<html:hidden name="existingTests" property="analysisId" indexed="true"/>
@@ -255,15 +338,43 @@ function updateSampleItemNumbers(newAccessionNumber){
 		<td>
 			<bean:write name="existingTests" property="sampleType"/>
 		</td>
+        <% if( useCollectionDate ){ %>
+        <td >
+            <% if( existingTests.getCollectionDate() != null ){%>
+            <html:text name='existingTests'
+                       property='collectionDate'
+                       maxlength='10'
+                       size ='12'
+                       onchange="checkValidEntryDate(this, 'past', true);"
+                       styleId='<%= "collectionDate_" + index %>'
+                       styleClass='text'
+                       indexed="true"/>
+            <% } %>
+        </td>
+        <td >
+            <% if( existingTests.getCollectionDate() != null ){%>
+            <html:text name='existingTests'
+                       property='collectionTime'
+                       maxlength='10'
+                       size ='12'
+                       onkeyup='filterTimeKeys(this, event);'
+                       onblur='checkValidTime(this, true);'
+                       styleId='<%= "collectionTime_" + index %>'
+                       styleClass='text'
+                       indexed="true"/>
+            <% } %>
+        </td>
+        <% } %>
 		<logic:equal name='<%=formName%>' property="isEditable" value="true" >
-		    <td>
-				<% if( existingTests.getAccessionNumber() != null ){
-				         if( existingTests.isCanRemoveSample()){ %>
-				<html:checkbox name='existingTests' property='removeSample' indexed='true' onchange="addRemoveRequest(this);" />
-				<% }else{ %>
-				<html:checkbox name='existingTests' property='removeSample' indexed='true' disabled="true" />
-				<% }} %>
-			</td>
+            <td>
+                <% if( existingTests.getAccessionNumber() != null ){
+                    if( existingTests.isCanRemoveSample() ){ %>
+                <html:checkbox name='existingTests' property='removeSample' indexed='true' onchange="addRemoveRequest(this);"/>
+                <% }else{ %>
+                <html:checkbox name='existingTests' property='removeSample' indexed='true' disabled="true"/>
+                <% }
+                } %>
+            </td>
 		</logic:equal>
 		<td>
 			<bean:write name="existingTests" property="testName"/>
