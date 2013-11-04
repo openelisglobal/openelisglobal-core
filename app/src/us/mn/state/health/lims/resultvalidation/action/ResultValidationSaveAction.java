@@ -254,7 +254,6 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		    if (qualifiedDictIdsSet.contains(analysisItem.getResult()) &&
 		            GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue())) {
 		        errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
-		        System.out.println("<~Error");
 		    }
 
 		}
