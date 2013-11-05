@@ -153,6 +153,7 @@ public class ResultsLoadUtility {
 		analyte.setAnalyteName("Conclusion");
 		analyte = analyteDAO.getAnalyteByName(analyte, false);
 		ANALYTE_CONCLUSION_ID = analyte == null ? "" : analyte.getId();
+        analyte = new Analyte();
 		analyte.setAnalyteName("generated CD4 Count");
 		analyte = analyteDAO.getAnalyteByName(analyte, false);
 		ANALYTE_CD4_CNT_CONCLUSION_ID = analyte == null ? "" : analyte.getId();
@@ -949,7 +950,7 @@ public class ResultsLoadUtility {
 							qualifiedDictionaryIds += ",";
 						}
 						qualifiedDictionaryIds += testResult.getValue();
-						setQualifedValues(testItem, testResult, result);
+						setQualifedValues(testItem, result);
 					}
 				}
 			}
@@ -965,7 +966,7 @@ public class ResultsLoadUtility {
 		testItem.setDictionaryResults(values);
 	}
 
-	private void setQualifedValues(TestResultItem testItem, TestResult testResult, Result result) {
+	private void setQualifedValues(TestResultItem testItem, Result result) {
 		if (result != null) {
 			List<Result> results = resultDAO.getChildResults(result.getId());
 			if (!results.isEmpty()) {
@@ -1032,7 +1033,7 @@ public class ResultsLoadUtility {
 
 				@Override
 				public int compare(Note o1, Note o2) {
-					return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
+					return o1.getLastupdated().compareTo( o2.getLastupdated() );
 				}
 			});
 			StringBuilder noteBuilder = new StringBuilder();
