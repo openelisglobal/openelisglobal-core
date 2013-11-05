@@ -23,4 +23,24 @@
             where dictionary_category_id = ( select id from clinlims.dictionary_category where description = 'Positive bacteriology results' );
         </sql>
     </changeSet>
+    <changeSet id="4" author="paulsc" context="haitiLNSP">
+        <comment>Correct spelling in test catalog</comment>
+        <update tableName="test" >
+            <column name="description" value="Test Rapide Salmonelle typhi IgM 09(Serum)" />
+            <column name="name" value="Test Rapide Salmonelle typhi IgM 09"  />
+            <column name="reporting_description" value="Test Rapide Salmonelle typhi IgM 09" />
+            <column name="local_abbrev" value="Test Rapide Salmonel"  />
+            <where>description = 'Test RapideSalmonelle typhi IgM 09(Serum)'</where>
+        </update>
+    </changeSet>
+    <changeSet id="5" author="paulsc" context="haitiLNSP">
+        <comment>Correct spelling in test catalog</comment>
+        <update tableName="test" >
+            <column name="description" value="Test Rapide Salmonelle typhi IgM 09(Selles)" />
+            <column name="name" value="Test Rapide Salmonelle typhi IgM 09"  />
+            <column name="reporting_description" value="Test Rapide Salmonelle typhi IgM 09" />
+            <column name="local_abbrev" value="Test Rapide Salmonel"  />
+            <where>description = 'Test Rapide Salmonelle typhi  IgM 09(Selles)'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
