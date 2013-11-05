@@ -1032,7 +1032,7 @@ public class ResultsLoadUtility {
 
 				@Override
 				public int compare(Note o1, Note o2) {
-					return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
+					return o1.getLastupdated().compareTo( o2.getLastupdated() );
 				}
 			});
 			StringBuilder noteBuilder = new StringBuilder();
