@@ -11,8 +11,6 @@
             <form-property name="currentDate" type="java.lang.String" initial="" />
             <form-property name="project" type="java.lang.String" initial="" />
             <form-property name="projects" type="java.util.Collection" />
-            <form-property name="patientSearchSelection" type="java.lang.String" initial="" />
-            <form-property name="patientSearchList" type="java.util.List" />
             <form-property name="patientProcessingStatus" type="java.lang.String" initial="Add" />
             <form-property name="patientPK" type="java.lang.String" initial="" />
             <form-property name="sampleTypes" type="java.util.List" />
