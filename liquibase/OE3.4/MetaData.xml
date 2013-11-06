@@ -141,4 +141,21 @@
             <column name="instruction_key" value="instructions.patient.duplicate.subject" />
         </insert>
     </changeSet>
+    <changeSet id="11" author="paulsc">
+        <comment>Adding "Test Result" as a general dictionary category</comment>
+        <insert tableName="dictionary_category">
+            <column name="id" valueNumeric=" nextval( 'dictionary_category_seq' ) "/>
+            <column name="description" value="General test result" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="name" value="Test Result" />
+            <column name="local_abbrev" value="Test Reslt" />
+        </insert>
+    </changeSet>
+    <changeSet id="12" author="paulsc">
+        <comment>Update layout of VIH 1 and 2 dictionary value</comment>
+        <update tableName="dictionary" >
+            <column name="dict_entry" value="Positif VIH 1 et 2" />
+            <where>dict_entry = 'Positif VIH1 et 2'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
