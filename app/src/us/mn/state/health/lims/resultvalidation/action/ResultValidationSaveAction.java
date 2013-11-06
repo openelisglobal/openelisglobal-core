@@ -254,6 +254,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		    if (qualifiedDictIdsSet.contains(analysisItem.getResult()) &&
 		            GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue())) {
 		        errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
+		      
 		    }
 
 		}
@@ -482,7 +483,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		if(GenericValidator.isBlankOrNull(analysisItem.getResultId())){
 			result.setAnalysis(analysis);
 			result.setAnalysisId(analysisItem.getAnalysisId());
-			result.setResultType(analysisItem.getResultType());
+	        result.setResultType(analysisItem.getResultType());
 			TestAnalyte testAnalyte = getTestAnalyteForResult(result);
 
 			if(testAnalyte != null){
@@ -509,6 +510,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 			}
 			//changing to quantifiable from non-quantifiable
 		}else if("Q".equals(testResult.getTestResultType())){
+		    
 			List<Result> children = resultDAO.getChildResults(result.getId());
 			if(children.isEmpty()){
 				Result quantifiedResult = new Result();
@@ -525,6 +527,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 				quantifiedResult.setSysUserId(currentUserId);
 				quantifiedResult.setSortOrder("0");
 				quantifiedResult.setParentResult(result);
+				// changing to quantifiable from non-quantifiable
+				result.setResultType("Q");
 				resultUpdateList.add(quantifiedResult);
 			}else{
 				updateExitingQuntifieableResult(analysisItem.getQualifiedResultValue(), children);
