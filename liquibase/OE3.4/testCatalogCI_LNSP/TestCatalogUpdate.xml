@@ -8,11 +8,11 @@
 		<comment>Adds needed dictionary values</comment>
         <sqlFile path="OE3.4/testCatalogCI_LNSP/dictionary1.sql"/>
 	</changeSet>
-    <changeSet id="2" author="paulsc">
+    <changeSet id="2" author="paulsc" context="ciLNSP" >
         <comment>Update existing tests</comment>
         <sqlFile path="OE3.4/testCatalogCI_LNSP/updateTests.sql"/>
     </changeSet>
-    <changeSet id="3" author="paulsc">
+    <changeSet id="3" author="paulsc" context="ciLNSP">
         <comment>Insert new tests</comment>
         <sqlFile path="OE3.4/testCatalogCI_LNSP/insertTests.sql"/>
     </changeSet>
