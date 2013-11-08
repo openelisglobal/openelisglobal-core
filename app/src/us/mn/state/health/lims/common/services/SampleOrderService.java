@@ -155,7 +155,7 @@ public class SampleOrderService{
         }
 
         String receivedDate = sampleOrder.getReceivedDateForDisplay();
-        boolean useReceiveDateForCollectionDate = !FormFields.getInstance().useField( FormFields.Field.CollectionDate );
+     //   boolean useReceiveDateForCollectionDate = !FormFields.getInstance().useField( FormFields.Field.CollectionDate );
 
         if( !GenericValidator.isBlankOrNull( sampleOrder.getReceivedTime() ) ){
             receivedDate += " " + sampleOrder.getReceivedTime();
@@ -188,7 +188,7 @@ public class SampleOrderService{
 
         if( providerPerson == null){
             providerPerson = new Person();
-            SampleRequester samplePersonRequester =requesterService.getSampleRequesterByType( RequesterService.Requester.PERSON );
+            SampleRequester samplePersonRequester =requesterService.getSampleRequesterByType( RequesterService.Requester.PERSON, true );
             samplePersonRequester.setSysUserId( currentUserId );
             artifacts.setSamplePersonRequester( samplePersonRequester );
         }
@@ -204,12 +204,10 @@ public class SampleOrderService{
     }
 
     private boolean namesDiffer( Person providerPerson, SampleOrderItem sampleOrder ){
-        if( providerPerson == null){
-            return true;
-        }
+        return providerPerson == null ||
+                StringUtil.compareWithNulls( providerPerson.getFirstName(), sampleOrder.getProviderFirstName() ) != 0 ||
+                StringUtil.compareWithNulls( providerPerson.getLastName(), sampleOrder.getProviderLastName() ) != 0;
 
-        return StringUtil.compareWithNulls(providerPerson.getFirstName(), sampleOrder.getProviderFirstName()) != 0 ||
-                StringUtil.compareWithNulls(providerPerson.getLastName(), sampleOrder.getProviderLastName()) != 0;
     }
 
     private void createObservationHistoryArtifacts( SampleOrderItem sampleOrder, String currentUserId, SampleOrderPersistenceArtifacts artifacts ){
@@ -278,7 +276,7 @@ public class SampleOrderService{
                 i. referring code is the same as in the organization or referring code is blank -- nothing to do
                ii referring code is different from organization -- update organization
          */
-        SampleRequester orgRequester = requesterService.getSampleRequesterByType( RequesterService.Requester.ORGANIZATION );
+        SampleRequester orgRequester = requesterService.getSampleRequesterByType( RequesterService.Requester.ORGANIZATION, false );
 
         if( orgRequester == null){
             handleNoExistingOrganizationRequester( sampleOrder, currentUserId, artifacts );
