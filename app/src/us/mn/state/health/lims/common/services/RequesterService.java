@@ -126,24 +126,29 @@ public class RequesterService{
         return organization;
     }
 
-    public SampleRequester getSampleRequesterByType( Requester type){
-        if( requesters == null){
+    public SampleRequester getSampleRequesterByType( Requester type, boolean createIfNotFound ){
+        if( requesters == null ){
             buildRequesters();
         }
 
-        for( SampleRequester requester : requesters){
-            if( requester.getRequesterTypeId() == type.getId()){
-               return requester;
+        for( SampleRequester requester : requesters ){
+            if( requester.getRequesterTypeId() == type.getId() ){
+                return requester;
             }
         }
 
         //reachable only if existing requester not found
-        SampleRequester newRequester = new SampleRequester();
-        newRequester.setRequesterTypeId( type.getId() );
-        newRequester.setSampleId( Long.parseLong(sampleId) );
+        if( createIfNotFound ){
+            SampleRequester newRequester = new SampleRequester();
+            newRequester.setRequesterTypeId( type.getId() );
+            newRequester.setSampleId( Long.parseLong( sampleId ) );
 
-        return newRequester;
+            return newRequester;
+        }
+
+        return null;
     }
+
     private void buildRequesters(){
         requesters = sampleRequesterDAO.getRequestersForSampleId( sampleId );
         for( SampleRequester requester : requesters ){
