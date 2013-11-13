@@ -114,7 +114,7 @@ function /*void*/ savePage(){
 	form.submit();
 }
 
-function checkAccessionNumber(changeElement){
+function checkEditedAccessionNumber(changeElement){
 	var accessionNumber;
 	clearFieldErrorDisplay( changeElement );
 
@@ -141,19 +141,17 @@ function checkAccessionNumber(changeElement){
 		return;
 	}
 	
-	validateAccessionNumberOnServer(true, changeElement.id, accessionNumber, processAccessionSuccess, null);
+	validateAccessionNumberOnServer(true, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
 }
 
-function processAccessionSuccess(xhr)
+function processEditAccessionSuccess(xhr)
 {
-
 	//alert( xhr.responseText );
 	var accessionNumberUpdate;
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
 	var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
 
 	if (message == "SAMPLE_FOUND"){
-		//$(formField).style.borderColor = "red";
 		setFieldErrorDisplay( $(formField) );
 		setSaveButton();
 		alert('<%=StringUtil.getMessageForKey("errors.may_not_reuse_accession_number")%>');
@@ -252,7 +250,7 @@ function checkValidTime(time, blankAllowed)
     else
     {
         setFieldErrorDisplay(time);
-        setSampleFieldInvalid(time.name);
+ //       setSampleFieldInvalid(time.name);
     }
 
     setSaveButton();
@@ -287,7 +285,7 @@ function checkValidTime(time, blankAllowed)
 		       value='<%= ((String)newAccessionNumber).length() == maxAccessionLength ? ((String)newAccessionNumber).substring(nonEditableAccession, maxAccessionLength) : "" %>'
 		       maxlength="<%= editableAccession%>"
 		       size="<%= editableAccession%>"
-		       onchange="checkAccessionNumber(this);"
+		       onchange="checkEditedAccessionNumber(this);"
 		       id="accessionEdit">
 		       
 	<br/><br/><hr/>
