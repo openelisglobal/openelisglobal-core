@@ -47,4 +47,8 @@
         <comment>Update the spelling of Micobacterium to Mycobacterium</comment>
         <sqlFile path="OE3.4/HaitiLNSPTestUpdate1.sql" />
     </changeSet>
+    <changeSet id="7" author="paulsc" context="haitiLNSP">
+        <comment>Move all of Sang Total tests and panels to Sang</comment>
+        <sqlFile path="OE3.4/HaitiLNSPSangTotalToSang.sql" />
+    </changeSet>
 </databaseChangeLog>
