@@ -43,4 +43,8 @@
             <where>description = 'Test Rapide Salmonelle typhi  IgM 09(Selles)'</where>
         </update>
     </changeSet>
+    <changeSet id="6" author="paulsc" context="haitiLNSP">
+        <comment>Update the spelling of Micobacterium to Mycobacterium</comment>
+        <sqlFile path="OE3.4/HaitiLNSPTestUpdate1.sql" />
+    </changeSet>
 </databaseChangeLog>
