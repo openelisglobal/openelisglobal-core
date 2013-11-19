@@ -677,7 +677,9 @@
 			<form-property name="accessionNumberSearch" type="java.lang.String" initial="" />
 			<form-property name="log" type="java.util.Collection" />
 			<form-property name="accessionNumber" type="java.lang.String" initial="" />
-		</form-bean>
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+        </form-bean>
 	</form-beans>
 
 	

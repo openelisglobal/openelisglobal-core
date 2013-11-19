@@ -16,22 +16,20 @@
 */
 package us.mn.state.health.lims.audittrail.action;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailViewWorker;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class AuditTrailViewAction extends BaseAction {
 
@@ -48,6 +46,8 @@ public class AuditTrailViewAction extends BaseAction {
 			List<AuditTrailItem> items = worker.getAuditTrail();
 			PropertyUtils.setProperty(dynaForm, "log", items);
 			PropertyUtils.setProperty(dynaForm, "accessionNumber", accessionNumber);
+            PropertyUtils.setProperty( dynaForm, "sampleOrderItems", worker.getSampleOrderSnapshot() );
+            PropertyUtils.setProperty( dynaForm, "patientProperties", worker.getPatientSnapshot() );
 		}
 		
 		return mapping.findForward(IActionConstants.FWD_SUCCESS);

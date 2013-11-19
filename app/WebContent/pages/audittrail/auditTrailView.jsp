@@ -11,6 +11,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 <%@ taglib uri="/tags/labdev-view" prefix="app" %>
+<%@ taglib uri="/tags/struts-tiles"     prefix="tiles" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
 
 <%!
@@ -82,7 +83,10 @@ function submit(){
 		        <bean:message key="status" />: <span id="currentStatus"><bean:message key="status.sample.notStarted" /></span>
 		    </div>
 		</div>
-	
+	    <div class="current" >
+            <tiles:insert attribute="orderInfo" />
+            <tiles:insert attribute="patientInfo" />
+        </div>
 		<div class="row-fluid">
 			<div class="span12">		
 				<div id="loading" class="loading-note"><img src="<%=basePath%>/images/indicator.gif" /><bean:message key="loading" /></div>
@@ -135,3 +139,11 @@ function submit(){
 <logic:notEmpty name='<%= formName %>' property="log" >
 <script type="text/javascript" src="<%=basePath%>scripts/oe.datatables.functions.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 </logic:notEmpty>
+
+<script type="text/javascript">
+
+    jQuery(document).ready( function() {
+        jQuery(".current input").each( function(index,elem){ jQuery(elem).attr('readonly', true) });
+        jQuery(".current .spacerRow").each( function(index, elem){jQuery(elem).hide()});
+    } );
+</script>

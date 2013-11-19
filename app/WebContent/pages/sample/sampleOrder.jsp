@@ -17,7 +17,7 @@
 <%@ taglib uri="/tags/labdev-view" prefix="app" %>
 
 <bean:define id="formName" value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>'/>
-<bean:define id="entryDate" name="<%=formName%>" property="currentDate"/>
+<!--bean:define id="entryDate" name="<%=formName%>" property="currentDate"/> -->
 
 <%!
     String path = "";
@@ -175,9 +175,9 @@
 
 
 <!-- This define may not be needed, look at usages (not in any other jsp or js page may be radio buttons for ci LNSP-->
-<bean:define id="orderTypeList" name='<%=formName%>' property="sampleOrderItems.orderTypes"  type="java.util.Collection"/>
+<!--bean:define id="orderTypeList" name='<%=formName%>' property="sampleOrderItems.orderTypes"  type="java.util.Collection"/> -->
 <bean:define id="sampleOrderItem" name='<%=formName%>' property="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
-<html:hidden property="currentDate" name="<%=formName%>" styleId="currentDate"/>
+<!--html:hidden property="currentDate" name="<%=formName%>" styleId="currentDate"/> -->
 <html:hidden property="sampleOrderItems.newRequesterName" name='<%=formName%>' styleId="newRequesterName"/>
 <html:hidden property="sampleOrderItems.modified" name='<%=formName%>' styleId="orderModified"  />
 
@@ -271,7 +271,7 @@
 </tr>
 <% } %>
 
-<tr>
+<tr class="spacerRow">
     <td>&nbsp;</td>
 </tr>
 <% if( FormFields.getInstance().useField( Field.SampleEntryRequestingSiteSampleId ) ){%>
@@ -315,7 +315,8 @@
         <span class="requiredlabel">*</span>
         <% } %>
     </td>
-    <td colspan="3">
+    <td colspan="3" >
+        <logic:equal value="false" name='<%=formName%>' property="sampleOrderItems.readOnly" >
         <html:select styleId="requesterId"
                      name="<%=formName%>"
                      property="sampleOrderItems.referringSiteId"
@@ -326,6 +327,10 @@
             <html:optionsCollection name="<%=formName%>" property="sampleOrderItems.referringSiteList" label="value"
                                     value="id"/>
         </html:select>
+        </logic:equal>
+        <logic:equal value="true" name='<%=formName%>' property="sampleOrderItems.readOnly" >
+            <html:text property="sampleOrderItems.referringSiteName" name="<%=formName%>" style="width:300px" />
+        </logic:equal>
     </td>
 </tr>
 <% } %>
@@ -343,7 +348,7 @@
     </td>
 </tr>
 <% } %>
-<tr>
+<tr class="spacerRow">
     <td>&nbsp;</td>
 </tr>
 <% if( useProviderInfo ){ %>
@@ -455,7 +460,7 @@
     </td>
 </tr>
 <% } %>
-<tr>
+<tr class="spacerRow">
     <td>&nbsp;</td>
 </tr>
 <% if( trackPayment ){ %>
@@ -512,7 +517,7 @@
     </td>
 </tr>
 <% } %>
-<tr>
+<tr class="spacerRow">
     <td>
         &nbsp;
     </td>

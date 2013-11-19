@@ -52,6 +52,7 @@ public class SampleOrderService{
     private boolean needFollowup = FormFields.getInstance().useField( FormFields.Field.SampleEntryLabOrderTypes );
     private SampleOrderItem sampleOrder;
     private Sample sample;
+    private boolean readOnly = false;
 
 
     public SampleOrderService(){
@@ -65,6 +66,12 @@ public class SampleOrderService{
     public SampleOrderService( SampleOrderItem sampleOrder ){
         this.sampleOrder = sampleOrder;
     }
+
+    public SampleOrderService(String accessionNumber, boolean readOnly){
+        this.sample = sampleDAO.getSampleByAccessionNumber( accessionNumber );
+        this.readOnly = readOnly;
+    }
+
 
     private SampleOrderItem getBaseSampleOrderItem(){
         SampleOrderItem orderItems = new SampleOrderItem();
@@ -125,6 +132,9 @@ public class SampleOrderService{
             sampleOrder.setProviderEmail( requesterService.getEmail() );
             sampleOrder.setReferringSiteId( requesterService.getReferringSiteId() );
             sampleOrder.setReferringSiteCode( requesterService.getReferringSiteCode() );
+            sampleOrder.setReferringSiteName( requesterService.getReferringSiteName() );
+
+            sampleOrder.setReadOnly( readOnly );
         }
 
         return sampleOrder;

@@ -16,35 +16,26 @@
  */
 package us.mn.state.health.lims.audittrail.action.workers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.services.historyservices.AnalysisHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.HistoryService;
-import us.mn.state.health.lims.common.services.historyservices.NoteHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.OrderHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.PatientHistoryHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.PatientHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.QaHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.ReportHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.ResultHistoryService;
-import us.mn.state.health.lims.common.services.historyservices.SampleHistoryService;
+import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.SampleOrderService;
+import us.mn.state.health.lims.common.services.historyservices.*;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementBridge;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.patient.util.PatientUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
+import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import java.util.*;
 
 public class AuditTrailViewWorker {
 
@@ -61,14 +52,12 @@ public class AuditTrailViewWorker {
 
 	public List<AuditTrailItem> getAuditTrail() throws IllegalStateException {
 		if (GenericValidator.isBlankOrNull(accessionNumber)) {
-			throw new IllegalStateException("AuditTrialViewWorker is not iniitialized");
+			throw new IllegalStateException("AuditTrialViewWorker is not initialized");
 		}
 
-		if( sample == null ){
-			sample = new SampleDAOImpl().getSampleByAccessionNumber(accessionNumber);
-		}
-		
-		List<AuditTrailItem> items = new ArrayList<AuditTrailItem>();
+        getSample();
+
+        List<AuditTrailItem> items = new ArrayList<AuditTrailItem>();
 
 		if (sample != null) {
 			items.addAll(addOrders());	
@@ -84,17 +73,39 @@ public class AuditTrailViewWorker {
 		return items;
 	}
 
-	
+    public SampleOrderItem getSampleOrderSnapshot(){
+        if (GenericValidator.isBlankOrNull(accessionNumber)) {
+            throw new IllegalStateException("AuditTrialViewWorker is not initialized");
+        }
+
+        SampleOrderService orderService = new SampleOrderService( accessionNumber, true );
+        return orderService.getSampleOrderItem();
+    }
+
+    public PatientManagementInfo getPatientSnapshot(){
+        if (GenericValidator.isBlankOrNull(accessionNumber)) {
+            throw new IllegalStateException("AuditTrialViewWorker is not initialized");
+        }
+
+        getSample();
+
+
+
+        if( sample != null){
+            PatientService patientService = new PatientService( sample );
+            return new PatientManagementBridge().getPatientManagementInfoFor( patientService.getPatient(), true );
+        }else{
+            return new PatientManagementInfo();
+        }
+    }
 	public List<AuditTrailItem> getPatientHistoryAuditTrail() throws IllegalStateException{
 		if (GenericValidator.isBlankOrNull(accessionNumber)) {
-			throw new IllegalStateException("AuditTrialViewWirker is not iniitialized");
+			throw new IllegalStateException("AuditTrialViewWorker is not initialized");
 		}
 
-		if( sample == null ){
-			sample = new SampleDAOImpl().getSampleByAccessionNumber(accessionNumber);
-		}
-		
-		List<AuditTrailItem> items = new ArrayList<AuditTrailItem>();
+        getSample();
+
+        List<AuditTrailItem> items = new ArrayList<AuditTrailItem>();
 
 		if (sample != null) {
 			items.addAll(addPatientHistory());
@@ -102,11 +113,15 @@ public class AuditTrailViewWorker {
 		return items;
 
 	}
-	
-	
-	
 
-	private Collection<AuditTrailItem> addReports() {
+    private void getSample(){
+        if( sample == null ){
+            sample = new SampleDAOImpl().getSampleByAccessionNumber(accessionNumber);
+        }
+    }
+
+
+    private Collection<AuditTrailItem> addReports() {
 		List<AuditTrailItem> items = new ArrayList<AuditTrailItem>();
 		
 		if (sample != null) {

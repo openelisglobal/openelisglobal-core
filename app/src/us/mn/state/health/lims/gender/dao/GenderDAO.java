@@ -15,11 +15,11 @@
 */
 package us.mn.state.health.lims.gender.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.gender.valueholder.Gender;
+
+import java.util.List;
 
 /**
  * @author diane benz
@@ -44,9 +44,11 @@ public interface GenderDAO extends BaseDAO {
 	
 	public List getNextGenderRecord(String id) throws LIMSRuntimeException;
 
-	public List getPreviousGenderRecord(String id) throws LIMSRuntimeException;
-	
-	//bugzilla 1411
-	public Integer getTotalGenderCount() throws LIMSRuntimeException; 
+    public Gender getGenderByType( String type ) throws LIMSRuntimeException;
+
+    public List getPreviousGenderRecord(String id) throws LIMSRuntimeException;
+
+	public Integer getTotalGenderCount() throws LIMSRuntimeException;
+
 
 }

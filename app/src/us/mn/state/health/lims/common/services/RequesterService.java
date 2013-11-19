@@ -103,6 +103,9 @@ public class RequesterService{
         return getOrganization() == null ? null :getOrganization().getId();
     }
 
+    public String getReferringSiteName(){
+        return getOrganization() == null ? null : getOrganization().getOrganizationName();
+    }
     public String getReferringSiteCode(){
         return getOrganization() == null ? null : getOrganization().getCode();
     }

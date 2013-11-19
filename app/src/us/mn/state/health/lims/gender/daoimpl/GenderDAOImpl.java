@@ -15,24 +15,24 @@
 */
 package us.mn.state.health.lims.gender.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
-
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSDuplicateRecordException;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.log.LogEvent; 
 import us.mn.state.health.lims.gender.dao.GenderDAO;
 import us.mn.state.health.lims.gender.valueholder.Gender;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
+
+import java.util.List;
+
 
 /**
  * @author diane benz
@@ -40,13 +40,12 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 
 	public void deleteData(List genders) throws LIMSRuntimeException {
-		//add to audit trail
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			for (int i = 0; i < genders.size(); i++) {
 				Gender data = (Gender)genders.get(i);
 			
-				Gender oldData = (Gender)readGender(data.getId());
+				Gender oldData = readGender(data.getId());
 				Gender newData = new Gender();
 
 				String sysUserId = data.getSysUserId();
@@ -55,7 +54,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 				auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
 			}
 		}  catch (Exception e) {
-			//bugzilla 2154
+
 			LogEvent.logError("GenderDAOImpl","AuditTrail deleteData()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender AuditTrail deleteData()", e);
 		}  
@@ -63,14 +62,12 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 		try {					
 			for (int i = 0; i < genders.size(); i++) {
 				Gender data = (Gender) genders.get(i);
-				//bugzilla 2206
-				data = (Gender)readGender(data.getId());
+				data = readGender(data.getId());
 				HibernateUtil.getSession().delete(data);
 				HibernateUtil.getSession().flush();
 				HibernateUtil.getSession().clear();
 			}						
 		} catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("GenderDAOImpl","deleteData()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender deleteData()", e);
 		}
@@ -107,7 +104,6 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 	}
 
 	public void updateData(Gender gender) throws LIMSRuntimeException {
-		// bugzilla 1482 throw Exception if record already exists
 		try {
 			if (duplicateGenderExists(gender)) {
 				throw new LIMSDuplicateRecordException(
@@ -115,13 +111,12 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 								+ gender.getGenderType());
 			}
 		} catch (Exception e) {
-    		//bugzilla 2154
 			LogEvent.logError("GenderDAOImpl","updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender updateData()",
 					e);
 		}
 
-		Gender oldData = (Gender)readGender(gender.getId());
+		Gender oldData = readGender(gender.getId());
 		Gender newData = gender;
 
 		//add to audit trail
@@ -168,7 +163,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 	}
 
 	public List getAllGenders() throws LIMSRuntimeException {		
-		List list = new Vector();
+		List list;
 		try {
 			String sql = "from Gender";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -187,7 +182,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 	}
 
 	public List getPageOfGenders(int startingRecNo) throws LIMSRuntimeException {		
-		List list = new Vector();
+		List list;
 		try {			
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
@@ -212,7 +207,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 	}
 
 	public Gender readGender(String idString) {		
-		Gender gender = null;
+		Gender gender;
 		try {			
 			gender = (Gender)HibernateUtil.getSession().get(Gender.class, idString);
 			HibernateUtil.getSession().flush();
@@ -231,33 +226,43 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 		return getNextRecord(id, "Gender", Gender.class);
 	}
 
-	public List getPreviousGenderRecord(String id) throws LIMSRuntimeException {
+    @Override
+    public Gender getGenderByType( String type ) throws LIMSRuntimeException{
+        String sql = "From Gender g where g.genderType = :type";
+        try{
+            Query query = HibernateUtil.getSession().createQuery( sql );
+            query.setString( "type", type );
+            Gender gender = (Gender)query.uniqueResult();
+            closeSession();
+            return gender;
+        }catch( HibernateException e ){
+            handleException( e, "getGenderByType" );
+        }
+        return null;
+    }
+
+    public List getPreviousGenderRecord(String id) throws LIMSRuntimeException {
 
 		return getPreviousRecord(id, "Gender", Gender.class);
 	}
 	
-	//bugzilla 1411
 	public Integer getTotalGenderCount() throws LIMSRuntimeException {
 		return getTotalCount("Gender", Gender.class);
 	}
 	
-//	bugzilla 1427
-	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException {	
-		int currentId= (Integer.valueOf(id)).intValue();
+	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException {
+		int currentId= Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
 		
-		List list = new Vector();
-		//bugzilla 1908
-		int rrn = 0;
+		List list;
+
 		try {
-			//bugzilla 1908 cannot use named query for postgres because of oracle ROWNUM
-			//instead get the list in this sortorder and determine the index of record with id = currentId
 			String sql = "select g.id from Gender g order by g.description, g.genderType";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			list = query.list();
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
-			rrn = list.indexOf(String.valueOf(currentId));
+			int rrn = list.indexOf(String.valueOf(currentId));
 
 			list = HibernateUtil.getSession().getNamedQuery(tablePrefix + "getNext")
 			.setFirstResult(rrn + 1)
@@ -274,23 +279,19 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 		return list;		
 	}
 
-	//bugzilla 1427
 	public List getPreviousRecord(String id, String table, Class clazz) throws LIMSRuntimeException {		
-		int currentId= (Integer.valueOf(id)).intValue();
+		int currentId= Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
 		
-		List list = new Vector();
-		//bugzilla 1908
-		int rrn = 0;
+		List list;
+
 		try {	
-			//bugzilla 1908 cannot use named query for postgres because of oracle ROWNUM
-			//instead get the list in this sortorder and determine the index of record with id = currentId
 			String sql = "select g.id from Gender g order by g.description desc, g.genderType desc";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			list = query.list();
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
-			rrn = list.indexOf(String.valueOf(currentId));
+			int rrn = list.indexOf(String.valueOf(currentId));
 			
 			list = HibernateUtil.getSession().getNamedQuery(tablePrefix + "getPrevious")
 			.setFirstResult(rrn + 1)
@@ -311,13 +312,12 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 	private boolean duplicateGenderExists(Gender gender) throws LIMSRuntimeException {
 		try {
 
-			List list = new ArrayList();
+			List list;
 
 			// not case sensitive hemolysis and Hemolysis are considered
 			// duplicates
 			String sql = "from Gender t where trim(lower(t.genderType)) = :genderType and t.id != :genderId";
-			org.hibernate.Query query = HibernateUtil.getSession().createQuery(
-					sql);
+			Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setParameter("genderType", gender.getGenderType().toLowerCase().trim());
 	
 			// initialize with 0 (for new records where no id has been generated
