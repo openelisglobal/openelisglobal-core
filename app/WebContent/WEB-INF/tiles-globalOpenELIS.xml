@@ -16,7 +16,7 @@
     </definition>
 
   <definition name="sampleConfirmationCore" path="/pages/sample/sampleConfirmationAdd.jsp">
-      <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
+        <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
   		<put name="patientInfo" value="patientManagementCore"/>
   </definition>
 
@@ -110,7 +110,11 @@
 		<put name="patientSearch"  value="/pages/patient/patientSearch.jsp" />
 	</definition>
 
-	<definition name="nonConformityDefiniton" extends="baseDefinition">
+    <definition name="patientManagementNoSearchCore" path="/pages/patient/patientManagement.jsp">
+        <put name="patientSearch"  value="/pages/common/emptyPlaceHolder.jsp" />
+    </definition>
+
+    <definition name="nonConformityDefiniton" extends="baseDefinition">
 		<put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
 		<put name="body" value="/pages/qaevent/nonConformity.jsp"/>
 		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
@@ -122,8 +126,12 @@
 		<put name="footer" value="/pages/common/emptyPlaceHolder.jsp"/>
 	</definition>
 
+    <definition name="auditTrailCore" path="/pages/audittrail/auditTrailView.jsp">
+        <put name="orderInfo" value="/pages/sample/sampleOrder.jsp" />
+        <put name="patientInfo" value="patientManagementNoSearchCore" />
+    </definition>
     <definition name="auditTrailViewDefinition" extends="baseMenuDefinition">
-		<put name="body" value="/pages/audittrail/auditTrailView.jsp"/>
+		<put name="body" value="auditTrailCore"/>
 	</definition>
 
 	<definition name="resultListViewCore" page="/pages/result/resultListView.jsp">

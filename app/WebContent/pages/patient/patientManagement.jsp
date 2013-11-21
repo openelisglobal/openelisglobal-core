@@ -75,6 +75,8 @@
 
 <script type="text/javascript" >
 
+var $jq = jQuery.noConflict();
+
 /*the prefix pt_ is being used for scoping.  Since this is being used as a tile there may be collisions with other
   tiles with simular names.  Only those elements that may cause confusion are being tagged, and we know which ones will collide
   because we can predicte the future */
@@ -777,11 +779,13 @@ function  processSubjectNumberSuccess(xhr){
 	<nested:hidden name='<%=formName%>' property="patientProperties.patientProcessingStatus" styleId="processingStatus" value="add" />
 	<nested:hidden name='<%=formName%>' property="patientProperties.patientPK" styleId="patientPK_ID" />
 	<nested:hidden name='<%=formName%>' property="patientProperties.guid" styleId="patientGUID_ID" />
+    <logic:equal value="false" name="<%=formName%>" property="patientProperties.readOnly" >
 	<br/>
 	<div class="patientSearch">
 		<hr style="width:100%" />
         <input type="button" value="Nouveau Patient" onclick="addPatient()">
 	</div>
+    </logic:equal>
 	<div id="PatientDetail"   >
 	<h2><bean:message key="patient.information"/></h2>
 	<table style="width:80%" border="0">
@@ -855,7 +859,7 @@ function  processSubjectNumberSuccess(xhr){
         </td>
     </tr>
     <%} %>
-    <tr ><td colspan="2">&nbsp;</td></tr>
+    <tr class="spacerRow" ><td colspan="2">&nbsp;</td></tr>
 	<tr>
 		<td style="width:15%">
 			<bean:message key="patient.name" />
@@ -939,7 +943,7 @@ function  processSubjectNumberSuccess(xhr){
 		</td>
 	</tr>
 	<%} %>
-	<tr ><td colspan="2">&nbsp;</td></tr>
+	<tr class="spacerRow" ><td colspan="2">&nbsp;</td></tr>
 	<tr>
 		<td >
 			<bean:message  key="person.streetAddress" />
@@ -995,6 +999,7 @@ function  processSubjectNumberSuccess(xhr){
 			<bean:message  key="person.department" />:
 		</td>
 		<td>
+            <logic:equal value="false" name="<%=formName%>" property="patientProperties.readOnly" >
 			<html:select name='<%=formName%>'
 						 property="patientProperties.addressDepartment"
 						 onchange="updatePatientEditStatus();clearDeptMessage();"
@@ -1003,6 +1008,10 @@ function  processSubjectNumberSuccess(xhr){
 			<html:optionsCollection name="<%=formName %>" property="patientProperties.addressDepartments" label="dictEntry" value="id" />
 			</html:select><br>
 			<span id="deptMessage"></span>
+            </logic:equal>
+            <logic:equal value="true" name="<%=formName%>" property="patientProperties.readOnly" >
+                <html:text property="patientProperties.addressDepartment" name="<%=formName%>" />
+            </logic:equal>
 		</td>
 	</tr>
 	<% } %>
@@ -1015,7 +1024,7 @@ function  processSubjectNumberSuccess(xhr){
 			</td>
 		</tr>
 	<% } %>
-	<tr ><td >&nbsp;</td></tr>
+	<tr class="spacerRow"><td >&nbsp;</td></tr>
 	<% if( FormFields.getInstance().useField(Field.PatientHealthRegion)){ %>
 	<tr>
 	<td>&nbsp;</td>
@@ -1070,10 +1079,14 @@ function  processSubjectNumberSuccess(xhr){
 			<bean:message  key="patient.age" />:
 		</td>
 		<td >
-			<INPUT type=text name=age id=age size="3" class="text"
-				   onchange="handleAgeChange( this ); updatePatientEditStatus();"
-				   maxlength="3" />
-			<div id="ageMessage" class="blank" ></div>
+            <html:text property="patientProperties.age"
+                       name="<%=formName%>"
+                       size="3"
+                       maxlength="3"
+                       onchange="handleAgeChange( this ); updatePatientEditStatus();"
+                       styleClass="text"
+                    styleId="age"/>
+			<div id="patientProperties.ageMessage" class="blank" ></div>
 		</td>
 		<td style="text-align:right;">
 			<bean:message  key="patient.gender" />:
@@ -1082,6 +1095,7 @@ function  processSubjectNumberSuccess(xhr){
 			<% } %>
 		</td>
 		<td>
+            <logic:equal value="false" name="<%=formName%>" property="patientProperties.readOnly" >
 			<nested:select name='<%=formName%>'
 						 property="patientProperties.gender"
 						 onchange="updatePatientEditStatus();"
@@ -1089,6 +1103,10 @@ function  processSubjectNumberSuccess(xhr){
 				<option value=" " ></option>
 				<nested:optionsCollection name='<%=formName%>' property="patientProperties.genders"   label="value" value="id" />
 			</nested:select>
+            </logic:equal>
+            <logic:equal value="true" name="<%=formName%>" property="patientProperties.readOnly" >
+                <html:text property="patientProperties.gender" name="<%=formName%>" />
+            </logic:equal>
 		</td>
 	</tr>
 	<% if( supportInsurance || supportPatientType){ %>

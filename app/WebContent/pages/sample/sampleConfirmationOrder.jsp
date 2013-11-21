@@ -55,6 +55,7 @@
 %>
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.jsp"></script>
+<script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="scripts/jquery.asmselect.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/laborder.js?ver=<%= Versioning.getBuildNumber() %>"></script>
@@ -234,6 +235,20 @@
             setSaveButton();
         }
     }
+
+    function sampleConfirmationValid(){
+        var enable = true;
+
+        $jq(".required").each( function(i, val){
+            var elValue = $jq(val).val();
+            if( !elValue.trim().length || elValue == 0){
+                enable = false;
+                return;
+            }
+        });
+
+        return enable;
+    }
 </script>
 
 <html:hidden property="sampleOrderItems.modified" name='<%=formName%>' styleId="orderModified"  />
@@ -248,7 +263,7 @@
             <td style="width:15%">
                 <app:text name="<%=formName%>" property="sampleOrderItems.labNo"
                           maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-                          onchange="checkAccessionNumber(this);makeDirty();" styleClass="text"
+                          onchange="checkAccessionNumber(this);makeDirty();setOrderModified();" styleClass="text"
                           styleId="labNo"/>
             </td>
             <td id="generate">
@@ -268,17 +283,16 @@
     </logic:notEmpty>
     <tr>
         <td>
-            <bean:message key="quick.entry.received.date"/>
-            :
+            <bean:message key="quick.entry.received.date"/>:
             <span class="requiredlabel">*</span>
 			<span style="font-size: xx-small; "><bean:message key="sample.date.format"/>
 			</span>
         </td>
         <td colspan="2">
             <app:text name="<%=formName%>" property="sampleOrderItems.receivedDateForDisplay"
-                      onchange="checkValidDate(this);orderModified();"
+                      onchange="checkValidDate(this);setOrderModified();"
                       onkeyup="addDateSlashes(this,event);"
-                      styleClass="text"
+                      styleClass="text required"
                       maxlength="10"
                       styleId="receivedDate"/>
 
@@ -329,7 +343,7 @@
             <html:select name='<%= formName %>'
                          property="sampleOrderItems.providerId"
                          styleId="personRequesterId"
-                         onchange="populateRequesterDetail(this); makeDirty();setSaveButton();">
+                         onchange="populateRequesterDetail(this); makeDirty();setOrderModified();">
                 <option value="0"><bean:message key="sample.entry.requester.new"/></option>
             </html:select>
         </td>
@@ -395,7 +409,7 @@
         resultCallBack = function( ) {
             getRequestersForOrg( );
             makeDirty();
-            setSaveButton();
+            setOrderModified();
         };
     } );
 </script>

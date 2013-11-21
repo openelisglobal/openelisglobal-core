@@ -68,6 +68,8 @@ public class PatientManagementInfo implements Serializable {
 	private static List<IdValuePair> educationList;
 	private static List<IdValuePair> maritialList;
 	private static List<IdValuePair> nationalityList;
+    private boolean readOnly = false;
+    private String age;
 
 	
 	public String getCurrentDate() {
@@ -320,4 +322,19 @@ public class PatientManagementInfo implements Serializable {
 		this.guid = guid;
 	}
 
+    public boolean isReadOnly(){
+        return readOnly;
+    }
+
+    public void setReadOnly( boolean readOnly ){
+        this.readOnly = readOnly;
+    }
+
+    public String getAge(){
+        return age;
+    }
+
+    public void setAge( String age ){
+        this.age = age;
+    }
 }

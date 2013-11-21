@@ -35,6 +35,7 @@ public class SampleOrderItem implements Serializable{
     private String referringPatientNumber;
     private String referringSiteId;
     private String referringSiteCode;
+    private String referringSiteName;
     private Collection referringSiteList;
     private String providerId;
     private String providerFirstName;
@@ -55,6 +56,7 @@ public class SampleOrderItem implements Serializable{
     private String otherPeriodOrder;
     private Boolean modified = false;
     private String sampleId;
+    private boolean readOnly = false;
 
     public String getNewRequesterName(){
         return newRequesterName;
@@ -158,6 +160,14 @@ public class SampleOrderItem implements Serializable{
 
     public void setReferringSiteCode( String referringSiteCode ){
         this.referringSiteCode = referringSiteCode;
+    }
+
+    public String getReferringSiteName(){
+        return referringSiteName;
+    }
+
+    public void setReferringSiteName( String referringSiteName ){
+        this.referringSiteName = referringSiteName;
     }
 
     public Collection getReferringSiteList(){
@@ -318,5 +328,13 @@ public class SampleOrderItem implements Serializable{
 
     public void setSampleId( String sampleId ){
         this.sampleId = sampleId;
+    }
+
+    public boolean isReadOnly(){
+        return readOnly;
+    }
+
+    public void setReadOnly( boolean readOnly ){
+        this.readOnly = readOnly;
     }
 }
