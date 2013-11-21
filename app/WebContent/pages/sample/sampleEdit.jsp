@@ -82,13 +82,6 @@ function /*void*/ addRemoveRequest( checkbox ){
 
 }
 
-function setSaveButton(){
-	var newAccession = $("newAccessionNumber").value;
-	var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>";
-    var sampleItemChanged = $jq(".sampleItemChanged[value='true']").length > 0;
-
-    $("saveButtonId").disabled = errorsOnForm() || !sampleAddValid(false) || (checkedCount == 0  && !accessionChanged && !samplesHaveBeenAdded() && !orderChanged && !sampleItemChanged );
-}
 
 // Adds warning when leaving page if tests are checked
 function formWarning(){
@@ -254,6 +247,20 @@ function checkValidTime(time, blankAllowed)
     }
 
     setSaveButton();
+}
+
+//all methods here either overwrite methods in tiles or all called after they are loaded
+var dirty=false;
+function makeDirty(){
+    dirty=true;
+    if( typeof(showSuccessMessage) != 'undefinded' ){
+        showSuccessMessage(false); //refers to last save
+    }
+    // Adds warning when leaving page if content has been entered into makeDirty form fields
+    function formWarning(){
+        return "<bean:message key="banner.menu.dataLossWarning"/>";
+    }
+    window.onbeforeunload = formWarning;
 }
 
 </script>
@@ -438,3 +445,17 @@ function checkValidTime(time, blankAllowed)
 <logic:equal name="<%=formName%>" property="noSampleFound" value="true">
 	<bean:message key="sample.edit.sample.notFound"/>
 </logic:equal>
+
+<script type="text/javascript" >
+
+    function setSaveButton(){
+        var newAccession = $("newAccessionNumber").value;
+        var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>";
+        var sampleItemChanged = $jq(".sampleItemChanged[value='true']").length > 0;
+        var sampleAddIsValid = typeof(sampleAddValid) != 'undefined' ?  sampleAddValid(false) : true;
+        var sampleConfirmationIsValid = typeof(sampleConfirmationValid) != 'undefined' ?  sampleConfirmationValid() : true;
+
+        $("saveButtonId").disabled = errorsOnForm() || !sampleAddIsValid || !sampleConfirmationIsValid || (checkedCount == 0  && !accessionChanged && !samplesHaveBeenAdded() && !orderChanged && !sampleItemChanged );
+    }
+
+</script>

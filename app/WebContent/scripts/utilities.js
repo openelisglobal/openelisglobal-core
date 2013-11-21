@@ -232,8 +232,7 @@ function checkTime(value) {
  * @return
  */
 
-function /*void*/
-checkValidDate(dateElement) {
+function checkValidDate(dateElement) {
     if (dateElement) {
         if (dateElement.value.blank()) {
             updateFieldValidity(true, dateElement.id);

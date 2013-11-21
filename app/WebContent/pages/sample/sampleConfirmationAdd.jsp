@@ -726,7 +726,7 @@ function /*void*/ setSave(){
 
 //all methods here either overwrite methods in tiles or all called after they are loaded
 var dirty=false;
-function /*void*/ makeDirty(){
+function makeDirty(){
 	dirty=true;
 	if( typeof(showSuccessMessage) != 'undefinded' ){
 		showSuccessMessage(false); //refers to last save
