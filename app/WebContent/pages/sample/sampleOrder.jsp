@@ -220,6 +220,7 @@
     <td><html:text name='<%=formName %>'
                    property="sampleOrderItems.requestDate"
                    styleId="requestDate"
+                   styleClass="required"
                    onchange="setOrderModified();checkValidEntryDate(this, 'past')"
                    onkeyup="addDateSlashes(this, event);"
                    maxlength="10"/>
@@ -239,7 +240,7 @@
                   onchange="setOrderModified();checkValidEntryDate(this, 'past');"
                   onkeyup="addDateSlashes(this, event);"
                   maxlength="10"
-                  styleClass="text"
+                  styleClass="text required"
                   styleId="receivedDateForDisplay"/>
 
         <% if( FormFields.getInstance().useField( Field.SampleEntryUseReceptionHour ) ){ %>
