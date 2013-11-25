@@ -95,4 +95,8 @@
     <dropPrimaryKey tableName="sample_requester" constraintName="sample_requester_pk" />
     <addPrimaryKey tableName="sample_requester" columnNames="sample_id, requester_type_id" constraintName="sample_requester_pk" />
 </changeSet>
+<changeSet id="7" author="paulsc">
+    <comment>Adds an id column to sample_requester and makes it the primary key</comment>
+    <sqlFile path="OE3.4/SampleRequesterID.sql" />
+</changeSet>    
 </databaseChangeLog>
