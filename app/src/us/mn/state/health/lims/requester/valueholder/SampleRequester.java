@@ -22,7 +22,7 @@ public class SampleRequester extends BaseObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String id = "1"; //only used for audit trail
+	private String id;
 	private long sampleId;
 	private long requesterId;
 	private long requesterTypeId;
@@ -74,11 +74,11 @@ public class SampleRequester extends BaseObject {
 		       sr.sampleId == sampleId;
 	}
 
-	public int hashValue(){
-		return (int)(requesterId & requesterTypeId & sampleId);
-	}
-
 	public String getId() {
 		return id;
 	}
+
+    public void setId( String id){
+        this.id = id;
+    }
 }

@@ -15,11 +15,11 @@
 */
 package us.mn.state.health.lims.audittrail.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+
+import java.util.List;
 
 /**
  *  @author         Hung Nguyen
@@ -35,8 +35,10 @@ public interface AuditTrailDAO extends BaseDAO {
 	public String getXML(String table, String id) throws LIMSRuntimeException;
 	
 	public String getXMLData(String table, String id) throws LIMSRuntimeException;
-		
-	public List getHistoryByRefIdAndRefTableId(History history) throws LIMSRuntimeException;
+
+    public List getHistoryByRefIdAndRefTableId(History history) throws LIMSRuntimeException;
+
+    public List getHistoryByRefIdAndRefTableId(String refId, String tableId) throws LIMSRuntimeException;
 	
 	public List getHistoryBySystemUserAndDateAndRefTableId(History history) throws LIMSRuntimeException;
 	

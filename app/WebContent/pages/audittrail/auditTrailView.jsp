@@ -80,10 +80,10 @@ function submit(){
 		        <span class="order-number"><bean:write name='<%= formName %>' property="accessionNumber"  /></span> 
 		        <bean:message key="reports.auditTrail.creation" />: <span id="dateCreated"></span>
 		        <bean:message key="reports.auditTrail.days" />: <span id="daysInSystem"></span>
-		        <bean:message key="status" />: <span id="currentStatus"><bean:message key="status.sample.notStarted" /></span>
 		    </div>
 		</div>
 	    <div class="current" >
+            <h2><bean:message key="order.information" /></h2>
             <tiles:insert attribute="orderInfo" />
             <tiles:insert attribute="patientInfo" />
         </div>

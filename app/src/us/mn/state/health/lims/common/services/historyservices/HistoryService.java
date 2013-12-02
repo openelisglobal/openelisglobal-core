@@ -16,19 +16,7 @@
  */
 package us.mn.state.health.lims.common.services.historyservices;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
@@ -43,6 +31,12 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 public abstract class HistoryService {
 
@@ -112,9 +106,7 @@ public abstract class HistoryService {
 		for (String key : changeMaps.keySet()) {
 			setIdentifierForKey(key);
 			AuditTrailItem item = getCoreTrail(history);
-			if (showAttribute()) {
-				item.setAttribute(key);
-			}
+            item.setAttribute(showAttribute() && !GenericValidator.isBlankOrNull( key ) ? key : StringUtil.getMessageForKey( "auditTrail.action.update" ));
 			item.setOldValue(changeMaps.get(key));
 			item.setNewValue(newValueMap.get(key));
 			newValueMap.put(key, item.getOldValue());
@@ -157,13 +149,12 @@ public abstract class HistoryService {
 
 	private Map<String, String> getChangeMap(History history) throws SQLException, IOException {
 		Map<String, String> changeMap = new HashMap<String, String>();
-		// System.out.println(type.name() + " : " + history.getId() + " : " +
-		// history.getActivity() );
+	    //System.out.println( history.getId() + " : " + history.getActivity() );
 		if ("U".equals(history.getActivity()) || "D".equals(history.getActivity())) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
 
 			byte[] bindata = new byte[1024];
-			int bytesread = 0;
+			int bytesread;
 			BufferedInputStream bis = new BufferedInputStream(history.getChanges().getBinaryStream());
 			if ((bytesread = bis.read(bindata, 0, bindata.length)) != -1) {
 				baos.write(bindata, 0, bytesread);

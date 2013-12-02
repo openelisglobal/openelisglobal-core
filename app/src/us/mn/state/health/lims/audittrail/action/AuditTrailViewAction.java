@@ -39,7 +39,7 @@ public class AuditTrailViewAction extends BaseAction {
 
 		BaseActionForm dynaForm = (BaseActionForm)form;
 		String accessionNumber = dynaForm.getString("accessionNumberSearch");
-		((BaseActionForm)form).initialize(mapping);	
+		dynaForm.initialize(mapping);
 		
 		if( !GenericValidator.isBlankOrNull(accessionNumber)){
 			AuditTrailViewWorker worker = new AuditTrailViewWorker( accessionNumber);
