@@ -15,13 +15,6 @@
 */
 package us.mn.state.health.lims.audittrail.daoimpl;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.struts.util.LabelValueBean;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -29,7 +22,7 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.hibernate.Hibernate;
-
+import org.hibernate.HibernateException;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -43,6 +36,12 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.Vector;
 
 /**
  *  @author         Hung Nguyen
@@ -314,10 +313,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
           		//bugzilla 2134 fixed the analysis_qaevent completed date problem
           		//bugzilla 2122 fixed the sample collection date problem
 				if (fieldName.equals("qaEvent") || fieldName.equals("sample")) {
-					LabelValueBean lvb = processLabelValueFixes(fieldName,propertyPreUpdateState,existingObject,newObject,tableName);
+					LabelValueBean lvb = processLabelValueFixes(fieldName,propertyPreUpdateState,existingObject,newObject);
 					if ( lvb != null ) {
-          				String label = (String)lvb.getLabel();
-          				String value = (String)lvb.getValue();
+          				String label = lvb.getLabel();
+          				String value = lvb.getValue();
           				optionList.add(new LabelValueBean(label,value));
           			}
 				} else {
@@ -337,11 +336,9 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 					if (propertyNewState.equals(propertyPreUpdateState)) {
 						continue; // Values haven't changed so loop to next property
 					} else  {
-						LabelValueBean lvb = processLabelValue(fieldName,propertyPreUpdateState,existingObject,newObject,tableName);
+						LabelValueBean lvb = processLabelValue(fieldName,propertyPreUpdateState,existingObject,newObject);
 						if ( lvb != null ) {
-							String label = (String)lvb.getLabel();
-							String value = (String)lvb.getValue();
-							optionList.add(new LabelValueBean(label,value));
+							optionList.add(new LabelValueBean(lvb.getLabel(),lvb.getValue()));
 						}
 					}
 				}
@@ -361,16 +358,15 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	 * @param propertyPreUpdateState the previous value
 	 * @param existingObject the old data object
 	 * @param newObject the new data object
-	 * @param tableName the table name being audit
 	 * @return a label value object
 	 * bugzilla 2134 fixed the analysis_qaevent completed date problem
 	 * bugzilla 2122 fixed the sample collection_date problem
 	 */
 	private LabelValueBean processLabelValueFixes(String fieldName, String propertyPreUpdateState,
-			                       Object existingObject, Object newObject, String tableName) {
+			                       Object existingObject, Object newObject) {
 		LabelValueBean lvb = null;
-		java.lang.reflect.Method m1 = null;
-		java.lang.reflect.Method m2 = null;
+		java.lang.reflect.Method m1;
+		java.lang.reflect.Method m2;
 		Object o1 = null;
 		Object o2 = null;
 
@@ -378,20 +374,20 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 			if ( fieldName.equals("qaEvent")) {
 				fieldName = "completedDate";
 				m1 = existingObject.getClass().getMethod("getCompletedDate", new Class[0]);
-				o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+				o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 				m2 = newObject.getClass().getMethod("getCompletedDate", new Class[0]);
-				o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+				o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 			}
 			if ( fieldName.equals("sample")) {
 				fieldName = "collectionDate";
 				try {
 					m1 = existingObject.getClass().getMethod("getCollectionDate", new Class[0]);
-					o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+					o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 					m2 = newObject.getClass().getMethod("getCollectionDate", new Class[0]);
-					o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+					o2 = m2.invoke(newObject, (Object[])new Class[0]);
 				} catch (NoSuchMethodException nsme) {
 					//ignore for SampleItem (which does not have getCollectionDate method
 				}
@@ -400,11 +396,11 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 			String oldID = "";
 			String newID = "";
 			if ( o1 != null ) {
-				oldID = (String)o1.toString();
+				oldID = o1.toString();
 			}
 
 			if ( o2 != null ) {
-				newID = (String)o2.toString();
+				newID = o2.toString();
 			}
 
 			if ( oldID.compareTo(newID)==0 ) {
@@ -443,21 +439,20 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	 * @param propertyPreUpdateState the previous value
 	 * @param existingObject the old data object
 	 * @param newObject the new data object
-	 * @param tableName the table name being audit
 	 * @return a label value object
 	 */
 	private LabelValueBean processLabelValue(String fieldName, String propertyPreUpdateState,
-			                       Object existingObject, Object newObject, String tableName) {
+			                       Object existingObject, Object newObject) {
 
 		LabelValueBean lvb = null;
 		if ( propertyPreUpdateState.startsWith("{us.mn.state.health.lims") ) {
 			if ( fieldName.equals("test") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getTest", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getTest", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -487,10 +482,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 			} else if ( fieldName.equals("testSection") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getTestSection", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getTestSection", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -520,10 +515,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("county") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getCounty", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getCounty", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -553,10 +548,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("region") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getRegion", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getRegion", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -586,10 +581,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("scriptlet") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getScriptlet", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getScriptlet", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -619,10 +614,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("organization") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getOrganization", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getOrganization", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -652,10 +647,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("panel") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getPanel", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getPanel", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -685,10 +680,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("person") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getPerson", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getPerson", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -718,10 +713,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("testResult") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getTestResult", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getTestResult", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -751,10 +746,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("analysis") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getAnalysis", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getAnalysis", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -784,10 +779,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("analyte") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getAnalyte", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getAnalyte", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -817,10 +812,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("sampleItem") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getSampleItem", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getSampleItem", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -850,10 +845,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("parentAnalysis") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getParentAnalysis", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getParentAnalysis", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -883,10 +878,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("parentResult") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getParentResult", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getParentResult", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -916,10 +911,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("sample") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getSample", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getSample", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -949,10 +944,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("method") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getMethod", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getMethod", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -982,10 +977,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("testTrailer") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getTestTrailer", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getTestTrailer", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -1015,10 +1010,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("unitOfMeasure") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getUnitOfMeasure", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getUnitOfMeasure", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -1048,10 +1043,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("testAnalyte") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getTestAnalyte", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getTestAnalyte", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -1081,10 +1076,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("label") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getLabel", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getLabel", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -1114,10 +1109,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	    	} else if ( fieldName.equals("city") ) {
 	    		try {
 	    			java.lang.reflect.Method m1 = existingObject.getClass().getMethod("getCity", new Class[0]);
-	    			Object o1 = (Object)m1.invoke(existingObject, (Object[])new Class[0]);
+	    			Object o1 = m1.invoke(existingObject, (Object[])new Class[0]);
 
 	    			java.lang.reflect.Method m2 = newObject.getClass().getMethod("getCity", new Class[0]);
-	    			Object o2 = (Object)m2.invoke(newObject, (Object[])new Class[0]);
+	    			Object o2 = m2.invoke(newObject, (Object[])new Class[0]);
 
 	    			String oldID = "";
 	    			String newID = "";
@@ -1206,10 +1201,10 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 
 		for ( int i=0; i<list.size(); i++ ) {
 			LabelValueBean lvb = (LabelValueBean)list.elementAt(i);
-			xml.append("<" +lvb.getLabel()+ ">");
-			xml.append(lvb.getValue());
-			xml.append("</" +lvb.getLabel() +">\n");
-		}
+            xml.append( "<" ).append( lvb.getLabel() ).append( ">" );
+            xml.append( lvb.getValue() );
+            xml.append( "</" ).append( lvb.getLabel() ).append( ">\n" );
+        }
 
 		return xml.toString();
 	}
@@ -1276,27 +1271,28 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	 * @return list of history objects
 	 */
     public List getHistoryByRefIdAndRefTableId(History history) throws LIMSRuntimeException {
-    	List list = null;
+        return getHistoryByRefIdAndRefTableId( history.getReferenceId(), history.getReferenceTable() );
+    }
 
-    	try {
+    @Override
+    public List getHistoryByRefIdAndRefTableId( String refId, String tableId ) throws LIMSRuntimeException{
+        List list = null;
 
-    		String sql = "from History h where h.referenceId = :refId and h.referenceTable = :tableId order by h.timestamp desc, h.activity desc";
-    		org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
-    		query.setInteger("refId", Integer.parseInt(history.getReferenceId()));
-    		query.setInteger("tableId", Integer.parseInt(history.getReferenceTable()));
+        try {
 
-    		list = query.list();
-    		HibernateUtil.getSession().flush();
-    		HibernateUtil.getSession().clear();
-    		LogEvent.logDebug("AuditTrailDAOImpl","getHistoryByRefIdAndRefTableId()","getting History List");
+            String sql = "from History h where h.referenceId = :refId and h.referenceTable = :tableId order by h.timestamp desc, h.activity desc";
+            org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("refId", Integer.parseInt(refId));
+            query.setInteger("tableId", Integer.parseInt(tableId));
 
-
-         } catch (Exception e) {
-        	 //buzilla 2154
-			 LogEvent.logError("AuditTrailDAOImpl","getHistoryByRefIdAndRefTableId()",e.toString());
-        	 throw new LIMSRuntimeException("Error in AuditTrail getHistoryByRefIdAndRefTableId()", e);
-         }
-         return list;
+            list = query.list();
+            HibernateUtil.getSession().flush();
+            HibernateUtil.getSession().clear();
+        } catch (HibernateException e) {
+            LogEvent.logError("AuditTrailDAOImpl","getHistoryByRefIdAndRefTableId()",e.toString());
+            throw new LIMSRuntimeException("Error in AuditTrail getHistoryByRefIdAndRefTableId()", e);
+        }
+        return list;
     }
 
     @SuppressWarnings("unchecked")
@@ -1398,7 +1394,7 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
             History history = (History) HibernateUtil.getSession().get(History.class, id);
         	if ( history != null ) {
         		byte[] bindata = new byte[1024];
-        		int bytesread = 0;
+        		int bytesread;
         		java.io.BufferedInputStream bis =
         			new java.io.BufferedInputStream( history.getChanges().getBinaryStream() );
         		if ( (bytesread = bis.read(bindata,0,bindata.length)) != -1 ) {

@@ -83,6 +83,10 @@ public class RequesterService{
         return getPersonService() == null ? null : getPersonService().getLastName();
     }
 
+    public String getRequesterLastFirstName(){
+        return getPersonService() == null ? null : getPersonService().getLastFirstName();
+    }
+
     public String getWorkPhone(){
         return getPersonService() == null ? null : getPersonService().getWorkPhone();
     }

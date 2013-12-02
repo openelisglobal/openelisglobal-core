@@ -16,11 +16,7 @@
  */
 package us.mn.state.health.lims.common.services.historyservices;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -36,11 +32,17 @@ import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class PatientHistoryHistoryService extends HistoryService {
 	private static String OBSERVATION_HISTORY_TABLE_ID;
 	private static String SAMPLE_ORG_TABLE_ID;
 
 	private static final String ORGANIZATION_ATTRIBUTE = "organization";
+    private static final String REFERRING_PATIENT_ID_ATTRIBUTE = "referrersPatientId";
 
 	private static ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
 	private static SampleOrganizationDAO sampleOrgDAO = new SampleOrganizationDAOImpl();
@@ -59,38 +61,29 @@ public class PatientHistoryHistoryService extends HistoryService {
 	private void setUpForPatientHistory(Sample sample) {
 		attributeToIdentifierMap = new HashMap<String, String>();
 		attributeToIdentifierMap.put(ORGANIZATION_ATTRIBUTE, "Referring Organization");
+        attributeToIdentifierMap.put(REFERRING_PATIENT_ID_ATTRIBUTE, StringUtil.getMessageForKey( "sample.referring.patientNumber" ));
 
 		newValueMap = new HashMap<String, String>();
-		
+        historyList = new ArrayList<History>();
+
 		List<ObservationHistory> observationList = observationDAO.getObservationHistoriesBySampleId(sample.getId());
 		
 		for( ObservationHistory observation :observationList){
 			newValueMap.put(observation.getId(), getObservationValue(observation));
-		}
+            historyList.addAll(auditTrailDAO.getHistoryByRefIdAndRefTableId(observation.getId(),OBSERVATION_HISTORY_TABLE_ID));
+        }
 
 		identifier = sample.getAccessionNumber();
 
-		List<ObservationHistory> observations = observationDAO.getObservationHistoriesBySampleId(sample.getId());
-
-		History searchHistory = new History();
-		historyList = new ArrayList<History>();
-
-		for (ObservationHistory observation : observations) {
-			searchHistory.setReferenceId(observation.getId());
-			searchHistory.setReferenceTable(OBSERVATION_HISTORY_TABLE_ID);
-			historyList.addAll(auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory));
-		}
 
 		SampleOrganization sampleOrg = sampleOrgDAO.getDataBySample(sample);
 		if (sampleOrg != null) {
 			newValueMap.put(ORGANIZATION_ATTRIBUTE, sampleOrg.getOrganization().getOrganizationName());
-
-			searchHistory.setReferenceId(sampleOrg.getId());
-			searchHistory.setReferenceTable(SAMPLE_ORG_TABLE_ID);
-			List<History> orgHistory = auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory);
+			List<History> orgHistory = auditTrailDAO.getHistoryByRefIdAndRefTableId(sampleOrg.getId(),SAMPLE_ORG_TABLE_ID);
 			historyList.addAll(orgHistory);
 		}
 
+     //   ObservationHistoryService historyService = new ObservationHistoryService();
 	}
 
 	@Override
@@ -99,7 +92,8 @@ public class PatientHistoryHistoryService extends HistoryService {
 		observation.setId(history.getReferenceId());
 		observation = observationDAO.getById(observation);
 		if (observation != null) {
-			identifier = ObservationHistoryTypeMap.getInstance().getTypeFromId(observation.getObservationHistoryTypeId());
+            identifier = ObservationHistoryTypeMap.getInstance().getTypeFromId(observation.getObservationHistoryTypeId());
+            setIdentifierForKey( identifier );
 			AuditTrailItem item = getCoreTrail(history);
 			item.setNewValue(getObservationValue(observation));
 			items.add(item);
@@ -152,7 +146,12 @@ public class PatientHistoryHistoryService extends HistoryService {
 
 	protected void addItemsForKeys(List<AuditTrailItem> items, History history, Map<String, String> changeMaps) {
 		for (String key : changeMaps.keySet()) {
-			setIdentifierForKey(key);
+            if( key == VALUE_ATTRIBUTE){
+                setIdentifierForObservation( history );
+            }else{
+                setIdentifierForKey(key);
+            }
+
 			AuditTrailItem item = getCoreTrail(history);
 			if (showAttribute()) {
 				item.setAttribute(key);
@@ -163,13 +162,22 @@ public class PatientHistoryHistoryService extends HistoryService {
 			item.setOldValue( changeMaps.get(key));
 			item.setNewValue( newValueMap.get(observationKey));
 			newValueMap.put(observationKey, item.getOldValue());
+            item.setAttribute(showAttribute() && !GenericValidator.isBlankOrNull( key ) ? key : StringUtil.getMessageForKey( "auditTrail.action.update" ));
 			if (item.newOldDiffer()) {
 				items.add(item);
 			}
 		}
 	}
-	
-	protected String getObservationValue(ObservationHistory observation) {
+
+    private void setIdentifierForObservation( History history ){
+        ObservationHistory observation = new ObservationHistory();
+        observation.setId(history.getReferenceId());
+        observation = observationDAO.getById(observation);
+        identifier = ObservationHistoryTypeMap.getInstance().getTypeFromId(observation.getObservationHistoryTypeId());
+        setIdentifierForKey( identifier );
+    }
+
+    protected String getObservationValue(ObservationHistory observation) {
 		if ("D".equals(observation.getValueType())) {
 			Dictionary dict = dictDAO.getDataForId(observation.getValue());
 			return dict != null ? dict.getDictEntry() : observation.getValue();
