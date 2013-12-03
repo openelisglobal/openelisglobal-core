@@ -6,6 +6,7 @@
         <datasource-map>
           <unit-entry name="us:mn:state:health:lims:hibernate:hibernate.cfg.xml" />
         </datasource-map>
+        <naming-strategy-map />
         <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/us/mn/state/health/lims/hibernate/hibernate.cfg.xml" />
       </configuration>
     </facet>

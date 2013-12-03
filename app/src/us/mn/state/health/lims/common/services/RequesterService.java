@@ -20,6 +20,7 @@ import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationTypeDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
+import us.mn.state.health.lims.organization.valueholder.OrganizationType;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
@@ -68,7 +69,9 @@ public class RequesterService{
         requesterType = requesterTypeDAO.getRequesterTypeByName( "provider" );
         Requester.PERSON.setId( requesterType != null ? Long.parseLong( requesterType.getId() ) : -1L);
 
-        REFERRAL_ORG_TYPE_ID = new OrganizationTypeDAOImpl().getOrganizationTypeByName( REFERRAL_ORG_TYPE ).getId();
+        OrganizationType orgType = new OrganizationTypeDAOImpl().getOrganizationTypeByName( REFERRAL_ORG_TYPE );
+
+        REFERRAL_ORG_TYPE_ID = orgType == null ? null : orgType.getId();
     }
 
     public RequesterService( String sampleId ){
