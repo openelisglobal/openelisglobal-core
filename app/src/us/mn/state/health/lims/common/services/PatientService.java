@@ -244,7 +244,7 @@ public class PatientService implements IPatientService {
 	}
 	
 	private String getIdentityInfo(String identityId) {
-		if( patient == null){
+		if( patient == null || GenericValidator.isBlankOrNull( identityId )){
 			return "";
 		}
 		
