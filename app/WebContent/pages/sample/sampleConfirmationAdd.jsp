@@ -275,8 +275,6 @@ function addNewRequesterTestResult(addButtonElement, sampleIndex){  //request fo
 		                                          replace("Tests_0", "Tests_" + sampleIndex).
 		                                          replace("inline", "none").
 		                                          replace(selectedPattern, "");
-		//see note about crap
-		if( i == 0 ){ cell.align = "right";	}
 	}
 
 	cell = newRow.insertCell( clonedCells.length );
@@ -419,7 +417,7 @@ function loadDynamicData(){
 	$("xmlWad").value = xml;
 }
 
-function /*string*/ addSamples( xml ){
+function addSamples(  ){
 	var samplesXml = "<samples>";
 	var sampleIndexs = $$(".sampleIndex");
 
@@ -443,7 +441,7 @@ function /*string*/ addSample( sampleIndex ){
 	if( useInitialSampleCondition ){
 		var initialConditions = $("initialCondition_" + sampleIndex);
 		var optionLength = initialConditions.options.length;
-		xml = " initialConditionIds=' ";
+		var xml = " initialConditionIds=' ";
 		for( var i = 0; i < optionLength; ++i ){
 			if( initialConditions.options[i].selected ){
 				xml += initialConditions.options[i].value + ",";
@@ -551,7 +549,7 @@ function /*string*/ getNote( sampleIndex ){
 				<input type="hidden" value="0" id="maxReferralTestIndex_0" />
 				<input type="text" id="requesterSampleId_0" onchange=" makeDirty();">
 			</td>
-			<td><bean:message key="sample.collectionDate"/></td>
+			<td><bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>:</td>
 			<td><input type="text"
 			           id="collectionDate_0"
 			           name="collectionDate_0"
@@ -560,7 +558,7 @@ function /*string*/ getNote( sampleIndex ){
 			           onchange="checkValidDate(this)"/>
              <% if( FormFields.getInstance().useField(Field.CollectionTime)){ %>
                  <bean:message key="sample.collectionTime" />:
-                     <html:text name="<%=formName %>" 
+                     <html:text name="<%=formName %>"
                      onkeyup="filterTimeKeys(this, event);" 
                      property="interviewTime" 
                      styleId="interviewTime_0"
@@ -669,7 +667,7 @@ function /*string*/ getNote( sampleIndex ){
 <input type="button"
 	   class=textButton
 	   value="<%= StringUtil.getMessageForKey("sampletracking.requester.sample.add") %>"
-	   onclick="addNewRequesterSample( this )" />
+	   onclick="addNewRequesterSample( )" />
 
 <hr/>
 <hr style="width: 100%; height: 5px" />
