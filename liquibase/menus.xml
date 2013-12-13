@@ -2233,17 +2233,6 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_reports_realisation" />
-			<column name="action_url"
-				value="/Report.do?type=indicator&amp;report=indicatorRealisation" />
-			<column name="display_key" value="report.realisation" />
-			<column name="tool_tip_key" value="tooltip.report.confirmation" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
 			<column name="presentation_order" valueNumeric="5" />
 			<column name="element_id" value="menu_reports_validation_backlog" />
 			<column name="action_url"
