@@ -26,81 +26,81 @@ import java.util.Map;
 public class FormFields {
 	//Note- these should all be upper case, change as you touch and add form name to name
 	public static enum Field {
-		AKA,
-		StNumber,
-		MothersName,
-		PatientType,
-		InsuranceNumber,
-		CollectionDate,
-		CollectionTime,
-		RequesterSiteList,
-		OrgLocalAbrev,
-		OrgState,
-		ZipCode,
-		MLS,
-		InlineOrganizationTypes,
-		SubjectNumber,
-		ProviderInfo,
-		NationalID,
-		Occupation,
-		Commune,
-		MotherInitial,
-		ResultsAccept,
-		SearchSampleStatus,
-		OrganizationAddressInfo,
-		OrganizationCLIA,
-		OrganizationParent,
-		OrganizationShortName,
-		OrganizationMultiUnit,
-		OrganizationOrgId,
-		Project,
-		SampleCondition,
-		NON_CONFORMITY_SITE_LIST,                 // site (patient entry or nonconforming) is defined by a list of sites.
-		NON_CONFORMITY_SITE_LIST_USER_ADDABLE,
-		NON_CONFORMITY_PROVIDER_ADDRESS,
-		AddressCity,
-		AddressDepartment,
-		AddressCommune,
-		AddressVillage,
-		DepersonalizedResults,
-		SEARCH_PATIENT_WITH_LAB_NO,
-		ResultsReferral,
-		ValueHozSpaceOnResults,  //favors a layout which values horizontal space over vertical space
-		InitialSampleCondition,
-		PatientRequired,         // By default, a (minimal) patient to go with a sample is required.
-		PatientRequired_SampleConfirmation,
-		QAFullProviderInfo,         // Store doctor info. as a simple observation history field or as person record.
-		QASubjectNumber,
-		QATimeWithDate, 
-		PatientIDRequired,
-		PatientIDRequired_SampleConfirmation,
-		PatientNameRequired,
-		PatientAgeRequired_SampleConfirmation,
-		PatientGenderRequired_SampleConfirmation,
-		PatientAgeRequired_SampleEntry,
-		PatientGenderRequired_SampleEntry,	
-		SampleEntryUseReceptionHour,
-		SampleEntryUseRequestDate,
-		SampleEntryNextVisitDate,
-		SampleEntryRequestingSiteSampleId,
-		SampleEntryReferralSiteNameRequired,
-		SampleEntryReferralSiteNameCapitialized,
-		SampleEntryReferralSiteCode,
-		SampleEntryProviderFax,
-		SampleEntryProviderEmail,
-		SampleEntryHealthFacilityAddress,
-		SampleEntryLabOrderTypes,
-		SampleEntrySampleCollector,
-		SampleEntryRequesterLastNameRequired,
-		SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER,
-		PatientPhone,
-		PatientHealthRegion,
-		PatientHealthDistrict,
-		PatientNationality,
-		PatientMarriageStatus,
-		PatientEducation,
-		SampleEntryPatientClinical,
-		QA_DOCUMENT_NUMBER
+		AKA,                                    //Include AKA with patient info
+		StNumber,                               //Include ST number with patient info
+		MothersName,                            //Include Mothers name with patient info
+		PatientType,                            //Include patient type with patient info
+		InsuranceNumber,                        //Include patient insurance number will patient info
+		CollectionDate,                         //Track collection date for samples, current date will be used if false
+		CollectionTime,                         //Track collection time for samples
+		RequesterSiteList,                      //Present list of referring sites
+		OrgLocalAbrev,                          //Use organization abbreviation.  Should be standardized to FALSE
+		OrgState,                               //Include state in organization info
+		ZipCode,                                //Include zip code in organization info
+		MLS,                                    //Include indicator if organization is a sentinel lab
+		InlineOrganizationTypes,                //Should organization types be included when specifying organizations
+		SubjectNumber,                          //Include subject number with patient info
+		ProviderInfo,                           //Include provider information on order form
+		NationalID,                             //Include national ID with patient info
+		Occupation,                             //Include occupation with patient info
+		Commune,                                //Is commune part of an address
+		MotherInitial,                          //Include mothers first initial with patient info
+		ResultsAccept,                          //No longer used
+		SearchSampleStatus,                     //Can patients be searched for by status
+		OrganizationAddressInfo,                //Include address info with organization info
+		OrganizationCLIA,                       //Include CLIA status with organization info
+		OrganizationParent,                     //Include parent with organization info
+		OrganizationShortName,                  //Include short name with organization info
+		OrganizationMultiUnit,                  //Include multiunit status with organization address info
+		OrganizationOrgId,                      //Include db id with organization info
+		Project,                                //Include project (RETROCI) with non-conformity info
+		SampleCondition,                        //Allow for collection of sample condition with non-conformity
+		NON_CONFORMITY_SITE_LIST,               // site (patient entry or nonconforming) is defined by a list of sites.
+		NON_CONFORMITY_SITE_LIST_USER_ADDABLE,  //Should the user be able to add to the site list
+		NON_CONFORMITY_PROVIDER_ADDRESS,        //Should the providers address be collected on non-conformity page
+		AddressCity,                            //Is a city part of an address
+		AddressDepartment,                      //Is department part of an address
+		AddressCommune,                         //Is a commune part of an address
+		AddressVillage,                         //Is a village part of an address
+		DepersonalizedResults,                  //Should results entry have personal identifiers
+		SEARCH_PATIENT_WITH_LAB_NO,             //Should lab number be part of patient search
+		ResultsReferral,                        //Can results be referred out
+		ValueHozSpaceOnResults,                 //favors a layout which values horizontal space over vertical space
+		InitialSampleCondition,                 //Allow for collection of sample condition with sample entry
+		PatientRequired,                        // By default, a (minimal) patient to go with a sample is required.
+		PatientRequired_SampleConfirmation,     //Is patient required for sample confirmation
+		QAFullProviderInfo,                     //Include provider information on non-conformity
+		QASubjectNumber,                        //Include subject number be on non-conformity
+		QATimeWithDate,                         //Include time in addition to date on non-conformity
+		PatientIDRequired,                      //Is patient ID required for patient
+		PatientIDRequired_SampleConfirmation,   //Is patient ID required for patient on sample conformation form
+		PatientNameRequired,                    //Is patient name required
+		PatientAgeRequired_SampleConfirmation,  //Is patient age required on sample conformation form
+		PatientGenderRequired_SampleConfirmation,//Is patient gender required on sample conformation form
+		PatientAgeRequired_SampleEntry,         //Is patient age required
+		PatientGenderRequired_SampleEntry,	     //Is patient gender required
+		SampleEntryUseReceptionHour,            //Include reception time on sample entry
+		SampleEntryUseRequestDate,              //Include request date on sample entry
+		SampleEntryNextVisitDate,               //Include next visit date on sample entry
+		SampleEntryRequestingSiteSampleId,      //Include sample ID from requesting site
+		SampleEntryReferralSiteNameRequired,    //Is referral site required
+		SampleEntryReferralSiteNameCapitialized,//Should referral site name be transformed to upper case
+		SampleEntryReferralSiteCode,            //Include referral site code on sample entry
+		SampleEntryProviderFax,                 //Include provider fax for sample entry
+		SampleEntryProviderEmail,               //Include provider email for sample entry
+		SampleEntryHealthFacilityAddress,       //Include referral address
+		SampleEntryLabOrderTypes,               //Are there different types of lab orders
+		SampleEntrySampleCollector,             //Include name of sample collector
+		SampleEntryRequesterLastNameRequired,   //Is the requester name required
+		SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER,//Include referral patient number
+		PatientPhone,                           //Include patient phone with patient info
+		PatientHealthRegion,                    //Include patient health region with patient info
+		PatientHealthDistrict,                  //Include patient health district with patient info
+		PatientNationality,                     //Include patient nationality with patient info
+		PatientMarriageStatus,                  //Include patient marriage status with patient info
+		PatientEducation,                       //Include patient education level with patient info
+		SampleEntryPatientClinical,             //Include patient clinical information on sample entry (request by CI but not currently implemented)
+		QA_DOCUMENT_NUMBER                      //Include document number on non-conformity
 	}
 
 	private static FormFields instance = null;

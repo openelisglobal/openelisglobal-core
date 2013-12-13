@@ -287,7 +287,7 @@ function convertSampleToXml( id ){
 
 
 function sampleTypeSelected( element ){
-	currentTypeIndex = element.selectedIndex;
+	var currentTypeIndex = element.selectedIndex;
 	$("addSampleButton").disabled = currentTypeIndex == 0;
 }
 
@@ -379,7 +379,7 @@ function insertTestIntoTestTable( test, testTable, userSampleTypes ){
 
         selectionClone.children("#userSampleTypePrototypeID").attr("id", "userSampleTypeSelect_" + nominalRow);
         selectionCell.innerHTML = selectionClone.html();
-        $jq("#userSampleTypeSelect_" + nominalRow).change(function(e){
+        $jq("#userSampleTypeSelect_" + nominalRow).change(function(){
             userSampleTypeSelectionChanged( "userSampleTypeSelect_" + nominalRow, nominalRow, qualifiableId  );
         });
 
@@ -535,7 +535,7 @@ function assignTestsToSelected(checkbox, panelId){
 		if( checkbox.checked ){
 			panelIdElement.value = addIdToUniqueIdList(panelId, panelIdElement.value);
 		}else{
-			panelIdArray = panelIdElement.value.split(",");
+			var panelIdArray = panelIdElement.value.split(",");
 			panelIdArray.splice(panelIdArray.indexOf(panelId), 1);
 			panelIdElement.value = panelIdArray.join(",");
 		}		
@@ -622,7 +622,7 @@ function checkTests(tests, isVariableSampleType) {
 function populateUserSelectedType( testRow ){
     var selectedTypes = $jq("#testTypeMap_" + selectedTypeRowId).val();
     var testId = $jq("#testName_" + testRow).val();
-    var selectedTypeList, selectedTypeListLength, typeSelection, selectedTypeName, selectionFound;
+    var selectedTypeList, selectedTypeListLength, typeSelection, selectedTypeName, selectionFound, i;
 
     if(selectedTypes){
         selectedTypeList = selectedTypes.split(",");
@@ -840,7 +840,7 @@ function sampleTypeQualifierChanged(element){
 				<% } %>
 				<% if( useCollectionDate ){ %>
 				<th >
-					<bean:message key="sample.collectionDate"/>
+					<bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
 				</th>
 				<th >
 					<bean:message key="sample.collectionTime"/>

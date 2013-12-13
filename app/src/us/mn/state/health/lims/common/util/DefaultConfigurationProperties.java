@@ -41,9 +41,6 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		propertiesFileMap.put(Property.AmbiguousDateValue, new KeyDefaultPair("date.ambiguous.date.value", "01") );
 		propertiesFileMap.put(Property.AmbiguousDateHolder , new KeyDefaultPair("date.ambiguous.date.holder", "X") );
 		propertiesFileMap.put(Property.ReferingLabParentOrg , new KeyDefaultPair("organization.reference.lab.parent", null) );
-		propertiesFileMap.put(Property.MenuName , new KeyDefaultPair("menu.name", "TabbedMenu") );
-		propertiesFileMap.put(Property.MenuPermissions , new KeyDefaultPair("menu.permissions","") );
-		propertiesFileMap.put(Property.MenuTopItems , new KeyDefaultPair("menu.topItems", "") );
 		propertiesFileMap.put(Property.resultsResendTime , new KeyDefaultPair("results.send.retry.time", "30") );
 /*		propertiesFileMap.put(Property. , new KeyDefaultPair() );
 

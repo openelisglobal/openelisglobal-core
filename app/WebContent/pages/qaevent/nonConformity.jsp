@@ -23,7 +23,6 @@
 <%! String basePath = "";
     IAccessionNumberValidator accessionNumberValidator;
     boolean useProject = FormFields.getInstance().useField(Field.Project);
-    boolean useSampleCondition = FormFields.getInstance().useField(Field.SampleCondition);
     boolean useSiteList = FormFields.getInstance().useField(Field.NON_CONFORMITY_SITE_LIST);
     boolean useFullProviderInfo = FormFields.getInstance().useField(Field.QAFullProviderInfo);
     boolean useSubjectNo = FormFields.getInstance().useField(Field.QASubjectNumber);
@@ -362,7 +361,8 @@ function  processPhoneSuccess(xhr){
 	<table >
 		<tr>
 			<td >
-				<%= StringUtil.getContextualMessageForKey("nonconformity.date") %>
+				<%= StringUtil.getContextualMessageForKey("nonconformity.date") %>&nbsp;
+                <span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
 				:
 			</td>
 			<td>
@@ -662,31 +662,31 @@ function  processPhoneSuccess(xhr){
 	</table>
 	
 	<hr />
-	<table width="95%" id="qaEventsTable">
+	<table style="width:95%" id="qaEventsTable">
 		<thead>
 		<tr>
-			<th width="0%" style="display: none"></th>
+			<th style="display: none"></th>
 			<% if( FormFields.getInstance().useField(Field.QA_DOCUMENT_NUMBER)){ %>
-				<th width="100 px">
+				<th style="width:100px">
 					<bean:message key="nonConformity.document.number" /><br> <%= NonConformityRecordNumberValidationProvider.getDocumentNumberFormat() %>  :
 				</th>
 			<% } %>
-			<th width="22%">
+			<th style="width:22%">
 				<bean:message key="label.refusal.reason" /><span class="requiredlabel">*</span>
 			</th>
-			<th width="16%">
+			<th style="width:16%">
 				<bean:message key="label.sampleType" />
 			</th>
-			<th width="11%">
+			<th style="width:11%">
 				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %>
 			</th>
-			<th width="13%">
+			<th style="width:13%">
 				<%=StringUtil.getContextualMessageForKey("label.biologist") %>
 			</th>
-			<th width="">
+			<th >
 				<%= StringUtil.getContextualMessageForKey("nonconformity.note") %>
 			</th>
-			<th width="5%">
+			<th style="width:5%">
 				<bean:message key="label.remove" />
 			</th>
 		</tr>
