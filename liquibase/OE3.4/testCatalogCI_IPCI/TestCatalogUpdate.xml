@@ -82,5 +82,12 @@
         <comment>Adds reflex tests</comment>
         <sqlFile path="OE3.4/testCatalogCI_IPCI/Reflex.sql" />
     </changeSet>
+    <changeSet id="15" author="paulsc" context="CI_IPCI">
+        <comment>Adds significant digits to test_results</comment>
+        <update tableName="test_result" >
+            <column name="significant_digits" valueNumeric="0" />
+        </update>
+        <sqlFile path="OE3.4/testCatalogCI_IPCI/significantDigits.sql" />
+    </changeSet>
 </databaseChangeLog>
 
