@@ -40,6 +40,7 @@ public class Result extends EnumValueItemImpl {
 	private String value;
 	private Double minNormal;
 	private Double maxNormal;
+    private int significantDigits;
 	private ValueHolder parentResult;
 
 	public Result() {
@@ -203,7 +204,15 @@ public class Result extends EnumValueItemImpl {
 		this.maxNormal = maxNormal;
 	}
 
-	public Result getParentResult() {
+    public int getSignificantDigits(){
+        return significantDigits;
+    }
+
+    public void setSignificantDigits( int significantDigits ){
+        this.significantDigits = significantDigits;
+    }
+
+    public Result getParentResult() {
 		return (Result)parentResult.getValue();
 	}
 

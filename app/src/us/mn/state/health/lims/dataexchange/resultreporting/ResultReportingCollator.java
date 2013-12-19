@@ -16,31 +16,13 @@
  */
 package us.mn.state.health.lims.dataexchange.resultreporting;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
-import us.mn.state.health.lims.common.services.IPatientService;
-import us.mn.state.health.lims.common.services.LabIdentificationService;
-import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.dataexchange.resultreporting.beans.CodedValueXmit;
-import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultReportXmit;
-import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultXmit;
-import us.mn.state.health.lims.dataexchange.resultreporting.beans.TestRangeXmit;
-import us.mn.state.health.lims.dataexchange.resultreporting.beans.TestResultsXmit;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.dataexchange.resultreporting.beans.*;
 import us.mn.state.health.lims.dictionary.util.DictionaryUtil;
 import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
@@ -50,7 +32,6 @@ import us.mn.state.health.lims.patientidentity.daoimpl.PatientIdentityDAOImpl;
 import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
 import us.mn.state.health.lims.patientidentitytype.daoimpl.PatientIdentityTypeDAOImpl;
 import us.mn.state.health.lims.result.action.util.ResultUtil;
-import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
@@ -58,6 +39,8 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
+
+import java.util.*;
 
 public class ResultReportingCollator {
 	private PatientIdentityDAO patientIdentityDAO = new PatientIdentityDAOImpl();
@@ -95,8 +78,6 @@ public class ResultReportingCollator {
 	}
 
 	public boolean addResult(Result result, Patient patient,  boolean isUpdate, boolean forMalaria) {
-		ResultsLoadUtility resultUtility = new ResultsLoadUtility();
-		
 		if (hasNoReportableResults(result, patient)) {
 			return false;
 		}
@@ -171,7 +152,7 @@ public class ResultReportingCollator {
 		
 		// For test section
 		String convertedSection = result.getAnalysis().getTestSection().getTestSectionName();
-		String actualSection = "";
+		String actualSection;
 		
 		// Need to reverse the conversion done when the test catalog was imported
 		if ("Hematology".equals(convertedSection)) {
@@ -195,8 +176,8 @@ public class ResultReportingCollator {
 
 		if (result.getMinNormal().doubleValue() != result.getMaxNormal().doubleValue()) {
 			TestRangeXmit normalRange = new TestRangeXmit();
-			normalRange.setLow(String.valueOf(result.getMinNormal()));
-			normalRange.setHigh(String.valueOf(result.getMaxNormal()));
+			normalRange.setLow( StringUtil.doubleWithSignificantDigits( result.getMinNormal(), result.getSignificantDigits() ) );
+			normalRange.setHigh(StringUtil.doubleWithSignificantDigits( result.getMaxNormal(), result.getSignificantDigits() ) );
 			normalRange.setUnits(getUnitOfMeasure(result));
 
 			testResult.setNormalRange(normalRange);
@@ -204,7 +185,7 @@ public class ResultReportingCollator {
 
 		// For valid range min/max
 		SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
-		ResultLimit validLimit = resultUtility.getResultLimitForTestAndPatient(result.getAnalysis().getTest(),
+		ResultLimit validLimit = new ResultLimitService().getResultLimitForTestAndPatient(result.getAnalysis().getTest(),
 																			   sampleHumanDAO.getPatientForSample(result.getAnalysis().getSampleItem().getSample()));
 		if (validLimit != null && (validLimit.getLowValid() != validLimit.getHighValid())) {
 			TestRangeXmit validRange = new TestRangeXmit();
@@ -228,8 +209,7 @@ public class ResultReportingCollator {
 			testResult.setPatientBirthdate(patientService.getDOB());
 			testResult.setPatientTelephone(patientService.getPhone());
 
-			Map<String, String> addressParts = new HashMap<String, String>();
-			addressParts = patientService.getAddressComponents();
+            Map<String, String> addressParts = patientService.getAddressComponents();
 			testResult.setPatientStreetAddress(addressParts.get("Street"));
 			testResult.setPatientCity(addressParts.get("City"));
 			testResult.setPatientState(addressParts.get("State"));

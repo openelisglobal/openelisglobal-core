@@ -576,6 +576,7 @@ function forceTechApproval(checkbox, index ){
 		<bean:define id="upperBound" name="testResult" property="upperNormalRange" />
 		<bean:define id="lowerAbnormalBound" name="testResult" property="lowerAbnormalRange" />
 		<bean:define id="upperAbnormalBound" name="testResult" property="upperAbnormalRange" />
+        <bean:define id="significantDigits" name="testResult" property="significantDigits" />
 		<bean:define id="bound" value="<%=String.valueOf(!lowerBound.equals(upperBound))%>" />
 		<bean:define id="rowColor" value='<%=(testResult.getSampleGroupingNumber() % 2 == 0) ? "evenRow" : "oddRow" %>' />
 		<bean:define id="readOnly" value='<%=testResult.isReadOnly() ? "disabled=\'true\'" : "" %>' />
@@ -747,7 +748,7 @@ function forceTechApproval(checkbox, index ){
 			           title='<%= (testResult.isValid() ? testResult.isNormal() ? "" : StringUtil.getMessageForKey("result.value.abnormal") : StringUtil.getMessageForKey("result.value.invalid")) %>' 
 					   <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
 					   class='<%= (testResult.isReflexGroup() ? "reflexGroup_" + testResult.getReflexParentGroup()  : "")  +  (testResult.isChildReflex() ? " childReflex_" + testResult.getReflexParentGroup() : "") %> ' 
-					   onchange='<%="validateResults( this," + index + "," + lowerBound + "," + upperBound + "," + lowerAbnormalBound + "," + upperAbnormalBound + ", \"XXXX\" );" +
+					   onchange='<%="validateResults( this," + index + "," + lowerBound + "," + upperBound + "," + lowerAbnormalBound + "," + upperAbnormalBound + "," + significantDigits +", \"XXXX\" );" +
 						               "markUpdated(" + index + "); " +
 						                (testResult.isReflexGroup() && !testResult.isChildReflex() ? "updateReflexChild(" + testResult.getReflexParentGroup()  +  " ); " : "") +
 						                ( noteRequired && !"".equals(testResult.getResultValue())  ? "showNote( " + index + ");" : ""  ) + 

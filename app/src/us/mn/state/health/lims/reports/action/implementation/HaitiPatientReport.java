@@ -646,7 +646,7 @@ public abstract class HaitiPatientReport extends Report{
 		String range = "";
 		if("N".equals(result.getResultType())){
 			if(result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals(result.getMaxNormal())){
-				range = result.getMinNormal() + "-" + result.getMaxNormal();
+				range = ResultLimitService.getDisplayNormalRange( result.getMinNormal() , result.getMaxNormal(), String.valueOf( result.getSignificantDigits()), "-");
 			}
 		}
 		return range;
