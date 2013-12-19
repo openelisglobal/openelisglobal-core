@@ -1,11 +1,7 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
 	import="java.util.Date, java.util.List,
-	org.apache.struts.Globals,
-	us.mn.state.health.lims.common.util.SystemConfiguration,
 	us.mn.state.health.lims.common.action.IActionConstants,
-	java.util.Collection,
-	java.util.ArrayList,
 	us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
 	us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
 	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem,
@@ -21,8 +17,8 @@
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax" %>
 
 <bean:define id="formName"	value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
-<bean:define id="testSection"	value='<%=(String) request.getParameter("type")%>' />
-<bean:define id="testName"	value='<%=(String) request.getParameter("test")%>' />
+<bean:define id="testSection"	value='<%=request.getParameter("type")%>' />
+<bean:define id="testName"	value='<%=request.getParameter("test")%>' />
 <bean:define id="results" name="<%=formName%>" property="resultList" />
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage" type="List<IdValuePair>" /> 
 
@@ -37,7 +33,7 @@
 %>
 <%
 
-	String basePath = "";
+	String basePath;
 	String path = request.getContextPath();
 	basePath = request.getScheme() + "://" + request.getServerName() + ":"
 	+ request.getServerPort() + path + "/";
@@ -58,7 +54,7 @@ pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.cu
 
 var pageSearch; //assigned in post load function
 
-var pagingSearch = new Object();
+var pagingSearch = {};
 
 <%
 	for( IdValuePair pair : ((List<IdValuePair>)pagingSearch)){
@@ -147,27 +143,28 @@ function savePage() {
 }
 
 function toggleSelectAll( element ) {
+    var index, item, checkboxes,matchedCheckboxes;
 
 	if (element.id == "selectAllAccept" ) {
-		var checkboxes = $$(".accepted");
-		var matchedCheckboxes = $$(".rejected");
+		checkboxes = $$(".accepted");
+		matchedCheckboxes = $$(".rejected");
 	} else if (element.id == "selectAllReject" ) {
-		var checkboxes = $$(".rejected");
-		var matchedCheckboxes = $$(".accepted");
+		checkboxes = $$(".rejected");
+		matchedCheckboxes = $$(".accepted");
 	}
 
 	if (element.checked == true ) {
-		for (var index = 0; index < checkboxes.length; ++index) {
-			  var item = checkboxes[index];
+		for (index = 0; index < checkboxes.length; ++index) {
+			  item = checkboxes[index];
 			  item.checked = true;
 		}
-		for (var index = 0; index < matchedCheckboxes.length; ++index) {
-			  var item = matchedCheckboxes[index];
+		for (index = 0; index < matchedCheckboxes.length; ++index) {
+			  item = matchedCheckboxes[index];
 			  item.checked = false;
 		}
 	} else if (element.checked == false ) {
-		for (var index = 0; index < checkboxes.length; ++index) {
-			  var item = checkboxes[index];
+		for (index = 0; index < checkboxes.length; ++index) {
+			  item = checkboxes[index];
 			  item.checked = false;
 		}
 	}
@@ -186,6 +183,24 @@ function updateLogValue(element, index ){
 			jQuery(logField).html(logValue);
 		}
 	}
+}
+
+function trim(element, significantDigits){
+    if( significantDigits < 0){
+        return;
+    }
+
+    var splitValue = element.value.split(".");
+
+    if(splitValue.size() == 2){
+        if( significantDigits == 0 ){
+            element.value = splitValue[0];
+        }else if(splitValue[1].length == 0){
+            element.value = element.value.substring(0, splitValue[0].length);
+        }else{
+            element.value = element.value.substring(0, splitValue[0].length + 1 + significantDigits);
+        }
+    }
 }
 
 function updateReflexChild( group){
@@ -220,7 +235,7 @@ function updateReflexChild( group){
 
 }
 
-function /*void*/ processTestReflexCD4Failure(xhr){
+function /*void*/ processTestReflexCD4Failure(){
 	alert("failed");
 }
 
@@ -229,11 +244,10 @@ function /*void*/ processTestReflexCD4Success(xhr)
 	//alert( xhr.responseText );
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = false, childRow, value;
+	var childRow, value;
 
 
 	if (message.firstChild.nodeValue == "valid"){
-		success = true;
 		childRow = formField.getElementsByTagName("childRow").item(0).childNodes[0].nodeValue;
 		value = formField.getElementsByTagName("value").item(0).childNodes[0].nodeValue;
 		
@@ -287,12 +301,12 @@ function /*boolean*/ handleEnterEvent(){
 <html:hidden name="<%=formName%>"  property="testSection" value="<%=testSection%>" />
 <html:hidden name="<%=formName%>"  property="testName" value="<%=testName%>" />
 <logic:notEqual name="resultCount" value="0">
-<Table width="80%" >
+<Table style="width:80%" >
     <tr>
-		<th width="15%" colspan="3" style="background-color: white">
+		<th colspan="3" style="background-color: white;width:15%;">
 			<img src="./images/nonconforming.gif" /> = <bean:message key="result.nonconforming.item"/>		
 		</th>
-		<th width="3%" align="center" style="background-color: white">&nbsp;
+		<th style="text-align:center;width:3%;" style="background-color: white">&nbsp;
 				<bean:message key="validation.accept.all" />
 			<input type="checkbox"
 				name="selectAllAccept"
@@ -302,7 +316,7 @@ function /*boolean*/ handleEnterEvent(){
 				id="selectAllAccept"
 				class="accepted acceptAll">
 		</th>
-		<th width="3%" align="center" style="background-color: white">&nbsp;
+		<th  style="text-align:center;width:3%;" style="background-color: white">&nbsp;
 		<bean:message key="validation.reject.all" />
 			<input type="checkbox"
 					name="selectAllReject"
@@ -312,11 +326,11 @@ function /*boolean*/ handleEnterEvent(){
 					id="selectAllReject"
 					class="rejected rejectAll">
 		</th>
-		<th width="5%" style="background-color: white">&nbsp;</th>
+		<th style="background-color: white;width:5%;">&nbsp;</th>
   	</tr>
 </Table>
 </logic:notEqual>
-<Table width="80%" >
+<Table style="width:80%" >
 	<logic:notEqual name="resultCount" value="0">
 	<tr>
 	    <td colspan="9"><hr/></td>
@@ -331,10 +345,10 @@ function /*boolean*/ handleEnterEvent(){
 		<th>
 			<bean:message key="analyzer.results.result"/>
 		</th>
-		<th align="center">
+		<th style="text-align:center">
 			<bean:message key="validation.accept" />
 		</th>
-		<th align="center">
+		<th style="text-align:center">
 			<bean:message key="validation.reject" />
 		</th>
 		<th>
@@ -357,7 +371,7 @@ function /*boolean*/ handleEnterEvent(){
 				<td colspan="3" class='<%= currentAccessionNumber %>'>
 	      			<bean:write name="resultList" property="accessionNumber"/>
 	    		</td>
-	    		<td align="center">
+	    		<td style="text-align:center">
 					<html:checkbox styleId='<%="sampleAccepted_" + resultList.getSampleGroupingNumber() %>'
 								   name="resultList"
 								   property="isAccepted"
@@ -366,7 +380,7 @@ function /*boolean*/ handleEnterEvent(){
 								   onchange="markUpdated(); makeDirty();" 
 								   onclick='<%="acceptSample( this, \'" + resultList.getSampleGroupingNumber() + "\');" %>' />
 				</td>
-				<td align="center">
+				<td style="text-align:center">
 					<html:checkbox styleId='<%="sampleRejected_" + resultList.getSampleGroupingNumber() %>'
 									   name="resultList"
 									   property="isRejected"
@@ -410,7 +424,7 @@ function /*boolean*/ handleEnterEvent(){
 					           id='<%= "resultId_" + index %>'
 							   class='<%= (resultList.getIsHighlighted() ? "invalidHighlight " : " ") + (resultList.isReflexGroup() ? "reflexGroup_" + resultList.getSampleGroupingNumber()  : "")  +  
 							              (resultList.isChildReflex() ? " childReflex_" + resultList.getSampleGroupingNumber(): "") %> ' 
-							   onchange='<%=  "markUpdated(); makeDirty(); updateLogValue(this, " + index + "); " +
+							   onchange='<%=  "markUpdated(); makeDirty(); updateLogValue(this, " + index + "); trim(this, " + resultList.getSignificantDigits() + ");" +
 								                (resultList.isReflexGroup() && !resultList.isChildReflex() ? "updateReflexChild(" + resultList.getSampleGroupingNumber()  +  " ); " : "")  %>'/>
 	    				<% } %>
 						<bean:write name="resultList" property="units"/>
@@ -470,7 +484,7 @@ function /*boolean*/ handleEnterEvent(){
 					<% } %>
 				</td>
 				<% if(resultList.isShowAcceptReject()){ %>
-				<td align="center">
+				<td style="text-align:center">
 					<html:checkbox styleId='<%="accepted_" + index %>'
 								   name="resultList"
 								   property="isAccepted"
@@ -479,7 +493,7 @@ function /*boolean*/ handleEnterEvent(){
 								   onchange="markUpdated(); makeDirty();"
 								   onclick='<%="enableDisableCheckboxes(\'rejected_" + index + "\', \'" + resultList.getSampleGroupingNumber() + "\');" %>' />
 				</td>
-				<td align="center">
+				<td style="text-align:center">
 					<html:checkbox styleId='<%="rejected_" + index %>'
 									   name="resultList"
 									   property="isRejected"
@@ -491,7 +505,7 @@ function /*boolean*/ handleEnterEvent(){
 				<% }else{ %>
 				<td><bean:message key="label.computed"/></td><td><bean:message key="label.computed"/></td>
 				<% } %>
-				<td align="center">
+				<td style="text-align:center">
 					<% if( !resultList.isReadOnly()){ %>
 				    	<logic:empty name="resultList" property="note">
 						 	<img src="./images/note-add.gif"
@@ -505,22 +519,22 @@ function /*boolean*/ handleEnterEvent(){
 						 	     id='<%="showHideButton_" + index %>'
 						    />
 						 </logic:notEmpty>
-					<html:hidden property="hideShowFlag"  styleId='<%="hideShow_" + index %>' value="hidden" />
+                    <input type="hidden" value="hidden" id='<%="hideShow_" + index %>' >
 					<% } %>
 				</td>
       		</tr>
       		<logic:notEmpty name="resultList" property="pastNotes">
 			<tr  >
-				<td colspan="2" align="right" valign="top"><bean:message key="label.prior.note" />: </td>
-				<td colspan="6" align="left">
+				<td colspan="2" style="text-align:right;vertical-align:top"><bean:message key="label.prior.note" />: </td>
+				<td colspan="6" style="text-align:left">
 				<%= resultList.getPastNotes() %>
 				</td>
 			</tr>
 	</logic:notEmpty>
       		<tr id='<%="noteRow_" + index %>'
 				style="display: none;">
-				<td colspan="2" valign="top" align="right"><bean:message key="note.note"/>:</td>
-				<td colspan="6" align="left" >
+				<td colspan="2" style="text-align:right;vertical-align:top;"><bean:message key="note.note"/>:</td>
+				<td colspan="6" style="text-align:left" >
 					<html:textarea styleId='<%="note_" + index %>'
 								   onchange='<%="markUpdated(" + index + ");"%>'
 							   	   name="resultList"

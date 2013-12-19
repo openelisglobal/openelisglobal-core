@@ -30,6 +30,7 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -63,7 +64,6 @@ import us.mn.state.health.lims.result.daoimpl.ResultSignatureDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.result.valueholder.ResultInventory;
 import us.mn.state.health.lims.result.valueholder.ResultSignature;
-import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
@@ -86,6 +86,8 @@ import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -96,7 +98,7 @@ public class ResultsLoadUtility {
 
 	public static final String TESTKIT = "TestKit";
 
-	private static final double INVALID_PATIENT_AGE = Double.MIN_VALUE;
+
 	private static final String NO_PATIENT_NAME = " ";
 	private static final String NO_PATIENT_INFO = " ";
 
@@ -108,7 +110,6 @@ public class ResultsLoadUtility {
 	private List<Sample> samples;
 	private String currentDate = "";
 	private Patient currPatient;
-	private double currPatientAge;
 	private Sample currSample;
 
 	private Set<Integer> excludedAnalysisStatus = new HashSet<Integer>();
@@ -131,6 +132,7 @@ public class ResultsLoadUtility {
 
 	private static String ANALYTE_CONCLUSION_ID;
 	private static String ANALYTE_CD4_CNT_CONCLUSION_ID;
+    private static String NUMERIC_RESULT_TYPE_ID;
 	private static boolean depersonalize = FormFields.getInstance().useField(Field.DepersonalizedResults);
 	private boolean useTechSignature =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
 	private static boolean supportReferrals = FormFields.getInstance().useField(Field.ResultsReferral);
@@ -157,6 +159,9 @@ public class ResultsLoadUtility {
 		analyte.setAnalyteName("generated CD4 Count");
 		analyte = analyteDAO.getAnalyteByName(analyte, false);
 		ANALYTE_CD4_CNT_CONCLUSION_ID = analyte == null ? "" : analyte.getId();
+
+        TypeOfTestResult typeOfTestResult = new TypeOfTestResultDAOImpl().getTypeOfTestResultByType( "N" );
+        NUMERIC_RESULT_TYPE_ID = typeOfTestResult != null ? typeOfTestResult.getId() : "";
 
 	}
 
@@ -189,7 +194,6 @@ public class ResultsLoadUtility {
 		}
 
 		currPatient = patient;
-		currPatientAge = INVALID_PATIENT_AGE;
 
 		return getGroupedTestsForSamples();
 	}
@@ -200,7 +204,6 @@ public class ResultsLoadUtility {
 		inventoryNeeded = false;
 
 		currPatient = patient;
-		currPatientAge = INVALID_PATIENT_AGE;
 
 		SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
 		samples = sampleHumanDAO.getSamplesForPatient(patient.getId());
@@ -250,7 +253,6 @@ public class ResultsLoadUtility {
 		for (Analysis analysis : filteredAnalysisList) {
 
 			currPatient = getPatientForSampleItem(analysis.getSampleItem());
-			currPatientAge = INVALID_PATIENT_AGE; // force recalculation of age
 
 			String patientName = "";
 			String patientInfo;
@@ -427,7 +429,7 @@ public class ResultsLoadUtility {
 				multiSelectionResult = "M".equals(result.getResultType());
 			}
 
-			ResultLimit resultLimit = getResultLimitForTestAndPatient(test, currPatient);
+			ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(test, currPatient);
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
 
@@ -612,135 +614,6 @@ public class ResultsLoadUtility {
 
 	}
 
-	public ResultLimit getResultLimitForTestAndPatient(Test test, Patient patient) {
-		currPatient = patient;
-		List<ResultLimit> resultLimits = getAllResultLimitsForTest(test);
-
-		if (resultLimits == null || resultLimits.isEmpty()) {
-			return null;
-		} else if (patient == null) {
-			return defaultResultLimit(resultLimits);
-		} else if (patient.getBirthDate() == null && GenericValidator.isBlankOrNull(patient.getGender())) {
-			return defaultResultLimit(resultLimits);
-		} else if (GenericValidator.isBlankOrNull(patient.getGender())) {
-			return ageBasedResultLimit(resultLimits);
-		} else if (patient.getBirthDate() == null) {
-			return genderBasedResultLimit(resultLimits);
-		} else {
-			return ageAndGenderBasedResultLimit(resultLimits);
-		}
-	}
-
-	private ResultLimit defaultResultLimit(List<ResultLimit> resultLimits) {
-
-		for (ResultLimit limit : resultLimits) {
-			if (GenericValidator.isBlankOrNull(limit.getGender()) && limit.ageLimitsAreDefault()) {
-				return limit;
-			}
-		}
-		return new ResultLimit();
-	}
-
-	private ResultLimit ageBasedResultLimit(List<ResultLimit> resultLimits) {
-
-		ResultLimit resultLimit = null;
-
-		// First we look for a limit with no gender
-		for (ResultLimit limit : resultLimits) {
-			if (GenericValidator.isBlankOrNull(limit.getGender()) && !limit.ageLimitsAreDefault()
-					&& getCurrPatientAge() >= limit.getMinAge() && getCurrPatientAge() <= limit.getMaxAge()) {
-
-				resultLimit = limit;
-				break;
-			}
-		}
-
-		// if none is found then drop the no gender requirement
-		if (resultLimit == null) {
-			for (ResultLimit limit : resultLimits) {
-				if (!limit.ageLimitsAreDefault() && getCurrPatientAge() >= limit.getMinAge() && getCurrPatientAge() <= limit.getMaxAge()) {
-
-					resultLimit = limit;
-					break;
-				}
-			}
-		}
-
-		return resultLimit == null ? defaultResultLimit(resultLimits) : resultLimit;
-	}
-
-	private ResultLimit genderBasedResultLimit(List<ResultLimit> resultLimits) {
-
-		ResultLimit resultLimit = null;
-
-		// First we look for a limit with no age
-		for (ResultLimit limit : resultLimits) {
-			if (limit.ageLimitsAreDefault() && currPatient.getGender().equals(limit.getGender())) {
-
-				resultLimit = limit;
-				break;
-			}
-		}
-
-		// drop the age limit
-		if (resultLimit == null) {
-			for (ResultLimit limit : resultLimits) {
-				if (currPatient.getGender().equals(limit.getGender())) {
-					resultLimit = limit;
-					break;
-				}
-			}
-		}
-		return resultLimit == null ? defaultResultLimit(resultLimits) : resultLimit;
-	}
-
-	/*
-	 * We only get here if patient has age and gender
-	 */
-	private ResultLimit ageAndGenderBasedResultLimit(List<ResultLimit> resultLimits) {
-
-		ResultLimit resultLimit = null;
-
-		List<ResultLimit> fullySpecifiedLimits = new ArrayList<ResultLimit>();
-		// first age and gender matter
-		for (ResultLimit limit : resultLimits) {
-			if (currPatient.getGender().equals(limit.getGender()) && !limit.ageLimitsAreDefault()) {
-
-				// if fully qualified don't retest for only part of the
-				// qualification
-				fullySpecifiedLimits.add(limit);
-
-				if (getCurrPatientAge() >= limit.getMinAge() && getCurrPatientAge() <= limit.getMaxAge()) {
-
-					resultLimit = limit;
-					break;
-				}
-			}
-		}
-
-		resultLimits.removeAll(fullySpecifiedLimits);
-
-		// second only age matters
-		if (resultLimit == null) {
-			for (ResultLimit limit : resultLimits) {
-				if (!limit.ageLimitsAreDefault() && getCurrPatientAge() >= limit.getMinAge() && getCurrPatientAge() <= limit.getMaxAge()) {
-
-					resultLimit = limit;
-					break;
-				}
-			}
-		}
-
-		// third only gender matters
-		return resultLimit == null ? genderBasedResultLimit(resultLimits) : resultLimit;
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<ResultLimit> getAllResultLimitsForTest(Test test) {
-		ResultLimitDAO resultLimitDAO = DAOImplFactory.getInstance().getResultLimitsDAOImpl();
-		return resultLimitDAO.getAllResultLimitsForTest(test);
-	}
-
 	private List<SampleItem> getSampleItemsForSample(Sample sample) {
 		SampleItemDAO sampleItemDAO = DAOImplFactory.getInstance().getSampleItemDAOImpl();
 		return sampleItemDAO.getSampleItemsBySampleId(sample.getId());
@@ -756,7 +629,7 @@ public class ResultsLoadUtility {
 
 		String receivedDate = currSample == null ? getCurrentDate() : currSample.getReceivedDateForDisplay();
 		String testMethodName = test.getMethod() != null ? test.getMethod().getMethodName() : null;
-		List<TestResult> testResults = getPossibleResultsForTest(test);
+		List<TestResult> testResults = getPossibleTestResultsForTest( test );
 
 		String testKitId = null;
 		String testKitInventoryId = null;
@@ -826,7 +699,7 @@ public class ResultsLoadUtility {
 		testItem.setReceivedDate(receivedDate);
 		testItem.setTestName(displayTestName);
 		testItem.setTestId(test.getId());
-		setResultLimitDependencies(resultLimit, testItem);
+		setResultLimitDependencies(resultLimit, testItem, testResults);
 		testItem.setPatientName(patientName);
 		testItem.setPatientInfo(patientInfo);
 		testItem.setReportable("Y".equals(test.getIsReportable()));
@@ -892,7 +765,7 @@ public class ResultsLoadUtility {
         return name;
     }
 
-    private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem){
+    private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem, List<TestResult> testResults){
 		if( resultLimit != null){
 			testItem.setResultLimitId(resultLimit.getId());
 			testItem.setLowerNormalRange(resultLimit.getLowNormal() == Double.NEGATIVE_INFINITY ? 0 : resultLimit.getLowNormal());
@@ -901,6 +774,11 @@ public class ResultsLoadUtility {
 			testItem.setUpperAbnormalRange(resultLimit.getHighValid() == Double.POSITIVE_INFINITY ? 0 : resultLimit.getHighValid());
 			testItem.setValid(getIsValid(testItem.getResultValue(), resultLimit));
 			testItem.setNormal(getIsNormal(testItem.getResultValue(), resultLimit));
+            if( NUMERIC_RESULT_TYPE_ID.equals( resultLimit.getResultTypeId() )){
+                testItem.setNormalRange( ResultLimitService.getDisplayNormalRange( resultLimit.getLowNormal(), resultLimit.getHighNormal(), testResults.get( 0 ).getSignificantDigits(), " - " ));
+                testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
+            }
+
 		}
 	}
 
@@ -1098,7 +976,7 @@ public class ResultsLoadUtility {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<TestResult> getPossibleResultsForTest(Test test) {
+	private List<TestResult> getPossibleTestResultsForTest( Test test ) {
 		return testResultDAO.getAllTestResultsPerTest(test);
 	}
 
@@ -1149,17 +1027,7 @@ public class ResultsLoadUtility {
 		return true;
 	}
 
-	private double getCurrPatientAge() {
-		if (currPatientAge == INVALID_PATIENT_AGE && currPatient != null && currPatient.getBirthDate() != null) {
 
-			Calendar dob = Calendar.getInstance();
-			dob.setTime(currPatient.getBirthDate());
-
-			currPatientAge = DateUtil.getAgeInMonths(currPatient.getBirthDate(), new Date());
-		}
-
-		return currPatientAge;
-	}
 
 	private String getCurrentDate() {
 		if (GenericValidator.isBlankOrNull(currentDate)) {

@@ -5,17 +5,30 @@
  * upperNormal -- the high end of the normal range
  * lowerAbnormal -- the low end of the range in which the test is considered valid
  * highAbnormal -- the high end of the range in which the test is considered valid
+ * significantDigits -- how many significant digits are allowed
  *
  *  N.B.  If the upper and lower ranges of the normal and abnormal settings are the same then those ranges will
  *  be ignored.
  */
 var outOfValidRangeMsg = null;
 
-function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, lowerAbnormal, upperAbnormal, specialCase ){
+function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, lowerAbnormal, upperAbnormal, significantDigits, specialCase ){
 
 	var regEx = new RegExp("^(-|\\+){0,1}\\d*\\.?\\d*$");
 	var isNumber = regEx.test(resultBox.value);
 	var isSpecialCase = specialCase == resultBox.value.toUpperCase(); 
+    var splitValue = resultBox.value.split(".");
+
+
+    if(splitValue.size() == 2 && significantDigits >= 0){
+        if( significantDigits == 0 ){
+            resultBox.value = splitValue[0];
+        }else if(splitValue[1].length == 0){
+            resultBox.value = resultBox.value.substring(0, splitValue[0].length);
+        }else{
+            resultBox.value = resultBox.value.substring(0, splitValue[0].length + 1 + significantDigits);
+        }
+    }
 
 	if(resultBox.value.blank()){
 		resultBox.title = "";

@@ -15,10 +15,10 @@
 */
 package us.mn.state.health.lims.resultvalidation.bean;
 
+import us.mn.state.health.lims.common.util.IdValuePair;
+
 import java.sql.Timestamp;
 import java.util.List;
-
-import us.mn.state.health.lims.common.util.IdValuePair;
 
 public class AnalysisItem  {
 
@@ -82,6 +82,7 @@ public class AnalysisItem  {
 	private String pastNotes;
 	private String qualifiedDictionaryId;
 	private String qualifiedResultValue = "";
+    private int significantDigits = 0;
 
 
 	public AnalysisItem() {
@@ -561,6 +562,11 @@ public class AnalysisItem  {
 		this.qualifiedResultValue = qualifiedResultValue;
 	}
 
+    public int getSignificantDigits(){
+        return significantDigits;
+    }
 
-
+    public void setSignificantDigits( int significantDigits ){
+        this.significantDigits = significantDigits;
+    }
 }

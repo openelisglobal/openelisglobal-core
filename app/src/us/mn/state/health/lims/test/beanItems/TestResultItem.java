@@ -67,6 +67,8 @@ public class TestResultItem implements ResultItem, Serializable{
 	private double lowerNormalRange = 0;
 	private double upperAbnormalRange;
 	private double lowerAbnormalRange;
+    private String normalRange = "";
+    private int significantDigits = -1;
 	private String resultValue;
 	private String remarks;
 	private String technician;
@@ -321,10 +323,6 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setTestId(String testId) {
 		this.testId = testId;
 	}
-	public String getNormalRange() {
-		return String.valueOf(lowerNormalRange) + "-" + String.valueOf(upperNormalRange);
-	}
-
 	public String getResultValue() {
 		return resultValue;
 	}
@@ -543,7 +541,6 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setDisplayResultAsLog(boolean displayResultAsLog) {
 		this.displayResultAsLog = displayResultAsLog;
 	}
-
 	public boolean isNonconforming() {
 		return nonconforming;
 	}
@@ -580,12 +577,22 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setForceTechApproval(String forceTechApproval){
 		this.forceTechApproval = forceTechApproval;
 	}
-
     public String getReflexJSONResult(){
         return reflexJSONResult;
     }
-
     public void setReflexJSONResult( String reflexJSONResult ){
         this.reflexJSONResult = reflexJSONResult;
+    }
+    public String getNormalRange(){
+        return normalRange;
+    }
+    public void setNormalRange( String normalRange ){
+        this.normalRange = normalRange;
+    }
+    public int getSignificantDigits(){
+        return significantDigits;
+    }
+    public void setSignificantDigits( int significantDigits ){
+        this.significantDigits = significantDigits;
     }
 }

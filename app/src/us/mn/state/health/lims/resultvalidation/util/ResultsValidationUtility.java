@@ -25,6 +25,7 @@ import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
@@ -72,9 +73,6 @@ import java.util.*;
 
 public class ResultsValidationUtility {
 
-	public enum TestSectionType {
-		UNKNOWN, IMMUNOLOGY, HEMATOLOGY, BIOCHEMISTRY, SEROLOGY, VIROLOGY
-	}
 
 //	private static String VIRAL_LOAD_ID = "";
 	private static String ANALYTE_CD4_CT_GENERATED_ID;
@@ -235,12 +233,7 @@ public class ResultsValidationUtility {
 		if (name.equals("Lymph %")) {
 			Result result = resultDAO.getResultById(resultItem.getResultId());
 
-			if (result == null || result.getAnalyte() == null) {
-				return true;
-			} else {
-				return !ANALYTE_CD4_CT_GENERATED_ID.equals(result.getAnalyte().getId());
-			}
-
+            return result == null || result.getAnalyte() == null || !ANALYTE_CD4_CT_GENERATED_ID.equals( result.getAnalyte().getId() );
 		} else {
 			return name.equals("Neut %") || name.equals("Mono %") || name.equals("Eo %") || name.equals("Baso %");
 		}
@@ -372,7 +365,7 @@ public class ResultsValidationUtility {
 									: dictionary.getLocalAbbreviation();
 
 						} catch (Exception e) {
-
+                            //no-op
 						}
 
 						validationItem.setResultValue(resultValue);
@@ -394,11 +387,11 @@ public class ResultsValidationUtility {
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
 
 		if (valid == null) {
-			valid = new Boolean(getSampleRecordStatus(sample) == StatusService.RecordStatus.ValidationRegistration);
+			valid = getSampleRecordStatus( sample ) == StatusService.RecordStatus.ValidationRegistration;
 			accessionToValidMap.put(sample.getAccessionNumber(), valid);
 		}
 
-		return valid.booleanValue();
+		return valid;
 	}
 
 	public List<ResultValidationItem> getResultItemFromAnalysis(Analysis analysis) throws LIMSRuntimeException {
@@ -492,14 +485,14 @@ public class ResultsValidationUtility {
 			if( "Q".equals(testResult.getTestResultType())){
 			    
 		        if (testResult.getTestResultType().equals("Q")) {
-		            if( qualDictionaryIds != ""){
+		            if( !"".equals(qualDictionaryIds )){
 		                qualDictionaryIds += ",";
 		            }
 		            qualDictionaryIds += testResult.getValue();
 		        }
 			}
 		}
-		return qualDictionaryIds == "" ?  null : "[" + qualDictionaryIds + "]";
+		return  "".equals(qualDictionaryIds) ?  null : "[" + qualDictionaryIds + "]";
 	}
 
 	private String augmentUOMWithRange(String uom,	Result result) {
@@ -509,8 +502,8 @@ public class ResultsValidationUtility {
 		if( min == null || max == null || min.equals(max)){
 			return uom;
 		}
-				
-		return uom + "  ( " + String.valueOf(min) + " - " + String.valueOf(max) + " )";
+
+		return uom + "  ( " + ResultLimitService.getDisplayNormalRange( min, max, String.valueOf( result.getSignificantDigits()), " - " ) + " )";
 	}
 
 	private boolean isConclusion(Result testResult, Analysis analysis) {
@@ -601,7 +594,6 @@ public class ResultsValidationUtility {
 					}
 					readyForValidation = true;
 
-					analysisResultItem = new AnalysisItem();
 					analysisResultItem = testResultItemToELISAAnalysisItem(tResultItem);
 
 					currentAccessionNumber = analysisResultItem.getAccessionNumber();
@@ -784,7 +776,8 @@ public class ResultsValidationUtility {
 		}
 
 		testUnits = augmentUOMWithRange(testUnits,	testResultItem.getResult());
-		
+		Result result = testResultItem.getResult();
+
 		analysisResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
 		analysisResultItem.setTestName(testName);
 		analysisResultItem.setUnits(testUnits);
@@ -802,7 +795,13 @@ public class ResultsValidationUtility {
 		analysisResultItem.setNonconforming(testResultItem.isNonconforming());
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
-
+        if( "N".equals( testResultItem.getResultType() )){
+            if( result.getMinNormal() == result.getMaxNormal() || result.getMinNormal().equals( result.getMaxNormal())){
+                analysisResultItem.setSignificantDigits( -1 );
+            }else{
+                analysisResultItem.setSignificantDigits( result.getSignificantDigits() );
+            }
+        }
 		return analysisResultItem;
 
 	}

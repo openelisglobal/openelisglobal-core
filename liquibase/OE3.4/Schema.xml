@@ -98,5 +98,14 @@
 <changeSet id="7" author="paulsc">
     <comment>Adds an id column to sample_requester and makes it the primary key</comment>
     <sqlFile path="OE3.4/SampleRequesterID.sql" />
+</changeSet>  
+<changeSet id="8" author="paulsc">
+    <comment>Add a significant digit column to result</comment>
+    <addColumn tableName="result">
+        <column name="significant_digits" type="numeric" defaultValue="0"/>
+    </addColumn>
+    <sql>
+        COMMENT on COLUMN clinlims.result.significant_digits is 'Significant digits for results at the time the results were entered';
+    </sql>
 </changeSet>    
 </databaseChangeLog>
