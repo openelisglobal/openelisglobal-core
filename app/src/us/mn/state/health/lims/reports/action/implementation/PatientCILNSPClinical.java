@@ -34,8 +34,10 @@ import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.HaitiClinicalPatientData;
@@ -63,6 +65,9 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
 
 	}
+	
+	static final String configName = ConfigurationProperties.getInstance()
+			.getPropertyValue(Property.configurationName);
 
 	public PatientCILNSPClinical(){
 		super();
@@ -70,7 +75,13 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 
 	@Override
 	protected String reportFileName(){
-		return "PatientReportCILNSP";
+		if (configName.equals("CI IPCI")) {
+			return "PatientReportCIIPCI";
+		} else if (configName.equals("CI LNSP")) {
+			return "PatientReportCILNSP";
+		} else {
+			return "PatientReportHaitiClinical";
+		}
 	}
 
 	@Override
