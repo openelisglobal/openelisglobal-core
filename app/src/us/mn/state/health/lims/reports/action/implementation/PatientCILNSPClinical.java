@@ -77,10 +77,8 @@ public class PatientCILNSPClinical extends HaitiPatientReport implements IReport
 	protected String reportFileName(){
 		if (configName.equals("CI IPCI")) {
 			return "PatientReportCIIPCI";
-		} else if (configName.equals("CI LNSP")) {
-			return "PatientReportCILNSP";
 		} else {
-			return "PatientReportHaitiClinical";
+			return "PatientReportCILNSP";
 		}
 	}
 
