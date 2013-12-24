@@ -16,18 +16,16 @@
  */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.HibernateProxy;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CobasTaqmanReader extends AnalyzerLineInserter{
 
@@ -99,10 +97,10 @@ public class CobasTaqmanReader extends AnalyzerLineInserter{
 		}
 
 		AnalyzerResults analyzerResults = new AnalyzerResults();
-		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.COBAS_TAQMAN, fields[TEST].replace("\"", "").trim());
+		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerTestNameCache.COBAS_TAQMAN, fields[TEST].replace("\"", "").trim());
 
 		if(mappedName == null){
-			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerType.COBAS_TAQMAN, fields[TEST].replace("\"", "").trim());
+			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerTestNameCache.COBAS_TAQMAN, fields[TEST].replace("\"", "").trim());
 		}
 
 		String result = getAppropriateResults(fields[RESULT]);

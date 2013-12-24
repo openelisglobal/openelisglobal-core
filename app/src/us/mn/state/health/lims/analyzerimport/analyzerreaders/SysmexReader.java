@@ -17,22 +17,18 @@
  */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
+import org.apache.commons.validator.GenericValidator;
+import org.hibernate.Transaction;
+import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
+import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
+import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
+import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.HibernateProxy;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.validator.GenericValidator;
-import org.hibernate.Transaction;
-
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
-import us.mn.state.health.lims.analyzerresults.dao.AnalyzerResultsDAO;
-import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
-import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.util.DAOImplFactory;
-import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.HibernateProxy;
 
 @SuppressWarnings("unused")
 public class SysmexReader extends AnalyzerLineInserter {
@@ -384,10 +380,10 @@ public class SysmexReader extends AnalyzerLineInserter {
 			int testIndex = orderedTestIndexs[i];
 
 			if (!GenericValidator.isBlankOrNull(testNameIndex[testIndex])) {
-				MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.SYSMEX_XT_2000, testNameIndex[testIndex]);
+				MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerTestNameCache.SYSMEX_XT2000_NAME, testNameIndex[testIndex]);
 
 				if( mappedName == null){
-					mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerType.SYSMEX_XT_2000, testNameIndex[testIndex]);
+					mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerTestNameCache.SYSMEX_XT2000_NAME, testNameIndex[testIndex]);
 				}
 
 				AnalyzerResults analyzerResults = new AnalyzerResults();

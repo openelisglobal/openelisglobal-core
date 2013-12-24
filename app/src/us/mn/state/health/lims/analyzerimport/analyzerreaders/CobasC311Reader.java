@@ -16,20 +16,18 @@
  */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CobasC311Reader extends AnalyzerLineInserter {
 
@@ -164,11 +162,11 @@ public class CobasC311Reader extends AnalyzerLineInserter {
 
 		AnalyzerResults analyzerResults = new AnalyzerResults();
 
-		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.COBAS_C311,
+		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerTestNameCache.COBAS_C311,
 				analyzerTestName);
 
 		if (mappedName == null) {
-			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerType.COBAS_C311,
+			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerTestNameCache.COBAS_C311,
 					analyzerTestName);
 		}
 
