@@ -317,7 +317,7 @@ function makeDirty(){
 <th><bean:message key="sample.entry.sample.type"/></th>
 <% if( useCollectionDate ){ %>
 <th >
-    <bean:message key="sample.collectionDate"/>
+    <bean:message key="sample.collectionDate"/>&nbsp;<bean:message key="sample.date.format"/>
 </th>
 <th >
     <bean:message key="sample.collectionTime"/>
