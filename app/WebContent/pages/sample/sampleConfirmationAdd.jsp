@@ -740,7 +740,7 @@ function /*string*/ getNote( sampleIndex ){
 		<td colspan="2">
 			<app:text name="<%=formName%>" property="receivedDate"
 				onchange="checkValidDate(this);makeDirty();"
-				onkeyup="addDateSlashes(this,event);"
+				onkeyup="addDateSlashes(this,event); "
 				styleClass="text"
 				maxlength="10"
 				styleId="receivedDate" />
@@ -748,7 +748,7 @@ function /*string*/ getNote( sampleIndex ){
            <% if( FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour)){ %>
                <bean:message key="sample.receptionTime" />:
                    <html:text name="<%=formName %>" 
-                   onkeyup="filterTimeKeys(this, event);" 
+                   onkeyup="filterTimeKeys(this, event); addHourTwoPoint(this,event);" 
                    property="recievedTime"
                    styleId="receivedTime" 
                    maxlength="5"
@@ -822,10 +822,10 @@ function /*string*/ getNote( sampleIndex ){
 			<html:text name='<%=formName%>' property="lastName"  styleId="requesterLastName" />
 		</td>
 		<td>
-			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone" />
+			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone"  onkeyup="addNumberPhoneDashAndIndicative(this, event);"/>
 		</td>
 		<td>
-			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" />
+			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" onkeyup="addNumberPhoneDashAndIndicative(this, event);"/>
 		</td>
 		<td>
 			<html:text name='<%=formName%>' property="e-mail"  styleId="requesterEMail" />
@@ -1051,6 +1051,38 @@ function setValidIndicaterOnField( success, element){
 
 	element.style.borderColor = success ? "" : "red";
 	element.style.borderWidth = success ? "" : "2";
+}
+
+function /*void*/  addNumberPhoneDashAndIndicative(field, event) {
+
+    var key = event.which ? event.which : event.keyCode;
+    if (key == 8) { // delete key? do nothing
+        return;
+    }
+    var number = field.value;
+
+    if (field.value.length == 2 || field.value.length == 5 || field.value.length == 8) {
+        field.value = number + "-";
+    }
+
+    if (field.value.length == 11) {
+        field.value = "+225-" + number;
+    }
+}
+
+ 
+function /*void*/  addHourTwoPoint(field, event) {
+
+    var key = event.which ? event.which : event.keyCode;
+    if (key == 8) { // delete key? do nothing
+        return;
+    }
+    var number = field.value;
+
+    if (field.value.length == 2 ) {
+        field.value = number + ":";
+    }
+    
 }
 
 // Moving autocomplete to end - needs to be at bottom for IE to trigger properly
