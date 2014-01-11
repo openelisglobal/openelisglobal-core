@@ -171,8 +171,7 @@ public class SampleEditAction extends BaseAction {
 		Patient patient = new SampleHumanDAOImpl().getPatientForSample(sample);
 		IPatientService patientService = new PatientService(patient);
 
-		PropertyUtils.setProperty(dynaForm, "firstName", patientService.getFirstName());
-		PropertyUtils.setProperty(dynaForm, "lastName", patientService.getLastName());
+        PropertyUtils.setProperty( dynaForm, "patientName", patientService.getLastFirstName() );
 		PropertyUtils.setProperty(dynaForm, "dob", patientService.getDOB());
 		PropertyUtils.setProperty(dynaForm, "gender", patientService.getGender());
 		PropertyUtils.setProperty(dynaForm, "nationalId", patientService.getNationalId());
