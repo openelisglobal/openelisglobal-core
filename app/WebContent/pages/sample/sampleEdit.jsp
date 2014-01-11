@@ -270,8 +270,7 @@ function makeDirty(){
 <logic:equal name="<%=formName%>" property="noSampleFound" value="false">
 <DIV  id="patientInfo" class='textcontent'>
 <bean:message key="sample.entry.patient"/>:&nbsp;
-<bean:write name="<%=formName%>" property="firstName"/>&nbsp;
-<bean:write name="<%=formName%>" property="lastName"/>&nbsp;
+<bean:write name="<%=formName%>" property="patientName"/>&nbsp;
 <bean:write name="<%=formName%>" property="dob"/>&nbsp;
 <bean:write name="<%=formName%>" property="gender"/>&nbsp;
 <bean:write name="<%=formName%>" property="nationalId"/>
