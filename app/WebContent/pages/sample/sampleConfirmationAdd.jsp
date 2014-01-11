@@ -694,6 +694,19 @@ function /*string*/ getNote( sampleIndex ){
 	return ($("note_" + sampleIndex).value.replace(singleQuote, "\\'" ).replace(doubleQuote, '\\"'));
 }
 
+function /*void*/  addHourTwoPoint(field, event) {
+
+    var key = event.which ? event.which : event.keyCode;
+    if (key == 8) { // delete key? do nothing
+        return;
+    }
+    var number = field.value;
+
+    if (field.value.length == 2 ) {
+        field.value = number + ":";
+    }
+    
+}
 </script>
 <% if(useInitialSampleCondition){ %>
 <div id="sampleConditionPrototype" style="display: none" >
@@ -822,10 +835,10 @@ function /*string*/ getNote( sampleIndex ){
 			<html:text name='<%=formName%>' property="lastName"  styleId="requesterLastName" />
 		</td>
 		<td>
-			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone"  onkeyup="addNumberPhoneDashAndIndicative(this, event);"/>
+			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone"  />
 		</td>
 		<td>
-			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" onkeyup="addNumberPhoneDashAndIndicative(this, event);"/>
+			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" />
 		</td>
 		<td>
 			<html:text name='<%=formName%>' property="e-mail"  styleId="requesterEMail" />
@@ -1053,37 +1066,10 @@ function setValidIndicaterOnField( success, element){
 	element.style.borderWidth = success ? "" : "2";
 }
 
-function /*void*/  addNumberPhoneDashAndIndicative(field, event) {
-
-    var key = event.which ? event.which : event.keyCode;
-    if (key == 8) { // delete key? do nothing
-        return;
-    }
-    var number = field.value;
-
-    if (field.value.length == 2 || field.value.length == 5 || field.value.length == 8) {
-        field.value = number + "-";
-    }
-
-    if (field.value.length == 11) {
-        field.value = "+225-" + number;
-    }
-}
+ 
 
  
-function /*void*/  addHourTwoPoint(field, event) {
 
-    var key = event.which ? event.which : event.keyCode;
-    if (key == 8) { // delete key? do nothing
-        return;
-    }
-    var number = field.value;
-
-    if (field.value.length == 2 ) {
-        field.value = number + ":";
-    }
-    
-}
 
 // Moving autocomplete to end - needs to be at bottom for IE to trigger properly
 $jq(document).ready( function() {
