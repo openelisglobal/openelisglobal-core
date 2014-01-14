@@ -69,7 +69,7 @@ function submitOnClick(button){
             <td width="20%">&nbsp;</td>
             <td width="10%" noWrap><bean:message key="login.msg.password"/>:</td>
             <td colspan="2" align="left">
-                <%--bugzilla 2173, 2376--%>
+                
                 <html:password name="<%=formName%>" property="password" onkeypress="submitOnEnter(event)"/>
             </td>
         </tr>
