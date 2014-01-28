@@ -32,7 +32,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class PluginLoader {
-    private static final String PLUGIN_ANALYZER = "plugin\\";
+    private static final String PLUGIN_ANALYZER = "plugin" + File.separator;
     private static final String VERSION = "version";
     private static final String SUPPORTED_VERSION = "1.0";
     private static final String PATH = "path";
