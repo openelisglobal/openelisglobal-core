@@ -107,7 +107,7 @@ ul.nav-menu {
 }
 .nav-menu a {
 	border-left: 1px solid #fff;
-	padding: 10px 1em;
+	padding: 10px 0.85em;
 	text-decoration: none;
 }
 .nav-menu li ul li a {
