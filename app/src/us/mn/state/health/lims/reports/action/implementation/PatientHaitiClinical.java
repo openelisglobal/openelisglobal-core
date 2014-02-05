@@ -27,7 +27,7 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.HaitiClinicalPatientData;
+import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -39,7 +39,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static Set<Integer> analysisStatusIds;
 	private boolean isLNSP = false;
-	protected List<HaitiClinicalPatientData> clinicalReportItems;
+	protected List<ClinicalPatientData> clinicalReportItems;
 
 	static{
 		analysisStatusIds = new HashSet<Integer>();
@@ -76,7 +76,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
 				reportAnalysis = analysis;
-				HaitiClinicalPatientData resultsData = reportAnalysisResults();
+				ClinicalPatientData resultsData = reportAnalysisResults();
 				
 
 				if(reportAnalysis.isReferredOut()){
@@ -91,7 +91,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 		}
 	}
 
-	private void addReferredTests(Referral referral, HaitiClinicalPatientData parentData){
+	private void addReferredTests(Referral referral, ClinicalPatientData parentData){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
 
 
@@ -121,7 +121,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 				i = reportReferralResultValue(referralResults, i);
 				ReferralResult referralResult = referralResults.get(i);
 
-				HaitiClinicalPatientData data = new HaitiClinicalPatientData();
+				ClinicalPatientData data = new ClinicalPatientData();
 				copyParentData(data, parentData);
 
 				data.setResult(reportReferralResultValue);
@@ -160,7 +160,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 		}
 	}
 
-	private void copyParentData(HaitiClinicalPatientData data, HaitiClinicalPatientData parentData){
+	private void copyParentData(ClinicalPatientData data, ClinicalPatientData parentData){
 		data.setContactInfo(parentData.getContactInfo());
 		data.setSiteInfo(parentData.getSiteInfo());
 		data.setReceivedDate(parentData.getReceivedDate());
@@ -180,7 +180,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			HaitiClinicalPatientData reportItem = reportAnalysisResults();
+			ClinicalPatientData reportItem = reportAnalysisResults();
 			reportItem.setTestSection(StringUtil.getMessageForKey("report.no.results"));
 			clinicalReportItems.add(reportItem);
 		}else{
@@ -190,9 +190,9 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	}
 
 	private void buildReport(){
-		Collections.sort(reportItems, new Comparator<HaitiClinicalPatientData>(){
+		Collections.sort(reportItems, new Comparator<ClinicalPatientData>(){
 			@Override
-			public int compare(HaitiClinicalPatientData o1, HaitiClinicalPatientData o2){
+			public int compare(ClinicalPatientData o1, ClinicalPatientData o2){
 
 				String o1AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(o1.getAccessionNumber());
 				String o2AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(o2.getAccessionNumber());
@@ -228,7 +228,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 		});
 
 		String currentPanelId = null;
-		for(HaitiClinicalPatientData reportItem : reportItems){
+		for(ClinicalPatientData reportItem : reportItems){
 			if(reportItem.getPanel() != null && !reportItem.getPanel().getId().equals(currentPanelId)){
 				currentPanelId = reportItem.getPanel().getId();
 				reportItem.setSeparator(true);
@@ -263,11 +263,11 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	@Override
 	protected void initializeReportItems(){
 		super.initializeReportItems();
-		clinicalReportItems = new ArrayList<HaitiClinicalPatientData>();
+		clinicalReportItems = new ArrayList<ClinicalPatientData>();
 	}
 
 	@Override
-	protected void setReferredResult(HaitiClinicalPatientData data, Result result){
+	protected void setReferredResult(ClinicalPatientData data, Result result){
 		data.setResult(data.getResult() + (augmentResultWithFlag() ? getResultFlag(result, "R") : ""));
 		data.setAlerts(getResultFlag(result, "R"));
 	}
