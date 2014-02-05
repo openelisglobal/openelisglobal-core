@@ -16,18 +16,9 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -41,7 +32,9 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
-public class PatientHaitiClinical extends HaitiPatientReport implements IReportCreator, IReportParameterSetter{
+import java.util.*;
+
+public class PatientHaitiClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
 
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static Set<Integer> analysisStatusIds;
@@ -64,7 +57,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 		super();
 	}
 
-	public PatientHaitiClinical(boolean isLNSP){
+	public PatientHaitiClinical( boolean isLNSP ){
 		super();
 		this.isLNSP = isLNSP;
 	}

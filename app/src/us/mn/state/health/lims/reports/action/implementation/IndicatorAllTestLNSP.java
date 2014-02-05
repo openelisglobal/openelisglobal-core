@@ -20,7 +20,7 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 
-public class IndicatorAllTestHaitiLNSP extends IndicatorAllTestHaiti implements IReportCreator, IReportParameterSetter {
+public class IndicatorAllTestLNSP extends IndicatorAllTest implements IReportCreator, IReportParameterSetter {
 
 	@Override
 	protected String getLabNameLine1() {

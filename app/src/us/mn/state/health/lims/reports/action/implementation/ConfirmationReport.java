@@ -59,7 +59,7 @@ import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 
 import java.util.*;
 
-public class HaitiConfirmationReport extends HaitiIndicatorReport implements IReportCreator, IReportParameterSetter {
+public class ConfirmationReport extends IndicatorReport implements IReportCreator, IReportParameterSetter {
 
 	private List<ConfirmationData> reportItems;
 	private static AnalysisDAO analysisDAO = new AnalysisDAOImpl();

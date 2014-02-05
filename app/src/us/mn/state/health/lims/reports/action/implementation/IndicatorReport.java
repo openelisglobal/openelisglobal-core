@@ -30,7 +30,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMessages;
 
-public abstract class HaitiIndicatorReport extends Report {
+public abstract class IndicatorReport extends Report {
 
 	protected String lowerDateRange;
 	protected String upperDateRange;

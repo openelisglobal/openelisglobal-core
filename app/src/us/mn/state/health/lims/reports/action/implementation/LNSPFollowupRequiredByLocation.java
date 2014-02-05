@@ -22,7 +22,7 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 
-public class HaitiLNSPFollowupRequiredByLocation extends HaitiIndicatorReport {
+public class LNSPFollowupRequiredByLocation extends IndicatorReport{
 
 
 

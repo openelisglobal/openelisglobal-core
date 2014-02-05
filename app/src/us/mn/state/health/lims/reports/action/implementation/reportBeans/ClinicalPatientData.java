@@ -19,7 +19,7 @@ package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 
 
-public class HaitiClinicalPatientData {
+public class ClinicalPatientData{
 
 	private String patientName = "";
 	private String nationalId;

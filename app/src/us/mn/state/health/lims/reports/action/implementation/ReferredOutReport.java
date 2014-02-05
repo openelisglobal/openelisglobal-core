@@ -47,7 +47,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
  * @since Feb 18, 2011
  */
 
-public class ReferredOutHaitiReport extends HaitiPatientReport implements IReportParameterSetter, IReportCreator {
+public class ReferredOutReport extends PatientReport implements IReportParameterSetter, IReportCreator {
 
     private String lowDateStr;
     private String highDateStr;
@@ -208,7 +208,7 @@ public class ReferredOutHaitiReport extends HaitiPatientReport implements IRepor
 	}
 
     /**
-     * @see us.mn.state.health.lims.reports.action.implementation.HaitiPatientReport#getReportNameForParameterPage()
+     * @see PatientReport#getReportNameForParameterPage()
      */
     @Override
     protected String getReportNameForParameterPage() {
