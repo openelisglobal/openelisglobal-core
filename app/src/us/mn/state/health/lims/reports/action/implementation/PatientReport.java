@@ -100,7 +100,7 @@ import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class HaitiPatientReport extends Report{
+public abstract class PatientReport extends Report{
 
 	private static final String RESULT_REFERENCE_TABLE_ID = NoteUtil.getTableReferenceId("RESULT");
 	private static final DecimalFormat twoDecimalFormat = new DecimalFormat("#.##");
@@ -722,7 +722,7 @@ public abstract class HaitiPatientReport extends Report{
 	}
 
 	/**
-	 * @see us.mn.state.health.lims.reports.action.implementation.HaitiPatientReport#initializeReportItems()
+	 * @see PatientReport#initializeReportItems()
 	 */
 	protected void initializeReportItems(){
 		reportItems = new ArrayList<HaitiClinicalPatientData>();

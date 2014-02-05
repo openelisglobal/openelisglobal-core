@@ -19,7 +19,7 @@ package us.mn.state.health.lims.reports.action.implementation;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
-public class IndicatorAllTestHaitiClinical extends IndicatorAllTestHaiti implements IReportCreator, IReportParameterSetter {
+public class IndicatorAllTestClinical extends IndicatorAllTest implements IReportCreator, IReportParameterSetter {
 
 	@Override
 	protected String getLabNameLine1() {

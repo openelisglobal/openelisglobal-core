@@ -53,7 +53,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
  * Reserved.
  * 
  */
-public abstract class IndicatorAllTestHaiti extends HaitiIndicatorReport implements IReportCreator,
+public abstract class IndicatorAllTest extends IndicatorReport implements IReportCreator,
 		IReportParameterSetter {
 
 	private List<HaitiAggregateReportData> reportItems;
