@@ -45,8 +45,7 @@
 			<form-property name="noSampleFound" type="java.lang.Boolean" initial="Boolean.FALSE" />
             <form-property name="isConfirmationSample" type="java.lang.Boolean"  initial="Boolean.FALSE" />
 			<form-property name="isEditable" type="java.lang.Boolean" initial="Boolean.TRUE" />
-			<form-property name="firstName" type="java.lang.String" initial="" />
-			<form-property name="lastName" type="java.lang.String" initial="" />
+			<form-property name="patientName" type="java.lang.String" initial="" />
 			<form-property name="dob" type="java.lang.String" initial="" />
 			<form-property name="gender" type="java.lang.String" initial="" />
 			<form-property name="nationalId" type="java.lang.String" initial="" />

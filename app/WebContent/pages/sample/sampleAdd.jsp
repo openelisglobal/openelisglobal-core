@@ -840,7 +840,7 @@ function sampleTypeQualifierChanged(element){
 				<% } %>
 				<% if( useCollectionDate ){ %>
 				<th >
-					<bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
+					<bean:message key="sample.collectionDate"/>&nbsp;<bean:message key="sample.date.format"/>
 				</th>
 				<th >
 					<bean:message key="sample.collectionTime"/>

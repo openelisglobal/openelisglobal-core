@@ -16,18 +16,9 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -36,17 +27,19 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.HaitiClinicalPatientData;
+import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
-public class PatientHaitiClinical extends HaitiPatientReport implements IReportCreator, IReportParameterSetter{
+import java.util.*;
+
+public class PatientHaitiClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
 
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static Set<Integer> analysisStatusIds;
 	private boolean isLNSP = false;
-	protected List<HaitiClinicalPatientData> clinicalReportItems;
+	protected List<ClinicalPatientData> clinicalReportItems;
 
 	static{
 		analysisStatusIds = new HashSet<Integer>();
@@ -64,7 +57,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 		super();
 	}
 
-	public PatientHaitiClinical(boolean isLNSP){
+	public PatientHaitiClinical( boolean isLNSP ){
 		super();
 		this.isLNSP = isLNSP;
 	}
@@ -83,7 +76,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
 				reportAnalysis = analysis;
-				HaitiClinicalPatientData resultsData = reportAnalysisResults();
+				ClinicalPatientData resultsData = reportAnalysisResults();
 				
 
 				if(reportAnalysis.isReferredOut()){
@@ -98,7 +91,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 		}
 	}
 
-	private void addReferredTests(Referral referral, HaitiClinicalPatientData parentData){
+	private void addReferredTests(Referral referral, ClinicalPatientData parentData){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
 
 
@@ -128,7 +121,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 				i = reportReferralResultValue(referralResults, i);
 				ReferralResult referralResult = referralResults.get(i);
 
-				HaitiClinicalPatientData data = new HaitiClinicalPatientData();
+				ClinicalPatientData data = new ClinicalPatientData();
 				copyParentData(data, parentData);
 
 				data.setResult(reportReferralResultValue);
@@ -167,7 +160,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 		}
 	}
 
-	private void copyParentData(HaitiClinicalPatientData data, HaitiClinicalPatientData parentData){
+	private void copyParentData(ClinicalPatientData data, ClinicalPatientData parentData){
 		data.setContactInfo(parentData.getContactInfo());
 		data.setSiteInfo(parentData.getSiteInfo());
 		data.setReceivedDate(parentData.getReceivedDate());
@@ -187,7 +180,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			HaitiClinicalPatientData reportItem = reportAnalysisResults();
+			ClinicalPatientData reportItem = reportAnalysisResults();
 			reportItem.setTestSection(StringUtil.getMessageForKey("report.no.results"));
 			clinicalReportItems.add(reportItem);
 		}else{
@@ -197,9 +190,9 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 	}
 
 	private void buildReport(){
-		Collections.sort(reportItems, new Comparator<HaitiClinicalPatientData>(){
+		Collections.sort(reportItems, new Comparator<ClinicalPatientData>(){
 			@Override
-			public int compare(HaitiClinicalPatientData o1, HaitiClinicalPatientData o2){
+			public int compare(ClinicalPatientData o1, ClinicalPatientData o2){
 
 				String o1AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(o1.getAccessionNumber());
 				String o2AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(o2.getAccessionNumber());
@@ -235,7 +228,7 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 		});
 
 		String currentPanelId = null;
-		for(HaitiClinicalPatientData reportItem : reportItems){
+		for(ClinicalPatientData reportItem : reportItems){
 			if(reportItem.getPanel() != null && !reportItem.getPanel().getId().equals(currentPanelId)){
 				currentPanelId = reportItem.getPanel().getId();
 				reportItem.setSeparator(true);
@@ -270,11 +263,11 @@ public class PatientHaitiClinical extends HaitiPatientReport implements IReportC
 	@Override
 	protected void initializeReportItems(){
 		super.initializeReportItems();
-		clinicalReportItems = new ArrayList<HaitiClinicalPatientData>();
+		clinicalReportItems = new ArrayList<ClinicalPatientData>();
 	}
 
 	@Override
-	protected void setReferredResult(HaitiClinicalPatientData data, Result result){
+	protected void setReferredResult(ClinicalPatientData data, Result result){
 		data.setResult(data.getResult() + (augmentResultWithFlag() ? getResultFlag(result, "R") : ""));
 		data.setAlerts(getResultFlag(result, "R"));
 	}

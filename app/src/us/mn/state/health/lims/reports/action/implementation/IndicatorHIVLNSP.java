@@ -18,7 +18,7 @@ package us.mn.state.health.lims.reports.action.implementation;
 
 import us.mn.state.health.lims.common.util.StringUtil;
 //Note both Clinical and LNSP should extend common subclass
-public class IndicatorHaitiHIVLNSP extends IndicatorHaitiHIVClinical implements IReportCreator, IReportParameterSetter {
+public class IndicatorHIVLNSP extends IndicatorHIV implements IReportCreator, IReportParameterSetter {
 
 	static{
 		HIV_TESTS.add("CD4  Compte Abs");

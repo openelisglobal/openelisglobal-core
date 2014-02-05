@@ -75,7 +75,7 @@ import us.mn.state.health.lims.referral.daoimpl.ReferralDAOImpl;
 import us.mn.state.health.lims.referral.daoimpl.ReferralReasonDAOImpl;
 import us.mn.state.health.lims.referral.daoimpl.ReferralResultDAOImpl;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.HaitiClinicalPatientData;
+import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
 import us.mn.state.health.lims.requester.dao.RequesterTypeDAO;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.RequesterTypeDAOImpl;
@@ -100,7 +100,7 @@ import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class HaitiPatientReport extends Report{
+public abstract class PatientReport extends Report{
 
 	private static final String RESULT_REFERENCE_TABLE_ID = NoteUtil.getTableReferenceId("RESULT");
 	private static final DecimalFormat twoDecimalFormat = new DecimalFormat("#.##");
@@ -147,7 +147,7 @@ public abstract class HaitiPatientReport extends Report{
 	protected Provider currentProvider;
 	protected Analysis reportAnalysis;
 	protected String reportReferralResultValue;
-	protected List<HaitiClinicalPatientData> reportItems;
+	protected List<ClinicalPatientData> reportItems;
 	protected String compleationDate;
 	protected SampleService currentSampleService;
 
@@ -213,7 +213,7 @@ public abstract class HaitiPatientReport extends Report{
 
 	abstract protected void createReportItems();
 
-	abstract protected void setReferredResult(HaitiClinicalPatientData data, Result result);
+	abstract protected void setReferredResult(ClinicalPatientData data, Result result);
 
 	protected boolean appendUOMToRange(){
 		return true;
@@ -493,13 +493,13 @@ public abstract class HaitiPatientReport extends Report{
 		return identity;
 	}
 
-	protected void setPatientName(HaitiClinicalPatientData data){
+	protected void setPatientName(ClinicalPatientData data){
 		data.setPatientName(patientService.getLastFirstName());
 		data.setFirstName(patientService.getFirstName());
 		data.setLastName(patientService.getLastName());
 	}
 
-	protected void reportResultAndConclusion(HaitiClinicalPatientData data){
+	protected void reportResultAndConclusion(ClinicalPatientData data){
 		List<Result> resultList = resultDAO.getResultsByAnalysis(reportAnalysis);
 		Test test = reportAnalysis.getTest();
 
@@ -557,13 +557,13 @@ public abstract class HaitiPatientReport extends Report{
 		return false;
 	}
 
-	private void setNormalRange(HaitiClinicalPatientData data, Test test, Result result){
+	private void setNormalRange(ClinicalPatientData data, Test test, Result result){
 		String uom = getUnitOfMeasure(result, test);
 		data.setTestRefRange(addIfNotEmpty(getRange(result), appendUOMToRange() ? uom : null));
 		data.setUom(uom);
 	}
 
-	private String getAugmentedResult(HaitiClinicalPatientData data, Result result){
+	private String getAugmentedResult(ClinicalPatientData data, Result result){
 		String resultValue = data.getResult();
 		if(TestIdentityService.isTestNumericViralLoad(reportAnalysis.getTest())){
 			try{
@@ -608,7 +608,7 @@ public abstract class HaitiPatientReport extends Report{
 		return getResultFlag(result, imbed, null);
 	}
 
-	protected String getResultFlag(Result result, String imbed, HaitiClinicalPatientData data){
+	protected String getResultFlag(Result result, String imbed, ClinicalPatientData data){
 		String flag = "";
 		try{
 			if("N".equals(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())){
@@ -662,7 +662,7 @@ public abstract class HaitiPatientReport extends Report{
 		return uom;
 	}
 
-	private void setAppropriateResults(List<Result> resultList, HaitiClinicalPatientData data){
+	private void setAppropriateResults(List<Result> resultList, ClinicalPatientData data){
 		Result result = resultList.get(0);
 		String reportResult = "";
 		if("D".equals(result.getResultType())){
@@ -722,10 +722,10 @@ public abstract class HaitiPatientReport extends Report{
 	}
 
 	/**
-	 * @see us.mn.state.health.lims.reports.action.implementation.HaitiPatientReport#initializeReportItems()
+	 * @see PatientReport#initializeReportItems()
 	 */
 	protected void initializeReportItems(){
-		reportItems = new ArrayList<HaitiClinicalPatientData>();
+		reportItems = new ArrayList<ClinicalPatientData>();
 	}
 
 	/**
@@ -749,8 +749,8 @@ public abstract class HaitiPatientReport extends Report{
 	 * 
 	 * @return
 	 */
-	protected HaitiClinicalPatientData reportAnalysisResults(){
-		HaitiClinicalPatientData data = new HaitiClinicalPatientData();
+	protected ClinicalPatientData reportAnalysisResults(){
+		ClinicalPatientData data = new ClinicalPatientData();
 		String testName = null;
 		String sortOrder = "";
 		String recievedDate = reportSample.getReceivedDateForDisplay();

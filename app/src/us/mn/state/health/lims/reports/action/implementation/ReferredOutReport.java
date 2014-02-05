@@ -16,22 +16,15 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.SampleService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
@@ -39,15 +32,20 @@ import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralReason;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.HaitiClinicalPatientData;
+import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.valueholder.Test;
+
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 /**
  * @author Paul A. Hill (pahill@uw.edu)
  * @since Feb 18, 2011
  */
 
-public class ReferredOutHaitiReport extends HaitiPatientReport implements IReportParameterSetter, IReportCreator {
+public class ReferredOutReport extends PatientReport implements IReportParameterSetter, IReportCreator {
 
     private String lowDateStr;
     private String highDateStr;
@@ -108,13 +106,13 @@ public class ReferredOutHaitiReport extends HaitiPatientReport implements IRepor
         return;
     }
     
-    static class ReportItemsComparator implements Comparator<HaitiClinicalPatientData>{
+    static class ReportItemsComparator implements Comparator<ClinicalPatientData>{
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          * left.get().compareTo(right.get());
          */
         @Override
-        public int compare(HaitiClinicalPatientData left, HaitiClinicalPatientData right) {
+        public int compare(ClinicalPatientData left, ClinicalPatientData right) {
             int compare = left.getAccessionNumber().compareTo(right.getAccessionNumber());
             if (compare != 0) return compare;
             compare = left.getTestName().compareTo(right.getTestName());
@@ -176,7 +174,7 @@ public class ReferredOutHaitiReport extends HaitiPatientReport implements IRepor
 
 			i = reportReferralResultValue(referralResults, i);
 			ReferralResult referralResult = referralResults.get(i);
-			HaitiClinicalPatientData data = reportAnalysisResults();
+			ClinicalPatientData data = reportAnalysisResults();
 			data.setReferralSentDate((referral != null && referral.getSentDate() != null) ? DateUtil.formatDateAsText(referral.getSentDate()) : "");
 			data.setReferralResult(reportReferralResultValue);
 			data.setReferralNote(referralNote);
@@ -208,7 +206,7 @@ public class ReferredOutHaitiReport extends HaitiPatientReport implements IRepor
 	}
 
     /**
-     * @see us.mn.state.health.lims.reports.action.implementation.HaitiPatientReport#getReportNameForParameterPage()
+     * @see PatientReport#getReportNameForParameterPage()
      */
     @Override
     protected String getReportNameForParameterPage() {
@@ -232,7 +230,7 @@ public class ReferredOutHaitiReport extends HaitiPatientReport implements IRepor
 		
 	}
 	@Override
-	protected void setReferredResult(HaitiClinicalPatientData data, Result result) {
+	protected void setReferredResult(ClinicalPatientData data, Result result) {
 		data.setResult(data.getResult() );
 	}
 }
