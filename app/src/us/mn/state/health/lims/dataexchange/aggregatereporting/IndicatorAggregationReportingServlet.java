@@ -16,24 +16,11 @@
  */
 package us.mn.state.health.lims.dataexchange.aggregatereporting;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dataexchange.aggregatereporting.dao.ReportExternalImportDAO;
 import us.mn.state.health.lims.dataexchange.aggregatereporting.daoimpl.ReportExternalImportDAOImpl;
@@ -42,6 +29,17 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.login.dao.LoginDAO;
 import us.mn.state.health.lims.login.daoimpl.LoginDAOImpl;
 import us.mn.state.health.lims.login.valueholder.Login;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class IndicatorAggregationReportingServlet extends HttpServlet {
 	private static ReportExternalImportDAO reportImportDAO = new ReportExternalImportDAOImpl();
@@ -75,11 +73,20 @@ public class IndicatorAggregationReportingServlet extends HttpServlet {
 			return;
 		}
 
-		createReportItems(sentIndicators, insertableImportReports, updatableImportReports);
+        /*
+        This is too handle the problem where either
+        1. The same lab sends a report quickly enough to cause a race condition
+        2. Two different labs send a report at the same time but one is miss-configured and uses the same site id
+         
+         In both cases createReportItems considers the report a new one rather than a modification of an existing report
+         */
+        synchronized( this ){
+            createReportItems( sentIndicators, insertableImportReports, updatableImportReports );
 
-		updateReports(insertableImportReports, updatableImportReports);
-
-		response.setStatus(HttpServletResponse.SC_OK);
+            updateReports( insertableImportReports, updatableImportReports );
+        }
+        
+        response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private Document getDocument(ServletInputStream inputStream, int contentLength) {
