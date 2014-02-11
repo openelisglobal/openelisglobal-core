@@ -28,6 +28,17 @@ import java.util.Map;
  */
 public abstract class ConfigurationProperties {
 
+    public enum LOCALE{
+        ENGLISH("en_US"),
+        FRENCH("fr-FR");
+        private String locale;
+        private LOCALE(String locale){
+            this.locale = locale;
+        }
+        public String getRepresentation(){
+            return locale;
+        }
+    }
 	private static final Object lockObj = new Object();
 	private static ConfigurationProperties activeConcreteInstance= null;
 	protected Map<ConfigurationProperties.Property, String> propertiesValueMap = new HashMap<ConfigurationProperties.Property, String>();

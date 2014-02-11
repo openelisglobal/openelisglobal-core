@@ -16,21 +16,19 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.HibernateProxy;
 import us.mn.state.health.lims.common.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.List;
 
 public class FACSCantoReader extends AnalyzerLineInserter {
 
@@ -137,10 +135,10 @@ public class FACSCantoReader extends AnalyzerLineInserter {
 		//this is sort of dumb, we have the indexes we are interested in
 		for (int i = 0; i < testNameIndex.length; i++) {
 			if (!GenericValidator.isBlankOrNull(testNameIndex[i])) {
-				MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.FACSCANTO, testNameIndex[i].replace("\"", ""));
+				MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerTestNameCache.FACSCANTO, testNameIndex[i].replace("\"", ""));
 
 				if( mappedName == null){
-					mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerType.FACSCANTO, testNameIndex[i].replace("\"", ""));
+					mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerTestNameCache.FACSCANTO, testNameIndex[i].replace("\"", ""));
 				}
 
 				AnalyzerResults analyzerResults = new AnalyzerResults();

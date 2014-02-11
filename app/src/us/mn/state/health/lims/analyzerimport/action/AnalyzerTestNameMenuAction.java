@@ -17,25 +17,22 @@
 */
 package us.mn.state.health.lims.analyzerimport.action;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analyzer.dao.AnalyzerDAO;
 import us.mn.state.health.lims.analyzer.daoimpl.AnalyzerDAOImpl;
 import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
 import us.mn.state.health.lims.analyzerimport.action.beans.NamedAnalyzerTestMapping;
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.common.action.BaseMenuAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public class AnalyzerTestNameMenuAction extends BaseMenuAction {
@@ -53,12 +50,12 @@ public class AnalyzerTestNameMenuAction extends BaseMenuAction {
 
 
 		List<NamedAnalyzerTestMapping> mappedTestNameList = new ArrayList<NamedAnalyzerTestMapping>();
-		AnalyzerType[] analyzerList = AnalyzerType.values();
+		List<String> analyzerList = AnalyzerTestNameCache.instance().getAnalyzerNames();
 		AnalyzerDAO analyzerDAO = new AnalyzerDAOImpl();
 		Analyzer analyzer = new Analyzer();
 
-		for( AnalyzerType analyzerType : analyzerList){
-			Collection<MappedTestName> mappedTestNames = AnalyzerTestNameCache.instance().getMappedTestsForAnalyzer(analyzerType).values();
+		for( String analyzerName : analyzerList){
+			Collection<MappedTestName> mappedTestNames = AnalyzerTestNameCache.instance().getMappedTestsForAnalyzer(analyzerName).values();
 			if( mappedTestNames.size() > 0){
 				analyzer.setId(((MappedTestName)mappedTestNames.toArray()[0]).getAnalyzerId());
 				analyzer = analyzerDAO.getAnalyzerById(analyzer);
