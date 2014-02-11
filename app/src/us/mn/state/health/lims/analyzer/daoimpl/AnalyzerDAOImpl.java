@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import us.mn.state.health.lims.analyzer.dao.AnalyzerDAO;
 import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
@@ -88,7 +90,22 @@ public class AnalyzerDAOImpl extends BaseDAOImpl implements AnalyzerDAO {
 		}
 	}
 
-	public void getData(Analyzer analyzer) throws LIMSRuntimeException {
+    @Override
+    public Analyzer getAnalyzerByName(String name) throws LIMSRuntimeException {
+        String sql = "From Analyzer a where a.name = :name";
+        try {
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setString("name", name);
+            Analyzer analyzer = (Analyzer)query.uniqueResult();
+            closeSession();
+            return analyzer;
+        }catch ( HibernateException e){
+            handleException(e, "getAnalyzerrByName");
+        }
+        return null;
+    }
+
+    public void getData(Analyzer analyzer) throws LIMSRuntimeException {
 		try {
 			Analyzer tmpAnalyzer = (Analyzer)HibernateUtil.getSession().get(Analyzer.class, analyzer.getId());
 			HibernateUtil.getSession().flush();

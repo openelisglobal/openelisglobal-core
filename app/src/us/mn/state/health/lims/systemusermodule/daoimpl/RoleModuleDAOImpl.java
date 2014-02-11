@@ -17,15 +17,9 @@
 */
 package us.mn.state.health.lims.systemusermodule.daoimpl;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -42,6 +36,9 @@ import us.mn.state.health.lims.systemusermodule.valueholder.RoleModule;
 import us.mn.state.health.lims.userrole.dao.UserRoleDAO;
 import us.mn.state.health.lims.userrole.daoimpl.UserRoleDAOImpl;
 
+import java.math.BigInteger;
+import java.util.List;
+
 /**
  *  
  */
@@ -54,7 +51,7 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 			for (int i = 0; i < roleModules.size(); i++) {
 				RoleModule data = (RoleModule)roleModules.get(i);
 			
-				RoleModule oldData = (RoleModule)readRoleModule(data.getId());
+				RoleModule oldData = readRoleModule(data.getId());
 				RoleModule newData = new RoleModule();
 
 				String sysUserId = data.getSysUserId();
@@ -70,7 +67,7 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 		try {					
 			for (int i = 0; i < roleModules.size(); i++) {
 				RoleModule data = (RoleModule) roleModules.get(i);
-				data = (RoleModule)readRoleModule(data.getId());
+				data = readRoleModule(data.getId());
 				HibernateUtil.getSession().delete(data);
 				HibernateUtil.getSession().flush();
 				HibernateUtil.getSession().clear();
@@ -162,7 +159,7 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 	}
 
 	public List getAllPermissionModules() throws LIMSRuntimeException {		
-		List list = new Vector();
+		List list;
 		try {
 			String sql = "from RoleModule";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -178,7 +175,7 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 	}
 
 	public List getAllPermissionModulesByAgentId(int systemUserId) throws LIMSRuntimeException {		
-		List list = new Vector();
+		List list;
 		try {
 			String sql = "from RoleModule s where s.role.id = :param";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -195,7 +192,7 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 	}
 	
 	public List getPageOfPermissionModules(int startingRecNo) throws LIMSRuntimeException {		
-		List list = new Vector();
+		List list;
 		try {			
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
@@ -217,7 +214,7 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 	}
 
 	public RoleModule readRoleModule(String idString) {		
-		RoleModule sysUserModule = null;
+		RoleModule sysUserModule;
 		try {			
 			sysUserModule = (RoleModule)HibernateUtil.getSession().get(RoleModule.class, idString);
 			HibernateUtil.getSession().flush();
@@ -229,7 +226,23 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 		
 		return sysUserModule;
 	}
-	
+
+    public RoleModule getRoleModuleByRoleAndModuleId(String roleId, String moduleId){
+        String sql = "From RoleModule rm where rm.systemModule.id = :moduleId and rm.role.id = :roleId";
+
+        try{
+            Query query = HibernateUtil.getSession().createQuery( sql );
+            query.setInteger( "moduleId", Integer.parseInt( moduleId ) );
+            query.setInteger( "roleId", Integer.parseInt( roleId ) );
+            List<RoleModule> modules = query.list();
+            closeSession();
+            return modules.isEmpty() ? new RoleModule() : modules.get( 0 );
+        }catch( HibernateException he ){
+            handleException( he, "getRoleModuleByRoleAndModuleId" );
+        }
+
+        return null;
+    }
 	public List getNextPermissionModuleRecord(String id) throws LIMSRuntimeException {
 
 		return getNextRecord(id, "RoleModule", RoleModule.class);
@@ -246,11 +259,11 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 	
 	public List getNextRecord(String id, String table, Class clazz)
 			throws LIMSRuntimeException {
-		int currentId = (Integer.valueOf(id)).intValue();
+		int currentId = Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
 
-		List list = new Vector();
-		int rrn = 0;
+		List list;
+		int rrn;
 		try {
     		String sql = "select rm.id from RoleModule rm order by rm.role.id";
  			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -274,11 +287,11 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 
 	public List getPreviousRecord(String id, String table, Class clazz)
 			throws LIMSRuntimeException {
-		int currentId = (Integer.valueOf(id)).intValue();
+		int currentId = Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
 
-		List list = new Vector();
-		int rrn = 0;
+		List list;
+		int rrn;
 		try {
 			String sql = "select rm.id from RoleModule rm order by rm.role.id";
  			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -303,7 +316,7 @@ public class RoleModuleDAOImpl extends BaseDAOImpl implements PermissionAgentMod
 	private boolean duplicateRoleModuleExists(RoleModule roleModule) throws LIMSRuntimeException {
 		try {
 
-			List list = new ArrayList();
+			List list;
 
 			String sql = "from RoleModule s where s.role.id = :param and s.systemModule.id = :param2 and s.id != :param3";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);

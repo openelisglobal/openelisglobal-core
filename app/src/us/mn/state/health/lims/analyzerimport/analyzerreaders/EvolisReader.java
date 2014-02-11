@@ -16,31 +16,26 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
-import us.mn.state.health.lims.analyzerresults.dao.AnalyzerResultsDAO;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.HibernateProxy;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
-import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class EvolisReader extends AnalyzerLineInserter {
@@ -126,7 +121,7 @@ public class EvolisReader extends AnalyzerLineInserter {
 				analyzerAccessionNumber.length() > 6 &&
 				fields[assay].length() > 5){
 			
-			MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.EVOLIS, fields[assay]);
+			MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerTestNameCache.EVOLIS, fields[assay]);
 			AnalyzerResults analyzerResults = new AnalyzerResults();
 			analyzerResults.setAnalyzerId(mappedName.getAnalyzerId());
 			analyzerResults.setResult(getDictioanryValueForResult( fields[result]));

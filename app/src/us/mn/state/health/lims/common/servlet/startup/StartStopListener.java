@@ -1,13 +1,13 @@
 package us.mn.state.health.lims.common.servlet.startup;
 
+import org.quartz.SchedulerException;
+import us.mn.state.health.lims.plugin.PluginLoader;
+import us.mn.state.health.lims.scheduler.IndependentThreadStarter;
+import us.mn.state.health.lims.scheduler.LateStartScheduler;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import org.quartz.SchedulerException;
-
-import us.mn.state.health.lims.scheduler.IndependentThreadStarter;
-import us.mn.state.health.lims.scheduler.LateStartScheduler;
 
 public final class StartStopListener implements ServletContextListener {
 
@@ -54,5 +54,7 @@ public final class StartStopListener implements ServletContextListener {
 		threadStarter.startThreads();
 
 		System.out.println("Threads started");
+		new PluginLoader(event).load();
+		System.out.println("Plugins loaded");
 	}
 }
