@@ -38,8 +38,11 @@ public class PluginLoader {
     private static final String PATH = "path";
     private static final String ANALYZER_IMPORTER = "analyzerImporter";
     private static final String MENU = "menu";
-    private static final String EXTENSION_POINT = "extention_point";
-    private static final String EXTENSION = "extention";
+    private static final String PERMISSION = "permission";
+    private static final String EXTENSION_POINT = "extension_point";
+    private static final String EXTENSION = "extension";
+    private static final String DESCRIPTION = "description";
+    private static final String VALUE = "value";
     private ServletContext context;
 
     public PluginLoader(ServletContextEvent event) {
@@ -48,12 +51,19 @@ public class PluginLoader {
 
     public void load() {
         File pluginDir = new File(context.getRealPath(PLUGIN_ANALYZER));
+        loadDirectory( pluginDir );
+    }
+
+    private void loadDirectory( File pluginDir ){
         File[] files = pluginDir.listFiles();
 
         if (files != null) {
-            for (File pluginFile : files) {
-                if (pluginFile.getName().endsWith("jar")) {
-                    loadPlugin(pluginFile);
+            for (File file : files) {
+                if (file.getName().endsWith("jar")) {
+                    loadPlugin(file);
+                }else if(file.isDirectory()){
+                    System.out.println("Checking plugin subfolder: " + file.getName());
+                    loadDirectory( file );
                 }
             }
         }
@@ -75,7 +85,6 @@ public class PluginLoader {
                 }
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -103,6 +112,8 @@ public class PluginLoader {
             Element analyzerImporter = doc.getRootElement().element(ANALYZER_IMPORTER);
 
             if (analyzerImporter != null) {
+                Attribute description = analyzerImporter.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
+                System.out.println( "Loading: " + description.getValue());
                 Attribute path = analyzerImporter.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
                 loadActualPlugin(url, path.getValue());
             }
@@ -110,15 +121,28 @@ public class PluginLoader {
             Element menu = doc.getRootElement().element(MENU);
 
             if (menu != null) {
+                Attribute description = menu.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
+                System.out.println( "Loading: " + description.getValue());
                 Attribute path = menu.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
                 loadActualPlugin(url, path.getValue());
             }
 
+            Element permissions = doc.getRootElement().element(PERMISSION);
+
+            if (permissions != null) {
+                Attribute description = permissions.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
+                Attribute path = permissions.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
+                boolean loaded = loadActualPlugin(url, path.getValue());
+                if( loaded ){
+                    System.out.println( "Loading: " + description.getValue());
+                }else{
+                    System.out.println( "Failed Loading: " + description.getValue());
+                }
+            }
+
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (DocumentException e) {
             e.printStackTrace();
@@ -130,24 +154,22 @@ public class PluginLoader {
 
 
     @SuppressWarnings("unchecked")
-    private void loadActualPlugin(URL url, String classPath) {
+    private boolean loadActualPlugin(URL url, String classPath) {
         try {
             URL[] urls = {url};
             ClassLoader classLoader = new URLClassLoader(urls, this.getClass().getClassLoader());
 
             Class<APlugin> aClass = (Class<APlugin>) classLoader.loadClass(classPath);
             APlugin instance = aClass.newInstance();
-            instance.connect();
+            return instance.connect();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
+        return false;
     }
 }
