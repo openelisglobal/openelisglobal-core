@@ -24,34 +24,22 @@ import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 public class TestResult extends EnumValueItemImpl {
 
 	private static final long serialVersionUID = 1L;
-
 	private String id;
-
 	private ValueHolderInterface test;
-
 	private String testName;
-
 	private String resultGroup;
-	
 	private String sortOrder;
-
 	private String flags;
-
 	private String testResultType;
-
 	private String value;
-
 	private String significantDigits;
-
 	private String quantLimit;
-
 	private String contLevel;
-	
 	private String scriptletName;
-
 	private ValueHolderInterface scriptlet;
+    private Boolean isQuantifiable = false;
 
-	public TestResult() {
+    public TestResult() {
 		super();
 		this.test = new ValueHolder();
 		this.scriptlet = new ValueHolder();
@@ -173,12 +161,19 @@ public class TestResult extends EnumValueItemImpl {
 		return this.scriptlet;
 	}
 
-	//bugzilla 1845 added testResult sortOrder
 	public String getSortOrder() {
 		return sortOrder;
 	}
-	//bugzilla 1845 added testResult sortOrder
+
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
+
+    public Boolean getIsQuantifiable(){
+        return isQuantifiable;
+    }
+
+    public void setIsQuantifiable( Boolean isQuantifiable ){
+        this.isQuantifiable = isQuantifiable;
+    }
 }

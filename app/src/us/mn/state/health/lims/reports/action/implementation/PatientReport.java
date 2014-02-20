@@ -102,831 +102,851 @@ import java.util.*;
 
 public abstract class PatientReport extends Report{
 
-	private static final String RESULT_REFERENCE_TABLE_ID = NoteUtil.getTableReferenceId("RESULT");
-	private static final DecimalFormat twoDecimalFormat = new DecimalFormat("#.##");
-	protected static final boolean noAlertColumn = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.PATIENT_REPORT_NO_ALERTS, "true");
-	private static String ADDRESS_DEPT_ID;
-	private static String ADDRESS_COMMUNE_ID;
-	protected String currentContactInfo = "";
-	protected String currentSiteInfo = "";
-
-	protected SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
-	protected DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-	private ResultDAO resultDAO = new ResultDAOImpl();
-	protected SampleDAO sampleDAO = new SampleDAOImpl();
-	protected PatientDAO patientDAO = new PatientDAOImpl();
-	protected PersonDAO personDAO = new PersonDAOImpl();
-	protected ProviderDAO providerDAO = new ProviderDAOImpl();
-	protected SampleRequesterDAO requesterDAO = new SampleRequesterDAOImpl();
-	protected TestDAO testDAO = new TestDAOImpl();
-	protected ReferralReasonDAO referralReasonDAO = new ReferralReasonDAOImpl();
-	protected ReferralDAO referralDao = new ReferralDAOImpl();
-	protected ReferralResultDAO referralResultDAO = new ReferralResultDAOImpl();
-	protected ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
-	protected NoteDAO noteDAO = new NoteDAOImpl();
-	protected PersonAddressDAO addressDAO = new PersonAddressDAOImpl();
-	private LabOrderTypeDAO labOrderTypeDAO = new LabOrderTypeDAOImpl();
-	private List<String> handledOrders;
-
-	private String lowerNumber;
-	private String upperNumber;
-	protected String STNumber = null;
-	protected String subjectNumber = null;
-	protected String healthRegion = null;
-	protected String healthDistrict = null;
-	protected String patientName = null;
-	protected String patientDOB = null;
-	protected String currentConclusion = null;
-
-	protected String patientDept = null;
-	protected String patientCommune = null;
-	protected String patientMed = null;
-
-	protected IPatientService patientService;
-	protected Sample reportSample;
-	protected Provider currentProvider;
-	protected Analysis reportAnalysis;
-	protected String reportReferralResultValue;
-	protected List<ClinicalPatientData> reportItems;
-	protected String compleationDate;
-	protected SampleService currentSampleService;
-
-	protected static String ST_NUMBER_IDENTITY_TYPE_ID = "0";
-	protected static String SUBJECT_NUMBER_IDENTITY_TYPE_ID = "0";
-	protected static String HEALTH_REGION_IDENTITY_TYPE_ID = "0";
-	protected static String HEALTH_DISTRICT_IDENTITY_TYPE_ID = "0";
-	protected static String LAB_TYPE_OBSERVATION_ID = "0";
-	protected static String LAB_SUBTYPE_OBSERVATION_ID = "0";
-	protected static Long PERSON_REQUESTER_TYPE_ID;
-	protected static Long ORGANIZATION_REQUESTER_TYPE_ID;
-	protected Map<String, Boolean> sampleCompleteMap;
-
-	static{
-		PatientIdentityTypeDAO identityTypeDAO = new PatientIdentityTypeDAOImpl();
-		List<PatientIdentityType> typeList = identityTypeDAO.getAllPatientIdenityTypes();
-
-		for(PatientIdentityType identityType : typeList){
-			if("ST".equals(identityType.getIdentityType())){
-				ST_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
-			}else if("SUBJECT".equals(identityType.getIdentityType())){
-				SUBJECT_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
-			}else if("HEALTH REGION".equals(identityType.getIdentityType())){
-				HEALTH_REGION_IDENTITY_TYPE_ID = identityType.getId();
-			}else if("HEALTH DISTRICT".equals(identityType.getIdentityType())){
-				HEALTH_DISTRICT_IDENTITY_TYPE_ID = identityType.getId();
-			}
-		}
-
-		RequesterTypeDAO requesterTypeDAO = new RequesterTypeDAOImpl();
-		RequesterType type = requesterTypeDAO.getRequesterTypeByName("provider");
-		if(type != null){
-			PERSON_REQUESTER_TYPE_ID = Long.parseLong(type.getId());
-		}
-
-		type = requesterTypeDAO.getRequesterTypeByName("organization");
-		if(type != null){
-			ORGANIZATION_REQUESTER_TYPE_ID = Long.parseLong(type.getId());
-		}
-
-		List<AddressPart> partList = new AddressPartDAOImpl().getAll();
-		for(AddressPart part : partList){
-			if("department".equals(part.getPartName())){
-				ADDRESS_DEPT_ID = part.getId();
-			}else if("commune".equals(part.getPartName())){
-				ADDRESS_COMMUNE_ID = part.getId();
-			}
-		}
-
-		ObservationHistoryType ohType = new ObservationHistoryTypeDAOImpl().getByName("primaryOrderType");
-		LAB_TYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
-
-		ohType = new ObservationHistoryTypeDAOImpl().getByName("secondaryOrderType");
-		LAB_SUBTYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
-
-	}
-
-	abstract protected String getReportNameForParameterPage();
-
-	abstract protected String getSiteLogo();
-
-	abstract protected void postSampleBuild();
-
-	abstract protected void createReportItems();
-
-	abstract protected void setReferredResult(ClinicalPatientData data, Result result);
-
-	protected boolean appendUOMToRange(){
-		return true;
-	}
-
-	protected boolean augmentResultWithFlag(){
-		return true;
-	}
-
-	protected boolean useReportingDescription(){
-		return true;
-	}
-
-	@Override
-	protected String errorReportFileName(){
-		return HAITI_ERROR_REPORT;
-	}
-
-	public void setRequestParameters(BaseActionForm dynaForm){
-		try{
-			PropertyUtils.setProperty(dynaForm, "reportName", getReportNameForParameterPage());
-
-			PropertyUtils.setProperty(dynaForm, "useAccessionDirect", Boolean.TRUE);
-			PropertyUtils.setProperty(dynaForm, "useHighAccessionDirect", Boolean.TRUE);
-			PropertyUtils.setProperty(dynaForm, "usePatientNumberDirect", Boolean.TRUE);
-
-			PropertyUtils.setProperty(dynaForm, "exportOptions", getExportOptions());
-		}catch(IllegalAccessException e){
-			e.printStackTrace();
-		}catch(InvocationTargetException e){
-			e.printStackTrace();
-		}catch(NoSuchMethodException e){
-			e.printStackTrace();
-		}
-	}
-
-	public void initializeReport(BaseActionForm dynaForm){
-		super.initializeReport();
-		errorFound = false;
-		lowerNumber = dynaForm.getString("accessionDirect");
-		upperNumber = dynaForm.getString("highAccessionDirect");
-		String patientNumber = dynaForm.getString("patientNumberDirect");
-
-		handledOrders = new ArrayList<String>();
-
-		createReportParameters();
-
-		boolean valid = false;
-		List<Sample> reportSampleList = new ArrayList<Sample>();
-
-		if(GenericValidator.isBlankOrNull(lowerNumber) && GenericValidator.isBlankOrNull(upperNumber)){
-			List<Patient> patientList = new ArrayList<Patient>();
-			valid = findPatientByPatientNumber(patientNumber, patientList);
-
-			if(valid){
-				reportSampleList = findReportSamplesForReportPatient(patientList);
-			}
-		}else{
-			valid = validateAccessionNumbers();
-
-			if(valid){
-				reportSampleList = findReportSamples(lowerNumber, upperNumber);
-			}
-		}
-
-		sampleCompleteMap = new HashMap<String, Boolean>();
-		initializeReportItems();
-
-		if(reportSampleList.isEmpty()){
-			add1LineErrorMessage("report.error.message.noPrintableItems");
-		}else{
-
-			for(Sample sample : reportSampleList){
-				currentSampleService = new SampleService(sample);
-				handledOrders.add(sample.getId());
-				reportSample = sample;
-				sampleCompleteMap.put(sample.getAccessionNumber(), Boolean.TRUE);
-				findCompleationDate();
-				findPatientFromSample();
-				findContactInfo();
-				findPatientInfo();
-				createReportItems();
-			}
-
-			postSampleBuild();
-		}
-	}
-
-	private void findCompleationDate(){
-		Date date = currentSampleService.getCompletedDate();
-		compleationDate = date == null ? null : DateUtil.convertSqlDateToStringDate(date);
-	}
-
-	private void findPatientInfo(){
-		patientDept = "";
-		patientCommune = "";
-		if(ADDRESS_DEPT_ID != null){
-			PersonAddress deptAddress = addressDAO.getByPersonIdAndPartId(patientService.getPerson().getId(), ADDRESS_DEPT_ID);
-
-			if(deptAddress != null && !GenericValidator.isBlankOrNull(deptAddress.getValue())){
-				patientDept = dictionaryDAO.getDictionaryById(deptAddress.getValue()).getDictEntry();
-			}
-		}
-
-		if(ADDRESS_COMMUNE_ID != null){
-			PersonAddress deptAddress = addressDAO.getByPersonIdAndPartId(patientService.getPerson().getId(), ADDRESS_COMMUNE_ID);
-
-			if(deptAddress != null){
-				patientCommune = deptAddress.getValue();
-			}
-		}
-
-	}
-
-	private void findContactInfo(){
-		List<SampleRequester> requesters = requesterDAO.getRequestersForSampleId(reportSample.getId());
-		currentContactInfo = "";
-		currentSiteInfo = "";
-		currentProvider = null;
-
-		for(SampleRequester requester : requesters){
-			if(ORGANIZATION_REQUESTER_TYPE_ID == requester.getRequesterTypeId()){
-				OrganizationDAO organizationDAO = new OrganizationDAOImpl();
-				Organization org = organizationDAO.getOrganizationById(String.valueOf(requester.getRequesterId()));
-				if(org != null){
-					currentSiteInfo = org.getOrganizationName();
-				}
-			}
-
-			if(PERSON_REQUESTER_TYPE_ID == requester.getRequesterTypeId()){
-				StringBuffer buffer = new StringBuffer();
-				Person person = new Person();
-				person.setId(String.valueOf(requester.getRequesterId()));
-				personDAO.getData(person);
-				if(person.getId() != null){
-					buffer.append(person.getLastName());
-					if(!GenericValidator.isBlankOrNull(person.getLastName()) && !GenericValidator.isBlankOrNull(person.getFirstName())){
-						buffer.append(", ");
-					}
-					buffer.append(person.getFirstName());
-
-					currentProvider = providerDAO.getProviderByPerson(person);
-				}
-
-				currentContactInfo = buffer.toString();
-			}
-		}
-	}
-
-	private boolean findPatientByPatientNumber(String patientNumber, List<Patient> patientList){
-		patientService = null;
-		PatientIdentityDAO patientIdentityDAO = new PatientIdentityDAOImpl();
-		patientList.addAll(patientDAO.getPatientsByNationalId(patientNumber));
-
-		if(patientList.isEmpty()){
-			List<PatientIdentity> identities = patientIdentityDAO.getPatientIdentitiesByValueAndType(patientNumber, ST_NUMBER_IDENTITY_TYPE_ID);
-
-			if(identities.isEmpty()){
-				identities = patientIdentityDAO.getPatientIdentitiesByValueAndType(patientNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID);
-			}
-
-			if(!identities.isEmpty()){
-
-				for(PatientIdentity patientIdentity : identities){
-					String reportPatientId = patientIdentity.getPatientId();
-					Patient patient = new Patient();
-					patient.setId(reportPatientId);
-					patientDAO.getData(patient);
-					patientList.add(patient);
-				}
-			}
-		}
-
-		return !patientList.isEmpty();
-	}
-
-	private List<Sample> findReportSamplesForReportPatient(List<Patient> patientList){
-		List<Sample> sampleList = new ArrayList<Sample>();
-		for(Patient searchPatient : patientList){
-			sampleList.addAll(sampleHumanDAO.getSamplesForPatient(searchPatient.getId()));
-		}
-
-		return sampleList;
-	}
-
-	private boolean validateAccessionNumbers(){
-
-		if(GenericValidator.isBlankOrNull(lowerNumber) && GenericValidator.isBlankOrNull(upperNumber)){
-			add1LineErrorMessage("report.error.message.noParameters");
-			return false;
-		}
-
-		if(GenericValidator.isBlankOrNull(lowerNumber)){
-			lowerNumber = upperNumber;
-		}else if(GenericValidator.isBlankOrNull(upperNumber)){
-			upperNumber = lowerNumber;
-		}
-
-		if(lowerNumber.length() != upperNumber.length() ||
-				AccessionNumberUtil.correctFormat(lowerNumber) != IAccessionNumberValidator.ValidationResults.SUCCESS ||
-				AccessionNumberUtil.correctFormat(lowerNumber) != IAccessionNumberValidator.ValidationResults.SUCCESS){
-			add1LineErrorMessage("report.error.message.accession.not.valid");
-			return false;
-		}
-
-		if(lowerNumber.compareToIgnoreCase(upperNumber) > 0){
-			String temp = upperNumber;
-			upperNumber = lowerNumber;
-			lowerNumber = temp;
-		}
-
-		return true;
-	}
-
-	private List<Sample> findReportSamples(String lowerNumber, String upperNumber){
-		List<Sample> sampleList = sampleDAO.getSamplesByAccessionRange(lowerNumber, upperNumber);
-		return sampleList == null ? new ArrayList<Sample>() : sampleList;
-	}
-
-	protected void findPatientFromSample(){
-		Patient patient = sampleHumanDAO.getPatientForSample(reportSample);
-
-		if(patientService == null || !patient.getId().equals(patientService.getPatientId())){
-			STNumber = null;
-			patientDOB = null;
-			patientService = new PatientService(patient);
-		}
-	}
-
-	@Override
-	protected void createReportParameters(){
-		super.createReportParameters();
-		reportParameters.put("siteId", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteCode));
-		reportParameters.put("siteLogo", useLogo ? getSiteLogo() : null);
-		if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
-			reportParameters.put("headerName", "CILNSPHeader.jasper");
-			reportParameters.put("printLNSPLabPersons", Boolean.TRUE);
-		}else if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-			reportParameters.put("useSTNumber", Boolean.FALSE);
-		}else{
-			reportParameters.put("useSTNumber", Boolean.TRUE);
-		}
-
-		reportParameters.put("leftImage", getLeftImage());
-	}
-
-	protected String getLeftImage(){
-		if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI IPCI")){
-			return "IPCI_Logo.png";
-		}else if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI_REGIONAL")){
-			return "LNSPLogo.jpg";
-		}else{
-			return "HaitiFlag.gif";
-		}
-	}
-
-	protected String getPatientDOB(){
-		if(patientDOB == null){
-			patientDOB = patientService.getBirthdayForDisplay();
-		}
-
-		return patientDOB;
-	}
-
-	protected String getLazyPatientIdentity(String identity, String id){
-		if(identity == null){
-			identity = " ";
-			List<PatientIdentity> identities = patientService.getIdentityList();
-			for(PatientIdentity patientIdentity : identities){
-				if(patientIdentity.getIdentityTypeId().equals(id)){
-					identity = patientIdentity.getIdentityData();
-					break;
-				}
-			}
-		}
-
-		return identity;
-	}
-
-	protected void setPatientName(ClinicalPatientData data){
-		data.setPatientName(patientService.getLastFirstName());
-		data.setFirstName(patientService.getFirstName());
-		data.setLastName(patientService.getLastName());
-	}
-
-	protected void reportResultAndConclusion(ClinicalPatientData data){
-		List<Result> resultList = resultDAO.getResultsByAnalysis(reportAnalysis);
-		Test test = reportAnalysis.getTest();
-
-		data.setTestSection(reportAnalysis.getTestSection().getLocalizedName());
-		data.setTestSortOrder(GenericValidator.isBlankOrNull(test.getSortOrder()) ? Integer.MAX_VALUE : Integer.parseInt(test.getSortOrder()));
-		data.setSectionSortOrder(test.getTestSection().getSortOrderInt());
-
-		if(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled).equals(reportAnalysis.getStatusId())){
-			data.setResult(StringUtil.getMessageForKey("report.test.status.canceled"));
-		}else if(reportAnalysis.isReferredOut()){
-			if( noAlertColumn ){
-				data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress"));
-				return;
-			}
-
-			if(noResults(resultList)){
-				data.setResult(StringUtil.getMessageForKey("report.test.status.referredOut"));
-			}else{
-				setAppropriateResults(resultList, data);
-				setReferredResult(data, resultList.get(0));
-				setNormalRange(data, test, resultList.get(0));
-			}
-		}else if(!StatusService.getInstance().getStatusID(AnalysisStatus.Finalized).equals(reportAnalysis.getStatusId())){
-			sampleCompleteMap.put(reportSample.getAccessionNumber(), Boolean.FALSE);
-			data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress"));
-		}else{
-			setAppropriateResults(resultList, data);
-
-			Result result = resultList.get(0);
-			setNormalRange(data, test, result);
-			data.setResult(getAugmentedResult(data, result));
-			data.setFinishDate(reportAnalysis.getCompletedDateForDisplay());
-			data.setNote(getResultNote(result));
-			data.setAlerts(getResultFlag(result, null, data));
-		}
-
-		data.setConclusion(currentConclusion);
-	}
-
-	private boolean noResults(List<Result> resultList){
-		if(resultList.isEmpty()){
-			return true;
-		}
-
-		Result result = resultList.get(0);
-
-		if(GenericValidator.isBlankOrNull(resultList.get(0).getValue())){
-			return true;
-		}
-
-		if("M".equals(result.getResultType()) || "D".equals(result.getResultType())){
-			return "0".equals(result.getValue());
-		}
-
-		return false;
-	}
-
-	private void setNormalRange(ClinicalPatientData data, Test test, Result result){
-		String uom = getUnitOfMeasure(result, test);
-		data.setTestRefRange(addIfNotEmpty(getRange(result), appendUOMToRange() ? uom : null));
-		data.setUom(uom);
-	}
-
-	private String getAugmentedResult(ClinicalPatientData data, Result result){
-		String resultValue = data.getResult();
-		if(TestIdentityService.isTestNumericViralLoad(reportAnalysis.getTest())){
-			try{
-				resultValue += " (" + twoDecimalFormat.format(Math.log10(Double.parseDouble(resultValue))) + ")log ";
-			}catch(IllegalFormatException e){
-				// no-op
-			}
-		}
-
-		return resultValue + (augmentResultWithFlag() ? getResultFlag(result, null) : "");
-	}
-
-	protected String getResultNote(Result result){
-		if(result != null){
-			List<Note> notes = NoteUtil.getExternalNotesForObjectAndTable(result.getId(), RESULT_REFERENCE_TABLE_ID);
-
-			if(!(notes == null || notes.isEmpty())){
-
-				Collections.sort(notes, new Comparator<Note>(){
-					@Override
-					public int compare(Note o1, Note o2){
-						return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
-					}
-				});
-
-				StringBuilder noteBuilder = new StringBuilder();
-
-				for(Note note : notes){
-					noteBuilder.append(note.getText());
-					noteBuilder.append("<br/>");
-				}
-
-				noteBuilder.setLength(noteBuilder.lastIndexOf("<br/>"));
-
-				return noteBuilder.toString();
-			}
-		}
-		return null;
-	}
-
-	protected String getResultFlag(Result result, String imbed){
-		return getResultFlag(result, imbed, null);
-	}
-
-	protected String getResultFlag(Result result, String imbed, ClinicalPatientData data){
-		String flag = "";
-		try{
-			if("N".equals(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())){
-				if(result.getMinNormal() != null & result.getMaxNormal() != null && (result.getMinNormal() != 0.0 || result.getMaxNormal() != 0.0)){
-					if(Double.valueOf(result.getValue()) < result.getMinNormal()){
-						flag = "B";
-					}else if(Double.valueOf(result.getValue()) > result.getMaxNormal()){
-						flag = "E";
-					}
-
-					if(!GenericValidator.isBlankOrNull(flag)){
-						if(data != null){
-							data.setAbnormalResult(Boolean.TRUE);
-						}
-						if(!GenericValidator.isBlankOrNull(imbed)){
-							return " (<b>" + flag + "," + imbed + "</b>)";
-						}else{
-							return " (<b>" + flag + "</b>)";
-						}
-					}
-				}
-			}
-		}catch(NumberFormatException e){
-			// no-op
-		}
-
-		if(!GenericValidator.isBlankOrNull(imbed)){
-			return " (<b>" + imbed + "</b>)";
-		}
-
-		return "";
-	}
-
-	protected String getRange(Result result){
-		String range = "";
-		if("N".equals(result.getResultType())){
-			if(result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals(result.getMaxNormal())){
-				range = ResultLimitService.getDisplayNormalRange( result.getMinNormal() , result.getMaxNormal(), String.valueOf( result.getSignificantDigits()), "-");
-			}
-		}
-		return range;
-	}
-
-	protected String getUnitOfMeasure(Result result, Test test){
-		String uom = "";
-		if("N".equals(result.getResultType())){
-			if(test != null && test.getUnitOfMeasure() != null){
-				uom = test.getUnitOfMeasure().getName();
-			}
-		}
-		return uom;
-	}
-
-	private void setAppropriateResults(List<Result> resultList, ClinicalPatientData data){
-		Result result = resultList.get(0);
-		String reportResult = "";
-		if("D".equals(result.getResultType())){
-			Dictionary dictionary = new Dictionary();
-			for(Result siblingResult : resultList){
-				dictionary.setId(siblingResult.getValue());
-				dictionaryDAO.getData(dictionary);
-				if(siblingResult.getAnalyte() != null && "Conclusion".equals(siblingResult.getAnalyte().getAnalyteName())){
-					currentConclusion = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
-				}else{
-					reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
-				}
-			}
-		}else if("Q".equals(result.getResultType())){
-			List<Result> childResults = resultDAO.getChildResults(result.getId());
-			String childResult = childResults.get(0).getValue();
-
-			Dictionary dictionary = new Dictionary();
-			dictionary.setId(result.getValue());
-			dictionaryDAO.getData(dictionary);
-
-			reportResult = (dictionary.getId() != null ? dictionary.getLocalizedName() : "") + ": " + ("".equals(childResult) ? "n/a" : childResult);
-
-		}else if("M".equals(result.getResultType())){
-			Dictionary dictionary = new Dictionary();
-			StringBuilder multiResult = new StringBuilder();
-
-			Collections.sort(resultList, new Comparator<Result>(){
-				@Override
-				public int compare(Result o1, Result o2){
-					return Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
-				}
-			});
-
-			for(Result subResult : resultList){
-				dictionary.setId(subResult.getValue());
-				dictionaryDAO.getData(dictionary);
-
-				if(dictionary.getId() != null){
-					multiResult.append(dictionary.getLocalizedName());
-					multiResult.append("\n");
-				}
-			}
-
-			if(multiResult.length() > 1){
-				// remove last "\n"
-				multiResult.setLength(multiResult.length() - 2);
-			}
-
-			reportResult = multiResult.toString();
-		}else{
-			reportResult = result.getValue();
-		}
-		data.setResult(reportResult);
-
-		data.setHasRangeAndUOM("N".equals(result.getResultType()));
-	}
-
-	/**
-	 * @see PatientReport#initializeReportItems()
-	 */
-	protected void initializeReportItems(){
-		reportItems = new ArrayList<ClinicalPatientData>();
-	}
-
-	/**
-	 * If you have a string that you wish to add a suffix like units of measure,
-	 * use this.
-	 * 
-	 * @param base
-	 *            something
-	 * @param plus
-	 *            something to add, if the above is not null or blank.
-	 * @return the two args put together, or the original if it was blank to
-	 *         begin with.
-	 */
-	protected String addIfNotEmpty(String base, String plus){
-		return (!GenericValidator.isBlankOrNull(plus)) ? base + " " + plus : base;
-	}
-
-	/**
-	 * Pushes all of the information about a patient, analysis, result and the
-	 * conclusion into a new reporting object
-	 * 
-	 * @return
-	 */
-	protected ClinicalPatientData reportAnalysisResults(){
-		ClinicalPatientData data = new ClinicalPatientData();
-		String testName = null;
-		String sortOrder = "";
-		String recievedDate = reportSample.getReceivedDateForDisplay();
-
-		boolean doAnalysis = reportAnalysis != null;
-
-		if(doAnalysis){
-			testName = getTestName();
-		}
-
-		if(FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour)){
-			recievedDate += " " + reportSample.getReceivedTimeForDisplay();
-		}
-
-		data.setContactInfo(currentContactInfo);
-		data.setSiteInfo(currentSiteInfo);
-		data.setReceivedDate(recievedDate);
-		data.setDob(getPatientDOB());
-		data.setAge(createReadableAge(data.getDob()));
-		data.setGender(patientService.getGender());
-		data.setNationalId(patientService.getNationalId());
-		setPatientName(data);
-		data.setDept(patientDept);
-		data.setCommune(patientCommune);
-		data.setStNumber(getLazyPatientIdentity(STNumber, ST_NUMBER_IDENTITY_TYPE_ID));
-		data.setSubjectNumber(getLazyPatientIdentity(subjectNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID));
-		data.setHealthRegion(getLazyPatientIdentity(healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID));
-		data.setHealthDistrict(getLazyPatientIdentity(healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID));
-		data.setTestName(testName);
-		data.setPatientSiteNumber(ObservationHistoryService.getValue(ObservationType.REFERRERS_PATIENT_ID, reportSample.getId()));
-
-		if(doAnalysis){
-			data.setPanel(reportAnalysis.getPanel());
-			if(reportAnalysis.getPanel() != null){
-				data.setPanelName(reportAnalysis.getPanel().getPanelName());
-			}
-			data.setTestDate(DateUtil.convertSqlDateToStringDate(reportAnalysis.getCompletedDate()));
-			sortOrder = reportAnalysis.getSampleItem().getSortOrder();
-			data.setOrderFinishDate(compleationDate);
-			data.setOrderDate(DateUtil.convertSqlDateToStringDate(currentSampleService.getOrderedDate()));
-			data.setCollectionDateTime(DateUtil.convertTimestampToStringDateAndTime(reportAnalysis.getSampleItem().getCollectionDate()));
-		}
-
-		data.setAccessionNumber(reportSample.getAccessionNumber() + "-" + sortOrder);
-		data.setLabOrderType(createLabOrderType());
-
-		if(doAnalysis){
-			reportResultAndConclusion(data);
-		}
-
-		return data;
-	}
-
-	private String getTestName(){
-		String testName = null;
-
-		if(useReportingDescription()){
-			testName = reportAnalysis.getTest().getReportingDescription();
-		}else{
-			testName = reportAnalysis.getTest().getTestName();
-		}
-
-		if(GenericValidator.isBlankOrNull(testName)){
-			testName = reportAnalysis.getTest().getTestName();
-		}
-		return testName;
-	}
-
-	private String createLabOrderType(){
-		if(LAB_TYPE_OBSERVATION_ID == null){
-			return "";
-		}
-
-		List<ObservationHistory> primaryOrderTypes = observationDAO.getAll(patientService.getPatient(), reportSample, LAB_TYPE_OBSERVATION_ID);
-		if(primaryOrderTypes.isEmpty()){
-			return "";
-		}
-
-		LabOrderType primaryLabOrderType = labOrderTypeDAO.getLabOrderTypeByType(primaryOrderTypes.get(0).getValue());
-		if(primaryLabOrderType == null){
-			return "";
-		}
-
-		if(LAB_SUBTYPE_OBSERVATION_ID == null){
-			return primaryLabOrderType.getLocalizedName();
-		}
-
-		List<ObservationHistory> subOrderTypes = observationDAO.getAll(patientService.getPatient(), reportSample, LAB_SUBTYPE_OBSERVATION_ID);
-		if(subOrderTypes.isEmpty()){
-			return primaryLabOrderType.getLocalizedName();
-		}else{
-			return primaryLabOrderType.getLocalizedName() + " : " + subOrderTypes.get(0).getValue();
-		}
-
-	}
-
-	/**
-	 * Given a list of referralResults for a particular analysis, generated the
-	 * next displayable value made of from one or more of the values from the
-	 * list starting at the given index. It uses multiresult form the list when
-	 * the results are for the same test.
-	 * 
-	 * @param referralResultsForReferral
-	 * @param i
-	 *            starting index.
-	 * @return last index actually used. If you start with 2 and this routine
-	 *         uses just item #2, then return result is 2, but if there are two
-	 *         results for the same test (e.g. a multi-select result) and those
-	 *         are in item item 2 and item 3 this routine returns #3.
-	 */
-	protected int reportReferralResultValue(List<ReferralResult> referralResultsForReferral, int i){
-		ReferralResult referralResult = referralResultsForReferral.get(i);
-		reportReferralResultValue = "";
-		String currTestId = referralResult.getTestId();
-		do{
-			reportReferralResultValue += findDisplayableReportResult(referralResult.getResult()) + ", ";
-			i++;
-			if(i >= referralResultsForReferral.size()){
-				break;
-			}
-			referralResult = referralResultsForReferral.get(i);
-		}while(currTestId.equals(referralResult.getTestId()));
-		reportReferralResultValue = reportReferralResultValue.substring(0, reportReferralResultValue.length() - 2);
-		i--;
-		return i;
-	}
-
-	/**
-	 * Derive the appropriate displayable string results, either dictionary
-	 * result or direct value.
-	 * 
-	 * @param result
-	 * @return a reportable result string.
-	 */
-	private String findDisplayableReportResult(Result result){
-		String reportResult = "";
-		if(result == null){
-			return reportResult;
-		}
-		String type = result.getResultType();
-		String value = result.getValue();
-		if(value == null){
-			return reportResult;
-		}
-		if("D".equals(type) || "M".equals(type)){
-			Dictionary dictionary = new Dictionary();
-			dictionary.setId(result.getValue());
-			dictionaryDAO.getData(dictionary);
-			reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
-		}else{
-			reportResult = result.getValue();
-		}
-		return reportResult;
-	}
-
-	private String createReadableAge(String dob){
-		if(GenericValidator.isBlankOrNull(dob)){
-			return "";
-		}
-
-		dob = dob.replaceAll("xx", "01");
-		Date dobDate = DateUtil.convertStringDateToSqlDate(dob);
-		int months = DateUtil.getAgeInMonths(dobDate, DateUtil.getNowAsSqlDate());
-		if(months > 35){
-			return ((int)months / 12) + " A";
-		}else if(months > 0){
-			return months + " M";
-		}else{
-			int days = DateUtil.getAgeInDays(dobDate, DateUtil.getNowAsSqlDate());
-			return days + " J";
-		}
-
-	}
-
-	@Override
-	public List<String> getReportedOrders(){
-		return handledOrders;
-	}
+    private static final String RESULT_REFERENCE_TABLE_ID = NoteUtil.getTableReferenceId( "RESULT" );
+    private static final DecimalFormat twoDecimalFormat = new DecimalFormat( "#.##" );
+    protected static final boolean noAlertColumn = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.PATIENT_REPORT_NO_ALERTS, "true" );
+    private static String ADDRESS_DEPT_ID;
+    private static String ADDRESS_COMMUNE_ID;
+    protected String currentContactInfo = "";
+    protected String currentSiteInfo = "";
+
+    protected SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
+    protected DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+    private ResultDAO resultDAO = new ResultDAOImpl();
+    protected SampleDAO sampleDAO = new SampleDAOImpl();
+    protected PatientDAO patientDAO = new PatientDAOImpl();
+    protected PersonDAO personDAO = new PersonDAOImpl();
+    protected ProviderDAO providerDAO = new ProviderDAOImpl();
+    protected SampleRequesterDAO requesterDAO = new SampleRequesterDAOImpl();
+    protected TestDAO testDAO = new TestDAOImpl();
+    protected ReferralReasonDAO referralReasonDAO = new ReferralReasonDAOImpl();
+    protected ReferralDAO referralDao = new ReferralDAOImpl();
+    protected ReferralResultDAO referralResultDAO = new ReferralResultDAOImpl();
+    protected ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
+    protected NoteDAO noteDAO = new NoteDAOImpl();
+    protected PersonAddressDAO addressDAO = new PersonAddressDAOImpl();
+    private LabOrderTypeDAO labOrderTypeDAO = new LabOrderTypeDAOImpl();
+    private List<String> handledOrders;
+
+    private String lowerNumber;
+    private String upperNumber;
+    protected String STNumber = null;
+    protected String subjectNumber = null;
+    protected String healthRegion = null;
+    protected String healthDistrict = null;
+    protected String patientName = null;
+    protected String patientDOB = null;
+    protected String currentConclusion = null;
+
+    protected String patientDept = null;
+    protected String patientCommune = null;
+    protected String patientMed = null;
+
+    protected IPatientService patientService;
+    protected Sample reportSample;
+    protected Provider currentProvider;
+    protected Analysis reportAnalysis;
+    protected String reportReferralResultValue;
+    protected List<ClinicalPatientData> reportItems;
+    protected String compleationDate;
+    protected SampleService currentSampleService;
+
+    protected static String ST_NUMBER_IDENTITY_TYPE_ID = "0";
+    protected static String SUBJECT_NUMBER_IDENTITY_TYPE_ID = "0";
+    protected static String HEALTH_REGION_IDENTITY_TYPE_ID = "0";
+    protected static String HEALTH_DISTRICT_IDENTITY_TYPE_ID = "0";
+    protected static String LAB_TYPE_OBSERVATION_ID = "0";
+    protected static String LAB_SUBTYPE_OBSERVATION_ID = "0";
+    protected static Long PERSON_REQUESTER_TYPE_ID;
+    protected static Long ORGANIZATION_REQUESTER_TYPE_ID;
+    protected Map<String, Boolean> sampleCompleteMap;
+
+    static{
+        PatientIdentityTypeDAO identityTypeDAO = new PatientIdentityTypeDAOImpl();
+        List<PatientIdentityType> typeList = identityTypeDAO.getAllPatientIdenityTypes();
+
+        for( PatientIdentityType identityType : typeList ){
+            if( "ST".equals( identityType.getIdentityType() ) ){
+                ST_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
+            }else if( "SUBJECT".equals( identityType.getIdentityType() ) ){
+                SUBJECT_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
+            }else if( "HEALTH REGION".equals( identityType.getIdentityType() ) ){
+                HEALTH_REGION_IDENTITY_TYPE_ID = identityType.getId();
+            }else if( "HEALTH DISTRICT".equals( identityType.getIdentityType() ) ){
+                HEALTH_DISTRICT_IDENTITY_TYPE_ID = identityType.getId();
+            }
+        }
+
+        RequesterTypeDAO requesterTypeDAO = new RequesterTypeDAOImpl();
+        RequesterType type = requesterTypeDAO.getRequesterTypeByName( "provider" );
+        if( type != null ){
+            PERSON_REQUESTER_TYPE_ID = Long.parseLong( type.getId() );
+        }
+
+        type = requesterTypeDAO.getRequesterTypeByName( "organization" );
+        if( type != null ){
+            ORGANIZATION_REQUESTER_TYPE_ID = Long.parseLong( type.getId() );
+        }
+
+        List<AddressPart> partList = new AddressPartDAOImpl().getAll();
+        for( AddressPart part : partList ){
+            if( "department".equals( part.getPartName() ) ){
+                ADDRESS_DEPT_ID = part.getId();
+            }else if( "commune".equals( part.getPartName() ) ){
+                ADDRESS_COMMUNE_ID = part.getId();
+            }
+        }
+
+        ObservationHistoryType ohType = new ObservationHistoryTypeDAOImpl().getByName( "primaryOrderType" );
+        LAB_TYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
+
+        ohType = new ObservationHistoryTypeDAOImpl().getByName( "secondaryOrderType" );
+        LAB_SUBTYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
+
+    }
+
+    abstract protected String getReportNameForParameterPage();
+
+    abstract protected String getSiteLogo();
+
+    abstract protected void postSampleBuild();
+
+    abstract protected void createReportItems();
+
+    abstract protected void setReferredResult( ClinicalPatientData data, Result result );
+
+    protected boolean appendUOMToRange(){
+        return true;
+    }
+
+    protected boolean augmentResultWithFlag(){
+        return true;
+    }
+
+    protected boolean useReportingDescription(){
+        return true;
+    }
+
+    @Override
+    protected String errorReportFileName(){
+        return HAITI_ERROR_REPORT;
+    }
+
+    public void setRequestParameters( BaseActionForm dynaForm ){
+        try{
+            PropertyUtils.setProperty( dynaForm, "reportName", getReportNameForParameterPage() );
+
+            PropertyUtils.setProperty( dynaForm, "useAccessionDirect", Boolean.TRUE );
+            PropertyUtils.setProperty( dynaForm, "useHighAccessionDirect", Boolean.TRUE );
+            PropertyUtils.setProperty( dynaForm, "usePatientNumberDirect", Boolean.TRUE );
+
+            PropertyUtils.setProperty( dynaForm, "exportOptions", getExportOptions() );
+        }catch( IllegalAccessException e ){
+            e.printStackTrace();
+        }catch( InvocationTargetException e ){
+            e.printStackTrace();
+        }catch( NoSuchMethodException e ){
+            e.printStackTrace();
+        }
+    }
+
+    public void initializeReport( BaseActionForm dynaForm ){
+        super.initializeReport();
+        errorFound = false;
+        lowerNumber = dynaForm.getString( "accessionDirect" );
+        upperNumber = dynaForm.getString( "highAccessionDirect" );
+        String patientNumber = dynaForm.getString( "patientNumberDirect" );
+
+        handledOrders = new ArrayList<String>();
+
+        createReportParameters();
+
+        boolean valid = false;
+        List<Sample> reportSampleList = new ArrayList<Sample>();
+
+        if( GenericValidator.isBlankOrNull( lowerNumber ) && GenericValidator.isBlankOrNull( upperNumber ) ){
+            List<Patient> patientList = new ArrayList<Patient>();
+            valid = findPatientByPatientNumber( patientNumber, patientList );
+
+            if( valid ){
+                reportSampleList = findReportSamplesForReportPatient( patientList );
+            }
+        }else{
+            valid = validateAccessionNumbers();
+
+            if( valid ){
+                reportSampleList = findReportSamples( lowerNumber, upperNumber );
+            }
+        }
+
+        sampleCompleteMap = new HashMap<String, Boolean>();
+        initializeReportItems();
+
+        if( reportSampleList.isEmpty() ){
+            add1LineErrorMessage( "report.error.message.noPrintableItems" );
+        }else{
+
+            for( Sample sample : reportSampleList ){
+                currentSampleService = new SampleService( sample );
+                handledOrders.add( sample.getId() );
+                reportSample = sample;
+                sampleCompleteMap.put( sample.getAccessionNumber(), Boolean.TRUE );
+                findCompleationDate();
+                findPatientFromSample();
+                findContactInfo();
+                findPatientInfo();
+                createReportItems();
+            }
+
+            postSampleBuild();
+        }
+    }
+
+    private void findCompleationDate(){
+        Date date = currentSampleService.getCompletedDate();
+        compleationDate = date == null ? null : DateUtil.convertSqlDateToStringDate( date );
+    }
+
+    private void findPatientInfo(){
+        patientDept = "";
+        patientCommune = "";
+        if( ADDRESS_DEPT_ID != null ){
+            PersonAddress deptAddress = addressDAO.getByPersonIdAndPartId( patientService.getPerson().getId(), ADDRESS_DEPT_ID );
+
+            if( deptAddress != null && !GenericValidator.isBlankOrNull( deptAddress.getValue() ) ){
+                patientDept = dictionaryDAO.getDictionaryById( deptAddress.getValue() ).getDictEntry();
+            }
+        }
+
+        if( ADDRESS_COMMUNE_ID != null ){
+            PersonAddress deptAddress = addressDAO.getByPersonIdAndPartId( patientService.getPerson().getId(), ADDRESS_COMMUNE_ID );
+
+            if( deptAddress != null ){
+                patientCommune = deptAddress.getValue();
+            }
+        }
+
+    }
+
+    private void findContactInfo(){
+        List<SampleRequester> requesters = requesterDAO.getRequestersForSampleId( reportSample.getId() );
+        currentContactInfo = "";
+        currentSiteInfo = "";
+        currentProvider = null;
+
+        for( SampleRequester requester : requesters ){
+            if( ORGANIZATION_REQUESTER_TYPE_ID == requester.getRequesterTypeId() ){
+                OrganizationDAO organizationDAO = new OrganizationDAOImpl();
+                Organization org = organizationDAO.getOrganizationById( String.valueOf( requester.getRequesterId() ) );
+                if( org != null ){
+                    currentSiteInfo = org.getOrganizationName();
+                }
+            }
+
+            if( PERSON_REQUESTER_TYPE_ID == requester.getRequesterTypeId() ){
+                StringBuffer buffer = new StringBuffer();
+                Person person = new Person();
+                person.setId( String.valueOf( requester.getRequesterId() ) );
+                personDAO.getData( person );
+                if( person.getId() != null ){
+                    buffer.append( person.getLastName() );
+                    if( !GenericValidator.isBlankOrNull( person.getLastName() ) && !GenericValidator.isBlankOrNull( person.getFirstName() ) ){
+                        buffer.append( ", " );
+                    }
+                    buffer.append( person.getFirstName() );
+
+                    currentProvider = providerDAO.getProviderByPerson( person );
+                }
+
+                currentContactInfo = buffer.toString();
+            }
+        }
+    }
+
+    private boolean findPatientByPatientNumber( String patientNumber, List<Patient> patientList ){
+        patientService = null;
+        PatientIdentityDAO patientIdentityDAO = new PatientIdentityDAOImpl();
+        patientList.addAll( patientDAO.getPatientsByNationalId( patientNumber ) );
+
+        if( patientList.isEmpty() ){
+            List<PatientIdentity> identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, ST_NUMBER_IDENTITY_TYPE_ID );
+
+            if( identities.isEmpty() ){
+                identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID );
+            }
+
+            if( !identities.isEmpty() ){
+
+                for( PatientIdentity patientIdentity : identities ){
+                    String reportPatientId = patientIdentity.getPatientId();
+                    Patient patient = new Patient();
+                    patient.setId( reportPatientId );
+                    patientDAO.getData( patient );
+                    patientList.add( patient );
+                }
+            }
+        }
+
+        return !patientList.isEmpty();
+    }
+
+    private List<Sample> findReportSamplesForReportPatient( List<Patient> patientList ){
+        List<Sample> sampleList = new ArrayList<Sample>();
+        for( Patient searchPatient : patientList ){
+            sampleList.addAll( sampleHumanDAO.getSamplesForPatient( searchPatient.getId() ) );
+        }
+
+        return sampleList;
+    }
+
+    private boolean validateAccessionNumbers(){
+
+        if( GenericValidator.isBlankOrNull( lowerNumber ) && GenericValidator.isBlankOrNull( upperNumber ) ){
+            add1LineErrorMessage( "report.error.message.noParameters" );
+            return false;
+        }
+
+        if( GenericValidator.isBlankOrNull( lowerNumber ) ){
+            lowerNumber = upperNumber;
+        }else if( GenericValidator.isBlankOrNull( upperNumber ) ){
+            upperNumber = lowerNumber;
+        }
+
+        if( lowerNumber.length() != upperNumber.length() ||
+                AccessionNumberUtil.correctFormat( lowerNumber ) != IAccessionNumberValidator.ValidationResults.SUCCESS ||
+                AccessionNumberUtil.correctFormat( lowerNumber ) != IAccessionNumberValidator.ValidationResults.SUCCESS ){
+            add1LineErrorMessage( "report.error.message.accession.not.valid" );
+            return false;
+        }
+
+        if( lowerNumber.compareToIgnoreCase( upperNumber ) > 0 ){
+            String temp = upperNumber;
+            upperNumber = lowerNumber;
+            lowerNumber = temp;
+        }
+
+        return true;
+    }
+
+    private List<Sample> findReportSamples( String lowerNumber, String upperNumber ){
+        List<Sample> sampleList = sampleDAO.getSamplesByAccessionRange( lowerNumber, upperNumber );
+        return sampleList == null ? new ArrayList<Sample>() : sampleList;
+    }
+
+    protected void findPatientFromSample(){
+        Patient patient = sampleHumanDAO.getPatientForSample( reportSample );
+
+        if( patientService == null || !patient.getId().equals( patientService.getPatientId() ) ){
+            STNumber = null;
+            patientDOB = null;
+            patientService = new PatientService( patient );
+        }
+    }
+
+    @Override
+    protected void createReportParameters(){
+        super.createReportParameters();
+        reportParameters.put( "siteId", ConfigurationProperties.getInstance().getPropertyValue( Property.SiteCode ) );
+        reportParameters.put( "siteLogo", useLogo ? getSiteLogo() : null );
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI LNSP" ) ){
+            reportParameters.put( "headerName", "CILNSPHeader.jasper" );
+            reportParameters.put( "printLNSPLabPersons", Boolean.TRUE );
+        }else if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "Haiti LNSP" ) ){
+            reportParameters.put( "useSTNumber", Boolean.FALSE );
+        }else{
+            reportParameters.put( "useSTNumber", Boolean.TRUE );
+        }
+
+        reportParameters.put( "leftImage", getLeftImage() );
+    }
+
+    protected String getLeftImage(){
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI IPCI" ) ){
+            return "IPCI_Logo.png";
+        }else if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI_REGIONAL" ) ){
+            return "LNSPLogo.jpg";
+        }else{
+            return "HaitiFlag.gif";
+        }
+    }
+
+    protected String getPatientDOB(){
+        if( patientDOB == null ){
+            patientDOB = patientService.getBirthdayForDisplay();
+        }
+
+        return patientDOB;
+    }
+
+    protected String getLazyPatientIdentity( String identity, String id ){
+        if( identity == null ){
+            identity = " ";
+            List<PatientIdentity> identities = patientService.getIdentityList();
+            for( PatientIdentity patientIdentity : identities ){
+                if( patientIdentity.getIdentityTypeId().equals( id ) ){
+                    identity = patientIdentity.getIdentityData();
+                    break;
+                }
+            }
+        }
+
+        return identity;
+    }
+
+    protected void setPatientName( ClinicalPatientData data ){
+        data.setPatientName( patientService.getLastFirstName() );
+        data.setFirstName( patientService.getFirstName() );
+        data.setLastName( patientService.getLastName() );
+    }
+
+    protected void reportResultAndConclusion( ClinicalPatientData data ){
+        List<Result> resultList = resultDAO.getResultsByAnalysis( reportAnalysis );
+        Test test = reportAnalysis.getTest();
+
+        data.setTestSection( reportAnalysis.getTestSection().getLocalizedName() );
+        data.setTestSortOrder( GenericValidator.isBlankOrNull( test.getSortOrder() ) ? Integer.MAX_VALUE : Integer.parseInt( test.getSortOrder() ) );
+        data.setSectionSortOrder( test.getTestSection().getSortOrderInt() );
+
+        if( StatusService.getInstance().getStatusID( AnalysisStatus.Canceled ).equals( reportAnalysis.getStatusId() ) ){
+            data.setResult( StringUtil.getMessageForKey( "report.test.status.canceled" ) );
+        }else if( reportAnalysis.isReferredOut() ){
+            if( noAlertColumn ){
+                data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+                return;
+            }
+
+            if( noResults( resultList ) ){
+                data.setResult( StringUtil.getMessageForKey( "report.test.status.referredOut" ) );
+            }else{
+                setAppropriateResults( resultList, data );
+                setReferredResult( data, resultList.get( 0 ) );
+                setNormalRange( data, test, resultList.get( 0 ) );
+            }
+        }else if( !StatusService.getInstance().getStatusID( AnalysisStatus.Finalized ).equals( reportAnalysis.getStatusId() ) ){
+            sampleCompleteMap.put( reportSample.getAccessionNumber(), Boolean.FALSE );
+            data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+        }else{
+            setAppropriateResults( resultList, data );
+
+            Result result = resultList.get( 0 );
+            setNormalRange( data, test, result );
+            data.setResult( getAugmentedResult( data, result ) );
+            data.setFinishDate( reportAnalysis.getCompletedDateForDisplay() );
+            data.setNote( getResultNote( result ) );
+            data.setAlerts( getResultFlag( result, null, data ) );
+        }
+
+        data.setConclusion( currentConclusion );
+    }
+
+    private boolean noResults( List<Result> resultList ){
+        if( resultList.isEmpty() ){
+            return true;
+        }
+
+        Result result = resultList.get( 0 );
+
+        if( GenericValidator.isBlankOrNull( resultList.get( 0 ).getValue() ) ){
+            return true;
+        }
+
+        if( "M".equals( result.getResultType() ) || "D".equals( result.getResultType() ) ){
+            return "0".equals( result.getValue() );
+        }
+
+        return false;
+    }
+
+    private void setNormalRange( ClinicalPatientData data, Test test, Result result ){
+        String uom = getUnitOfMeasure( result, test );
+        data.setTestRefRange( addIfNotEmpty( getRange( result ), appendUOMToRange() ? uom : null ) );
+        data.setUom( uom );
+    }
+
+    private String getAugmentedResult( ClinicalPatientData data, Result result ){
+        String resultValue = data.getResult();
+        if( TestIdentityService.isTestNumericViralLoad( reportAnalysis.getTest() ) ){
+            try{
+                resultValue += " (" + twoDecimalFormat.format( Math.log10( Double.parseDouble( resultValue ) ) ) + ")log ";
+            }catch( IllegalFormatException e ){
+                // no-op
+            }
+        }
+
+        return resultValue + ( augmentResultWithFlag() ? getResultFlag( result, null ) : "" );
+    }
+
+    protected String getResultNote( Result result ){
+        if( result != null ){
+            List<Note> notes = NoteUtil.getExternalNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
+
+            if( !( notes == null || notes.isEmpty() ) ){
+
+                Collections.sort( notes, new Comparator<Note>(){
+                    @Override
+                    public int compare( Note o1, Note o2 ){
+                        return Integer.parseInt( o1.getId() ) - Integer.parseInt( o2.getId() );
+                    }
+                } );
+
+                StringBuilder noteBuilder = new StringBuilder();
+
+                for( Note note : notes ){
+                    noteBuilder.append( note.getText() );
+                    noteBuilder.append( "<br/>" );
+                }
+
+                noteBuilder.setLength( noteBuilder.lastIndexOf( "<br/>" ) );
+
+                return noteBuilder.toString();
+            }
+        }
+        return null;
+    }
+
+    protected String getResultFlag( Result result, String imbed ){
+        return getResultFlag( result, imbed, null );
+    }
+
+    protected String getResultFlag( Result result, String imbed, ClinicalPatientData data ){
+        String flag = "";
+        try{
+            if( "N".equals( result.getResultType() ) && !GenericValidator.isBlankOrNull( result.getValue() ) ){
+                if( result.getMinNormal() != null & result.getMaxNormal() != null && ( result.getMinNormal() != 0.0 || result.getMaxNormal() != 0.0 ) ){
+                    if( Double.valueOf( result.getValue() ) < result.getMinNormal() ){
+                        flag = "B";
+                    }else if( Double.valueOf( result.getValue() ) > result.getMaxNormal() ){
+                        flag = "E";
+                    }
+
+                    if( !GenericValidator.isBlankOrNull( flag ) ){
+                        if( data != null ){
+                            data.setAbnormalResult( Boolean.TRUE );
+                        }
+                        if( !GenericValidator.isBlankOrNull( imbed ) ){
+                            return " (<b>" + flag + "," + imbed + "</b>)";
+                        }else{
+                            return " (<b>" + flag + "</b>)";
+                        }
+                    }
+                }
+            }
+        }catch( NumberFormatException e ){
+            // no-op
+        }
+
+        if( !GenericValidator.isBlankOrNull( imbed ) ){
+            return " (<b>" + imbed + "</b>)";
+        }
+
+        return "";
+    }
+
+    protected String getRange( Result result ){
+        String range = "";
+        if( "N".equals( result.getResultType() ) ){
+            if( result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals( result.getMaxNormal() ) ){
+                range = ResultLimitService.getDisplayNormalRange( result.getMinNormal(), result.getMaxNormal(), String.valueOf( result.getSignificantDigits() ), "-" );
+            }
+        }
+        return range;
+    }
+
+    protected String getUnitOfMeasure( Result result, Test test ){
+        String uom = "";
+        if( "N".equals( result.getResultType() ) ){
+            if( test != null && test.getUnitOfMeasure() != null ){
+                uom = test.getUnitOfMeasure().getName();
+            }
+        }
+        return uom;
+    }
+
+    private void setAppropriateResults( List<Result> resultList, ClinicalPatientData data ){
+        String reportResult = "";
+        //If only one result just get it and get out
+        if( resultList.size() == 1 ){
+            Result result = resultList.get( 0 );
+            if( "MD".contains( result.getResultType() ) ){
+                Dictionary dictionary = new Dictionary();
+                dictionary.setId( result.getValue() );
+                dictionaryDAO.getData( dictionary );
+                if( result.getAnalyte() != null && "Conclusion".equals( result.getAnalyte().getAnalyteName() ) ){
+                    currentConclusion = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+                }else{
+                    reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+                }
+            }else{
+                reportResult = result.getValue();
+                data.setHasRangeAndUOM( "N".equals( result.getResultType() ) );
+            }
+        }else{
+
+            //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
+
+            String resultType = resultList.get( 0 ).getResultType();
+
+            if( "D".equals( resultType ) ){
+                List<Result> dictionaryResults = new ArrayList<Result>(  );
+                Result quantification = null;
+                for(Result sibResult : resultList){
+                    if( "D".equals( sibResult.getResultType() )){
+                        dictionaryResults.add( sibResult );
+                    }else if("A".equals( sibResult.getResultType() ) && sibResult.getParentResult() != null){
+                        quantification = sibResult;
+                    }
+                }
+
+                Dictionary dictionary = new Dictionary();
+                for( Result sibResult : dictionaryResults ){
+                    dictionary.setId( sibResult.getValue() );
+                    dictionaryDAO.getData( dictionary );
+                    if( sibResult.getAnalyte() != null && "Conclusion".equals( sibResult.getAnalyte().getAnalyteName() ) ){
+                        currentConclusion = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+                    }else{
+                        reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+                        if( quantification != null && quantification.getParentResult().getId().equals( sibResult.getId() )){
+                            reportResult += ": " + quantification.getValue();
+                        }
+                    }
+                }
+            }else if( "M".equals( resultType ) ){
+                Dictionary dictionary = new Dictionary();
+                StringBuilder multiResult = new StringBuilder();
+
+                Collections.sort( resultList, new Comparator<Result>(){
+                    @Override
+                    public int compare( Result o1, Result o2 ){
+                        return Integer.parseInt( o1.getSortOrder() ) - Integer.parseInt( o2.getSortOrder() );
+                    }
+                } );
+
+                for( Result subResult : resultList ){
+                    dictionary.setId( subResult.getValue() );
+                    dictionaryDAO.getData( dictionary );
+
+                    if( dictionary.getId() != null ){
+                        multiResult.append( dictionary.getLocalizedName() );
+                        multiResult.append( "\n" );
+                    }
+                }
+
+                if( multiResult.length() > 1 ){
+                    // remove last "\n"
+                    multiResult.setLength( multiResult.length() - 2 );
+                }
+
+                reportResult = multiResult.toString();
+            }
+        }
+        data.setResult( reportResult );
+
+
+    }
+
+    /**
+     * @see PatientReport#initializeReportItems()
+     */
+    protected void initializeReportItems(){
+        reportItems = new ArrayList<ClinicalPatientData>();
+    }
+
+    /**
+     * If you have a string that you wish to add a suffix like units of measure,
+     * use this.
+     *
+     * @param base something
+     * @param plus something to add, if the above is not null or blank.
+     * @return the two args put together, or the original if it was blank to
+     * begin with.
+     */
+    protected String addIfNotEmpty( String base, String plus ){
+        return ( !GenericValidator.isBlankOrNull( plus ) ) ? base + " " + plus : base;
+    }
+
+    /**
+     * Pushes all of the information about a patient, analysis, result and the
+     * conclusion into a new reporting object
+     *
+     * @return
+     */
+    protected ClinicalPatientData reportAnalysisResults(){
+        ClinicalPatientData data = new ClinicalPatientData();
+        String testName = null;
+        String sortOrder = "";
+        String recievedDate = reportSample.getReceivedDateForDisplay();
+
+        boolean doAnalysis = reportAnalysis != null;
+
+        if( doAnalysis ){
+            testName = getTestName();
+        }
+
+        if( FormFields.getInstance().useField( Field.SampleEntryUseReceptionHour ) ){
+            recievedDate += " " + reportSample.getReceivedTimeForDisplay();
+        }
+
+        data.setContactInfo( currentContactInfo );
+        data.setSiteInfo( currentSiteInfo );
+        data.setReceivedDate( recievedDate );
+        data.setDob( getPatientDOB() );
+        data.setAge( createReadableAge( data.getDob() ) );
+        data.setGender( patientService.getGender() );
+        data.setNationalId( patientService.getNationalId() );
+        setPatientName( data );
+        data.setDept( patientDept );
+        data.setCommune( patientCommune );
+        data.setStNumber( getLazyPatientIdentity( STNumber, ST_NUMBER_IDENTITY_TYPE_ID ) );
+        data.setSubjectNumber( getLazyPatientIdentity( subjectNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID ) );
+        data.setHealthRegion( getLazyPatientIdentity( healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID ) );
+        data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID ) );
+        data.setTestName( testName );
+        data.setPatientSiteNumber( ObservationHistoryService.getValue( ObservationType.REFERRERS_PATIENT_ID, reportSample.getId() ) );
+
+        if( doAnalysis ){
+            data.setPanel( reportAnalysis.getPanel() );
+            if( reportAnalysis.getPanel() != null ){
+                data.setPanelName( reportAnalysis.getPanel().getPanelName() );
+            }
+            data.setTestDate( DateUtil.convertSqlDateToStringDate( reportAnalysis.getCompletedDate() ) );
+            sortOrder = reportAnalysis.getSampleItem().getSortOrder();
+            data.setOrderFinishDate( compleationDate );
+            data.setOrderDate( DateUtil.convertSqlDateToStringDate( currentSampleService.getOrderedDate() ) );
+            data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndTime( reportAnalysis.getSampleItem().getCollectionDate() ) );
+        }
+
+        data.setAccessionNumber( reportSample.getAccessionNumber() + "-" + sortOrder );
+        data.setLabOrderType( createLabOrderType() );
+
+        if( doAnalysis ){
+            reportResultAndConclusion( data );
+        }
+
+        return data;
+    }
+
+    private String getTestName(){
+        String testName = null;
+
+        if( useReportingDescription() ){
+            testName = reportAnalysis.getTest().getReportingDescription();
+        }else{
+            testName = reportAnalysis.getTest().getTestName();
+        }
+
+        if( GenericValidator.isBlankOrNull( testName ) ){
+            testName = reportAnalysis.getTest().getTestName();
+        }
+        return testName;
+    }
+
+    private String createLabOrderType(){
+        if( LAB_TYPE_OBSERVATION_ID == null ){
+            return "";
+        }
+
+        List<ObservationHistory> primaryOrderTypes = observationDAO.getAll( patientService.getPatient(), reportSample, LAB_TYPE_OBSERVATION_ID );
+        if( primaryOrderTypes.isEmpty() ){
+            return "";
+        }
+
+        LabOrderType primaryLabOrderType = labOrderTypeDAO.getLabOrderTypeByType( primaryOrderTypes.get( 0 ).getValue() );
+        if( primaryLabOrderType == null ){
+            return "";
+        }
+
+        if( LAB_SUBTYPE_OBSERVATION_ID == null ){
+            return primaryLabOrderType.getLocalizedName();
+        }
+
+        List<ObservationHistory> subOrderTypes = observationDAO.getAll( patientService.getPatient(), reportSample, LAB_SUBTYPE_OBSERVATION_ID );
+        if( subOrderTypes.isEmpty() ){
+            return primaryLabOrderType.getLocalizedName();
+        }else{
+            return primaryLabOrderType.getLocalizedName() + " : " + subOrderTypes.get( 0 ).getValue();
+        }
+
+    }
+
+    /**
+     * Given a list of referralResults for a particular analysis, generated the
+     * next displayable value made of from one or more of the values from the
+     * list starting at the given index. It uses multiresult form the list when
+     * the results are for the same test.
+     *
+     * @param referralResultsForReferral
+     * @param i                          starting index.
+     * @return last index actually used. If you start with 2 and this routine
+     * uses just item #2, then return result is 2, but if there are two
+     * results for the same test (e.g. a multi-select result) and those
+     * are in item item 2 and item 3 this routine returns #3.
+     */
+    protected int reportReferralResultValue( List<ReferralResult> referralResultsForReferral, int i ){
+        ReferralResult referralResult = referralResultsForReferral.get( i );
+        reportReferralResultValue = "";
+        String currTestId = referralResult.getTestId();
+        do{
+            reportReferralResultValue += findDisplayableReportResult( referralResult.getResult() ) + ", ";
+            i++;
+            if( i >= referralResultsForReferral.size() ){
+                break;
+            }
+            referralResult = referralResultsForReferral.get( i );
+        }while(currTestId.equals( referralResult.getTestId() ));
+        reportReferralResultValue = reportReferralResultValue.substring( 0, reportReferralResultValue.length() - 2 );
+        i--;
+        return i;
+    }
+
+    /**
+     * Derive the appropriate displayable string results, either dictionary
+     * result or direct value.
+     *
+     * @param result
+     * @return a reportable result string.
+     */
+    private String findDisplayableReportResult( Result result ){
+        String reportResult = "";
+        if( result == null ){
+            return reportResult;
+        }
+        String type = result.getResultType();
+        String value = result.getValue();
+        if( value == null ){
+            return reportResult;
+        }
+        if( "D".equals( type ) || "M".equals( type ) ){
+            Dictionary dictionary = new Dictionary();
+            dictionary.setId( result.getValue() );
+            dictionaryDAO.getData( dictionary );
+            reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+        }else{
+            reportResult = result.getValue();
+        }
+        return reportResult;
+    }
+
+    private String createReadableAge( String dob ){
+        if( GenericValidator.isBlankOrNull( dob ) ){
+            return "";
+        }
+
+        dob = dob.replaceAll( "xx", "01" );
+        Date dobDate = DateUtil.convertStringDateToSqlDate( dob );
+        int months = DateUtil.getAgeInMonths( dobDate, DateUtil.getNowAsSqlDate() );
+        if( months > 35 ){
+            return ( ( int ) months / 12 ) + " A";
+        }else if( months > 0 ){
+            return months + " M";
+        }else{
+            int days = DateUtil.getAgeInDays( dobDate, DateUtil.getNowAsSqlDate() );
+            return days + " J";
+        }
+
+    }
+
+    @Override
+    public List<String> getReportedOrders(){
+        return handledOrders;
+    }
 }

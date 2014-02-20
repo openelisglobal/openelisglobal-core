@@ -607,7 +607,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			Result qualifiedResult = null;
 
 			boolean newResult = GenericValidator.isBlankOrNull(testResultItem.getResultId());
-			boolean isQualifiedResult = "Q".equals(testResultItem.getResultType());
+			boolean isQualifiedResult = testResultItem.isHasQualifiedResult();
 
 			if(!newResult){
 				result.setId(testResultItem.getResultId());
@@ -626,7 +626,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			}
 
 			if("D".equals(testResultItem.getResultType()) || isQualifiedResult){
-				setTestResultsForDictionaryResult(testResultItem.getTestId(), testResultItem.getResultValue(), result);
+				setTestResultsForDictionaryResult(testResultItem.getTestId(), testResultItem.getResultValue(), result);  //support qualified result
 			}else{
 				List<TestResult> testResultList = testResultDAO.getTestResultsByTest(testResultItem.getTestId());
 				// we are assuming there is only one testResult for a numeric

@@ -17,13 +17,13 @@
 */
 package us.mn.state.health.lims.resultvalidation.action.util;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.result.action.util.ResultItem;
 import us.mn.state.health.lims.result.valueholder.Result;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResultValidationItem implements ResultItem, Serializable{
 
@@ -82,6 +82,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	private boolean nonconforming = false;
 	private String qualifiedDictionaryId;
 	private String qualifiedResultValue = "";
+    private boolean hasQualifiedResult = false;
 
 	public String getAccessionNumber() {
 		return accessionNumber;
@@ -358,4 +359,11 @@ public class ResultValidationItem implements ResultItem, Serializable{
 		this.qualifiedResultValue = qualifiedResultValue;
 	}
 
+    public boolean isHasQualifiedResult(){
+        return hasQualifiedResult;
+    }
+
+    public void setHasQualifiedResult( boolean hasQualifiedResult ){
+        this.hasQualifiedResult = hasQualifiedResult;
+    }
 }

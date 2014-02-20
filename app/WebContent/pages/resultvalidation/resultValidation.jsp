@@ -429,7 +429,7 @@ function /*boolean*/ handleEnterEvent(){
 	    				<% } %>
 						<bean:write name="resultList" property="units"/>
 					</logic:equal>
-					<% if( "DQM".contains(resultList.getResultType())){ %>
+					<% if( "DM".contains(resultList.getResultType())){ %>
 						<select name="<%="resultList[" + index + "].result" %>" 
 						        id='<%="resultId_" + index%>' 
 						        onchange= '<%= "markUpdated(); makeDirty();" +
@@ -444,7 +444,7 @@ function /*boolean*/ handleEnterEvent(){
 			           			name='<%="resultList[" + index + "].qualifiedResultValue" %>' 
 			           			value='<%= resultList.getQualifiedResultValue() %>' 
 			           			id='<%= "qualifiedDict_" + index %>'
-			           			style = '<%= "display:" + ("Q".equals(resultList.getResultType()) ? "inline" : "none") %>'
+			           			style = '<%= "display:" + (resultList.isHasQualifiedResult() ? "inline" : "none") %>'
 					   			<%= resultList.isReadOnly() ? "disabled='disabled'" : ""%> />
 					<% } %>
 					<logic:equal name="resultList" property="resultType" value="A">

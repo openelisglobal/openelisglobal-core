@@ -1,3 +1,6 @@
+
+
+
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
 	import="java.util.List,
@@ -58,7 +61,7 @@
 	hivKits = new ArrayList<String>();
 	syphilisKits = new ArrayList<String>();
 
-	for( InventoryKitItem item : ((List<InventoryKitItem>)inventory) ){
+	for( InventoryKitItem item : (List<InventoryKitItem>)inventory ){
 		if( item.getType().equals("HIV") ){
 	hivKits.add(item.getInventoryLocationId());
 		}else{
@@ -121,10 +124,10 @@ pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.cu
 
 var pageSearch; //assigned in post load function
 
-var pagingSearch = new Object();
+var pagingSearch = {};
 
 <%
-	for( IdValuePair pair : ((List<IdValuePair>)pagingSearch)){
+	for( IdValuePair pair : (List<IdValuePair>)pagingSearch){
 		out.print( "pagingSearch[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
 	}
 %>
@@ -620,7 +623,8 @@ function forceTechApproval(checkbox, index ){
 			<html:hidden name="testResult" property="resultType" indexed="true" styleId='<%="resultType_" + index%>' />
 			<html:hidden name="testResult" property="valid" indexed="true"  styleId='<%="valid_" + index %>'/>
 			<html:hidden name="testResult" property="referralId" indexed="true" />
-			<html:hidden name="testResult" property="referralCanceled" indexed="true" />
+            <html:hidden name="testResult" property="referralCanceled" indexed="true" />
+            <html:hidden name="testResult" property="hasQualifiedResult" indexed="true" styleId='<%="hasQualifiedResult_" + index %>' />
             <logic:equal name="testResult" property="userChoiceReflex" value="true">
                 <html:hidden name="testResult" property="reflexJSONResult"  styleId='<%="reflexServerResultId_" + index%>'  styleClass="reflexJSONResult" indexed="true"/>
             </logic:equal>
@@ -783,12 +787,12 @@ function forceTechApproval(checkbox, index ){
 						  />
 				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal>
-			<% if( "D".equals(testResult.getResultType()) || "Q".equals(testResult.getResultType()) ){ %>
+			<% if( "D".equals(testResult.getResultType())  ){ %>
 			<!-- dictionary results -->
 			<select name="<%="testResult[" + index + "].resultValue" %>"
 			        onchange="<%="markUpdated(" + index + ", " + testResult.isUserChoiceReflex() +  ", \'" + testResult.getSiblingReflexKey() + "\');"   +
 						               ((noteRequired && !"".equals(testResult.getResultValue()) )? "showNote( " + index + ");" : "") +
-						               (testResult.getQualifiedDictonaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictonaryId() + ");" :"") %>"
+						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", 'D');" :"") %>"
 			        id='<%="resultId_" + index%>'
 			        <%=testResult.isReadOnly()? "disabled=\'true\'" : "" %> >
 					<option value="0"></option>
@@ -802,7 +806,7 @@ function forceTechApproval(checkbox, index ){
 			           name='<%="testResult[" + index + "].qualifiedResultValue" %>' 
 			           value='<%= testResult.getQualifiedResultValue() %>' 
 			           id='<%= "qualifiedDict_" + index %>'
-			           style = '<%= "display:" + ("Q".equals(testResult.getResultType()) ? "inline" : "none") %>'
+			           style = '<%= "display:" + (testResult.isHasQualifiedResult() ? "inline" : "none") %>'
 					   <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
 					   onchange='<%="markUpdated(" + index + ");" %>'
 					    />
@@ -814,8 +818,9 @@ function forceTechApproval(checkbox, index ){
 					multiple="multiple"
 					<%=testResult.isReadOnly()? "disabled=\'disabled\'" : "" %> 
 						 title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
-						 onchange='<%="markUpdated(" + index + ")"  +
-						               ((noteRequired && !GenericValidator.isBlankOrNull(testResult.getMultiSelectResultValues())) ? "showNote( " + index + ");" : "") %>' >
+						 onchange='<%="markUpdated(" + index + "); "  +
+						               ((noteRequired && !GenericValidator.isBlankOrNull(testResult.getMultiSelectResultValues())) ? "showNote( " + index + ");" : "") +
+						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", \"M\" );" :"")%>' >
 						<logic:iterate id="optionValue" name="testResult" property="dictionaryResults" type="IdValuePair" >
 						<option value='<%=optionValue.getId()%>'
 								<%if(StringUtil.textInCommaSeperatedValues(optionValue.getId(), testResult.getMultiSelectResultValues())) out.print("selected"); %>  >
@@ -823,7 +828,15 @@ function forceTechApproval(checkbox, index ){
 						</option>
 					</logic:iterate>
 				</select>
-				<html:hidden name="testResult" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>' />
+				<html:hidden name="testResult" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>'   />
+                <input type="text"
+                   name='<%="testResult[" + index + "].qualifiedResultValue" %>'
+                   value='<%= testResult.getQualifiedResultValue() %>'
+                   id='<%= "qualifiedDict_" + index %>'
+                   style = '<%= "display:" + ( testResult.isHasQualifiedResult() ? "inline" : "none") %>'
+                    <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
+                   onchange='<%="markUpdated(" + index + ");" %>'
+                />
 			</logic:equal>
 			<% if( testResult.isDisplayResultAsLog()){ %>
 						<br/><input type='text'

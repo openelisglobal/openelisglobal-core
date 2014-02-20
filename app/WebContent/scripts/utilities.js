@@ -383,7 +383,7 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
 
     var monthSpecified = true;
     var daySpecified = true;
-
+    var years;
     var splitDOB = date.split("/");
     var monthDOB = splitDOB[monthIndex];
     var dayDOB = splitDOB[dayIndex];
@@ -407,7 +407,7 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
     var age = new Date(endDate.getTime() - dob.getTime());
 
     if (weekId) {
-        var years = age.getTime() / timeToYears;
+        years = age.getTime() / timeToYears;
 
         if (years < 2) {
             if (monthSpecified && daySpecified) {
@@ -436,7 +436,7 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
 
         }
     } else if (monthId) {
-        var years = age.getTime() / timeToYears;
+        years = age.getTime() / timeToYears;
 
         if (years < 2 || !yearId) {
             if (monthSpecified) {
@@ -478,16 +478,16 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
 
 function FieldValidator() {
 
-    this.invalidFields = new Array();
-    this.requiredFields = new Array();
-    this.conflictedFields = new Array();
+    this.invalidFields = [];
+    this.requiredFields = [];
+    this.conflictedFields = [];
 
     /**
      * Call this to set a new set of required field Ids
      **/
     this.setRequiredFields = function /*void*/
     ( /*Array<String>[]*/ newRequiredFields) {
-        this.requiredFields = newRequiredFields
+        this.requiredFields = newRequiredFields;
     }
 
     this.addRequiredField = function /*void*/
@@ -504,7 +504,7 @@ function FieldValidator() {
      */
     this.removeRequiredField = function /*void*/
     ( /*String*/ fieldId) {
-        var i = this.requiredFields.indexOf(fieldId)
+        var i = this.requiredFields.indexOf(fieldId);
         if (i != -1) {
             this.requiredFields.splice(i, 1);
         }
@@ -670,7 +670,7 @@ setSaveButton() {
 
 function HashObj() {
     this.length = 0;
-    this.items = new Array();
+    this.items = [];
     for (var i = 0; i < arguments.length; i += 2) {
         if (typeof(arguments[i + 1]) != 'undefined') {
             this.items[arguments[i]] = arguments[i + 1];
@@ -760,11 +760,8 @@ function filterTimeKeys(field, event) {
         return;
     }
     var currentChar = v.charAt(v.length - 1);
-    if (IsTimeKey(currentChar)) {
-        return;
-    } else {
+    if (!IsTimeKey(currentChar)) {
         field.value = removeLastChar(v);
-        return;
     }
 }
     
@@ -812,14 +809,31 @@ function /*void*/ hideNote(index) {
     $("noteRow_" + index).hide();
 }
 
-function showQuanitiy(selector, index, dictionaryIds) {
+function showQuanitiy(selector, index, dictionaryIds, context) {
+    var multipleResults, resultList, i;
+    var quantifiableFound = false;
 
-    if (dictionaryIds.indexOf($jq("#resultId_" + index + " option:selected").val()) != -1) {
+    if( context == 'M'){
+        multipleResults = $jq("#multiresultId_" + index).val();
+        if( multipleResults.length > 0){
+            resultList = multipleResults.split(',');
+            for( i = 0; i < resultList.size(); i++){
+                if(dictionaryIds.indexOf(resultList[i]) != -1){
+                  quantifiableFound = true;
+                  break;
+                }
+            }
+        }
+    }else{
+        quantifiableFound = (dictionaryIds.indexOf($jq("#resultId_" + index + " option:selected").val()) != -1);
+    }
+
+    if( quantifiableFound) {
         $jq("#qualifiedDict_" + index).show();
-        $jq("#resultType_" + index).val("Q");
+        $jq("#hasQualifiedResult_" + index).val("true");
     } else {
         $jq("#qualifiedDict_" + index).hide();
         $jq("#qualifiedDict_" + index).val("");
-        $jq("#resultType_" + index).val("D");
+        $jq("#hasQualifiedResult_" + index).val("false");
     }
 }

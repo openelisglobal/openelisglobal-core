@@ -51,4 +51,30 @@
         <comment>Move all of Sang Total tests and panels to Sang</comment>
         <sqlFile path="OE3.4/HaitiLNSPSangTotalToSang.sql" />
     </changeSet>
+    <changeSet id="8" author="paulsc" context="haitiLNSP">
+        <comment>Corrects spelling in dictionary</comment>
+        <update tableName="dictionary" >
+            <column name="dict_entry" value="Isospora belli" />
+            <where>dict_entry = 'isospora belli'</where>
+        </update>
+    </changeSet>
+    <changeSet id="9" author="paulsc" context="haitiLNSP">
+        <comment>Adds new result value to dictionary</comment>
+        <insert tableName="dictionary">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) " />
+            <column name="is_active" value="Y" />
+            <column name="dict_entry" value="Sarcocystis" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="dictionary_category_id" valueNumeric=" ( select id from clinlims.dictionary_category where description = 'Haiti Lab' ) " />
+        </insert>
+    </changeSet>
+    <changeSet id="10" author="paulsc" context="haitiLNSP">
+        <comment>Adds Sarcocystis and other to test result</comment>
+        <sql >
+            INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
+            VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'Ziehl Neelsen modifiee(Selles)' ) , 'M' ,  ( select max(id) from clinlims.dictionary where dict_entry ='Sarcocystis' )  , now() , 11062);
+            INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order, is_quantifiable)
+            VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'Ziehl Neelsen modifiee(Selles)' ) , 'M' ,  ( select max(id) from clinlims.dictionary where dict_entry ='Autre' )  , now() , 11064, true);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
