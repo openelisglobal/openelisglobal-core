@@ -29,12 +29,9 @@ import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
-import us.mn.state.health.lims.common.services.QAService;
-import us.mn.state.health.lims.common.services.ResultLimitService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
-import us.mn.state.health.lims.common.services.TestIdentityService;
 import us.mn.state.health.lims.common.util.*;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -81,11 +78,8 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
-import us.mn.state.health.lims.testresult.dao.TestResultDAO;
-import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
-import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
@@ -102,9 +96,6 @@ public class ResultsLoadUtility {
 	private static final String NO_PATIENT_NAME = " ";
 	private static final String NO_PATIENT_INFO = " ";
 
-	public static final String HIV_TYPE = "HIV_TEST_KIT";
-	public static final String SYPHILIS_TYPE = "SYPHILIS_TEST_KIT";
-
 	private static String RESULT_REFERENCE_TABLE_ID = null;
 
 	private List<Sample> samples;
@@ -119,7 +110,6 @@ public class ResultsLoadUtility {
 	private List<InventoryKitItem> activeKits;
 
 	private final ResultDAO resultDAO = DAOImplFactory.getInstance().getResultDAOImpl();
-	private final TestResultDAO testResultDAO = new TestResultDAOImpl();
 	private final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private final ResultSignatureDAO resultSignatureDAO = new ResultSignatureDAOImpl();
 	private final ResultInventoryDAO resultInventoryDAO = new ResultInventoryDAOImpl();
@@ -378,7 +368,6 @@ public class ResultsLoadUtility {
 			throws LIMSRuntimeException {
 		List<TestResultItem> testResultList = new ArrayList<TestResultItem>();
 
-		Test test = analysis.getTest();
 		SampleItem sampleItem = analysis.getSampleItem();
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 
@@ -429,11 +418,9 @@ public class ResultsLoadUtility {
 				multiSelectionResult = "M".equals(result.getResultType());
 			}
 
-			ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(test, currPatient);
-
 			String initialConditions = getInitialSampleConditionString(sampleItem);
 
-			TestResultItem resultItem = createTestResultItem(resultLimit, analysis, test, testKit, notes, sampleItem.getSortOrder(), result,
+			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,
 					multiSelectionResult, initialConditions,  TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
 
@@ -494,10 +481,6 @@ public class ResultsLoadUtility {
 			testResultType = testResults.get(0).getTestResultType();
 		}
 
-        //If it really should be Q it will be over written in setDictionaryResult
-        if( "Q".equals( testResultType )){
-            testResultType = "D";
-        }
 		return testResultType;
 	}
 
@@ -623,13 +606,16 @@ public class ResultsLoadUtility {
 		return analysisDAO.getAnalysesBySampleItemsExcludingByStatusIds(item, excludedAnalysisStatus);
 	}
 
-	private TestResultItem createTestResultItem(ResultLimit resultLimit, Analysis analysis, Test test, ResultInventory testKit, List<Note> notes,
+	private TestResultItem createTestResultItem(AnalysisService analysisService, ResultInventory testKit, List<Note> notes,
 			String sequenceNumber, Result result, String accessionNumber, String patientName, String patientInfo, String techSignature,
 			String techSignatureId,  boolean multiSelectionResult, String initialSampleConditions, String sampleType) {
 
-		String receivedDate = currSample == null ? getCurrentDate() : currSample.getReceivedDateForDisplay();
-		String testMethodName = test.getMethod() != null ? test.getMethod().getMethodName() : null;
-		List<TestResult> testResults = getPossibleTestResultsForTest( test );
+        TestService testService = new TestService( analysisService.getTest() );
+        ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(testService.getTest(), currPatient);
+
+        String receivedDate = currSample == null ? getCurrentDate() : currSample.getReceivedDateForDisplay();
+		String testMethodName = testService.getTestMethodName();
+		List<TestResult> testResults = testService.getPossibleTestResults();
 
 		String testKitId = null;
 		String testKitInventoryId = null;
@@ -644,14 +630,14 @@ public class ResultsLoadUtility {
 			testKitInactive = kitNotInActiveKitList(testKitInventoryId);
 		}
 
-		String displayTestName = getTestName( test, analysis );
+		String displayTestName = analysisService.getTestDisplayName( );
 
 		boolean isConclusion = false;
 		boolean isCD4Conclusion = false;
 
 		String multiSelectResults = null;
 		if (multiSelectionResult) {
-			multiSelectResults = createMultiSelectResultsString(analysis);
+			multiSelectResults = analysisService.getCSVMultiselectResults();
 		}
 
 		if (result != null && result.getAnalyte() != null) {
@@ -669,8 +655,8 @@ public class ResultsLoadUtility {
 		String referralReasonId = null;
 		boolean referralCanceled = false;
 		if (supportReferrals) {
-			if (analysis != null) {
-				Referral referral = referralDAO.getReferralByAnalysisId(analysis.getId());
+			if (analysisService.getAnalysis() != null) {
+				Referral referral = referralDAO.getReferralByAnalysisId(analysisService.getAnalysis().getId());
 				if (referral != null) {
 					referralCanceled = referral.isCanceled();
 					referralId = referral.getId();
@@ -681,37 +667,35 @@ public class ResultsLoadUtility {
 			}
 		}
 
-		String uom = "";
-		if (!isCD4Conclusion) {
-			if (test != null && test.getUnitOfMeasure() != null) {
-				uom = test.getUnitOfMeasure().getName();
-			}
-		}
+		String uom = testService.getUOM( isCD4Conclusion );
 
-		String testDate = GenericValidator.isBlankOrNull(analysis.getCompletedDateForDisplay()) ? getCurrentDate()
-				: analysis.getCompletedDateForDisplay();
-
+		String testDate = GenericValidator.isBlankOrNull(analysisService.getCompletedDateForDisplay()) ? getCurrentDate()
+				: analysisService.getCompletedDateForDisplay();
+        ResultDisplayType resultDisplayType = testService.getDisplayTypeForTestMethod(  );
+        if(resultDisplayType != ResultDisplayType.TEXT){
+            inventoryNeeded = true;
+        }
 		TestResultItem testItem = new TestResultItem();
 
 		testItem.setAccessionNumber(accessionNumber);
-		testItem.setAnalysisId(analysis.getId());
+		testItem.setAnalysisId( analysisService.getAnalysis().getId() );
 		testItem.setSequenceNumber(sequenceNumber);
 		testItem.setReceivedDate(receivedDate);
 		testItem.setTestName(displayTestName);
-		testItem.setTestId(test.getId());
+		testItem.setTestId( testService.getTest().getId() );
 		setResultLimitDependencies(resultLimit, testItem, testResults);
 		testItem.setPatientName(patientName);
 		testItem.setPatientInfo(patientInfo);
-		testItem.setReportable("Y".equals(test.getIsReportable()));
+		testItem.setReportable(testService.isReportable());
 		testItem.setUnitsOfMeasure(uom);
 		testItem.setTestDate(testDate);
-		testItem.setResultDisplayType(getDisplayTypeForTestMethod(testMethodName));
+		testItem.setResultDisplayType(resultDisplayType);
 		testItem.setTestMethod(testMethodName);
-		testItem.setAnalysisMethod(analysis.getAnalysisType());
+		testItem.setAnalysisMethod(analysisService.getAnalysisType());
 		testItem.setResult(result);
-		testItem.setResultValue(getFormatedResultValue(result));
+		testItem.setResultValue( getFormattedResultValue( result ));
 		testItem.setMultiSelectResultValues(multiSelectResults);
-		testItem.setAnalysisStatusId(analysis.getStatusId());
+		testItem.setAnalysisStatusId(analysisService.getStatusId());
 		//setDictionaryResults must come after setResultType, it may override it
 		testItem.setResultType(getTestResultType(testResults));
 		setDictionaryResults(testItem, isConclusion, result, testResults);
@@ -728,42 +712,20 @@ public class ResultsLoadUtility {
 		testItem.setReferralCanceled(referralCanceled);
 		testItem.setInitialSampleCondition(initialSampleConditions);
 		testItem.setSampleType(sampleType);
-		testItem.setTestSortOrder(test.getSortOrder());
-		testItem.setFailedValidation(statusRules.hasFailedValidation(analysis.getStatusId()));
+		testItem.setTestSortOrder(testService.getSortOrder());
+		testItem.setFailedValidation(statusRules.hasFailedValidation(analysisService.getStatusId()));
 		if (useCurrentUserAsTechDefault && GenericValidator.isBlankOrNull(testItem.getTechnician())) {
 			testItem.setTechnician(currentUserName);
 		}
-		testItem.setReflexGroup(analysis.getTriggeredReflex());
-		testItem.setChildReflex(analysis.getTriggeredReflex() && isConclusion(result, analysis));
+		testItem.setReflexGroup(analysisService.getTriggeredReflex());
+		testItem.setChildReflex(analysisService.getTriggeredReflex() && analysisService.resultIsConclusion( result ));
 		addNotes(notes, testItem);
 
-		testItem.setDisplayResultAsLog(hasLogValue(analysis, testItem.getResultValue()));
-		testItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
+		//testItem.setDisplayResultAsLog(hasLogValue(analysisService.getAnalysis(), testItem.getResultValue()));
+        testItem.setDisplayResultAsLog(hasLogValue(testService));
+        testItem.setNonconforming( analysisService.isParentNonConforming() );
 		return testItem;
 	}
-
-    private String getTestName( Test test, Analysis analysis ){
-        String name = test.getDescription();
-
-        TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleForTest( test.getId() );
-
-        if( typeOfSample != null && typeOfSample.getId().equals( TypeOfSampleUtil.getTypeOfSampleIdForLocalAbbreviation( "Variable" ))){
-            name += "(" + analysis.getSampleTypeName() + ")";
-        }
-
-        if( analysis.getParentResult() != null && "M".equals( analysis.getParentResult().getResultType() )){
-            Dictionary dictionary = dictionaryDAO.getDictionaryById( analysis.getParentResult().getValue() );
-            if( dictionary != null){
-                String parentResult = dictionary.getLocalAbbreviation();
-                if( GenericValidator.isBlankOrNull( parentResult )){
-                    parentResult = dictionary.getDictEntry();
-                }
-                name = parentResult + " &rarr; " + name;
-            }
-        }
-
-        return name;
-    }
 
     private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem, List<TestResult> testResults){
 		if( resultLimit != null){
@@ -784,7 +746,7 @@ public class ResultsLoadUtility {
 
 	private void setDictionaryResults(TestResultItem testItem, boolean isConclusion, Result result,	List<TestResult> testResults) {
 		if (isConclusion) {
-			testItem.setDictionaryResults(getAnyDictonaryValues(result));
+			testItem.setDictionaryResults(getAnyDictionaryValues( result ));
 		} else {
 			setDictionaryResults(testItem, testResults, result);
 		}
@@ -795,7 +757,7 @@ public class ResultsLoadUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && !testResults.isEmpty() && isDictionaryVarientType(testResults.get(0).getTestResultType())) {
+		if (testResults != null && !testResults.isEmpty() && isDictionaryVariantType( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Collections.sort(testResults, new Comparator<TestResult>() {
@@ -812,7 +774,7 @@ public class ResultsLoadUtility {
 			
 			String qualifiedDictionaryIds = "";
 			for (TestResult testResult : testResults) {
-				if (isDictionaryVarientType(testResult.getTestResultType())) {
+				if ( isDictionaryVariantType( testResult.getTestResultType() )) {
 					dictionary = new Dictionary();
 					dictionary.setId(testResult.getValue());
 					dictionaryDAO.getData(dictionary);
@@ -823,28 +785,28 @@ public class ResultsLoadUtility {
 								.getDictEntry() : dictionary.getLocalAbbreviation();
 					}
 					values.add(new IdValuePair(testResult.getValue(), displayValue));
-					if (testResult.getTestResultType().equals("Q")) {
+					if (testResult.getIsQuantifiable()) {
 						if( !GenericValidator.isBlankOrNull( qualifiedDictionaryIds )){
 							qualifiedDictionaryIds += ",";
 						}
 						qualifiedDictionaryIds += testResult.getValue();
-						setQualifedValues(testItem, result);
+						setQualifiedValues( testItem, result );
 					}
 				}
 			}
 			
 			if( !GenericValidator.isBlankOrNull( qualifiedDictionaryIds )){
-				testItem.setQualifiedDictonaryId("[" + qualifiedDictionaryIds + "]");
+				testItem.setQualifiedDictionaryId( "[" + qualifiedDictionaryIds + "]" );
 			}
 		}
 		if( !GenericValidator.isBlankOrNull(testItem.getQualifiedResultValue())){
-			testItem.setResultType("Q");
+			testItem.setHasQualifiedResult( true );
 		}
 
 		testItem.setDictionaryResults(values);
 	}
 
-	private void setQualifedValues(TestResultItem testItem, Result result) {
+	private void setQualifiedValues( TestResultItem testItem, Result result ) {
 		if (result != null) {
 			List<Result> results = resultDAO.getChildResults(result.getId());
 			if (!results.isEmpty()) {
@@ -855,7 +817,7 @@ public class ResultsLoadUtility {
 		}
 	}
 
-	private String getFormatedResultValue(Result result) {
+	private String getFormattedResultValue( Result result ) {
 		if (result == null) {
 			return "";
 		}
@@ -867,9 +829,9 @@ public class ResultsLoadUtility {
 		return result.getValue();
 	}
 
-	private boolean hasLogValue(Analysis analysis, String resultValue) {
+	private boolean hasLogValue(TestService testService){//Analysis analysis, String resultValue) {
 		//TO-DO refactor
-		if ( TestIdentityService.isTestNumericViralLoad(analysis.getTest())){
+		//if ( ){
 //			if (GenericValidator.isBlankOrNull(resultValue)) {
 //				return true;
 //			}
@@ -880,29 +842,11 @@ public class ResultsLoadUtility {
 //				return false;
 //			}
 			
-			return true;
-		}
+		//	return true;
+		//}
 
-		return false;
-	}
-
-	private boolean isConclusion(Result testResult, Analysis analysis) {
-		List<Result> results = resultDAO.getResultsByAnalysis(analysis);
-		if (results.size() == 1) {
-			return false;
-		}
-
-		Long testResultId = Long.parseLong(testResult.getId());
-		// This based on the fact that the conclusion is always added
-		// after the shared result so if there is a result with a larger id
-		// then this is not a conclusion
-		for (Result result : results) {
-			if (Long.parseLong(result.getId()) > testResultId) {
-				return false;
-			}
-		}
-
-		return true;
+		//return false;
+        return TestIdentityService.isTestNumericViralLoad( testService.getTest() );
 	}
 
 	protected void addNotes(List<Note> notes, TestResultItem testItem) {
@@ -927,26 +871,10 @@ public class ResultsLoadUtility {
 		}
 	}
 
-	private String createMultiSelectResultsString(Analysis analysis) {
-		String multiSelectResults;
-		List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
-		StringBuilder multiSelectBuffer = new StringBuilder();
-		for (Result existingResult : existingResults) {
-			multiSelectBuffer.append(existingResult.getValue());
-			multiSelectBuffer.append(',');
-		}
-
-		multiSelectBuffer.setLength(multiSelectBuffer.length() - 1); // remove
-		// last
-		// ','
-		multiSelectResults = multiSelectBuffer.toString();
-		return multiSelectResults;
-	}
-
-	private List<IdValuePair> getAnyDictonaryValues(Result result) {
+	private List<IdValuePair> getAnyDictionaryValues(Result result) {
 		List<IdValuePair> values = null;
 
-		if (result != null && isDictionaryVarientType(result.getResultType())) {
+		if (result != null && isDictionaryVariantType( result.getResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Dictionary dictionaryValue = new Dictionary();
@@ -971,13 +899,8 @@ public class ResultsLoadUtility {
 
 	}
 
-	private boolean isDictionaryVarientType(String testResultType) {
-		return "D".equals(testResultType) || "M".equals(testResultType) || "Q".equals(testResultType);
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<TestResult> getPossibleTestResultsForTest( Test test ) {
-		return testResultDAO.getAllTestResultsPerTest(test);
+	private boolean isDictionaryVariantType( String testResultType ) {
+		return "D".equals(testResultType) || "M".equals(testResultType );
 	}
 
 	private boolean getIsValid(String resultValue, ResultLimit resultLimit) {
@@ -1037,19 +960,6 @@ public class ResultsLoadUtility {
 		return currentDate;
 	}
 
-	private ResultDisplayType getDisplayTypeForTestMethod(String methodName) {
-		ResultDisplayType resultType = ResultDisplayType.TEXT;
-
-		if (HIV_TYPE.equals(methodName)) {
-			resultType = ResultDisplayType.HIV;
-			inventoryNeeded = true;
-		} else if (SYPHILIS_TYPE.equals(methodName)) {
-			resultType = ResultDisplayType.SYPHILIS;
-			inventoryNeeded = true;
-		}
-
-		return resultType;
-	}
 
 	public boolean inventoryNeeded() {
 		return inventoryNeeded;

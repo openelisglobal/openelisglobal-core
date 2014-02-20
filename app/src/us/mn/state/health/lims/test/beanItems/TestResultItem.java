@@ -113,9 +113,10 @@ public class TestResultItem implements ResultItem, Serializable{
 	private int reflexParentGroup = 0;
 	private boolean isChildReflex = false;
 	private boolean displayResultAsLog = false;
-	private String qualifiedDictonaryId = null;
+	private String qualifiedDictionaryId = null;
 	private String qualifiedResultValue = "";
 	private String qualifiedResultId;
+    private boolean hasQualifiedResult = false;
 	private String nextVisitDate;
 	private String forceTechApproval;
     private String reflexJSONResult;
@@ -547,11 +548,11 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setNonconforming(boolean nonconforming) {
 		this.nonconforming = nonconforming;
 	}
-	public String getQualifiedDictonaryId() {
-		return qualifiedDictonaryId;
+	public String getQualifiedDictionaryId() {
+		return qualifiedDictionaryId;
 	}
-	public void setQualifiedDictonaryId(String qualifiedDictonaryId) {
-		this.qualifiedDictonaryId = qualifiedDictonaryId;
+	public void setQualifiedDictionaryId( String qualifiedDictionaryId ) {
+		this.qualifiedDictionaryId = qualifiedDictionaryId;
 	}
 	public String getQualifiedResultValue() {
 		return qualifiedResultValue;
@@ -562,7 +563,16 @@ public class TestResultItem implements ResultItem, Serializable{
 	public String getQualifiedResultId() {
 		return qualifiedResultId;
 	}
-	public void setQualifiedResultId(String qualifiedResultId) {
+
+    public boolean isHasQualifiedResult(){
+        return hasQualifiedResult;
+    }
+
+    public void setHasQualifiedResult( boolean hasQualifiedResult ){
+        this.hasQualifiedResult = hasQualifiedResult;
+    }
+
+    public void setQualifiedResultId(String qualifiedResultId) {
 		this.qualifiedResultId = qualifiedResultId;
 	}
 	public String getNextVisitDate(){

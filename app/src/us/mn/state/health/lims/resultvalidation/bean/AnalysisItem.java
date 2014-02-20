@@ -82,6 +82,7 @@ public class AnalysisItem  {
 	private String pastNotes;
 	private String qualifiedDictionaryId;
 	private String qualifiedResultValue = "";
+    private boolean hasQualifiedResult = false;
     private int significantDigits = 0;
 
 
@@ -561,6 +562,14 @@ public class AnalysisItem  {
 	public void setQualifiedResultValue(String qualifiedResultValue){
 		this.qualifiedResultValue = qualifiedResultValue;
 	}
+
+    public boolean isHasQualifiedResult(){
+        return hasQualifiedResult;
+    }
+
+    public void setHasQualifiedResult( boolean hasQualifiedResult ){
+        this.hasQualifiedResult = hasQualifiedResult;
+    }
 
     public int getSignificantDigits(){
         return significantDigits;

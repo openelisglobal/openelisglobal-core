@@ -106,7 +106,7 @@ public class ResultsValidation {
 			}
 		}
 		
-		if( "Q".equals(testResultItem.getResultType()) && GenericValidator.isBlankOrNull(testResultItem.getQualifiedResultValue())){
+		if( testResultItem.isHasQualifiedResult() && GenericValidator.isBlankOrNull(testResultItem.getQualifiedResultValue())){
 			errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
 		}
 	}

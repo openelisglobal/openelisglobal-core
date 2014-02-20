@@ -240,7 +240,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 	}
 
 	public void validateQuantifiableItems(AnalysisItem analysisItem, List<ActionError> errors){
-		if( "Q".equals(analysisItem.getResultType()) && 
+		if( analysisItem.isHasQualifiedResult() &&
 				GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue()) &&
 				analysisItemWillBeUpdated(analysisItem)){
 			errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
@@ -497,19 +497,16 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 		TestResult testResult = getTestResult(analysisItem);
 		// changing from quantifiable
-		if("Q".equals(result.getTestResult().getTestResultType())){
-			String quanifiedValue = "";
-			if("Q".equals(testResult.getTestResultType())){
-				// just the qualifier value has changed
-				quanifiedValue = analysisItem.getQualifiedResultValue();
-			}
+		if( analysisItem.isHasQualifiedResult()){
+			// just the qualifier value has changed
+			String quantifiedValue = analysisItem.getQualifiedResultValue();
 			
 			List<Result> children = resultDAO.getChildResults(result.getId());
 			if(!children.isEmpty()){
-				updateExitingQuntifieableResult(quanifiedValue, children);
+				updateExitingQuntifieableResult(quantifiedValue, children);
 			}
 			//changing to quantifiable from non-quantifiable
-		}else if("Q".equals(testResult.getTestResultType())){
+		}else if(testResult.getIsQuantifiable()){
 		    
 			List<Result> children = resultDAO.getChildResults(result.getId());
 			if(children.isEmpty()){
@@ -527,8 +524,6 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 				quantifiedResult.setSysUserId(currentUserId);
 				quantifiedResult.setSortOrder("0");
 				quantifiedResult.setParentResult(result);
-				// changing to quantifiable from non-quantifiable
-				result.setResultType("Q");
 				resultUpdateList.add(quantifiedResult);
 			}else{
 				updateExitingQuntifieableResult(analysisItem.getQualifiedResultValue(), children);

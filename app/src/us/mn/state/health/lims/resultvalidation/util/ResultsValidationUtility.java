@@ -417,7 +417,7 @@ public class ResultsValidationUtility {
 		for (Result result : resultList) {
 			if( parentItem != null && parentItem.getResultId().equals(result.getParentResult().getId())){
 				parentItem.setQualifiedResultValue(result.getValue());
-				parentItem.setResultType("Q");
+				parentItem.setHasQualifiedResult( true );
 				continue;
 			}
 			
@@ -482,14 +482,11 @@ public class ResultsValidationUtility {
 	private String getQualifiedDictionaryId(List<TestResult> testResults){
 	    String qualDictionaryIds = "";
 	    for( TestResult testResult : testResults){
-			if( "Q".equals(testResult.getTestResultType())){
-			    
-		        if (testResult.getTestResultType().equals("Q")) {
-		            if( !"".equals(qualDictionaryIds )){
-		                qualDictionaryIds += ",";
-		            }
-		            qualDictionaryIds += testResult.getValue();
-		        }
+			if( testResult.getIsQuantifiable()){
+                if( !"".equals(qualDictionaryIds )){
+                    qualDictionaryIds += ",";
+                }
+                qualDictionaryIds += testResult.getValue();
 			}
 		}
 		return  "".equals(qualDictionaryIds) ?  null : "[" + qualDictionaryIds + "]";
@@ -795,6 +792,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setNonconforming(testResultItem.isNonconforming());
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
+        analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
         if( "N".equals( testResultItem.getResultType() )){
             if( result.getMinNormal() == result.getMaxNormal() || result.getMinNormal().equals( result.getMaxNormal())){
                 analysisResultItem.setSignificantDigits( -1 );

@@ -161,5 +161,5 @@ function encodeJSONStringToHTML( json){
 }
 
 function encodeHTMLToJSONString( html ){
-    return html.length == 0 ? "{}" : html.replace( /'/g, "\"");
+    return html && html.length > 0 ? html.replace( /'/g, "\"") : "{}" ;
 }

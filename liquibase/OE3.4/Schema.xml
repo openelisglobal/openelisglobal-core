@@ -107,5 +107,26 @@
     <sql>
         COMMENT on COLUMN clinlims.result.significant_digits is 'Significant digits for results at the time the results were entered';
     </sql>
+</changeSet>
+<changeSet id="9" author="paulsc">
+    <comment>Add is quantifiable column to test_result</comment>
+    <addColumn tableName="test_result">
+        <column name="is_quantifiable" type="boolean" defaultValueBoolean="false" />
+    </addColumn>
+    <sql>
+        COMMENT on COLUMN clinlims.test_result.is_quantifiable is 'True if the user should be able to quantify the result.  Is only meaningful for D and M types';
+    </sql>
+</changeSet>
+<changeSet id="10" author="paulsc">
+    <comment>backfill test_result table and result table for the change to a boolean for is_quantifiable</comment>
+    <update tableName="test_result" >
+        <column name="is_quantifiable" valueBoolean="true" />
+        <column name="tst_rslt_type" value="D" />
+        <where>tst_rslt_type = 'Q'</where>
+    </update>
+    <update tableName="result" >
+        <column name="result_type" value="D" />
+        <where>result_type = 'Q'</where>
+    </update>
 </changeSet>    
 </databaseChangeLog>
