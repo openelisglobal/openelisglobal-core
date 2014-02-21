@@ -638,6 +638,7 @@ public class ResultsLoadUtility {
 		String multiSelectResults = null;
 		if (multiSelectionResult) {
 			multiSelectResults = analysisService.getCSVMultiselectResults();
+
 		}
 
 		if (result != null && result.getAnalyte() != null) {
@@ -698,7 +699,7 @@ public class ResultsLoadUtility {
 		testItem.setAnalysisStatusId(analysisService.getStatusId());
 		//setDictionaryResults must come after setResultType, it may override it
 		testItem.setResultType(getTestResultType(testResults));
-		setDictionaryResults(testItem, isConclusion, result, testResults);
+		setDictionaryResults( testItem, isConclusion, result, testResults );
 
 		testItem.setTechnician(techSignature);
 		testItem.setTechnicianSignatureId(techSignatureId);
@@ -724,6 +725,12 @@ public class ResultsLoadUtility {
 		//testItem.setDisplayResultAsLog(hasLogValue(analysisService.getAnalysis(), testItem.getResultValue()));
         testItem.setDisplayResultAsLog(hasLogValue(testService));
         testItem.setNonconforming( analysisService.isParentNonConforming() );
+        Result quantifiedResult = analysisService.getQuantifiedResult();
+        if( quantifiedResult != null){
+            testItem.setQualifiedResultId( quantifiedResult.getId() );
+            testItem.setQualifiedResultValue( quantifiedResult.getValue() );
+            testItem.setHasQualifiedResult( true );
+        }
 		return testItem;
 	}
 

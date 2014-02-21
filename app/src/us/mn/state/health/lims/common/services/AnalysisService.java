@@ -28,6 +28,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,19 +70,40 @@ public class AnalysisService{
     }
 
     public String getCSVMultiselectResults(){
-        List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
+        List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         StringBuilder multiSelectBuffer = new StringBuilder();
-        for (Result existingResult : existingResults) {
-            multiSelectBuffer.append(existingResult.getValue());
-            multiSelectBuffer.append(',');
+        for( Result existingResult : existingResults ){
+            if( "M".equals( existingResult.getResultType() ) ){
+                multiSelectBuffer.append( existingResult.getValue() );
+                multiSelectBuffer.append( ',' );
+            }
         }
 
         // remove last ','
-        multiSelectBuffer.setLength(multiSelectBuffer.length() - 1);
+        multiSelectBuffer.setLength( multiSelectBuffer.length() - 1 );
 
         return multiSelectBuffer.toString();
     }
 
+    public Result getQuantifiedResult(){
+        List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
+        List<String> quantifiableResultsIds = new ArrayList<String>(  );
+        for( Result existingResult : existingResults ){
+            if( "MD".contains( existingResult.getResultType() ) ){
+                quantifiableResultsIds.add( existingResult.getId() );
+            }
+        }
+
+        for( Result existingResult : existingResults ){
+            if( !"MD".contains( existingResult.getResultType()) &&
+                    existingResult.getParentResult() != null &&
+                    quantifiableResultsIds.contains( existingResult.getParentResult().getId()) ){
+            return existingResult;
+            }
+        }
+
+        return null;
+    }
     public String getCompletedDateForDisplay(){
         return analysis.getCompletedDateForDisplay();
     }

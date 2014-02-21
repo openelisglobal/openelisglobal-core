@@ -373,7 +373,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		for(TestResultItem testResultItem : modifiedItems){
 
 			Analysis analysis = analysisDAO.getAnalysisById(testResultItem.getAnalysisId());
-			List<Result> results = createResultFromTestResultItem(testResultItem, analysis);
+			List<Result> results = createResultsFromTestResultItem( testResultItem, analysis );
 
 			for(Result result : results){
 				addResult(result, testResultItem, analysis);
@@ -570,13 +570,23 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		modifiedAnalysis.add(analysis);
 	}
 
-	private List<Result> createResultFromTestResultItem(TestResultItem testResultItem, Analysis analysis){
+	private List<Result> createResultsFromTestResultItem( TestResultItem testResultItem, Analysis analysis ){
 		List<Result> results = new ArrayList<Result>();
+        boolean isQualifiedResult = testResultItem.isHasQualifiedResult();
 
 		if("M".equals(testResultItem.getResultType())){
 			String[] multiResults = testResultItem.getMultiSelectResultValues().split(",");
 			List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
 
+            /*
+            We will go through all of selections made by the user and compare them to the selections
+            already in the DB.  If a match is found then it will be removed from the DB list and
+            added to the results list and we will go on to the next selection made by the user.  If
+            a match is not found then a new result will be created.
+
+            After all of the user selections are made any DB results which were not matched will be marked for
+            deletion
+             */
             for( String resultAsString : multiResults){
 				Result existingResultFromDB = null;
 				for(Result existingResult : existingResults){
@@ -596,18 +606,51 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 				setTestResultsForDictionaryResult(testResultItem.getTestId(), resultAsString, result);
 				setNewResultValues(testResultItem, analysis, result);
+                setAnalyteForResult(result);
 				setStandardResultValues(resultAsString, result);
 				result.setSortOrder(getResultSortOrder(analysis, result.getValue()));
 
 				results.add(result);
 			}
+
+            /*
+            A quantifiable result may or may not be in the DB
+             */
+            if( isQualifiedResult ){
+                //cases that it is in DB
+                if( !existingResults.isEmpty() && testResultItem.getQualifiedResultId() != null ){
+                    List<Result> removableResults = new ArrayList<Result>(  );
+                    for(Result existingResult : existingResults){
+                        if( testResultItem.getQualifiedResultId().equals( existingResult.getId() )){
+                            removableResults.add( existingResult );
+                            setStandardResultValues( testResultItem.getQualifiedResultValue(), existingResult );
+                            results.add( existingResult );
+                        }
+                    }
+                    existingResults.removeAll( removableResults );
+                    //case this is a new quantified result
+                }else{
+                    String[] quantifiableResults = testResultItem.getQualifiedDictionaryId().substring( 1, testResultItem.getQualifiedDictionaryId().length() - 1 ).split( "," );
+                    for( String quantifiableResultId : quantifiableResults){
+                        for( Result selectedResult: results){
+                            if(selectedResult.getValue().equals( quantifiableResultId )){
+                                Result quantifiedResult = getQuantifiedResult( testResultItem, analysis, selectedResult );
+                                setStandardResultValues( testResultItem.getQualifiedResultValue(), quantifiedResult );
+                                results.add( quantifiedResult );
+                                break;
+                            }
+                        }
+                    }
+
+
+                }
+            }
 			deletableResults.addAll(existingResults);
 		}else{
 			Result result = new Result();
 			Result qualifiedResult = null;
 
 			boolean newResult = GenericValidator.isBlankOrNull(testResultItem.getResultId());
-			boolean isQualifiedResult = testResultItem.isHasQualifiedResult();
 
 			if(!newResult){
 				result.setId(testResultItem.getResultId());
@@ -618,10 +661,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 					qualifiedResult.setId(testResultItem.getQualifiedResultId());
 					resultDAO.getData(qualifiedResult);
 				}else if(isQualifiedResult){
-					qualifiedResult = new Result();
-					setNewResultValues(testResultItem, analysis, qualifiedResult);
-					qualifiedResult.setResultType("A");
-					qualifiedResult.setParentResult(result);
+                    qualifiedResult = getQuantifiedResult( testResultItem, analysis, result );
 				}
 			}
 
@@ -637,17 +677,13 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			}
 
 			if(newResult){
-				setNewResultValues(testResultItem, analysis, result);
+				setNewResultValues( testResultItem, analysis, result );
 				if(isQualifiedResult){
-					qualifiedResult = new Result();
-					setNewResultValues(testResultItem, analysis, qualifiedResult);
-					qualifiedResult.setResultType("A");
-					qualifiedResult.setParentResult(result);
+                    qualifiedResult = getQuantifiedResult( testResultItem, analysis, result );
 				}
-			}else{
-				setAnalyteForResult(result);
 			}
 
+            setAnalyteForResult( result );
 			setStandardResultValues(testResultItem.getResultValue(), result);
 			results.add(result);
 
@@ -665,7 +701,17 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		return results;
 	}
 
-	private String getResultSortOrder(Analysis analysis, String resultValue){
+    private Result getQuantifiedResult( TestResultItem testResultItem, Analysis analysis, Result parentResult ){
+        Result qualifiedResult;
+        qualifiedResult = new Result();
+        setNewResultValues(testResultItem, analysis, qualifiedResult);
+        setAnalyteForResult(parentResult);
+        qualifiedResult.setResultType("A");
+        qualifiedResult.setParentResult(parentResult);
+        return qualifiedResult;
+    }
+
+    private String getResultSortOrder(Analysis analysis, String resultValue){
 		TestResult testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysis.getTest().getId(), resultValue);
 		return testResult == null ? "0" : testResult.getSortOrder();
 	}
@@ -684,8 +730,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		result.setMinNormal(testResultItem.getLowerNormalRange());
 		result.setMaxNormal(testResultItem.getUpperNormalRange());
         result.setSignificantDigits( testResultItem.getSignificantDigits() );
-
-		setAnalyteForResult(result);
 	}
 
 	private void setAnalyteForResult(Result result){
