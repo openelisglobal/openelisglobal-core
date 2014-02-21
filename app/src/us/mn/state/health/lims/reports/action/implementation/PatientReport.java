@@ -140,7 +140,6 @@ public abstract class PatientReport extends Report{
 
     protected String patientDept = null;
     protected String patientCommune = null;
-    protected String patientMed = null;
 
     protected IPatientService patientService;
     protected Sample reportSample;
@@ -148,7 +147,7 @@ public abstract class PatientReport extends Report{
     protected Analysis reportAnalysis;
     protected String reportReferralResultValue;
     protected List<ClinicalPatientData> reportItems;
-    protected String compleationDate;
+    protected String completionDate;
     protected SampleService currentSampleService;
 
     protected static String ST_NUMBER_IDENTITY_TYPE_ID = "0";
@@ -261,7 +260,7 @@ public abstract class PatientReport extends Report{
 
         createReportParameters();
 
-        boolean valid = false;
+        boolean valid;
         List<Sample> reportSampleList = new ArrayList<Sample>();
 
         if( GenericValidator.isBlankOrNull( lowerNumber ) && GenericValidator.isBlankOrNull( upperNumber ) ){
@@ -304,7 +303,7 @@ public abstract class PatientReport extends Report{
 
     private void findCompleationDate(){
         Date date = currentSampleService.getCompletedDate();
-        compleationDate = date == null ? null : DateUtil.convertSqlDateToStringDate( date );
+        completionDate = date == null ? null : DateUtil.convertSqlDateToStringDate( date );
     }
 
     private void findPatientInfo(){
@@ -344,7 +343,7 @@ public abstract class PatientReport extends Report{
             }
 
             if( PERSON_REQUESTER_TYPE_ID == requester.getRequesterTypeId() ){
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 Person person = new Person();
                 person.setId( String.valueOf( requester.getRequesterId() ) );
                 personDAO.getData( person );
@@ -550,11 +549,8 @@ public abstract class PatientReport extends Report{
             return true;
         }
 
-        if( "M".equals( result.getResultType() ) || "D".equals( result.getResultType() ) ){
-            return "0".equals( result.getValue() );
-        }
+        return ( "M".equals( result.getResultType() ) || "D".equals( result.getResultType() ) ) && "0".equals( result.getValue() );
 
-        return false;
     }
 
     private void setNormalRange( ClinicalPatientData data, Test test, Result result ){
@@ -681,7 +677,6 @@ public abstract class PatientReport extends Report{
                 data.setHasRangeAndUOM( "N".equals( result.getResultType() ) );
             }
         }else{
-
             //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
 
             String resultType = resultList.get( 0 ).getResultType();
@@ -721,12 +716,26 @@ public abstract class PatientReport extends Report{
                     }
                 } );
 
+                Result quantifiedResult = null;
+                for( Result subResult : resultList){
+                    if( "A".equals( subResult.getResultType() )){
+                        quantifiedResult = subResult;
+                        resultList.remove( subResult );
+                        break;
+                    }
+                }
                 for( Result subResult : resultList ){
                     dictionary.setId( subResult.getValue() );
                     dictionaryDAO.getData( dictionary );
 
                     if( dictionary.getId() != null ){
                         multiResult.append( dictionary.getLocalizedName() );
+                        if( quantifiedResult != null &&
+                                quantifiedResult.getParentResult().getId().equals( subResult.getId() ) &&
+                                !GenericValidator.isBlankOrNull( quantifiedResult.getValue() )){
+                            multiResult.append( ": " );
+                            multiResult.append( quantifiedResult.getValue() );
+                        }
                         multiResult.append( "\n" );
                     }
                 }
@@ -768,7 +777,7 @@ public abstract class PatientReport extends Report{
      * Pushes all of the information about a patient, analysis, result and the
      * conclusion into a new reporting object
      *
-     * @return
+     * @return  A single record
      */
     protected ClinicalPatientData reportAnalysisResults(){
         ClinicalPatientData data = new ClinicalPatientData();
@@ -810,7 +819,7 @@ public abstract class PatientReport extends Report{
             }
             data.setTestDate( DateUtil.convertSqlDateToStringDate( reportAnalysis.getCompletedDate() ) );
             sortOrder = reportAnalysis.getSampleItem().getSortOrder();
-            data.setOrderFinishDate( compleationDate );
+            data.setOrderFinishDate( completionDate );
             data.setOrderDate( DateUtil.convertSqlDateToStringDate( currentSampleService.getOrderedDate() ) );
             data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndTime( reportAnalysis.getSampleItem().getCollectionDate() ) );
         }
@@ -826,7 +835,7 @@ public abstract class PatientReport extends Report{
     }
 
     private String getTestName(){
-        String testName = null;
+        String testName;
 
         if( useReportingDescription() ){
             testName = reportAnalysis.getTest().getReportingDescription();
@@ -874,7 +883,7 @@ public abstract class PatientReport extends Report{
      * list starting at the given index. It uses multiresult form the list when
      * the results are for the same test.
      *
-     * @param referralResultsForReferral
+     * @param referralResultsForReferral The referral
      * @param i                          starting index.
      * @return last index actually used. If you start with 2 and this routine
      * uses just item #2, then return result is 2, but if there are two
@@ -902,7 +911,7 @@ public abstract class PatientReport extends Report{
      * Derive the appropriate displayable string results, either dictionary
      * result or direct value.
      *
-     * @param result
+     * @param result    The result
      * @return a reportable result string.
      */
     private String findDisplayableReportResult( Result result ){
@@ -935,7 +944,7 @@ public abstract class PatientReport extends Report{
         Date dobDate = DateUtil.convertStringDateToSqlDate( dob );
         int months = DateUtil.getAgeInMonths( dobDate, DateUtil.getNowAsSqlDate() );
         if( months > 35 ){
-            return ( ( int ) months / 12 ) + " A";
+            return ( months / 12 ) + " A";
         }else if( months > 0 ){
             return months + " M";
         }else{

@@ -415,7 +415,7 @@ public class ResultsValidationUtility {
 
 		ResultValidationItem parentItem = null;
 		for (Result result : resultList) {
-			if( parentItem != null && parentItem.getResultId().equals(result.getParentResult().getId())){
+			if( parentItem != null && result.getParentResult() != null && parentItem.getResultId().equals(result.getParentResult().getId())){
 				parentItem.setQualifiedResultValue(result.getValue());
 				parentItem.setHasQualifiedResult( true );
 				continue;
