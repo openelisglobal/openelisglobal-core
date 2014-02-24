@@ -89,8 +89,9 @@ public class ResultService {
 			boolean firstPass = true;
 
 			List<Result> results = new ResultDAOImpl().getResultsByAnalysis(result.getAnalysis());
+
 			for (Result multiResult : results) {
-				if (!GenericValidator.isBlankOrNull(multiResult.getValue())) {
+				if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && "M".equals(multiResult.getResultType())) {
 					if (firstPass) {
 						firstPass = false;
 					} else {
@@ -100,10 +101,58 @@ public class ResultService {
 				}
 			}
 			return buffer.toString();
-		} else {
-			return result.getValue();
+		} else if ("N".equals(getTestType())) {
+            int significantPlaces = result.getSignificantDigits();
+            if (significantPlaces < 1) {
+                return result.getValue();
+            }
+            StringBuilder value = new StringBuilder();
+            value.append(result.getValue());
+            int startFill = 0;
+
+            if (!result.getValue().contains(".")) {
+                value.append(".");
+            } else {
+                startFill = result.getValue().length() - result.getValue().lastIndexOf(".") - 1;
+            }
+
+            for (int i = startFill ; i < significantPlaces; i++) {
+                value.append("0");
+            }
+            return value.toString();
+        }else if ("A".equals(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
+            return result.getValue().split("\\(")[0].trim();
+        }else {
+            return result.getValue();
 		}
 	}
+
+    public String getMultiSelectSelectedIdValues(){
+        if (GenericValidator.isBlankOrNull(result.getValue())) {
+            return "";
+        }
+
+        if ("M".equals(getTestType())) {
+            StringBuilder buffer = new StringBuilder();
+            boolean firstPass = true;
+
+            List<Result> results = new ResultDAOImpl().getResultsByAnalysis(result.getAnalysis());
+
+            for (Result multiResult : results) {
+                if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && "M".equals(multiResult.getResultType())) {
+                    if (firstPass) {
+                        firstPass = false;
+                    } else {
+                        buffer.append(",");
+                    }
+                    buffer.append(multiResult.getValue());
+                }
+            }
+            return buffer.toString();
+        }
+
+        return "";
+    }
 
 	public String getUOM() {
 		return test.getUnitOfMeasure().getUnitOfMeasureName();

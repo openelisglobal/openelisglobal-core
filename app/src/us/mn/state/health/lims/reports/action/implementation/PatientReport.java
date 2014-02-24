@@ -673,7 +673,7 @@ public abstract class PatientReport extends Report{
                     reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
                 }
             }else{
-                reportResult = result.getValue();
+                reportResult = new ResultService(result).getResultValue();
                 data.setHasRangeAndUOM( "N".equals( result.getResultType() ) );
             }
         }else{
