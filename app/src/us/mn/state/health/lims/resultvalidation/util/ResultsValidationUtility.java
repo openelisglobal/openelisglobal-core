@@ -24,12 +24,9 @@ import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.QAService;
-import us.mn.state.health.lims.common.services.ResultLimitService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
-import us.mn.state.health.lims.common.services.TestIdentityService;
 import us.mn.state.health.lims.common.tools.StopWatch;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -555,7 +552,7 @@ public class ResultsValidationUtility {
 	}
 
 	private boolean isDictionaryType(String resultType){
-		return "DQM".contains(resultType);
+		return "DM".contains(resultType);
 	}
 
 	private String getTestResultType(List<TestResult> testResults) {
@@ -736,8 +733,14 @@ public class ResultsValidationUtility {
 	public List<AnalysisItem> testResultListToAnalysisItemList(List<ResultValidationItem> testResultList) {
 		List<AnalysisItem> analysisResultList = new ArrayList<AnalysisItem>();
 
-		for (ResultValidationItem tResultItem : testResultList) {
-			analysisResultList.add(testResultItemToAnalysisItem(tResultItem));
+        boolean multiResultEntered = false;
+		for (ResultValidationItem testResultItem : testResultList) {
+            if( !multiResultEntered){
+                analysisResultList.add(testResultItemToAnalysisItem(testResultItem));
+                if( "M".equals(testResultItem.getResultType())){
+                    multiResultEntered = true;
+                }
+            }
 		}
 
 		return analysisResultList;
@@ -786,7 +789,11 @@ public class ResultsValidationUtility {
 		analysisResultItem.setTestSortNumber(sortOrder);
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
-		analysisResultItem.setResult(getFormatedResult(testResultItem));
+        if( !"M".equals(testResultItem.getResultType())){
+            analysisResultItem.setResult(getFormatedResult(testResultItem));
+        } else {
+            analysisResultItem.setMultiSelectResultValues(new ResultService(testResultItem.getResult()).getMultiSelectSelectedIdValues());
+        }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
 		analysisResultItem.setNonconforming(testResultItem.isNonconforming());
@@ -805,12 +812,12 @@ public class ResultsValidationUtility {
 	}
 
 	private String getFormatedResult(ResultValidationItem testResultItem) {
-		String result = testResultItem.getResult().getValue();
+        String result = testResultItem.getResult().getValue();
 		if( TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()) && !GenericValidator.isBlankOrNull(result)){
-			result = result.split("\\(")[0].trim();
-		}
-		
-		return result;
+			return result.split("\\(")[0].trim();
+		}else{
+            return new ResultService(testResultItem.getResult()).getResultValue();
+        }
 	}
 
 	public String getUnitsByTestId(String testId) {

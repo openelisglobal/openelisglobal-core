@@ -15,12 +15,20 @@ var outOfValidRangeMsg = null;
 function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, lowerAbnormal, upperAbnormal, significantDigits, specialCase ){
 
 	var regEx = new RegExp("^(-|\\+){0,1}\\d*\\.?\\d*$");
-	var isNumber = regEx.test(resultBox.value);
+	//var isNumber = regEx.test();
 	var isSpecialCase = specialCase == resultBox.value.toUpperCase(); 
-    var splitValue = resultBox.value.split(".");
+  //  var splitValue = resultBox.value.split(".");
 
+    if(isNaN(resultBox.value)){
+        resultBox.style.borderColor = "red";
+        $("valid_" + row).value = false;
+        return;
+    }
 
-    if(splitValue.size() == 2 && significantDigits >= 0){
+    if( !isNaN(significantDigits)){
+        resultBox.value = round( resultBox.value, significantDigits)
+    }
+  /*  if(splitValue.size() == 2 && significantDigits >= 0){
         if( significantDigits == 0 ){
             resultBox.value = splitValue[0];
         }else if(splitValue[1].length == 0){
@@ -29,7 +37,7 @@ function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, low
             resultBox.value = resultBox.value.substring(0, splitValue[0].length + 1 + significantDigits);
         }
     }
-
+ */
 	if(resultBox.value.blank()){
 		resultBox.title = "";
 		resultBox.style.borderColor = "";
@@ -44,12 +52,6 @@ function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, low
 		resultBox.style.borderColor = "";
 		resultBox.style.background = "#ffffff";
 		$("valid_" + row).value = true;
-		return;
-	}
-	
-	if(!isNumber){
-		resultBox.style.borderColor = "red";
-		$("valid_" + row).value = false;
 		return;
 	}
 

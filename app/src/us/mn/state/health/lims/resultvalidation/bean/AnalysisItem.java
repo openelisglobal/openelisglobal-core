@@ -75,6 +75,7 @@ public class AnalysisItem  {
 	private boolean showAcceptReject = true;
 	private List<IdValuePair> dictionaryResults;
 	private boolean isMultipleResultForSample = false;
+    private String multiSelectResultValues;
 	private boolean readOnly = false;
 	private boolean isReflexGroup = false;
 	private boolean isChildReflex = false;
@@ -475,7 +476,15 @@ public class AnalysisItem  {
 		return isMultipleResultForSample;
 	}
 
-	public void setReadOnly(boolean readOnly) {
+    public String getMultiSelectResultValues() {
+        return multiSelectResultValues;
+    }
+
+    public void setMultiSelectResultValues(String multiSelectResultValues) {
+        this.multiSelectResultValues = multiSelectResultValues;
+    }
+
+    public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
 

@@ -825,15 +825,7 @@ public class ResultsLoadUtility {
 	}
 
 	private String getFormattedResultValue( Result result ) {
-		if (result == null) {
-			return "";
-		}
-
-		if ("A".equals(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
-			return result.getValue().split("\\(")[0].trim();
-		}
-
-		return result.getValue();
+		return result != null ? new ResultService(result).getResultValue() : "";
 	}
 
 	private boolean hasLogValue(TestService testService){//Analysis analysis, String resultValue) {
