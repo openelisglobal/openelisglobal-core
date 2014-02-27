@@ -13,11 +13,16 @@
 var outOfValidRangeMsg = null;
 
 function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, lowerAbnormal, upperAbnormal, significantDigits, specialCase ){
+    var isSpecialCase = specialCase == resultBox.value.toUpperCase();
+    var roundedValue, splitRoundedValue;
 
-	var regEx = new RegExp("^(-|\\+){0,1}\\d*\\.?\\d*$");
-	//var isNumber = regEx.test();
-	var isSpecialCase = specialCase == resultBox.value.toUpperCase(); 
-  //  var splitValue = resultBox.value.split(".");
+    if(resultBox.value.blank()){
+        resultBox.title = "";
+        resultBox.style.borderColor = "";
+        resultBox.style.background = "#ffffff";
+        $("valid_" + row).value = false;
+        return;
+    }
 
     if(isNaN(resultBox.value)){
         resultBox.style.borderColor = "red";
@@ -26,25 +31,8 @@ function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, low
     }
 
     if( !isNaN(significantDigits)){
-        resultBox.value = round( resultBox.value, significantDigits)
+        resultBox.value = round( resultBox.value, significantDigits);
     }
-  /*  if(splitValue.size() == 2 && significantDigits >= 0){
-        if( significantDigits == 0 ){
-            resultBox.value = splitValue[0];
-        }else if(splitValue[1].length == 0){
-            resultBox.value = resultBox.value.substring(0, splitValue[0].length);
-        }else{
-            resultBox.value = resultBox.value.substring(0, splitValue[0].length + 1 + significantDigits);
-        }
-    }
- */
-	if(resultBox.value.blank()){
-		resultBox.title = "";
-		resultBox.style.borderColor = "";
-		resultBox.style.background = "#ffffff";
-		$("valid_" + row).value = false;
-		return;
-	}
 
 	if( isSpecialCase ){
 		resultBox.title = "";
