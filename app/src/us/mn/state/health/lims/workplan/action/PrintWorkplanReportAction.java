@@ -18,6 +18,7 @@
 package us.mn.state.health.lims.workplan.action;
 
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,6 +53,7 @@ public class PrintWorkplanReportAction extends BaseAction {
 	
 	private final TestDAO testDAO = new TestDAOImpl();
 	private static us.mn.state.health.lims.workplan.reports.IWorkplanReport workplanReport;
+	private String reportPath;
 			
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
@@ -79,6 +81,8 @@ public class PrintWorkplanReportAction extends BaseAction {
 
 		//get workplan report based on testName
 		workplanReport = getWorkplanReport(workplanType, workplanName);
+		
+		workplanReport.setReportPath(getReportPath());
 				
 		//set jasper report parameters
 		HashMap<String, ?> parameterMap = workplanReport.getParameters();
@@ -171,6 +175,13 @@ public class PrintWorkplanReportAction extends BaseAction {
     	return workplan;
     }
 	
+	public String getReportPath() {
+	    if (reportPath == null) {
+	        reportPath = getServlet().getServletContext().getRealPath("") + File.separator + "WEB-INF" + File.separator + "reports" + File.separator;
+	    }
+        return reportPath;
+    }
+
 	
 }
 	

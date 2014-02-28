@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="WorkplanByTest" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -16,10 +16,18 @@
 		<defaultValueExpression><![CDATA["Lab No."]]></defaultValueExpression>
 	</parameter>
 	<parameter name="subjectNoTitle" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="siteLogo" class="java.lang.String"/>
+	<parameter name="labName" class="java.lang.String"/>
+	<parameter name="nameOfPatient" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
 	<field name="accessionNumber" class="java.lang.String"/>
 	<field name="receivedDate" class="java.lang.String"/>
 	<field name="patientInfo" class="java.lang.String"/>
 	<field name="nextVisitDate" class="java.lang.String"/>
+	<field name="patientName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -52,10 +60,19 @@
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="1" y="1" width="48" height="45"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{siteLogo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="164" y="2" width="229" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="20" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<staticText>
 				<reportElement key="staticText" x="0" y="1" width="111" height="16"/>
 				<box>
@@ -76,27 +93,32 @@
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="242" y="1" width="126" height="16">
+				<reportElement x="234" y="1" width="92" height="16">
 					<printWhenExpression><![CDATA[$P{printSubjectNo}]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{subjectNoTitle}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="111" y="0" width="115" height="16"/>
-				<textElement/>
+				<reportElement x="111" y="1" width="115" height="16"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labNumberTitle}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="371" y="1" width="128" height="16"/>
+				<reportElement x="423" y="1" width="76" height="16"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Résultats]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="504" y="0" width="39" height="16"/>
-				<textElement/>
+				<reportElement x="504" y="1" width="39" height="16"/>
+				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Tech]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="334" y="1" width="89" height="16"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{nameOfPatient}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -121,10 +143,10 @@
 				</graphicElement>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement x="242" y="0" width="126" height="13">
+				<reportElement mode="Transparent" x="235" y="0" width="91" height="13" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{printSubjectNo}]]></printWhenExpression>
 				</reportElement>
-				<textElement/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientInfo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -139,6 +161,11 @@
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="334" y="0" width="89" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
