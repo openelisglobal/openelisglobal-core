@@ -76,14 +76,21 @@ public class ResultService {
 		return result.getResultType();
 	}
 
-	public String getResultValue() {
+    /**
+     * This returns a textual representation of the result value.  Multiselect results are returned as a comma
+     * delimited string. If there is a qualified value it is not included
+     * @param printable If true the results will be suitable for printing, otherwise they will be suitable for a
+     *                  web form
+     * @return A textual representation of the value
+     */
+    public String getResultValue(boolean printable ) {
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 		if (GenericValidator.isBlankOrNull(result.getValue())) {
 			return "";
 		}
 
 		if ("D".equals(getTestType())) {
-			return dictionaryDAO.getDataForId(result.getValue()).getDictEntry();
+			return printable ? dictionaryDAO.getDataForId(result.getValue()).getDictEntry() : result.getValue();
 		} else if ("M".equals(getTestType())) {
 			StringBuilder buffer = new StringBuilder();
 			boolean firstPass = true;

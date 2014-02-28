@@ -90,10 +90,10 @@ function handleMultiSelectChange( e, data ){
     if( data.type == "add"){
         appendValueToElementValue( selection, data.value );
         if( $jq("#" + e.target.id).hasClass("userSelection")){
-            showUserReflexChoices( e.target.id.split("_")[1], data.value )
+     //       showUserReflexChoices( e.target.id.split("_")[1], data.value )
         }
     }else{ //drop
-        removeReflexesFor( data.value, id.split("_")[1]);
+    //    removeReflexesFor( data.value, id.split("_")[1]);
         var splitValues =  selection.value.split(",");
         selection.value = "";
 

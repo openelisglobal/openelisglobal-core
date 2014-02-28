@@ -97,7 +97,8 @@ public class AnalysisService{
         for( Result existingResult : existingResults ){
             if( !"MD".contains( existingResult.getResultType()) &&
                     existingResult.getParentResult() != null &&
-                    quantifiableResultsIds.contains( existingResult.getParentResult().getId()) ){
+                    quantifiableResultsIds.contains( existingResult.getParentResult().getId()) &&
+                    !GenericValidator.isBlankOrNull(existingResult.getValue())){
             return existingResult;
             }
         }
