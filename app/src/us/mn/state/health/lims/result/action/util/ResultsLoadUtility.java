@@ -825,7 +825,7 @@ public class ResultsLoadUtility {
 	}
 
 	private String getFormattedResultValue( Result result ) {
-		return result != null ? new ResultService(result).getResultValue() : "";
+		return result != null ? new ResultService(result).getResultValue( false ) : "";
 	}
 
 	private boolean hasLogValue(TestService testService){//Analysis analysis, String resultValue) {

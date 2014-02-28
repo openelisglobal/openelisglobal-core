@@ -733,13 +733,32 @@ public class ResultsValidationUtility {
 	public List<AnalysisItem> testResultListToAnalysisItemList(List<ResultValidationItem> testResultList) {
 		List<AnalysisItem> analysisResultList = new ArrayList<AnalysisItem>();
 
+        /*
+        The issue with multiselect results is that each selection is one ResultValidationItem but they all need to
+        be condensed into one AnalysisItem.  There is a many to one mapping.  The first multiselect result we have gets rolled into
+        one AnalysisItem and the rest are skipped but we want to capture any qualified results
+         */
         boolean multiResultEntered = false;
+        String currentAccession = null;
+        AnalysisItem currentMultiSelectAnalysisItem = null;
 		for (ResultValidationItem testResultItem : testResultList) {
+            if( !testResultItem.getAccessionNumber().equals(currentAccession)){
+                currentAccession = testResultItem.getAccessionNumber();
+                currentMultiSelectAnalysisItem = null;
+                multiResultEntered = false;
+            }
             if( !multiResultEntered){
-                analysisResultList.add(testResultItemToAnalysisItem(testResultItem));
+                AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
+                analysisResultList.add(convertedItem);
                 if( "M".equals(testResultItem.getResultType())){
                     multiResultEntered = true;
+                    currentMultiSelectAnalysisItem = convertedItem;
                 }
+            }
+            if(currentMultiSelectAnalysisItem != null && testResultItem.isHasQualifiedResult() ){
+                currentMultiSelectAnalysisItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
+                currentMultiSelectAnalysisItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
+                currentMultiSelectAnalysisItem.setHasQualifiedResult(true);
             }
 		}
 
@@ -790,7 +809,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
         if( !"M".equals(testResultItem.getResultType())){
-            analysisResultItem.setResult(getFormatedResult(testResultItem));
+            analysisResultItem.setResult(getFormattedResult(testResultItem));
         } else {
             analysisResultItem.setMultiSelectResultValues(new ResultService(testResultItem.getResult()).getMultiSelectSelectedIdValues());
         }
@@ -811,12 +830,12 @@ public class ResultsValidationUtility {
 
 	}
 
-	private String getFormatedResult(ResultValidationItem testResultItem) {
+	private String getFormattedResult(ResultValidationItem testResultItem) {
         String result = testResultItem.getResult().getValue();
 		if( TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()) && !GenericValidator.isBlankOrNull(result)){
 			return result.split("\\(")[0].trim();
 		}else{
-            return new ResultService(testResultItem.getResult()).getResultValue();
+            return new ResultService(testResultItem.getResult()).getResultValue( false );
         }
 	}
 
