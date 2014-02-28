@@ -101,7 +101,11 @@ function printWorkplan() {
 		<% if( !workplanType.equals("test") ){ %>
 		<th width="3%">&nbsp;</th>
 		<th width="30%" style="text-align: left;">
-	  		<bean:message key="sample.entry.project.testName"/>
+			<% if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){ %>
+                <bean:message key="sample.entry.project.patient.and.testName"/>
+	        <% } else { %>
+	  		   <bean:message key="sample.entry.project.testName"/>
+	  		<% } %>  
 		</th>
 		<% } %>
 		<th width="20%" style="text-align: left;">
