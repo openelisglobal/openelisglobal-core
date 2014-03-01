@@ -192,7 +192,11 @@ public class BaseWorkplanAction extends BaseAction {
     protected String getPatientName( Analysis analysis){
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
             IPatientService patientService = new PatientService(analysis.getSampleItem().getSample());
-            return patientService.getLastName().toUpperCase();
+            String nationalId = patientService.getNationalId();
+            if (GenericValidator.isBlankOrNull(nationalId))
+                return patientService.getLastName().toUpperCase();
+            else
+                return patientService.getLastName().toUpperCase() + "/" + nationalId;
         } else 
             return ""; 
     }

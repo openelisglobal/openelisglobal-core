@@ -256,8 +256,9 @@ public class ResultsLoadUtility {
 
 			String patientName = "";
 			String patientInfo;
+			String nationalId = currPatient.getNationalId();
 			if (depersonalize) {
-				patientInfo = GenericValidator.isBlankOrNull(currPatient.getNationalId()) ? currPatient.getExternalId() : currPatient
+				patientInfo = GenericValidator.isBlankOrNull(nationalId) ? currPatient.getExternalId() : currPatient
 						.getNationalId();
 			} else {
 				patientName = getDisplayNameForCurrentPatient();
@@ -265,7 +266,7 @@ public class ResultsLoadUtility {
 			}
 
 			currSample = analysis.getSampleItem().getSample();
-			List<TestResultItem> testResultItemList = getTestResultItemFromAnalysis(analysis, patientName, patientInfo);
+			List<TestResultItem> testResultItemList = getTestResultItemFromAnalysis(analysis, patientName, patientInfo, nationalId);
 
 			for (TestResultItem selectionItem : testResultItemList) {
 				selectedTestList.add(selectionItem);
@@ -283,6 +284,15 @@ public class ResultsLoadUtility {
 
 		return selectedTestList;
 	}
+	
+    private String getNationalIdForCurrentPatient() {
+        StringBuilder codeBuilder = new StringBuilder();
+        if (!GenericValidator.isBlankOrNull(currPatient.getPerson().getLastName())) {
+            codeBuilder.append(currPatient.getNationalId());
+        }
+
+        return codeBuilder.toString();
+    }
 
 	private String getDisplayNameForCurrentPatient() {
 		StringBuilder nameBuilder = new StringBuilder();
@@ -374,7 +384,7 @@ public class ResultsLoadUtility {
 	}
 
 
-	private List<TestResultItem> getTestResultItemFromAnalysis(Analysis analysis, String patientName, String patientInfo)
+	private List<TestResultItem> getTestResultItemFromAnalysis(Analysis analysis, String patientName, String patientInfo, String nationalId)
 			throws LIMSRuntimeException {
 		List<TestResultItem> testResultList = new ArrayList<TestResultItem>();
 
@@ -436,7 +446,7 @@ public class ResultsLoadUtility {
 			TestResultItem resultItem = createTestResultItem(resultLimit, analysis, test, testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,
 					multiSelectionResult, initialConditions,  TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
-
+			resultItem.setNationalId(nationalId);
 			testResultList.add(resultItem);
 
 			if (multiSelectionResult) {
@@ -547,7 +557,7 @@ public class ResultsLoadUtility {
 
 				for (Analysis analysis : analysisList) {
 
-					List<TestResultItem> selectedItemList = getTestResultItemFromAnalysis(analysis, NO_PATIENT_NAME, NO_PATIENT_INFO);
+					List<TestResultItem> selectedItemList = getTestResultItemFromAnalysis(analysis, NO_PATIENT_NAME, NO_PATIENT_INFO, "");
 
 					for (TestResultItem selectedItem : selectedItemList) {
 						testList.add(selectedItem);

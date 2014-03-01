@@ -68,7 +68,7 @@ public class TestWorkplanReport implements IWorkplanReport {
 
    protected String getNameOfPatient(){
        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-           return StringUtil.getContextualMessageForKey("patient.name");   
+           return StringUtil.getContextualMessageForKey("sample.entry.project.patientName.code");   
        } else 
            return null;
    }   

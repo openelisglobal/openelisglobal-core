@@ -236,6 +236,7 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
         // Add Patient Name to top of test list
         testResultItem.setTestName(firstTestResultItem.getPatientName());
         testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
+        testResultItem.setServingAsTestGroupIdentifier(true);
         workplanTestList.add(insertPosition, testResultItem);
         
 }

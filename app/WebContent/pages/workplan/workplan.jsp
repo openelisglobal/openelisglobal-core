@@ -120,12 +120,14 @@ function printWorkplan() {
 					rowColorIndex++; } %>
      		<tr id='<%="row_" + index %>' class='<%=(rowColorIndex % 2 == 0) ? "evenRow" : "oddRow" %>'  >
      			<td id='<%="cell_" + index %>'>
+     			<% if (!workplanTests.isServingAsTestGroupIdentifier()) { %>
 					<html:checkbox name="workplanTests"
 						   property="notIncludedInWorkplan"
 						   styleId='<%="includedCheck_" + index %>'
 						   styleClass="includedCheck"
 						   indexed="true"
 						   onclick='<%="disableEnableTest(this," + index + ");" %>' />
+			    <% } %>
 				</td>
 				<% if( workplanType.equals("test") ){ %>
 				<td>
