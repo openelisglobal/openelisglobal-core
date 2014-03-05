@@ -128,6 +128,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 						testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
 						if (addPatientName)
 						    testResultItem.setPatientName(getPatientName(analysis));
+
 						workplanTestList.add(testResultItem);
 				}
 			}
@@ -177,6 +178,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
             // Add Patient Name to top of test list
             testResultItem.setTestName(firstTestResultItem.getPatientName());
             testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
+            testResultItem.setServingAsTestGroupIdentifier(true);
             workplanTestList.add(insertPosition, testResultItem);
             
     }
