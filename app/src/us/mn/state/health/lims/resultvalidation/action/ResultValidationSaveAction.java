@@ -27,12 +27,14 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.IResultSaveService;
+import us.mn.state.health.lims.common.services.ResultSaveService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
+import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapter;
 import us.mn.state.health.lims.common.services.registration.ValidationUpdateRegister;
 import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
-import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
@@ -60,26 +62,20 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
-import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
-import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class ResultValidationSaveAction extends BaseResultValidationAction implements IResultSaveService  {
 
-	private static final DecimalFormat TWO_DECIMAL_FORMAT = new DecimalFormat("##.##");
 	// DAOs
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static final SampleDAO sampleDAO = new SampleDAOImpl();
 	private static final TestResultDAO testResultDAO = new TestResultDAOImpl();
-	private static final TestAnalyteDAO testAnalyteDAO = new TestAnalyteDAOImpl();
 	private static final ResultDAO resultDAO = new ResultDAOImpl();
 	private static final NoteDAO noteDAO = new NoteDAOImpl();
 	private static final SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
@@ -90,6 +86,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 	private ArrayList<Sample> sampleUpdateList;
 	private ArrayList<Note> noteUpdateList;
 	private ArrayList<Result> resultUpdateList;
+    private List<Result> deletableList;
 
 	private SystemUser systemUser;
 	private ArrayList<Integer> sampleFinishedStatus = new ArrayList<Integer>();
@@ -144,6 +141,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		analysisUpdateList = new ArrayList<Analysis>();
 		modifiedResultSet = new ArrayList<ResultSet>();
 		newResultSet = new ArrayList<ResultSet>();
+        deletableList = new ArrayList<Result>();
 		
 		if(testSectionName.equals("serology")){
 			createUpdateElisaList(resultItemList);
@@ -154,8 +152,9 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 		try{
+            ResultSaveService.removeDeletedResultsInTransaction( deletableList,currentUserId);
 
-			// update analysis
+            // update analysis
 			for(Analysis analysis : analysisUpdateList){
 				analysisDAO.updateData(analysis);
 			}
@@ -295,15 +294,17 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 				createNote(analysisItem);
 
-				if(areResults(analysisItem)){
-					Result result = createResultFromAnalysisItem(analysisItem, analysis);
-					resultUpdateList.add(result);
-					
-					if(areListeners){
-						addResultSets(analysis, result);
-					}
-				}
-			}
+                if (areResults(analysisItem)) {
+                    List<Result> results = createResultFromAnalysisItem(analysisItem, analysis);
+                    for (Result result : results) {
+                        resultUpdateList.add(result);
+
+                        if (areListeners) {
+                            addResultSets(analysis, result);
+                        }
+                    }
+                }
+            }
 		}
 	}
 
@@ -409,7 +410,6 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 		String currentSampleId = "";
 		boolean sampleFinished = true;
-		List<Analysis> analysisList = new ArrayList<Analysis>();
 
 		for(AnalysisItem analysisItem : resultItemList){
 
@@ -418,7 +418,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 				currentSampleId = analysisSampleId;
 
-				analysisList = analysisDAO.getAnalysesBySampleId(currentSampleId);
+                List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(currentSampleId);
 
 				for(Analysis analysis : analysisList){
 					if(!sampleFinishedStatus.contains(Integer.parseInt(analysis.getStatusId()))){
@@ -476,96 +476,16 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 	}
 
-	private Result createResultFromAnalysisItem(AnalysisItem analysisItem, Analysis analysis){
+	private List<Result> createResultFromAnalysisItem(AnalysisItem analysisItem, Analysis analysis){
 
-		Result result = new Result();
-
-		if(GenericValidator.isBlankOrNull(analysisItem.getResultId())){
-			result.setAnalysis(analysis);
-			result.setAnalysisId(analysisItem.getAnalysisId());
-	        result.setResultType(analysisItem.getResultType());
-			TestAnalyte testAnalyte = getTestAnalyteForResult(result);
-
-			if(testAnalyte != null){
-				result.setAnalyte(testAnalyte.getAnalyte());
-			}
-
-		}else{
-			result.setId(analysisItem.getResultId());
-			resultDAO.getData(result);
-		}
-
-		TestResult testResult = getTestResult(analysisItem);
-		// changing from quantifiable
-		if( analysisItem.isHasQualifiedResult()){
-			// just the qualifier value has changed
-			String quantifiedValue = analysisItem.getQualifiedResultValue();
-			
-			List<Result> children = resultDAO.getChildResults(result.getId());
-			if(!children.isEmpty()){
-				updateExitingQuntifieableResult(quantifiedValue, children);
-			}
-			//changing to quantifiable from non-quantifiable
-		}else if(testResult.getIsQuantifiable()){
-		    
-			List<Result> children = resultDAO.getChildResults(result.getId());
-			if(children.isEmpty()){
-				Result quantifiedResult = new Result();
-				quantifiedResult.setAnalysis(analysis);
-				quantifiedResult.setAnalysisId(analysisItem.getAnalysisId());
-				// alphanumeric is the only supported resultType currently
-				quantifiedResult.setResultType("A");
-				TestAnalyte testAnalyte = getTestAnalyteForResult(quantifiedResult);
-
-				if(testAnalyte != null){
-					quantifiedResult.setAnalyte(testAnalyte.getAnalyte());
-				}
-				quantifiedResult.setValue(analysisItem.getQualifiedResultValue());
-				quantifiedResult.setSysUserId(currentUserId);
-				quantifiedResult.setSortOrder("0");
-				quantifiedResult.setParentResult(result);
-				resultUpdateList.add(quantifiedResult);
-			}else{
-				updateExitingQuntifieableResult(analysisItem.getQualifiedResultValue(), children);
-			}
-		}
-
-		if(testResult != null){
-			result.setTestResult(testResult);
-		}
-
-		if(analysisItem.getResult() != null && !analysisItem.getResult().equals(result.getValue())){
-			String analysisResult = analysisItem.getResult();
-			if(analysisItem.isDisplayResultAsLog()){
-				try{
-					Double value = Math.log10(Double.parseDouble(analysisResult));
-					analysisResult += "(" + String.valueOf(Double.valueOf(TWO_DECIMAL_FORMAT.format(value))) + ")";
-				}catch(NumberFormatException e){
-					// no-op use original number
-				}
-			}
-
-			result.setValue(analysisResult);
-			analysis.setRevision(String.valueOf(Integer.parseInt(analysis.getRevision()) + 1));
-			analysis.setEnteredDate(DateUtil.getNowAsTimestamp());
-		}
-		result.setSysUserId(currentUserId);
-		result.setSortOrder("0");
-
-		return result;
+        ResultSaveBean bean =  ResultSaveBeanAdapter.fromAnalysisItem(analysisItem);
+        return new ResultSaveService(analysis, currentUserId ).createResultsFromTestResultItem(bean,deletableList);
 	}
 
-	private void updateExitingQuntifieableResult(String quanifiedValue, List<Result> children){
-		Result quantifiedResult = children.get(0);
-		quantifiedResult.setValue(quanifiedValue);
-		quantifiedResult.setSysUserId(currentUserId);
-		quantifiedResult.setSortOrder("0");
-		resultUpdateList.add(quantifiedResult);
-	}
 
 	protected TestResult getTestResult(AnalysisItem analysisItem){
 		TestResult testResult = null;
-		if("DQ".contains(analysisItem.getResultType())){
+		if("D".equals(analysisItem.getResultType())){
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysisItem.getTestId(), analysisItem.getResult());
 		}else{
 			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(analysisItem.getTestId());
@@ -578,36 +498,14 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		return testResult;
 	}
 
-	private TestAnalyte getTestAnalyteForResult(Result result){
-
-		if(result.getTestResult() != null){
-			@SuppressWarnings("unchecked")
-			List<TestAnalyte> testAnalyteList = testAnalyteDAO.getAllTestAnalytesPerTest(result.getTestResult().getTest());
-
-			if(testAnalyteList.size() > 0){
-				int distanceFromRoot = 0;
-
-				Analysis parentAnalysis = result.getAnalysis().getParentAnalysis();
-
-				while(parentAnalysis != null){
-					distanceFromRoot++;
-					parentAnalysis = parentAnalysis.getParentAnalysis();
-				}
-
-				int index = Math.min(distanceFromRoot, testAnalyteList.size() - 1);
-
-				return testAnalyteList.get(index);
-			}
-		}
-		return null;
-	}
-
 	private boolean areNotes(AnalysisItem item){
 		return !GenericValidator.isBlankOrNull(item.getNote());
 	}
 
 	private boolean areResults(AnalysisItem item){
-		return !(GenericValidator.isBlankOrNull(item.getResult()) || ("D".equals(item.getResultType()) && "0".equals(item.getResult())));
+		return !(GenericValidator.isBlankOrNull(item.getResult()) ||
+                ("D".equals(item.getResultType()) && "0".equals(item.getResult()))) ||
+                ("M".equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 
 	private void createSystemUser(){

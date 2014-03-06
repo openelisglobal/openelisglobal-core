@@ -110,8 +110,8 @@ public class ResultService {
 			return buffer.toString();
 		} else if ("N".equals(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
-            if (significantPlaces < 1) {
-                return result.getValue();
+            if (significantPlaces == 0) {
+                return result.getValue().split("\\.")[0];
             }
             StringBuilder value = new StringBuilder();
             value.append(result.getValue());
