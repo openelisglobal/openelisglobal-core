@@ -402,6 +402,7 @@ function /*boolean*/ handleEnterEvent(){
 			<html:hidden name="resultList" property="sampleGroupingNumber" indexed="true" />
 			<html:hidden name="resultList" property="noteId" indexed="true" />
 			<html:hidden name="resultList" property="resultId"  indexed="true" styleId='<%="resultIdValue_" + index%>'/>
+            <html:hidden name="resultList" property="hasQualifiedResult" indexed="true" styleId='<%="hasQualifiedResult_" + index %>' />
 
 			<%if( resultList.isMultipleResultForSample() && showAccessionNumber ){ 
 			     showAccessionNumber = false; %>
@@ -504,7 +505,7 @@ function /*boolean*/ handleEnterEvent(){
                     </select>
                     <html:hidden name="resultList" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>'   />
                     <input type="text"
-                           name='<%="testResult[" + index + "].qualifiedResultValue" %>'
+                           name='<%="resultList[" + index + "].qualifiedResultValue" %>'
                            value='<%= resultList.getQualifiedResultValue() %>'
                            id='<%= "qualifiedDict_" + index %>'
                            style = '<%= "display:" + ( resultList.isHasQualifiedResult() ? "inline" : "none") %>'

@@ -415,6 +415,7 @@ public class ResultsValidationUtility {
 			if( parentItem != null && result.getParentResult() != null && parentItem.getResultId().equals(result.getParentResult().getId())){
 				parentItem.setQualifiedResultValue(result.getValue());
 				parentItem.setHasQualifiedResult( true );
+                parentItem.setQualificationResultId(result.getId());
 				continue;
 			}
 			
@@ -818,6 +819,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setNonconforming(testResultItem.isNonconforming());
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
+        analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
         analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
         if( "N".equals( testResultItem.getResultType() )){
             if( result.getMinNormal() == result.getMaxNormal() || result.getMinNormal().equals( result.getMaxNormal())){

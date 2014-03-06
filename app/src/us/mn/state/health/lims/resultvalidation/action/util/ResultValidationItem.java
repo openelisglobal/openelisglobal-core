@@ -82,6 +82,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	private boolean nonconforming = false;
 	private String qualifiedDictionaryId;
 	private String qualifiedResultValue = "";
+    private String qualificationResultId;
     private boolean hasQualifiedResult = false;
 
 	public String getAccessionNumber() {
@@ -365,5 +366,13 @@ public class ResultValidationItem implements ResultItem, Serializable{
 
     public void setHasQualifiedResult( boolean hasQualifiedResult ){
         this.hasQualifiedResult = hasQualifiedResult;
+    }
+
+    public String getQualificationResultId() {
+        return qualificationResultId;
+    }
+
+    public void setQualificationResultId(String qualificationResultId) {
+        this.qualificationResultId = qualificationResultId;
     }
 }
