@@ -17,6 +17,7 @@
 */
 package us.mn.state.health.lims.workplan.reports;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
 	private final HashMap<String, Object> parameterMap = new HashMap<String, Object>();
 	private String testSection = "";
 	private String messageKey = "banner.menu.workplan.";
+	protected String reportPath = "";
 	
 	public TestSectionWorkplanReport(String testSection) {
 		messageKey = messageKey + testSection;
@@ -55,7 +57,11 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
 		parameterMap.put("printNextVisit", ConfigurationProperties.getInstance().isPropertyValueEqual(Property.NEXT_VISIT_DATE_ON_WORKPLAN, "true"));
 		parameterMap.put("labNumberTitle", StringUtil.getContextualMessageForKey("quick.entry.accession.number"));
 		parameterMap.put("subjectNoTitle", StringUtil.getContextualMessageForKey("patient.subject.number"));
+		parameterMap.put("nameOfTest", getNameOfTest());
+		parameterMap.put("nameOfPatient", getNameOfPatient());
 		parameterMap.put("labName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
+        parameterMap.put("siteLogo", getSiteLogo());
+        parameterMap.put("SUBREPORT_DIR", reportPath);
 
 		return parameterMap;	
 	
@@ -78,5 +84,32 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
 		}
 		return includedTests;
 	}
+
+    @Override
+    public void setReportPath(String reportPath) {
+        this.reportPath = reportPath;
+        
+    }
+
+    protected String getSiteLogo(){
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
+            return "images" + File.separator + "HaitiLNSP.jpg";   
+        } else 
+            return null;
+    }
+
+    protected String getNameOfTest(){
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
+            return StringUtil.getContextualMessageForKey("sample.entry.project.patientName.testName");   
+        } else 
+            return StringUtil.getContextualMessageForKey("sample.entry.project.testName");
+    }
+
+    protected String getNameOfPatient(){
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
+            return StringUtil.getContextualMessageForKey("patient.name");   
+        } else 
+            return null;
+    }   
 
 }

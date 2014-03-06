@@ -17,6 +17,7 @@
 */
 package us.mn.state.health.lims.workplan.reports;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ public class TestWorkplanReport implements IWorkplanReport {
 	private static final String RESULT_FILE_NAME = "WorkplanResultsByTest";
 	private final HashMap<String, Object> parameterMap = new HashMap<String, Object>();
 	private String testName = "";
+	protected String reportPath = "";
 	
 	public TestWorkplanReport(String testType) {
 		this.testName = testType;	
@@ -48,12 +50,30 @@ public class TestWorkplanReport implements IWorkplanReport {
 		parameterMap.put("printNextVisit", ConfigurationProperties.getInstance().isPropertyValueEqual(Property.NEXT_VISIT_DATE_ON_WORKPLAN, "true"));
 		parameterMap.put("labNumberTitle", StringUtil.getContextualMessageForKey("quick.entry.accession.number"));
 		parameterMap.put("subjectNoTitle", StringUtil.getContextualMessageForKey("patient.subject.number"));
+		parameterMap.put("nameOfPatient", getNameOfPatient());
 		parameterMap.put("labName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
+		parameterMap.put("siteLogo", getSiteLogo());
+		parameterMap.put("SUBREPORT_DIR", reportPath);
+		
 		return parameterMap;	
 	
 	}
 	
-	public List<?> prepareRows(BaseActionForm dynaForm) {
+   protected String getSiteLogo(){
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
+            return "images" + File.separator + "HaitiLNSP.jpg";   
+        } else 
+            return null;
+    }
+
+   protected String getNameOfPatient(){
+       if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
+           return StringUtil.getContextualMessageForKey("sample.entry.project.patientName.code");   
+       } else 
+           return null;
+   }   
+	
+   public List<?> prepareRows(BaseActionForm dynaForm) {
 		
 		@SuppressWarnings("unchecked")
 		List<TestResultItem> workplanTests  = (List<TestResultItem>) dynaForm.get("workplanTests");
@@ -70,5 +90,11 @@ public class TestWorkplanReport implements IWorkplanReport {
 		}
 		return includedTests;
 	}
+
+    @Override
+    public void setReportPath(String reportPath) {
+        this.reportPath = reportPath;
+        
+    }
 
 }

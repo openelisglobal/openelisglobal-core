@@ -29,7 +29,9 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
@@ -41,6 +43,8 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -52,6 +56,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 	private final PanelDAO panelDAO = new PanelDAOImpl();
 	private final PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
 
+	private String reportPath;
 
 
 	@Override
@@ -102,11 +107,13 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 	private List<TestResultItem> getWorkplanByPanel(String panelId) {
 
 		List<TestResultItem> workplanTestList = new ArrayList<TestResultItem>();
+		// check for patient name addition 
+		boolean addPatientName = isPatientNameAdded();
 		
 		if (!(GenericValidator.isBlankOrNull(panelId) || panelId.equals("0"))) {
 
 			List<PanelItem> panelItems = panelItemDAO.getPanelItemsForPanel(panelId);
-						
+			
 			for(PanelItem panelItem : panelItems){
 				List<Analysis> analysisList = analysisDAO.getAllAnalysisByTestAndStatus(panelItem.getTest().getId(), statusList);
 				
@@ -119,6 +126,9 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 						testResultItem.setReceivedDate(getReceivedDateDisplay(sample));
 						testResultItem.setTestName(analysis.getTest().getTestName());
 						testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
+						if (addPatientName)
+						    testResultItem.setPatientName(getPatientName(analysis));
+
 						workplanTestList.add(testResultItem);
 				}
 			}
@@ -134,22 +144,52 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 			String currentAccessionNumber = new String();
 			int sampleGroupingNumber = 0;
 			
-			for (TestResultItem testResultItem: workplanTestList) {
+			int newIndex = 0;
+			int newElementsAdded = 0;
+			int workplanTestListOrigSize = workplanTestList.size();
 			
+			for (int i=0; newIndex < (workplanTestListOrigSize + newElementsAdded) ; i++) { 
+			    
+			    TestResultItem testResultItem = (TestResultItem) workplanTestList.get(newIndex);
+			    
 				if (!testResultItem.getAccessionNumber().equals(currentAccessionNumber)) {
 					sampleGroupingNumber++;
+					if (addPatientName) {
+					    addPatientNameToList(testResultItem, workplanTestList, newIndex, sampleGroupingNumber);
+					    newIndex++; newElementsAdded++;
+					}
+					
 					currentAccessionNumber = testResultItem.getAccessionNumber();
 				}
 				testResultItem.setSampleGroupingNumber(sampleGroupingNumber);	
+				newIndex++;
 			}
 
 		}
 
 		return workplanTestList;
 	}
-
+	
+    private void addPatientNameToList(TestResultItem firstTestResultItem, List<TestResultItem> workplanTestList, int insertPosition, int sampleGroupingNumber) {
+            TestResultItem testResultItem = new TestResultItem();
+            testResultItem.setAccessionNumber(firstTestResultItem.getAccessionNumber());
+            testResultItem.setPatientInfo(firstTestResultItem.getPatientInfo());
+            testResultItem.setReceivedDate(firstTestResultItem.getReceivedDate());
+            // Add Patient Name to top of test list
+            testResultItem.setTestName(firstTestResultItem.getPatientName());
+            testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
+            testResultItem.setServingAsTestGroupIdentifier(true);
+            workplanTestList.add(insertPosition, testResultItem);
+            
+    }
+	
+    private boolean isPatientNameAdded() {
+        return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP");
+    }
+	
 	private String getPanelName(String panelId) {
 		return panelDAO.getNameForPanelId(panelId);
 	}
+	
 
 }

@@ -41,9 +41,12 @@ public class TestResultItem implements ResultItem, Serializable{
 	private boolean isGroupSeparator = false;
 	private int sampleGroupingNumber = 1;  //display only -- groups like samples together
 
-
+	/*
+	 * Used for inserting Patient Names/o into lists of TestResultItems
+	 */
+	private boolean isServingAsTestGroupIdentifier = false;
 	
-	private static String NO = "no";
+    private static String NO = "no";
 	@SuppressWarnings("unused")
 	private static String YES = "yes";
 
@@ -75,7 +78,8 @@ public class TestResultItem implements ResultItem, Serializable{
 	private boolean reportable;
 	private String patientName;
 	private String patientInfo;
-	private String unitsOfMeasure = "";
+	private String nationalId;
+    private String unitsOfMeasure = "";
 
 //	private String testSortNumber;
 	private String resultType;
@@ -605,4 +609,19 @@ public class TestResultItem implements ResultItem, Serializable{
     public void setSignificantDigits( int significantDigits ){
         this.significantDigits = significantDigits;
     }
+    public boolean isServingAsTestGroupIdentifier() {
+        return isServingAsTestGroupIdentifier;
+    }
+    public void setServingAsTestGroupIdentifier(
+            boolean isServingAsTestGroupIdentifier) {
+        this.isServingAsTestGroupIdentifier = isServingAsTestGroupIdentifier;
+    }
+    public String getNationalId() {
+        return nationalId;
+    }
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+
 }

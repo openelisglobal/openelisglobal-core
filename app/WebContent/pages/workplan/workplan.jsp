@@ -101,7 +101,11 @@ function printWorkplan() {
 		<% if( !workplanType.equals("test") ){ %>
 		<th width="3%">&nbsp;</th>
 		<th width="30%" style="text-align: left;">
-	  		<bean:message key="sample.entry.project.testName"/>
+			<% if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){ %>
+                <bean:message key="sample.entry.project.patient.and.testName"/>
+	        <% } else { %>
+	  		   <bean:message key="sample.entry.project.testName"/>
+	  		<% } %>  
 		</th>
 		<% } %>
 		<th width="20%" style="text-align: left;">
@@ -116,12 +120,14 @@ function printWorkplan() {
 					rowColorIndex++; } %>
      		<tr id='<%="row_" + index %>' class='<%=(rowColorIndex % 2 == 0) ? "evenRow" : "oddRow" %>'  >
      			<td id='<%="cell_" + index %>'>
+     			<% if (!workplanTests.isServingAsTestGroupIdentifier()) { %>
 					<html:checkbox name="workplanTests"
 						   property="notIncludedInWorkplan"
 						   styleId='<%="includedCheck_" + index %>'
 						   styleClass="includedCheck"
 						   indexed="true"
 						   onclick='<%="disableEnableTest(this," + index + ");" %>' />
+			    <% } %>
 				</td>
 				<% if( workplanType.equals("test") ){ %>
 				<td>

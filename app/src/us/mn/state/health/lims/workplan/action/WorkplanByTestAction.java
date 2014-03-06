@@ -150,6 +150,7 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 		List<TestResultItem> workplanTestList = new ArrayList<TestResultItem>();
 		String currentAccessionNumber = new String();
 		String subjectNumber = new String();
+		String patientName = new String();
 		String nextVisit = new String();
 		int sampleGroupingNumber = 0;
 
@@ -172,10 +173,12 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 					sampleGroupingNumber++;
 					currentAccessionNumber = testResultItem.getAccessionNumber();
 					subjectNumber = getSubjectNumber(analysis);
+					patientName = getPatientName(analysis);
 					nextVisit = ObservationHistoryService.getValue(ObservationType.NEXT_VISIT_DATE, sample.getId());
 				}
 				testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
 				testResultItem.setPatientInfo(subjectNumber);
+				testResultItem.setPatientName(patientName);
 				testResultItem.setNextVisitDate(nextVisit);
 				
 				
@@ -235,7 +238,7 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 
 		return workplanTestList;
 	}
-
+		
 	private String getTestName(String testId) {
 
 		Test test = new Test();

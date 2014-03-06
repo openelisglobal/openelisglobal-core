@@ -31,4 +31,6 @@ public interface IWorkplanReport {
     public String getFileName();
 
     public List<?> prepareRows(BaseActionForm dynaForm);
+
+    public void setReportPath(String reportPath);
 }
