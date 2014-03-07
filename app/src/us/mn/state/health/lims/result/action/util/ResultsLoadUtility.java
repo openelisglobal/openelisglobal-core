@@ -274,15 +274,7 @@ public class ResultsLoadUtility {
 
 		return selectedTestList;
 	}
-	
-    private String getNationalIdForCurrentPatient() {
-        StringBuilder codeBuilder = new StringBuilder();
-        if (!GenericValidator.isBlankOrNull(currPatient.getPerson().getLastName())) {
-            codeBuilder.append(currPatient.getNationalId());
-        }
 
-        return codeBuilder.toString();
-    }
 
 	private String getDisplayNameForCurrentPatient() {
 		StringBuilder nameBuilder = new StringBuilder();
