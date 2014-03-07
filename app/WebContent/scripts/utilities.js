@@ -763,6 +763,8 @@ function filterTimeKeys(field, event) {
     if (!IsTimeKey(currentChar)) {
         field.value = removeLastChar(v);
     }
+
+    addHourTwoPoint(field,event);
 }
     
 function removeLastChar(stringToCut) {
@@ -855,4 +857,17 @@ function round(value, exp) {
     // Shift back
     value = value.toString().split('e');
     return (+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp))).toFixed(exp);
+}
+
+function  addHourTwoPoint(field, event) {
+    var key = event.which ? event.which : event.keyCode;
+    if (key == 8) { // delete key? do nothing
+        return;
+    }
+    var number = field.value;
+
+    if (field.value.length == 2 && field.value.indexOf(":") == -1) {
+        field.value = number + ":";
+    }
+
 }
