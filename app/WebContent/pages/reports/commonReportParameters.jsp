@@ -252,7 +252,7 @@ function onPrint(){
 		<html:text styleClass="input-medium" name='<%=formName%>' property="lowerDateRange" onkeyup="addDateSlashes(this, event);" maxlength="10"/>
 	  </logic:equal>
 	  <logic:equal name='<%=formName%>' property="useUpperDateRange" value="true">
-	  	<span style="padding-left: 10px"><bean:message key="report.date.end"/></span>
+	  	<span style="padding-left: 10px"><bean:message key="report.date.end"/>&nbsp;<bean:message key="sample.date.format"/></span>
 	  	<html:text styleClass="input-medium" name='<%=formName%>' property="upperDateRange" maxlength="10" onkeyup="addDateSlashes(this, event);"/>
 	  </logic:equal>
   </div>
@@ -287,7 +287,7 @@ function onPrint(){
 		 </html:select>
 	</div>
 	<div>
-  	    <bean:message key="report.date.start"/>&nbsp;<bean:message key="sample.date.format"/>
+  	    <bean:message key="report.date.start"/>
 			<html:select name="<%= formName %>" 
 						 property="lowerMonth" 
 						 styleClass="text" 
