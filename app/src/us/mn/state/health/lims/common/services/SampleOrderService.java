@@ -115,14 +115,14 @@ public class SampleOrderService{
             sampleOrder.setReceivedDateForDisplay( sampleService.getReceivedDateForDisplay() );
             sampleOrder.setReceivedTime( sampleService.getReceivedTimeForDisplay() );
 
-            sampleOrder.setRequestDate( ObservationHistoryService.getValue( ObservationType.REQUEST_DATE, sample.getId() ) );
-            sampleOrder.setReferringPatientNumber( ObservationHistoryService.getValue( ObservationType.REFERRERS_PATIENT_ID, sample.getId() ) );
-            sampleOrder.setNextVisitDate( ObservationHistoryService.getValue( ObservationType.NEXT_VISIT_DATE, sample.getId() )  );
-            sampleOrder.setPaymentOptionSelection( ObservationHistoryService.getRawValue( ObservationType.PAYMENT_STATUS, sample.getId() ) );
-            sampleOrder.setOrderType( ObservationHistoryService.getValue( ObservationType.PRIMARY_ORDER_TYPE, sample.getId() ) );
-            sampleOrder.setInitialPeriodOrderType( ObservationHistoryService.getValue( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
-            sampleOrder.setFollowupPeriodOrderType( ObservationHistoryService.getValue( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
-            sampleOrder.setOtherPeriodOrder( ObservationHistoryService.getValue( ObservationType.OTHER_SECONDARY_ORDER_TYPE, sample.getId() ) );
+            sampleOrder.setRequestDate( ObservationHistoryService.getValueForSample( ObservationType.REQUEST_DATE, sample.getId() ) );
+            sampleOrder.setReferringPatientNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, sample.getId() ) );
+            sampleOrder.setNextVisitDate( ObservationHistoryService.getValueForSample( ObservationType.NEXT_VISIT_DATE, sample.getId() )  );
+            sampleOrder.setPaymentOptionSelection( ObservationHistoryService.getRawValueForSample( ObservationType.PAYMENT_STATUS, sample.getId() ) );
+            sampleOrder.setOrderType( ObservationHistoryService.getValueForSample( ObservationType.PRIMARY_ORDER_TYPE, sample.getId() ) );
+            sampleOrder.setInitialPeriodOrderType( ObservationHistoryService.getValueForSample( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
+            sampleOrder.setFollowupPeriodOrderType( ObservationHistoryService.getValueForSample( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
+            sampleOrder.setOtherPeriodOrder( ObservationHistoryService.getValueForSample( ObservationType.OTHER_SECONDARY_ORDER_TYPE, sample.getId() ) );
 
             RequesterService requesterService = new RequesterService( sample.getId() );
             sampleOrder.setProviderFirstName( requesterService.getRequesterFirstName() );
@@ -250,12 +250,12 @@ public class SampleOrderService{
     private void createOrUpdateObservation(  String currentUserId, List<ObservationHistory> observations,
                                              String patientId, ObservationType observationType, String value,
                                              ValueType valueType){
-        ObservationHistory observation = ObservationHistoryService.getObservation( observationType, sampleOrder.getSampleId() );
+        ObservationHistory observation = ObservationHistoryService.getObservationForSample( observationType, sampleOrder.getSampleId() );
         if(observation == null && !GenericValidator.isBlankOrNull( value )){
             observation = new ObservationHistory(  );
             observation.setSampleId( sampleOrder.getSampleId() );
             observation.setPatientId( patientId );
-            observation.setObservationHistoryTypeId( ObservationHistoryService.getIdForType( observationType ) );
+            observation.setObservationHistoryTypeId( ObservationHistoryService.getObservationTypeIdForType( observationType ) );
             observation.setValueType( valueType.getCode() );
         }
 

@@ -1,14 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
-			     us.mn.state.health.lims.common.util.SystemConfiguration,
 			     us.mn.state.health.lims.common.formfields.FormFields,
 			     us.mn.state.health.lims.common.formfields.FormFields.Field,
 			     us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
 			     us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-			     us.mn.state.health.lims.common.util.StringUtil,
-			     us.mn.state.health.lims.common.util.Versioning,
-			     us.mn.state.health.lims.common.util.ConfigurationProperties,
 			     us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
+<%@ page import="us.mn.state.health.lims.common.util.*" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
@@ -16,9 +13,11 @@
 <%@ taglib uri="/tags/struts-logic"		prefix="logic" %>
 <%@ taglib uri="/tags/labdev-view"		prefix="app" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
+<%@ taglib prefix="nested" uri="http://jakarta.apache.org/struts/tags-nested" %>
 
 <bean:define id="formName"	value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 <bean:define id="localDBOnly" value='<%=Boolean.toString(ConfigurationProperties.getInstance().getPropertyValueLowerCase(Property.UseExternalPatientInfo).equals("false"))%>' />
+<bean:define id="patientSearch" name='<%=formName%>' property='patientSearch' type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
 
 <%!
 	IAccessionNumberValidator accessionNumberValidator;
@@ -50,28 +49,44 @@ var supportSubjectNumber = <%= supportSubjectNumber %>;
 var supportNationalID = <%= supportNationalID %>;
 var supportLabNumber = <%= supportLabNumber %>;
 var patientSelectID;
-var patientInfoHash = new Array();
-var patientChangeListeners = new Array();
+var patientInfoHash = [];
+var patientChangeListeners = [];
 var localDB = '<%=localDBOnly%>' == "true";
 var newSearchInfo = false;
 
 function searchPatients()
 {
+    var criteria = $jq("#searchCriteria").val();
+    var value = $jq("#searchValue").val();
+    var splitName;
+    var lastName = "";
+    var firstName = "";
+    var STNumber = "";
+    var subjectNumber = "";
+    var nationalID = "";
+    var labNumber = "";
+
+
 	newSearchInfo = false;
+    $jq("#resultsDiv").hide();
 
-	var results = $("resultsDiv");
-	if( results ){
-		results.hide();
-	}
+    if( criteria == 1){
+        firstName =  value;
+    }else if(criteria == 2){
+        lastName = value;
+    }else if(criteria == 3){
+        splitName = value.split(",");
+        lastName = splitName[0].trim();
+        firstName = splitName[1].trim();
+    }else if(criteria == 4){
+        STNumber = value;
+        subjectNumber = value;
+        nationalID = value;
+    }else if(criteria == 5){
+        labNumber = value;
+    }
 
-	var lastName = $("searchLastNameID").value;
-	var firstName = $("searchFirstNameID").value;
-    var STNumber = supportSTNumber ? $("searchSTID").value : "";
-    var subjectNumber = supportSubjectNumber ? $("searchSubjectNumberID").value : "";
-    var nationalID = supportNationalID ? $("searchNationalID").value : "";
-    var labNumber = supportLabNumber ? $("searchLabNumber").value : "";
-
-	patientSearch(lastName, firstName, STNumber, subjectNumber, nationalID, labNumber, "", false, processSearchSuccess, processSearchFailure);
+	patientSearch(lastName, firstName, STNumber, subjectNumber, nationalID, labNumber, "", false, processSearchSuccess);
 
 }
 
@@ -97,8 +112,8 @@ function processSearchSuccess(xhr)
 			addPatientToSearch( table, resultNodes.item(i) );
 		}
 		
-		if( resultNodes.length == 1 && doSelectPatientForResults ){
-			doSelectPatientForResults();
+		if( resultNodes.length == 1 && <%= String.valueOf(patientSearch.isLoadFromServerWithPatient()) %>  ){
+			handleSelectedPatient();
 		}
 	}else
 	{
@@ -115,12 +130,6 @@ function clearSearchResultTable() {
 	
 }
 
-function processSearchFailure(xhr)
-{
-	//alert( xhr.responseText );
-	alert("<bean:message key="error.system"/>");
-}
-
 function clearTable(table){
 	var rows = table.rows.length - 1;
 	while( rows > 0 ){
@@ -129,7 +138,7 @@ function clearTable(table){
 }
 
 function clearPatientInfoCache(){
-	patientInfoHash = new Array();
+	patientInfoHash = [];
 }
 
 function addPatientToSearch(table, result ){
@@ -210,7 +219,7 @@ function /*String*/ nonNullString( target ){
 }
 
 function addToPatientInfo( firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk ){
-	var info = new Array();
+	var info = [];
 	info["first"] = nonNullString( firstName );
 	info["last"] = nonNullString( lastName );
 	info["gender"] = nonNullString( gender );
@@ -225,18 +234,18 @@ function addToPatientInfo( firstName, lastName, gender, DOB, stNumber, subjectNu
 
 
 function selectPatient( patientID ){
-
+    var i;
 	if( patientID ){
 		patientSelectID = patientID;
 
 		var info = patientInfoHash[patientID];
 
-		for(var i = 0; i < patientChangeListeners.length; i++){
+		for(i = 0; i < patientChangeListeners.length; i++){
 			patientChangeListeners[i](info["first"],info["last"],info["gender"],info["DOB"],info["ST"],info["subjectNumber"],info["national"],info["mother"], patientID);
 		}
 
 	}else{
-		for(var i = 0; i < patientChangeListeners.length; i++){
+		for(i = 0; i < patientChangeListeners.length; i++){
 			patientChangeListeners[i]("","","","","","","","", null);
 		}
 	}
@@ -261,88 +270,56 @@ function /*void*/ dirtySearchInfo(e){
 		newSearchInfo = true; 
 	}
 }
+
+function enableSearchButton(){
+    var valueElem = $jq("#searchValue");
+    var criteriaElem  = $jq('#searchCriteria');
+    if( valueElem.val() && criteriaElem.val() != "0"){
+        $jq("#searchButton").removeAttr("disabled");
+    }else{
+        $jq("#searchButton").attr("disabled", "disabled");
+    }
+
+    if(criteriaElem.val() == "5" ){
+        valueElem.attr("maxlength","<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>");
+        valueElem.val( valueElem.val().substring(0, <%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>));
+    }else{
+        valueElem.attr("maxlength","120");
+    }
+}
+
+function handleSelectedPatient(){
+    var accessionNumber = "";
+    if($jq("#searchCriteria").val() == 5){//lab number
+        accessionNumber = $jq("#searchValue").val();
+    }
+
+    $("searchResultsDiv").style.display = "none";
+    var form = document.forms[0];
+    form.action = '<%=formName%>'.sub('Form','') + ".do?accessionNumber=" + accessionNumber + "&patientID=" + patientSelectID;
+    form.submit();
+}
 </script>
 
-<div id="PatientPage" class="colorFill patientSearch" style="display:inline" >
+<div id="PatientPage" class="colorFill patientSearch" style="display:inline;" >
 	
-		<h2><bean:message key="sample.entry.search"/></h2>
-		
-		<table width="70%">
-		<tr >
-			<td width="30%">
-				<bean:message key="patient.epiLastName"/>
-			</td>
-			<td width="25%">
-				<bean:message key="patient.epiFirstName"/>
-			</td>
-			<% if( supportSTNumber ){ %>
-			<td width="20%">
-				<bean:message key="patient.ST.number"/>
-			</td>
-			<%} %>
-			<% if( supportSubjectNumber ){ %>
-			<td width="20%">
-				<%=StringUtil.getContextualMessageForKey("patient.subject.number") %>
-			</td>
-			<%} %>
-			<% if( supportNationalID ){ %>
-			<td width="20%">
-				<%=StringUtil.getContextualMessageForKey("patient.NationalID") %>
-			</td>
-			<%} %>
-			<% if( supportLabNumber ){ %>
-			<td width="20%">
-				<%=StringUtil.getContextualMessageForKey("resultsentry.accessionNumber") %>
-			</td>
-			<%} %>
-			<td></td>
-		</tr>
-	
-		<tr>
-		<td >
-			<input name="searchLastName" size="30" value="" id="searchLastNameID" class="text" type="text" onkeyup="dirtySearchInfo( event )">
-		</td>
-		<td>
-			<input name="searchFirstName" size="30" value="" id="searchFirstNameID" class="text" type="text" onkeyup="dirtySearchInfo( event )" >
-		</td>
-		<% if(supportSTNumber){ %>
-		<td>
-			<input name="searchST" size="15" value="" id="searchSTID" class="text" type="text" onkeyup="dirtySearchInfo( event )">
-		</td>
-		<% } %>
-		<% if(supportSubjectNumber){ %>
-		<td>
-			<input name="searchSubjectNumber" size="15" value="" id="searchSubjectNumberID" class="text" type="text" onkeyup="dirtySearchInfo( event )" >
-		</td>
-		<% } %>
-		<% if(supportNationalID){ %>
-		<td>
-			<input name="searchNationalID" size="15" value="" id="searchNationalID" class="text" type="text" onkeyup="dirtySearchInfo( event )" >
-		</td>
-		<% } %>
-		<% if(supportLabNumber){ %>
-		<td>
-			<input name="searchLabNumber"
-				   size="15"
-				   value=""
-				   id="searchLabNumber"
-				   class="text"
-				   maxlength="<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>"
-				   type="text"  
-				   onkeyup="dirtySearchInfo( event )" >
-		</td>
-		<% } %>
-		
-		<td><html:button property="searchButton" onclick="searchPatients()"  >
-				<bean:message key="sample.entry.runSearch"/>
-			</html:button>
-		</td>
-		</tr>
-	</table>
+	<h2><bean:message key="sample.entry.search"/></h2>
+    <select id="searchCriteria"  style="float:left" onchange="enableSearchButton()">
+        <%
+            for(IdValuePair pair : patientSearch.getSearchCriteria()){
+                out.print("<option value=\"" + pair.getId() +"\">" + pair.getValue() + "</option>");
+            }
+        %>
+    </select>
+
+    <input size="30" value="" id="searchValue" class="text" type="text"  onkeyup="enableSearchButton()"/>
+
+    <input type="button" name="searchButton" value="<%= StringUtil.getMessageForKey("label.patient.search")%>" id="searchButton" onclick="searchPatients()" disabled="true">
+
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>
 	</div>
-	<div id="searchResultsDiv" class="colorFill" style="display: none" >
+	<div id="searchResultsDiv" class="colorFill" style="display: none;" >
 		<% if( localDBOnly.equals("false")){ %>
 		<table id="searchResultTable" style="width:90%">
 			<tr>
@@ -389,14 +366,13 @@ function /*void*/ dirtySearchInfo(e){
 			</tr>
 		</table>
 		<br/>
-		<logic:notEmpty name="<%=formName%>" property="buttonText" >
-			<html:button property="retrieveTestsButton" onclick="doSelectPatientForResults();" styleId="selectPatientButtonID">
-				<bean:write name="<%=formName%>" property="buttonText" />
-			</html:button>
-		</logic:notEmpty>
+
+        <% if( patientSearch.getSelectedPatientActionButtonText() != null){ %>
+            <input type="button"
+                   value="<%= patientSearch.getSelectedPatientActionButtonText()%>"
+                   id="selectPatientButtonID"
+                   onclick="handleSelectedPatient()">
+        <% }%>
 		</div>
 	</div>
-</div>
-
-
 

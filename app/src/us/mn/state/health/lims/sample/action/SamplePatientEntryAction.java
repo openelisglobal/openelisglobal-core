@@ -28,6 +28,7 @@ import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,6 +56,7 @@ public class SamplePatientEntryAction extends BaseSampleEntryAction {
         SampleOrderService sampleOrderService = new SampleOrderService();
         PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
 		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
+        PropertyUtils.setProperty( dynaForm, "patientSearch", new PatientSearch() );
 		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE));
 		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
         PropertyUtils.setProperty( dynaForm, "currentDate", DateUtil.getCurrentDateAsText());

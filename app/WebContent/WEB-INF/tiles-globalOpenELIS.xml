@@ -96,7 +96,7 @@
 	</definition>
 
 	<definition name="accessionSampleEditCore" path="/pages/result/resultsBySearch.jsp">
-		<put name="searchPanel" value="/pages/search/compoundSearch.jsp"/>
+		<put name="searchPanel" value="/pages/patient/patientSearch.jsp"/>
 		<put name="resultsPanel" value="sampleEditCore"/>
 	</definition>
 
