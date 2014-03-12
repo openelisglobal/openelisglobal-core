@@ -15,8 +15,8 @@
             <form-property name="patientPK" type="java.lang.String" initial="" />
             <form-property name="sampleTypes" type="java.util.List" />
             <form-property name="sampleXML" type="java.lang.String" initial="" />
-            <form-property name="buttonText" type="java.lang.String" initial="" />
             <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
             <form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
             <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
             <form-property name="initialSampleConditionList" type="java.util.Collection" />
@@ -30,11 +30,11 @@
 			<form-property name="currentDate" type="java.lang.String" initial="" />
 			<form-property name="patientLastUpdated" type="java.lang.String" initial="" />
 			<form-property name="personLastUpdated" type="java.lang.String" initial="" />
-			<form-property name="buttonText" type="java.lang.String" initial="" />
 			<form-property name="confirmationItems" type="java.util.Collection" />
 			<form-property name="sampleTypes" type="java.util.Collection" />
 			<form-property name="patientPK" type="java.lang.String" initial="" />
 			<form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
 			<form-property name="requestingOrganizationList" type="java.util.Collection" />
 			<form-property name="requestAsXML" type="java.lang.String" />
 			<form-property name="initialSampleConditionList" type="java.util.Collection" />
@@ -62,12 +62,11 @@
 			<form-property name="currentDate" type="java.lang.String" initial="" />
 			<form-property name="testSectionList" type="java.util.Collection" />
             <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
 		</form-bean>
 
 
  		<form-bean name="patientEntryByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
- 			<form-property name="buttonText" type="java.lang.String"/>
-
 			<!-- Drop downs -->
  			<form-property name="formLists" type="java.util.Map"/>
  			<form-property name="dictionaryLists" type="java.util.Map"/>
@@ -102,8 +101,6 @@
 		</form-bean>
 
  		<form-bean name="patientEditByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
- 			<form-property name="buttonText" type="java.lang.String"/>
-
 			<!-- Drop downs -->
  			<form-property name="formLists" type="java.util.Map"/>
  			<form-property name="dictionaryLists" type="java.util.Map"/>
@@ -191,7 +188,6 @@
 			<form-property name="st" type="java.lang.String" initial="" />
 			<form-property name="subjectNumber" type="java.lang.String" initial="" />
 			<form-property name="nationalId" type="java.lang.String" initial="" />
-			<form-property name="buttonText" type="java.lang.String" initial="" />
 			<form-property name="displayTestMethod" type="java.lang.Boolean" initial="true" />
 			<form-property name="displayTestKit" type="java.lang.Boolean" initial="false" />
 			<form-property name="testResult" type="java.util.ArrayList" />
@@ -199,6 +195,7 @@
 			<form-property name="searchFinished" type="java.lang.Boolean" initial="false" />
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
 		</form-bean>
 
 		<form-bean name="AccessionResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -212,7 +209,6 @@
 			<form-property name="st" type="java.lang.String" initial="" />
 			<form-property name="subjectNumber" type="java.lang.String" initial="" />
 			<form-property name="nationalId" type="java.lang.String" initial="" />
-			<form-property name="buttonText" type="java.lang.String" initial="" />
 			<form-property name="displayTestMethod" type="java.lang.Boolean" initial="true" />
 			<form-property name="displayTestKit" type="java.lang.Boolean" initial="false" />
 			<form-property name="testResult" type="java.util.ArrayList" />

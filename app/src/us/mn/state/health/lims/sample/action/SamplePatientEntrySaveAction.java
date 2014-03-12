@@ -415,16 +415,16 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 
 	private void addObservations(SampleOrderItem sampleOrder, boolean trackPayments) {
 		if (trackPayments) {
-			createObservation( sampleOrder.getPaymentOptionSelection(), ObservationHistoryService.getIdForType(ObservationType.PAYMENT_STATUS), ValueType.DICTIONARY);
+			createObservation( sampleOrder.getPaymentOptionSelection(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.PAYMENT_STATUS ), ValueType.DICTIONARY);
 		}
 
-		createObservation( sampleOrder.getRequestDate(),  ObservationHistoryService.getIdForType(ObservationType.REQUEST_DATE), ValueType.LITERAL);
-		createObservation( sampleOrder.getNextVisitDate(),  ObservationHistoryService.getIdForType(ObservationType.NEXT_VISIT_DATE), ValueType.LITERAL);
-		createOrderTypeObservation(sampleOrder.getOrderType(),  ObservationHistoryService.getIdForType(ObservationType.PRIMARY_ORDER_TYPE), ValueType.LITERAL);
-		createOrderTypeObservation(sampleOrder.getFollowupPeriodOrderType(),  ObservationHistoryService.getIdForType(ObservationType.SECONDARY_ORDER_TYPE), ValueType.LITERAL);
-		createOrderTypeObservation(sampleOrder.getInitialPeriodOrderType(),  ObservationHistoryService.getIdForType(ObservationType.SECONDARY_ORDER_TYPE), ValueType.LITERAL);
-		createObservation(sampleOrder.getOtherPeriodOrder(),  ObservationHistoryService.getIdForType(ObservationType.OTHER_SECONDARY_ORDER_TYPE), ValueType.LITERAL);
-		createObservation(sampleOrder.getReferringPatientNumber(),  ObservationHistoryService.getIdForType(ObservationType.REFERRERS_PATIENT_ID), ValueType.LITERAL);
+		createObservation( sampleOrder.getRequestDate(),  ObservationHistoryService.getObservationTypeIdForType( ObservationType.REQUEST_DATE ), ValueType.LITERAL);
+		createObservation( sampleOrder.getNextVisitDate(),  ObservationHistoryService.getObservationTypeIdForType( ObservationType.NEXT_VISIT_DATE ), ValueType.LITERAL);
+		createOrderTypeObservation(sampleOrder.getOrderType(),  ObservationHistoryService.getObservationTypeIdForType( ObservationType.PRIMARY_ORDER_TYPE ), ValueType.LITERAL);
+		createOrderTypeObservation(sampleOrder.getFollowupPeriodOrderType(),  ObservationHistoryService.getObservationTypeIdForType( ObservationType.SECONDARY_ORDER_TYPE ), ValueType.LITERAL);
+		createOrderTypeObservation(sampleOrder.getInitialPeriodOrderType(),  ObservationHistoryService.getObservationTypeIdForType( ObservationType.SECONDARY_ORDER_TYPE ), ValueType.LITERAL);
+		createObservation(sampleOrder.getOtherPeriodOrder(),  ObservationHistoryService.getObservationTypeIdForType( ObservationType.OTHER_SECONDARY_ORDER_TYPE ), ValueType.LITERAL);
+		createObservation(sampleOrder.getReferringPatientNumber(),  ObservationHistoryService.getObservationTypeIdForType( ObservationType.REFERRERS_PATIENT_ID ), ValueType.LITERAL);
 	}
 
     private void createOrderTypeObservation(String observationData, String observationType, ValueType valueType) {

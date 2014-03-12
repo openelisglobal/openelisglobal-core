@@ -30,8 +30,8 @@ import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
@@ -43,8 +43,6 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -122,7 +120,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 						Sample sample = analysis.getSampleItem().getSample();
 						testResultItem.setAccessionNumber(sample.getAccessionNumber());
 						testResultItem.setPatientInfo(getSubjectNumber(analysis));
-						testResultItem.setNextVisitDate(ObservationHistoryService.getValue(ObservationType.NEXT_VISIT_DATE, sample.getId()));
+						testResultItem.setNextVisitDate(ObservationHistoryService.getValueForSample( ObservationType.NEXT_VISIT_DATE, sample.getId() ));
 						testResultItem.setReceivedDate(getReceivedDateDisplay(sample));
 						testResultItem.setTestName(analysis.getTest().getTestName());
 						testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));

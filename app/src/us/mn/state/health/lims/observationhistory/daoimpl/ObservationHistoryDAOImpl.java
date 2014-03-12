@@ -116,9 +116,29 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 		return null;
 	}
 
-	
+    @Override
+    public List<ObservationHistory> getObservationHistoriesByPatientIdAndType( String patientId, String observationHistoryTypeId ) throws LIMSRuntimeException{
+        String sql = "from ObservationHistory oh where oh.patientId = :patientId and oh.observationHistoryTypeId = :ohTypeId order by oh.lastupdated desc";
 
-	@Override
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("patientId", Integer.parseInt(patientId));
+            query.setInteger("ohTypeId", Integer.parseInt(observationHistoryTypeId));
+
+            List<ObservationHistory> ohList = query.list();
+
+            closeSession();
+
+            return ohList;
+        }catch(HibernateException e){
+            handleException(e, "getObservationHistoriesByPatientIdAndType");
+        }
+
+        return null;
+    }
+
+
+    @Override
 	public ObservationHistory getObservationHistoriesBySampleIdAndType(String sampleId, String observationHistoryTypeId)
 			throws LIMSRuntimeException {
 		
@@ -140,4 +160,26 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 		
 		return null;
 	}
+
+    @Override
+    public List<ObservationHistory> getObservationHistoriesByValueAndType( String value, String typeId, String valueType ) throws LIMSRuntimeException{
+        String sql = "from ObservationHistory oh where oh.value = :value and oh.observationHistoryTypeId = :typeId and oh.valueType = :valueType";
+
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("typeId", Integer.parseInt(typeId));
+            query.setString( "value", value );
+            query.setString( "valueType", valueType );
+
+            List<ObservationHistory> ohList = query.list();
+
+            closeSession();
+
+            return ohList;
+        }catch(HibernateException e){
+            handleException(e, "getObservationHistoriesByValueAndType");
+        }
+
+        return null;
+    }
 }

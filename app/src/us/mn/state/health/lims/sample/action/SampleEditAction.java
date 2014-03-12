@@ -34,6 +34,7 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -129,6 +130,10 @@ public class SampleEditAction extends BaseAction {
 		}
 		
 		PropertyUtils.setProperty(form, "currentDate", DateUtil.getCurrentDateAsText());
+        PatientSearch patientSearch = new PatientSearch();
+        patientSearch.setLoadFromServerWithPatient( true );
+        patientSearch.setSelectedPatientActionButtonText( StringUtil.getMessageForKey( "label.patient.search.select" ) );
+        PropertyUtils.setProperty( form, "patientSearch", patientSearch );
 		
 		return mapping.findForward(forward);
 	}

@@ -17,19 +17,13 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.provider.query.workerObjects.PatientSearchLocalAndClinicWorker;
 import us.mn.state.health.lims.common.provider.query.workerObjects.PatientSearchLocalWorker;
 import us.mn.state.health.lims.common.provider.query.workerObjects.PatientSearchWorker;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -42,6 +36,12 @@ import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.math.BigDecimal;
 
 public class PatientSearchProvider extends BaseQueryProvider{
 
@@ -109,8 +109,8 @@ public class PatientSearchProvider extends BaseQueryProvider{
 				patient.getExternalId(),
 				service.getSTNumber(),
 				service.getSubjectNumber(),
-				service.getGUID());
-
+				service.getGUID(),
+                ObservationHistoryService.getMostRecentValueForPatient( ObservationType.REFERRERS_PATIENT_ID, service.getPatientId() ));
 	}
 
 	private Patient getPatientForLabNumber(String labNumber){

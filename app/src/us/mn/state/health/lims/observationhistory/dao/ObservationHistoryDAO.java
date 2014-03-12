@@ -57,7 +57,11 @@ public interface ObservationHistoryDAO {
 
 	public List<ObservationHistory> getObservationHistoriesBySampleId(String sampleId) throws LIMSRuntimeException;
 
+    public List<ObservationHistory> getObservationHistoriesByPatientIdAndType( String patientId, String observationHistoryTypeId) throws LIMSRuntimeException;
+
 	public ObservationHistory getObservationHistoriesBySampleIdAndType(String sampleId, String observationHistoryTypeId) throws LIMSRuntimeException;
 	
 	public ObservationHistory getById(ObservationHistory observation) throws LIMSRuntimeException;
+
+    public List<ObservationHistory> getObservationHistoriesByValueAndType( String value, String typeId, String valueType ) throws LIMSRuntimeException;
 }

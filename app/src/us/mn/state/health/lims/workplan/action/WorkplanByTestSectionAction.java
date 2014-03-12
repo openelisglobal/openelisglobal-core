@@ -147,7 +147,7 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 					
 					subjectNumber = getSubjectNumber(analysis);
 					patientName = getPatientName(analysis);
-					nextVisit = ObservationHistoryService.getValue(ObservationType.NEXT_VISIT_DATE, sample.getId());
+					nextVisit = ObservationHistoryService.getValueForSample(ObservationType.NEXT_VISIT_DATE, sample.getId());
 				}
 
 				

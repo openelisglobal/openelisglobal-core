@@ -60,7 +60,8 @@ public class DisplayListService implements LocaleChangeListener {
 		SAMPLE_PATIENT_REFERRING_CLINIC, 
 		QA_EVENTS,
 		TEST_SECTION,
-		HAITI_DEPARTMENTS
+		HAITI_DEPARTMENTS,
+        PATIENT_SEARCH_CRITERIA
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
@@ -84,6 +85,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.TEST_SECTION, createTestSectionList());
 		typeToListMap.put(ListType.HAITI_DEPARTMENTS, createAddressDepartmentList());
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
+        typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
@@ -104,6 +106,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.QA_EVENTS, createSortedQAEvents());
         typeToListMap.put(ListType.TEST_SECTION, createTestSectionList());
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
+        typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
         dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
     }
 
@@ -303,4 +306,19 @@ public class DisplayListService implements LocaleChangeListener {
 		
 		return departmentPairs;
 	}
+
+    private static List<IdValuePair> createPatientSearchCriteria() {
+        List<IdValuePair> searchCriteria = new ArrayList<IdValuePair>();
+
+        //N.B.  If the order is to be changed just change the order but keep the id:value pairing the same
+        searchCriteria.add(new IdValuePair("0", StringUtil.getMessageForKey( "label.select.search.by" )));
+        searchCriteria.add(new IdValuePair("2", "1. " + StringUtil.getMessageForKey( "label.select.last.name" )));
+        searchCriteria.add(new IdValuePair("1", "2. " + StringUtil.getMessageForKey("label.select.first.name")));
+        searchCriteria.add(new IdValuePair("3", "3. " + StringUtil.getMessageForKey("label.select.last.first.name")));
+        searchCriteria.add(new IdValuePair("4", "4. " + StringUtil.getMessageForKey("label.select.patient.ID")));
+        searchCriteria.add(new IdValuePair("5", "5. " + StringUtil.getContextualMessageForKey( "quick.entry.accession.number" )));
+
+        return searchCriteria;
+    }
+
 }

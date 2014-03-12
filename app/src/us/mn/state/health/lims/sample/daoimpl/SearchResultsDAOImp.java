@@ -17,18 +17,17 @@
  */
 package us.mn.state.health.lims.sample.daoimpl;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.provider.query.PatientSearchResults;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.patientidentitytype.util.PatientIdentityTypeMap;
 import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchResultsDAOImp implements SearchResultsDAO {
 
@@ -104,7 +103,7 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 			Object[] line = (Object[]) resultLine;
 
 			results.add(new PatientSearchResults((BigDecimal) line[0], (String) line[1], (String) line[2], (String) line[3],
-					(Timestamp) line[4], (String) line[5], (String) line[6], (String) line[7], (String) line[8], (String) line[9]));
+					(Timestamp) line[4], (String) line[5], (String) line[6], (String) line[7], (String) line[8], (String) line[9], null));
 		}
 
 		return results;
