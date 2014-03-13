@@ -155,7 +155,6 @@ function addPatientToSearch(table, result ){
 	var pk = getValueFromXmlElement( result, "id");
 	var dataSourceName = getValueFromXmlElement( result, "dataSourceName");
 
-
 	var row = createRow( table, firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk, dataSourceName );
 	addToPatientInfo( firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk );
 
@@ -195,7 +194,6 @@ function createRow(table, firstName, lastName, gender, DOB, stNumber, subjectNum
 		var stCell = supportSTNumber ? newRow.insertCell(++cellCounter) : null;
 		var subjectNumberCell = supportSubjectNumber ? newRow.insertCell(++cellCounter) : null;
 		var nationalCell = supportNationalID ? newRow.insertCell(++cellCounter) : null;
-
 		selectionCell.innerHTML = getSelectionHtml( row, pk );
 		lastNameCell.innerHTML = nonNullString( lastName );
 		firstNameCell.innerHTML = nonNullString( firstName );
@@ -274,7 +272,7 @@ function /*void*/ dirtySearchInfo(e){
 function enableSearchButton(){
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
-    if( valueElem.val() && criteriaElem.val() != "0"){
+    if( valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '<%=StringUtil.getMessageForKey("label.select.search.here")%>'){
         $jq("#searchButton").removeAttr("disabled");
     }else{
         $jq("#searchButton").attr("disabled", "disabled");
@@ -299,6 +297,40 @@ function handleSelectedPatient(){
     form.action = '<%=formName%>'.sub('Form','') + ".do?accessionNumber=" + accessionNumber + "&patientID=" + patientSelectID;
     form.submit();
 }
+
+function firstClick(){
+    var target = event.target || event.srcElement;
+    target.value = "";
+    target.onkeydown = null;
+}
+
+function messageRestore(element ){
+    if( !element.value  ){
+        element.value = '<%=StringUtil.getMessageForKey("label.select.search.here")%>';
+        element.onkeydown = firstClick;
+        setCaretPosition(element, 0);
+    }
+}
+
+function cursorAtFront(element){
+
+    if( element.onkeydown){
+        setCaretPosition( element, 0);
+    }
+}
+
+function setCaretPosition(ctrl, pos){
+    if(ctrl.setSelectionRange){
+        ctrl.focus();
+        ctrl.setSelectionRange(pos,pos);
+    } else if (ctrl.createTextRange) {
+        var range = ctrl.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', pos);
+        range.moveStart('character', pos);
+        range.select();
+    }
+}
 </script>
 
 <div id="PatientPage" class="colorFill patientSearch" style="display:inline;" >
@@ -312,9 +344,21 @@ function handleSelectedPatient(){
         %>
     </select>
 
-    <input size="30" value="" id="searchValue" class="text" type="text"  onkeyup="enableSearchButton()"/>
+    <input size="30"
+           id="searchValue"
+           class="text"
+           value='<%=StringUtil.getMessageForKey("label.select.search.here")%>'
+           type="text"
+           onclick="cursorAtFront(this)"
+           onkeydown='firstClick();'
+           onkeyup="messageRestore(this);enableSearchButton();"/>
 
-    <input type="button" name="searchButton" value="<%= StringUtil.getMessageForKey("label.patient.search")%>" id="searchButton" onclick="searchPatients()" disabled="true">
+    <input type="button"
+           name="searchButton"
+           value="<%= StringUtil.getMessageForKey("label.patient.search")%>"
+           id="searchButton"
+           onclick="searchPatients()"
+           disabled="true">
 
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>
@@ -360,9 +404,9 @@ function handleSelectedPatient(){
 				<% } %>
 				<% if(supportNationalID){ %>
 				<th width="12%">
-					<%=StringUtil.getContextualMessageForKey("patient.NationalID") %>
-				</th>
-				<% } %>
+                    <%=StringUtil.getContextualMessageForKey("patient.NationalID") %>
+                </th>
+                <% } %>
 			</tr>
 		</table>
 		<br/>
