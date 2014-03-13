@@ -58,6 +58,7 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
 		}
 
 		SearchResultsDAO search = new SearchResultsDAOImp();
+        //N.B. results do not have the referrinngPatientId information but it is not displayed so for now it will be left as null
 		List<PatientSearchResults> results = search.getSearchResults(lastName, firstName, STNumber, subjectNumber, nationalID, nationalID, patientID, guid);
         List<PatientSearchResults> observationResults = getObservationsByReferringPatientId(nationalID);
         results.addAll( observationResults );
