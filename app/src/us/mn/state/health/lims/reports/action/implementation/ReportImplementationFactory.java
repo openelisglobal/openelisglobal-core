@@ -84,7 +84,9 @@ public class ReportImplementationFactory{
 				return new RetroCIPatientAssociatedReport();
 			}else if (report.equals("indicatorRealisation") ){
 				    return new DateRangeParameters(StringUtil.getMessageForKey("report.realisation"));
-			}
+			}else if (report.equals("epiSurveillanceExport") ){
+                return new DateRangeParameters(StringUtil.getMessageForKey("banner.menu.report.epi.surveillance.export"));
+            }
 		}
 
 		return null;
@@ -176,8 +178,10 @@ public class ReportImplementationFactory{
 				return new IndicatorCDIHIVLNSP();
 			}else if(report.equals("validationBacklog")){
 				return new ValidationBacklogReport();
-			}else if (report.equals("indicatorRealisation")){
+			}else if(report.equals("indicatorRealisation")){
 				return new IPCIRealisationReport();
+            }else if(report.equals( "epiSurveillanceExport" )){
+                return new HaitiLnspEpiExportReport();
             }
 		}
 
