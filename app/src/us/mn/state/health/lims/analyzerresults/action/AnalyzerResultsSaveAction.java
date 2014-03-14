@@ -48,7 +48,6 @@ import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.util.PatientUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.result.action.util.ResultUtil;
-import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -779,7 +778,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 
 	private Note createResultNote(String noteText) {
 		Note note = new Note();
-		note.setReferenceTableId(ResultsLoadUtility.getResultReferenceTableId());
+		note.setReferenceTableId("21");//ResultsLoadUtility.getResultReferenceTableId());
 		note.setNoteType(DEFAULT_NOTE_TYPE);
 		note.setSubject(RESULT_SUBJECT);
 		note.setText(noteText);

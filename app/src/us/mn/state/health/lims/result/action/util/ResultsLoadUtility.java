@@ -39,7 +39,6 @@ import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
@@ -47,8 +46,6 @@ import us.mn.state.health.lims.patient.util.PatientUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
 import us.mn.state.health.lims.patientidentitytype.util.PatientIdentityTypeMap;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.referral.dao.ReferralDAO;
 import us.mn.state.health.lims.referral.daoimpl.ReferralDAOImpl;
 import us.mn.state.health.lims.referral.valueholder.Referral;
@@ -81,7 +78,6 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
-import us.mn.state.health.lims.common.services.NoteService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -95,8 +91,6 @@ public class ResultsLoadUtility {
 
 	private static final String NO_PATIENT_NAME = " ";
 	private static final String NO_PATIENT_INFO = " ";
-
-	private static String RESULT_REFERENCE_TABLE_ID = null;
 
 	private List<Sample> samples;
 	private String currentDate = "";
@@ -134,11 +128,6 @@ public class ResultsLoadUtility {
 	private boolean lockCurrentResults = false;
 
 	static {
-		ReferenceTablesDAO rtDAO = DAOImplFactory.getInstance().getReferenceTablesDAOImpl();
-		ReferenceTables referenceTable = new ReferenceTables();
-		referenceTable.setTableName("RESULT");
-		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-		RESULT_REFERENCE_TABLE_ID = referenceTable.getId();
 
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
 		Analyte analyte = new Analyte();
@@ -377,7 +366,6 @@ public class ResultsLoadUtility {
 
 		String techSignature = "";
 		String techSignatureId = "";
-		List<Note> notes = null;
 
 		if (resultList == null) {
 			return testResultList;
@@ -402,7 +390,6 @@ public class ResultsLoadUtility {
 			}
 
 			if (result != null) {
-				notes = getNotesForAnalysis(result, resultList);
 				if (useTechSignature) {
 					List<ResultSignature> signatures = resultSignatureDAO.getResultSignaturesByResults(resultList);
 
@@ -422,6 +409,8 @@ public class ResultsLoadUtility {
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
 
+            String notes = new NoteService( analysis ).getNotesAsString( true, true, "</br>" );
+
 			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,
 					multiSelectionResult, initialConditions,  TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
@@ -434,19 +423,6 @@ public class ResultsLoadUtility {
 		}
 
 		return testResultList;
-	}
-
-	protected List<Note> getNotesForAnalysis(Result result, List<Result> resultList) {
-		if ("M".equals(result.getResultType()) && resultList.size() > 1) {
-			List<Note> notes = new ArrayList<Note>();
-			for (Result resultItem : resultList) {
-				notes.addAll( NoteService.getNotesForObjectAndTable( resultItem.getId(), RESULT_REFERENCE_TABLE_ID ));
-			}
-
-			return notes;
-		} else {
-			return NoteService.getNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
-		}
 	}
 
 	private String getInitialSampleConditionString(SampleItem sampleItem) {
@@ -608,7 +584,7 @@ public class ResultsLoadUtility {
 		return analysisDAO.getAnalysesBySampleItemsExcludingByStatusIds(item, excludedAnalysisStatus);
 	}
 
-	private TestResultItem createTestResultItem(AnalysisService analysisService, ResultInventory testKit, List<Note> notes,
+	private TestResultItem createTestResultItem(AnalysisService analysisService, ResultInventory testKit, String notes,
 			String sequenceNumber, Result result, String accessionNumber, String patientName, String patientInfo, String techSignature,
 			String techSignatureId,  boolean multiSelectionResult, String initialSampleConditions, String sampleType) {
 
@@ -722,7 +698,7 @@ public class ResultsLoadUtility {
 		}
 		testItem.setReflexGroup(analysisService.getTriggeredReflex());
 		testItem.setChildReflex(analysisService.getTriggeredReflex() && analysisService.resultIsConclusion( result ));
-		addNotes(notes, testItem);
+        testItem.setPastNotes( notes );
 
 		//testItem.setDisplayResultAsLog(hasLogValue(analysisService.getAnalysis(), testItem.getResultValue()));
         testItem.setDisplayResultAsLog(hasLogValue(testService));
@@ -850,28 +826,6 @@ public class ResultsLoadUtility {
         return TestIdentityService.isTestNumericViralLoad( testService.getTest() );
 	}
 
-	protected void addNotes(List<Note> notes, TestResultItem testItem) {
-		if (!(notes == null || notes.isEmpty())) {
-			Collections.sort(notes, new Comparator<Note>() {
-
-				@Override
-				public int compare(Note o1, Note o2) {
-					return o1.getLastupdated().compareTo( o2.getLastupdated() );
-				}
-			});
-			StringBuilder noteBuilder = new StringBuilder();
-			for (Note note : notes) {
-                noteBuilder.append( NoteService.getNotePrefix( note ));
-				noteBuilder.append(note.getText());
-				noteBuilder.append("<br/>");
-			}
-
-			noteBuilder.setLength(noteBuilder.lastIndexOf("<br/>"));
-
-			testItem.setPastNotes(noteBuilder.toString());
-		}
-	}
-
 	private List<IdValuePair> getAnyDictionaryValues(Result result) {
 		List<IdValuePair> values = null;
 
@@ -985,10 +939,6 @@ public class ResultsLoadUtility {
 		}
 
 		return activeKits;
-	}
-
-	public static String getResultReferenceTableId() {
-		return RESULT_REFERENCE_TABLE_ID;
 	}
 
 	public void setLockCurrentResults(boolean lockCurrentResults) {

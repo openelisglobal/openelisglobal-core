@@ -21,11 +21,13 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DAOImplFactory;
+import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
+import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
@@ -38,7 +40,19 @@ public class NoteService{
     private static boolean SUPPORT_INTERNAL_EXTERNAL = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION,"true");
 
     public enum NoteType{
-        EXTERNAL, INTERNAL, REJECTION_REASON
+        EXTERNAL(Note.EXTERNAL),
+        INTERNAL(Note.INTERNAL),
+        REJECTION_REASON( Note.REJECT_REASON);
+
+        String DBCode;
+
+        NoteType(String dbCode){
+            DBCode = dbCode;
+        }
+
+        public String getDBCode(){
+            return DBCode;
+        }
     }
 
     public enum BoundTo{
@@ -50,17 +64,96 @@ public class NoteService{
         OTHER
     }
 
+    private Analysis analysis;
+    private BoundTo binding;
+
+    private static final String ANALYSIS_TABLE_ID;
+
+    static{
+        ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
+        ANALYSIS_TABLE_ID = refTableDAO.getReferenceTableByName( "ANALYSIS" ).getId();
+    }
+
+    public NoteService(Analysis analysis){
+        this.analysis = analysis;
+        binding = BoundTo.ANALYSIS;
+    }
+
+    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparater ){
+        List<Note> noteList = null;
+
+        switch( binding ){
+            case ANALYSIS:{
+                noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( analysis.getId(), ANALYSIS_TABLE_ID );
+                break;
+            }
+            default:{
+                return "";
+            }
+        }
+
+        if(noteList.isEmpty()){
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        for( Note note : noteList ){
+            if( prefixType ){
+                builder.append( getNotePrefix( note ) );
+                builder.append( " " );
+            }
+
+            if( prefixTimestamp ){
+                builder.append( getNoteTimestamp( note ) );
+                builder.append( " " );
+            }
+
+            if( prefixType || prefixTimestamp){
+                builder.append( ": " );
+            }
+            builder.append( note.getText() );
+
+            builder.append( noteSeparater );
+        }
+
+        builder.setLength(builder.lastIndexOf(noteSeparater));
+
+        return builder.toString();
+    }
+
+    private String getNoteTimestamp( Note note ){
+        return DateUtil.convertTimestampToStringDateAndTime( note.getLastupdated() );
+    }
+
     /**
-     * Do nothing stub for now.
      * @param type
-     * @param analysis
      * @param text
      * @param subject
-     * @param currentSysId
+     * @param currentUserId
      * @return  Note
      */
-    public Note createSavableNote( NoteType type, Analysis analysis, String text, String subject, String currentSysId){
-        return new Note();
+    public Note createSavableNote( NoteType type, String text, String subject, String currentUserId){
+        if( GenericValidator.isBlankOrNull( text )){
+            return null;
+        }
+
+        Note note = new Note();
+
+        switch( binding ){
+            case ANALYSIS:{
+                note.setReferenceId( analysis.getId() );
+                note.setReferenceTableId( ANALYSIS_TABLE_ID );
+            }
+        }
+
+        note.setNoteType( type.getDBCode() );
+        note.setSubject( subject );
+        note.setText( text );
+        note.setSysUserId( currentUserId );
+        note.setSystemUser( createSystemUser(currentUserId) );
+
+        return note;
     }
 
 	@SuppressWarnings("unchecked")
@@ -100,6 +193,7 @@ public class NoteService{
      * @param currentUserId -- The current user Id.  Also known as the sysUserId.  This is the same id as the one used to track changes in the history table.
      * @return The note if one could be created
      */
+    @Deprecated
     public static Note createSavableNote(String noteId, String text, String objectId, String tableId, String noteSubject, String currentUserId, String noteType) {
         Note note = null;
 
@@ -143,9 +237,11 @@ public class NoteService{
     public static String getNotePrefix(Note note) {
         if(SUPPORT_INTERNAL_EXTERNAL){
             if( "I".equals(note.getNoteType())){
-                return "(" + StringUtil.getMessageForKey("note.type.internal") + ") ";
-            }if( "E".equals(note.getNoteType())){
-                return "(" + StringUtil.getMessageForKey("note.type.external") + ") ";
+                return StringUtil.getMessageForKey("note.type.internal");
+            }else if( "E".equals(note.getNoteType())){
+                return StringUtil.getMessageForKey("note.type.external");
+            }else if( "R".equals( note.getNoteType() )){
+                return StringUtil.getMessageForKey( "note.type.rejectReason" );
             }
         }
 

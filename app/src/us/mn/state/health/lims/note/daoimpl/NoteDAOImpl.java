@@ -183,7 +183,7 @@ public class NoteDAOImpl extends BaseDAOImpl implements NoteDAO {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	public List<Note> getAllNotes() throws LIMSRuntimeException {
 		List<Note> list;
 		try {
@@ -436,6 +436,24 @@ public class NoteDAOImpl extends BaseDAOImpl implements NoteDAO {
 		return null;
 	}
 
-	
+    @Override
+    public List<Note> getNotesChronologicallyByRefIdAndRefTable( String refId, String table_id ) throws LIMSRuntimeException{
+        String sql = "FROM Note n where n.referenceId = :refId and n.referenceTableId = :tableId order by n.lastupdated asc";
+
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("refId", Integer.parseInt(refId));
+            query.setInteger("tableId", Integer.parseInt(table_id));
+
+            List<Note> noteList = query.list();
+
+            closeSession();
+
+            return noteList;
+        }catch(HibernateException e){
+            handleException(e, "getNotesChronologicallyByRefIdAndRefTable");
+        }
+        return null;
+    }
 }
 
