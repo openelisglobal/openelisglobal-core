@@ -33,6 +33,7 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -43,7 +44,6 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -363,7 +363,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		String noteText = sampleItemElement.attributeValue("note");
 
 		if (!GenericValidator.isBlankOrNull(noteText)) {
-			return NoteUtil.createSavableNote(null, noteText, null, SAMPLE_ITEM_TABLE_ID, "Confirmation Note", currentUserId, NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
+			return NoteService.createSavableNote( null, noteText, null, SAMPLE_ITEM_TABLE_ID, "Confirmation Note", currentUserId, NoteService.getDefaultNoteType( NoteService.NoteSource.OTHER ) );
 		}
 
 		return null;

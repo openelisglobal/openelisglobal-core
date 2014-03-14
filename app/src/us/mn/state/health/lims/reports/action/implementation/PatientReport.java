@@ -43,7 +43,6 @@ import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
 import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -102,7 +101,7 @@ import java.util.*;
 
 public abstract class PatientReport extends Report{
 
-    private static final String RESULT_REFERENCE_TABLE_ID = NoteUtil.getTableReferenceId( "RESULT" );
+    private static final String RESULT_REFERENCE_TABLE_ID = NoteService.getTableReferenceId( "RESULT" );
     private static final DecimalFormat twoDecimalFormat = new DecimalFormat( "#.##" );
     protected static final boolean noAlertColumn = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.PATIENT_REPORT_NO_ALERTS, "true" );
     private static String ADDRESS_DEPT_ID;
@@ -574,7 +573,7 @@ public abstract class PatientReport extends Report{
 
     protected String getResultNote( Result result ){
         if( result != null ){
-            List<Note> notes = NoteUtil.getExternalNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
+            List<Note> notes = NoteService.getExternalNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
 
             if( !( notes == null || notes.isEmpty() ) ){
 

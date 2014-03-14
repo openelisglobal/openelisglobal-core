@@ -35,6 +35,7 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.IResultSaveService;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.ResultSaveService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -51,7 +52,6 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.referral.dao.ReferralDAO;
@@ -114,8 +114,8 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 	private boolean useTechnicianName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
 	private boolean alwaysValidate = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ALWAYS_VALIDATE_RESULTS, "true");
-	private boolean supportReferrals = FormFields.getInstance().useField(Field.ResultsReferral);
-	private String statusRuleSet = ConfigurationProperties.getInstance().getPropertyValueUpperCase(Property.StatusRules);
+	private boolean supportReferrals = FormFields.getInstance().useField( Field.ResultsReferral );
+	private String statusRuleSet = ConfigurationProperties.getInstance().getPropertyValueUpperCase( Property.StatusRules );
 	private Analysis previousAnalysis;
 	private ResultsValidation resultValidation = new ResultsValidation();
 
@@ -288,9 +288,9 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 	protected void setTestReflexes(){
 		TestReflexUtil testReflexUtil = new TestReflexUtil();
-		testReflexUtil.setCurrentUserId(currentUserId);
-		testReflexUtil.addNewTestsToDBForReflexTests(convertToTestReflexBeanList(newResults));
-		testReflexUtil.updateModifiedReflexes(convertToTestReflexBeanList(modifiedResults));
+		testReflexUtil.setCurrentUserId( currentUserId );
+		testReflexUtil.addNewTestsToDBForReflexTests( convertToTestReflexBeanList( newResults ) );
+		testReflexUtil.updateModifiedReflexes( convertToTestReflexBeanList( modifiedResults ) );
 	}
 
 	private List<TestReflexBean> convertToTestReflexBeanList(List<ResultSet> resultSetList){
@@ -390,8 +390,8 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 		ResultInventory testKit = createTestKitLinkIfNeeded(testResultItem, ResultsLoadUtility.TESTKIT);
 
-		Note note = NoteUtil.createSavableNote(null, testResultItem.getNote(), testResultItem.getResultId(),
-				ResultsLoadUtility.getResultReferenceTableId(), RESULT_SUBJECT, currentUserId, NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
+		Note note = NoteService.createSavableNote( null, testResultItem.getNote(), testResultItem.getResultId(),
+                ResultsLoadUtility.getResultReferenceTableId(), RESULT_SUBJECT, currentUserId, NoteService.getDefaultNoteType( NoteService.NoteSource.OTHER ) );
 
 		analysis.setStatusId(getStatusForTestResult(testResultItem));
 		analysis.setReferredOut(testResultItem.isReferredOut());

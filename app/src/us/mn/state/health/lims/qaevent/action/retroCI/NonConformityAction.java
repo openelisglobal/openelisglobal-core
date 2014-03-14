@@ -26,11 +26,8 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
-import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
-import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.PersonService;
-import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -38,7 +35,6 @@ import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -408,7 +404,7 @@ public class NonConformityAction extends BaseAction{
 		if(sampleQaEvent == null || GenericValidator.isBlankOrNull(sampleQaEvent.getId())){
 			return null;
 		}else{
-			List<Note> notes = NoteUtil.getNotesForObjectAndTable(sampleQaEvent.getId(), SAMPLE_QAEVENT_TABLE_ID);
+			List<Note> notes = NoteService.getNotesForObjectAndTable( sampleQaEvent.getId(), SAMPLE_QAEVENT_TABLE_ID );
 			return (notes == null || notes.isEmpty()) ? null : notes.get(0).getText();
 		}
 	}

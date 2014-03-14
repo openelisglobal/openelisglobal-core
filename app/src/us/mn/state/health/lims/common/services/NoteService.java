@@ -14,7 +14,7 @@
 * Copyright (C) CIRG, University of Washington, Seattle WA.  All Rights Reserved.
 *
 */
-package us.mn.state.health.lims.note.util;
+package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -32,7 +32,7 @@ import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 
 import java.util.List;
 
-public class NoteUtil {
+public class NoteService{
     private static NoteDAO noteDAO = new NoteDAOImpl();
     private static boolean SUPPORT_INTERNAL_EXTERNAL = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION,"true");
 

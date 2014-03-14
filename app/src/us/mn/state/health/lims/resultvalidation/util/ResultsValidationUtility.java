@@ -35,7 +35,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -458,15 +457,15 @@ public class ResultsValidationUtility {
 		testItem.setQualifiedDictionaryId(getQualifiedDictionaryId(testResults));
 
 		if (result != null && !GenericValidator.isBlankOrNull(result.getId())) {
-			List<Note> noteList = NoteUtil.getNotesForObjectAndTable(result.getId(), RESULT_TABLE_ID);
+			List<Note> noteList = NoteService.getNotesForObjectAndTable( result.getId(), RESULT_TABLE_ID );
 
 			if (!(noteList == null || noteList.isEmpty())) {
 				StringBuilder builder = new StringBuilder();
-                builder.append(NoteUtil.getNotePrefix(noteList.get(noteList.size() - 1)));
+                builder.append( NoteService.getNotePrefix( noteList.get( noteList.size() - 1 ) ));
                 builder.append(noteList.get(noteList.size() - 1).getText());
 				for(int i = noteList.size() - 2; i >= 0; i--){
 					builder.append("<br>");
-                    builder.append(NoteUtil.getNotePrefix(noteList.get(i)));
+                    builder.append( NoteService.getNotePrefix( noteList.get( i ) ));
 					builder.append(noteList.get(i).getText());
 				}
 				
