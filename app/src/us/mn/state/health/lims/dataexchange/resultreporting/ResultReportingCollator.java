@@ -24,7 +24,6 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.*;
 import us.mn.state.health.lims.dictionary.util.DictionaryUtil;
-import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;

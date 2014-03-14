@@ -14,7 +14,7 @@
 * Copyright (C) CIRG, University of Washington, Seattle WA.  All Rights Reserved.
 *
 */
-package us.mn.state.health.lims.note.util;
+package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;

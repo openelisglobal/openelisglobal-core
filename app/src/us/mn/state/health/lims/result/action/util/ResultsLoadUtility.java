@@ -39,7 +39,6 @@ import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
-import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -82,6 +81,7 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
+import us.mn.state.health.lims.common.services.NoteService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;

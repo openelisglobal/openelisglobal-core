@@ -43,7 +43,6 @@ import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
 import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
