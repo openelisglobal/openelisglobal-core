@@ -31,7 +31,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
@@ -206,7 +206,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 	}
 
 	private String getNoteForSampleItem(SampleItem sampleItem) {
-		List<Note> notes = NoteUtil.getNotesForObjectAndTable(sampleItem.getId(), SAMPLE_ITEM_TABLE_ID);
+		List<Note> notes = NoteService.getNotesForObjectAndTable( sampleItem.getId(), SAMPLE_ITEM_TABLE_ID );
 		return notes == null || notes.isEmpty() ? "" : notes.get(0).getText();
 	}
 

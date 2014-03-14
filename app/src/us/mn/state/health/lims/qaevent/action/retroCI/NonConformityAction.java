@@ -38,7 +38,7 @@ import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -408,7 +408,7 @@ public class NonConformityAction extends BaseAction{
 		if(sampleQaEvent == null || GenericValidator.isBlankOrNull(sampleQaEvent.getId())){
 			return null;
 		}else{
-			List<Note> notes = NoteUtil.getNotesForObjectAndTable(sampleQaEvent.getId(), SAMPLE_QAEVENT_TABLE_ID);
+			List<Note> notes = NoteService.getNotesForObjectAndTable( sampleQaEvent.getId(), SAMPLE_QAEVENT_TABLE_ID );
 			return (notes == null || notes.isEmpty()) ? null : notes.get(0).getText();
 		}
 	}

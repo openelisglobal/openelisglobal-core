@@ -32,7 +32,7 @@ import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 
 import java.util.List;
 
-public class NoteUtil {
+public class NoteService{
     private static NoteDAO noteDAO = new NoteDAOImpl();
     private static boolean SUPPORT_INTERNAL_EXTERNAL = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION,"true");
 

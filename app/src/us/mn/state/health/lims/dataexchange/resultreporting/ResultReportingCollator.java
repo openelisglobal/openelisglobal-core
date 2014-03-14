@@ -24,7 +24,7 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.*;
 import us.mn.state.health.lims.dictionary.util.DictionaryUtil;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
@@ -54,7 +54,7 @@ public class ResultReportingCollator {
 	private Map<String, List<ResultXmit>> analysisIdToResultBeanMap = new HashMap<String, List<ResultXmit>>();
 	private Collection<String> noGUIDPatients = new HashSet<String>();
 	private static Map<String, String> resultTypeToHL7TypeMap;
-	private static final String RESULT_REFERENCE_TABLE_ID = NoteUtil.getTableReferenceId("RESULT");
+	private static final String RESULT_REFERENCE_TABLE_ID = NoteService.getTableReferenceId( "RESULT" );
 
     static {
 		GUID_IDENTITY_TYPE = new PatientIdentityTypeDAOImpl().getNamedIdentityType("GUID").getId();
@@ -222,7 +222,7 @@ public class ResultReportingCollator {
 	
 	protected String getResultNote(Result result) {
 		if (result != null) {
-			List<Note> notes  = NoteUtil.getNotesForObjectAndTable(result.getId(), RESULT_REFERENCE_TABLE_ID);
+			List<Note> notes  = NoteService.getNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
 
 			if (!(notes == null || notes.isEmpty())) {
 				Collections.sort(notes, new Comparator<Note>(){

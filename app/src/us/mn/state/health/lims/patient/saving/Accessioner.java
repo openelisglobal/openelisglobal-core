@@ -50,7 +50,7 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -359,7 +359,7 @@ public abstract class Accessioner {
 			}
 
 			note.setSysUserId(sysUserId);
-			note.setSystemUser(NoteUtil.createSystemUser(sysUserId));
+			note.setSystemUser( NoteService.createSystemUser( sysUserId ));
 
 			if (note.getId() == null) {
 				noteDAO.insertData(note);

@@ -41,7 +41,7 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
@@ -322,13 +322,13 @@ public class ReferredOutUpdateAction extends BaseAction {
 		referral.setSentDate(DateUtil.convertStringDateToTruncatedTimestamp(referralItem.getReferredSendDate()));
 		referral.setRequesterName(referralItem.getReferrer());
 
-		referralSet.note = NoteUtil.createSavableNote(null,
-												 	  referralItem.getNote(),
-												 	  referralItem.getCasualResultId(),
-												 	  ResultsLoadUtility.getResultReferenceTableId(),
-												 	  RESULT_SUBJECT,
-                                                      currentUserId,
-                                                      NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
+		referralSet.note = NoteService.createSavableNote( null,
+                referralItem.getNote(),
+                referralItem.getCasualResultId(),
+                ResultsLoadUtility.getResultReferenceTableId(),
+                RESULT_SUBJECT,
+                currentUserId,
+                NoteService.getDefaultNoteType( NoteService.NoteSource.OTHER ) );
 
         createReferralResults(referralItem, referralSet);
 

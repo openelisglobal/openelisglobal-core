@@ -30,7 +30,7 @@ import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
@@ -70,7 +70,7 @@ public class ReferredOutAction extends BaseAction {
 	private static ResultDAO resultDAO = new ResultDAOImpl();
 	private static DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private List<NonNumericTests> nonNumericTests;
-	private static String RESULT_REFERENCE_TABLE_ID = NoteUtil.getTableReferenceId("RESULT");
+	private static String RESULT_REFERENCE_TABLE_ID = NoteService.getTableReferenceId( "RESULT" );
 
 	@Override
 	protected String getPageSubtitleKey() {
@@ -207,7 +207,7 @@ public class ReferredOutAction extends BaseAction {
 			resultString = getAppropriateResultValue(resultList);
 			referralItem.setCasualResultId(result.getId());
 			
-			List<Note> notes = NoteUtil.getNotesForObjectAndTable(result.getId(), RESULT_REFERENCE_TABLE_ID);
+			List<Note> notes = NoteService.getNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
 			if (!(notes == null || notes.isEmpty())) {
 				Collections.sort(notes, new Comparator<Note>() {
 					@Override

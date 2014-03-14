@@ -39,7 +39,7 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
@@ -462,7 +462,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 			note = new Note();
 			note.setReferenceId(testResult.getResultId());
 			note.setReferenceTableId(ResultsLoadUtility.getResultReferenceTableId());
-			note.setNoteType(NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.VALIDATION));
+			note.setNoteType( NoteService.getDefaultNoteType( NoteService.NoteSource.VALIDATION ));
 			note.setSubject(RESULT_SUBJECT);
 		}
 

@@ -39,7 +39,7 @@ import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
-import us.mn.state.health.lims.note.util.NoteUtil;
+import us.mn.state.health.lims.note.util.NoteService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -440,12 +440,12 @@ public class ResultsLoadUtility {
 		if ("M".equals(result.getResultType()) && resultList.size() > 1) {
 			List<Note> notes = new ArrayList<Note>();
 			for (Result resultItem : resultList) {
-				notes.addAll(NoteUtil.getNotesForObjectAndTable(resultItem.getId(), RESULT_REFERENCE_TABLE_ID));
+				notes.addAll( NoteService.getNotesForObjectAndTable( resultItem.getId(), RESULT_REFERENCE_TABLE_ID ));
 			}
 
 			return notes;
 		} else {
-			return NoteUtil.getNotesForObjectAndTable(result.getId(), RESULT_REFERENCE_TABLE_ID);
+			return NoteService.getNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
 		}
 	}
 
@@ -861,7 +861,7 @@ public class ResultsLoadUtility {
 			});
 			StringBuilder noteBuilder = new StringBuilder();
 			for (Note note : notes) {
-                noteBuilder.append(NoteUtil.getNotePrefix(note));
+                noteBuilder.append( NoteService.getNotePrefix( note ));
 				noteBuilder.append(note.getText());
 				noteBuilder.append("<br/>");
 			}

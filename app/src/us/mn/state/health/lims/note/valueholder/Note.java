@@ -53,32 +53,6 @@ public class Note extends BaseObject {
 		return id;
 	}
 
-	/*public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.timestampForDisplay = StringUtil.convertSqlDateToStringDate(
-				timestamp, locale);
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestampForDisplay(String timestampForDisplay) {
-		this.timestampForDisplay = timestampForDisplay;
-		// also update the java.sql.Date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.timestamp = StringUtil.convertStringDateToSqlDate(
-				this.timestampForDisplay, locale);
-	}
-
-	public String getTimestampForDisplay() {
-		return timestampForDisplay;
-	}
-*/
 	public String getNoteType() {
 		return noteType;
 	}
@@ -136,16 +110,10 @@ public class Note extends BaseObject {
 		this.systemUserId = systemUserId;
 	}
 
-//	public ReferenceTables getReferenceTables() {
-//		return referenceTables;
-//	}
-//
 	public void setReferenceTables(ReferenceTables referenceTables) {
 		if( referenceTables != null){
 			setReferenceTableId(referenceTables.getId());
 		}
-			
-// note: due to transient issues we're just using the id  Do not merge into main branch		this.referenceTables = referenceTables;
 	}
 
 
