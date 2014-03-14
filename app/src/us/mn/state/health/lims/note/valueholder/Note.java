@@ -24,6 +24,7 @@ import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 public class Note extends BaseObject {
     public static final String EXTERNAL = "E";
     public static final String INTERNAL = "I";
+    public static final String REJECT_REASON = "R";
 
 	private String id;
 

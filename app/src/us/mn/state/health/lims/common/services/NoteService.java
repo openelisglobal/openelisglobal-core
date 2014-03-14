@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
+import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DAOImplFactory;
@@ -35,6 +36,32 @@ import java.util.List;
 public class NoteService{
     private static NoteDAO noteDAO = new NoteDAOImpl();
     private static boolean SUPPORT_INTERNAL_EXTERNAL = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION,"true");
+
+    public enum NoteType{
+        EXTERNAL, INTERNAL, REJECTION_REASON
+    }
+
+    public enum BoundTo{
+        ANALYSIS, NON_CONFORMITY, ORDER, SAMPLE
+    }
+
+    public enum NoteSource {
+        VALIDATION,
+        OTHER
+    }
+
+    /**
+     * Do nothing stub for now.
+     * @param type
+     * @param analysis
+     * @param text
+     * @param subject
+     * @param currentSysId
+     * @return  Note
+     */
+    public Note createSavableNote( NoteType type, Analysis analysis, String text, String subject, String currentSysId){
+        return new Note();
+    }
 
 	@SuppressWarnings("unchecked")
 	public static List<Note> getNotesForObjectAndTable(String objectId, String tableId) {
@@ -125,8 +152,4 @@ public class NoteService{
         return "";
     }
 
-    public enum NoteSource {
-        VALIDATION,
-        OTHER
-    }
 }
