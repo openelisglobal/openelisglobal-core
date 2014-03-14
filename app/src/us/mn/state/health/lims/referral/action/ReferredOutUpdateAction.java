@@ -55,7 +55,6 @@ import us.mn.state.health.lims.referral.daoimpl.ReferralDAOImpl;
 import us.mn.state.health.lims.referral.daoimpl.ReferralResultDAOImpl;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
-import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -325,7 +324,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		referralSet.note = NoteService.createSavableNote( null,
                 referralItem.getNote(),
                 referralItem.getCasualResultId(),
-                ResultsLoadUtility.getResultReferenceTableId(),
+                "21",//ResultsLoadUtility.getResultReferenceTableId(),
                 RESULT_SUBJECT,
                 currentUserId,
                 NoteService.getDefaultNoteType( NoteService.NoteSource.OTHER ) );

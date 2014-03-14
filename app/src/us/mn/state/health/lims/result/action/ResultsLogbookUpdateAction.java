@@ -154,11 +154,16 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}
 
 		initializeLists();
-		createResultsFromItems();
+        List<Note> noteList = new ArrayList<Note>(  );
+		createResultsFromItems(noteList);
 
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 		try{
+            for(Note note: noteList){
+                noteDAO.insertData( note );
+            }
+
 			for(ResultSet resultSet : newResults){
 
 				resultDAO.insertData(resultSet.result);
@@ -171,11 +176,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 				if(resultSet.testKit != null && resultSet.testKit.getInventoryLocationId() != null){
 					resultSet.testKit.setResultId(resultSet.result.getId());
 					resultInventoryDAO.insertData(resultSet.testKit);
-				}
-
-				if(resultSet.note != null){
-					resultSet.note.setReferenceId(resultSet.result.getId());
-					noteDAO.insertData(resultSet.note);
 				}
 
 				if(resultSet.newReferral != null){
@@ -201,15 +201,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 						resultInventoryDAO.insertData(resultSet.testKit);
 					}else{
 						resultInventoryDAO.updateData(resultSet.testKit);
-					}
-				}
-
-				if(resultSet.note != null){
-					resultSet.note.setReferenceId(resultSet.result.getId());
-					if(resultSet.note.getId() == null){
-						noteDAO.insertData(resultSet.note);
-					}else{
-						noteDAO.updateData(resultSet.note);
 					}
 				}
 
@@ -346,11 +337,17 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 				&& (ResultUtil.areResults(item) || ResultUtil.areNotes(item) || ResultUtil.isReferred(item) || ResultUtil.isForcedToAcceptance(item));
 	}
 
-	private void createResultsFromItems(){
+	private void createResultsFromItems( List<Note> noteList ){
 
 		for(TestResultItem testResultItem : modifiedItems){
 
 			Analysis analysis = analysisDAO.getAnalysisById(testResultItem.getAnalysisId());
+
+            NoteService noteService = new NoteService( analysis );
+            Note note = noteService.createSavableNote( NoteService.NoteType.INTERNAL, testResultItem.getNote(), RESULT_SUBJECT, currentUserId);
+            if( note != null){
+                noteList.add( note );
+            }
 
             ResultSaveBean bean = ResultSaveBeanAdapter.fromTestResultItem(testResultItem);
 			List<Result> results = new ResultSaveService(analysis,currentUserId).createResultsFromTestResultItem( bean, deletableResults );
@@ -389,9 +386,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}
 
 		ResultInventory testKit = createTestKitLinkIfNeeded(testResultItem, ResultsLoadUtility.TESTKIT);
-
-		Note note = NoteService.createSavableNote( null, testResultItem.getNote(), testResultItem.getResultId(),
-                ResultsLoadUtility.getResultReferenceTableId(), RESULT_SUBJECT, currentUserId, NoteService.getDefaultNoteType( NoteService.NoteSource.OTHER ) );
 
 		analysis.setStatusId(getStatusForTestResult(testResultItem));
 		analysis.setReferredOut(testResultItem.isReferredOut());
@@ -449,10 +443,10 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
         getSelectedReflexes( testResultItem.getReflexJSONResult(), triggersToReflexesMap );
 
         if(newResult){
-			newResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, triggersToReflexesMap, referral,
+			newResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sample, triggersToReflexesMap, referral,
 					existingReferral));
 		}else{
-			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, triggersToReflexesMap,
+			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sample, triggersToReflexesMap,
 					referral, existingReferral));
 		}
 

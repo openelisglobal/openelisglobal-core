@@ -48,7 +48,6 @@ import us.mn.state.health.lims.reports.daoimpl.DocumentTrackDAOImpl;
 import us.mn.state.health.lims.reports.daoimpl.DocumentTypeDAOImpl;
 import us.mn.state.health.lims.reports.valueholder.DocumentTrack;
 import us.mn.state.health.lims.result.action.util.ResultSet;
-import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -313,9 +312,9 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		Patient patient = sampleHumanDAO.getPatientForSample(sample);
 		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
 		if( documents.isEmpty()){
-			newResultSet.add(new ResultSet(result, null,null,null, patient, sample, null, null, null));
+			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, null, null));
 		}else{
-			modifiedResultSet.add(new ResultSet(result, null,null,null, patient, sample, null, null, null));
+			modifiedResultSet.add(new ResultSet(result, null,null, patient, sample, null, null, null));
 		}
 	}
 
@@ -461,7 +460,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		}else if(areNotes(testResult)){
 			note = new Note();
 			note.setReferenceId(testResult.getResultId());
-			note.setReferenceTableId(ResultsLoadUtility.getResultReferenceTableId());
+			note.setReferenceTableId("21");//ResultsLoadUtility.getResultReferenceTableId());
 			note.setNoteType( NoteService.getDefaultNoteType( NoteService.NoteSource.VALIDATION ));
 			note.setSubject(RESULT_SUBJECT);
 		}
