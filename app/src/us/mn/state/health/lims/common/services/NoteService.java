@@ -20,7 +20,6 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
@@ -28,11 +27,14 @@ import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
+import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NoteService{
@@ -56,7 +58,7 @@ public class NoteService{
     }
 
     public enum BoundTo{
-        ANALYSIS, NON_CONFORMITY, ORDER, SAMPLE
+        ANALYSIS, QA_EVENT, ORDER, SAMPLE
     }
 
     public enum NoteSource {
@@ -64,34 +66,65 @@ public class NoteService{
         OTHER
     }
 
-    private Analysis analysis;
     private BoundTo binding;
+    private final String tableId;
+    private final String objectId;
 
     private static final String ANALYSIS_TABLE_ID;
+    private static final String SAMPLE_TABLE_ID;
+    private static final String SAMPLE_QAEVENT_TABLE_ID;
+    private static final String SAMPLE_ITEM_TABLE_ID;
 
     static{
         ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
         ANALYSIS_TABLE_ID = refTableDAO.getReferenceTableByName( "ANALYSIS" ).getId();
+        SAMPLE_TABLE_ID = refTableDAO.getReferenceTableByName( "SAMPLE" ).getId();
+        SAMPLE_QAEVENT_TABLE_ID = refTableDAO.getReferenceTableByName( "SAMPLE_QAEVENT" ).getId();
+        SAMPLE_ITEM_TABLE_ID = refTableDAO.getReferenceTableByName( "SAMPLE_ITEM" ).getId();
     }
 
     public NoteService(Analysis analysis){
-        this.analysis = analysis;
+        tableId = ANALYSIS_TABLE_ID;
+        objectId = analysis.getId();
         binding = BoundTo.ANALYSIS;
     }
 
-    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparater ){
-        List<Note> noteList = null;
+    public NoteService(Sample sample){
+        tableId = SAMPLE_TABLE_ID;
+        objectId = sample.getId();
+        binding = BoundTo.ORDER;
+    }
 
-        switch( binding ){
-            case ANALYSIS:{
-                noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( analysis.getId(), ANALYSIS_TABLE_ID );
-                break;
-            }
-            default:{
-                return "";
-            }
+    public NoteService(SampleQaEvent sampleQaEvent){
+        tableId = SAMPLE_QAEVENT_TABLE_ID;
+        objectId = sampleQaEvent.getId();
+        binding = BoundTo.QA_EVENT;
+    }
+
+    public NoteService( SampleItem sampleItem){
+        tableId = SAMPLE_ITEM_TABLE_ID;
+        objectId = sampleItem.getId();
+        binding = BoundTo.SAMPLE;
+    }
+
+    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, NoteType[] filter ){
+        List<String> dbFilter = new ArrayList<String>( filter.length );
+        for( NoteType type : filter){
+            dbFilter.add( type.getDBCode() );
         }
 
+        List<Note> noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( objectId, tableId, dbFilter );
+
+        return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList );
+    }
+
+    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator ){
+         List<Note> noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( objectId, tableId );
+
+        return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList );
+    }
+
+    private String notesToString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, List<Note> noteList ){
         if(noteList.isEmpty()){
             return null;
         }
@@ -114,14 +147,55 @@ public class NoteService{
             }
             builder.append( note.getText() );
 
-            builder.append( noteSeparater );
+            builder.append( StringUtil.blankIfNull( noteSeparator ) );
         }
 
-        builder.setLength(builder.lastIndexOf(noteSeparater));
+        if(!GenericValidator.isBlankOrNull( noteSeparator )){
+            builder.setLength(builder.lastIndexOf( noteSeparator ));
+        }
 
         return builder.toString();
     }
 
+    public String getNotesAsString( String prefix, String noteSeparator ){
+        List<Note> noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( objectId, tableId );
+
+        if(noteList.isEmpty()){
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        for( Note note : noteList ){
+            builder.append( StringUtil.blankIfNull( prefix ) );
+            builder.append( note.getText() );
+            builder.append( StringUtil.blankIfNull( noteSeparator ) );
+        }
+
+        if( !GenericValidator.isBlankOrNull( noteSeparator )){
+            builder.setLength(builder.lastIndexOf( noteSeparator ));
+        }
+
+        return builder.toString();
+    }
+
+
+    public Note getMostRecentNoteFilteredBySubject(String filter){
+        List<Note> noteList;
+        if( GenericValidator.isBlankOrNull( filter )){
+            noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( objectId, tableId );
+            if(!noteList.isEmpty()){
+                return noteList.get(noteList.size() - 1);
+            }
+        }else{
+            noteList = noteDAO.getNoteByRefIAndRefTableAndSubject(objectId, tableId, filter );
+            if(!noteList.isEmpty()){
+                return noteList.get(0);
+            }
+        }
+
+        return null;
+    }
     private String getNoteTimestamp( Note note ){
         return DateUtil.convertTimestampToStringDateAndTime( note.getLastupdated() );
     }
@@ -139,81 +213,13 @@ public class NoteService{
         }
 
         Note note = new Note();
-
-        switch( binding ){
-            case ANALYSIS:{
-                note.setReferenceId( analysis.getId() );
-                note.setReferenceTableId( ANALYSIS_TABLE_ID );
-            }
-        }
-
+        note.setReferenceId( objectId );
+        note.setReferenceTableId( tableId );
         note.setNoteType( type.getDBCode() );
         note.setSubject( subject );
         note.setText( text );
         note.setSysUserId( currentUserId );
         note.setSystemUser( createSystemUser(currentUserId) );
-
-        return note;
-    }
-
-	@SuppressWarnings("unchecked")
-	public static List<Note> getNotesForObjectAndTable(String objectId, String tableId) {
-
-		Note note = new Note();
-		note.setReferenceTableId(tableId);
-		note.setReferenceId(objectId);
-		return noteDAO.getAllNotesByRefIdRefTable(note);
-	}
-
-    @SuppressWarnings("unchecked")
-    public static List<Note> getExternalNotesForObjectAndTable(String objectId, String tableId) {
-
-        Note note = new Note();
-        note.setReferenceTableId(tableId);
-        note.setReferenceId(objectId);
-        note.setNoteType(Note.EXTERNAL);
-        return noteDAO.getNotesByNoteTypeRefIdRefTable(note);
-    }
-
-    static public String getTableReferenceId(String tableName) {
-        ReferenceTablesDAO rtDAO = DAOImplFactory.getInstance().getReferenceTablesDAOImpl();
-        ReferenceTables referenceTable = new ReferenceTables();
-        referenceTable.setTableName(tableName);
-        referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-        return referenceTable.getId();
-    }
-
-    /**
-     * @param noteId -- The id of the note if it exists, otherwise it may be null.  If it does exist then the Note will be loaded from the
-     * database.  The id of the returned note should be checked to understand if the note should be inserted or updated
-     * @param text -- What should go into the note.  May not be null or blank for new notes
-     * @param objectId -- Notes are defined by some id and some table.  This is the id
-     * @param tableId -- Notes are defined by some id and some table.  This is the id of the table from reference_table table
-     * @param noteSubject -- This is the subject of the note.  May be some arbitary string which can then be used for searching
-     * @param currentUserId -- The current user Id.  Also known as the sysUserId.  This is the same id as the one used to track changes in the history table.
-     * @return The note if one could be created
-     */
-    @Deprecated
-    public static Note createSavableNote(String noteId, String text, String objectId, String tableId, String noteSubject, String currentUserId, String noteType) {
-        Note note = null;
-
-        if (!GenericValidator.isBlankOrNull(noteId)) {
-            note = new Note();
-            note.setId(noteId);
-            noteDAO.getData(note);
-		} else if( !GenericValidator.isBlankOrNull(text)) {
-            note = new Note();
-            note.setReferenceId(objectId);
-            note.setReferenceTableId(tableId);
-            note.setNoteType(noteType);
-            note.setSubject(noteSubject);
-        }
-
-        if (note != null) {
-            note.setText(text);
-            note.setSysUserId(currentUserId);
-            note.setSystemUser(createSystemUser(currentUserId));
-        }
 
         return note;
     }
@@ -226,15 +232,27 @@ public class NoteService{
         return systemUser;
     }
 
-    public static String getDefaultNoteType(NoteSource source) {
-        if(SUPPORT_INTERNAL_EXTERNAL) {
-            return source == NoteSource.VALIDATION ? Note.EXTERNAL : Note.INTERNAL;
+    public static String getReferenceTableIdForNoteBinding( BoundTo binding){
+        switch( binding ){
+            case ANALYSIS:{
+                return ANALYSIS_TABLE_ID;
+            }
+            case QA_EVENT:{
+                return SAMPLE_QAEVENT_TABLE_ID;
+            }
+            case ORDER:{
+                return SAMPLE_TABLE_ID;
+            }
+            case SAMPLE:{
+                return SAMPLE_ITEM_TABLE_ID;
+            }
+            default:{
+                return null;
+            }
         }
-
-        return Note.EXTERNAL;
     }
 
-    public static String getNotePrefix(Note note) {
+    private String getNotePrefix(Note note) {
         if(SUPPORT_INTERNAL_EXTERNAL){
             if( "I".equals(note.getNoteType())){
                 return StringUtil.getMessageForKey("note.type.internal");
@@ -247,5 +265,4 @@ public class NoteService{
 
         return "";
     }
-
 }

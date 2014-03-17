@@ -21,6 +21,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.SampleService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -167,17 +168,15 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 		currentSampleService = new SampleService(reportSample);
 		findPatientFromSample();
 
+        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>" );
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
 		for (int i = 0; i < referralResults.size(); i++) {
-			// pick up note from 1st of possible multiple results
-			String referralNote = getResultNote(referralResults.get(i).getResult());
-
 			i = reportReferralResultValue(referralResults, i);
 			ReferralResult referralResult = referralResults.get(i);
 			ClinicalPatientData data = reportAnalysisResults();
 			data.setReferralSentDate((referral != null && referral.getSentDate() != null) ? DateUtil.formatDateAsText(referral.getSentDate()) : "");
 			data.setReferralResult(reportReferralResultValue);
-			data.setReferralNote(referralNote);
+			data.setReferralNote(note);
 			String testId = referralResult.getTestId();
 			if (!GenericValidator.isBlankOrNull(testId)) {
 				Test test = new Test();
