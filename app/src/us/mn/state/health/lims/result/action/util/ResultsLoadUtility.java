@@ -409,7 +409,7 @@ public class ResultsLoadUtility {
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
 
-            String notes = new NoteService( analysis ).getNotesAsString( true, true, "</br>" );
+            String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>" );
 
 			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,

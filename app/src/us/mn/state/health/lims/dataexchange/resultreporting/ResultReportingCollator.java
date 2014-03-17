@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.dataexchange.resultreporting;
 
 import org.apache.commons.validator.GenericValidator;
+import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -24,7 +25,6 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.*;
 import us.mn.state.health.lims.dictionary.util.DictionaryUtil;
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
 import us.mn.state.health.lims.patientidentity.daoimpl.PatientIdentityDAOImpl;
@@ -53,7 +53,6 @@ public class ResultReportingCollator {
 	private Map<String, List<ResultXmit>> analysisIdToResultBeanMap = new HashMap<String, List<ResultXmit>>();
 	private Collection<String> noGUIDPatients = new HashSet<String>();
 	private static Map<String, String> resultTypeToHL7TypeMap;
-	private static final String RESULT_REFERENCE_TABLE_ID = NoteService.getTableReferenceId( "RESULT" );
 
     static {
 		GUID_IDENTITY_TYPE = new PatientIdentityTypeDAOImpl().getNamedIdentityType("GUID").getId();
@@ -221,23 +220,9 @@ public class ResultReportingCollator {
 	
 	protected String getResultNote(Result result) {
 		if (result != null) {
-			List<Note> notes  = NoteService.getNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
-
-			if (!(notes == null || notes.isEmpty())) {
-				Collections.sort(notes, new Comparator<Note>(){
-					@Override
-					public int compare(Note o1, Note o2) {
-						return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
-					}
-				});
-				StringBuilder noteBuilder = new StringBuilder();
-				for( Note note : notes){
-					noteBuilder.append(note.getText());
-					noteBuilder.append("<br/>");
-				}
-				noteBuilder.setLength(noteBuilder.lastIndexOf("<br/>"));
-				return noteBuilder.toString();
-			}
+            Analysis analysis = new Analysis();
+            analysis.setId( result.getAnalysis().getId() );
+            return new NoteService( analysis ).getNotesAsString( false, false, "<br/>" );
 		}
 		return null;
 	}

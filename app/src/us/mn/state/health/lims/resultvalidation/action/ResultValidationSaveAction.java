@@ -291,7 +291,10 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 					}
 				}
 
-				createNote(analysisItem);
+                Note note = new NoteService( analysis ).createSavableNote( NoteService.NoteType.EXTERNAL, analysisItem.getNote(), RESULT_SUBJECT, currentUserId );
+                if(note != null){
+                    noteUpdateList.add( note );
+                }
 
                 if (areResults(analysisItem)) {
                     List<Result> results = createResultFromAnalysisItem(analysisItem, analysis);
@@ -450,31 +453,6 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		return analysis;
 	}
 
-	private void createNote(AnalysisItem testResult){
-		Note note = null;
-
-		if(!GenericValidator.isBlankOrNull(testResult.getNoteId())){
-			note = new Note();
-			note.setId(testResult.getNoteId());
-			noteDAO.getData(note);
-		}else if(areNotes(testResult)){
-			note = new Note();
-			note.setReferenceId(testResult.getResultId());
-			note.setReferenceTableId("21");//ResultsLoadUtility.getResultReferenceTableId());
-			note.setNoteType( NoteService.getDefaultNoteType( NoteService.NoteSource.VALIDATION ));
-			note.setSubject(RESULT_SUBJECT);
-		}
-
-		if(note != null){
-			note.setText(testResult.getNote());
-			note.setSysUserId(currentUserId);
-			note.setSystemUser(systemUser);
-			note.setSystemUserId(currentUserId);
-			noteUpdateList.add(note);
-		}
-
-	}
-
 	private List<Result> createResultFromAnalysisItem(AnalysisItem analysisItem, Analysis analysis){
 
         ResultSaveBean bean =  ResultSaveBeanAdapter.fromAnalysisItem(analysisItem);
@@ -495,10 +473,6 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 			}
 		}
 		return testResult;
-	}
-
-	private boolean areNotes(AnalysisItem item){
-		return !GenericValidator.isBlankOrNull(item.getNote());
 	}
 
 	private boolean areResults(AnalysisItem item){

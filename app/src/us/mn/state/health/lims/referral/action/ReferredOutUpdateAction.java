@@ -321,13 +321,8 @@ public class ReferredOutUpdateAction extends BaseAction {
 		referral.setSentDate(DateUtil.convertStringDateToTruncatedTimestamp(referralItem.getReferredSendDate()));
 		referral.setRequesterName(referralItem.getReferrer());
 
-		referralSet.note = NoteService.createSavableNote( null,
-                referralItem.getNote(),
-                referralItem.getCasualResultId(),
-                "21",//ResultsLoadUtility.getResultReferenceTableId(),
-                RESULT_SUBJECT,
-                currentUserId,
-                NoteService.getDefaultNoteType( NoteService.NoteSource.OTHER ) );
+
+        referralSet.note =  new NoteService(referral.getAnalysis()).createSavableNote( NoteService.NoteType.INTERNAL, referralItem.getNote(),RESULT_SUBJECT,currentUserId );
 
         createReferralResults(referralItem, referralSet);
 

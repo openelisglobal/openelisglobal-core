@@ -22,6 +22,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -97,14 +98,14 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
 	private void addReferredTests(Referral referral, ClinicalPatientData parentData, boolean parentStillReferred){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
+        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>" );
 
 		for(int i = 0; i < referralResults.size(); i++){
 			if(referralResults.get(i).getResult() != null &&
 			// if referral has been canceled then don't show referred tests with
 			// no results
 					(parentStillReferred || !GenericValidator.isBlankOrNull(referralResults.get(i).getResult().getValue()))){
-				// pick up note from 1st of possible multiple results
-				String referralNote = getResultNote(referralResults.get(i).getResult());
+
 				i = reportReferralResultValue(referralResults, i);
 				ReferralResult referralResult = referralResults.get(i);
 
@@ -112,7 +113,9 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 				copyParentData(data, parentData);
 
 				data.setResult(reportReferralResultValue);
-				data.setNote(referralNote);
+                if( note != null){
+                    data.setNote(note);
+                }
 				String testId = referralResult.getTestId();
 				if(!GenericValidator.isBlankOrNull(testId)){
 					Test test = new Test();

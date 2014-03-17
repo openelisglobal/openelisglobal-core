@@ -32,15 +32,11 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ConfirmationData;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMessages;
 import us.mn.state.health.lims.requester.dao.RequesterTypeDAO;
@@ -69,16 +65,10 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 	private static ResultDAO resultDAO = new ResultDAOImpl();
 	private static DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private static OrganizationDAO organizationDAO = new OrganizationDAOImpl();
-	private static String SAMPLE_ITEM_TABLE_ID;
 	private static long PERSON_REQUESTER_TYPE_ID;
 	private static long ORG_REQUESTER_TYPE_ID;
 
 	static {
-		ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
-		ReferenceTables refTable = new ReferenceTables();
-		refTable.setTableName("SAMPLE_ITEM");
-		SAMPLE_ITEM_TABLE_ID = refTableDAO.getReferenceTableByName(refTable).getId();
-
 		RequesterTypeDAO requesterTypeDAO = new RequesterTypeDAOImpl();
 		PERSON_REQUESTER_TYPE_ID = Long.parseLong(requesterTypeDAO.getRequesterTypeByName("provider").getId());
 		ORG_REQUESTER_TYPE_ID = Long.parseLong(requesterTypeDAO.getRequesterTypeByName("organization").getId());
@@ -206,8 +196,8 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 	}
 
 	private String getNoteForSampleItem(SampleItem sampleItem) {
-		List<Note> notes = NoteService.getNotesForObjectAndTable( sampleItem.getId(), SAMPLE_ITEM_TABLE_ID );
-		return notes == null || notes.isEmpty() ? "" : notes.get(0).getText();
+        String notes = new NoteService( sampleItem ).getNotesAsString( null, null );
+		return notes == null ? "" : notes;
 	}
 
 	private void addResults(ConfirmationData data, SampleItem sampleItem) {
@@ -217,7 +207,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 		List<String> requestResultList = new ArrayList<String>();
 		List<String> labTestList = new ArrayList<String>();
 		List<String> labResultList = new ArrayList<String>();
-		List<String> compleationDate = new ArrayList<String>();
+		List<String> completionDate = new ArrayList<String>();
 
 		for (Analysis analysis : analysisList) {
 			if (analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))) {
@@ -232,7 +222,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 			} else {
 				labTestList.add(analysis.getTest().getTestName());
 				labResultList.add(getResultsForAnalysis(analysis));
-				compleationDate.add(getCompleationDate(analysis));
+				completionDate.add( getCompleationDate( analysis ) );
 			}
 		}
 
@@ -240,7 +230,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 		data.setLabTest(labTestList);
 		data.setRequesterTest(requestTestList);
 		data.setRequesterResult(requestResultList);
-		data.setCompleationDate(compleationDate);
+		data.setCompleationDate(completionDate);
 	}
 
 	private String getResultsForAnalysis(Analysis analysis) {

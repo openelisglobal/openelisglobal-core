@@ -31,10 +31,7 @@ import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.note.dao.NoteDAO;
-import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -57,8 +54,6 @@ import us.mn.state.health.lims.provider.dao.ProviderDAO;
 import us.mn.state.health.lims.provider.daoimpl.ProviderDAOImpl;
 import us.mn.state.health.lims.provider.valueholder.Provider;
 import us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
@@ -97,11 +92,9 @@ public class NonConformityAction extends BaseAction{
 
 	public static String DOCTOR_OBSERVATION_TYPE_ID;
 	public static String SERVICE_OBSERVATION_TYPE_ID;
-	public static String SAMPLE_QAEVENT_TABLE_ID;
-	public static String SAMPLE_TABLE_ID;
+
 	private static final String QA_NOTE_SUBJECT = "QaEvent Note";
 
-	private static NoteDAO noteDAO = new NoteDAOImpl();
 	private static SampleDAO sampleDAO = new SampleDAOImpl();
 	private static SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 	private static TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
@@ -124,19 +117,6 @@ public class NonConformityAction extends BaseAction{
 	static{
 		DOCTOR_OBSERVATION_TYPE_ID = getOHTypeIdByName("nameOfDoctor");
 		SERVICE_OBSERVATION_TYPE_ID = getOHTypeIdByName("service");
-
-		ReferenceTablesDAO rtDAO = DAOImplFactory.getInstance().getReferenceTablesDAOImpl();
-		ReferenceTables referenceTable = new ReferenceTables();
-
-		referenceTable.setTableName("SAMPLE_QAEVENT");
-		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-		SAMPLE_QAEVENT_TABLE_ID = referenceTable.getId();
-
-		referenceTable = new ReferenceTables();
-		referenceTable.setTableName("SAMPLE");
-		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-		SAMPLE_TABLE_ID = referenceTable.getId();
-
 	}
 
 	@Override
@@ -388,24 +368,16 @@ public class NonConformityAction extends BaseAction{
 	}
 
 	public static String getNoteForSample(Sample sample){
-		Note note = new Note();
-		note.setReferenceTableId(SAMPLE_TABLE_ID);
-		note.setReferenceId(sample.getId());
-
-		List<Note> noteList = noteDAO.getNoteByRefIAndRefTableAndSubject(sample.getId(), SAMPLE_TABLE_ID, QA_NOTE_SUBJECT);// noteDAO.getAllNotesByRefIdRefTable(note);
-		if(!noteList.isEmpty()){
-			return noteList.get(0).getText();
-		}
-
-		return null;
+		Note note = new NoteService( sample ).getMostRecentNoteFilteredBySubject( QA_NOTE_SUBJECT );
+		return note != null ? note.getText() : null;
 	}
 
 	public static String getNoteForSampleQaEvent(SampleQaEvent sampleQaEvent){
 		if(sampleQaEvent == null || GenericValidator.isBlankOrNull(sampleQaEvent.getId())){
 			return null;
 		}else{
-			List<Note> notes = NoteService.getNotesForObjectAndTable( sampleQaEvent.getId(), SAMPLE_QAEVENT_TABLE_ID );
-			return (notes == null || notes.isEmpty()) ? null : notes.get(0).getText();
+            Note note = new NoteService( sampleQaEvent ).getMostRecentNoteFilteredBySubject( null );
+			return note != null ? note.getText() : null;
 		}
 	}
 

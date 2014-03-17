@@ -22,6 +22,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -93,7 +94,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 	private void addReferredTests(Referral referral, ClinicalPatientData parentData){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
-
+        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER );
 
 		if( noAlertColumn && !referralResults.isEmpty()){
 		
@@ -116,8 +117,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 			if( referralResults.get(i).getResult() == null ){
 				sampleCompleteMap.put(reportSample.getAccessionNumber(), Boolean.FALSE);
 			}else{
-				// pick up note from 1st of possible multiple results
-				String referralNote = getResultNote(referralResults.get(i).getResult());
+
 				i = reportReferralResultValue(referralResults, i);
 				ReferralResult referralResult = referralResults.get(i);
 
@@ -125,7 +125,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 				copyParentData(data, parentData);
 
 				data.setResult(reportReferralResultValue);
-				data.setNote(referralNote);
+				data.setNote(note);
 				String testId = referralResult.getTestId();
 				if(!GenericValidator.isBlankOrNull(testId)){
 					Test test = new Test();

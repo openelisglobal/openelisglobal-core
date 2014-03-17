@@ -32,31 +32,19 @@ type
 public interface NoteDAO extends BaseDAO {
 
 	public boolean insertData(Note note) throws LIMSRuntimeException;
-
 	public void deleteData(List notes) throws LIMSRuntimeException;
-
 	public List<Note> getAllNotes() throws LIMSRuntimeException;
-
 	public List getPageOfNotes(int startingRecNo) throws LIMSRuntimeException;
-
 	public void getData(Note note) throws LIMSRuntimeException;
-
 	public void updateData(Note note) throws LIMSRuntimeException;
-
 	public List getNextNoteRecord(String id) throws LIMSRuntimeException;
-
 	public List getPreviousNoteRecord(String id) throws LIMSRuntimeException;
-
 	public Integer getTotalNoteCount() throws LIMSRuntimeException;
-
 	public List getAllNotesByRefIdRefTable(Note note) throws LIMSRuntimeException;
-	
 	public List<Note> getNotesByNoteTypeRefIdRefTable(Note note) throws LIMSRuntimeException;
-
+    public  List<Note> getNotesChronologicallyByRefIdAndRefTableAndType( String objectId, String tableId, List<String> filter ) throws  LIMSRuntimeException;
 	public List<Note> getNoteByRefIAndRefTableAndSubject(String refId, String table_id, String subject) throws LIMSRuntimeException;
-
 	public Note getData(String noteId) throws LIMSRuntimeException;
-
     public List<Note> getNotesChronologicallyByRefIdAndRefTable( String refId, String table_id ) throws LIMSRuntimeException;
 }
 

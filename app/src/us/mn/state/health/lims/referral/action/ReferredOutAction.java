@@ -31,7 +31,6 @@ import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -70,7 +69,6 @@ public class ReferredOutAction extends BaseAction {
 	private static ResultDAO resultDAO = new ResultDAOImpl();
 	private static DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private List<NonNumericTests> nonNumericTests;
-	private static String RESULT_REFERENCE_TABLE_ID = NoteService.getTableReferenceId( "RESULT" );
 
 	@Override
 	protected String getPageSubtitleKey() {
@@ -144,8 +142,7 @@ public class ReferredOutAction extends BaseAction {
 		List<Referral> referralList = referralDAO.getAllUncanceledOpenReferrals();
 
 		for (Referral referral : referralList) {
-			ReferralItem referralItem = null;
-			referralItem = getReferralItem(referral);
+            ReferralItem referralItem = getReferralItem(referral);
 			if (referralItem != null) {
 				referralItems.add(referralItem);
 			}
@@ -167,7 +164,7 @@ public class ReferredOutAction extends BaseAction {
             if (result != 0) {
                 return result;
             }
-            return result = left.getReferringTestName().compareTo(right.getReferringTestName());
+            return left.getReferringTestName().compareTo(right.getReferringTestName());
         }	    
 	}
 
@@ -198,7 +195,6 @@ public class ReferredOutAction extends BaseAction {
 		referralItem.setSampleType(typeOfSample.getLocalizedName());
 
 		referralItem.setReferringTestName(referral.getAnalysis().getTest().getLocalizedName());
-
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 		String resultString = "";
 
@@ -206,27 +202,6 @@ public class ReferredOutAction extends BaseAction {
 			Result result = resultList.get(0);
 			resultString = getAppropriateResultValue(resultList);
 			referralItem.setCasualResultId(result.getId());
-			
-			List<Note> notes = NoteService.getNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
-			if (!(notes == null || notes.isEmpty())) {
-				Collections.sort(notes, new Comparator<Note>() {
-					@Override
-					public int compare(Note o1, Note o2) {
-						return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
-					}
-				});
-				
-				StringBuilder noteBuilder = new StringBuilder();
-				
-				for(Note note : notes){
-					noteBuilder.append(note.getText());
-					noteBuilder.append("<br/>");
-				}
-				
-				noteBuilder.setLength( noteBuilder.lastIndexOf("<br/>"));
-				referralItem.setPastNotes(noteBuilder.toString());
-
-			}
 		}
 
 		referralItem.setReferralId(referral.getId());
@@ -246,6 +221,10 @@ public class ReferredOutAction extends BaseAction {
 		if (referral.getOrganization() != null) {
 			referralItem.setReferredInstituteId(referral.getOrganization().getId());
 		}
+        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>" );
+        if (notes != null ) {
+            referralItem.setPastNotes(notes);
+        }
 
 		return referralItem;
 	}
@@ -276,8 +255,8 @@ public class ReferredOutAction extends BaseAction {
 	/**
 	 * Move everything appropriate to the referralItem including one or more of the referralResults from the given list.
 	 * Note: This method removes an item from the referralResults list.
-	 * @param referralItem
-	 * @param referralResults
+	 * @param referralItem The source item
+	 * @param referralResults The created list
 	 */
 	private List<ReferralResult> setReferralItem(IReferralResultTest referralItem, List<ReferralResult> referralResults) {
 	    List<ReferralResult> leftOvers = new ArrayList<ReferralResult>(referralResults);
@@ -416,11 +395,11 @@ public class ReferredOutAction extends BaseAction {
 
     /**
      * The types of testResults which mean that there will be a list of choices/options to select from.
-     * @param testResultType
+     * @param testResultType  The resultType being tested
      * @return true if it is one of the types which means a list of choices, false otherwise.
      */
 	public static boolean isSelectList(String testResultType) {
-        return "DMQ".contains( testResultType );
+        return "DM".contains( testResultType );
     }
 
 	public class NonNumericTests {

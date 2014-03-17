@@ -35,16 +35,12 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
 import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -83,7 +79,6 @@ public class ResultsValidationUtility {
 	private final TestDAO testDAO = new TestDAOImpl();
 	private final SampleDAO sampleDAO = new SampleDAOImpl();
 	private final ObservationHistoryDAO observationHistoryDAO = new ObservationHistoryDAOImpl();
-	private static String RESULT_TABLE_ID;
 	private static String SAMPLE_STATUS_OBSERVATION_HISTORY_TYPE_ID;
 	private static String CD4_COUNT_SORT_NUMBER;
 
@@ -111,11 +106,6 @@ public class ResultsValidationUtility {
 		if( test != null){
 			CD4_COUNT_SORT_NUMBER = test.getSortOrder();
 		}
-		
-		ReferenceTablesDAO refTablesDAO = new ReferenceTablesDAOImpl();
-		ReferenceTables refTable = new ReferenceTables();
-		refTable.setTableName("RESULT");
-		RESULT_TABLE_ID = refTablesDAO.getReferenceTableByName(refTable).getId();
 
 		ObservationHistoryTypeDAO ohTypeDAO = new ObservationHistoryTypeDAOImpl();
 		ObservationHistoryType oht = ohTypeDAO.getByName("SampleRecordStatus");
@@ -394,7 +384,7 @@ public class ResultsValidationUtility {
 		List<ResultValidationItem> testResultList = new ArrayList<ResultValidationItem>();
 
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
-
+        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>" );
 		if (resultList == null) {
 			return testResultList;
 		}
@@ -419,8 +409,9 @@ public class ResultsValidationUtility {
 			}
 			
 			ResultValidationItem resultItem = createTestResultItem(analysis, analysis.getTest(), analysis.getSampleItem().getSortOrder(),
-					result, analysis.getSampleItem().getSample().getAccessionNumber());
+					result, analysis.getSampleItem().getSample().getAccessionNumber(), notes);
 
+            notes = null;//we only want it once
 			if( resultItem.getQualifiedDictionaryId() != null){
 				parentItem = resultItem;
 			}
@@ -432,7 +423,7 @@ public class ResultsValidationUtility {
 	}
 
 	private ResultValidationItem createTestResultItem(Analysis analysis, Test test, String sequenceNumber, Result result,
-			String accessionNumber) {
+			String accessionNumber, String notes) {
 
 		List<TestResult> testResults = getPossibleResultsForTest(test);
 
@@ -455,23 +446,7 @@ public class ResultsValidationUtility {
 		testItem.setReflexGroup(analysis.getTriggeredReflex());
 		testItem.setChildReflex(analysis.getTriggeredReflex() && isConclusion(result, analysis));
 		testItem.setQualifiedDictionaryId(getQualifiedDictionaryId(testResults));
-
-		if (result != null && !GenericValidator.isBlankOrNull(result.getId())) {
-			List<Note> noteList = NoteService.getNotesForObjectAndTable( result.getId(), RESULT_TABLE_ID );
-
-			if (!(noteList == null || noteList.isEmpty())) {
-				StringBuilder builder = new StringBuilder();
-                builder.append( NoteService.getNotePrefix( noteList.get( noteList.size() - 1 ) ));
-                builder.append(noteList.get(noteList.size() - 1).getText());
-				for(int i = noteList.size() - 2; i >= 0; i--){
-					builder.append("<br>");
-                    builder.append( NoteService.getNotePrefix( noteList.get( i ) ));
-					builder.append(noteList.get(i).getText());
-				}
-				
-				testItem.setPastNotes(builder.toString());
-			}
-		}
+        testItem.setPastNotes( notes );
 
 		return testItem;
 	}

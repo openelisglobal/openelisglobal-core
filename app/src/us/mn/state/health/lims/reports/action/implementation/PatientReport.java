@@ -31,6 +31,7 @@ import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValida
 import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -43,7 +44,6 @@ import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
 import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
@@ -101,7 +101,6 @@ import java.util.*;
 
 public abstract class PatientReport extends Report{
 
-    private static final String RESULT_REFERENCE_TABLE_ID = NoteService.getTableReferenceId( "RESULT" );
     private static final DecimalFormat twoDecimalFormat = new DecimalFormat( "#.##" );
     protected static final boolean noAlertColumn = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.PATIENT_REPORT_NO_ALERTS, "true" );
     private static String ADDRESS_DEPT_ID;
@@ -157,6 +156,7 @@ public abstract class PatientReport extends Report{
     protected static String LAB_SUBTYPE_OBSERVATION_ID = "0";
     protected static Long PERSON_REQUESTER_TYPE_ID;
     protected static Long ORGANIZATION_REQUESTER_TYPE_ID;
+    protected static final NoteType[] FILTER = {NoteType.EXTERNAL, NoteType.REJECTION_REASON};
     protected Map<String, Boolean> sampleCompleteMap;
 
     static{
@@ -499,8 +499,13 @@ public abstract class PatientReport extends Report{
 
     protected void reportResultAndConclusion( ClinicalPatientData data ){
         List<Result> resultList = resultDAO.getResultsByAnalysis( reportAnalysis );
-        Test test = reportAnalysis.getTest();
 
+
+        Test test = reportAnalysis.getTest();
+        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER );
+        if( note != null){
+            data.setNote( note );
+        }
         data.setTestSection( reportAnalysis.getTestSection().getLocalizedName() );
         data.setTestSortOrder( GenericValidator.isBlankOrNull( test.getSortOrder() ) ? Integer.MAX_VALUE : Integer.parseInt( test.getSortOrder() ) );
         data.setSectionSortOrder( test.getTestSection().getSortOrderInt() );
@@ -530,7 +535,6 @@ public abstract class PatientReport extends Report{
             setNormalRange( data, test, result );
             data.setResult( getAugmentedResult( data, result ) );
             data.setFinishDate( reportAnalysis.getCompletedDateForDisplay() );
-            data.setNote( getResultNote( result ) );
             data.setAlerts( getResultFlag( result, null, data ) );
         }
 
@@ -569,34 +573,6 @@ public abstract class PatientReport extends Report{
         }
 
         return resultValue + ( augmentResultWithFlag() ? getResultFlag( result, null ) : "" );
-    }
-
-    protected String getResultNote( Result result ){
-        if( result != null ){
-            List<Note> notes = NoteService.getExternalNotesForObjectAndTable( result.getId(), RESULT_REFERENCE_TABLE_ID );
-
-            if( !( notes == null || notes.isEmpty() ) ){
-
-                Collections.sort( notes, new Comparator<Note>(){
-                    @Override
-                    public int compare( Note o1, Note o2 ){
-                        return Integer.parseInt( o1.getId() ) - Integer.parseInt( o2.getId() );
-                    }
-                } );
-
-                StringBuilder noteBuilder = new StringBuilder();
-
-                for( Note note : notes ){
-                    noteBuilder.append( note.getText() );
-                    noteBuilder.append( "<br/>" );
-                }
-
-                noteBuilder.setLength( noteBuilder.lastIndexOf( "<br/>" ) );
-
-                return noteBuilder.toString();
-            }
-        }
-        return null;
     }
 
     protected String getResultFlag( Result result, String imbed ){
