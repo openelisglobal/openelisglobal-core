@@ -811,7 +811,7 @@ public class NonConformityUpdateWorker {
 			return null;
 		}
 
-		List<Note> notes = noteDAO.getNoteByRefIAndRefTableAndSubject(sample.getId(),NoteService.getReferenceTableIdForNoteBinding( NoteService.BoundTo.ORDER ), NOTE_SUBJECT);
+		List<Note> notes = noteDAO.getNoteByRefIAndRefTableAndSubject(sample.getId(),NoteService.getReferenceTableIdForNoteBinding( NoteService.BoundTo.SAMPLE ), NOTE_SUBJECT);
 		return notes.isEmpty() ? null : notes.get(0);
 	}
 

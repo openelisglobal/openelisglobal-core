@@ -58,12 +58,7 @@ public class NoteService{
     }
 
     public enum BoundTo{
-        ANALYSIS, QA_EVENT, ORDER, SAMPLE
-    }
-
-    public enum NoteSource {
-        VALIDATION,
-        OTHER
+        ANALYSIS, QA_EVENT, SAMPLE, SAMPLE_ITEM
     }
 
     private BoundTo binding;
@@ -92,7 +87,7 @@ public class NoteService{
     public NoteService(Sample sample){
         tableId = SAMPLE_TABLE_ID;
         objectId = sample.getId();
-        binding = BoundTo.ORDER;
+        binding = BoundTo.SAMPLE;
     }
 
     public NoteService(SampleQaEvent sampleQaEvent){
@@ -104,7 +99,7 @@ public class NoteService{
     public NoteService( SampleItem sampleItem){
         tableId = SAMPLE_ITEM_TABLE_ID;
         objectId = sampleItem.getId();
-        binding = BoundTo.SAMPLE;
+        binding = BoundTo.SAMPLE_ITEM;
     }
 
     public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, NoteType[] filter ){
@@ -240,10 +235,10 @@ public class NoteService{
             case QA_EVENT:{
                 return SAMPLE_QAEVENT_TABLE_ID;
             }
-            case ORDER:{
+            case SAMPLE:{
                 return SAMPLE_TABLE_ID;
             }
-            case SAMPLE:{
+            case SAMPLE_ITEM:{
                 return SAMPLE_ITEM_TABLE_ID;
             }
             default:{
