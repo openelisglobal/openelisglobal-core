@@ -485,6 +485,7 @@ function /*boolean*/ handleEnterEvent(){
 			           			id='<%= "qualifiedDict_" + index %>'
 			           			style = '<%= "display:" + (resultList.isHasQualifiedResult() ? "inline" : "none") %>'
 					   			<%= resultList.isReadOnly() ? "disabled='disabled'" : ""%> />
+                    <bean:write name="resultList" property="units"/>
 					<% } %><logic:equal name="resultList" property="resultType" value="M">
                     <!-- multiple results -->
                     <select name="<%="resultList[" + index + "].multiSelectResultValues" %>"
@@ -512,6 +513,7 @@ function /*boolean*/ handleEnterEvent(){
                             <%= resultList.isReadOnly() ? "disabled='disabled'" : ""%>
                            onchange='<%="markUpdated(" + index + ");" %>'
                             />
+                    <bean:write name="resultList" property="units"/>
                 </logic:equal>
 					<logic:equal name="resultList" property="resultType" value="A">
 						<app:text name="resultList"

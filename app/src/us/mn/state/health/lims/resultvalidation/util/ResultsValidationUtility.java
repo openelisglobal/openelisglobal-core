@@ -465,14 +465,9 @@ public class ResultsValidationUtility {
 	}
 
 	private String augmentUOMWithRange(String uom,	Result result) {
-		Double max = result.getMaxNormal();
-		Double min = result.getMinNormal();		
-	
-		if( min == null || max == null || min.equals(max)){
-			return uom;
-		}
-
-		return uom + "  ( " + ResultLimitService.getDisplayNormalRange( min, max, String.valueOf( result.getSignificantDigits()), " - " ) + " )";
+        String range = new ResultService( result ).getDisplayReferenceRange( true );
+        uom = StringUtil.blankIfNull( uom );
+        return GenericValidator.isBlankOrNull( range ) ? uom : (uom + " ( " + range + " )");
 	}
 
 	private boolean isConclusion(Result testResult, Analysis analysis) {
@@ -796,7 +791,7 @@ public class ResultsValidationUtility {
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
         analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
         if( "N".equals( testResultItem.getResultType() )){
-            if( result.getMinNormal() == result.getMaxNormal() || result.getMinNormal().equals( result.getMaxNormal())){
+            if(  result.getMinNormal().equals( result.getMaxNormal())){
                 analysisResultItem.setSignificantDigits( -1 );
             }else{
                 analysisResultItem.setSignificantDigits( result.getSignificantDigits() );

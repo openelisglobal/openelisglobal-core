@@ -33,6 +33,7 @@ import java.util.List;
 
 public class ResultService {
 
+    private static DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private Result result;
 	private Test test;
 	private List<ResultLimit> resultLimit;
@@ -201,6 +202,21 @@ public class ResultService {
 
 		return false;
 	}
+
+    public String getDisplayReferenceRange(boolean includeSelectList){
+        String range = "";
+        if( "N".equals( result.getResultType() ) ){
+            if( result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals( result.getMaxNormal() ) ){
+                range = ResultLimitService.getDisplayNormalRange( result.getMinNormal(), result.getMaxNormal(), String.valueOf( result.getSignificantDigits() ), "-" );
+            }
+        }else if( includeSelectList && "DM".contains( result.getResultType() )){
+            List<ResultLimit> limits = getResultLimits();
+            if( !limits.isEmpty() && !GenericValidator.isBlankOrNull( limits.get( 0 ).getDictionaryNormalId() )){
+                range = dictionaryDAO.getDataForId( limits.get( 0 ).getDictionaryNormalId() ).getLocalizedName();
+            }
+        }
+        return range;
+    }
 
 	@SuppressWarnings("unchecked")
 	private List<ResultLimit> getResultLimits() {

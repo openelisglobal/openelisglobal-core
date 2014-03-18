@@ -542,16 +542,11 @@ public abstract class PatientReport extends Report{
     }
 
     private boolean noResults( List<Result> resultList ){
-        if( resultList.isEmpty() ){
+        if( resultList.isEmpty() || GenericValidator.isBlankOrNull( resultList.get( 0 ).getValue() )){
             return true;
         }
 
         Result result = resultList.get( 0 );
-
-        if( GenericValidator.isBlankOrNull( resultList.get( 0 ).getValue() ) ){
-            return true;
-        }
-
         return ( "M".equals( result.getResultType() ) || "D".equals( result.getResultType() ) ) && "0".equals( result.getValue() );
 
     }
@@ -614,13 +609,7 @@ public abstract class PatientReport extends Report{
     }
 
     protected String getRange( Result result ){
-        String range = "";
-        if( "N".equals( result.getResultType() ) ){
-            if( result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals( result.getMaxNormal() ) ){
-                range = ResultLimitService.getDisplayNormalRange( result.getMinNormal(), result.getMaxNormal(), String.valueOf( result.getSignificantDigits() ), "-" );
-            }
-        }
-        return range;
+        return new ResultService( result ).getDisplayReferenceRange( true );
     }
 
     protected String getUnitOfMeasure( Result result, Test test ){
