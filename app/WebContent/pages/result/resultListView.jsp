@@ -580,7 +580,6 @@ function forceTechApproval(checkbox, index ){
 		<bean:define id="lowerAbnormalBound" name="testResult" property="lowerAbnormalRange" />
 		<bean:define id="upperAbnormalBound" name="testResult" property="upperAbnormalRange" />
         <bean:define id="significantDigits" name="testResult" property="significantDigits" />
-		<bean:define id="bound" value="<%=String.valueOf(!lowerBound.equals(upperBound))%>" />
 		<bean:define id="rowColor" value='<%=(testResult.getSampleGroupingNumber() % 2 == 0) ? "evenRow" : "oddRow" %>' />
 		<bean:define id="readOnly" value='<%=testResult.isReadOnly() ? "disabled=\'true\'" : "" %>' />
 		<bean:define id="accessionNumber" name="testResult" property="accessionNumber"/>
@@ -714,10 +713,10 @@ function forceTechApproval(checkbox, index ){
 		<logic:notEqual name="testResult" property="resultDisplayType" value="HIV"><logic:notEqual name="testResult" property="resultDisplayType" value="SYPHILIS">
 			<td style="vertical-align:middle" class="ruled">
                 <%= testResult.getTestName() %>
-				<logic:equal  name="bound"  value="true" >
+				<logic:notEmpty  name="testResult"  property="normalRange" >
 					<br/><bean:write name="testResult" property="normalRange"/>&nbsp;
 					<bean:write name="testResult" property="unitsOfMeasure"/>
-				</logic:equal>
+				</logic:notEmpty>
 			</td>
 		</logic:notEqual></logic:notEqual>
 

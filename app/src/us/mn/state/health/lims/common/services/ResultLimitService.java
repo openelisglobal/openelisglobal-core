@@ -20,10 +20,14 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
+import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.typeoftestresult.dao.TypeOfTestResultDAO;
+import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,13 +37,23 @@ import java.util.List;
 /**
  */
 public class ResultLimitService{
+    private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
     private static final ResultLimitDAO resultLimitDAO = DAOImplFactory.getInstance().getResultLimitsDAOImpl();
     private static final double INVALID_PATIENT_AGE = Double.MIN_VALUE;
+    private static final String NUMERIC_RESULT_TYPE_ID;
+    private static final String SELECT_LIST_RESULT_TYPE_IDS;
     private double currPatientAge;
+
+    static{
+        TypeOfTestResultDAO typeOfTestResultDAO = new TypeOfTestResultDAOImpl();
+        NUMERIC_RESULT_TYPE_ID = typeOfTestResultDAO.getTypeOfTestResultByType( "N" ).getId();
+        SELECT_LIST_RESULT_TYPE_IDS = typeOfTestResultDAO.getTypeOfTestResultByType( "D" ).getId() + typeOfTestResultDAO.getTypeOfTestResultByType( "M" ).getId();
+    }
 
     public ResultLimit getResultLimitForTestAndPatient( Test test, Patient patient){
         currPatientAge = INVALID_PATIENT_AGE;
 
+        @SuppressWarnings( "unchecked" )
         List<ResultLimit> resultLimits = resultLimitDAO.getAllResultLimitsForTest(test);
 
         if (resultLimits == null || resultLimits.isEmpty()) {
@@ -191,4 +205,14 @@ public class ResultLimitService{
         return StringUtil.doubleWithSignificantDigits( low, significantDigits ) + separator + StringUtil.doubleWithSignificantDigits( high, significantDigits );
     }
 
+    public static String getDisplayReferenceRange( ResultLimit resultLimit, String significantDigits, String separator){
+        String range = "";
+
+        if( NUMERIC_RESULT_TYPE_ID.equals( resultLimit.getResultTypeId() )){
+            range = getDisplayNormalRange( resultLimit.getLowNormal(), resultLimit.getHighNormal(),significantDigits, separator );
+        }else if( SELECT_LIST_RESULT_TYPE_IDS.contains( resultLimit.getResultTypeId() ) && !GenericValidator.isBlankOrNull( resultLimit.getDictionaryNormalId() )){
+            return dictionaryDAO.getDataForId( resultLimit.getDictionaryNormalId() ).getLocalizedName();
+        }
+        return range;
+    }
 }

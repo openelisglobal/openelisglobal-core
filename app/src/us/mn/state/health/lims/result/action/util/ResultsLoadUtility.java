@@ -721,8 +721,8 @@ public class ResultsLoadUtility {
 			testItem.setUpperAbnormalRange(resultLimit.getHighValid() == Double.POSITIVE_INFINITY ? 0 : resultLimit.getHighValid());
 			testItem.setValid(getIsValid(testItem.getResultValue(), resultLimit));
 			testItem.setNormal(getIsNormal(testItem.getResultValue(), resultLimit));
+            testItem.setNormalRange( ResultLimitService.getDisplayReferenceRange( resultLimit, testResults.get( 0 ).getSignificantDigits(), " - " ));
             if( NUMERIC_RESULT_TYPE_ID.equals( resultLimit.getResultTypeId() )){
-                testItem.setNormalRange( ResultLimitService.getDisplayNormalRange( resultLimit.getLowNormal(), resultLimit.getHighNormal(), testResults.get( 0 ).getSignificantDigits(), " - " ));
                 testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
             }
 
