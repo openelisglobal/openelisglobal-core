@@ -56,6 +56,7 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -267,7 +268,7 @@ public class ReferredOutAction extends BaseAction {
 		Result result = baseResult.getResult();
 		String resultType = (result != null)?result.getResultType():"N";
 		referralItem.setReferredResultType(resultType);
-		if ( !"M".equals(resultType) ) {
+		if ( !ResultType.MULTISELECT.getDBValue().equals(resultType) ) {
             if (result != null && result.getId() != null) {
     			String resultValue = GenericValidator.isBlankOrNull(result.getValue()) ? "" : result.getValue();
     			referralItem.setReferredResult(resultValue);
@@ -299,12 +300,12 @@ public class ReferredOutAction extends BaseAction {
 
 	private String getAppropriateResultValue(List<Result> results) {
 	    Result result = results.get(0);
-		if ("D".equals(result.getResultType())) {
+		if (ResultType.DICTIONARY.getDBValue().equals(result.getResultType())) {
 			Dictionary dictionary = dictionaryDAO.getDictionaryById(result.getValue());
 			if (dictionary != null) {
 				return dictionary.getLocalizedName();
 			}
-		} else if ("M".equals(result.getResultType())) {
+		} else if (ResultType.MULTISELECT.getDBValue().equals(result.getResultType())) {
             Dictionary dictionary = new Dictionary();
             StringBuilder multiResult = new StringBuilder();
         

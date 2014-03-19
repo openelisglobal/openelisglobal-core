@@ -60,6 +60,7 @@ import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.*;
 
@@ -229,12 +230,12 @@ public class ResultsValidationUtility {
 		ResultValidationItem item = new ResultValidationItem();
 
 		item.setTestName(totalTestName);
-		item.setUnitsOfMeasure("%");
-		item.setAccessionNumber(resultItem.getAccessionNumber());
-		item.setResult(new Result());
-		item.getResult().setValue("0");
-		item.setResultType("N");
-		item.setTestSortNumber("0");
+		item.setUnitsOfMeasure( "%" );
+		item.setAccessionNumber( resultItem.getAccessionNumber() );
+		item.setResult( new Result() );
+		item.getResult().setValue( "0" );
+		item.setResultType( ResultType.NUMERIC.getDBValue() );
+		item.setTestSortNumber( "0" );
 		return item;
 	}
 
@@ -254,10 +255,10 @@ public class ResultsValidationUtility {
 			if (total.startsWith("99.9999")) {
 				totalItem.getResult().setValue("100.0");
 			} else {
-				int seperatorIndex = total.indexOf('.');
+				int separatorIndex = total.indexOf('.');
 
-				if (seperatorIndex > 0) {
-					totalItem.getResult().setValue(total.substring(0, seperatorIndex + 2));
+				if (separatorIndex > 0) {
+					totalItem.getResult().setValue(total.substring(0, separatorIndex + 2));
 				}
 			}
 		}
@@ -526,7 +527,7 @@ public class ResultsValidationUtility {
 	}
 
 	private String getTestResultType(List<TestResult> testResults) {
-		String testResultType = "N";
+		String testResultType = ResultType.NUMERIC.getDBValue();
 
 		if (testResults != null && testResults.size() > 0) {
 			testResultType = testResults.get(0).getTestResultType();
@@ -720,7 +721,7 @@ public class ResultsValidationUtility {
             if( !multiResultEntered){
                 AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
                 analysisResultList.add(convertedItem);
-                if( "M".equals(testResultItem.getResultType())){
+                if( ResultType.MULTISELECT.getDBValue().equals(testResultItem.getResultType())){
                     multiResultEntered = true;
                     currentMultiSelectAnalysisItem = convertedItem;
                 }
@@ -778,7 +779,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setTestSortNumber(sortOrder);
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
-        if( !"M".equals(testResultItem.getResultType())){
+        if( !ResultType.MULTISELECT.getDBValue().equals(testResultItem.getResultType())){
             analysisResultItem.setResult(getFormattedResult(testResultItem));
         } else {
             analysisResultItem.setMultiSelectResultValues(new ResultService(testResultItem.getResult()).getMultiSelectSelectedIdValues());
@@ -790,7 +791,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
         analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
-        if( "N".equals( testResultItem.getResultType() )){
+        if( ResultType.NUMERIC.getDBValue().equals( testResultItem.getResultType() )){
             if(  result.getMinNormal().equals( result.getMaxNormal())){
                 analysisResultItem.setSignificantDigits( -1 );
             }else{

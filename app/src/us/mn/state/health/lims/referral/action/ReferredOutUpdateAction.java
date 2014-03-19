@@ -70,6 +70,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -356,7 +357,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 	 ***/
 	private void createReferralResults(IReferralResultTest referralItem, ReferralSet referralSet) {
 		String referredResultType = getReferredResultType(referralItem, null);
-		if ("M".equals(referredResultType)) {
+		if ( ResultType.MULTISELECT.getDBValue().equals(referredResultType)) {
 			String multiResult = referralItem.getReferredMultiDictionaryResult();
 			multiResult = (multiResult != null) ? multiResult : "";
 
@@ -411,7 +412,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		
 		String referredResultType = getReferredResultType(referredTest, test);
 		result.setResultType(referredResultType);
-		if ("D".equals(referredResultType) || "M".equals(referredResultType)) {
+		if (ResultType.DICTIONARY.getDBValue().equals(referredResultType) || ResultType.MULTISELECT.getDBValue().equals(referredResultType)) {
 			String dicResult = referredTest.getReferredDictionaryResult();
 			if (!(GenericValidator.isBlankOrNull(dicResult) || "0".equals(dicResult))) {
 				result.setValue(dicResult);
@@ -428,7 +429,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		
 		String referredResultType = referredTest.getReferredResultType();
 		
-		if ( !"D".equals(referredResultType) && !"M".equals(referredResultType) && test != null) {
+		if ( !ResultType.DICTIONARY.getDBValue().equals(referredResultType) && !ResultType.MULTISELECT.getDBValue().equals(referredResultType) && test != null) {
 			@SuppressWarnings("unchecked")
 			List<TestResult> testResults = testResultDAO.getAllTestResultsPerTest(test);
 			

@@ -39,6 +39,7 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -145,7 +146,7 @@ abstract public class CSVColumnBuilder {
 		ProjectDAO projectDAO = new ProjectDAOImpl();
 		List<Project> allProjects = projectDAO.getAllProjects();
 		for (Project project : allProjects) {
-			String projectTag = null;
+			String projectTag;
 			// Watch the order on these 1st 2!
 			if (project.getNameKey().contains("ARVF")) {
 				projectTag = "ARVS";
@@ -411,9 +412,9 @@ abstract public class CSVColumnBuilder {
 			String type = testResult.getTestResultType();
 			// if it is in the table D have to be translated through the
 			// dictionary, otherwise don't
-			if ("D".equals(type)) {
+			if (ResultType.DICTIONARY.getDBValue().equals(type)) {
 				return ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(value);
-			} else if ("M".equals(type)) {
+			} else if ( ResultType.MULTISELECT.getDBValue().equals(type)) {
 				return findMultiSelectItemsForTest(testResult.getTest().getId());
 			}
 			return value;
@@ -429,7 +430,8 @@ abstract public class CSVColumnBuilder {
 			List<Result> results = resultDAO.getResultsForTestAndSample(sampleId, testId);
 			StringBuilder multi = new StringBuilder();
 			for (Result result : results) {
-				multi.append(ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(result.getValue()) + ",");
+				multi.append(ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(result.getValue()));
+                multi.append( "," );
 			}
 			
 			if( multi.length() > 0){
@@ -440,9 +442,7 @@ abstract public class CSVColumnBuilder {
 		}
 	}
 
-	/**
-	 * @return some big SQL string
-	 */
+
 	abstract public void makeSQL();
 
 	protected void defineAllObservationHistoryTypes() {

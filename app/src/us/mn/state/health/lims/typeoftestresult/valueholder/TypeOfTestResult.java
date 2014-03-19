@@ -18,14 +18,29 @@ package us.mn.state.health.lims.typeoftestresult.valueholder;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 public class TypeOfTestResult extends BaseObject {
+    public enum ResultType{
+        REMARK( "R"),
+        DICTIONARY( "D"),
+        TITER( "T"),
+        NUMERIC( "N" ),
+        ALPHA( "A"),
+        MULTISELECT( "M");
 
-	private String id;
+        String DBValue;
+
+        private ResultType(String dbValue){
+            DBValue = dbValue;
+        }
+
+        public String getDBValue(){ return DBValue;}
+    }
+
+    private String id;
 
 	private String description;
 
 	private String testResultType;
-	
-	//bugzilla 1866
+
 	private String hl7Value;
 
 	public String getHl7Value() {

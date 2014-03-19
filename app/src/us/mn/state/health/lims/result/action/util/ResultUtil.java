@@ -17,8 +17,6 @@
 package us.mn.state.health.lims.result.action.util;
 
 import org.apache.commons.validator.GenericValidator;
-import java.util.List;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -27,6 +25,9 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
 import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
+
+import java.util.List;
 
 public class ResultUtil {
 	private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
@@ -41,7 +42,7 @@ public class ResultUtil {
 	}
 	
 	public static boolean hasDictionaryValues( Result result){
-		return "D".equals(result.getResultType()) || "M".equals(result.getResultType()); 
+		return ResultType.DICTIONARY.getDBValue().equals(result.getResultType()) || ResultType.MULTISELECT.getDBValue().equals( result.getResultType() );
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -77,8 +78,8 @@ public class ResultUtil {
 	
 	public static boolean areResults(TestResultItem item) {
 		return !(GenericValidator.isBlankOrNull(item.getResultValue()) || 
-				("D".equals(item.getResultType()) && "0".equals(item.getResultValue()))) || 
-				("M".equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
+				(ResultType.DICTIONARY.getDBValue().equals(item.getResultType()) && "0".equals(item.getResultValue()))) ||
+				(ResultType.MULTISELECT.getDBValue().equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 
 	public static boolean isForcedToAcceptance(TestResultItem item){

@@ -28,6 +28,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.List;
 
@@ -90,9 +91,9 @@ public class ResultService {
 			return "";
 		}
 
-		if ("D".equals(getTestType())) {
+		if (ResultType.DICTIONARY.getDBValue().equals(getTestType())) {
 			return printable ? dictionaryDAO.getDataForId(result.getValue()).getDictEntry() : result.getValue();
-		} else if ("M".equals(getTestType())) {
+		} else if (ResultType.MULTISELECT.getDBValue().equals(getTestType())) {
 			StringBuilder buffer = new StringBuilder();
 			boolean firstPass = true;
 
@@ -109,7 +110,7 @@ public class ResultService {
 				}
 			}
 			return buffer.toString();
-		} else if ("N".equals(getTestType())) {
+		} else if (ResultType.NUMERIC.getDBValue().equals(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
             if (significantPlaces == 0) {
                 return result.getValue().split("\\.")[0];
@@ -128,7 +129,7 @@ public class ResultService {
                 value.append("0");
             }
             return value.toString();
-        }else if ("A".equals(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
+        }else if (ResultType.ALPHA.getDBValue().equals(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
             return result.getValue().split("\\(")[0].trim();
         }else {
             return result.getValue();
@@ -140,7 +141,7 @@ public class ResultService {
             return "";
         }
 
-        if ("M".equals(getTestType())) {
+        if (ResultType.MULTISELECT.getDBValue().equals(getTestType())) {
             StringBuilder buffer = new StringBuilder();
             boolean firstPass = true;
 
@@ -205,7 +206,7 @@ public class ResultService {
 
     public String getDisplayReferenceRange(boolean includeSelectList){
         String range = "";
-        if( "N".equals( result.getResultType() ) ){
+        if( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) ){
             if( result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals( result.getMaxNormal() ) ){
                 range = ResultLimitService.getDisplayNormalRange( result.getMinNormal(), result.getMaxNormal(), String.valueOf( result.getSignificantDigits() ), "-" );
             }
