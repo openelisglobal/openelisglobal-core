@@ -34,6 +34,7 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +59,7 @@ public class ResultSaveService {
         List<Result> results = new ArrayList<Result>();
         boolean isQualifiedResult = serviceBean.isHasQualifiedResult();
 
-        if("M".equals(serviceBean.getResultType())){
+        if( ResultType.MULTISELECT.getDBValue().equals( serviceBean.getResultType() )){
             String[] multiResults = serviceBean.getMultiSelectResultValues().split(",");
             List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
 

@@ -27,6 +27,7 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class AnalysisService{
             name += "(" + analysis.getSampleTypeName() + ")";
         }
 
-        if( analysis.getParentResult() != null && "M".equals( analysis.getParentResult().getResultType() )){
+        if( analysis.getParentResult() != null && ResultType.MULTISELECT.getDBValue().equals( analysis.getParentResult().getResultType() )){
             Dictionary dictionary = dictionaryDAO.getDictionaryById( analysis.getParentResult().getValue() );
             if( dictionary != null){
                 String parentResult = dictionary.getLocalAbbreviation();
@@ -73,7 +74,7 @@ public class AnalysisService{
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         StringBuilder multiSelectBuffer = new StringBuilder();
         for( Result existingResult : existingResults ){
-            if( "M".equals( existingResult.getResultType() ) ){
+            if( ResultType.MULTISELECT.getDBValue().equals( existingResult.getResultType() ) ){
                 multiSelectBuffer.append( existingResult.getValue() );
                 multiSelectBuffer.append( ',' );
             }

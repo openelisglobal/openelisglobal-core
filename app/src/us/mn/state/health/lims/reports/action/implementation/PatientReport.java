@@ -29,9 +29,9 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
 import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
-import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -93,6 +93,7 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
@@ -547,7 +548,7 @@ public abstract class PatientReport extends Report{
         }
 
         Result result = resultList.get( 0 );
-        return ( "M".equals( result.getResultType() ) || "D".equals( result.getResultType() ) ) && "0".equals( result.getValue() );
+        return ( ResultType.MULTISELECT.getDBValue().equals( result.getResultType() ) || ResultType.DICTIONARY.getDBValue().equals( result.getResultType() ) ) && "0".equals( result.getValue() );
 
     }
 
@@ -577,7 +578,7 @@ public abstract class PatientReport extends Report{
     protected String getResultFlag( Result result, String imbed, ClinicalPatientData data ){
         String flag = "";
         try{
-            if( "N".equals( result.getResultType() ) && !GenericValidator.isBlankOrNull( result.getValue() ) ){
+            if( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) && !GenericValidator.isBlankOrNull( result.getValue() ) ){
                 if( result.getMinNormal() != null & result.getMaxNormal() != null && ( result.getMinNormal() != 0.0 || result.getMaxNormal() != 0.0 ) ){
                     if( Double.valueOf( result.getValue() ) < result.getMinNormal() ){
                         flag = "B";
@@ -614,7 +615,7 @@ public abstract class PatientReport extends Report{
 
     protected String getUnitOfMeasure( Result result, Test test ){
         String uom = "";
-        if( "N".equals( result.getResultType() ) ){
+        if( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) ){
             if( test != null && test.getUnitOfMeasure() != null ){
                 uom = test.getUnitOfMeasure().getName();
             }
@@ -638,20 +639,20 @@ public abstract class PatientReport extends Report{
                 }
             }else{
                 reportResult = new ResultService(result).getResultValue( true );
-                data.setHasRangeAndUOM( "N".equals( result.getResultType() ) );
+                data.setHasRangeAndUOM( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) );
             }
         }else{
             //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
 
             String resultType = resultList.get( 0 ).getResultType();
 
-            if( "D".equals( resultType ) ){
+            if( ResultType.DICTIONARY.getDBValue().equals( resultType ) ){
                 List<Result> dictionaryResults = new ArrayList<Result>(  );
                 Result quantification = null;
                 for(Result sibResult : resultList){
-                    if( "D".equals( sibResult.getResultType() )){
+                    if( ResultType.DICTIONARY.getDBValue().equals( sibResult.getResultType() )){
                         dictionaryResults.add( sibResult );
-                    }else if("A".equals( sibResult.getResultType() ) && sibResult.getParentResult() != null){
+                    }else if(ResultType.ALPHA.getDBValue().equals( sibResult.getResultType() ) && sibResult.getParentResult() != null){
                         quantification = sibResult;
                     }
                 }
@@ -669,7 +670,7 @@ public abstract class PatientReport extends Report{
                         }
                     }
                 }
-            }else if( "M".equals( resultType ) ){
+            }else if( ResultType.MULTISELECT.getDBValue().equals( resultType ) ){
                 Dictionary dictionary = new Dictionary();
                 StringBuilder multiResult = new StringBuilder();
 
@@ -682,7 +683,7 @@ public abstract class PatientReport extends Report{
 
                 Result quantifiedResult = null;
                 for( Result subResult : resultList){
-                    if( "A".equals( subResult.getResultType() )){
+                    if( ResultType.ALPHA.getDBValue().equals( subResult.getResultType() )){
                         quantifiedResult = subResult;
                         resultList.remove( subResult );
                         break;

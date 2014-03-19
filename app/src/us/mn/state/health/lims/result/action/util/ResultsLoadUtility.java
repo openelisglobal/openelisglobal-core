@@ -78,6 +78,7 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -404,7 +405,7 @@ public class ResultsLoadUtility {
 
 				testKit = getInventoryForResult(result);
 
-				multiSelectionResult = "M".equals(result.getResultType());
+				multiSelectionResult = ResultType.MULTISELECT.getDBValue().equals(result.getResultType());
 			}
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
@@ -453,7 +454,7 @@ public class ResultsLoadUtility {
 	}
 
 	private String getTestResultType(List<TestResult> testResults) {
-		String testResultType = "N";
+		String testResultType = ResultType.NUMERIC.getDBValue();
 
 		if (testResults != null && testResults.size() > 0) {
 			testResultType = testResults.get(0).getTestResultType();
@@ -478,11 +479,11 @@ public class ResultsLoadUtility {
 		for ( TestResultItem testItem : tests) {
 			if (!currentAccessionNumber.equals(testItem.getAccessionNumber())) {
 
-				TestResultItem seperatorItem = new TestResultItem();
-				seperatorItem.setIsGroupSeparator(true);
-				seperatorItem.setAccessionNumber(testItem.getAccessionNumber());
-				seperatorItem.setReceivedDate(testItem.getReceivedDate());
-				testList.add(seperatorItem);
+				TestResultItem separatorItem = new TestResultItem();
+				separatorItem.setIsGroupSeparator( true );
+				separatorItem.setAccessionNumber( testItem.getAccessionNumber() );
+				separatorItem.setReceivedDate( testItem.getReceivedDate() );
+				testList.add(separatorItem);
 
 				currentAccessionNumber = testItem.getAccessionNumber();
 				reflexGroup++;
@@ -855,7 +856,7 @@ public class ResultsLoadUtility {
 	}
 
 	private boolean isDictionaryVariantType( String testResultType ) {
-		return "D".equals(testResultType) || "M".equals(testResultType );
+		return ResultType.DICTIONARY.getDBValue().equals(testResultType) || ResultType.MULTISELECT.getDBValue().equals(testResultType );
 	}
 
 	private boolean getIsValid(String resultValue, ResultLimit resultLimit) {

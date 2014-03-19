@@ -64,6 +64,7 @@ import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -462,7 +463,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 	protected TestResult getTestResult(AnalysisItem analysisItem){
 		TestResult testResult = null;
-		if("D".equals(analysisItem.getResultType())){
+		if(ResultType.DICTIONARY.getDBValue().equals(analysisItem.getResultType())){
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysisItem.getTestId(), analysisItem.getResult());
 		}else{
 			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(analysisItem.getTestId());
@@ -477,8 +478,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 	private boolean areResults(AnalysisItem item){
 		return !(GenericValidator.isBlankOrNull(item.getResult()) ||
-                ("D".equals(item.getResultType()) && "0".equals(item.getResult()))) ||
-                ("M".equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
+                (ResultType.DICTIONARY.getDBValue().equals(item.getResultType()) && "0".equals(item.getResult()))) ||
+                ( ResultType.MULTISELECT.getDBValue().equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 
 	private void createSystemUser(){
