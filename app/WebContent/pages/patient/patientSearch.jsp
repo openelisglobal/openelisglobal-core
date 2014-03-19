@@ -77,7 +77,7 @@ function searchPatients()
     }else if(criteria == 3){
         splitName = value.split(",");
         lastName = splitName[0].trim();
-        firstName = splitName[1].trim();
+        firstName = splitName.size() == 2 ? splitName[1].trim() : "";
     }else if(criteria == 4){
         STNumber = value;
         subjectNumber = value;
@@ -280,7 +280,6 @@ function enableSearchButton(){
 
     if(criteriaElem.val() == "5" ){
         valueElem.attr("maxlength","<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>");
-        valueElem.val( valueElem.val().substring(0, <%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>));
     }else{
         valueElem.attr("maxlength","120");
     }
@@ -299,13 +298,14 @@ function handleSelectedPatient(){
 }
 
 function firstClick(){
-    var target = event.target || event.srcElement;
-    target.value = "";
-    target.onkeydown = null;
+    var searchValue = $jq("#searchValue");
+    searchValue.val("");
+    searchValue.removeAttr("onkeydown");
 }
 
 function messageRestore(element ){
     if( !element.value  ){
+        element.maxlength = 120;
         element.value = '<%=StringUtil.getMessageForKey("label.select.search.here")%>';
         element.onkeydown = firstClick;
         setCaretPosition(element, 0);
@@ -344,7 +344,8 @@ function setCaretPosition(ctrl, pos){
         %>
     </select>
 
-    <input size="30"
+    <input size="35"
+           maxlength="120"
            id="searchValue"
            class="text"
            value='<%=StringUtil.getMessageForKey("label.select.search.here")%>'
