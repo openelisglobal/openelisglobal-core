@@ -36,6 +36,7 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.IResultSaveService;
 import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.ResultSaveService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -344,7 +345,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			Analysis analysis = analysisDAO.getAnalysisById(testResultItem.getAnalysisId());
 
             NoteService noteService = new NoteService( analysis );
-            Note note = noteService.createSavableNote( NoteService.NoteType.INTERNAL, testResultItem.getNote(), RESULT_SUBJECT, currentUserId);
+            Note note = noteService.createSavableNote( NoteType.INTERNAL, testResultItem.getNote(), RESULT_SUBJECT, currentUserId);
             if( note != null){
                 noteList.add( note );
             }

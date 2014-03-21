@@ -100,7 +100,7 @@ public class ResultService {
 			List<Result> results = new ResultDAOImpl().getResultsByAnalysis(result.getAnalysis());
 
 			for (Result multiResult : results) {
-				if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && "M".equals(multiResult.getResultType())) {
+				if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && ResultType.MULTISELECT.getDBValue().equals(multiResult.getResultType())) {
 					if (firstPass) {
 						firstPass = false;
 					} else {
@@ -148,7 +148,7 @@ public class ResultService {
             List<Result> results = new ResultDAOImpl().getResultsByAnalysis(result.getAnalysis());
 
             for (Result multiResult : results) {
-                if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && "M".equals(multiResult.getResultType())) {
+                if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && ResultType.MULTISELECT.getDBValue().equals(multiResult.getResultType())) {
                     if (firstPass) {
                         firstPass = false;
                     } else {

@@ -405,7 +405,7 @@ public class ResultsLoadUtility {
 
 				testKit = getInventoryForResult(result);
 
-				multiSelectionResult = ResultType.MULTISELECT.getDBValue().equals(result.getResultType());
+				multiSelectionResult = ResultType.MULTISELECT.matches( result.getResultType());
 			}
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
@@ -453,15 +453,6 @@ public class ResultsLoadUtility {
 		return inventoryList.size() > 0 ? inventoryList.get(0) : null;
 	}
 
-	private String getTestResultType(List<TestResult> testResults) {
-		String testResultType = ResultType.NUMERIC.getDBValue();
-
-		if (testResults != null && testResults.size() > 0) {
-			testResultType = testResults.get(0).getTestResultType();
-		}
-
-		return testResultType;
-	}
 
 	private Patient getPatientForSampleItem(SampleItem sampleItem) {
 		SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
@@ -677,7 +668,7 @@ public class ResultsLoadUtility {
 		testItem.setMultiSelectResultValues(multiSelectResults);
 		testItem.setAnalysisStatusId(analysisService.getStatusId());
 		//setDictionaryResults must come after setResultType, it may override it
-		testItem.setResultType(getTestResultType(testResults));
+		testItem.setResultType(testService.getResultType());
 		setDictionaryResults( testItem, isConclusion, result, testResults );
 
 		testItem.setTechnician(techSignature);
@@ -743,7 +734,7 @@ public class ResultsLoadUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && !testResults.isEmpty() && isDictionaryVariantType( testResults.get( 0 ).getTestResultType() )) {
+		if (testResults != null && !testResults.isEmpty() && ResultType.isDictionaryType( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Collections.sort(testResults, new Comparator<TestResult>() {
@@ -760,7 +751,7 @@ public class ResultsLoadUtility {
 			
 			String qualifiedDictionaryIds = "";
 			for (TestResult testResult : testResults) {
-				if ( isDictionaryVariantType( testResult.getTestResultType() )) {
+				if ( ResultType.isDictionaryType( testResult.getTestResultType() )) {
 					dictionary = new Dictionary();
 					dictionary.setId(testResult.getValue());
 					dictionaryDAO.getData(dictionary);
@@ -830,7 +821,7 @@ public class ResultsLoadUtility {
 	private List<IdValuePair> getAnyDictionaryValues(Result result) {
 		List<IdValuePair> values = null;
 
-		if (result != null && isDictionaryVariantType( result.getResultType() )) {
+		if (result != null && ResultType.isDictionaryType( result.getResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Dictionary dictionaryValue = new Dictionary();
@@ -853,10 +844,6 @@ public class ResultsLoadUtility {
 
 		return values;
 
-	}
-
-	private boolean isDictionaryVariantType( String testResultType ) {
-		return ResultType.DICTIONARY.getDBValue().equals(testResultType) || ResultType.MULTISELECT.getDBValue().equals(testResultType );
 	}
 
 	private boolean getIsValid(String resultValue, ResultLimit resultLimit) {

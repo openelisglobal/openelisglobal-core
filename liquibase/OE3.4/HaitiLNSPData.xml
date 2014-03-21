@@ -77,4 +77,11 @@
             VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'Ziehl Neelsen modifiee(Selles)' ) , 'M' ,  ( select max(id) from clinlims.dictionary where dict_entry ='Autre' )  , now() , 11064, true);
         </sql>
     </changeSet>
+    <changeSet author="paulsc" id="11" context="haitiLNSP" >
+        <comment>Changes the result type of Malaria to cascading multiselect</comment>
+        <update tableName="test_result" >
+            <column name="tst_rslt_type" value="C" />
+            <where>test_id = (select id from clinlims.test where name = 'Malaria') </where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

@@ -59,7 +59,7 @@ public class ResultSaveService {
         List<Result> results = new ArrayList<Result>();
         boolean isQualifiedResult = serviceBean.isHasQualifiedResult();
 
-        if( ResultType.MULTISELECT.getDBValue().equals( serviceBean.getResultType() )){
+        if( ResultType.MULTISELECT.matches( serviceBean.getResultType() )){
             String[] multiResults = serviceBean.getMultiSelectResultValues().split(",");
             List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
 

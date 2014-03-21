@@ -889,7 +889,7 @@ public abstract class PatientReport extends Report{
         if( value == null ){
             return reportResult;
         }
-        if( "D".equals( type ) || "M".equals( type ) ){
+        if( ResultType.DICTIONARY.getDBValue().equals( type ) || ResultType.MULTISELECT.getDBValue().equals( type ) ){
             Dictionary dictionary = new Dictionary();
             dictionary.setId( result.getValue() );
             dictionaryDAO.getData( dictionary );
