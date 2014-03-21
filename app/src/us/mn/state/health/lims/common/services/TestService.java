@@ -17,11 +17,12 @@
 package us.mn.state.health.lims.common.services;
 
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
+import us.mn.state.health.lims.test.beanItems.TestResultItem.ResultDisplayType;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.test.beanItems.TestResultItem.ResultDisplayType;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import java.util.List;
 
@@ -81,4 +82,14 @@ public class TestService{
         return TestResultItem.ResultDisplayType.TEXT;
     }
 
+    public String getResultType(){
+        String testResultType = TypeOfTestResult.ResultType.NUMERIC.getDBValue();
+        List<TestResult> testResults = getPossibleTestResults();
+
+        if (testResults != null && !testResults.isEmpty()) {
+            testResultType = testResults.get(0).getTestResultType();
+        }
+
+        return testResultType;
+    }
 }

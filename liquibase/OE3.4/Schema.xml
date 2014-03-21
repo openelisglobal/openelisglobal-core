@@ -128,5 +128,11 @@
         <column name="result_type" value="D" />
         <where>result_type = 'Q'</where>
     </update>
-</changeSet>    
+</changeSet>
+<changeSet id="11" author="paulsc">
+    <comment>Widen type_of_test_result description column</comment>
+    <sql>
+        alter table clinlims.type_of_test_result alter column description type varchar(60);
+    </sql>
+</changeSet>
 </databaseChangeLog>

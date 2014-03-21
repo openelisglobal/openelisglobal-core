@@ -24,7 +24,8 @@ public class TypeOfTestResult extends BaseObject {
         TITER( "T"),
         NUMERIC( "N" ),
         ALPHA( "A"),
-        MULTISELECT( "M");
+        MULTISELECT( "M"),
+        CASCADING_MULTISELECT( "C");
 
         String DBValue;
 
@@ -33,7 +34,11 @@ public class TypeOfTestResult extends BaseObject {
         }
 
         public String getDBValue(){ return DBValue;}
+        public boolean matches( String type){ return DBValue.equals( type );}
+        public static boolean isDictionaryType(String type){ return "DMC".contains( type );}
     }
+
+    public static final String DICTIONARY_TYPES = ResultType.DICTIONARY.getDBValue() + ResultType.MULTISELECT.getDBValue() + ResultType.CASCADING_MULTISELECT.getDBValue();
 
     private String id;
 

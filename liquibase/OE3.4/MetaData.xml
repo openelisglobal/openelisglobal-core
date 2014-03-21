@@ -171,4 +171,14 @@
             DELETE FROM clinlims.note WHERE id NOT IN (SELECT MIN(id) FROM clinlims.note GROUP BY reference_id, reference_table, subject, text, note_type);
         </sql>
     </changeSet>
+    <changeSet author="paulsc" id="14" >
+        <comment>Add cascading multiselect to result type</comment>
+        <insert schemaName="clinlims" tableName="type_of_test_result" >
+            <column name="id" valueNumeric=" nextval( 'type_of_test_result_seq' ) " />
+            <column name="test_result_type" value="C" />
+            <column name="description" value="Cascading Multiselect" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="hl7_value" value="TX" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>

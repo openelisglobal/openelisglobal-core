@@ -156,43 +156,99 @@ $jq(document).ready( function() {
 			});
 
             loadPagedReflexSelections('<%= StringUtil.getMessageForKey("button.label.edit")%>');
+
+            $jq(".asmContainer").css("display","inline-block");
 			});
 
 function handleMultiSelectChange( e, data ){
-
-	var id = "#multi" + e.target.id;
-	var selection = $jq(id)[0];
+    var splitSource = e.target.id.split("_");
+    var major = splitSource[0] + "_" + splitSource[1];
+    var minorKey = splitSource[2];
+	var accumulator = $jq("#multi" + major);
 
 	if( data.type == "add"){
-		appendValueToElementValue( selection, data.value );
+        appendValueForMultiSelect( accumulator, minorKey, data.value);
         if( $jq("#" + e.target.id).hasClass("userSelection")){
-            showUserReflexChoices( e.target.id.split("_")[1], data.value )
+            showUserReflexChoices( splitSource[1], data.value )
         }
 	}else{ //drop
-        removeReflexesFor( data.value, id.split("_")[1]);
-		var splitValues =  selection.value.split(",");
-		selection.value = "";
-
-		for( var i = 0; i < splitValues.length; i++ ){
-			if( splitValues[i] != data.value ){
-				appendValueToElementValue( selection, splitValues[i] );
-			}
-		}
+        removeReflexesFor( data.value, splitSource[1]);
+        removeValueForMultiSelect(accumulator, minorKey, data.value);
 	}
 
-    $jq("#modified_" + id.split("_")[1]).val("true");
+    $jq("#modified_" + splitSource[1]).val("true");
 
     makeDirty();
 
     $jq("#saveButtonId").removeAttr("disabled");
 }
 
-function appendValueToElementValue( e, addString ){
-	if( e.value && e.value.length > 1 ){
-			e.value += ',';
+function appendValueForMultiSelect( element, key, addString ){
+    var currentValues = element.val();
+    var currentHash = {};
+    if( !currentValues ){
+        currentHash[key]=addString;
+    }else{
+        currentHash = JSON.parse(currentValues)
+        currentHash[key] = concatenateToCSV(currentHash[key], addString)
+    }
+
+    element.val(encodeHTMLToJSONString(JSON.stringify(currentHash)));
+}
+
+function removeValueForMultiSelect(element, key, removeString){
+    var currentValues = element.val();
+    var currentHash = {};
+    var newString;
+    if( !currentValues ){
+        return;
+    }else{
+        currentHash = JSON.parse(currentValues)
+        newString = removeFromCSV(currentHash[key], removeString);
+        if( !newString){
+            delete currentHash[key];
+        }else{
+            currentHash[key] = newString;
+        }
+
+        element.val(encodeHTMLToJSONString(JSON.stringify(currentHash)));
+    }
+}
+function concatenateToCSV( oldString, addString ){
+
+	if( oldString && oldString.length > 1 ){
+			return oldString + ',' + addString;
 		}
 
-		e.value += addString;
+	return addString;
+}
+
+function removeFromCSV( oldString, removeString){
+    var splitValues =  oldString.split(",");
+    var newString;
+
+    for( var i = 0; i < splitValues.length; i++ ){
+        if( splitValues[i] != removeString ){
+            newString = concatenateToCSV(newString, splitValues[i]);
+        }
+    }
+
+    return newString;
+}
+
+function  removeAllMultiSelectionsFor( majorMinorTarget ){
+    var splitSource = majorMinorTarget.split("_");
+    var accumulator = $jq("#multiresultId_" + splitSource[0]);
+    var currentValue = accumulator.val();
+    var currentHash = {};
+
+    if( !currentValue){
+        return;
+    }
+
+    currentHash = JSON.parse(currentValue);
+    delete currentHash[splitSource[1]];
+    accumulator.val(encodeHTMLToJSONString(JSON.stringify(currentHash)))
 }
 
 function /*void*/ makeDirty(){
@@ -363,7 +419,45 @@ function forceTechApproval(checkbox, index ){
 
 }
 
+function addNewMultiSelect( index ){
+    var divCount = $jq("#divCount_" + index);
+    var nextDivCount = parseInt(divCount.val()) + 1;
+    $jq('<div></div>',{id: 'cascadingMulti_' + index + "_" + nextDivCount, class: 'cascadingMulti_' + index}).insertAfter(".cascadingMulti_" + index + ":last");
 
+    var select = $jq("#resultId_" + index + "_0").clone();
+    select.find("option:selected").prop("selected", false);
+    select.find("option").attr("id", "");
+    select.attr("id", "resultId_" + index + "_" + nextDivCount);
+    var add = $jq(".addMultiSelect" + index).last().clone();
+    var remove = $jq(".removeMultiSelect" + index).first().clone();
+    remove.attr("onclick", remove.attr("onclick").replace("target", index + "_" + nextDivCount));
+    var newDiv = $jq('#cascadingMulti_' + index + "_" + nextDivCount);
+    $jq(".addMultiSelect" + index).hide();
+    add.show();
+    remove.show();
+    select.show();
+
+    select.appendTo(newDiv);
+    add.appendTo(newDiv);
+    remove.appendTo(newDiv);
+
+    select.asmSelect({
+        removeLabel: "X"
+    });
+    select.change(function(e, data) {
+        handleMultiSelectChange( e, data );
+    });
+
+    $jq(".asmContainer").css("display","inline-block");
+
+    divCount.val(nextDivCount);
+}
+
+function removeMultiSelect(target){
+    $jq("#cascadingMulti_" + target).remove();
+    $jq(".addMultiSelect" + target.split("_")[0]).last().show();
+    removeAllMultiSelectionsFor( target );
+}
 </script>
 
 
@@ -740,7 +834,7 @@ function forceTechApproval(checkbox, index ){
 							/>
 		</td>
 		<!-- result cell -->
-		<td id='<%="cell_" + index %>' class="ruled">
+		<td id='<%="cell_" + index %>' class="ruled" >
 			<logic:equal name="testResult" property="resultType" value="N">
 			    <input type="text" 
 			           name='<%="testResult[" + index + "].resultValue" %>' 
@@ -812,7 +906,7 @@ function forceTechApproval(checkbox, index ){
 			<% } %><logic:equal name="testResult" property="resultType" value="M">
 			<!-- multiple results -->
 			<select name="<%="testResult[" + index + "].multiSelectResultValues" %>"
-					id='<%="resultId_" + index%>'
+					id='<%="resultId_" + index + "_0"%>'
                     class="<%=testResult.isUserChoiceReflex() ? "userSelection" : "" %>"
 					multiple="multiple"
 					<%=testResult.isReadOnly()? "disabled=\'disabled\'" : "" %> 
@@ -837,6 +931,40 @@ function forceTechApproval(checkbox, index ){
                    onchange='<%="markUpdated(" + index + ");" %>'
                 />
 			</logic:equal>
+            <logic:equal name="testResult" property="resultType" value="C">
+                <!-- cascading multiple results -->
+                <div id=''<%="cascadingMulti_" + index + "_0"%>' class='<%="cascadingMulti_" + index %>' >
+                <input type="hidden" id='<%="divCount_" + index %>' value="0" >
+                <select name="<%="testResult[" + index + "].multiSelectResultValues" %>"
+                        id='<%="resultId_" + index + "_0"%>'
+                        class="<%=testResult.isUserChoiceReflex() ? "userSelection" : "" %>"
+                        multiple="multiple"
+                        <%=testResult.isReadOnly()? "disabled=\'disabled\'" : "" %>
+                        title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
+                        onchange='<%="markUpdated(" + index + "); "  +
+						               ((noteRequired && !GenericValidator.isBlankOrNull(testResult.getMultiSelectResultValues())) ? "showNote( " + index + ");" : "") +
+						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", \"M\" );" :"")%>' >
+                    <logic:iterate id="optionValue" name="testResult" property="dictionaryResults" type="IdValuePair" >
+                        <option value='<%=optionValue.getId()%>'
+                                <%if(StringUtil.textInCommaSeperatedValues(optionValue.getId(), testResult.getMultiSelectResultValues())) out.print("selected"); %>  >
+                            <bean:write name="optionValue" property="value"/>
+                        </option>
+                    </logic:iterate>
+                </select>
+                <input class='<%="addMultiSelect" + index%>' type="button" value="+" onclick='<%="addNewMultiSelect(" + index + ", this);"%>'/>
+                <input class='<%="removeMultiSelect" + index%>' type="button" value="-" onclick="removeMultiSelect('target');" style="display: none" />
+                <html:hidden name="testResult" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>'   />
+                <input type="text"
+                       name='<%="testResult[" + index + "].qualifiedResultValue" %>'
+                       value='<%= testResult.getQualifiedResultValue() %>'
+                       id='<%= "qualifiedDict_" + index %>'
+                       style = '<%= "display:" + ( testResult.isHasQualifiedResult() ? "inline" : "none") %>'
+                        <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
+                       onchange='<%="markUpdated(" + index + ");" %>'
+                        />
+
+                </div>
+            </logic:equal>
 			<% if( testResult.isDisplayResultAsLog()){ %>
 						<br/><input type='text'
 								    id='<%= "log_" + index %>'
