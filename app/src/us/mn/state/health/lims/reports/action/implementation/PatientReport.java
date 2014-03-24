@@ -578,7 +578,7 @@ public abstract class PatientReport extends Report{
     protected String getResultFlag( Result result, String imbed, ClinicalPatientData data ){
         String flag = "";
         try{
-            if( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) && !GenericValidator.isBlankOrNull( result.getValue() ) ){
+            if( ResultType.NUMERIC.matches( result.getResultType() ) && !GenericValidator.isBlankOrNull( result.getValue() ) ){
                 if( result.getMinNormal() != null & result.getMaxNormal() != null && ( result.getMinNormal() != 0.0 || result.getMaxNormal() != 0.0 ) ){
                     if( Double.valueOf( result.getValue() ) < result.getMinNormal() ){
                         flag = "B";
@@ -615,7 +615,7 @@ public abstract class PatientReport extends Report{
 
     protected String getUnitOfMeasure( Result result, Test test ){
         String uom = "";
-        if( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) ){
+        if( ResultType.NUMERIC.matches( result.getResultType() ) ){
             if( test != null && test.getUnitOfMeasure() != null ){
                 uom = test.getUnitOfMeasure().getName();
             }
@@ -628,7 +628,7 @@ public abstract class PatientReport extends Report{
         //If only one result just get it and get out
         if( resultList.size() == 1 ){
             Result result = resultList.get( 0 );
-            if( "MD".contains( result.getResultType() ) ){
+            if( ResultType.isDictionaryType( result.getResultType() ) ){
                 Dictionary dictionary = new Dictionary();
                 dictionary.setId( result.getValue() );
                 dictionaryDAO.getData( dictionary );
@@ -639,20 +639,20 @@ public abstract class PatientReport extends Report{
                 }
             }else{
                 reportResult = new ResultService(result).getResultValue( true );
-                data.setHasRangeAndUOM( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) );
+                data.setHasRangeAndUOM( ResultType.NUMERIC.matches( result.getResultType() ) );
             }
         }else{
             //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
 
             String resultType = resultList.get( 0 ).getResultType();
 
-            if( ResultType.DICTIONARY.getDBValue().equals( resultType ) ){
+            if( ResultType.DICTIONARY.matches( resultType ) ){
                 List<Result> dictionaryResults = new ArrayList<Result>(  );
                 Result quantification = null;
                 for(Result sibResult : resultList){
-                    if( ResultType.DICTIONARY.getDBValue().equals( sibResult.getResultType() )){
+                    if( ResultType.DICTIONARY.matches( sibResult.getResultType() )){
                         dictionaryResults.add( sibResult );
-                    }else if(ResultType.ALPHA.getDBValue().equals( sibResult.getResultType() ) && sibResult.getParentResult() != null){
+                    }else if(ResultType.ALPHA.matches( sibResult.getResultType() ) && sibResult.getParentResult() != null){
                         quantification = sibResult;
                     }
                 }
@@ -670,26 +670,35 @@ public abstract class PatientReport extends Report{
                         }
                     }
                 }
-            }else if( ResultType.MULTISELECT.getDBValue().equals( resultType ) ){
+            }else if( ResultType.isMultiSelectVariant( resultType )){
                 Dictionary dictionary = new Dictionary();
                 StringBuilder multiResult = new StringBuilder();
 
                 Collections.sort( resultList, new Comparator<Result>(){
                     @Override
                     public int compare( Result o1, Result o2 ){
-                        return Integer.parseInt( o1.getSortOrder() ) - Integer.parseInt( o2.getSortOrder() );
+                        if( o1.getGrouping() == o2.getGrouping()){
+                            return Integer.parseInt( o1.getSortOrder() ) - Integer.parseInt( o2.getSortOrder() );
+                        }else{
+                            return o1.getGrouping() - o2.getGrouping();
+                        }
                     }
                 } );
 
                 Result quantifiedResult = null;
                 for( Result subResult : resultList){
-                    if( ResultType.ALPHA.getDBValue().equals( subResult.getResultType() )){
+                    if( ResultType.ALPHA.matches( subResult.getResultType() )){
                         quantifiedResult = subResult;
                         resultList.remove( subResult );
                         break;
                     }
                 }
+                int currentGrouping = resultList.get( 0 ).getGrouping();
                 for( Result subResult : resultList ){
+                    if( subResult.getGrouping() != currentGrouping){
+                        currentGrouping = subResult.getGrouping();
+                        multiResult.append( "-------\n" );
+                    }
                     dictionary.setId( subResult.getValue() );
                     dictionaryDAO.getData( dictionary );
 

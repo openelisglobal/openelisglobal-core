@@ -38,6 +38,7 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.*;
 
@@ -96,7 +97,7 @@ public class ResultReportingCollator {
 		ResultXmit resultBean = new ResultXmit();
 
 		CodedValueXmit codedValue = new CodedValueXmit();
-		if (ResultUtil.hasDictionaryValues(result)) {
+		if ( ResultType.isDictionaryType( result.getResultType() )) {
 			codedValue.setCode(DictionaryUtil.getHL7ForDictioanryById(result.getValue()));
 		}
 
@@ -238,7 +239,7 @@ public class ResultReportingCollator {
 	private boolean hasNoReportableResults(Result result, Patient patient) {
 		return noGUIDPatients.contains(patient.getId()) ||
 			   GenericValidator.isBlankOrNull(result.getValue()) ||
-			   (ResultUtil.hasDictionaryValues(result) && "0".equals(result.getValue()) ||
+			   (ResultType.isDictionaryType(result.getResultType()) && "0".equals(result.getValue()) ||
 				!VALIDATED_RESULT_STATUS_ID.equals(result.getAnalysis().getStatusId()) );
 	}
 

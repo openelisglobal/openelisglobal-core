@@ -18,6 +18,9 @@ package us.mn.state.health.lims.common.services;
 
 
 import org.apache.commons.validator.GenericValidator;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
 import us.mn.state.health.lims.referral.dao.ReferralResultDAO;
@@ -59,82 +62,25 @@ public class ResultSaveService {
         List<Result> results = new ArrayList<Result>();
         boolean isQualifiedResult = serviceBean.isHasQualifiedResult();
 
-        if( ResultType.MULTISELECT.matches( serviceBean.getResultType() )){
-            String[] multiResults = serviceBean.getMultiSelectResultValues().split(",");
-            List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
+        if( ResultType.MULTISELECT.matches( serviceBean.getResultType() ) ||
+                ResultType.CASCADING_MULTISELECT.matches( serviceBean.getResultType() )){
 
-            /*
-            We will go through all of selections made by the user and compare them to the selections
-            already in the DB.  If a match is found then it will be removed from the DB list and
-            added to the results list and we will go on to the next selection made by the user.  If
-            a match is not found then a new result will be created.
 
-            After all of the user selections are made any DB results which were not matched will be marked for
-            deletion
-             */
-            for( String resultAsString : multiResults){
-                Result existingResultFromDB = null;
-                for(Result existingResult : existingResults){
-                    if(resultAsString.equals(existingResult.getValue())){
-                        existingResultFromDB = existingResult;
-                        break;
+            if( !GenericValidator.isBlankOrNull( serviceBean.getMultiSelectResultValues() )){
+                JSONParser parser=new JSONParser();
+                try{
+                    JSONObject jsonResult = ( JSONObject ) parser.parse( serviceBean.getMultiSelectResultValues() );
+
+                    List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
+                    for(Object key : jsonResult.keySet()){
+                        getResultsForMultiSelect( results, existingResults, serviceBean, (String)key, (String)jsonResult.get( key ), isQualifiedResult);
                     }
-                }
-
-                if(existingResultFromDB != null){
-                    existingResults.remove(existingResultFromDB);
-                    existingResultFromDB.setSysUserId(currentUserId);
-                    results.add(existingResultFromDB);
-                    continue;
-                }
-                Result result = new Result();
-
-                setTestResultsForDictionaryResult(serviceBean.getTestId(), resultAsString, result);
-                setNewResultValues(serviceBean, result);
-                setAnalyteForResult(result);
-                setStandardResultValues(resultAsString, result);
-                result.setSortOrder(getResultSortOrder( result.getValue()));
-
-                results.add(result);
-            }
-
-            /*
-            A quantifiable result may or may not be in the DB
-             */
-            if( isQualifiedResult ){
-                //cases that it is in DB
-                if( !existingResults.isEmpty() && serviceBean.getQualifiedResultId() != null ){
-                    List<Result> removableResults = new ArrayList<Result>(  );
-                    for(Result existingResult : existingResults){
-                        if( serviceBean.getQualifiedResultId().equals( existingResult.getId() )){
-                            removableResults.add( existingResult );
-                            setStandardResultValues( serviceBean.getQualifiedResultValue(), existingResult );
-                            results.add( existingResult );
-                        }
-                    }
-                    existingResults.removeAll( removableResults );
-                    //case this is a new quantified result
-                }else{
-                    String[] quantifiableResults = serviceBean.getQualifiedDictionaryId().substring( 1, serviceBean.getQualifiedDictionaryId().length() - 1 ).split( "," );
-                    for( String quantifiableResultId : quantifiableResults){
-                        for( Result selectedResult: results){
-                            if(selectedResult.getValue().equals( quantifiableResultId )){
-                                Result quantifiedResult = getQuantifiedResult( serviceBean, selectedResult );
-                                setStandardResultValues( serviceBean.getQualifiedResultValue(), quantifiedResult );
-                                results.add( quantifiedResult );
-                                break;
-                            }
-                        }
-                    }
-
-
+                    deletableResults.addAll(existingResults);
+                }catch( ParseException e ){
+                    e.printStackTrace();
                 }
             }
 
-            for(Result result : existingResults){
-                result.setSysUserId(currentUserId);
-            }
-            deletableResults.addAll(existingResults);
         }else{
             Result result = new Result();
             Result qualifiedResult = null;
@@ -154,7 +100,7 @@ public class ResultSaveService {
                 }
             }
 
-            if("D".equals(serviceBean.getResultType()) || isQualifiedResult){
+            if(ResultType.DICTIONARY.matches(serviceBean.getResultType()) || isQualifiedResult){
                 setTestResultsForDictionaryResult(serviceBean.getTestId(), serviceBean.getResultValue(), result);  //support qualified result
             }else{
                 List<TestResult> testResultList = testResultDAO.getTestResultsByTest(serviceBean.getTestId());
@@ -196,6 +142,84 @@ public class ResultSaveService {
         });
         return results;
     }
+
+    private void getResultsForMultiSelect( List<Result> results, List<Result> existingResults , ResultSaveBean serviceBean, String key, String value, boolean isQualifiedResult ){
+        int groupingKey = Integer.parseInt( key );
+        String[] multiResults = value.split(",");
+
+            /*
+            We will go through all of selections made by the user and compare them to the selections
+            already in the DB.  If a match is found then it will be removed from the DB list and
+            we will go on to the next selection made by the user.  If
+            a match is not found then a new result will be created.
+
+            After all of the user selections are made any DB results which were not matched will be marked for
+            deletion
+             */
+        for( String resultAsString : multiResults){
+            Result existingResultFromDB = null;
+            for(Result existingResult : existingResults){
+                if(resultAsString.equals(existingResult.getValue()) && existingResult.getGrouping() == groupingKey){
+                    existingResultFromDB = existingResult;
+                    break;
+                }
+            }
+
+            if(existingResultFromDB != null){
+                existingResults.remove(existingResultFromDB);
+                continue;
+            }
+
+            Result result = new Result();
+
+            setTestResultsForDictionaryResult(serviceBean.getTestId(), resultAsString, result);
+            setNewResultValues(serviceBean, result);
+            setAnalyteForResult(result);
+            setStandardResultValues(resultAsString, result);
+            result.setSortOrder(getResultSortOrder( result.getValue()));
+            result.setGrouping( groupingKey );
+
+            results.add(result);
+        }
+
+            /*
+            A quantifiable result may or may not be in the DB
+             */
+        if( isQualifiedResult ){
+            //cases that it is in DB
+            if( !existingResults.isEmpty() && serviceBean.getQualifiedResultId() != null ){
+                List<Result> removableResults = new ArrayList<Result>(  );
+                for(Result existingResult : existingResults){
+                    if( serviceBean.getQualifiedResultId().equals( existingResult.getId() )){
+                        removableResults.add( existingResult );
+                        setStandardResultValues( serviceBean.getQualifiedResultValue(), existingResult );
+                        results.add( existingResult );
+                    }
+                }
+                existingResults.removeAll( removableResults );
+                //case this is a new quantified result
+            }else{
+                String[] quantifiableResults = serviceBean.getQualifiedDictionaryId().substring( 1, serviceBean.getQualifiedDictionaryId().length() - 1 ).split( "," );
+                for( String quantifiableResultId : quantifiableResults){
+                    for( Result selectedResult: results){
+                        if(selectedResult.getValue().equals( quantifiableResultId )){
+                            Result quantifiedResult = getQuantifiedResult( serviceBean, selectedResult );
+                            setStandardResultValues( serviceBean.getQualifiedResultValue(), quantifiedResult );
+                            results.add( quantifiedResult );
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+        }
+
+        for(Result result : existingResults){
+            result.setSysUserId(currentUserId);
+        }
+    }
+
 
     private TestResult setTestResultsForDictionaryResult(String testId, String dictValue, Result result){
         TestResult testResult;
