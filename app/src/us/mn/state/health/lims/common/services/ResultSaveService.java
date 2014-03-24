@@ -71,9 +71,11 @@ public class ResultSaveService {
                 try{
                     JSONObject jsonResult = ( JSONObject ) parser.parse( serviceBean.getMultiSelectResultValues() );
 
+                    List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
                     for(Object key : jsonResult.keySet()){
-                        getResultsForMultiSelect( results, deletableResults, serviceBean, (String)key, (String)jsonResult.get( key ), isQualifiedResult);
+                        getResultsForMultiSelect( results, existingResults, serviceBean, (String)key, (String)jsonResult.get( key ), isQualifiedResult);
                     }
+                    deletableResults.addAll(existingResults);
                 }catch( ParseException e ){
                     e.printStackTrace();
                 }
@@ -141,16 +143,14 @@ public class ResultSaveService {
         return results;
     }
 
-    private void getResultsForMultiSelect( List<Result> results, List<Result> deletableResults, ResultSaveBean serviceBean, String key, String value, boolean isQualifiedResult ){
-
+    private void getResultsForMultiSelect( List<Result> results, List<Result> existingResults , ResultSaveBean serviceBean, String key, String value, boolean isQualifiedResult ){
+        int groupingKey = Integer.parseInt( key );
         String[] multiResults = value.split(",");
-        //TODO this will break when we re save results
-        List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
 
             /*
             We will go through all of selections made by the user and compare them to the selections
             already in the DB.  If a match is found then it will be removed from the DB list and
-            added to the results list and we will go on to the next selection made by the user.  If
+            we will go on to the next selection made by the user.  If
             a match is not found then a new result will be created.
 
             After all of the user selections are made any DB results which were not matched will be marked for
@@ -159,7 +159,7 @@ public class ResultSaveService {
         for( String resultAsString : multiResults){
             Result existingResultFromDB = null;
             for(Result existingResult : existingResults){
-                if(resultAsString.equals(existingResult.getValue())){
+                if(resultAsString.equals(existingResult.getValue()) && existingResult.getGrouping() == groupingKey){
                     existingResultFromDB = existingResult;
                     break;
                 }
@@ -167,10 +167,9 @@ public class ResultSaveService {
 
             if(existingResultFromDB != null){
                 existingResults.remove(existingResultFromDB);
-                existingResultFromDB.setSysUserId(currentUserId);
-                results.add(existingResultFromDB);
                 continue;
             }
+
             Result result = new Result();
 
             setTestResultsForDictionaryResult(serviceBean.getTestId(), resultAsString, result);
@@ -178,7 +177,7 @@ public class ResultSaveService {
             setAnalyteForResult(result);
             setStandardResultValues(resultAsString, result);
             result.setSortOrder(getResultSortOrder( result.getValue()));
-            result.setGrouping( Integer.parseInt( key ) );
+            result.setGrouping( groupingKey );
 
             results.add(result);
         }
@@ -219,7 +218,6 @@ public class ResultSaveService {
         for(Result result : existingResults){
             result.setSysUserId(currentUserId);
         }
-        deletableResults.addAll(existingResults);
     }
 
 

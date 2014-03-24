@@ -15,6 +15,7 @@
 */
 package us.mn.state.health.lims.typeoftestresult.valueholder;
 
+import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 public class TypeOfTestResult extends BaseObject {
@@ -35,10 +36,10 @@ public class TypeOfTestResult extends BaseObject {
 
         public String getDBValue(){ return DBValue;}
         public boolean matches( String type){ return DBValue.equals( type );}
-        public static boolean isDictionaryType(String type){ return "DMC".contains( type );}
+        public static boolean isDictionaryType(String type){ return !GenericValidator.isBlankOrNull( type ) && "DMC".contains( type );}
+        public static boolean isMultiSelectVariant( String type ){ return !GenericValidator.isBlankOrNull( type ) && "MC".contains( type );}
     }
 
-    public static final String DICTIONARY_TYPES = ResultType.DICTIONARY.getDBValue() + ResultType.MULTISELECT.getDBValue() + ResultType.CASCADING_MULTISELECT.getDBValue();
 
     private String id;
 

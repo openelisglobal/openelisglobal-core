@@ -670,8 +670,7 @@ public abstract class PatientReport extends Report{
                         }
                     }
                 }
-            }else if( ResultType.MULTISELECT.matches( resultType ) ||
-                    ResultType.CASCADING_MULTISELECT.matches( resultType )){
+            }else if( ResultType.isMultiSelectVariant( resultType )){
                 Dictionary dictionary = new Dictionary();
                 StringBuilder multiResult = new StringBuilder();
 

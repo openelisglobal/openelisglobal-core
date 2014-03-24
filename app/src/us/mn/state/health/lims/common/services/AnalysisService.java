@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
+import org.json.simple.JSONObject;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -30,6 +31,8 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -46,6 +49,7 @@ public class AnalysisService{
     public Analysis getAnalysis(){
         return analysis;
     }
+
     public String getTestDisplayName( ){
         Test test = getTest();
         String name = test.getDescription();
@@ -56,7 +60,8 @@ public class AnalysisService{
             name += "(" + analysis.getSampleTypeName() + ")";
         }
 
-        if( analysis.getParentResult() != null && ResultType.MULTISELECT.getDBValue().equals( analysis.getParentResult().getResultType() )){
+        String parentResultType = analysis.getParentResult() != null ? analysis.getParentResult().getResultType() : "";
+        if(  ResultType.isMultiSelectVariant( parentResultType ) ){
             Dictionary dictionary = dictionaryDAO.getDictionaryById( analysis.getParentResult().getValue() );
             if( dictionary != null){
                 String parentResult = dictionary.getLocalAbbreviation();
@@ -74,7 +79,7 @@ public class AnalysisService{
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         StringBuilder multiSelectBuffer = new StringBuilder();
         for( Result existingResult : existingResults ){
-            if( ResultType.MULTISELECT.getDBValue().equals( existingResult.getResultType() ) ){
+            if( ResultType.isMultiSelectVariant( existingResult.getResultType() )){
                 multiSelectBuffer.append( existingResult.getValue() );
                 multiSelectBuffer.append( ',' );
             }
@@ -86,17 +91,56 @@ public class AnalysisService{
         return multiSelectBuffer.toString();
     }
 
+    public String getJSONMultiSelectResults(){
+        List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
+
+        Collections.sort( existingResults, new Comparator<Result>(){
+            @Override
+            public int compare( Result o1, Result o2 ){
+                return o1.getGrouping() - o2.getGrouping();
+            }
+        });
+
+        JSONObject jsonRep =new JSONObject();
+
+        int currentGrouping = -1;
+        StringBuilder currentString = new StringBuilder( );
+
+        for(Result result : existingResults){
+            if( ResultType.isMultiSelectVariant( result.getResultType() )){
+                if( currentGrouping != result.getGrouping()){
+                    if( currentString.length() > 1 ){
+                        currentString.setLength( currentString.length() - 1 );
+                        jsonRep.put( String.valueOf( currentGrouping ), currentString.toString() );
+                    }
+
+                    currentGrouping = result.getGrouping();
+                    currentString = new StringBuilder( );
+                }
+
+                currentString.append( result.getValue() );
+                currentString.append( "," );
+            }
+        }
+
+        if( currentString.length() > 1 ){
+            currentString.setLength( currentString.length() - 1 );
+            jsonRep.put( String.valueOf( currentGrouping ), currentString.toString() );
+        }
+
+        return jsonRep.toJSONString();
+    }
     public Result getQuantifiedResult(){
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         List<String> quantifiableResultsIds = new ArrayList<String>(  );
         for( Result existingResult : existingResults ){
-            if( "MD".contains( existingResult.getResultType() ) ){
+            if( ResultType.isDictionaryType( existingResult.getResultType() ) ){
                 quantifiableResultsIds.add( existingResult.getId() );
             }
         }
 
         for( Result existingResult : existingResults ){
-            if( !"MD".contains( existingResult.getResultType()) &&
+            if( !ResultType.isDictionaryType( existingResult.getResultType()) &&
                     existingResult.getParentResult() != null &&
                     quantifiableResultsIds.contains( existingResult.getParentResult().getId()) &&
                     !GenericValidator.isBlankOrNull(existingResult.getValue())){

@@ -75,8 +75,7 @@ public class ResultUtil {
 	public static boolean areResults(TestResultItem item) {
 		return !(GenericValidator.isBlankOrNull(item.getResultValue()) || 
 				(ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getResultValue()))) ||
-				((ResultType.MULTISELECT.matches(item.getResultType())|| ResultType.CASCADING_MULTISELECT.matches( item.getResultType() )) &&
-                        !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
+				(ResultType.isMultiSelectVariant(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 
 	public static boolean isForcedToAcceptance(TestResultItem item){

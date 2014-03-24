@@ -382,7 +382,7 @@ public class ResultsLoadUtility {
 			resultList.add(null);
 		}
 
-		boolean multiSelectionResult = false;
+        boolean multiSelectionResult = false;
 		for (Result result : resultList) {
 			// If the parentResult has a value then this result was handled with
 			// the parent
@@ -405,7 +405,7 @@ public class ResultsLoadUtility {
 
 				testKit = getInventoryForResult(result);
 
-				multiSelectionResult = ResultType.MULTISELECT.matches( result.getResultType());
+				multiSelectionResult = ResultType.isMultiSelectVariant( result.getResultType());
 			}
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
@@ -414,7 +414,7 @@ public class ResultsLoadUtility {
 
 			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,
-					multiSelectionResult, initialConditions,  TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
+					initialConditions,  TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
 			resultItem.setNationalId(nationalId);
 			testResultList.add(resultItem);
 
@@ -578,7 +578,7 @@ public class ResultsLoadUtility {
 
 	private TestResultItem createTestResultItem(AnalysisService analysisService, ResultInventory testKit, String notes,
 			String sequenceNumber, Result result, String accessionNumber, String patientName, String patientInfo, String techSignature,
-			String techSignatureId,  boolean multiSelectionResult, String initialSampleConditions, String sampleType) {
+			String techSignatureId,  String initialSampleConditions, String sampleType) {
 
         TestService testService = new TestService( analysisService.getTest() );
         ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(testService.getTest(), currPatient);
@@ -604,12 +604,6 @@ public class ResultsLoadUtility {
 
 		boolean isConclusion = false;
 		boolean isCD4Conclusion = false;
-
-		String multiSelectResults = null;
-		if (multiSelectionResult) {
-			multiSelectResults = analysisService.getCSVMultiselectResults();
-
-		}
 
 		if (result != null && result.getAnalyte() != null) {
 			isConclusion = result.getAnalyte().getId().equals(ANALYTE_CONCLUSION_ID);
@@ -665,7 +659,7 @@ public class ResultsLoadUtility {
 		testItem.setAnalysisMethod(analysisService.getAnalysisType());
 		testItem.setResult(result);
 		testItem.setResultValue( getFormattedResultValue( result ));
-		testItem.setMultiSelectResultValues(multiSelectResults);
+		testItem.setMultiSelectResultValues(analysisService.getJSONMultiSelectResults());
 		testItem.setAnalysisStatusId(analysisService.getStatusId());
 		//setDictionaryResults must come after setResultType, it may override it
 		testItem.setResultType(testService.getResultType());
