@@ -34,15 +34,11 @@ public class ResultUtil {
 	private static final TestAnalyteDAO testAnalyteDAO = new TestAnalyteDAOImpl();
 	
 	public static String getStringValueOfResult( Result result){
-		if( hasDictionaryValues(result)){
+		if( ResultType.isDictionaryType(result.getResultType())){
 			return dictionaryDAO.getDictionaryById(result.getValue()).getLocalizedName();
 		}else{
 			return result.getValue();
 		}
-	}
-	
-	public static boolean hasDictionaryValues( Result result){
-		return ResultType.DICTIONARY.getDBValue().equals(result.getResultType()) || ResultType.MULTISELECT.getDBValue().equals( result.getResultType() );
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -78,8 +74,9 @@ public class ResultUtil {
 	
 	public static boolean areResults(TestResultItem item) {
 		return !(GenericValidator.isBlankOrNull(item.getResultValue()) || 
-				(ResultType.DICTIONARY.getDBValue().equals(item.getResultType()) && "0".equals(item.getResultValue()))) ||
-				(ResultType.MULTISELECT.getDBValue().equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
+				(ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getResultValue()))) ||
+				((ResultType.MULTISELECT.matches(item.getResultType())|| ResultType.CASCADING_MULTISELECT.matches( item.getResultType() )) &&
+                        !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 
 	public static boolean isForcedToAcceptance(TestResultItem item){

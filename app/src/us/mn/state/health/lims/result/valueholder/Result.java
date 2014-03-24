@@ -42,6 +42,7 @@ public class Result extends EnumValueItemImpl {
 	private Double maxNormal;
     private int significantDigits;
 	private ValueHolder parentResult;
+    private int grouping;
 
 	public Result() {
 		super();
@@ -220,4 +221,11 @@ public class Result extends EnumValueItemImpl {
 		this.parentResult.setValue( parentResult );
 	}
 
+    public int getGrouping(){
+        return grouping;
+    }
+
+    public void setGrouping( int grouping ){
+        this.grouping = grouping;
+    }
 }

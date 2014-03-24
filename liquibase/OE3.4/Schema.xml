@@ -135,4 +135,13 @@
         alter table clinlims.type_of_test_result alter column description type varchar(60);
     </sql>
 </changeSet>
+<changeSet author="paulsc" id="12" >
+    <comment>Adds a grouping column to result table</comment>
+    <addColumn tableName="result" >
+        <column name="grouping" type="numeric" defaultValue="-1" />
+    </addColumn>
+    <sql>
+        COMMENT on COLUMN clinlims.result.grouping is 'When an analysis has more then one set of results this groups them';
+    </sql>
+</changeSet>
 </databaseChangeLog>
