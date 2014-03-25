@@ -104,6 +104,7 @@
 <script type="text/javascript" src="scripts/jquery.asmselect.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/OEPaging.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="<%=basePath%>scripts/math-extend.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
+<script type="text/javascript" src="<%=basePath%>scripts/multiselectUtils.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>" />
 
 
@@ -160,153 +161,7 @@ $jq(document).ready( function() {
             $jq(".asmContainer").css("display","inline-block");
 			});
 
-function handleMultiSelectChange( e, data ){
-    var splitSource = e.target.id.split("_");
-    var major = splitSource[0] + "_" + splitSource[1];
-    var minorKey = splitSource[2];
-	var accumulator = $jq("#multi" + major);
 
-	if( data.type == "add"){
-        appendValueForMultiSelect( accumulator, minorKey, data.value);
-        if( $jq("#" + e.target.id).hasClass("userSelection")){
-            showUserReflexChoices( splitSource[1], data.value )
-        }
-	}else{ //drop
-        removeReflexesFor( data.value, splitSource[1]);
-        removeValueForMultiSelect(accumulator, minorKey, data.value);
-	}
-
-    $jq("#modified_" + splitSource[1]).val("true");
-
-    makeDirty();
-
-    $jq("#saveButtonId").removeAttr("disabled");
-}
-
-function appendValueForMultiSelect( element, key, addString ){
-    var currentValues = element.val();
-    var currentHash = {};
-    if( !currentValues ){
-        currentHash[key]=addString;
-    }else{
-        currentHash = JSON.parse(currentValues)
-        currentHash[key] = concatenateToCSV(currentHash[key], addString)
-    }
-
-    element.val(encodeHTMLToJSONString(JSON.stringify(currentHash)));
-}
-
-function removeValueForMultiSelect(element, key, removeString){
-    var currentValues = element.val();
-    var currentHash = {};
-    var newString;
-    if( !currentValues ){
-        return;
-    }else{
-        currentHash = JSON.parse(currentValues)
-        newString = removeFromCSV(currentHash[key], removeString);
-        if( !newString){
-            delete currentHash[key];
-        }else{
-            currentHash[key] = newString;
-        }
-
-        element.val(encodeHTMLToJSONString(JSON.stringify(currentHash)));
-    }
-}
-function concatenateToCSV( oldString, addString ){
-
-	if( oldString && oldString.length > 1 ){
-			return oldString + ',' + addString;
-		}
-
-	return addString;
-}
-
-function removeFromCSV( oldString, removeString){
-    var splitValues =  oldString.split(",");
-    var newString;
-
-    for( var i = 0; i < splitValues.length; i++ ){
-        if( splitValues[i] != removeString ){
-            newString = concatenateToCSV(newString, splitValues[i]);
-        }
-    }
-
-    return newString;
-}
-
-function  removeAllMultiSelectionsFor( majorMinorTarget ){
-    var splitSource = majorMinorTarget.split("_");
-    var accumulator = $jq("#multiresultId_" + splitSource[0]);
-    var currentValue = accumulator.val();
-    var currentHash = {};
-
-    if( !currentValue){
-        return;
-    }
-
-    currentHash = JSON.parse(currentValue);
-    delete currentHash[splitSource[1]];
-    accumulator.val(encodeHTMLToJSONString(JSON.stringify(currentHash)))
-}
-
-function loadMultiSelects(){
-    $jq(".multiSelectValues").each(function(i,element){loadMultSelect(element);});
-}
-
-function loadMultSelect( element ){
-    var selections = JSON.parse(element.value);
-    var index = element.id.split("_")[1];
-    var key, selector, options, i;
-    var keys = [];
-
-    for( key in selections){
-        if( selections.hasOwnProperty(key)){
-           keys.push(key);
-        }
-    }
-
-    keys.sort(function(a,b){return parseInt(a) - parseInt(b)});
-    for( i = 0; i < keys.length; i++){
-        options = selections[keys[i]].split(",");
-        if( keys[i] != 0) {
-            createNewMultiSelect( index, keys[i] )
-        }
-
-        $jq("#resultId_" + index + "_" + keys[i] + " option").each(function (i, element) {
-            if (options.indexOf(element.value) != -1) {
-                element.selected = "selected";
-            }
-        });
-    }
-}
-
-function createNewMultiSelect( index, minorIndex){
-    var divCount = $jq("#divCount_" + index);
-    var nextDivCount = minorIndex;
-    $jq('<div></div>',{id: 'cascadingMulti_' + index + "_" + nextDivCount, class: 'cascadingMulti_' + index}).insertAfter(".cascadingMulti_" + index + ":last");
-
-    var select = $jq("#resultId_" + index + "_0").clone();
-    select.find("option:selected").prop("selected", false);
-    select.find("option").attr("id", "");
-    select.attr("id", "resultId_" + index + "_" + nextDivCount);
-    var add = $jq(".addMultiSelect" + index).last().clone();
-    var remove = $jq(".removeMultiSelect" + index).first().clone();
-    remove.attr("onclick", remove.attr("onclick").replace("target", index + "_" + nextDivCount));
-    var newDiv = $jq('#cascadingMulti_' + index + "_" + nextDivCount);
-    $jq(".addMultiSelect" + index).hide();
-    add.show();
-    remove.show();
-    select.show();
-
-    select.appendTo(newDiv);
-    add.appendTo(newDiv);
-    remove.appendTo(newDiv);
-
-    divCount.val(nextDivCount);
-    return select;
-}
 function /*void*/ makeDirty(){
 	dirty=true;
 	if( typeof(showSuccessMessage) != 'undefinded' ){
@@ -475,25 +330,6 @@ function forceTechApproval(checkbox, index ){
 
 }
 
-function addNewMultiSelect( index ){
-    var nextDivCount = parseInt($jq("#divCount_" + index).val()) + 1;
-    var newSelect = createNewMultiSelect(index, nextDivCount);
-
-    newSelect.asmSelect({
-        removeLabel: "X"
-    });
-    newSelect.change(function(e, data) {
-        handleMultiSelectChange( e, data );
-    });
-
-    $jq(".asmContainer").css("display","inline-block");
-}
-
-function removeMultiSelect(target){
-    $jq("#cascadingMulti_" + target).remove();
-    $jq(".addMultiSelect" + target.split("_")[0]).last().show();
-    removeAllMultiSelectionsFor( target );
-}
 </script>
 
 
@@ -968,7 +804,7 @@ function removeMultiSelect(target){
 			</logic:equal>
             <logic:equal name="testResult" property="resultType" value="C">
                 <!-- cascading multiple results -->
-                <div id=''<%="cascadingMulti_" + index + "_0"%>' class='<%="cascadingMulti_" + index %>' >
+                <div id='<%="cascadingMulti_" + index + "_0"%>' class='<%="cascadingMulti_" + index %>' >
                 <input type="hidden" id='<%="divCount_" + index %>' value="0" >
                 <select name="<%="testResult[" + index + "].multiSelectResultValues" %>"
                         id='<%="resultId_" + index + "_0"%>'

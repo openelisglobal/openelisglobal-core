@@ -17,6 +17,7 @@
 */
 package us.mn.state.health.lims.resultvalidation.action.util;
 
+import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.result.action.util.ResultItem;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -61,8 +62,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	private String resultType;
 
 	private boolean isModified = false;
-	private String analysisId;
-	private String analysisStatusId;
+    private Analysis analysis;
 	private String resultId;
 	private Result result;
 	private String resultLimitId;
@@ -134,9 +134,8 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	}
 
 	public boolean isRemoved(){
-		return remove==NO;
+		return NO.equals( remove );
 	}
-
 
 	public void setTestSortNumber(String testSortNumber) {
 		this.testSortNumber = testSortNumber;
@@ -189,18 +188,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	public boolean getIsModified() {
 		return isModified;
 	}
-	public String getAnalysisId() {
-		return analysisId;
-	}
-	public void setAnalysisId(String analysisId) {
-		this.analysisId = analysisId;
-	}
-	public void setAnalysisStatusId(String analysisStatusId) {
-		this.analysisStatusId = analysisStatusId;
-	}
-	public String getAnalysisStatusId() {
-		return analysisStatusId;
-	}
+
 	public String getResultId() {
 		return resultId;
 	}
@@ -374,5 +362,13 @@ public class ResultValidationItem implements ResultItem, Serializable{
 
     public void setQualificationResultId(String qualificationResultId) {
         this.qualificationResultId = qualificationResultId;
+    }
+
+    public Analysis getAnalysis(){
+        return analysis;
+    }
+
+    public void setAnalysis( Analysis analysis ){
+        this.analysis = analysis;
     }
 }
