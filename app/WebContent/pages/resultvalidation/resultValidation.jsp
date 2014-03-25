@@ -1,15 +1,15 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="java.util.Date, java.util.List,
-	us.mn.state.health.lims.common.action.IActionConstants,
+	import="org.apache.commons.validator.GenericValidator, us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
 	us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem,
 	us.mn.state.health.lims.common.util.IdValuePair,
 	us.mn.state.health.lims.common.util.StringUtil,
-    us.mn.state.health.lims.common.util.Versioning,
-	java.text.DecimalFormat" %>
-<%@ page import="org.apache.commons.validator.GenericValidator" %>
+	us.mn.state.health.lims.common.util.Versioning,
+	us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType,
+    java.text.DecimalFormat,
+	java.util.List,
+	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -48,6 +48,8 @@
 <script type="text/javascript" src="scripts/OEPaging.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/jquery.asmselect.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>" />
+<script type="text/javascript" src="<%=basePath%>scripts/testReflex.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
+<script type="text/javascript" src="<%=basePath%>scripts/multiselectUtils.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 
 
 <script type="text/javascript" >
@@ -67,6 +69,7 @@ var pagingSearch = {};
 
 $jq(document).ready( function() {
 			var searchTerm = '<%=searchTerm%>';
+            loadMultiSelects();
             $jq("select[multiple]").asmSelect({
                 removeLabel: "X"
             });
@@ -80,45 +83,16 @@ $jq(document).ready( function() {
 			if( searchTerm != "null" ){
 				 pageSearch.highlightSearch( searchTerm, false );
 			}
+            $jq(".asmContainer").css("display","inline-block");
 			});
 
-function handleMultiSelectChange( e, data ){
 
-    var id = "#multi" + e.target.id;
-    var selection = $jq(id)[0];
-
-    if( data.type == "add"){
-        appendValueToElementValue( selection, data.value );
-        if( $jq("#" + e.target.id).hasClass("userSelection")){
-     //       showUserReflexChoices( e.target.id.split("_")[1], data.value )
-        }
-    }else{ //drop
-    //    removeReflexesFor( data.value, id.split("_")[1]);
-        var splitValues =  selection.value.split(",");
-        selection.value = "";
-
-        for( var i = 0; i < splitValues.length; i++ ){
-            if( splitValues[i] != data.value ){
-                appendValueToElementValue( selection, splitValues[i] );
-            }
-        }
-    }
-
-    $jq("#modified_" + id.split("_")[1]).val("true");
-
-    makeDirty();
-
-    $jq("#saveButtonId").removeAttr("disabled");
+function removeReflexesFor(){
+    //no-op
 }
-
-function appendValueToElementValue( e, addString ){
-    if( e.value && e.value.length > 1 ){
-        e.value += ',';
-    }
-
-    e.value += addString;
+function showUserReflexChoices(){
+    //no-op
 }
-
 function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 {
 	//first turn off any further validation
@@ -446,7 +420,7 @@ function /*boolean*/ handleEnterEvent(){
 					<% } %>
 				</td>
 				<td>
-					<logic:equal name="resultList" property="resultType" value="N">
+					<% if( ResultType.NUMERIC.matches(resultList.getResultType())){%>
 						<% if( resultList.isReadOnly() ){%>
 							<div
 								class='results-readonly <%= (resultList.getIsHighlighted() ? "invalidHighlight " : " ") + (resultList.isReflexGroup() ? "reflexGroup_" + resultList.getSampleGroupingNumber()  : "")  +  
@@ -467,8 +441,7 @@ function /*boolean*/ handleEnterEvent(){
 								                (resultList.isReflexGroup() && !resultList.isChildReflex() ? "updateReflexChild(" + resultList.getSampleGroupingNumber()  +  " ); " : "")  %>'/>
 	    				<% } %>
 						<bean:write name="resultList" property="units"/>
-					</logic:equal>
-					<% if( "D".equals(resultList.getResultType())){ %>
+					<% }else if( ResultType.DICTIONARY.matches(resultList.getResultType())){ %>
 						<select name="<%="resultList[" + index + "].result" %>" 
 						        id='<%="resultId_" + index%>' 
 						        onchange= '<%= "markUpdated(); makeDirty();" +
@@ -486,11 +459,10 @@ function /*boolean*/ handleEnterEvent(){
 			           			style = '<%= "display:" + (resultList.isHasQualifiedResult() ? "inline" : "none") %>'
 					   			<%= resultList.isReadOnly() ? "disabled='disabled'" : ""%> />
                     <bean:write name="resultList" property="units"/>
-					<% } %><logic:equal name="resultList" property="resultType" value="M">
+					<% }else  if( ResultType.MULTISELECT.matches(resultList.getResultType())){%>
                     <!-- multiple results -->
                     <select name="<%="resultList[" + index + "].multiSelectResultValues" %>"
-                            id='<%="resultId_" + index%>'
-
+                            id='<%="resultId_" + index + "_0"%>'
                             multiple="multiple"
                             <%=resultList.isReadOnly()? "disabled=\'disabled\'" : "" %>
                             title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
@@ -504,7 +476,7 @@ function /*boolean*/ handleEnterEvent(){
                             </option>
                         </logic:iterate>
                     </select>
-                    <html:hidden name="resultList" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>'   />
+                    <html:hidden name="resultList" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>' styleClass="multiSelectValues"  />
                     <input type="text"
                            name='<%="resultList[" + index + "].qualifiedResultValue" %>'
                            value='<%= resultList.getQualifiedResultValue() %>'
@@ -514,19 +486,48 @@ function /*boolean*/ handleEnterEvent(){
                            onchange='<%="markUpdated(" + index + ");" %>'
                             />
                     <bean:write name="resultList" property="units"/>
-                </logic:equal>
-					<logic:equal name="resultList" property="resultType" value="A">
-						<app:text name="resultList"
-								  indexed="true"
-								  property="result"
-								  size="6"
-								  allowEdits='<%= !resultList.isReadOnly() %>'
-								  styleId='<%="resultId_" + index %>'
-								  onchange='<%="markUpdated(); makeDirty(); updateLogValue(this, " + index + ");" %>'/>
-						<bean:write name="resultList" property="units"/>
+                    <%}else  if( ResultType.CASCADING_MULTISELECT.matches(resultList.getResultType())){%>
+                    <!-- cascading multiple results -->
+                    <div id='<%="cascadingMulti_" + index + "_0"%>' class='<%="cascadingMulti_" + index %>' >
+                    <input type="hidden" id='<%="divCount_" + index %>' value="0" >
+                    <select name="<%="resultList[" + index + "].multiSelectResultValues" %>"
+                            id='<%="resultId_" + index + "_0"%>'
+                            multiple="multiple"
+                            <%=resultList.isReadOnly()? "disabled=\'disabled\'" : "" %>
+                            title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
+                            onchange='<%="markUpdated(" + index + "); "  +
+						               ((!GenericValidator.isBlankOrNull(resultList.getMultiSelectResultValues())) ? "showNote( " + index + ");" : "") +
+						               (resultList.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + resultList.getQualifiedDictionaryId() + ", \"M\" );" :"")%>' >
+                        <logic:iterate id="optionValue" name="resultList" property="dictionaryResults" type="IdValuePair" >
+                            <option value='<%=optionValue.getId()%>' >
+                                <bean:write name="optionValue" property="value"/>
+                            </option>
+                        </logic:iterate>
+                    </select>
+                        <input class='<%="addMultiSelect" + index%>' type="button" value="+" onclick='<%="addNewMultiSelect(" + index + ", this);"%>'/>
+                        <input class='<%="removeMultiSelect" + index%>' type="button" value="-" onclick="removeMultiSelect('target');" style="display: none" />
+                        <html:hidden name="resultList" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>'  styleClass="multiSelectValues" />
+                    <input type="text"
+                           name='<%="resultList[" + index + "].qualifiedResultValue" %>'
+                           value='<%= resultList.getQualifiedResultValue() %>'
+                           id='<%= "qualifiedDict_" + index %>'
+                           style = '<%= "display:" + ( resultList.isHasQualifiedResult() ? "inline" : "none") %>'
+                            <%= resultList.isReadOnly() ? "disabled='disabled'" : ""%>
+                           onchange='<%="markUpdated(" + index + ");" %>'
+                            />
+                    <bean:write name="resultList" property="units"/>
+                     </div>
+                    <% }else if( ResultType.ALPHA.matches(resultList.getResultType())){%>
+                    <app:text name="resultList"
+                              indexed="true"
+                              property="result"
+                              size="6"
+                              allowEdits='<%= !resultList.isReadOnly() %>'
+                              styleId='<%="resultId_" + index %>'
+                              onchange='<%="markUpdated(); makeDirty(); updateLogValue(this, " + index + ");" %>'/>
+                    <bean:write name="resultList" property="units"/>
 
-					</logic:equal>
-					<logic:equal name="resultList" property="resultType" value="R">
+                    <%}else if( ResultType.REMARK.matches(resultList.getResultType())){ %>
 						<app:textarea name="resultList"
 								  indexed="true"
 								  property="result"
@@ -537,7 +538,7 @@ function /*boolean*/ handleEnterEvent(){
 								  />
 						<bean:write name="resultList" property="units"/>
 			 			<br/>200 char max
-					</logic:equal>
+					<%}%>
 					<% if(resultList.isDisplayResultAsLog()){ %>
 						<br/>
 						<div id='<%= "log_" + index %>'

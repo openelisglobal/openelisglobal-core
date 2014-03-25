@@ -91,16 +91,16 @@ public class ResultService {
 			return "";
 		}
 
-		if (ResultType.DICTIONARY.getDBValue().equals(getTestType())) {
+		if (ResultType.DICTIONARY.matches(getTestType())) {
 			return printable ? dictionaryDAO.getDataForId(result.getValue()).getDictEntry() : result.getValue();
-		} else if (ResultType.MULTISELECT.getDBValue().equals(getTestType())) {
+		} else if (ResultType.isMultiSelectVariant(getTestType())) {
 			StringBuilder buffer = new StringBuilder();
 			boolean firstPass = true;
 
 			List<Result> results = new ResultDAOImpl().getResultsByAnalysis(result.getAnalysis());
 
 			for (Result multiResult : results) {
-				if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && ResultType.MULTISELECT.getDBValue().equals(multiResult.getResultType())) {
+				if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && ResultType.isMultiSelectVariant(multiResult.getResultType())) {
 					if (firstPass) {
 						firstPass = false;
 					} else {
@@ -110,7 +110,7 @@ public class ResultService {
 				}
 			}
 			return buffer.toString();
-		} else if (ResultType.NUMERIC.getDBValue().equals(getTestType())) {
+		} else if (ResultType.NUMERIC.matches(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
             if (significantPlaces == 0) {
                 return result.getValue().split("\\.")[0];
@@ -129,7 +129,7 @@ public class ResultService {
                 value.append("0");
             }
             return value.toString();
-        }else if (ResultType.ALPHA.getDBValue().equals(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
+        }else if (ResultType.ALPHA.matches(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
             return result.getValue().split("\\(")[0].trim();
         }else {
             return result.getValue();
@@ -148,7 +148,7 @@ public class ResultService {
             List<Result> results = new ResultDAOImpl().getResultsByAnalysis(result.getAnalysis());
 
             for (Result multiResult : results) {
-                if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && ResultType.MULTISELECT.getDBValue().equals(multiResult.getResultType())) {
+                if (!GenericValidator.isBlankOrNull(multiResult.getValue()) && ResultType.isMultiSelectVariant(multiResult.getResultType())) {
                     if (firstPass) {
                         firstPass = false;
                     } else {
@@ -206,11 +206,11 @@ public class ResultService {
 
     public String getDisplayReferenceRange(boolean includeSelectList){
         String range = "";
-        if( ResultType.NUMERIC.getDBValue().equals( result.getResultType() ) ){
+        if( ResultType.NUMERIC.matches( result.getResultType() ) ){
             if( result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals( result.getMaxNormal() ) ){
                 range = ResultLimitService.getDisplayNormalRange( result.getMinNormal(), result.getMaxNormal(), String.valueOf( result.getSignificantDigits() ), "-" );
             }
-        }else if( includeSelectList && "DM".contains( result.getResultType() )){
+        }else if( includeSelectList && ResultType.isDictionaryType( result.getResultType() )){
             List<ResultLimit> limits = getResultLimits();
             if( !limits.isEmpty() && !GenericValidator.isBlankOrNull( limits.get( 0 ).getDictionaryNormalId() )){
                 range = dictionaryDAO.getDataForId( limits.get( 0 ).getDictionaryNormalId() ).getLocalizedName();

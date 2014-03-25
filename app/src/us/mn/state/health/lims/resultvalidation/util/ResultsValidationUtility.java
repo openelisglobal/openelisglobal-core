@@ -342,7 +342,7 @@ public class ResultsValidationUtility {
 				List<ResultValidationItem> testResultItemList = getResultItemFromAnalysis(analysis);
 				//NB.  The resultValue is filled in during getResultItemFromAnalysis as a side effect of setResult
 				for (ResultValidationItem validationItem : testResultItemList) {
-					if (isDictionaryType(validationItem.getResultType())) {
+					if (ResultType.isDictionaryType( validationItem.getResultType())) {
 						dictionary = new Dictionary();
 						String resultValue = null;
 						try {
@@ -359,7 +359,7 @@ public class ResultsValidationUtility {
 
 					}
 
-					validationItem.setAnalysisStatusId(analysis.getStatusId());
+                    validationItem.setAnalysis( analysis );
 					validationItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
 					selectedTestList.add(validationItem);
 				}
@@ -434,7 +434,7 @@ public class ResultsValidationUtility {
 		ResultValidationItem testItem = new ResultValidationItem();
 
 		testItem.setAccessionNumber(accessionNumber);
-		testItem.setAnalysisId(analysis.getId());
+        testItem.setAnalysis( analysis );
 		testItem.setSequenceNumber(sequenceNumber);
 		testItem.setTestName(displayTestName);
 		testItem.setTestId(test.getId());
@@ -442,7 +442,6 @@ public class ResultsValidationUtility {
 		testItem.setResult(result);
 		testItem.setDictionaryResults(getAnyDictonaryValues(testResults));
 		testItem.setResultType(getTestResultType(testResults ));
-		testItem.setAnalysisStatusId(analysis.getStatusId());
 		testItem.setTestSortNumber(test.getSortOrder());
 		testItem.setReflexGroup(analysis.getTriggeredReflex());
 		testItem.setChildReflex(analysis.getTriggeredReflex() && isConclusion(result, analysis));
@@ -499,14 +498,14 @@ public class ResultsValidationUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && testResults.size() > 0 && isDictionaryType(testResults.get(0).getTestResultType())) {
+		if (testResults != null && testResults.size() > 0 && ResultType.isDictionaryType( testResults.get(0).getTestResultType())) {
 			values = new ArrayList<IdValuePair>();
 			values.add(new IdValuePair("0", ""));
 
 			for (TestResult testResult : testResults) {
 				// Note: result group use to be a criteria but was removed, if
 				// results are not as expected investigate
-				if (isDictionaryType(testResult.getTestResultType())) {
+				if ( ResultType.isDictionaryType( testResult.getTestResultType())) {
 					dictionary = dictionaryDAO.getDataForId(testResult.getValue());
 					String displayValue = dictionary.getLocalizedName();
 
@@ -522,9 +521,6 @@ public class ResultsValidationUtility {
 		return values;
 	}
 
-	private boolean isDictionaryType(String resultType){
-		return "DM".contains(resultType);
-	}
 
 	private String getTestResultType(List<TestResult> testResults) {
 		String testResultType = ResultType.NUMERIC.getDBValue();
@@ -578,7 +574,7 @@ public class ResultsValidationUtility {
 				readyForValidation = false;
 			}
 
-			String finalResult = checkIfFinalResult(tResultItem.getAnalysisId());
+			String finalResult = checkIfFinalResult(tResultItem.getAnalysis().getId());
 
 			if (!GenericValidator.isBlankOrNull(finalResult)) {
 				analysisResultItem.setFinalResult(finalResult);
@@ -629,8 +625,8 @@ public class ResultsValidationUtility {
 		elisaResultItem.setTestName(testResultItem.getTestName());
 		elisaResultItem.setResult(testResultItem.getResultValue());
 		elisaResultItem.setSampleGroupingNumber(testResultItem.getSampleGroupingNumber());
-		elisaResultItem.setAnalysisId(testResultItem.getAnalysisId());
-		elisaResultItem.setStatusId(testResultItem.getAnalysisStatusId());
+		elisaResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		elisaResultItem.setStatusId(testResultItem.getAnalysis().getStatusId());
 		elisaResultItem.setNote(testResultItem.getNote());
 		elisaResultItem.setNoteId(testResultItem.getNoteId());
 		elisaResultItem.setResultId(testResultItem.getResultId());
@@ -647,8 +643,8 @@ public class ResultsValidationUtility {
 
 	public AnalysisItem addTestResultToELISAAnalysisItem(ResultValidationItem testResultItem, AnalysisItem eItem) {
 
-		eItem.setAnalysisId(testResultItem.getAnalysisId());
-		eItem.setStatusId(testResultItem.getAnalysisStatusId());
+		eItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		eItem.setStatusId(testResultItem.getAnalysis().getStatusId());
 		if( testResultItem.isNonconforming()){
 			eItem.setNonconforming(true);
 		}
@@ -721,7 +717,7 @@ public class ResultsValidationUtility {
             if( !multiResultEntered){
                 AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
                 analysisResultList.add(convertedItem);
-                if( ResultType.MULTISELECT.getDBValue().equals(testResultItem.getResultType())){
+                if( ResultType.isMultiSelectVariant(testResultItem.getResultType())){
                     multiResultEntered = true;
                     currentMultiSelectAnalysisItem = convertedItem;
                 }
@@ -771,7 +767,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
 		analysisResultItem.setTestName(testName);
 		analysisResultItem.setUnits(testUnits);
-		analysisResultItem.setAnalysisId(testResultItem.getAnalysisId());
+		analysisResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
 		analysisResultItem.setPastNotes(testResultItem.getPastNotes());
 		analysisResultItem.setResultId(testResultItem.getResultId());
 		analysisResultItem.setResultType(testResultItem.getResultType());
@@ -779,10 +775,10 @@ public class ResultsValidationUtility {
 		analysisResultItem.setTestSortNumber(sortOrder);
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
-        if( !ResultType.MULTISELECT.getDBValue().equals(testResultItem.getResultType())){
-            analysisResultItem.setResult(getFormattedResult(testResultItem));
+        if( ResultType.isMultiSelectVariant(testResultItem.getResultType())){
+            analysisResultItem.setMultiSelectResultValues(new AnalysisService( testResultItem.getAnalysis()).getJSONMultiSelectResults());
         } else {
-            analysisResultItem.setMultiSelectResultValues(new ResultService(testResultItem.getResult()).getMultiSelectSelectedIdValues());
+            analysisResultItem.setResult(getFormattedResult(testResultItem));
         }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
@@ -791,12 +787,8 @@ public class ResultsValidationUtility {
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
         analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
-        if( ResultType.NUMERIC.getDBValue().equals( testResultItem.getResultType() )){
-            if(  result.getMinNormal().equals( result.getMaxNormal())){
-                analysisResultItem.setSignificantDigits( -1 );
-            }else{
-                analysisResultItem.setSignificantDigits( result.getSignificantDigits() );
-            }
+        if( ResultType.NUMERIC.matches( testResultItem.getResultType() )){
+                analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
         }
 		return analysisResultItem;
 

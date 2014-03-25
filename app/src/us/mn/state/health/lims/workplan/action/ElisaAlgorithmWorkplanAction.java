@@ -16,20 +16,11 @@
  */
 package us.mn.state.health.lims.workplan.action;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -44,6 +35,13 @@ import us.mn.state.health.lims.resultvalidation.util.ResultsValidationUtility;
 import us.mn.state.health.lims.test.dao.TestSectionDAO;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.TestSection;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 
@@ -152,7 +150,7 @@ public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 				}
 				analysisResultItem = new AnalysisItem();
 				analysisResultItem = resultsValidationUtility.testResultItemToELISAAnalysisItem(validationItem);
-				String finalResult = resultsValidationUtility.checkIfFinalResult(validationItem.getAnalysisId());
+				String finalResult = resultsValidationUtility.checkIfFinalResult(validationItem.getAnalysis().getId());
 
 				if (!GenericValidator.isBlankOrNull(finalResult)) {
 					analysisResultItem.setFinalResult(finalResult);
@@ -166,7 +164,7 @@ public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 				hasFinalResult = false;
 				// or just add test result to elisaAlgorithm bean
 			} else if(!hasFinalResult ) {
-				String finalResult = resultsValidationUtility.checkIfFinalResult(validationItem.getAnalysisId());
+				String finalResult = resultsValidationUtility.checkIfFinalResult(validationItem.getAnalysis().getId());
 
 				if (!GenericValidator.isBlankOrNull(finalResult)) {
 					analysisResultItem.setFinalResult(finalResult);

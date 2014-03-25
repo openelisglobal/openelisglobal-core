@@ -17,7 +17,6 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
-import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
 import org.apache.struts.action.*;
 import org.hibernate.Transaction;
@@ -69,6 +68,8 @@ import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.Res
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+
+import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
 
 public class ResultValidationSaveAction extends BaseResultValidationAction implements IResultSaveService  {
 
@@ -199,7 +200,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 			updater.postTransactionalCommitUpdate(this);
 		}
 
-		if(GenericValidator.isBlankOrNull(testSectionName)){
+		if( isBlankOrNull( testSectionName )){
 			return mapping.findForward(forward);
 		}else{
 			Map<String, String> params = new HashMap<String, String>();
@@ -240,18 +241,18 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 	public void validateQuantifiableItems(AnalysisItem analysisItem, List<ActionError> errors){
 		if( analysisItem.isHasQualifiedResult() &&
-				GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue()) &&
+				isBlankOrNull( analysisItem.getQualifiedResultValue() ) &&
 				analysisItemWillBeUpdated(analysisItem)){
 			errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
 		}
 		// verify that qualifiedResultValue has been entered if required
-		if (!GenericValidator.isBlankOrNull(analysisItem.getQualifiedDictionaryId())) {
+		if (!isBlankOrNull( analysisItem.getQualifiedDictionaryId() )) {
 		    String[] qualifiedDictionaryIds = analysisItem.getQualifiedDictionaryId().replace("[", "").replace("]", "").split(",");
 		    Set<String> qualifiedDictIdsSet = new HashSet<String>(Arrays.asList(qualifiedDictionaryIds));
 		    
 		    
 		    if (qualifiedDictIdsSet.contains(analysisItem.getResult()) &&
-		            GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue())) {
+		            isBlankOrNull( analysisItem.getQualifiedResultValue() )) {
 		        errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
 		      
 		    }
@@ -358,47 +359,47 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 		Analysis analysis = new Analysis();
 
-		if(!GenericValidator.isBlankOrNull(analysisItem.getMurexResult())){
+		if(!isBlankOrNull( analysisItem.getMurexResult() )){
 			analysis = getAnalysisFromId(analysisItem.getMurexAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getBiolineResult())){
+		if(!isBlankOrNull( analysisItem.getBiolineResult() )){
 			analysis = getAnalysisFromId(analysisItem.getBiolineAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getIntegralResult())){
+		if(!isBlankOrNull( analysisItem.getIntegralResult() )){
 			analysis = getAnalysisFromId(analysisItem.getIntegralAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getVironostikaResult())){
+		if(!isBlankOrNull( analysisItem.getVironostikaResult() )){
 			analysis = getAnalysisFromId(analysisItem.getVironostikaAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getGenieIIResult())){
+		if(!isBlankOrNull( analysisItem.getGenieIIResult() )){
 			analysis = getAnalysisFromId(analysisItem.getGenieIIAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getGenieII10Result())){
+		if(!isBlankOrNull( analysisItem.getGenieII10Result() )){
 			analysis = getAnalysisFromId(analysisItem.getGenieII10AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getGenieII100Result())){
+		if(!isBlankOrNull( analysisItem.getGenieII100Result() )){
 			analysis = getAnalysisFromId(analysisItem.getGenieII100AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getWesternBlot1Result())){
+		if(!isBlankOrNull( analysisItem.getWesternBlot1Result() )){
 			analysis = getAnalysisFromId(analysisItem.getWesternBlot1AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getWesternBlot2Result())){
+		if(!isBlankOrNull( analysisItem.getWesternBlot2Result() )){
 			analysis = getAnalysisFromId(analysisItem.getWesternBlot2AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getP24AgResult())){
+		if(!isBlankOrNull( analysisItem.getP24AgResult() )){
 			analysis = getAnalysisFromId(analysisItem.getP24AgAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getInnoliaResult())){
+		if(!isBlankOrNull( analysisItem.getInnoliaResult() )){
 			analysis = getAnalysisFromId(analysisItem.getInnoliaAnalysisId());
 			analysisList.add(analysis);
 		}
@@ -463,7 +464,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 	protected TestResult getTestResult(AnalysisItem analysisItem){
 		TestResult testResult = null;
-		if(ResultType.DICTIONARY.getDBValue().equals(analysisItem.getResultType())){
+		if(ResultType.DICTIONARY.matches( analysisItem.getResultType() )){
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysisItem.getTestId(), analysisItem.getResult());
 		}else{
 			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(analysisItem.getTestId());
@@ -477,9 +478,9 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 	}
 
 	private boolean areResults(AnalysisItem item){
-		return !(GenericValidator.isBlankOrNull(item.getResult()) ||
-                (ResultType.DICTIONARY.getDBValue().equals(item.getResultType()) && "0".equals(item.getResult()))) ||
-                ( ResultType.MULTISELECT.getDBValue().equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
+		return !( isBlankOrNull( item.getResult() ) ||
+                (ResultType.DICTIONARY.matches( item.getResultType() ) && "0".equals(item.getResult()))) ||
+                (ResultType.isMultiSelectVariant( item.getResultType() ) && !isBlankOrNull( item.getMultiSelectResultValues() ));
 	}
 
 	private void createSystemUser(){

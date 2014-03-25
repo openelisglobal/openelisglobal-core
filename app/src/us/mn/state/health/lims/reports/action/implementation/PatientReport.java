@@ -716,7 +716,7 @@ public abstract class PatientReport extends Report{
 
                 if( multiResult.length() > 1 ){
                     // remove last "\n"
-                    multiResult.setLength( multiResult.length() - 2 );
+                    multiResult.setLength( multiResult.length() - 1 );
                 }
 
                 reportResult = multiResult.toString();

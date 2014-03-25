@@ -152,9 +152,6 @@ public class ResultSaveService {
             already in the DB.  If a match is found then it will be removed from the DB list and
             we will go on to the next selection made by the user.  If
             a match is not found then a new result will be created.
-
-            After all of the user selections are made any DB results which were not matched will be marked for
-            deletion
              */
         for( String resultAsString : multiResults){
             Result existingResultFromDB = null;
