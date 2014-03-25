@@ -107,13 +107,13 @@ public class ReferredOutAction extends BaseAction {
 	private void fillInDictionaryValuesForReferralItems(List<ReferralItem> referralItems) {
 		for (ReferralItem referralItem : referralItems) {
 			String referredResultType = referralItem.getReferredResultType();
-            if (isSelectList(referredResultType)) {
+            if ( ResultType.isDictionaryType( referredResultType)) {
 				referralItem.setDictionaryResults(getDictionaryValuesForTest(referralItem.getReferredTestId()));
 			}
 
 			if (referralItem.getAdditionalTests() != null) {
 				for (ReferredTest test : referralItem.getAdditionalTests()) {
-					if (isSelectList(test.getReferredResultType())) {
+					if (ResultType.isDictionaryType(test.getReferredResultType())) {
 						test.setDictionaryResults(getDictionaryValuesForTest(test.getReferredTestId()));
 					}
 				}
@@ -268,7 +268,7 @@ public class ReferredOutAction extends BaseAction {
 		Result result = baseResult.getResult();
 		String resultType = (result != null)?result.getResultType():"N";
 		referralItem.setReferredResultType(resultType);
-		if ( !ResultType.MULTISELECT.getDBValue().equals(resultType) ) {
+		if ( !ResultType.isMultiSelectVariant(resultType) ) {
             if (result != null && result.getId() != null) {
     			String resultValue = GenericValidator.isBlankOrNull(result.getValue()) ? "" : result.getValue();
     			referralItem.setReferredResult(resultValue);
@@ -300,12 +300,12 @@ public class ReferredOutAction extends BaseAction {
 
 	private String getAppropriateResultValue(List<Result> results) {
 	    Result result = results.get(0);
-		if (ResultType.DICTIONARY.getDBValue().equals(result.getResultType())) {
+		if (ResultType.DICTIONARY.matches(result.getResultType())) {
 			Dictionary dictionary = dictionaryDAO.getDictionaryById(result.getValue());
 			if (dictionary != null) {
 				return dictionary.getLocalizedName();
 			}
-		} else if (ResultType.MULTISELECT.getDBValue().equals(result.getResultType())) {
+		} else if (ResultType.isMultiSelectVariant(result.getResultType())) {
             Dictionary dictionary = new Dictionary();
             StringBuilder multiResult = new StringBuilder();
         
@@ -370,12 +370,12 @@ public class ReferredOutAction extends BaseAction {
 
 				nonNumericTests.testId = testId;
                 nonNumericTests.testType = testResultList.get(0).getTestResultType();
-				boolean isSelectList = isSelectList(nonNumericTests.testType);
+				boolean isSelectList = ResultType.isDictionaryType(nonNumericTests.testType);
 
 				if (isSelectList) {
 					List<IdValuePair> dictionaryValues = new ArrayList<IdValuePair>();
 					for (TestResult testResult : testResultList) {
-						if (isSelectList(testResult.getTestResultType())) {
+						if (ResultType.isDictionaryType(testResult.getTestResultType())) {
 							String resultName = dictionaryDAO.getDictionaryById(testResult.getValue()).getLocalizedName();
 							dictionaryValues.add(new IdValuePair(testResult.getValue(), resultName));
 						}
@@ -393,15 +393,6 @@ public class ReferredOutAction extends BaseAction {
 
 		return nonNumericTestList;
 	}
-
-    /**
-     * The types of testResults which mean that there will be a list of choices/options to select from.
-     * @param testResultType  The resultType being tested
-     * @return true if it is one of the types which means a list of choices, false otherwise.
-     */
-	public static boolean isSelectList(String testResultType) {
-        return "DM".contains( testResultType );
-    }
 
 	public class NonNumericTests {
 		public String testId;
