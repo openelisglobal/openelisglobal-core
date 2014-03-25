@@ -181,4 +181,17 @@
             <column name="hl7_value" value="TX" />
         </insert>
     </changeSet>
+    <changeSet id="15" author="paulsc">
+        <comment>Add flag to send technical rejected analysis to validation</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name" value="validateTechnicalRejection" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="If true and a technician rejects test results then they are ready to be validated" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'resultConfiguration' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instructions.validation.techRejection" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
