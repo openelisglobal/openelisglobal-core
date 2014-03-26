@@ -196,7 +196,7 @@ public class BaseWorkplanAction extends BaseAction {
             if (GenericValidator.isBlankOrNull(nationalId))
                 return patientService.getLastName().toUpperCase();
             else
-                return patientService.getLastName().toUpperCase() + "/" + nationalId;
+                return patientService.getLastName().toUpperCase() + " / " + nationalId;
         } else 
             return ""; 
     }
