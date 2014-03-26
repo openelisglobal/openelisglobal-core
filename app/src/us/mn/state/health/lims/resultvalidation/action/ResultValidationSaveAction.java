@@ -27,6 +27,7 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.IResultSaveService;
 import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.ResultSaveService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -293,7 +294,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 					}
 				}
 
-                Note note = new NoteService( analysis ).createSavableNote( NoteService.NoteType.EXTERNAL, analysisItem.getNote(), RESULT_SUBJECT, currentUserId );
+                NoteType noteType = analysisItem.getIsAccepted() ? NoteType.EXTERNAL : NoteType.INTERNAL;
+                Note note = new NoteService( analysis ).createSavableNote( noteType, analysisItem.getNote(), RESULT_SUBJECT, currentUserId );
                 if(note != null){
                     noteUpdateList.add( note );
                 }

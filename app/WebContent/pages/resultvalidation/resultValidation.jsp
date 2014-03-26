@@ -316,7 +316,7 @@ function /*boolean*/ handleEnterEvent(){
 <Table style="width:80%" >
     <tr>
 		<th colspan="3" style="background-color: white;width:15%;">
-			<img src="./images/nonconforming.gif" /> = <bean:message key="result.nonconforming.item"/>		
+			<img src="./images/nonconforming.gif" /> = <%= StringUtil.getContextualMessageForKey("result.nonconforming.item")%>'
 		</th>
 		<th style="text-align:center;width:3%;" style="background-color: white">&nbsp;
 				<bean:message key="validation.accept.all" />

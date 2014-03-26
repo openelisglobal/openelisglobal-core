@@ -67,7 +67,8 @@ import java.util.*;
 public class ResultsValidationUtility {
 
 
-//	private static String VIRAL_LOAD_ID = "";
+    private static final String REJECT_STATUS_ID = StatusService.getInstance().getStatusID( AnalysisStatus.TechnicalRejected );
+    //	private static String VIRAL_LOAD_ID = "";
 	private static String ANALYTE_CD4_CT_GENERATED_ID;
 
 	private static String CONCLUSION_ID;
@@ -89,7 +90,7 @@ public class ResultsValidationUtility {
 	private Map<String, Boolean> accessionToValidMap;
 	private String totalTestName = "";
 
-	static {
+    static {
 		notValidStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized)));
 		notValidStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected)));
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
@@ -342,7 +343,7 @@ public class ResultsValidationUtility {
 				List<ResultValidationItem> testResultItemList = getResultItemFromAnalysis(analysis);
 				//NB.  The resultValue is filled in during getResultItemFromAnalysis as a side effect of setResult
 				for (ResultValidationItem validationItem : testResultItemList) {
-					if (ResultType.isDictionaryType( validationItem.getResultType())) {
+					if (ResultType.isDictionaryType( validationItem.getResultType() )) {
 						dictionary = new Dictionary();
 						String resultValue = null;
 						try {
@@ -498,7 +499,7 @@ public class ResultsValidationUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && testResults.size() > 0 && ResultType.isDictionaryType( testResults.get(0).getTestResultType())) {
+		if (testResults != null && testResults.size() > 0 && ResultType.isDictionaryType( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 			values.add(new IdValuePair("0", ""));
 
@@ -717,7 +718,7 @@ public class ResultsValidationUtility {
             if( !multiResultEntered){
                 AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
                 analysisResultList.add(convertedItem);
-                if( ResultType.isMultiSelectVariant(testResultItem.getResultType())){
+                if( ResultType.isMultiSelectVariant( testResultItem.getResultType() )){
                     multiResultEntered = true;
                     currentMultiSelectAnalysisItem = convertedItem;
                 }
@@ -782,7 +783,8 @@ public class ResultsValidationUtility {
         }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
-		analysisResultItem.setNonconforming(testResultItem.isNonconforming());
+		analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
+                REJECT_STATUS_ID.equals( testResultItem.getAnalysis().getStatusId() ) );
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());

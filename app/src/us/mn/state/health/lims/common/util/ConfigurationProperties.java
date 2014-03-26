@@ -104,7 +104,8 @@ public abstract class ConfigurationProperties {
         NOTE_EXTERNAL_ONLY_FOR_VALIDATION, //If true then only validation notes will be on patient report
         PHONE_FORMAT,                //Format of phone number
         VALIDATE_PHONE_FORMAT,       //If true then entered phone numbers will be validated against format
-        ALLOW_DUPLICATE_SUBJECT_NUMBERS //If true then duplicate subject numbers are allowed
+        ALLOW_DUPLICATE_SUBJECT_NUMBERS, //If true then duplicate subject numbers are allowed
+        VALIDATE_REJECTED_TESTS //If true then if the technician rejects a test the next step is validation
     }
 
 	
