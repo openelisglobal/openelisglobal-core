@@ -553,7 +553,7 @@ public abstract class PatientReport extends Report{
     }
 
     private void setNormalRange( ClinicalPatientData data, Test test, Result result ){
-        String uom = getUnitOfMeasure( result, test );
+        String uom = getUnitOfMeasure(  test );
         data.setTestRefRange( addIfNotEmpty( getRange( result ), appendUOMToRange() ? uom : null ) );
         data.setUom( uom );
     }
@@ -613,14 +613,8 @@ public abstract class PatientReport extends Report{
         return new ResultService( result ).getDisplayReferenceRange( true );
     }
 
-    protected String getUnitOfMeasure( Result result, Test test ){
-        String uom = "";
-        if( ResultType.NUMERIC.matches( result.getResultType() ) ){
-            if( test != null && test.getUnitOfMeasure() != null ){
-                uom = test.getUnitOfMeasure().getName();
-            }
-        }
-        return uom;
+    protected String getUnitOfMeasure( Test test ){
+            return ( test != null && test.getUnitOfMeasure() != null )? test.getUnitOfMeasure().getName() : "";
     }
 
     private void setAppropriateResults( List<Result> resultList, ClinicalPatientData data ){
@@ -639,6 +633,7 @@ public abstract class PatientReport extends Report{
                 }
             }else{
                 reportResult = new ResultService(result).getResultValue( true );
+                //TODO - how is this used.  Selection types can also have UOM and reference ranges
                 data.setHasRangeAndUOM( ResultType.NUMERIC.matches( result.getResultType() ) );
             }
         }else{

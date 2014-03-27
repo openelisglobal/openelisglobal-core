@@ -123,7 +123,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 					testDAO.getData(test);
 					data.setTestName(test.getReportingDescription());
 
-					String uom = getUnitOfMeasure(referralResult.getResult(), test);
+					String uom = getUnitOfMeasure( test);
 					if(reportReferralResultValue != null){
 						data.setReferralResult(addIfNotEmpty(reportReferralResultValue, uom));
 					}
