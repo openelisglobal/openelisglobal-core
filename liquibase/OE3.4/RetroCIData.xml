@@ -26,4 +26,11 @@
             <where>name = 'validateTechnicalRejection'</where>
         </update>
     </changeSet>
+    <changeSet id="2" author="paulsc" context="CDIRetroCI">
+        <comment>Sets validationOnlyNotesAreExternal to false</comment>
+        <update tableName="site_information" >
+            <column name="value" value="false" />
+            <where>name = 'validationOnlyNotesAreExternal'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

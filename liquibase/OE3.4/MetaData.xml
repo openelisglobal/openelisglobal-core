@@ -194,4 +194,11 @@
             <column name="instruction_key" value="instructions.validation.techRejection" />
         </insert>
     </changeSet>
+    <changeSet id="16" author="paulsc">
+        <comment>Sets validationOnlyNotesAreExternal to true</comment>
+        <update tableName="site_information" >
+            <column name="value" value="true" />
+            <where>name = 'validationOnlyNotesAreExternal'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
