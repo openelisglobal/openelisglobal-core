@@ -17,8 +17,9 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 
 public class HT_LNSPFormFields implements IFormFieldsForImplementation {
@@ -56,8 +57,6 @@ public class HT_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.SampleCondition, Boolean.FALSE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);
 		settings.put(Field.PatientNameRequired, Boolean.FALSE);
-		settings.put(Field.PatientAgeRequired_SampleEntry, Boolean.FALSE);
-		settings.put(Field.PatientGenderRequired_SampleEntry, Boolean.FALSE);
 		settings.put(Field.SampleEntryUseReceptionHour, Boolean.TRUE);
 		settings.put(Field.CollectionDate, Boolean.TRUE);
 		settings.put(Field.CollectionTime, Boolean.TRUE);

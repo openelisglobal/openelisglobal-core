@@ -75,10 +75,6 @@ public class FormFields {
 		PatientIDRequired,                      //Is patient ID required for patient
 		PatientIDRequired_SampleConfirmation,   //Is patient ID required for patient on sample conformation form
 		PatientNameRequired,                    //Is patient name required
-		PatientAgeRequired_SampleConfirmation,  //Is patient age required on sample conformation form
-		PatientGenderRequired_SampleConfirmation,//Is patient gender required on sample conformation form
-		PatientAgeRequired_SampleEntry,         //Is patient age required
-		PatientGenderRequired_SampleEntry,	     //Is patient gender required
 		SampleEntryUseReceptionHour,            //Include reception time on sample entry
 		SampleEntryUseRequestDate,              //Include request date on sample entry
 		SampleEntryNextVisitDate,               //Include next visit date on sample entry

@@ -61,13 +61,13 @@
 	if("SampleConfirmationEntryForm".equals( formName )){
 		patientIDRequired = FormFields.getInstance().useField(Field.PatientIDRequired_SampleConfirmation);
 		patientRequired = FormFields.getInstance().useField(Field.PatientRequired_SampleConfirmation );
-		patientAgeRequired = FormFields.getInstance().useField(Field.PatientAgeRequired_SampleConfirmation );
-		patientGenderRequired = FormFields.getInstance().useField(Field.PatientGenderRequired_SampleConfirmation );
+		patientAgeRequired = false;
+		patientGenderRequired = false;
 	}else{
 		patientIDRequired = FormFields.getInstance().useField(Field.PatientIDRequired);
 	    patientRequired = FormFields.getInstance().useField(Field.PatientRequired );
-	    patientAgeRequired = FormFields.getInstance().useField(Field.PatientAgeRequired_SampleEntry );
-		patientGenderRequired = FormFields.getInstance().useField(Field.PatientGenderRequired_SampleEntry);
+	    patientAgeRequired = true;
+		patientGenderRequired = true;
 	}
 	
 	patientNamesRequired = FormFields.getInstance().useField(Field.PatientNameRequired);
