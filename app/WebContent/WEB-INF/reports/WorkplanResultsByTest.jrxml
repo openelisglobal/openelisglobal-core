@@ -64,9 +64,11 @@
 				<reportElement x="1" y="1" width="48" height="45"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{siteLogo}]]></imageExpression>
 			</image>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="164" y="2" width="229" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font isItalic="true"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName}]]></textFieldExpression>
 			</textField>
 		</band>
