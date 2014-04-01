@@ -87,4 +87,6 @@ public interface IAccessionNumberValidator {
 	 * @return
 	 */
 	public int getChangeableLength();
+
+    public String getPrefix();
 }

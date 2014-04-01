@@ -23,6 +23,10 @@
 	<parameter name="siteLogo" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="nameOfTest" class="java.lang.String"/>
+	<parameter name="accessionPrefix" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="prefixLength" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
 	<field name="accessionNumber" class="java.lang.String"/>
 	<field name="receivedDate" class="java.lang.String"/>
 	<field name="testName" class="java.lang.String"/>
@@ -78,9 +82,9 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="37" splitType="Stretch">
+		<band height="41" splitType="Stretch">
 			<line>
-				<reportElement key="line-1" x="1" y="36" width="554" height="1"/>
+				<reportElement key="line-1" x="1" y="38" width="554" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
@@ -108,7 +112,7 @@
 			<textField>
 				<reportElement x="96" y="7" width="80" height="16"/>
 				<box leftPadding="4"/>
-				<textElement verticalAlignment="Top"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labNumberTitle}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -138,9 +142,16 @@
 				<text><![CDATA[Nom du Test ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="175" y="7" width="234" height="29"/>
+				<reportElement x="175" y="7" width="234" height="32"/>
 				<textElement verticalAlignment="Top" markup="styled"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{nameOfTest}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="96" y="22" width="80" height="16">
+					<printWhenExpression><![CDATA[$P{accessionPrefix} != null && !"".equals($P{accessionPrefix})]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["(" + $P{accessionPrefix} +")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -169,7 +180,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}.substring($P{prefixLength})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField" isPrintRepeatedValues="false" mode="Transparent" x="0" y="3" width="95" height="13" printWhenGroupChanges="Accession" forecolor="#000000" backcolor="#FFFFFF"/>

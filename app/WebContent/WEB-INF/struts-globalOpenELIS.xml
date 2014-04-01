@@ -341,22 +341,14 @@
 			<form-property name="reportType" type="java.lang.String" initial=""/>
 			<form-property name="reportName" type="java.lang.String" initial=""/>
 			<form-property name="reportRequest" type="java.lang.String" initial="glen"/>
-			<form-property name="useAccessionList" type="java.lang.Boolean" initial="Boolean.FALSE" />
-			<form-property name="selectedAccession" type="java.lang.String" initial="" />
-			<form-property name="accessionList" type="java.util.Collection" />
 			<form-property name="useAccessionDirect" type="java.lang.Boolean" initial="Boolean.FALSE"/>
 			<form-property name="accessionDirect" type="java.lang.String" initial="" />
-			<form-property name="useHighAccessionList" type="java.lang.Boolean" initial="Boolean.FALSE" />
 			<form-property name="selectedHighAccession" type="java.util.Collection" />
 			<form-property name="useHighAccessionDirect" type="java.lang.Boolean" initial="Boolean.FALSE"/>
 			<form-property name="highAccessionDirect" type="java.lang.String" initial="" />
-			<form-property name="usePatientNumberList" type="java.lang.Boolean" initial="Boolean.FALSE" />
-			<form-property name="selectedPatientNumber" type="java.lang.String" initial="" />
 			<form-property name="patientNumberList" type="java.util.Collection" />
 			<form-property name="usePatientNumberDirect" type="java.lang.Boolean" initial="Boolean.FALSE"/>
 			<form-property name="patientNumberDirect" type="java.lang.String" initial="" />
-			<form-property name="useUpperPatientNumberList" type="java.lang.Boolean" initial="Boolean.FALSE" />
-			<form-property name="selectedUpperPatientNumber" type="java.lang.String" initial="" />
 			<form-property name="useUpperPatientNumberDirect" type="java.lang.Boolean" initial="Boolean.FALSE"/>
 			<form-property name="patientUpperNumberDirect" type="java.lang.String" initial="" />
 			<form-property name="useLowerDateRange" type="java.lang.Boolean" initial="Boolean.FALSE"/>
@@ -376,12 +368,8 @@
 			<form-property name="lowerYear" type="java.lang.String" initial="" />
 			<form-property name="upperMonth" type="java.lang.String" initial="" />
 			<form-property name="upperYear" type="java.lang.String" initial="" />
-			<form-property name="useSiteList" type="java.lang.Boolean" initial="Boolean.FALSE"/>
-			<form-property name="siteList" type="java.util.Collection"/>
-			<form-property name="siteName" type="java.lang.String" initial=""/>
+            <form-property name="selectList" type="us.mn.state.health.lims.reports.action.implementation.ReportSpecificationList" />
 			<form-property name="projectCodeList" type="java.util.Collection"/>
-			<form-property name="exportOption" type="java.lang.String" />
-			<form-property name="exportOptions" type="java.util.Collection" />
 			<form-property name="instructions" type="java.lang.String" initial="" />
 		</form-bean>
 

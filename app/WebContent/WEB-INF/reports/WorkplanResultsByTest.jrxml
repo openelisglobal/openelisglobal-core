@@ -20,6 +20,10 @@
 	<parameter name="siteLogo" class="java.lang.String"/>
 	<parameter name="labName" class="java.lang.String"/>
 	<parameter name="nameOfPatient" class="java.lang.String"/>
+	<parameter name="accessionPrefix" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="prefixLength" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -74,9 +78,9 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="20" splitType="Stretch">
+		<band height="39" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText" x="0" y="1" width="111" height="16"/>
+				<reportElement key="staticText" x="0" y="1" width="98" height="32"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -89,13 +93,13 @@
 				<text><![CDATA[Date de Réception    ]]></text>
 			</staticText>
 			<line>
-				<reportElement key="line-1" x="1" y="19" width="557" height="1"/>
+				<reportElement key="line-1" x="0" y="35" width="555" height="1"/>
 				<graphicElement fill="Solid">
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="221" y="1" width="92" height="16">
+				<reportElement x="221" y="1" width="92" height="32">
 					<printWhenExpression><![CDATA[$P{printSubjectNo}]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
@@ -103,23 +107,30 @@
 			</textField>
 			<textField>
 				<reportElement x="98" y="1" width="115" height="16"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labNumberTitle}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="410" y="1" width="76" height="16"/>
+				<reportElement x="410" y="1" width="76" height="32"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Résultats]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="491" y="1" width="42" height="16"/>
+				<reportElement x="491" y="1" width="42" height="32"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Tech ID]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="222" y="1" width="188" height="16"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="222" y="1" width="188" height="32"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{nameOfPatient}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="98" y="17" width="115" height="16">
+					<printWhenExpression><![CDATA[$P{accessionPrefix} != null && !"".equals($P{accessionPrefix})]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["(" + $P{accessionPrefix} + ")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -162,7 +173,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}.substring($P{prefixLength})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="222" y="0" width="189" height="13" backcolor="#FFFFFF"/>

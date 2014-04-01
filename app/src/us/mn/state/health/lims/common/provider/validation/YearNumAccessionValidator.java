@@ -17,15 +17,15 @@
  */
 package us.mn.state.health.lims.common.provider.validation;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
+
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 public class YearNumAccessionValidator implements IAccessionNumberValidator {
 
@@ -183,4 +183,9 @@ public class YearNumAccessionValidator implements IAccessionNumberValidator {
 	public int getChangeableLength() {
 		return getMaxAccessionLength() - getInvarientLength();
 	}
+
+    @Override
+    public String getPrefix(){
+        return null; //no single prefix
+    }
 }

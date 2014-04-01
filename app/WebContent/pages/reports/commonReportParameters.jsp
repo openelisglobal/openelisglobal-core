@@ -36,6 +36,7 @@
 <bean:define id="reportRequest" name='<%=formName %>' property="reportRequest"/>
 <bean:define id="instructions" name='<%=formName %>' property="instructions"/>
 
+
 <script type="text/javascript">
 
 
@@ -174,15 +175,7 @@ function onPrint(){
   </logic:equal>
   
   <div>
-	  <logic:equal name='<%=formName%>' property="useAccessionList" value="true">
-		<span style="padding-left: 10px"><%= StringUtil.getContextualMessageForKey("report.select.labNumber") %></span>
-		<html:select name="<%=formName%>" property="selectedAccession">
-			<html:option value=""></html:option>
-			<logic:iterate id="accession" name='<%=formName%>' property="accessionList" type="java.lang.String">
-				<html:option value='<%=accession%>' ></html:option>
-			</logic:iterate>
-		</html:select>
-	  </logic:equal>
+
 	  <logic:equal name='<%=formName%>' property="useAccessionDirect" value="true">
 		<span style="padding-left: 10px">
 		<logic:equal name='<%=formName%>' property="useHighAccessionDirect" value="true">
@@ -194,15 +187,6 @@ function onPrint(){
 				   property="accessionDirect"
 				   maxlength='<%= Integer.toString(accessionValidator.getMaxAccessionLength())%>'
 				   />
-	  </logic:equal>
-      <logic:equal name='<%=formName%>' property="useHighAccessionList" value="true">
-		<span style="padding-left: 10px"><%= StringUtil.getContextualMessageForKey("report.select.labNumber") %></span>
-		<html:select name="<%=formName%>" property="selectedAccession">
-			<html:option value=""></html:option>
-			<logic:iterate id="accession" name='<%=formName%>' property="accessionList" type="java.lang.String">
-				<html:option value='<%=accession%>' ></html:option>
-			</logic:iterate>
-		</html:select>
 	  </logic:equal>
 	  <logic:equal name='<%=formName%>' property="useHighAccessionDirect" value="true">
 		<span style="padding-left: 10px"><%= StringUtil.getContextualMessageForKey("report.to") %></span>
@@ -219,27 +203,11 @@ function onPrint(){
 	<div><strong><%= StringUtil.getContextualMessageForKey("report.enter.subjectNumber") %></strong></div>
   </logic:equal>
   <div>
-	  <logic:equal name='<%=formName%>' property="usePatientNumberList" value="true">
-	    <%= StringUtil.getContextualMessageForKey("report.select.subjectNumber") %>
-		<html:select name="<%=formName%>" property="selectedPatientNumber">
-			<html:option value=""></html:option>
-			<logic:iterate id="patientNo" name='<%=formName%>' property="patientNumberList" type="java.lang.String">
-				<html:option value='<%=patientNo%>' ></html:option>
-			</logic:iterate>
-		</html:select>
-	  </logic:equal>
+
 	  <logic:equal name='<%=formName%>' property="usePatientNumberDirect" value="true">
 		<div style="padding: 5px 0 0 10px"><html:text styleClass="input-medium" name='<%=formName%>' property="patientNumberDirect" /></div>
 	  </logic:equal>
-	  <logic:equal name='<%=formName%>' property="useUpperPatientNumberList" value="true">
-	    <%= StringUtil.getContextualMessageForKey("report.select.subjectNumber") %>
-		<html:select name="<%=formName%>" property="selectedUpperPatientNumber">
-			<html:option value=""></html:option>
-			<logic:iterate id="patientNo" name='<%=formName%>' property="patientNumberList" type="java.lang.String">
-				<html:option value='<%=patientNo%>' ></html:option>
-			</logic:iterate>
-		</html:select>
-	  </logic:equal>
+
 	  <logic:equal name='<%=formName%>' property="useUpperPatientNumberDirect" value="true">
 	   <span style="padding-left: 10px"><%= StringUtil.getContextualMessageForKey("report.to") %></span>
 		<html:text styleClass="input-medium" name='<%=formName%>' property="patientUpperNumberDirect" />
@@ -324,15 +292,16 @@ function onPrint(){
   			<div id="dateWarning" ></div>
 	</div>
   </logic:equal>
-  <logic:equal name='<%=formName%>' property="useSiteList" value="true">
+    <logic:notEmpty name='<%=formName%>'  property="selectList" >
    	<div>
-	   <bean:message key="report.select.site"/>
-	   	     <html:select name="<%=formName%>"  property="siteName" styleClass="text" >
-		   <app:optionsCollection  name="<%=formName%>" property="siteList" label="value" value="id" />
-		 </html:select>
+       <bean:define id="selectList" name='<%=formName %>' property="selectList" type="us.mn.state.health.lims.reports.action.implementation.ReportSpecificationList"/>
+       <span style="padding-left: 10px"><label for="selectList">
+       <%= selectList.getLabel()%></label>
+	   <html:select name="<%=formName%>"  property="selectList.selection" styleClass="text" styleId="selectList">
+		   <app:optionsCollection  name="<%=formName%>" property="selectList.list" label="value" value="id" />
+       </html:select></span>
 	</div>
-  </logic:equal>
-
+    </logic:notEmpty>
 </logic:equal>
 
 <br/>
@@ -342,17 +311,7 @@ function onPrint(){
 </logic:notEmpty>
 </div>
 <div style="margin-left: 50px">
-<%--
-	Report format:
-	<logic:iterate id="export" name='<%=formName%>' property="exportOptions" indexId="index">
-		<% //if(index == 0){ %>
-			<input type="radio" name="exportOption" value='<%=export%>' checked="checked" ><%=export%>
-		<% //}else{ %>
-			<input type="radio" name="exportOption" value='<%=export%>'  ><%=export%>
-		<% //} %>
-	</logic:iterate>
---%>
-	<input type="button" class="btn" name="printNew" onclick="onPrint();" value='<%=StringUtil.getMessageForKey("label.button.print.new.window") %>'>&nbsp;
+	<input type="button" class="btn" name="printNew" onclick="onPrint();" value="<%=StringUtil.getMessageForKey("label.button.print.new.window") %>">
 </div>
 
 </div>

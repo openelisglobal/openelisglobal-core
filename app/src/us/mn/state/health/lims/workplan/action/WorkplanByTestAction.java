@@ -240,13 +240,7 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 	}
 		
 	private String getTestName(String testId) {
-
-		Test test = new Test();
-		test.setId(testId);
-
-		test = testDAO.getTestById(test);
-
-		return test.getName();
+		return testDAO.getNameForTestId( testId );
 	}
 
 	class TestDescriptionComparator implements Comparator<Test> {

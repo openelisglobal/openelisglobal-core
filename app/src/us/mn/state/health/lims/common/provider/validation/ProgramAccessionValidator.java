@@ -309,7 +309,12 @@ public class ProgramAccessionValidator implements IAccessionNumberValidator {
 		return getMaxAccessionLength() - getInvarientLength();
 	}
 
-	private static ProjectDAO getProjectDAO() {
+    @Override
+    public String getPrefix(){
+        return null; //no single prefix
+    }
+
+    private static ProjectDAO getProjectDAO() {
 		if( projectDAO == null){
 			projectDAO = new ProjectDAOImpl();
 		}
