@@ -17,19 +17,20 @@
 */
 package us.mn.state.health.lims.workplan.reports;
 
+import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
+import us.mn.state.health.lims.test.beanItems.TestResultItem;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.test.beanItems.TestResultItem;
-
 public class TestSectionWorkplanReport implements IWorkplanReport {
-	
+    private static int PREFIX_LENGTH = AccessionNumberUtil.getAccessionNumberValidator().getInvarientLength();
 	private static final String BASE_FILE_NAME = "WorkplanByTestSection";
 	private static final String FILE_NAME_WITH_RESULTS = "WorkplanResultsByTestSection";
 	private final HashMap<String, Object> parameterMap = new HashMap<String, Object>();
@@ -61,6 +62,8 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
 		parameterMap.put("nameOfPatient", getNameOfPatient());
 		parameterMap.put("labName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
         parameterMap.put("siteLogo", getSiteLogo());
+        parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
+        parameterMap.put("prefixLength", PREFIX_LENGTH );
         parameterMap.put("SUBREPORT_DIR", reportPath);
 
 		return parameterMap;	

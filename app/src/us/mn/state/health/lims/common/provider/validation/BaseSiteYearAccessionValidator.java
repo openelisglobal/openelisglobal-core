@@ -16,20 +16,16 @@
 */
 package us.mn.state.health.lims.common.provider.validation;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
+
+import java.util.*;
 
 public abstract class BaseSiteYearAccessionValidator {
 
@@ -204,7 +200,7 @@ public abstract class BaseSiteYearAccessionValidator {
 
 	protected abstract int getMaxAccessionLength();
 
-	protected static String getPrefix() {
+	public String getPrefix() {
 		return ConfigurationProperties.getInstance().getPropertyValue(Property.ACCESSION_NUMBER_PREFIX);
 	}
 
