@@ -1113,7 +1113,46 @@
 			<column name="display_key" value="openreports.aggregate.title" />
 			<column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+            <column name="presentation_order" valueNumeric="7" />
+            <column name="element_id" value="menu_reports_activity" />
+            <column name="display_key" value="openreports.activity.title" />
+            <column name="tool_tip_key" value="openreports.activity.title" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_activity_report_test" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTest" />
+            <column name="display_key" value="banner.menu.workplan.test" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_activity_report_panel" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByPanel" />
+            <column name="display_key" value="banner.menu.workplan.panel" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_activity_report_bench" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTestSection" />
+            <column name="display_key" value="banner.menu.workplan.bench" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />

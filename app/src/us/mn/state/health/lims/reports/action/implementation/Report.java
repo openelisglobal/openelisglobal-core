@@ -31,7 +31,6 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMe
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,8 +43,6 @@ public abstract class Report implements IReportCreator {
     public static final String HAITI_ERROR_REPORT = "HaitiNoticeOfReportError";
     
 	protected static final String CSV = "csv";
-	protected static final String EXCEL = "excel";
-	protected static final String PDF = "pdf";
 
 	protected boolean initialized = false;
     protected boolean errorFound = false;
@@ -64,16 +61,7 @@ public abstract class Report implements IReportCreator {
 	public String getResponseHeaderContent(){
 		return null;
 	}
-	
-	protected Collection<String> getExportOptions() {
-		List<String> exportList = new ArrayList<String>();
 
-		exportList.add(PDF);
-		exportList.add(EXCEL);
-		exportList.add(CSV);
-
-		return exportList;
-	}
 
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#getContentType()
@@ -107,7 +95,7 @@ public abstract class Report implements IReportCreator {
         if (!initialized) {
             throw new IllegalStateException("initializeReport not called first");
         }
-        return reportParameters;
+        return reportParameters != null ? reportParameters : new HashMap<String, Object>();
     }
 
     /**
@@ -241,6 +229,14 @@ public abstract class Report implements IReportCreator {
             } catch (Exception ignored ) {
             }
             return range;
+        }
+
+        public String getLowDateStr(){
+            return lowDateStr;
+        }
+
+        public String getHighDateStr(){
+            return highDateStr;
         }
     }
     

@@ -85,4 +85,8 @@ public class SampleService {
     public boolean isConfirmationSample(){
         return !analysisDAO.getAnalysesBySampleIdAndStatusId( sample.getId(), CONFIRMATION_STATUS_SET ).isEmpty();
     }
+
+    public Sample getSample(){
+        return sample;
+    }
 }
