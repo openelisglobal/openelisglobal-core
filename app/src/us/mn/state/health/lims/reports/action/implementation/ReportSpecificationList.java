@@ -20,13 +20,16 @@ import org.apache.commons.beanutils.PropertyUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.util.IdValuePair;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
  * Represents a list for report specification
  */
-public class ReportSpecificationList{
+public class ReportSpecificationList implements Serializable{
+
+
     private final String label;
     private final List<IdValuePair> list;
     private String selection;

@@ -16,24 +16,11 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.io.ByteArrayOutputStream;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.IdValuePair;
@@ -43,6 +30,10 @@ import us.mn.state.health.lims.dataexchange.aggregatereporting.daoimpl.ReportExt
 import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.ReportExternalImport;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.TestSiteYearReport;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.TestSiteYearReport.Months;
+
+import java.io.ByteArrayOutputStream;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implements IReportCreator, IReportParameterSetter {
 	private static ReportExternalImportDAO reportDAO = new ReportExternalImportDAOImpl();
@@ -91,8 +82,7 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 	public void setRequestParameters(BaseActionForm dynaForm) {
 		try {
 			PropertyUtils.setProperty(dynaForm, "usePredefinedDateRanges", Boolean.TRUE);
-			PropertyUtils.setProperty(dynaForm, "useSiteList", Boolean.TRUE);
-			PropertyUtils.setProperty(dynaForm, "siteList", getSiteList());
+            new ReportSpecificationList( getSiteList(), StringUtil.getMessageForKey( "report.select.site" )).setRequestParameters( dynaForm );
 			PropertyUtils.setProperty(dynaForm, "instructions", StringUtil.getMessageForKey("report.instruction.inventory.test.count"));
 			PropertyUtils.setProperty(dynaForm, "monthList", MONTH_LIST);
 			PropertyUtils.setProperty(dynaForm, "yearList", getYearList());
@@ -132,9 +122,9 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 		createReportParameters();
 
 		String period = dynaForm.getString("datePeriod");
-		String site = dynaForm.getString("siteName");
+		ReportSpecificationList specificationList = (ReportSpecificationList)dynaForm.get("selectList");
 
-		createResults(site, period, dynaForm);
+		createResults(specificationList.getSelection(), period, dynaForm);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -195,9 +185,9 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 						targetMonthTestCount.put(test, 0);
 					}
 
-					int current = targetMonthTestCount.get(test).intValue();
+					int current = targetMonthTestCount.get( test );
 					int additional = Integer.parseInt(String.valueOf(databaseTestCountList.get(test)));
-					targetMonthTestCount.put(test, new Integer(current + additional));
+					targetMonthTestCount.put(test, current + additional );
 				}
 
 			} catch (ParseException pe) {
@@ -250,14 +240,7 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 		return "attachment;filename=" + getReportFileName() + ".csv";
 	}
 
-	/**
-	 * Do everything necessary for to generate a CSV text file.
-	 * 
-	 * @param reportDefinitionName
-	 *            full path to the definition for the report.
-	 * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#runReport(java.lang.String,
-	 *      Response)
-	 */
+
 	public byte[] runReport() throws Exception {
 		if (errorFound) {
 			return super.runReport();

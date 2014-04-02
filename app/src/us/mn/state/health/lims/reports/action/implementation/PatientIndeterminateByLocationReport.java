@@ -17,13 +17,8 @@
 package us.mn.state.health.lims.reports.action.implementation;
 
 
-import java.util.HashMap;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
-
 import org.apache.commons.beanutils.PropertyUtils;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.organization.util.OrganizationTypeList;
@@ -32,6 +27,9 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Indeter
 import us.mn.state.health.lims.sampleproject.dao.SampleProjectDAO;
 import us.mn.state.health.lims.sampleproject.daoimpl.SampleProjectDAOImpl;
 import us.mn.state.health.lims.sampleproject.valueholder.SampleProject;
+
+import java.util.HashMap;
+import java.util.List;
 
 
 public class PatientIndeterminateByLocationReport extends PatientIndeterminateReport implements IReportParameterSetter, IReportCreator {
@@ -56,7 +54,6 @@ public class PatientIndeterminateByLocationReport extends PatientIndeterminateRe
             PropertyUtils.setProperty(dynaForm, "useLocationCode", Boolean.TRUE);
             List<Organization> list = OrganizationTypeList.EID_ORGS_BY_NAME.getList();
             PropertyUtils.setProperty(dynaForm, "locationCodeList", list);
-            PropertyUtils.setProperty(dynaForm, "exportOptions", getExportOptions());
         } catch (Exception e) {
             e.printStackTrace();
         }

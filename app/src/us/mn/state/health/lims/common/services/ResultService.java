@@ -20,8 +20,12 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
+import us.mn.state.health.lims.result.dao.ResultDAO;
+import us.mn.state.health.lims.result.dao.ResultSignatureDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
+import us.mn.state.health.lims.result.daoimpl.ResultSignatureDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
+import us.mn.state.health.lims.result.valueholder.ResultSignature;
 import us.mn.state.health.lims.resultlimits.daoimpl.ResultLimitDAOImpl;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -30,11 +34,14 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
+import java.sql.Date;
 import java.util.List;
 
 public class ResultService {
 
     private static DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+    private static ResultDAO resultDAO = new ResultDAOImpl();
+    private static ResultSignatureDAO signatureDAO = new ResultSignatureDAOImpl();
 	private Result result;
 	private Test test;
 	private List<ResultLimit> resultLimit;
@@ -85,7 +92,11 @@ public class ResultService {
      *                  web form
      * @return A textual representation of the value
      */
-    public String getResultValue(boolean printable ) {
+    public String getResultValue(boolean printable ){
+       return getResultValue( ",", printable, false );
+    }
+
+    public String getResultValue( String separator, boolean printable, boolean includeUOM){
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 		if (GenericValidator.isBlankOrNull(result.getValue())) {
 			return "";
@@ -104,7 +115,7 @@ public class ResultService {
 					if (firstPass) {
 						firstPass = false;
 					} else {
-						buffer.append(",");
+						buffer.append(separator);
 					}
 					buffer.append(dictionaryDAO.getDataForId(multiResult.getValue()).getDictEntry());
 				}
@@ -113,7 +124,7 @@ public class ResultService {
 		} else if (ResultType.NUMERIC.matches(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
             if (significantPlaces == 0) {
-                return result.getValue().split("\\.")[0];
+                return result.getValue().split("\\.")[0] + appendUOM( includeUOM );
             }
             StringBuilder value = new StringBuilder();
             value.append(result.getValue());
@@ -128,13 +139,22 @@ public class ResultService {
             for (int i = startFill ; i < significantPlaces; i++) {
                 value.append("0");
             }
-            return value.toString();
+
+            return value.toString() + appendUOM( includeUOM );
         }else if (ResultType.ALPHA.matches(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
             return result.getValue().split("\\(")[0].trim();
         }else {
             return result.getValue();
 		}
 	}
+
+    private String appendUOM( boolean includeUOM ){
+        if( includeUOM && result.getAnalysis().getTest().getUnitOfMeasure() != null ){
+            return " " + result.getAnalysis().getTest().getUnitOfMeasure().getName();
+        }else{
+            return "";
+        }
+    }
 
     public String getMultiSelectSelectedIdValues(){
         if (GenericValidator.isBlankOrNull(result.getValue())) {
@@ -231,4 +251,20 @@ public class ResultService {
 	public String getLastUpdatedTime() {
 		return  DateUtil.convertTimestampToStringDate(result.getLastupdated());
 	}
+
+    public String getSignature(){
+        List<ResultSignature> signatures = signatureDAO.getResultSignaturesByResult( result );
+         return signatures.isEmpty() ? "" : signatures.get( 0 ).getNonUserName();
+    }
+    public static List<Result> getResultsInTimePeriodWithTest( Date startDate, Date endDate, String testId){
+        return resultDAO.getResultsForTestInDateRange( testId, startDate, endDate  );
+    }
+
+    public static List<Result> getResultsInTimePeriodInPanel( Date lowDate, Date highDate, String panelId ){
+        return resultDAO.getResultsForPanelInDateRange( panelId, lowDate, highDate );
+    }
+
+    public static List<Result> getResultsInTimePeriodInTestSection( Date lowDate, Date highDate, String testSectionId ){
+        return resultDAO.getResultsForTestSectionInDateRange( testSectionId, lowDate, highDate );
+    }
 }

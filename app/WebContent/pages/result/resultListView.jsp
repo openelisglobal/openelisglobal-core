@@ -890,6 +890,7 @@ function forceTechApproval(checkbox, index ){
 					   disabled='<%= testResult.isReadOnly() %>'
 					   indexed="true" style="margin: 1px"
 					   size="10em"
+                       maxlength="18"
 					   onchange='<%="markUpdated(" + index + ");"%>'/>
 		</td>
 		<% } %>

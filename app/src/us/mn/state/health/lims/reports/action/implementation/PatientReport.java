@@ -238,8 +238,6 @@ public abstract class PatientReport extends Report{
             PropertyUtils.setProperty( dynaForm, "useAccessionDirect", Boolean.TRUE );
             PropertyUtils.setProperty( dynaForm, "useHighAccessionDirect", Boolean.TRUE );
             PropertyUtils.setProperty( dynaForm, "usePatientNumberDirect", Boolean.TRUE );
-
-            PropertyUtils.setProperty( dynaForm, "exportOptions", getExportOptions() );
         }catch( IllegalAccessException e ){
             e.printStackTrace();
         }catch( InvocationTargetException e ){

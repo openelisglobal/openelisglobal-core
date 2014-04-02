@@ -47,7 +47,6 @@ public abstract class IndicatorReport extends Report {
 			PropertyUtils.setProperty(dynaForm, "useLowerDateRange", Boolean.TRUE);
 			PropertyUtils.setProperty(dynaForm, "useUpperDateRange", Boolean.TRUE);
 
-			PropertyUtils.setProperty(dynaForm, "exportOptions", getExportOptions());
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
