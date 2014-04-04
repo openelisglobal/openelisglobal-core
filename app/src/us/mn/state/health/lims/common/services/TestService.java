@@ -18,6 +18,8 @@ package us.mn.state.health.lims.common.services;
 
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.beanItems.TestResultItem.ResultDisplayType;
+import us.mn.state.health.lims.test.dao.TestDAO;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
@@ -33,6 +35,7 @@ public class TestService{
     public static final String HIV_TYPE = "HIV_TEST_KIT";
     public static final String SYPHILIS_TYPE = "SYPHILIS_TEST_KIT";
     private static final TestResultDAO testResultDAO = new TestResultDAOImpl();
+    private static final TestDAO testDAO = new TestDAOImpl();
     private final Test test;
 
     public TestService(Test test){
@@ -91,5 +94,9 @@ public class TestService{
         }
 
         return testResultType;
+    }
+
+    public static List<Test> getAllActiveTests(){
+        return testDAO.getAllActiveTests(false);
     }
 }
