@@ -18,6 +18,8 @@ package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
 import org.json.simple.JSONObject;
+import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
+import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -30,6 +32,7 @@ import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +41,7 @@ import java.util.List;
 /**
  */
 public class AnalysisService{
+    private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
     private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
     private static final ResultDAO resultDAO = new ResultDAOImpl();
     private final Analysis analysis;
@@ -191,5 +195,9 @@ public class AnalysisService{
 
     public Test getTest(){
         return analysis.getTest();
+    }
+
+    public static List<Analysis> getAnalysisStartedOrCompletedInDateRange(Date lowDate, Date highDate){
+        return analysisDAO.getAnalysisStartedOrCompletedInDateRange(lowDate, highDate);
     }
 }

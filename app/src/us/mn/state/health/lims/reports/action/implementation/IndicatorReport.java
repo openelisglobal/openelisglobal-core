@@ -16,7 +16,6 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
@@ -26,7 +25,6 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMessages;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
 
 public abstract class IndicatorReport extends Report {
@@ -41,19 +39,7 @@ public abstract class IndicatorReport extends Report {
 	}
 	
 	public void setRequestParameters(BaseActionForm dynaForm) {
-		try {
-			PropertyUtils.setProperty(dynaForm, "reportName", getNameForReportRequest());
-
-			PropertyUtils.setProperty(dynaForm, "useLowerDateRange", Boolean.TRUE);
-			PropertyUtils.setProperty(dynaForm, "useUpperDateRange", Boolean.TRUE);
-
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		}
+        new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE, getNameForReportRequest(), null ).setRequestParameters( dynaForm );
 	}
 
 	protected void createReportParameters(){

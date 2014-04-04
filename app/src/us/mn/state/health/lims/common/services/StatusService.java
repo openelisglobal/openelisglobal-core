@@ -16,14 +16,7 @@
  */
 package us.mn.state.health.lims.common.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -47,6 +40,12 @@ import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
 import us.mn.state.health.lims.statusofsample.dao.StatusOfSampleDAO;
 import us.mn.state.health.lims.statusofsample.daoimpl.StatusOfSampleDAOImpl;
 import us.mn.state.health.lims.statusofsample.valueholder.StatusOfSample;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class StatusService{
 	public enum OrderStatus{
@@ -121,8 +120,28 @@ public class StatusService{
 		return SingletonHolder.INSTANCE;
 	}
 
-	public String getStatusID(OrderStatus statusType){
-		insureMapsAreBuilt();
+    public boolean matches(String id, SampleStatus sampleStatus){
+        insureMapsAreBuilt();
+        return getStatusID( sampleStatus ).equals( id );
+    }
+
+    public boolean matches(String id, AnalysisStatus analysisStatus){
+        insureMapsAreBuilt();
+        return getStatusID( analysisStatus ).equals( id );
+    }
+
+    public boolean matches(String id, OrderStatus orderStatus){
+        insureMapsAreBuilt();
+        return getStatusID( orderStatus ).equals( id );
+    }
+
+    public boolean matches(String id, ExternalOrderStatus externalOrderStatus){
+        insureMapsAreBuilt();
+        return getStatusID( externalOrderStatus ).equals( id );
+    }
+
+    public String getStatusID(OrderStatus statusType){
+        insureMapsAreBuilt();
 		StatusOfSample status = orderStatusToObjectMap.get(statusType);
 		return status == null ? "-1" : status.getId();
 	}
