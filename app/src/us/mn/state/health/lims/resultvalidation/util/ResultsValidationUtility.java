@@ -25,6 +25,7 @@ import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.tools.StopWatch;
@@ -386,7 +387,9 @@ public class ResultsValidationUtility {
 		List<ResultValidationItem> testResultList = new ArrayList<ResultValidationItem>();
 
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
-        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>" );
+        NoteType[] noteTypes = { NoteType.EXTERNAL, NoteType.INTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
+        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes );
+
 		if (resultList == null) {
 			return testResultList;
 		}

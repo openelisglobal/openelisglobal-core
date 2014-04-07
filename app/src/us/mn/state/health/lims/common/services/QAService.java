@@ -16,12 +16,7 @@
  */
 package us.mn.state.health.lims.common.services;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -36,6 +31,7 @@ import us.mn.state.health.lims.qaevent.daoimpl.QaObservationDAOImpl;
 import us.mn.state.health.lims.qaevent.daoimpl.QaObservationTypeDAOImpl;
 import us.mn.state.health.lims.qaevent.valueholder.QaEvent;
 import us.mn.state.health.lims.qaevent.valueholder.QaObservation;
+import us.mn.state.health.lims.qaevent.valueholder.QaObservation.ObservedType;
 import us.mn.state.health.lims.qaevent.valueholder.QaObservationType;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
@@ -44,6 +40,11 @@ import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class QAService {
 	public static final String SAMPLE_QAEVENT_TABLE_ID;
@@ -164,7 +165,7 @@ public class QAService {
 		QaObservation observation = null;
 
 		if (sampleQaEvent.getId() != null) {
-			observation = observationDAO.getQaObservationByTypeAndObserved(observationType.getDBName(), "SAMPLE", sampleQaEvent.getId());
+			observation = observationDAO.getQaObservationByTypeAndObserved(observationType.getDBName(), ObservedType.SAMPLE.getDBName(), sampleQaEvent.getId());
 		}
 
 		if (observation == null) {
@@ -172,7 +173,7 @@ public class QAService {
 			observation.setObservationType(observationType.getType());
 			// id may be null at this point
 			observation.setObservedId(sampleQaEvent.getId()); 
-			observation.setObservedType("SAMPLE");
+			observation.setObservedType(ObservedType.SAMPLE.getDBName());
 			observation.setValueType(type.getDBSymbole());
 		}
 

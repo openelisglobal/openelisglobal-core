@@ -157,7 +157,7 @@ public abstract class PatientReport extends Report{
     protected static String LAB_SUBTYPE_OBSERVATION_ID = "0";
     protected static Long PERSON_REQUESTER_TYPE_ID;
     protected static Long ORGANIZATION_REQUESTER_TYPE_ID;
-    protected static final NoteType[] FILTER = {NoteType.EXTERNAL, NoteType.REJECTION_REASON};
+    protected static final NoteType[] FILTER = {NoteType.EXTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
     protected Map<String, Boolean> sampleCompleteMap;
 
     static{
@@ -501,7 +501,7 @@ public abstract class PatientReport extends Report{
 
 
         Test test = reportAnalysis.getTest();
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER );
+        String note = new NoteService( reportAnalysis ).getNotesAsString( true, true, "<br/>", FILTER );
         if( note != null){
             data.setNote( note );
         }

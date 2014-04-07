@@ -32,6 +32,7 @@ import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.util.*;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -409,8 +410,8 @@ public class ResultsLoadUtility {
 			}
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
-
-            String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>" );
+            NoteType[] noteTypes = { NoteType.EXTERNAL, NoteType.INTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
+            String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes );
 
 			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,
