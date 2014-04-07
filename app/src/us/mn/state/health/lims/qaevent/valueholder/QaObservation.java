@@ -24,6 +24,18 @@ public class QaObservation extends BaseObject {
 
 	private static final long serialVersionUID = 1L;
 
+    public enum ObservedType{
+        SAMPLE("SAMPLE"),
+        ANALYSIS("ANALYSIS");
+        String dbName;
+
+        private ObservedType(String type){
+            dbName = type;
+        }
+
+        public String getDBName(){return dbName;}
+    }
+
 	private String id;
 	private String observedId;
 	private String observedType;

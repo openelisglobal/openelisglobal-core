@@ -29,22 +29,28 @@ import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class NoteService{
     private static NoteDAO noteDAO = new NoteDAOImpl();
+    private static SampleQaEventDAO sampleQADAO = new SampleQaEventDAOImpl();
     private static boolean SUPPORT_INTERNAL_EXTERNAL = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION,"true");
 
     public enum NoteType{
         EXTERNAL(Note.EXTERNAL),
         INTERNAL(Note.INTERNAL),
-        REJECTION_REASON( Note.REJECT_REASON);
+        REJECTION_REASON( Note.REJECT_REASON),
+        NON_CONFORMITY(Note.NON_CONFORMITY);
 
         String DBCode;
 
@@ -64,6 +70,7 @@ public class NoteService{
     private BoundTo binding;
     private final String tableId;
     private final String objectId;
+    private final Object object;
 
     private static final String ANALYSIS_TABLE_ID;
     private static final String SAMPLE_TABLE_ID;
@@ -82,42 +89,104 @@ public class NoteService{
         tableId = ANALYSIS_TABLE_ID;
         objectId = analysis.getId();
         binding = BoundTo.ANALYSIS;
+        object = analysis;
     }
 
     public NoteService(Sample sample){
         tableId = SAMPLE_TABLE_ID;
         objectId = sample.getId();
         binding = BoundTo.SAMPLE;
+        object = sample;
     }
 
     public NoteService(SampleQaEvent sampleQaEvent){
         tableId = SAMPLE_QAEVENT_TABLE_ID;
         objectId = sampleQaEvent.getId();
         binding = BoundTo.QA_EVENT;
+        object = sampleQaEvent;
     }
 
     public NoteService( SampleItem sampleItem){
         tableId = SAMPLE_ITEM_TABLE_ID;
         objectId = sampleItem.getId();
         binding = BoundTo.SAMPLE_ITEM;
+        object = sampleItem;
     }
 
     public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, NoteType[] filter ){
+        boolean includeNoneConformity = false;
         List<String> dbFilter = new ArrayList<String>( filter.length );
         for( NoteType type : filter){
+            if( type == NoteType.NON_CONFORMITY){
+                includeNoneConformity = true;
+            }
+
             dbFilter.add( type.getDBCode() );
+
         }
 
         List<Note> noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( objectId, tableId, dbFilter );
 
+        if( includeNoneConformity){
+            List<Note> nonConformityNoteList = getNonConformityReasons();
+            if( !nonConformityNoteList.isEmpty()){
+                noteList.addAll( nonConformityNoteList );
+                Collections.sort( noteList, new Comparator<Note>(){
+                    @Override
+                    public int compare( Note o1, Note o2 ){
+                        return o1.getLastupdated().compareTo( o2.getLastupdated() );
+                    }
+                } );
+            }
+        }
+
         return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList );
+    }
+
+    private List<Note> getNonConformityReasons(){
+        ArrayList<Note> notes = new ArrayList<Note>(  );
+
+        if( binding == BoundTo.QA_EVENT){
+            return notes;
+        }
+
+        ArrayList<String> filter = new ArrayList<String>( 1 );
+        filter.add( NoteType.NON_CONFORMITY.getDBCode() );
+        Sample sample = null;
+
+        //get parent objects and the qa notes
+        if( binding == BoundTo.ANALYSIS){
+            SampleItem sampleItem = ((Analysis)object).getSampleItem();
+            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sampleItem.getId(), SAMPLE_ITEM_TABLE_ID, filter) );
+
+            sample = sampleItem.getSample();
+            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SAMPLE_TABLE_ID, filter ) );
+        }else if( binding == BoundTo.SAMPLE_ITEM ){
+            sample = ((SampleItem)object).getSample();
+            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SAMPLE_TABLE_ID, filter ) );
+        }
+
+
+        if( sample != null){
+            List<SampleQaEvent> sampleQAList = sampleQADAO.getSampleQaEventsBySample(sample);
+            for( SampleQaEvent event : sampleQAList){
+                notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( event.getId(), SAMPLE_QAEVENT_TABLE_ID, filter ) );
+                Note proxyNote = new Note();
+                proxyNote.setNoteType( Note.NON_CONFORMITY );
+                proxyNote.setText( event.getQaEvent().getLocalizedName() );
+                proxyNote.setLastupdated( event.getLastupdated() );
+                notes.add( proxyNote );
+            }
+        }
+
+        return notes;
     }
 
     public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator ){
-         List<Note> noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( objectId, tableId );
+            List<Note> noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( objectId, tableId );
 
-        return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList );
-    }
+            return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList );
+        }
 
     private String notesToString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, List<Note> noteList ){
         if(noteList.isEmpty()){
@@ -249,12 +318,14 @@ public class NoteService{
 
     private String getNotePrefix(Note note) {
         if(SUPPORT_INTERNAL_EXTERNAL){
-            if( "I".equals(note.getNoteType())){
+            if( Note.INTERNAL.equals(note.getNoteType())){
                 return StringUtil.getMessageForKey("note.type.internal");
-            }else if( "E".equals(note.getNoteType())){
+            }else if( Note.EXTERNAL.equals(note.getNoteType())){
                 return StringUtil.getMessageForKey("note.type.external");
-            }else if( "R".equals( note.getNoteType() )){
+            }else if( Note.REJECT_REASON.equals( note.getNoteType() )){
                 return StringUtil.getMessageForKey( "note.type.rejectReason" );
+            }else if(Note.NON_CONFORMITY.equals( note.getNoteType() )){
+                return StringUtil.getMessageForKey( "note.type.nonConformity" );
             }
         }
 

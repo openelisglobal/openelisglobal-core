@@ -25,6 +25,7 @@ public class Note extends BaseObject {
     public static final String EXTERNAL = "E";
     public static final String INTERNAL = "I";
     public static final String REJECT_REASON = "R";
+    public static final String NON_CONFORMITY = "N";
 
 	private String id;
 
@@ -35,10 +36,6 @@ public class Note extends BaseObject {
 	private String referenceId;
 	
 	private String referenceTableId;
-
-	//private Date timestamp = null;
-
-	//private String timestampForDisplay = null;
 
 	private String noteType;
 

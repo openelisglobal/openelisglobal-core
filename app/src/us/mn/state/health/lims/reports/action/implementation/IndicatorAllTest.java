@@ -109,19 +109,19 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 	}
 
     private void setAnalysisForDateRange(){
-        HashMap<String, ArrayList<Analysis>> sampleToPanalAnalysisMap = new HashMap<String, ArrayList<Analysis>>();
+        HashMap<String, ArrayList<Analysis>> sampleToPanelAnalysisMap = new HashMap<String, ArrayList<Analysis>>();
         List<Analysis> rawAnalysisList = AnalysisService.getAnalysisStartedOrCompletedInDateRange( lowDate, highDate );
         ArrayList<Analysis> analysisList = new ArrayList<Analysis>();
 
         //group analysis w/ panels by samples (sampleItem)
         for( Analysis analysis : rawAnalysisList ){
-            extractAnalysisInPanels( sampleToPanalAnalysisMap, analysisList, analysis );
+            extractAnalysisInPanels( sampleToPanelAnalysisMap, analysisList, analysis );
         }
 
         //for each sample we will break it down into panels with list of analysis
-        for( String sampleId : sampleToPanalAnalysisMap.keySet() ){
+        for( String sampleId : sampleToPanelAnalysisMap.keySet() ){
             HashMap<String, ArrayList<Analysis>> panelIdToAnalysisMap = new HashMap<String, ArrayList<Analysis>>();
-            for( Analysis sampleAnalysis : sampleToPanalAnalysisMap.get( sampleId ) ){
+            for( Analysis sampleAnalysis : sampleToPanelAnalysisMap.get( sampleId ) ){
                 ArrayList<Analysis> panelAnalysisList = panelIdToAnalysisMap.get( sampleAnalysis.getPanel().getId() );
                 if( panelAnalysisList == null ){
                     panelAnalysisList = new ArrayList<Analysis>();

@@ -119,7 +119,7 @@ public class NonConformityUpdateWorker {
 
 	private List<SampleQaEvent> sampleQAEventInsertList;
 	private List<SampleQaEvent> sampleQAEventDeleteList;
-	private Map<QaObservation, SampleQaEvent> qaObservationList;
+	private Map<QaObservation, SampleQaEvent> qaObservationMap;
 	private List<NoteSet> insertableNotes;
 	private List<Note> updateableNotes;
 	private List<Note> deleteableNotes;
@@ -139,8 +139,7 @@ public class NonConformityUpdateWorker {
 	private boolean updatePatient = false;
 	private boolean useFullProviderInfo;
 	private boolean updateSampleHuman;
-	
-	public static final String DEFAULT_NOTE_TYPE = Note.EXTERNAL;
+
 	public static final String NOTE_SUBJECT = "QaEvent Note";
 	private static final String REFERRING_ORG_TYPE_ID;
 	private static final String COMMUNE_ADDRESS_PART_ID;
@@ -323,9 +322,9 @@ public class NonConformityUpdateWorker {
 			noteDAO.deleteData(deleteableNotes);
 			sampleQaEventDAO.deleteData(sampleQAEventDeleteList);
 
-			for (QaObservation qa : qaObservationList.keySet()) {
+			for (QaObservation qa : qaObservationMap.keySet()) {
 				if (qa.getId() == null) {
-					qa.setObservedId(qaObservationList.get(qa).getId());
+					qa.setObservedId( qaObservationMap.get( qa ).getId() );
 					qaObservationDAO.insertData(qa);
 				} else {
 					qaObservationDAO.updateData(qa);
@@ -376,7 +375,7 @@ public class NonConformityUpdateWorker {
 		sampleItemsByType = new HashMap<String, SampleItem>();
 		sampleQAEventInsertList = new ArrayList<SampleQaEvent>();
 		sampleQAEventDeleteList = new ArrayList<SampleQaEvent>();
-		qaObservationList = new HashMap<QaObservation, SampleQaEvent>();
+		qaObservationMap = new HashMap<QaObservation, SampleQaEvent>();
 		insertableNotes = new ArrayList<NoteSet>();
 		updateableNotes = new ArrayList<Note>();
 		deleteableNotes = new ArrayList<Note>();
@@ -739,8 +738,7 @@ public class NonConformityUpdateWorker {
 			} else {
 				NoteSet noteSet = new NoteSet();
 				noteSet.referencedSample = sample;
-				noteSet.note = createNote(noteText);
-			//	noteSet.note.setReferenceTableId(NonConformityAction.SAMPLE_TABLE_ID);
+				noteSet.note = new NoteService( sample ).createSavableNote( NoteService.NoteType.NON_CONFORMITY, noteText, NOTE_SUBJECT, webData.getCurrentSysUserId() );
 				insertableNotes.add(noteSet);
 			}
 		}
@@ -761,7 +759,7 @@ public class NonConformityUpdateWorker {
 		sampleQAEventInsertList.add(qaService.getSampleQaEvent());
 
 		for (QaObservation observation : qaService.getUpdatedObservations()) {
-			qaObservationList.put(observation, qaService.getSampleQaEvent());
+			qaObservationMap.put( observation, qaService.getSampleQaEvent() );
 		}
 
 		return qaService.getSampleQaEvent();
@@ -801,7 +799,7 @@ public class NonConformityUpdateWorker {
 		// if the DB already has this sample type don't bother returning it to
 		// the caller (who will want to save it later), because this update
 		// action never updates sampleItems
-		return (sampleItemsOfType.size() > 0) ? null : sampleItem;
+		return (sampleItemsOfType != null && sampleItemsOfType.size() > 0) ? null : sampleItem;
 	}
 
 
@@ -828,22 +826,9 @@ public class NonConformityUpdateWorker {
 		if (!GenericValidator.isBlankOrNull(noteText)) {
 			NoteSet noteSet = new NoteSet();
 			noteSet.referencedEvent = event;
-			noteSet.note = createNote(noteText);
-			noteSet.note.setReferenceTableId(QAService.SAMPLE_QAEVENT_TABLE_ID);
+			noteSet.note = new NoteService( event ).createSavableNote( NoteService.NoteType.NON_CONFORMITY, noteText, NOTE_SUBJECT, webData.getCurrentSysUserId() );
 			insertableNotes.add(noteSet);
 		}
-	}
-
-	private Note createNote(String noteText) {
-		Note note = new Note();
-		note.setText(noteText);
-		note.setSysUserId(webData.getCurrentSysUserId());
-		note.setNoteType(DEFAULT_NOTE_TYPE);
-		note.setSubject(NOTE_SUBJECT);
-		note.setSystemUser(systemUser);
-		note.setSystemUserId(webData.getCurrentSysUserId());
-
-		return note;
 	}
 
 	private String getNextSampleItemSortOrder() {
