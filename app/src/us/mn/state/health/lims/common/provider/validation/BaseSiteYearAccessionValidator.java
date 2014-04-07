@@ -188,7 +188,8 @@ public abstract class BaseSiteYearAccessionValidator {
 
 		return ValidationResults.SUCCESS;
 	}
-	//protected abstract ValidationResults validFormat( String accessionNumber, boolean checkDate);
+
+    protected abstract String getPrefix();
 
 	protected abstract int getIncrementStartIndex();
 
@@ -199,9 +200,4 @@ public abstract class BaseSiteYearAccessionValidator {
 	protected abstract int getSiteEndIndex();
 
 	protected abstract int getMaxAccessionLength();
-
-	public String getPrefix() {
-		return ConfigurationProperties.getInstance().getPropertyValue(Property.ACCESSION_NUMBER_PREFIX);
-	}
-
 }
