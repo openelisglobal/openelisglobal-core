@@ -23,6 +23,7 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -33,6 +34,7 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 public class PatientHaitiClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
@@ -70,15 +72,18 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 	@Override
 	protected void createReportItems(){
-		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(reportSample.getId(), analysisStatusIds);
+		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(currentSampleService.getId(), analysisStatusIds);
 
+        Timestamp lastReportTime = new ReportTrackingService().getTimeOfLastReport( currentSampleService.getSample(), ReportTrackingService.ReportType.PATIENT );
+        if( lastReportTime == null){
+            lastReportTime = new Timestamp( Long.MAX_VALUE );
+        }
 		currentConclusion = null;
 		for(Analysis analysis : analysisList){
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
 				reportAnalysis = analysis;
-				ClinicalPatientData resultsData = reportAnalysisResults();
-				
+				ClinicalPatientData resultsData = reportAnalysisResults( lastReportTime);
 
 				if(reportAnalysis.isReferredOut()){
 					Referral referral = referralDao.getReferralByAnalysisId(reportAnalysis.getId());
@@ -115,7 +120,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 		
 		for(int i = 0; i < referralResults.size(); i++){
 			if( referralResults.get(i).getResult() == null ){
-				sampleCompleteMap.put(reportSample.getAccessionNumber(), Boolean.FALSE);
+				sampleCompleteMap.put(currentSampleService.getAccessionNumber(), Boolean.FALSE);
 			}else{
 
 				i = reportReferralResultValue(referralResults, i);
@@ -145,7 +150,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 				}
 
 				if(GenericValidator.isBlankOrNull(reportReferralResultValue)){
-					sampleCompleteMap.put(reportSample.getAccessionNumber(), Boolean.FALSE);
+					sampleCompleteMap.put(currentSampleService.getAccessionNumber(), Boolean.FALSE);
 					data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress")
 							+ (augmentResultWithFlag() ? getResultFlag(referralResult.getResult(), "A") : ""));
 				}else{
@@ -180,7 +185,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			ClinicalPatientData reportItem = reportAnalysisResults();
+			ClinicalPatientData reportItem = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ));
 			reportItem.setTestSection(StringUtil.getMessageForKey("report.no.results"));
 			clinicalReportItems.add(reportItem);
 		}else{
@@ -239,6 +244,16 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 			reportItem.setAccessionNumber(reportItem.getAccessionNumber().split("-")[0]);
 			reportItem.setCompleteFlag(StringUtil.getMessageForKey(sampleCompleteMap.get(reportItem.getAccessionNumber()) ? "report.status.complete" : "report.status.partial"));
+            if( reportItem.isCorrectedResult()){
+                //The report is French only
+                if( reportItem.getNote() != null && reportItem.getNote().length() > 0 ){
+                    reportItem.setNote( "Résultat corrigé</br>" + reportItem.getNote() );
+                }else{
+                    reportItem.setNote( "Résultat corrigé" );
+                }
+            }
+
+            reportItem.setCorrectedResult( sampleCorrectedMap.get(reportItem.getAccessionNumber().split( "_" )[0]) != null );
 		}
 	}
 

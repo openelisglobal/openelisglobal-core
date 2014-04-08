@@ -68,6 +68,7 @@ public class ClinicalPatientData{
     private String patientSiteNumber;
     private Boolean abnormalResult = Boolean.FALSE;
     private String collectionDateTime;
+    private boolean correctedResult = false;
     
     public String getReferralRefRange() {
         return referralRefRange;
@@ -452,4 +453,11 @@ public class ClinicalPatientData{
 		this.collectionDateTime = collectionDateTime;
 	}
 
+    public boolean isCorrectedResult(){
+        return correctedResult;
+    }
+
+    public void setCorrectedResult( boolean correctedResult ){
+        this.correctedResult = correctedResult;
+    }
 }

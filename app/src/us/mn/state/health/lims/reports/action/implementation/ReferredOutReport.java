@@ -35,6 +35,7 @@ import us.mn.state.health.lims.referral.valueholder.ReferralReason;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
 import us.mn.state.health.lims.result.valueholder.Result;
+import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 import java.sql.Timestamp;
@@ -150,6 +151,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
         List<Referral> referrals =  referralDao.getAllReferralsByOrganization(locationId,
         																	  dateRange.getLowDate(),
         		                                                              dateRange.getHighDateAtEndOfDay());
+
         for (Referral referral : referrals) {
         	if( !referral.isCanceled()){
         		reportReferral(referral);
@@ -164,8 +166,8 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 	 */
 	private void reportReferral(Referral referral) {
 		reportAnalysis = referral.getAnalysis();
-		reportSample = referralDao.getReferralById(referral.getId()).getAnalysis().getSampleItem().getSample();
-		currentSampleService = new SampleService(reportSample);
+		Sample sample = referralDao.getReferralById(referral.getId()).getAnalysis().getSampleItem().getSample();
+		currentSampleService = new SampleService(sample);
 		findPatientFromSample();
 
         String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>" );
@@ -173,7 +175,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 		for (int i = 0; i < referralResults.size(); i++) {
 			i = reportReferralResultValue(referralResults, i);
 			ReferralResult referralResult = referralResults.get(i);
-			ClinicalPatientData data = reportAnalysisResults();
+			ClinicalPatientData data = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ));
 			data.setReferralSentDate((referral != null && referral.getSentDate() != null) ? DateUtil.formatDateAsText(referral.getSentDate()) : "");
 			data.setReferralResult(reportReferralResultValue);
 			data.setReferralNote(note);

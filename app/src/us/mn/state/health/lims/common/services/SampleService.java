@@ -89,4 +89,8 @@ public class SampleService {
     public Sample getSample(){
         return sample;
     }
+
+    public String getId(){
+        return sample.getId();
+    }
 }
