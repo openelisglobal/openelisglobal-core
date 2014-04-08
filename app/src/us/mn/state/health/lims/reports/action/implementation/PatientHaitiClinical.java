@@ -247,7 +247,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
             if( reportItem.isCorrectedResult()){
                 //The report is French only
                 if( reportItem.getNote() != null && reportItem.getNote().length() > 0 ){
-                    reportItem.setNote( "Résultat corrigé</br>" + reportItem.getNote() );
+                    reportItem.setNote( "Résultat corrigé<br/>" + reportItem.getNote() );
                 }else{
                     reportItem.setNote( "Résultat corrigé" );
                 }
