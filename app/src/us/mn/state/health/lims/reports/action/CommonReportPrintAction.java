@@ -84,14 +84,14 @@ public class CommonReportPrintAction extends BaseAction {
 		}
 
 		if("patient".equals(request.getParameter("type"))){
-			trackReports( reportCreator, request.getParameter("report"));	
+			trackReports( reportCreator, request.getParameter("report"), ReportType.PATIENT);
 		}
 		
 		return mapping.findForward(forward);
 	}
 
-	private void trackReports(IReportCreator reportCreator, String reportName) {
-		new ReportTrackingService().addReports(reportCreator.getReportedOrders(), ReportType.PATIENT, reportName, currentUserId);
+	private void trackReports(IReportCreator reportCreator, String reportName, ReportType reportType) {
+		new ReportTrackingService().addReports(reportCreator.getReportedOrders(), reportType, reportName, currentUserId);
 	}
 
 	@Override

@@ -27,6 +27,9 @@
 	<parameter name="useSTNumber" class="java.lang.Boolean" isForPrompting="false">
 		<defaultValueExpression><![CDATA[Boolean.TRUE]]></defaultValueExpression>
 	</parameter>
+	<parameter name="correctedReport" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -56,6 +59,7 @@
 	<field name="patientName" class="java.lang.String"/>
 	<field name="abnormalResult" class="java.lang.Boolean"/>
 	<field name="collectionDateTime" class="java.lang.String"/>
+	<field name="correctedResult" class="java.lang.Boolean"/>
 	<group name="person" isStartNewPage="true" isResetPageNumber="true">
 		<groupExpression><![CDATA[$F{accessionNumber}]]></groupExpression>
 	</group>
@@ -395,7 +399,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="130" splitType="Stretch">
+		<band height="158" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
 				<subreportParameter name="SUBREPORT_DIR">
@@ -425,10 +429,19 @@
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{headerName}]]></subreportExpression>
 			</subreport>
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="134" width="552" height="22" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$F{correctedResult}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rapport corrigé]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="1" splitType="Prevent"/>
+		<band splitType="Prevent"/>
 	</columnHeader>
 	<detail>
 		<band height="52" splitType="Prevent">
