@@ -42,7 +42,7 @@ sub sendOffsite{
    		my $command = $curlExe . ' -k --user ' . $upLoadUserName . ':' . $upLoadPassword
    					. ' --url ' . $upLoadtargetURL 
    					. ' --form "dataFileName=@' . $file;
-
+        my $command = $curlExe . ' -T ' . $file . ' ' .$upLoadUserName . ':' . $upLoadPassword . ' ' . $upLoadtargetURL
   		my $retryCount = 0;
    		my $sendSuccess = 0; #false
            
