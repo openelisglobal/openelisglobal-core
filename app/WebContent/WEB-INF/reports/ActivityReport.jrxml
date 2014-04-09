@@ -197,7 +197,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[Date de]]></text>
+				<text><![CDATA[Date des]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="422" y="16" width="61" height="15"/>
