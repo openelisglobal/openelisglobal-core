@@ -35,7 +35,9 @@ public class ActivityReportByPanel extends ActivityReport implements IReportCrea
 
     @Override
     public void setRequestParameters( BaseActionForm dynaForm ){
-        super.setRequestParameters( dynaForm );
+        new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
+                StringUtil.getMessageForKey( "report.activity.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.panel" ),
+                StringUtil.getMessageForKey( "report.instruction.all.fields" ) ).setRequestParameters( dynaForm );
         new ReportSpecificationList( DisplayListService.getList( DisplayListService.ListType.PANELS ),
                                      StringUtil.getMessageForKey( "workplan.panel.types" ) ).setRequestParameters( dynaForm );
     }

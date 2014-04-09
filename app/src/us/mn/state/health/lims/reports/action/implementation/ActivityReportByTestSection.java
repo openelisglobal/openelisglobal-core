@@ -35,7 +35,9 @@ public class ActivityReportByTestSection extends ActivityReport implements IRepo
 
     @Override
     public void setRequestParameters( BaseActionForm dynaForm ){
-        super.setRequestParameters( dynaForm );
+        new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
+                StringUtil.getMessageForKey( "report.activity.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.unit" ),
+                StringUtil.getMessageForKey( "report.instruction.all.fields" ) ).setRequestParameters( dynaForm );
         new ReportSpecificationList( DisplayListService.getList( DisplayListService.ListType.TEST_SECTION ),
                                      StringUtil.getMessageForKey( "workplan.unit.types" ) ).setRequestParameters( dynaForm );
     }
