@@ -34,7 +34,9 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
 
     @Override
     public void setRequestParameters( BaseActionForm dynaForm ){
-        super.setRequestParameters( dynaForm );
+        new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
+                StringUtil.getMessageForKey( "report.activity.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.test" ),
+                StringUtil.getMessageForKey( "report.instruction.all.fields" ) ).setRequestParameters( dynaForm );
         new ReportSpecificationList( DisplayListService.getList( DisplayListService.ListType.TESTS ),
                                      StringUtil.getMessageForKey( "workplan.test.types" ) ).setRequestParameters( dynaForm );
     }

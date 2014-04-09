@@ -47,11 +47,6 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(testsResults);
     }
 
-    public void setRequestParameters( BaseActionForm dynaForm ){
-        new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
-                StringUtil.getMessageForKey( "report.activity.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.panel" ),
-                StringUtil.getMessageForKey( "report.instruction.all.fields" ) ).setRequestParameters( dynaForm );
-    }
     @Override
     protected void createReportParameters() {
         super.createReportParameters();
