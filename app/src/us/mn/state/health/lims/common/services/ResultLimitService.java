@@ -207,7 +207,7 @@ public class ResultLimitService{
 
     public static String getDisplayReferenceRange( ResultLimit resultLimit, String significantDigits, String separator){
         String range = "";
-        if( resultLimit != null){
+        if( resultLimit != null && !GenericValidator.isBlankOrNull( resultLimit.getResultTypeId() )){
             if( NUMERIC_RESULT_TYPE_ID.equals( resultLimit.getResultTypeId() ) ){
                 range = getDisplayNormalRange( resultLimit.getLowNormal(), resultLimit.getHighNormal(), significantDigits, separator );
             }else if( SELECT_LIST_RESULT_TYPE_IDS.contains( resultLimit.getResultTypeId() ) && !GenericValidator.isBlankOrNull( resultLimit.getDictionaryNormalId() ) ){
