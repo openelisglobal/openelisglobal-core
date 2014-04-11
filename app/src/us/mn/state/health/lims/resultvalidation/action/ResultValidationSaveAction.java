@@ -17,6 +17,7 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
+import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
 import org.apache.struts.action.*;
 import org.hibernate.Transaction;
@@ -36,6 +37,7 @@ import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapte
 import us.mn.state.health.lims.common.services.registration.ValidationUpdateRegister;
 import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
 import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
@@ -294,11 +296,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 					}
 				}
 
-                NoteType noteType = analysisItem.getIsAccepted() ? NoteType.EXTERNAL : NoteType.INTERNAL;
-                Note note = new NoteService( analysis ).createSavableNote( noteType, analysisItem.getNote(), RESULT_SUBJECT, currentUserId );
-                if(note != null){
-                    noteUpdateList.add( note );
-                }
+                createNeedNotes( analysisItem, analysis );
 
                 if (areResults(analysisItem)) {
                     List<Result> results = createResultFromAnalysisItem(analysisItem, analysis);
@@ -314,7 +312,22 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		}
 	}
 
-	private void addResultSets(Analysis analysis, Result result){
+    private void createNeedNotes( AnalysisItem analysisItem, Analysis analysis ){
+        NoteService noteService = new NoteService( analysis );
+
+        if( analysisItem.getIsRejected()){
+            Note note = noteService.createSavableNote( NoteType.INTERNAL, StringUtil.getMessageForKey( "validation.note.retest" ), RESULT_SUBJECT, currentUserId );
+            noteUpdateList.add( note );
+        }
+
+        if( !GenericValidator.isBlankOrNull( analysisItem.getNote() )){
+            NoteType noteType = analysisItem.getIsAccepted() ? NoteType.EXTERNAL : NoteType.INTERNAL;
+            Note note = noteService.createSavableNote( noteType, analysisItem.getNote(), RESULT_SUBJECT, currentUserId );
+            noteUpdateList.add( note );
+        }
+    }
+
+    private void addResultSets(Analysis analysis, Result result){
 		Sample sample = analysis.getSampleItem().getSample();
 		Patient patient = sampleHumanDAO.getPatientForSample(sample);
 		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
