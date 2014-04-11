@@ -28,7 +28,6 @@ import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.login.valueholder.UserSessionData;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -104,7 +103,7 @@ public class PatientSearchProvider extends BaseQueryProvider{
 				service.getFirstName(),
 				service.getLastName(),
 				service.getGender(),
-				DateUtil.convertStringDateToTruncatedTimestamp(service.getDOB()),
+				service.getDOB(),
 				service.getNationalId(),
 				patient.getExternalId(),
 				service.getSTNumber(),
