@@ -33,6 +33,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.valueholder.Note;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -462,5 +463,26 @@ public class NoteDAOImpl extends BaseDAOImpl implements NoteDAO {
         return null;
     }
 
+    @Override
+    public List<Note> getNotesInDateRangeAndType( Date lowDate, Date highDate, String noteType, String referenceTableId ) throws LIMSRuntimeException{
+        String sql = "FROM Note n where n.noteType = :type and n.referenceTableId = :referenceTableId and n.lastupdated between :lowDate and :highDate";
+
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setString( "type", noteType );
+            query.setInteger( "referenceTableId", Integer.parseInt(referenceTableId ));
+            query.setDate( "lowDate", lowDate );
+            query.setDate( "highDate", highDate );
+
+            List<Note> noteList = query.list();
+
+            closeSession();
+
+            return noteList;
+        }catch(HibernateException e){
+            handleException(e, "getNotesInDateRangeAndType");
+        }
+        return null;
+    }
 }
 

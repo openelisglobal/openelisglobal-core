@@ -92,6 +92,12 @@ public class ReportImplementationFactory{
                 return new ActivityReportByTest();
             }else if (report.equals( "activityReportByTestSection" )){
                 return new ActivityReportByTestSection();
+            }else if (report.equals( "rejectionReportByPanel" )){
+                return new RejectionReportByPanel();
+            }else if (report.equals( "rejectionReportByTest" )){
+                return new RejectionReportByTest();
+            }else if (report.equals( "rejectionReportByTestSection" )){
+                return new RejectionReportByTestSection();
             }
 		}
 
@@ -194,6 +200,12 @@ public class ReportImplementationFactory{
                 return new ActivityReportByTest();
             }else if (report.equals( "activityReportByTestSection" )){
                 return new ActivityReportByTestSection();
+            }else if (report.equals( "rejectionReportByPanel" )){
+                return new RejectionReportByPanel();
+            }else if (report.equals( "rejectionReportByTest" )){
+                return new RejectionReportByTest();
+            }else if (report.equals( "rejectionReportByTestSection" )){
+                return new RejectionReportByTestSection();
             }
 		}
 

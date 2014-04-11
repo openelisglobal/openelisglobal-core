@@ -19,6 +19,7 @@ import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.note.valueholder.Note;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -46,6 +47,6 @@ public interface NoteDAO extends BaseDAO {
 	public List<Note> getNoteByRefIAndRefTableAndSubject(String refId, String table_id, String subject) throws LIMSRuntimeException;
 	public Note getData(String noteId) throws LIMSRuntimeException;
     public List<Note> getNotesChronologicallyByRefIdAndRefTable( String refId, String table_id ) throws LIMSRuntimeException;
+    public List<Note> getNotesInDateRangeAndType( Date lowDate, Date highDate, String noteType, String referenceTableId ) throws LIMSRuntimeException;
+
 }
-
-

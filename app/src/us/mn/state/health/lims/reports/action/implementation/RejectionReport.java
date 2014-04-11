@@ -20,7 +20,9 @@ package us.mn.state.health.lims.reports.action.implementation;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.validator.GenericValidator;
+import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.services.SampleService;
@@ -29,22 +31,25 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.ActivityReportBean;
+import us.mn.state.health.lims.reports.action.implementation.reportBeans.RejectionReportBean;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public abstract class ActivityReport extends Report implements IReportCreator{
+public abstract class RejectionReport extends Report implements IReportCreator{
     private int PREFIX_LENGTH = AccessionNumberUtil.getAccessionNumberValidator().getInvarientLength();
-    protected List<ActivityReportBean> testsResults;
+    protected List<RejectionReportBean> rejections;
     protected String reportPath = "";
     protected DateRange dateRange;
 
     @Override
     public JRDataSource getReportDataSource() throws IllegalStateException{
-        return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(testsResults);
+        return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource( rejections );
     }
 
     @Override
@@ -90,7 +95,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         }
 
         buildReportContent( selection );
-        if ( testsResults.size() == 0 ) {
+        if ( rejections.size() == 0 ) {
             add1LineErrorMessage("report.error.message.noPrintableItems");
         }
     }
@@ -113,19 +118,26 @@ public abstract class ActivityReport extends Report implements IReportCreator{
     }
 
 
-    protected ActivityReportBean createActivityReportBean( Result result, boolean useTestName ){
-        ActivityReportBean item = new ActivityReportBean();
+    protected RejectionReportBean createRejectionReportBean( String noteText, Analysis analysis, boolean useTestName  ){
+        RejectionReportBean item = new RejectionReportBean();
 
-        ResultService resultService = new ResultService( result );
-        SampleService sampleService = new SampleService( result.getAnalysis().getSampleItem().getSample() );
+        AnalysisService analysisService = new AnalysisService( analysis );
+        SampleService sampleService = new SampleService(  analysisService.getAnalysis().getSampleItem().getSample() );
         PatientService patientService = new PatientService( sampleService.getSample() );
-        item.setResultValue( resultService.getResultValue( "\n", true, true ) );
-        item.setTechnician( resultService.getSignature() );
+
+        List<Result> results = analysisService.getResults();
+        for( Result result : results){
+            String signature = new ResultService( result ).getSignature();
+            if( !GenericValidator.isBlankOrNull( signature )){
+                item.setTechnician( signature);
+                break;
+            }
+        }
+
         item.setAccessionNumber( sampleService.getAccessionNumber().substring( PREFIX_LENGTH ) );
         item.setReceivedDate( sampleService.getReceivedDateForDisplay() );
-        item.setResultDate( DateUtil.convertTimestampToStringDate( result.getLastupdated() ) );
-        item.setCollectionDate( DateUtil.convertTimestampToStringDate( result.getAnalysis().getSampleItem().getCollectionDate() ) );
-
+        item.setCollectionDate( DateUtil.convertTimestampToStringDate( analysisService.getAnalysis().getSampleItem().getCollectionDate() ) );
+        item.setRejectionReason( noteText );
 
         StringBuilder nameBuilder = new StringBuilder( patientService.getLastName().toUpperCase() );
         if( !GenericValidator.isBlankOrNull( patientService.getNationalId() ) ){
@@ -137,7 +149,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
 
 
         if( useTestName ){
-            item.setPatientOrTestName( resultService.getTestName() );
+            item.setPatientOrTestName( analysisService.getTest().getLocalizedName() );
             item.setNonPrintingPatient( nameBuilder.toString() );
         }else{
             item.setPatientOrTestName( nameBuilder.toString() );
@@ -148,7 +160,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
 
     @Override
     protected String reportFileName(){
-        return  "ActivityReport";
+        return  "RejectionReport";
     }
 
     @Override
@@ -156,8 +168,8 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         return "HaitiNoticeOfReportError";
     }
 
-    protected ActivityReportBean createIdentityActivityBean( ActivityReportBean item, boolean blankCollectionDate ){
-        ActivityReportBean filler = new ActivityReportBean();
+    protected RejectionReportBean createIdentityRejectionBean( RejectionReportBean item, boolean blankCollectionDate ){
+        RejectionReportBean filler = new RejectionReportBean();
 
         filler.setAccessionNumber( item.getAccessionNumber() );
         filler.setReceivedDate( item.getReceivedDate() );
@@ -178,5 +190,25 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         }
 
         return "";
+    }
+
+    protected void injectPatientLineAndCopyToFinalList( ArrayList<RejectionReportBean> rawResults ){
+        Collections.sort( rawResults, new Comparator<RejectionReportBean>(){
+            @Override
+            public int compare( RejectionReportBean o1, RejectionReportBean o2 ){
+                int sortResult = o1.getAccessionNumber().compareTo( o2.getAccessionNumber() );
+                return sortResult == 0 ? o1.getPatientOrTestName().compareTo( o2.getPatientOrTestName() ) : sortResult;
+            }
+        } );
+
+        String currentAccessionNumber = "";
+        for( RejectionReportBean item : rawResults){
+            if( !currentAccessionNumber.equals( item.getAccessionNumber() )){
+                rejections.add( createIdentityRejectionBean( item, false ) );
+                currentAccessionNumber = item.getAccessionNumber();
+            }
+            item.setCollectionDate( null );
+            rejections.add( item );
+        }
     }
 }
