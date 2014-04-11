@@ -68,7 +68,7 @@ import java.util.*;
 public class ResultsValidationUtility {
 
 
-    private static final String REJECT_STATUS_ID = StatusService.getInstance().getStatusID( AnalysisStatus.TechnicalRejected );
+
     //	private static String VIRAL_LOAD_ID = "";
 	private static String ANALYTE_CD4_CT_GENERATED_ID;
 
@@ -352,7 +352,6 @@ public class ResultsValidationUtility {
 							dictionaryDAO.getData(dictionary);
 							resultValue = GenericValidator.isBlankOrNull(dictionary.getLocalAbbreviation()) ? dictionary.getDictEntry()
 									: dictionary.getLocalAbbreviation();
-
 						} catch (Exception e) {
                             //no-op
 						}
@@ -362,7 +361,8 @@ public class ResultsValidationUtility {
 					}
 
                     validationItem.setAnalysis( analysis );
-					validationItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
+					validationItem.setNonconforming( QAService.isAnalysisParentNonConforming( analysis ) ||
+                            StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.TechnicalRejected ) );
 					selectedTestList.add(validationItem);
 				}
 			}
@@ -371,7 +371,7 @@ public class ResultsValidationUtility {
 		return selectedTestList;
 	}
 
-	private boolean sampleReadyForValidation(Sample sample) {
+    private boolean sampleReadyForValidation(Sample sample) {
 
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
 
@@ -634,7 +634,7 @@ public class ResultsValidationUtility {
 		elisaResultItem.setNote(testResultItem.getNote());
 		elisaResultItem.setNoteId(testResultItem.getNoteId());
 		elisaResultItem.setResultId(testResultItem.getResultId());
-		elisaResultItem.setNonconforming(testResultItem.isNonconforming());
+		elisaResultItem.setNonconforming(testResultItem.isNonconforming() );
 
 		// elisaResultItem.setResult(testResultItem.getResult().getValue());
 
@@ -787,7 +787,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
 		analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
-                REJECT_STATUS_ID.equals( testResultItem.getAnalysis().getStatusId() ) );
+                StatusService.getInstance().matches( testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected ));
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
