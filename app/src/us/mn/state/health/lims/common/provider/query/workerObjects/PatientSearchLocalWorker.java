@@ -23,7 +23,6 @@ import us.mn.state.health.lims.common.provider.query.PatientSearchResults;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
@@ -100,7 +99,7 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
                 service.getFirstName(),
                 service.getLastName(),
                 service.getGender(),
-                DateUtil.convertStringDateToTruncatedTimestamp( service.getDOB() ),
+                service.getDOB(),
                 service.getNationalId(),
                 patient.getExternalId(),
                 service.getSTNumber(),

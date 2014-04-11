@@ -17,10 +17,7 @@
 */
 package us.mn.state.health.lims.common.provider.query;
 
-import us.mn.state.health.lims.common.util.DateUtil;
-
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 public class PatientSearchResults {
 
@@ -41,13 +38,13 @@ public class PatientSearchResults {
 
 	public PatientSearchResults(){}
 
-	public PatientSearchResults( BigDecimal id, String first, String last, String gender, Timestamp dob, String nationalId, String externalId, String stNumber, String subjectNumber, String guid, String referringSitePatientId)
+	public PatientSearchResults( BigDecimal id, String first, String last, String gender, String dob, String nationalId, String externalId, String stNumber, String subjectNumber, String guid, String referringSitePatientId)
 	{
 		this.id = id.toPlainString();
 		firstName = first;
 		lastName = last;
 		this.gender = gender;
-		birthdate = dob == null ? null : DateUtil.convertTimestampToStringDate(dob);
+		birthdate = dob;
 		this.nationalId = nationalId;
 		this.stNumber = stNumber;
 		this.subjectNumber = subjectNumber;

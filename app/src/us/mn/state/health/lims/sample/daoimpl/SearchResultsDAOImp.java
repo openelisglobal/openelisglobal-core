@@ -25,7 +25,6 @@ import us.mn.state.health.lims.patientidentitytype.util.PatientIdentityTypeMap;
 import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +102,7 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 			Object[] line = (Object[]) resultLine;
 
 			results.add(new PatientSearchResults((BigDecimal) line[0], (String) line[1], (String) line[2], (String) line[3],
-					(Timestamp) line[4], (String) line[5], (String) line[6], (String) line[7], (String) line[8], (String) line[9], null));
+                    (String)line[4], (String) line[5], (String) line[6], (String) line[7], (String) line[8], (String) line[9], null));
 		}
 
 		return results;
@@ -122,7 +121,7 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 			boolean externalID, boolean anyID, boolean patientID, boolean guid) {
 
 		StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("select p.id, pr.first_name, pr.last_name, p.gender, p.birth_date, p.national_id, p.external_id, pi.identity_data as st, piSN.identity_data as subject, piGUID.identity_data as guid from patient p join person pr on p.person_id = pr.id ");
+		queryBuilder.append("select p.id, pr.first_name, pr.last_name, p.gender, p.entered_birth_date, p.national_id, p.external_id, pi.identity_data as st, piSN.identity_data as subject, piGUID.identity_data as guid from patient p join person pr on p.person_id = pr.id ");
 		queryBuilder.append("left join patient_identity  pi on pi.patient_id = p.id and pi.identity_type_id = '");
 		queryBuilder.append(PatientIdentityTypeMap.getInstance().getIDForType("ST"));
 		queryBuilder.append("' ");
