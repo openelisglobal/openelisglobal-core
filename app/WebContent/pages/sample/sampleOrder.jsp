@@ -121,9 +121,8 @@
             $("labNo").value = "";
         }
 
-        var targetName = $("labNo").name;
-        selectFieldErrorDisplay(success, $(targetName));
-        setValidIndicaterOnField(success, targetName);
+        selectFieldErrorDisplay(success, $("labNo"));
+        setValidIndicaterOnField(success, "labNo");
 
         if( window.setSave()){setSave();}
     }
