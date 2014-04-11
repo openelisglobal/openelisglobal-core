@@ -52,15 +52,8 @@ public class PatientSearchProvider extends BaseQueryProvider{
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
 		String STNumber = request.getParameter("STNumber");
-		String subjectNumber = request.getParameter("subjectNumber"); // N.B.
-																		// This
-																		// is a
-																		// bad
-																		// name,
-																		// it is
-																		// other
-																		// than
-																		// STnumber
+        // N.B. This is a bad name, it is other than STnumber
+		String subjectNumber = request.getParameter("subjectNumber");
 		String nationalID = request.getParameter("nationalID");
 		String labNumber = request.getParameter("labNumber");
 		String guid = request.getParameter("guid");
@@ -123,18 +116,6 @@ public class PatientSearchProvider extends BaseQueryProvider{
 		}
 
 		return new Patient();
-	}
-
-	private String getSubjectNumber(Patient patient){
-		if(patient == null){
-			return null;
-		}
-
-		if(GenericValidator.isBlankOrNull(patient.getNationalId())){
-			return patient.getExternalId();
-		}else{
-			return patient.getNationalId();
-		}
 	}
 
 	private PatientSearchWorker getAppropriateWorker(HttpServletRequest request, boolean suppressExternalSearch){
