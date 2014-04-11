@@ -50,11 +50,16 @@ public class AnalysisService{
         this.analysis = analysis;
     }
 
+    public AnalysisService(String analysisId){
+        analysis = analysisDAO.getAnalysisById( analysisId );
+    }
+
     public Analysis getAnalysis(){
         return analysis;
     }
 
     public String getTestDisplayName( ){
+        if( analysis == null){return ""; }
         Test test = getTest();
         String name = test.getDescription();
 
@@ -80,6 +85,7 @@ public class AnalysisService{
     }
 
     public String getCSVMultiselectResults(){
+        if( analysis == null){return ""; }
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         StringBuilder multiSelectBuffer = new StringBuilder();
         for( Result existingResult : existingResults ){
@@ -96,6 +102,7 @@ public class AnalysisService{
     }
 
     public String getJSONMultiSelectResults(){
+        if( analysis == null){return ""; }
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
 
         Collections.sort( existingResults, new Comparator<Result>(){
@@ -135,6 +142,7 @@ public class AnalysisService{
         return jsonRep.toJSONString();
     }
     public Result getQuantifiedResult(){
+        if( analysis == null){return null; }
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         List<String> quantifiableResultsIds = new ArrayList<String>(  );
         for( Result existingResult : existingResults ){
@@ -155,22 +163,23 @@ public class AnalysisService{
         return null;
     }
     public String getCompletedDateForDisplay(){
-        return analysis.getCompletedDateForDisplay();
+        return analysis == null ? "" : analysis.getCompletedDateForDisplay();
     }
 
     public String getAnalysisType(){
-        return analysis.getAnalysisType();
+        return analysis == null ? "" :analysis.getAnalysisType();
     }
 
     public String getStatusId(){
-        return analysis.getStatusId();
+        return analysis == null ? "" :analysis.getStatusId();
     }
 
     public Boolean getTriggeredReflex(){
-        return analysis.getTriggeredReflex();
+        return analysis == null ? false :analysis.getTriggeredReflex();
     }
 
     public boolean resultIsConclusion(Result currentResult){
+        if( analysis == null){return false; }
         List<Result> results = resultDAO.getResultsByAnalysis(analysis);
         if (results.size() == 1) {
             return false;
@@ -190,14 +199,19 @@ public class AnalysisService{
     }
 
     public boolean isParentNonConforming(){
-        return QAService.isAnalysisParentNonConforming(analysis);
+        return analysis == null ? false :QAService.isAnalysisParentNonConforming(analysis);
     }
 
     public Test getTest(){
-        return analysis.getTest();
+        return analysis == null ? null :analysis.getTest();
     }
 
     public static List<Analysis> getAnalysisStartedOrCompletedInDateRange(Date lowDate, Date highDate){
         return analysisDAO.getAnalysisStartedOrCompletedInDateRange(lowDate, highDate);
     }
+
+    public List<Result> getResults(){
+        return analysis == null ? new ArrayList<Result>(  ) : resultDAO.getResultsByAnalysis( analysis );
+    }
+
 }

@@ -36,6 +36,7 @@ import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -316,6 +317,9 @@ public class NoteService{
         }
     }
 
+    public static List<Note> getTestNotesInDateRangeByType( Date lowDate, Date highDate, NoteType noteType ){
+        return noteDAO.getNotesInDateRangeAndType( lowDate, highDate, noteType.DBCode, ANALYSIS_TABLE_ID);
+    }
     private String getNotePrefix(Note note) {
         if(SUPPORT_INTERNAL_EXTERNAL){
             if( Note.INTERNAL.equals(note.getNoteType())){
