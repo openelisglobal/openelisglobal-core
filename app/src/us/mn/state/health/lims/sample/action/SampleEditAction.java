@@ -34,6 +34,8 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
@@ -53,6 +55,7 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
+import us.mn.state.health.lims.userrole.daoimpl.UserRoleDAOImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,15 +64,14 @@ import java.util.*;
 
 public class SampleEditAction extends BaseAction {
 
-	private String accessionNumber;
-	private Sample sample;
-	private List<SampleItem> sampleItemList;
-	private static final TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
-	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-	private static final SampleEditItemComparator testComparator = new SampleEditItemComparator();
+    private static final TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
+    private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+    private static final UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+    private static final SampleEditItemComparator testComparator = new SampleEditItemComparator();
+    private static final Set<Integer> excludedAnalysisStatusList;
+    private static final Set<Integer> ENTERED_STATUS_SAMPLE_LIST = new HashSet<Integer>();
+
 	private boolean isEditable = false;
-	private static Set<Integer> excludedAnalysisStatusList;
-	private static final Set<Integer> ENTERED_STATUS_SAMPLE_LIST = new HashSet<Integer>();
 	private String maxAccessionNumber;
 
 	static {
@@ -89,8 +91,10 @@ public class SampleEditAction extends BaseAction {
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 
-		accessionNumber = request.getParameter("accessionNumber");
-		
+		String accessionNumber = request.getParameter("accessionNumber");
+        boolean allowedToCancelResults = userModuleDAO.isUserAdmin(request) ||
+                new UserRoleDAOImpl().userInRole( currentUserId, "Validation" );
+
 		if( GenericValidator.isBlankOrNull(accessionNumber)){
 			accessionNumber = getMostRecentAccessionNumberForPaitient( request.getParameter("patientID"));
 		}
@@ -105,16 +109,18 @@ public class SampleEditAction extends BaseAction {
 			PropertyUtils.setProperty(dynaForm, "accessionNumber", accessionNumber);
 			PropertyUtils.setProperty(dynaForm, "searchFinished", Boolean.TRUE);
 
-			getSample();
+			Sample sample = getSample(accessionNumber);
 
 			if (sample != null && !GenericValidator.isBlankOrNull(sample.getId())) {
 
-				getSampleItems();
-				setPatientInfo(dynaForm);
-				setCurrentTestInfo(dynaForm);
-				setAddableTestInfo(dynaForm);
+				List<SampleItem> sampleItemList = getSampleItems(sample);
+				setPatientInfo(dynaForm, sample);
+                List<SampleEditItem> currentTestList = getCurrentTestInfo( dynaForm, sampleItemList, accessionNumber, allowedToCancelResults );
+                PropertyUtils.setProperty(dynaForm, "existingTests", currentTestList);
+				setAddableTestInfo(dynaForm, sampleItemList, accessionNumber);
 				setAddableSampleTypes(dynaForm);
-                setSampleOrderInfo(dynaForm);
+                setSampleOrderInfo(dynaForm, sample);
+                PropertyUtils.setProperty( dynaForm, "ableToCancelResults", hasResults(currentTestList, allowedToCancelResults) );
 				PropertyUtils.setProperty(dynaForm, "maxAccessionNumber", maxAccessionNumber);
                 PropertyUtils.setProperty( dynaForm, "isConfirmationSample", new SampleService( sample ).isConfirmationSample() );
 			} else {
@@ -138,7 +144,21 @@ public class SampleEditAction extends BaseAction {
 		return mapping.findForward(forward);
 	}
 
-    private void setSampleOrderInfo( DynaActionForm dynaForm ) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    private Boolean hasResults( List<SampleEditItem> currentTestList, boolean allowedToCancelResults ){
+        if( !allowedToCancelResults){
+            return false;
+        }
+
+        for( SampleEditItem editItem : currentTestList){
+            if( editItem.isHasResults()){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void setSampleOrderInfo( DynaActionForm dynaForm, Sample sample ) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         SampleOrderService sampleOrderService = new SampleOrderService( sample );
         PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
     }
@@ -160,18 +180,18 @@ public class SampleEditAction extends BaseAction {
 		return accessionNumber;
 	}
 
-	private void getSample() {
+	private Sample getSample(String accessionNumber) {
 		SampleDAO sampleDAO = new SampleDAOImpl();
-		sample = sampleDAO.getSampleByAccessionNumber(accessionNumber);
+		return sampleDAO.getSampleByAccessionNumber(accessionNumber);
 	}
 
-	private void getSampleItems() {
+	private List<SampleItem> getSampleItems(Sample sample) {
 		SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 
-		sampleItemList = sampleItemDAO.getSampleItemsBySampleIdAndStatus(sample.getId(), ENTERED_STATUS_SAMPLE_LIST );
+		return sampleItemDAO.getSampleItemsBySampleIdAndStatus(sample.getId(), ENTERED_STATUS_SAMPLE_LIST );
 	}
 
-	private void setPatientInfo(DynaActionForm dynaForm) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+	private void setPatientInfo(DynaActionForm dynaForm, Sample sample) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
 
 		Patient patient = new SampleHumanDAOImpl().getPatientForSample(sample);
 		IPatientService patientService = new PatientService(patient);
@@ -182,18 +202,18 @@ public class SampleEditAction extends BaseAction {
 		PropertyUtils.setProperty(dynaForm, "nationalId", patientService.getNationalId());
 	}
 
-	private void setCurrentTestInfo(DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException,
+	private List<SampleEditItem> getCurrentTestInfo( DynaActionForm dynaForm, List<SampleItem> sampleItemList, String accessionNumber, boolean allowedToCancelAll ) throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
 		List<SampleEditItem> currentTestList = new ArrayList<SampleEditItem>();
 
 		for (SampleItem sampleItem : sampleItemList) {
-			addCurrentTestsToList(sampleItem, currentTestList);
+			addCurrentTestsToList(sampleItem, currentTestList, accessionNumber, allowedToCancelAll);
 		}
 
-		PropertyUtils.setProperty(dynaForm, "existingTests", currentTestList);
+        return currentTestList;
 	}
 
-	private void addCurrentTestsToList(SampleItem sampleItem, List<SampleEditItem> currentTestList) {
+	private void addCurrentTestsToList(SampleItem sampleItem, List<SampleEditItem> currentTestList, String accessionNumber, boolean allowedToCancelAll) {
 
 		TypeOfSample typeOfSample = new TypeOfSample();
 		typeOfSample.setId(sampleItem.getTypeOfSampleId());
@@ -213,8 +233,9 @@ public class SampleEditAction extends BaseAction {
 			sampleEditItem.setTestName(analysis.getTest().getTestName());
 			sampleEditItem.setSampleItemId(sampleItem.getId());
 
-			boolean canCancel = !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled))
-					&& analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted));
+			boolean canCancel = allowedToCancelAll ||
+                    (!StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.Canceled ) &&
+					StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.NotStarted ));
 
 			if( !canCancel){
 				canRemove = false;
@@ -223,6 +244,7 @@ public class SampleEditAction extends BaseAction {
 			sampleEditItem.setAnalysisId(analysis.getId());
 			sampleEditItem.setStatus(StatusService.getInstance().getStatusNameFromId(analysis.getStatusId()));
 			sampleEditItem.setSortOrder(analysis.getTest().getSortOrder());
+            sampleEditItem.setHasResults( !StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.NotStarted ) );
 
 			analysisSampleItemList.add(sampleEditItem);
 		}
@@ -241,12 +263,12 @@ public class SampleEditAction extends BaseAction {
 		}
 	}
 
-	private void setAddableTestInfo(DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException,
+	private void setAddableTestInfo(DynaActionForm dynaForm, List<SampleItem> sampleItemList, String accessionNumber) throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
 		List<SampleEditItem> possibleTestList = new ArrayList<SampleEditItem>();
 
 		for (SampleItem sampleItem : sampleItemList) {
-			addPossibleTestsToList(sampleItem, possibleTestList);
+			addPossibleTestsToList(sampleItem, possibleTestList, accessionNumber);
 		}
 
 		PropertyUtils.setProperty(dynaForm, "possibleTests", possibleTestList);
@@ -257,11 +279,11 @@ public class SampleEditAction extends BaseAction {
 		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE));
 	}
 	
-	private void addPossibleTestsToList(SampleItem sampleItem, List<SampleEditItem> possibleTestList) {
+	private void addPossibleTestsToList(SampleItem sampleItem, List<SampleEditItem> possibleTestList, String accessionNumber) {
 
 		TypeOfSample typeOfSample = new TypeOfSample();
 		typeOfSample.setId(sampleItem.getTypeOfSampleId());
-		typeOfSampleDAO.getData(typeOfSample);
+		typeOfSampleDAO.getData( typeOfSample );
 
 		TestDAO testDAO = new TestDAOImpl();
 		Test test = new Test();

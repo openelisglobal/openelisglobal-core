@@ -63,6 +63,7 @@
 			<form-property name="testSectionList" type="java.util.Collection" />
             <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+            <form-property name="ableToCancelResults" type="java.lang.Boolean" initial="false" />
 		</form-bean>
 
 
