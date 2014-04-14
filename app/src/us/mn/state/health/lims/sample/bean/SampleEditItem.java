@@ -17,6 +17,7 @@ public class SampleEditItem {
     private String collectionDate;
     private String collectionTime;
     private boolean sampleItemChanged = false;
+    private boolean hasResults = false;
 
 	public String getAccessionNumber() {
 		return accessionNumber;
@@ -120,5 +121,13 @@ public class SampleEditItem {
 
     public void setSampleItemChanged( boolean sampleItemChanged ){
         this.sampleItemChanged = sampleItemChanged;
+    }
+
+    public boolean isHasResults(){
+        return hasResults;
+    }
+
+    public void setHasResults( boolean hasResults ){
+        this.hasResults = hasResults;
     }
 }

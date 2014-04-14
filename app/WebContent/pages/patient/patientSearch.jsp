@@ -269,13 +269,18 @@ function /*void*/ dirtySearchInfo(e){
 	}
 }
 
-function enableSearchButton(){
+function enableSearchButton(e){
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
+    var searchButton = $jq("#searchButton");
     if( valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '<%=StringUtil.getMessageForKey("label.select.search.here")%>'){
-        $jq("#searchButton").removeAttr("disabled");
+        searchButton.removeAttr("disabled");
+        var code = e ? e.which : window.event.keyCode;
+        if( code == 13 ){
+            searchButton.click();
+        }
     }else{
-        $jq("#searchButton").attr("disabled", "disabled");
+        searchButton.attr("disabled", "disabled");
     }
 
     if(criteriaElem.val() == "5" ){
@@ -336,7 +341,7 @@ function setCaretPosition(ctrl, pos){
 <div id="PatientPage" class="colorFill patientSearch" style="display:inline;" >
 	
 	<h2><bean:message key="sample.entry.search"/></h2>
-    <select id="searchCriteria"  style="float:left" onchange="enableSearchButton()">
+    <select id="searchCriteria"  style="float:left" onchange="enableSearchButton()" tabindex="1">
         <%
             for(IdValuePair pair : patientSearch.getSearchCriteria()){
                 out.print("<option value=\"" + pair.getId() +"\">" + pair.getValue() + "</option>");
@@ -352,14 +357,15 @@ function setCaretPosition(ctrl, pos){
            type="text"
            onclick="cursorAtFront(this)"
            onkeydown='firstClick();'
-           onkeyup="messageRestore(this);enableSearchButton();"/>
+           onkeyup="messageRestore(this);enableSearchButton();"
+            tabindex="2"/>
 
     <input type="button"
            name="searchButton"
            value="<%= StringUtil.getMessageForKey("label.patient.search")%>"
            id="searchButton"
            onclick="searchPatients()"
-           disabled="true">
+           disabled="true" >
 
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>
