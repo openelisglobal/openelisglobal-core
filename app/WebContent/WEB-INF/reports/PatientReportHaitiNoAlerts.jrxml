@@ -116,7 +116,7 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA["Date demande: " + $F{orderDate}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA["Date demandé: " + $F{orderDate}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="404" y="0" width="50" height="14" backcolor="#CCCCCC"/>
@@ -402,20 +402,20 @@
 		<band height="158" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
-				<subreportParameter name="labName2">
-					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName2">
+					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="siteLogo">
-					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName1">
 					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="siteLogo">
+					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA["Résultats d'Analyses"]]></subreportParameterExpression>
