@@ -26,11 +26,8 @@ import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.IResultSaveService;
-import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
-import us.mn.state.health.lims.common.services.ResultSaveService;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapter;
@@ -273,25 +270,24 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 		for(AnalysisItem analysisItem : analysisItems){
 			if(!analysisItem.isReadOnly() && analysisItemWillBeUpdated(analysisItem)){
-				String analysisId = analysisItem.getAnalysisId();
 
-				Analysis analysis = new Analysis();
-				analysis.setId(analysisId);
-				analysisDAO.getData(analysis);
+                AnalysisService analysisService = new AnalysisService( analysisItem.getAnalysisId() );
+                Analysis analysis = analysisService.getAnalysis();
+
 				analysis.setSysUserId(currentUserId);
 
-				if(!analysisIdList.contains(analysisId)){
+				if(!analysisIdList.contains(analysis.getId())){
 
 					if(analysisItem.getIsAccepted()){
 						analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized));
 						analysis.setReleasedDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-						analysisIdList.add(analysisId);
+						analysisIdList.add(analysis.getId());
 						analysisUpdateList.add(analysis);
 					}
 
 					if(analysisItem.getIsRejected()){
 						analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.BiologistRejected));
-						analysisIdList.add(analysisId);
+						analysisIdList.add(analysis.getId());
 						analysisUpdateList.add(analysis);
 					}
 				}
@@ -299,7 +295,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
                 createNeedNotes( analysisItem, analysis );
 
                 if (areResults(analysisItem)) {
-                    List<Result> results = createResultFromAnalysisItem(analysisItem, analysis);
+                    List<Result> results = createResultFromAnalysisItem(analysisItem, analysisService);
                     for (Result result : results) {
                         resultUpdateList.add(result);
 
@@ -470,10 +466,15 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		return analysis;
 	}
 
-	private List<Result> createResultFromAnalysisItem(AnalysisItem analysisItem, Analysis analysis){
+	private List<Result> createResultFromAnalysisItem(AnalysisItem analysisItem, AnalysisService analysisService){
 
         ResultSaveBean bean =  ResultSaveBeanAdapter.fromAnalysisItem(analysisItem);
-        return new ResultSaveService(analysis, currentUserId ).createResultsFromTestResultItem(bean,deletableList);
+        ResultSaveService resultSaveService = new ResultSaveService(analysisService.getAnalysis(), currentUserId );
+        List<Result> results = resultSaveService.createResultsFromTestResultItem(bean,deletableList);
+        if( analysisService.patientReportHasBeenDone() && resultSaveService.isUpdatedResult()){
+            analysisService.getAnalysis().setCorrectedSincePatientReport( true );
+        }
+        return results;
 	}
 
 

@@ -214,4 +214,11 @@ public class AnalysisService{
         return analysis == null ? new ArrayList<Result>(  ) : resultDAO.getResultsByAnalysis( analysis );
     }
 
+    public boolean hasBeenCorrectedSinceLastPatientReport(){
+        return analysis == null ? false : analysis.isCorrectedSincePatientReport();
+    }
+
+    public boolean patientReportHasBeenDone(){
+        return analysis == null ? false : new ReportTrackingService().getLastReportForSample( analysis.getSampleItem().getSample(), ReportTrackingService.ReportType.PATIENT ) != null;
+    }
 }

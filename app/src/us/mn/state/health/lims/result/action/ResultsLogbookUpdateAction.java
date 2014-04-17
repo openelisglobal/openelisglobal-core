@@ -34,11 +34,8 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
-import us.mn.state.health.lims.common.services.IResultSaveService;
-import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
-import us.mn.state.health.lims.common.services.ResultSaveService;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapter;
@@ -343,22 +340,26 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 		for(TestResultItem testResultItem : modifiedItems){
 
-			Analysis analysis = analysisDAO.getAnalysisById(testResultItem.getAnalysisId());
+			AnalysisService analysisService = new AnalysisService( testResultItem.getAnalysisId() );
 
-            NoteService noteService = new NoteService( analysis );
+            NoteService noteService = new NoteService( analysisService.getAnalysis() );
             Note note = noteService.createSavableNote( NoteType.INTERNAL, testResultItem.getNote(), RESULT_SUBJECT, currentUserId);
             if( note != null){
                 noteList.add( note );
             }
 
             ResultSaveBean bean = ResultSaveBeanAdapter.fromTestResultItem(testResultItem);
-			List<Result> results = new ResultSaveService(analysis,currentUserId).createResultsFromTestResultItem( bean, deletableResults );
+            ResultSaveService resultSaveService = new ResultSaveService(analysisService.getAnalysis(),currentUserId);
+			List<Result> results = resultSaveService.createResultsFromTestResultItem( bean, deletableResults );
+
+            analysisService.getAnalysis().setCorrectedSincePatientReport( resultSaveService.isUpdatedResult() && analysisService.patientReportHasBeenDone() );
+
 
 			for(Result result : results){
-				addResult(result, testResultItem, analysis);
+				addResult(result, testResultItem, analysisService.getAnalysis());
 
 				if(analysisShouldBeUpdated(testResultItem, result)){
-					updateAndAddAnalysisToModifiedList(testResultItem, testResultItem.getTestDate(), analysis);
+					updateAndAddAnalysisToModifiedList(testResultItem, testResultItem.getTestDate(), analysisService.getAnalysis());
 				}
 			}
 		}
