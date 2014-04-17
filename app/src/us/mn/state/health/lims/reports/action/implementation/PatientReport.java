@@ -18,13 +18,17 @@ package us.mn.state.health.lims.reports.action.implementation;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
+import org.hibernate.Transaction;
 import us.mn.state.health.lims.address.dao.PersonAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
 import us.mn.state.health.lims.address.daoimpl.PersonAddressDAOImpl;
 import us.mn.state.health.lims.address.valueholder.AddressPart;
 import us.mn.state.health.lims.address.valueholder.PersonAddress;
+import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
+import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
@@ -39,6 +43,7 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.laborder.dao.LabOrderTypeDAO;
 import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
 import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
@@ -123,10 +128,12 @@ public abstract class PatientReport extends Report{
     protected ReferralDAO referralDao = new ReferralDAOImpl();
     protected ReferralResultDAO referralResultDAO = new ReferralResultDAOImpl();
     protected ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
+    protected AnalysisDAO analysisDAO = new AnalysisDAOImpl();
     protected NoteDAO noteDAO = new NoteDAOImpl();
     protected PersonAddressDAO addressDAO = new PersonAddressDAOImpl();
     private LabOrderTypeDAO labOrderTypeDAO = new LabOrderTypeDAOImpl();
     private List<String> handledOrders;
+    private List<Analysis> updatedAnalysis = new ArrayList<Analysis>(  );
 
     private String lowerNumber;
     private String upperNumber;
@@ -297,6 +304,21 @@ public abstract class PatientReport extends Report{
             }
 
             postSampleBuild();
+        }
+
+        if( !updatedAnalysis.isEmpty()){
+            Transaction tx = HibernateUtil.getSession().beginTransaction();
+
+            try{
+                for( Analysis analysis : updatedAnalysis ){
+                    analysisDAO.updateData( analysis, true );
+                }
+                tx.commit();
+
+            }catch( LIMSRuntimeException lre ){
+                tx.rollback();
+
+            }
         }
     }
 
@@ -530,8 +552,8 @@ public abstract class PatientReport extends Report{
             data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
         }else{
             setAppropriateResults( resultList, data );
-            setCorrectedStatus( resultList, lastReportTime, data);
             Result result = resultList.get( 0 );
+            setCorrectedStatus( result, data);
             setNormalRange( data, test, result );
             data.setResult( getAugmentedResult( data, result ) );
             data.setFinishDate( reportAnalysis.getCompletedDateForDisplay() );
@@ -541,14 +563,13 @@ public abstract class PatientReport extends Report{
         data.setConclusion( currentConclusion );
     }
 
-    private void setCorrectedStatus( List<Result> resultList, Timestamp lastReportTime, ClinicalPatientData data ){
-        for( Result result : resultList){
-            if( result.getLastupdated().compareTo( lastReportTime ) > 0){
+    private void setCorrectedStatus( Result result, ClinicalPatientData data ){
+            if( reportAnalysis.isCorrectedSincePatientReport() && !GenericValidator.isBlankOrNull( result.getValue() )){
                 data.setCorrectedResult( true );
                 sampleCorrectedMap.put( currentSampleService.getAccessionNumber(), true);
-                break;
+                reportAnalysis.setCorrectedSincePatientReport( false );
+                updatedAnalysis.add( reportAnalysis );
             }
-        }
     }
 
     private boolean noResults( List<Result> resultList ){

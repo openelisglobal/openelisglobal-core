@@ -144,4 +144,13 @@
         COMMENT on COLUMN clinlims.result.grouping is 'When an analysis has more then one set of results this groups them';
     </sql>
 </changeSet>
+<changeSet id="13" author="paulsc">
+    <comment>Adds a new column to analysis table to track updates</comment>
+    <addColumn tableName="analysis">
+        <column name="corrected" type="boolean" defaultValueBoolean="false" />
+    </addColumn>
+    <sql>
+        COMMENT ON COLUMN clinlims.analysis.corrected IS 'Signifies that the result has been updated since the last patient report was generated'
+    </sql>
+</changeSet>
 </databaseChangeLog>
