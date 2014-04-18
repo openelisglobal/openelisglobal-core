@@ -28,6 +28,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class SearchResultsDAOImp implements SearchResultsDAO {
 
 	private static final String FIRST_NAME_PARAM = "firstName";
@@ -62,17 +64,20 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 
 			org.hibernate.Query query = HibernateUtil.getSession().createSQLQuery(sql);
 
+            //The pText stuff is to handle accents in names
 			if (queryFirstName) {
-				query.setString(FIRST_NAME_PARAM, firstName.toLowerCase());
+                byte ptext[] = firstName.getBytes();
+				query.setString(FIRST_NAME_PARAM, new String(ptext, UTF_8));
 			}
 			if (queryLastName) {
-				query.setString(LAST_NAME_PARAM, lastName.toLowerCase());
+                byte ptext[] = lastName.getBytes();
+				query.setText(LAST_NAME_PARAM, new String(ptext, UTF_8));
 			}
 			if (queryNationalId) {
-				query.setString(NATIONAL_ID_PARAM, nationalID.toLowerCase());
+				query.setString(NATIONAL_ID_PARAM, nationalID);
 			}
 			if (queryExternalId) {
-				query.setString(EXTERNAL_ID_PARAM, nationalID.toLowerCase());
+				query.setString(EXTERNAL_ID_PARAM, nationalID);
 			}
 			if (querySTNumber) {
 				query.setString(ST_NUMBER_PARAM, STNumber);
@@ -120,7 +125,7 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 	private String buildQueryString(boolean lastName, boolean firstName, boolean STNumber, boolean subjectNumber, boolean nationalID,
 			boolean externalID, boolean anyID, boolean patientID, boolean guid) {
 
-		StringBuilder queryBuilder = new StringBuilder();
+        StringBuilder queryBuilder = new StringBuilder();
 		queryBuilder.append("select p.id, pr.first_name, pr.last_name, p.gender, p.entered_birth_date, p.national_id, p.external_id, pi.identity_data as st, piSN.identity_data as subject, piGUID.identity_data as guid from patient p join person pr on p.person_id = pr.id ");
 		queryBuilder.append("left join patient_identity  pi on pi.patient_id = p.id and pi.identity_type_id = '");
 		queryBuilder.append(PatientIdentityTypeMap.getInstance().getIDForType("ST"));
@@ -135,39 +140,39 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 		queryBuilder.append("' where ");
 
 		if (lastName) {
-			queryBuilder.append(" lower(pr.last_name) like :");
-			queryBuilder.append(LAST_NAME_PARAM);
+			queryBuilder.append(" pr.last_name ilike :");
+			queryBuilder.append( LAST_NAME_PARAM );
 			queryBuilder.append(" and");
 		}
 
 		if (firstName) {
-			queryBuilder.append(" lower(pr.first_name) like :");
+			queryBuilder.append(" pr.first_name ilike :");
 			queryBuilder.append(FIRST_NAME_PARAM);
 			queryBuilder.append(" and");
 		}
 
 		if (anyID) {
 			if (nationalID) {
-				queryBuilder.append(" lower(p.national_id) like :");
+				queryBuilder.append(" p.national_id ilike :");
 				queryBuilder.append(NATIONAL_ID_PARAM);
 				queryBuilder.append(" or ");
 			}
 
 			if (externalID) {
-				queryBuilder.append(" lower(p.external_id) like :");
+				queryBuilder.append(" p.external_id ilike :");
 				queryBuilder.append(EXTERNAL_ID_PARAM);
 				queryBuilder.append(" or");
 			}
 		} else {
 
 			if (nationalID) {
-				queryBuilder.append(" lower(p.national_id) like :");
+				queryBuilder.append(" p.national_id ilike :");
 				queryBuilder.append(NATIONAL_ID_PARAM);
 				queryBuilder.append(" or");
 			}
 
 			if (externalID) {
-				queryBuilder.append(" lower(p.external_id) like :");
+				queryBuilder.append(" p.external_id ilike :");
 				queryBuilder.append(EXTERNAL_ID_PARAM);
 				queryBuilder.append(" or");
 			}
