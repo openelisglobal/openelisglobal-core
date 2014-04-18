@@ -216,7 +216,7 @@
 			<frame>
 				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="553" height="15" printWhenGroupChanges="accession" backcolor="#CCCCCC"/>
 				<box>
-					<bottomPen lineWidth="0.5"/>
+					<bottomPen lineWidth="1.0"/>
 				</box>
 			</frame>
 			<textField isBlankWhenNull="true">
@@ -263,7 +263,7 @@
 			<frame>
 				<reportElement stretchType="RelativeToTallestObject" x="182" y="0" width="371" height="15" forecolor="#000000"/>
 				<box>
-					<bottomPen lineWidth="0.5"/>
+					<bottomPen lineWidth="1.0"/>
 				</box>
 			</frame>
 			<textField isBlankWhenNull="true">

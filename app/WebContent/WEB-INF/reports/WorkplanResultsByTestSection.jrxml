@@ -167,7 +167,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="245" y="18" width="307" height="1" forecolor="#CCCCCC"/>
+				<reportElement x="245" y="18" width="307" height="1" forecolor="#000000"/>
 			</line>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField" isPrintRepeatedValues="false" x="174" y="3" width="71" height="13" printWhenGroupChanges="Accession"/>
@@ -202,7 +202,7 @@
 			<line>
 				<reportElement x="174" y="18" width="378" height="1"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineColor="#666666"/>
+					<pen lineWidth="1.0" lineColor="#000000"/>
 				</graphicElement>
 			</line>
 			<line>
