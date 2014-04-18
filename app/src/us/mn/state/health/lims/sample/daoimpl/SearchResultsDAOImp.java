@@ -25,10 +25,9 @@ import us.mn.state.health.lims.patientidentitytype.util.PatientIdentityTypeMap;
 import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SearchResultsDAOImp implements SearchResultsDAO {
 
@@ -40,6 +39,7 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 	private static final String SUBJECT_NUMBER_PARAM = "subjectNumber";
 	private static final String ID_PARAM = "id";
 	private static final String GUID = "guid";
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
 
 	@SuppressWarnings("rawtypes")
