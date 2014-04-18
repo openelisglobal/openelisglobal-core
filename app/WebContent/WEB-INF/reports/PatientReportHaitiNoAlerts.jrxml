@@ -550,7 +550,7 @@
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA["Panel: " + ($F{panelName} != null ? $F{panelName} : "Aucun")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{panelName} == null ? "Les tests qui ne font pas partie d'un panel" : "Panel: " + $F{panelName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" mode="Opaque" x="10" y="36" width="542" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F5F5F5">
