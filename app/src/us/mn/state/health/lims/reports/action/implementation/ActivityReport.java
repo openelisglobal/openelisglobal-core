@@ -122,9 +122,9 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         item.setResultValue( resultService.getResultValue( "\n", true, true ) );
         item.setTechnician( resultService.getSignature() );
         item.setAccessionNumber( sampleService.getAccessionNumber().substring( PREFIX_LENGTH ) );
-        item.setReceivedDate( sampleService.getReceivedDateForDisplay() );
-        item.setResultDate( DateUtil.convertTimestampToStringDate( result.getLastupdated() ) );
-        item.setCollectionDate( DateUtil.convertTimestampToStringDate( result.getAnalysis().getSampleItem().getCollectionDate() ) );
+        item.setReceivedDate( sampleService.getReceivedDateWithTwoYearDisplay() );
+        item.setResultDate( DateUtil.convertTimestampToTwoYearStringDate( result.getLastupdated() ) );
+        item.setCollectionDate( DateUtil.convertTimestampToTwoYearStringDate( result.getAnalysis().getSampleItem().getCollectionDate() ) );
 
 
         StringBuilder nameBuilder = new StringBuilder( patientService.getLastName().toUpperCase() );

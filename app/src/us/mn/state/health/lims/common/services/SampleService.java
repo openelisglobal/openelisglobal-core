@@ -19,6 +19,7 @@ package us.mn.state.health.lims.common.services;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 
 import java.sql.Date;
@@ -77,6 +78,8 @@ public class SampleService {
     public String getReceivedDateForDisplay(){
         return sample.getReceivedDateForDisplay();
     }
+
+    public String getReceivedDateWithTwoYearDisplay(){ return DateUtil.convertTimestampToTwoYearStringDate( sample.getReceivedTimestamp() ); }
 
     public String getReceivedTimeForDisplay(){
         return sample.getReceivedTimeForDisplay();
