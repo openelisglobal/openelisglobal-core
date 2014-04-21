@@ -54,7 +54,7 @@
 				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="1" y="1" width="48" height="45"/>
+				<reportElement x="1" y="1" width="65" height="64"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{siteLogo}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
@@ -111,14 +111,14 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="33" splitType="Stretch">
+		<band height="45" splitType="Stretch">
 			<staticText>
 				<reportElement x="61" y="15" width="61" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[réception]]></text>
 			</staticText>
 			<line>
-				<reportElement key="line-1" x="0" y="32" width="555" height="1"/>
+				<reportElement key="line-1" x="0" y="42" width="555" height="1"/>
 				<graphicElement fill="Solid">
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 				</graphicElement>
@@ -209,6 +209,27 @@
 				<textElement/>
 				<text><![CDATA[Nom du test]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="61" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[(jj/mm/aa)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="30" width="61" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[(jj/mm/aa)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="30" width="61" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[(jj/mm/aa)]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -280,8 +301,8 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{collectionDate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField" mode="Transparent" x="422" y="0" width="61" height="13" backcolor="#FFFFFF"/>
-				<box>
+				<reportElement key="textField" mode="Transparent" x="423" y="0" width="60" height="13" backcolor="#FFFFFF"/>
+				<box leftPadding="2">
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>

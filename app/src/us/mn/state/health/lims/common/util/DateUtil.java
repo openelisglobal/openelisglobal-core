@@ -16,23 +16,18 @@
  */
 package us.mn.state.health.lims.common.util;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
+
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class DateUtil {
 
@@ -261,27 +256,40 @@ public class DateUtil {
 
 	// TIMESTAMP
 	public static String convertTimestampToStringDate(Timestamp date, String stringLocale) throws LIMSRuntimeException {
-		Locale locale = new Locale(stringLocale);
-		String pattern = ResourceLocator.getInstance().getMessageResources().getMessage(locale, "date.format.formatKey");
-		SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
-		String returnDate = null;
-		if (date != null) {
-			try {
-				returnDate = format.format(date);
-			} catch (Exception e) {
-
-				LogEvent.logError("DateUtil", "convertTimestampToStringDate()", e.toString());
-				throw new LIMSRuntimeException("Error converting date", e);
-			}
-		}
-
-		return returnDate;
+		return convertTimestampToStringDate( date,stringLocale, false );
 	}
 
-	public static String convertTimestampToStringDate(Timestamp date) throws LIMSRuntimeException {
-		String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-		return convertTimestampToStringDate(date, locale);
-	}
+    public static String convertTimestampToStringDate(Timestamp date) throws LIMSRuntimeException {
+        String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
+        return convertTimestampToStringDate(date, locale, false);
+    }
+
+    public static String convertTimestampToTwoYearStringDate(Timestamp date) throws LIMSRuntimeException {
+        String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
+        return convertTimestampToStringDate(date, locale, true);
+    }
+    private static String convertTimestampToStringDate( Timestamp date, String stringLocale, boolean twoYearDate) throws LIMSRuntimeException {
+        Locale locale = new Locale(stringLocale);
+        String pattern = ResourceLocator.getInstance().getMessageResources().getMessage(locale, "date.format.formatKey");
+        if( twoYearDate){
+            pattern = pattern.replace( "yyyy", "yy" );
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
+        String returnDate = null;
+        if (date != null) {
+            try {
+                returnDate = format.format(date);
+            } catch (Exception e) {
+
+                LogEvent.logError("DateUtil", "convertTimestampToStringDate()", e.toString());
+                throw new LIMSRuntimeException("Error converting date", e);
+            }
+        }
+
+        return returnDate;
+    }
+
 
 	public static String convertTimestampToStringTime(Timestamp date) throws LIMSRuntimeException {
 		String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
