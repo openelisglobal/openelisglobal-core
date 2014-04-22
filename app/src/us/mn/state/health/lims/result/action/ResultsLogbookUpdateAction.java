@@ -79,7 +79,6 @@ import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
-import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexBean;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
@@ -289,7 +288,22 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		for(ResultSet resultSet : resultSetList){
 			TestReflexBean reflex = new TestReflexBean();
 			reflex.setPatient(resultSet.patient);
-            reflex.setTriggersToSelectedReflexesMap( resultSet.triggersToSelectedReflexesMap );
+
+            if( resultSet.triggersToSelectedReflexesMap.size() > 0 && resultSet.multipleResultsForAnalysis){
+                for( String trigger : resultSet.triggersToSelectedReflexesMap.keySet()){
+                    if( trigger.equals( resultSet.result.getValue() )){
+                        HashMap<String, List<String>> reducedMap = new HashMap<String, List<String>>( 1 );
+                        reducedMap.put( trigger, resultSet.triggersToSelectedReflexesMap.get( trigger ) );
+                        reflex.setTriggersToSelectedReflexesMap( reducedMap );
+                    }
+                }
+                if( reflex.getTriggersToSelectedReflexesMap() == null){
+                    reflex.setTriggersToSelectedReflexesMap( new HashMap<String, List<String>>(  ) );
+                }
+            }else{
+                reflex.setTriggersToSelectedReflexesMap( resultSet.triggersToSelectedReflexesMap );
+            }
+
 			reflex.setResult(resultSet.result);
 			reflex.setSample(resultSet.sample);
 			reflexBeanList.add(reflex);
@@ -350,13 +364,14 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
             ResultSaveBean bean = ResultSaveBeanAdapter.fromTestResultItem(testResultItem);
             ResultSaveService resultSaveService = new ResultSaveService(analysisService.getAnalysis(),currentUserId);
+            //deletable Results will be written to, not read
 			List<Result> results = resultSaveService.createResultsFromTestResultItem( bean, deletableResults );
 
             analysisService.getAnalysis().setCorrectedSincePatientReport( resultSaveService.isUpdatedResult() && analysisService.patientReportHasBeenDone() );
 
-
+            //If there is more than one result then each user selected reflex gets mapped to that result
 			for(Result result : results){
-				addResult(result, testResultItem, analysisService.getAnalysis());
+				addResult(result, testResultItem, analysisService.getAnalysis(), results.size() > 1);
 
 				if(analysisShouldBeUpdated(testResultItem, result)){
 					updateAndAddAnalysisToModifiedList(testResultItem, testResultItem.getTestDate(), analysisService.getAnalysis());
@@ -378,7 +393,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 				|| ResultUtil.isForcedToAcceptance(testResultItem);
 	}
 
-	private void addResult(Result result, TestResultItem testResultItem, Analysis analysis){
+	private void addResult(Result result, TestResultItem testResultItem, Analysis analysis, boolean multipleResultsForAnalysis){
 		boolean newResult = result.getId() == null;
 		boolean newAnalysisInLoop = analysis != previousAnalysis;
 
@@ -401,17 +416,8 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			analysis.setRevision(String.valueOf(Integer.parseInt(analysis.getRevision()) + 1));
 		}
 
-		Sample sample = sampleDAO.getSampleByAccessionNumber(testResultItem.getAccessionNumber());
-		Patient patient = null;
-
-		if("H".equals(sample.getDomain())){
-			SampleHuman sampleHuman = new SampleHuman();
-			sampleHuman.setSampleId(sample.getId());
-			sampleHumanDAO.getDataBySample(sampleHuman);
-
-			patient = new Patient();
-			patient.setId(sampleHuman.getPatientId());
-		}
+        SampleService sampleService = new SampleService( testResultItem.getAccessionNumber() );
+        Patient patient = sampleService.getPatient();
 
 		Referral referral = null;
 		Referral existingReferral = null;
@@ -446,11 +452,11 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
         getSelectedReflexes( testResultItem.getReflexJSONResult(), triggersToReflexesMap );
 
         if(newResult){
-			newResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sample, triggersToReflexesMap, referral,
-					existingReferral));
+			newResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sampleService.getSample(), triggersToReflexesMap, referral,
+					existingReferral, multipleResultsForAnalysis));
 		}else{
-			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sample, triggersToReflexesMap,
-					referral, existingReferral));
+			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sampleService.getSample(), triggersToReflexesMap,
+					referral, existingReferral, multipleResultsForAnalysis));
 		}
 
 		previousAnalysis = analysis;
@@ -463,13 +469,15 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
                 JSONObject jsonResult = ( JSONObject ) parser.parse( reflexJSONResult.replaceAll( "'", "\"" ) );
 
                 for(Object compoundReflexes : jsonResult.values()){
-                    String triggerIds = (String)((JSONObject)compoundReflexes).get( "triggerIds" );
-                    List<String> selectedReflexIds = new ArrayList<String>(  );
-                    JSONArray selectedReflexes = (JSONArray)( ( JSONObject ) compoundReflexes ).get( "selected" );
-                    for( Object selectedReflex : selectedReflexes){
-                        selectedReflexIds.add (((String)selectedReflex));
+                    if( compoundReflexes != null){
+                        String triggerIds = ( String ) ( ( JSONObject ) compoundReflexes ).get( "triggerIds" );
+                        List<String> selectedReflexIds = new ArrayList<String>();
+                        JSONArray selectedReflexes = ( JSONArray ) ( ( JSONObject ) compoundReflexes ).get( "selected" );
+                        for( Object selectedReflex : selectedReflexes ){
+                            selectedReflexIds.add( ( ( String ) selectedReflex ) );
+                        }
+                        triggersToReflexesMap.put( triggerIds.trim(), selectedReflexIds );
                     }
-                    triggersToReflexesMap.put( triggerIds.trim(), selectedReflexIds );
                 }
             }catch( ParseException e ){
                 e.printStackTrace();
@@ -504,13 +512,13 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		if((TestResultItem.ResultDisplayType.SYPHILIS == testResult.getRawResultDisplayType() || TestResultItem.ResultDisplayType.HIV == testResult
 				.getRawResultDisplayType()) && ResultsLoadUtility.TESTKIT.equals(testKitName)){
 
-			testKit = creatTestKit(testResult, testKitName, testResult.getTestKitId());
+			testKit = createTestKit( testResult, testKitName, testResult.getTestKitId() );
 		}
 
 		return testKit;
 	}
 
-	private ResultInventory creatTestKit(TestResultItem testResult, String testKitName, String testKitId) throws LIMSRuntimeException{
+	private ResultInventory createTestKit( TestResultItem testResult, String testKitName, String testKitId ) throws LIMSRuntimeException{
 		ResultInventory testKit;
 		testKit = new ResultInventory();
 

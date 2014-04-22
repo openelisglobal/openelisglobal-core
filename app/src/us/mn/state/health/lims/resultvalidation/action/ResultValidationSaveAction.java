@@ -328,9 +328,9 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		Patient patient = sampleHumanDAO.getPatientForSample(sample);
 		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
 		if( documents.isEmpty()){
-			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, null, null));
+			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, null, null, false));
 		}else{
-			modifiedResultSet.add(new ResultSet(result, null,null, patient, sample, null, null, null));
+			modifiedResultSet.add(new ResultSet(result, null,null, patient, sample, null, null, null, false));
 		}
 	}
 
