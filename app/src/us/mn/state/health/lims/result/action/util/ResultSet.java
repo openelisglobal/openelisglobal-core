@@ -27,19 +27,20 @@ import java.util.List;
 import java.util.Map;
 
 public class ResultSet {
-	public Result result;
-	public ResultSignature signature;
-	public ResultInventory testKit;
-	public Patient patient;
-	public Sample sample;
-	public Map<String,List<String>> triggersToSelectedReflexesMap;
-	public Referral newReferral;
-	public Referral existingReferral;
-	public boolean alwaysInsertSignature = false;
-
+	public final Result result;
+	public final ResultSignature signature;
+	public final ResultInventory testKit;
+	public final Patient patient;
+	public final Sample sample;
+	public final Map<String,List<String>> triggersToSelectedReflexesMap;
+	public final Referral newReferral;
+	public final Referral existingReferral;
+	public final boolean alwaysInsertSignature;
+    public final boolean multipleResultsForAnalysis;
 
 	public ResultSet(Result result, ResultSignature signature, ResultInventory testKit, Patient patient, Sample sample,
-                     Map<String,List<String>> triggersToSelectedReflexesMap , Referral newReferral, Referral existingReferral) {
+                     Map<String,List<String>> triggersToSelectedReflexesMap , Referral newReferral,
+                     Referral existingReferral, boolean multipleResultsForAnalysis) {
 		this.result = result;
 		this.signature = signature;
 		this.testKit = testKit;
@@ -48,8 +49,7 @@ public class ResultSet {
 		this.triggersToSelectedReflexesMap = triggersToSelectedReflexesMap;
 		this.newReferral = newReferral;
 		this.existingReferral = existingReferral;
-		
-
+        this.multipleResultsForAnalysis = multipleResultsForAnalysis;
 		alwaysInsertSignature = signature != null && signature.getId() == null;
 	}
 }

@@ -20,7 +20,12 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.sample.dao.SampleDAO;
+import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
+import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 
 import java.sql.Date;
 import java.util.HashSet;
@@ -29,15 +34,21 @@ import java.util.Set;
 
 
 public class SampleService {
+    private static final SampleDAO sampleDAO = new SampleDAOImpl();
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+    private static final SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
     private static final Set<Integer> CONFIRMATION_STATUS_SET = new HashSet<Integer>(  );
 
 	private Sample sample;
-	
-	public SampleService( Sample sample){
+
+
+    public SampleService( Sample sample){
 		this.sample = sample;
 	}
 
+    public SampleService( String accessionNumber){
+        this.sample = sampleDAO.getSampleByAccessionNumber( accessionNumber );
+    }
     static {
         CONFIRMATION_STATUS_SET.add( Integer.parseInt( StatusService.getInstance().getStatusID( StatusService.AnalysisStatus.ReferredIn ) ) );
     }
@@ -95,5 +106,9 @@ public class SampleService {
 
     public String getId(){
         return sample.getId();
+    }
+
+    public Patient getPatient(){
+        return sampleHumanDAO.getPatientForSample( sample );
     }
 }
