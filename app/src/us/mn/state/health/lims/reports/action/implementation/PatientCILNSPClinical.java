@@ -90,7 +90,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null){
 				reportAnalysis = analysis;
-				ClinicalPatientData resultsData = reportAnalysisResults(lastReportTime);
+				ClinicalPatientData resultsData = reportAnalysisResults(lastReportTime, false);
 				reportItems.add(resultsData);
 
 				Referral referral = referralDao.getReferralByAnalysisId(reportAnalysis.getId());
@@ -192,7 +192,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			ClinicalPatientData reportItem = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ));
+			ClinicalPatientData reportItem = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ), false);
 			HaitiClinicalPatientDataColFormat colData = new HaitiClinicalPatientDataColFormat(reportItem);
 			colData.setSectionName(StringUtil.getMessageForKey("report.no.results"));
 			colData.setAge(createReadableAge(reportItem.getDob()));

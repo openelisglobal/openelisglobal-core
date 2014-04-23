@@ -296,7 +296,7 @@ public abstract class PatientReport extends Report{
                 currentSampleService = new SampleService( sample );
                 handledOrders.add( sample.getId() );
                 sampleCompleteMap.put( sample.getAccessionNumber(), Boolean.TRUE );
-                findCompleationDate();
+                findCompletionDate();
                 findPatientFromSample();
                 findContactInfo();
                 findPatientInfo();
@@ -322,7 +322,7 @@ public abstract class PatientReport extends Report{
         }
     }
 
-    private void findCompleationDate(){
+    private void findCompletionDate(){
         Date date = currentSampleService.getCompletedDate();
         completionDate = date == null ? null : DateUtil.convertSqlDateToStringDate( date );
     }
@@ -532,7 +532,7 @@ public abstract class PatientReport extends Report{
         data.setTestSortOrder( GenericValidator.isBlankOrNull( test.getSortOrder() ) ? Integer.MAX_VALUE : Integer.parseInt( test.getSortOrder() ) );
         data.setSectionSortOrder( test.getTestSection().getSortOrderInt() );
 
-        if( StatusService.getInstance().getStatusID( AnalysisStatus.Canceled ).equals( reportAnalysis.getStatusId() ) ){
+        if( StatusService.getInstance().matches( reportAnalysis.getStatusId(), AnalysisStatus.Canceled ) ){
             data.setResult( StringUtil.getMessageForKey( "report.test.status.canceled" ) );
         }else if( reportAnalysis.isReferredOut() ){
             if( noAlertColumn ){
@@ -560,6 +560,7 @@ public abstract class PatientReport extends Report{
             data.setAlerts( getResultFlag( result, null, data ) );
         }
 
+        data.setParentResult( reportAnalysis.getParentResult() );
         data.setConclusion( currentConclusion );
     }
 
@@ -778,7 +779,7 @@ public abstract class PatientReport extends Report{
      *
      * @return  A single record
      */
-    protected ClinicalPatientData reportAnalysisResults(Timestamp lastReportTime){
+    protected ClinicalPatientData reportAnalysisResults(Timestamp lastReportTime, boolean hasParent){
         ClinicalPatientData data = new ClinicalPatientData();
         String testName = null;
         String sortOrder = "";
@@ -787,7 +788,7 @@ public abstract class PatientReport extends Report{
         boolean doAnalysis = reportAnalysis != null;
 
         if( doAnalysis ){
-            testName = getTestName();
+            testName = getTestName(hasParent);
         }
 
         if( FormFields.getInstance().useField( Field.SampleEntryUseReceptionHour ) ){
@@ -833,7 +834,7 @@ public abstract class PatientReport extends Report{
         return data;
     }
 
-    private String getTestName(){
+    private String getTestName(boolean indent){
         String testName;
 
         if( useReportingDescription() ){
@@ -845,7 +846,7 @@ public abstract class PatientReport extends Report{
         if( GenericValidator.isBlankOrNull( testName ) ){
             testName = reportAnalysis.getTest().getTestName();
         }
-        return testName;
+        return (indent ? "    " : "") + testName;
     }
 
     private String createLabOrderType(){

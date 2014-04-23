@@ -86,6 +86,45 @@ public class ResultService {
 	}
 
     /**
+     * This gets the simple value of the result, it treats multiresults as single dictionary values and
+     * does not try to get the complete set
+     * @return The String value
+     */
+    public String getSimpleResultValue(){
+        DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+        if (GenericValidator.isBlankOrNull(result.getValue())) {
+            return "";
+        }
+
+        if (ResultType.isDictionaryType( getTestType() )) {
+            return dictionaryDAO.getDataForId(result.getValue()).getDictEntry();
+        } else if (ResultType.NUMERIC.matches(getTestType())) {
+            int significantPlaces = result.getSignificantDigits();
+            if (significantPlaces == 0) {
+                return result.getValue().split("\\.")[0];
+            }
+            StringBuilder value = new StringBuilder();
+            value.append(result.getValue());
+            int startFill = 0;
+
+            if (!result.getValue().contains(".")) {
+                value.append(".");
+            } else {
+                startFill = result.getValue().length() - result.getValue().lastIndexOf(".") - 1;
+            }
+
+            for (int i = startFill ; i < significantPlaces; i++) {
+                value.append("0");
+            }
+
+            return value.toString();
+        }else if (ResultType.ALPHA.matches(result.getResultType()) && !GenericValidator.isBlankOrNull(result.getValue())) {
+            return result.getValue().split("\\(")[0].trim();
+        }else {
+            return result.getValue();
+        }
+    }
+    /**
      * This returns a textual representation of the result value.  Multiselect results are returned as a comma
      * delimited string. If there is a qualified value it is not included
      * @param printable If true the results will be suitable for printing, otherwise they will be suitable for a

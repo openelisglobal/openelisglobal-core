@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.result.valueholder.Result;
 
 
 public class ClinicalPatientData{
@@ -69,7 +70,64 @@ public class ClinicalPatientData{
     private Boolean abnormalResult = Boolean.FALSE;
     private String collectionDateTime;
     private boolean correctedResult = false;
-    
+    private Result parentResult;
+    private boolean parentMarker = false;
+
+    public ClinicalPatientData(){}
+    public ClinicalPatientData( ClinicalPatientData data){
+        patientName = data.getPatientName();
+        nationalId  = data.getNationalId();
+        gender = data.getGender();
+        dob = data.getDob();
+        age = data.getAge();
+        stNumber = data.getStNumber();
+        subjectNumber = data.getSubjectNumber();
+        contactInfo = data.getContactInfo();
+        siteInfo = data.getSiteInfo();
+        testName = data.getTestName();
+        testRefRange = data.getTestRefRange();
+        result = data.getResult();
+        note = data.getNote();
+        conclusion = data.getConclusion();
+        finishDate = data.getFinishDate();
+        accessionNumber = data.getAccessionNumber();
+        receivedDate = data.getReceivedDate();
+        testDate = data.getTestDate();
+        referralSentDate = data.getReferralSentDate();
+        referralTestName = data.getReferralTestName();
+        referralResult = data.getReferralResult();
+        referralResultReportDate = data.getReferralResultReportDate();
+        referralReason = data.getReferralReason();
+        referralRefRange = data.getReferralRefRange();
+        referralNote = data.getReferralNote();
+        firstName = data.getFirstName();
+        lastName = data.getLastName();
+        testSection = data.getTestSection();
+        dept = data.getDept();
+        commune = data.getCommune();
+        healthDistrict = data.getHealthDistrict();
+        healthRegion = data.getHealthRegion();
+        sectionSortOrder = data.getSectionSortOrder();
+        testSortOrder = data.getTestSortOrder();
+        hasRangeAndUOM = data.getAbnormalResult();
+        labOrderType = data.getLabOrderType();
+        uom = data.getUom();
+        alerts = data.getAlerts();
+        completeFlag = data.getCompleteFlag();
+        orderFinishDate = data.getOrderFinishDate();
+        panelName = data.getPanelName();
+        separator = data.getSeparator();
+        panel = data.getPanel();
+        orderDate = data.getOrderDate();
+        patientSiteNumber = data.getPatientSiteNumber();
+        abnormalResult = data.getAbnormalResult();
+        collectionDateTime = data.getCollectionDateTime();
+        correctedResult = data.isCorrectedResult();
+        parentResult = data.getParentResult();
+        parentMarker = data.getParentMarker();
+
+    }
+
     public String getReferralRefRange() {
         return referralRefRange;
     }
@@ -459,5 +517,21 @@ public class ClinicalPatientData{
 
     public void setCorrectedResult( boolean correctedResult ){
         this.correctedResult = correctedResult;
+    }
+
+    public Result getParentResult(){
+        return parentResult;
+    }
+
+    public void setParentResult( Result parentResult ){
+        this.parentResult = parentResult;
+    }
+
+    public boolean getParentMarker(){
+        return parentMarker;
+    }
+
+    public void setParentMarker( boolean isParentMarker ){
+        this.parentMarker = isParentMarker;
     }
 }
