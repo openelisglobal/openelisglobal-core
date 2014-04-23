@@ -24,6 +24,7 @@ import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.ReportTrackingService;
+import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -79,11 +80,13 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
             lastReportTime = new Timestamp( Long.MAX_VALUE );
         }
 		currentConclusion = null;
+
 		for(Analysis analysis : analysisList){
+            boolean hasParentResult = analysis.getParentResult() != null;
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
 				reportAnalysis = analysis;
-				ClinicalPatientData resultsData = reportAnalysisResults( lastReportTime);
+				ClinicalPatientData resultsData = reportAnalysisResults( lastReportTime, hasParentResult);
 
 				if(reportAnalysis.isReferredOut()){
 					Referral referral = referralDao.getReferralByAnalysisId(reportAnalysis.getId());
@@ -91,13 +94,13 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 						addReferredTests(referral, resultsData);
 					}
 				}else{
-					reportItems.add(resultsData);	
-				}
+                    reportItems.add(resultsData);
+                }
 			}
 		}
 	}
 
-	private void addReferredTests(Referral referral, ClinicalPatientData parentData){
+    private void addReferredTests(Referral referral, ClinicalPatientData parentData){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
         String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER );
 
@@ -185,7 +188,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			ClinicalPatientData reportItem = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ));
+			ClinicalPatientData reportItem = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ), false);
 			reportItem.setTestSection(StringUtil.getMessageForKey("report.no.results"));
 			clinicalReportItems.add(reportItem);
 		}else{
@@ -228,9 +231,36 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 					return panelSort;
 				}
 
+                if( o1.getParentResult() != null && o2.getParentResult() != null){
+                    int parentSort = Integer.parseInt( o1.getParentResult().getId()) -
+                            Integer.parseInt( o2.getParentResult().getId());
+
+                    if( parentSort != 0){
+                        return parentSort;
+                    }
+                }
+
 				return o1.getTestSortOrder() - o2.getTestSortOrder();
 			}
 		});
+
+        ArrayList<ClinicalPatientData> augmentedList = new ArrayList<ClinicalPatientData>( reportItems.size() );
+        HashSet<String> parentResults = new HashSet<String>(  );
+        for(ClinicalPatientData data : reportItems){
+            if( data.getParentResult() != null && !parentResults.contains( data.getParentResult().getId() )){
+                parentResults.add( data.getParentResult().getId() );
+                ClinicalPatientData marker = new ClinicalPatientData(data);
+                marker.setTestName( new ResultService(data.getParentResult()).getSimpleResultValue() );
+                marker.setResult( null );
+                marker.setTestRefRange( null );
+                marker.setParentMarker( true );
+                augmentedList.add( marker );
+            }
+
+            augmentedList.add( data );
+        }
+
+        reportItems = augmentedList;
 
 		String currentPanelId = null;
 		for(ClinicalPatientData reportItem : reportItems){

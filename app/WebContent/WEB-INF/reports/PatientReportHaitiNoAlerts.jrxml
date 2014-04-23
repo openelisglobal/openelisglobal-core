@@ -60,6 +60,7 @@
 	<field name="abnormalResult" class="java.lang.Boolean"/>
 	<field name="collectionDateTime" class="java.lang.String"/>
 	<field name="correctedResult" class="java.lang.Boolean"/>
+	<field name="parentMarker" class="java.lang.Boolean"/>
 	<group name="person" isStartNewPage="true" isResetPageNumber="true">
 		<groupExpression><![CDATA[$F{accessionNumber}]]></groupExpression>
 	</group>
@@ -462,17 +463,14 @@
 					<bottomPen lineWidth="0.5" lineColor="#000000"/>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
-				<textField isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToTallestObject" x="474" y="0" width="78" height="18"/>
-					<box topPadding="2" bottomPadding="2">
-						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{uom}]]></textFieldExpression>
-				</textField>
+				<rectangle>
+					<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="550" height="18" backcolor="#E0E0E0">
+						<printWhenExpression><![CDATA[$F{parentMarker}]]></printWhenExpression>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="256" y="0" width="74" height="18">
 						<printWhenExpression><![CDATA[!$F{abnormalResult}]]></printWhenExpression>
@@ -497,7 +495,7 @@
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle" markup="styled"/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
@@ -534,6 +532,17 @@
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{collectionDateTime}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="474" y="0" width="78" height="18"/>
+					<box topPadding="2" bottomPadding="2">
+						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{uom}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<textField>
