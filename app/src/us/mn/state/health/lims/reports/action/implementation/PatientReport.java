@@ -551,13 +551,17 @@ public abstract class PatientReport extends Report{
             sampleCompleteMap.put( currentSampleService.getAccessionNumber(), Boolean.FALSE );
             data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
         }else{
-            setAppropriateResults( resultList, data );
-            Result result = resultList.get( 0 );
-            setCorrectedStatus( result, data);
-            setNormalRange( data, test, result );
-            data.setResult( getAugmentedResult( data, result ) );
-            data.setFinishDate( reportAnalysis.getCompletedDateForDisplay() );
-            data.setAlerts( getResultFlag( result, null, data ) );
+            if( resultList.isEmpty()){
+                data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+            }else{
+                setAppropriateResults( resultList, data );
+                Result result = resultList.get( 0 );
+                setCorrectedStatus( result, data );
+                setNormalRange( data, test, result );
+                data.setResult( getAugmentedResult( data, result ) );
+                data.setFinishDate( reportAnalysis.getCompletedDateForDisplay() );
+                data.setAlerts( getResultFlag( result, null, data ) );
+            }
         }
 
         data.setParentResult( reportAnalysis.getParentResult() );
@@ -650,102 +654,105 @@ public abstract class PatientReport extends Report{
 
     private void setAppropriateResults( List<Result> resultList, ClinicalPatientData data ){
         String reportResult = "";
-        //If only one result just get it and get out
-        if( resultList.size() == 1 ){
-            Result result = resultList.get( 0 );
-            if( ResultType.isDictionaryType( result.getResultType() ) ){
-                Dictionary dictionary = new Dictionary();
-                dictionary.setId( result.getValue() );
-                dictionaryDAO.getData( dictionary );
-                if( result.getAnalyte() != null && "Conclusion".equals( result.getAnalyte().getAnalyteName() ) ){
-                    currentConclusion = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
-                }else{
-                    reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
-                }
-            }else{
-                reportResult = new ResultService(result).getResultValue( true );
-                //TODO - how is this used.  Selection types can also have UOM and reference ranges
-                data.setHasRangeAndUOM( ResultType.NUMERIC.matches( result.getResultType() ) );
-            }
-        }else{
-            //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
+        if( !resultList.isEmpty()){
 
-            String resultType = resultList.get( 0 ).getResultType();
-
-            if( ResultType.DICTIONARY.matches( resultType ) ){
-                List<Result> dictionaryResults = new ArrayList<Result>(  );
-                Result quantification = null;
-                for(Result sibResult : resultList){
-                    if( ResultType.DICTIONARY.matches( sibResult.getResultType() )){
-                        dictionaryResults.add( sibResult );
-                    }else if(ResultType.ALPHA.matches( sibResult.getResultType() ) && sibResult.getParentResult() != null){
-                        quantification = sibResult;
-                    }
-                }
-
-                Dictionary dictionary = new Dictionary();
-                for( Result sibResult : dictionaryResults ){
-                    dictionary.setId( sibResult.getValue() );
+            //If only one result just get it and get out
+            if( resultList.size() == 1 ){
+                Result result = resultList.get( 0 );
+                if( ResultType.isDictionaryType( result.getResultType() ) ){
+                    Dictionary dictionary = new Dictionary();
+                    dictionary.setId( result.getValue() );
                     dictionaryDAO.getData( dictionary );
-                    if( sibResult.getAnalyte() != null && "Conclusion".equals( sibResult.getAnalyte().getAnalyteName() ) ){
+                    if( result.getAnalyte() != null && "Conclusion".equals( result.getAnalyte().getAnalyteName() ) ){
                         currentConclusion = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
                     }else{
                         reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
-                        if( quantification != null && quantification.getParentResult().getId().equals( sibResult.getId() )){
-                            reportResult += ": " + quantification.getValue();
+                    }
+                }else{
+                    reportResult = new ResultService( result ).getResultValue( true );
+                    //TODO - how is this used.  Selection types can also have UOM and reference ranges
+                    data.setHasRangeAndUOM( ResultType.NUMERIC.matches( result.getResultType() ) );
+                }
+            }else{
+                //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
+
+                String resultType = resultList.get( 0 ).getResultType();
+
+                if( ResultType.DICTIONARY.matches( resultType ) ){
+                    List<Result> dictionaryResults = new ArrayList<Result>();
+                    Result quantification = null;
+                    for( Result sibResult : resultList ){
+                        if( ResultType.DICTIONARY.matches( sibResult.getResultType() ) ){
+                            dictionaryResults.add( sibResult );
+                        }else if( ResultType.ALPHA.matches( sibResult.getResultType() ) && sibResult.getParentResult() != null ){
+                            quantification = sibResult;
                         }
                     }
-                }
-            }else if( ResultType.isMultiSelectVariant( resultType )){
-                Dictionary dictionary = new Dictionary();
-                StringBuilder multiResult = new StringBuilder();
 
-                Collections.sort( resultList, new Comparator<Result>(){
-                    @Override
-                    public int compare( Result o1, Result o2 ){
-                        if( o1.getGrouping() == o2.getGrouping()){
-                            return Integer.parseInt( o1.getSortOrder() ) - Integer.parseInt( o2.getSortOrder() );
+                    Dictionary dictionary = new Dictionary();
+                    for( Result sibResult : dictionaryResults ){
+                        dictionary.setId( sibResult.getValue() );
+                        dictionaryDAO.getData( dictionary );
+                        if( sibResult.getAnalyte() != null && "Conclusion".equals( sibResult.getAnalyte().getAnalyteName() ) ){
+                            currentConclusion = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
                         }else{
-                            return o1.getGrouping() - o2.getGrouping();
+                            reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+                            if( quantification != null && quantification.getParentResult().getId().equals( sibResult.getId() ) ){
+                                reportResult += ": " + quantification.getValue();
+                            }
                         }
                     }
-                } );
+                }else if( ResultType.isMultiSelectVariant( resultType ) ){
+                    Dictionary dictionary = new Dictionary();
+                    StringBuilder multiResult = new StringBuilder();
 
-                Result quantifiedResult = null;
-                for( Result subResult : resultList){
-                    if( ResultType.ALPHA.matches( subResult.getResultType() )){
-                        quantifiedResult = subResult;
-                        resultList.remove( subResult );
-                        break;
-                    }
-                }
-                int currentGrouping = resultList.get( 0 ).getGrouping();
-                for( Result subResult : resultList ){
-                    if( subResult.getGrouping() != currentGrouping){
-                        currentGrouping = subResult.getGrouping();
-                        multiResult.append( "-------\n" );
-                    }
-                    dictionary.setId( subResult.getValue() );
-                    dictionaryDAO.getData( dictionary );
-
-                    if( dictionary.getId() != null ){
-                        multiResult.append( dictionary.getLocalizedName() );
-                        if( quantifiedResult != null &&
-                                quantifiedResult.getParentResult().getId().equals( subResult.getId() ) &&
-                                !GenericValidator.isBlankOrNull( quantifiedResult.getValue() )){
-                            multiResult.append( ": " );
-                            multiResult.append( quantifiedResult.getValue() );
+                    Collections.sort( resultList, new Comparator<Result>(){
+                        @Override
+                        public int compare( Result o1, Result o2 ){
+                            if( o1.getGrouping() == o2.getGrouping() ){
+                                return Integer.parseInt( o1.getSortOrder() ) - Integer.parseInt( o2.getSortOrder() );
+                            }else{
+                                return o1.getGrouping() - o2.getGrouping();
+                            }
                         }
-                        multiResult.append( "\n" );
+                    } );
+
+                    Result quantifiedResult = null;
+                    for( Result subResult : resultList ){
+                        if( ResultType.ALPHA.matches( subResult.getResultType() ) ){
+                            quantifiedResult = subResult;
+                            resultList.remove( subResult );
+                            break;
+                        }
                     }
-                }
+                    int currentGrouping = resultList.get( 0 ).getGrouping();
+                    for( Result subResult : resultList ){
+                        if( subResult.getGrouping() != currentGrouping ){
+                            currentGrouping = subResult.getGrouping();
+                            multiResult.append( "-------\n" );
+                        }
+                        dictionary.setId( subResult.getValue() );
+                        dictionaryDAO.getData( dictionary );
 
-                if( multiResult.length() > 1 ){
-                    // remove last "\n"
-                    multiResult.setLength( multiResult.length() - 1 );
-                }
+                        if( dictionary.getId() != null ){
+                            multiResult.append( dictionary.getLocalizedName() );
+                            if( quantifiedResult != null &&
+                                    quantifiedResult.getParentResult().getId().equals( subResult.getId() ) &&
+                                    !GenericValidator.isBlankOrNull( quantifiedResult.getValue() ) ){
+                                multiResult.append( ": " );
+                                multiResult.append( quantifiedResult.getValue() );
+                            }
+                            multiResult.append( "\n" );
+                        }
+                    }
 
-                reportResult = multiResult.toString();
+                    if( multiResult.length() > 1 ){
+                        // remove last "\n"
+                        multiResult.setLength( multiResult.length() - 1 );
+                    }
+
+                    reportResult = multiResult.toString();
+                }
             }
         }
         data.setResult( reportResult );
