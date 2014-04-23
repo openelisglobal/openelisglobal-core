@@ -81,12 +81,14 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
         List<PatientSearchResults> resultList = new ArrayList<PatientSearchResults>(  );
         List<ObservationHistory> observationList = ObservationHistoryService.getObservationsByTypeAndValue( ObservationType.REFERRERS_PATIENT_ID, referringId );
 
-        for( ObservationHistory observation : observationList ){
-            Patient patient = patientDAO.getData( observation.getPatientId() );
-            if(patient != null){
-               resultList.add( getSearchResultsForPatient( patient, referringId ));
-            }
+        if( observationList != null){
+            for( ObservationHistory observation : observationList ){
+                Patient patient = patientDAO.getData( observation.getPatientId() );
+                if( patient != null ){
+                    resultList.add( getSearchResultsForPatient( patient, referringId ) );
+                }
 
+            }
         }
 
         return resultList;
