@@ -77,8 +77,6 @@ import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
-import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexBean;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
@@ -102,7 +100,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	private ResultInventoryDAO resultInventoryDAO = new ResultInventoryDAOImpl();
 	private NoteDAO noteDAO = new NoteDAOImpl();
 	private SampleDAO sampleDAO = new SampleDAOImpl();
-	private SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
 	private ReferralDAO referralDAO = new ReferralDAOImpl();
 	private ReferralResultDAO referralResultDAO = new ReferralResultDAOImpl();
 	private ResultLimitDAO resultLimitDAO = new ResultLimitDAOImpl();
@@ -355,6 +352,9 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		for(TestResultItem testResultItem : modifiedItems){
 
 			AnalysisService analysisService = new AnalysisService( testResultItem.getAnalysisId() );
+            analysisService.getAnalysis().setStatusId( getStatusForTestResult( testResultItem ) );
+            analysisService.getAnalysis().setSysUserId( currentUserId );
+            modifiedAnalysis.add( analysisService.getAnalysis() );
 
             NoteService noteService = new NoteService( analysisService.getAnalysis() );
             Note note = noteService.createSavableNote( NoteType.INTERNAL, testResultItem.getNote(), RESULT_SUBJECT, currentUserId);
@@ -367,14 +367,15 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
             //deletable Results will be written to, not read
 			List<Result> results = resultSaveService.createResultsFromTestResultItem( bean, deletableResults );
 
-            analysisService.getAnalysis().setCorrectedSincePatientReport( resultSaveService.isUpdatedResult() && analysisService.patientReportHasBeenDone() );
+            analysisService.getAnalysis().setCorrectedSincePatientReport( resultSaveService.isUpdatedResult() &&
+                                                                          analysisService.patientReportHasBeenDone()  );
 
             //If there is more than one result then each user selected reflex gets mapped to that result
 			for(Result result : results){
 				addResult(result, testResultItem, analysisService.getAnalysis(), results.size() > 1);
 
 				if(analysisShouldBeUpdated(testResultItem, result)){
-					updateAndAddAnalysisToModifiedList(testResultItem, testResultItem.getTestDate(), analysisService.getAnalysis());
+					updateAnalysis( testResultItem, testResultItem.getTestDate(), analysisService.getAnalysis() );
 				}
 			}
 		}
@@ -405,7 +406,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 		ResultInventory testKit = createTestKitLinkIfNeeded(testResultItem, ResultsLoadUtility.TESTKIT);
 
-		analysis.setStatusId(getStatusForTestResult(testResultItem));
 		analysis.setReferredOut(testResultItem.isReferredOut());
 		analysis.setEnteredDate(DateUtil.getNowAsTimestamp());
 
@@ -533,26 +533,24 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		return testKit;
 	}
 
-	private void updateAndAddAnalysisToModifiedList(TestResultItem testResultItem, String testDate, Analysis analysis){
+	private void updateAnalysis( TestResultItem testResultItem, String testDate, Analysis analysis ){
 		String testMethod = testResultItem.getAnalysisMethod();
 		analysis.setAnalysisType(testMethod);
 		analysis.setStartedDateForDisplay(testDate);
 
 		// This needs to be refactored -- part of the logic is in
-		// getStatusForTestResult
+		// getStatusForTestResult. RetroCI over rides to whatever was set before
 		if(statusRuleSet.equals(IActionConstants.STATUS_RULES_RETROCI)){
 			if( !StatusService.getInstance().getStatusID(AnalysisStatus.Canceled).equals(analysis.getStatusId() )){
 				analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 				analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance));
 			}
-		}else if(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized).equals(analysis.getStatusId()) ||
-				StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance).equals(analysis.getStatusId()) ||
+		}else if(StatusService.getInstance().matches(analysis.getStatusId(), AnalysisStatus.Finalized) ||
+				StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.TechnicalAcceptance ) ||
 				(analysis.isReferredOut() && !GenericValidator.isBlankOrNull(testResultItem.getResultValue()))){
 			analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 		}
 
-		analysis.setSysUserId(currentUserId);
-		modifiedAnalysis.add(analysis);
 	}
 
 
