@@ -142,6 +142,10 @@ public class ResultSaveService {
                         ? -1 : 0;
             }
         });
+
+        if( !deletableResults.isEmpty() || !results.isEmpty()){
+            updatedResult = true;
+        }
         return results;
     }
 
