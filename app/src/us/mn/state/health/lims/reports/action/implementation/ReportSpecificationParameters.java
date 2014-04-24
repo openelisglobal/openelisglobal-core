@@ -31,6 +31,12 @@ public class ReportSpecificationParameters implements IReportParameterSetter {
     private String instructions;
     private ArrayList<Parameter> parameters = new ArrayList<Parameter>(  );
 
+    /**
+     * Constructor for a single parameter.
+     * @param parameter The parameter which will appear on the parameter page
+     * @param title The title for the page, it will appear above the parameters
+     * @param instructions The instructions for the user on how to fill in the parameters
+     */
 	public ReportSpecificationParameters(Parameter parameter,  String title, String instructions ){
 		parameters.add(parameter);
         reportTitle = title;
