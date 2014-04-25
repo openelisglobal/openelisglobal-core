@@ -84,6 +84,8 @@ public class ActivityReportByPanel extends ActivityReport implements IReportCrea
                 testsResults.add( createIdentityActivityBean( item, false ));
                 currentAccessionNumber = item.getAccessionNumber();
             }
+            //hokey way to remove collection date
+            item.setCollectionDate(  " " );
             testsResults.add( item );
         }
     }
