@@ -118,7 +118,7 @@
 				<text><![CDATA[réception]]></text>
 			</staticText>
 			<line>
-				<reportElement key="line-1" x="0" y="42" width="555" height="1"/>
+				<reportElement key="line-1" x="0" y="44" width="555" height="1"/>
 				<graphicElement fill="Solid">
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 				</graphicElement>
@@ -233,10 +233,11 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="15" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="553" height="15" printWhenGroupChanges="accession" backcolor="#CCCCCC"/>
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="553" height="15" printWhenGroupChanges="accession" backcolor="#E0E0E0"/>
 				<box>
+					<topPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
 				</box>
 			</frame>
@@ -337,7 +338,7 @@
 			<staticText>
 				<reportElement x="1" y="7" width="468" height="16"/>
 				<textElement verticalAlignment="Bottom"/>
-				<text><![CDATA[Revu/Validé____________________________   par________________________________________]]></text>
+				<text><![CDATA[Revu/Validé(jj/mm/aaaa)____________________   par____________________________________]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
