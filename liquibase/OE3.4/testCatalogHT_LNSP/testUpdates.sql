@@ -83,10 +83,10 @@ INSERT INTO result_limits(  id, test_id, test_result_type_id, lastupdated, norma
 VALUES ( nextval( 'result_limits_seq' ) , ( select id from clinlims.test where description = 'Criptococcus test rapide(Plasma)' ) , (select id from clinlims.type_of_test_result where test_result_type = 'D' ) ,  now() , (select max(id) from clinlims.dictionary where dict_entry = 'Negatif' ) );
 
 --63
+update clinlims.test set is_active='N' where description = 'VIH-1 PCR Qualitatif(DBS)';
 
-UPDATE clinlims.test set name='VIH-1 PCR 1 Qualitatif', description='VIH-1 PCR 1 Qualitatif(DBS)', local_abbrev='VIH-1 PCR 1 Qualitatif', reporting_description='VIH-1 PCR 1 Qualitatif' where id = (select id from clinlims.test where description = 'VIH-1 PCR Qualitatif(DBS)');
-
-delete from clinlims.test_result where test_id = ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(DBS)');
+INSERT INTO test( id,  uom_id, description, reporting_description, is_active, is_reportable, lastupdated, test_section_id, local_abbrev, sort_order, name, loinc )
+VALUES ( nextval( 'test_seq' ) , null , 'VIH-1 PCR 1 Qualitatif(DBS)' , 'VIH-1 PCR 1 Qualitatif' , 'Y' , 'N' , now() , (select id from clinlims.test_section where name = 'Biologie Moleculaire' ) ,'VIH-1 PCR 1 Qualitatif' ,560 , 'VIH-1 PCR 1 Qualitatif' , '');
 
 INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
 VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(DBS)' ) , 'D' ,  ( select max(id) from clinlims.dictionary where dict_entry ='ADN VIH-1 Non-Détecté' )  , now() , 10);
@@ -94,6 +94,9 @@ INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_o
 VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(DBS)' ) , 'D' ,  ( select max(id) from clinlims.dictionary where dict_entry ='ADN VIH-1 Détecté' )  , now() , 13);
 INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
 VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(DBS)' ) , 'D' ,  ( select max(id) from clinlims.dictionary where dict_entry ='ADN VIH-1 Indeterminé' )  , now() , 17);
+
+INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
+  (nextval( 'sample_type_test_seq' ) , (select id from test where description = 'VIH-1 PCR 1 Qualitatif(DBS)' )  ,    (select id from type_of_sample where description = 'DBS')  );
 
 INSERT INTO result_limits(  id, test_id, test_result_type_id, lastupdated, normal_dictionary_id)
 VALUES ( nextval( 'result_limits_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(DBS)' ) , (select id from clinlims.type_of_test_result where test_result_type = 'D' ) ,  now() , (select max(id) from clinlims.dictionary where dict_entry = 'ADN VIH-1 Non-Détecté' ) );
@@ -172,10 +175,10 @@ INSERT INTO result_limits(  id, test_id, test_result_type_id, lastupdated, norma
 VALUES ( nextval( 'result_limits_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 5 Qualitatif(DBS)' ) , (select id from clinlims.type_of_test_result where test_result_type = 'D' ) ,  now() , (select max(id) from clinlims.dictionary where dict_entry = 'ADN VIH-1 Non-Détecté' ) );
 
 --68
+update clinlims.test set is_active='N' where description = 'VIH-1 PCR Qualitatif(Sang Total)';
 
-UPDATE clinlims.test set name='VIH-1 PCR 1 Qualitatif', description='VIH-1 PCR 1 Qualitatif(Sang Total)', local_abbrev='VIH-1 PCR 1 Qualitatif', reporting_description='VIH-1 PCR 1 Qualitatif' where id = (select id from clinlims.test where description = 'VIH-1 PCR Qualitatif(Sang Total)');
-
-delete from clinlims.test_result where test_id = ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(Sang Total)');
+INSERT INTO test( id,  uom_id, description, reporting_description, is_active, is_reportable, lastupdated, test_section_id, local_abbrev, sort_order, name, loinc )
+VALUES ( nextval( 'test_seq' ) , null , 'VIH-1 PCR 1 Qualitatif(Sang Total)' , 'VIH-1 PCR 1 Qualitatif' , 'Y' , 'N' , now() , (select id from clinlims.test_section where name = 'Biologie Moleculaire' ) ,'VIH-1 PCR 1 Qualitatif' ,570 , 'VIH-1 PCR 1 Qualitatif' , '');
 
 INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
 VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(Sang Total)' ) , 'D' ,  ( select max(id) from clinlims.dictionary where dict_entry ='ADN VIH-1 Non-Détecté' )  , now() , 10);
@@ -183,6 +186,9 @@ INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_o
 VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(Sang Total)' ) , 'D' ,  ( select max(id) from clinlims.dictionary where dict_entry ='ADN VIH-1 Détecté' )  , now() , 13);
 INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
 VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(Sang Total)' ) , 'D' ,  ( select max(id) from clinlims.dictionary where dict_entry ='ADN VIH-1 Indeterminé' )  , now() , 17);
+
+INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
+  (nextval( 'sample_type_test_seq' ) , (select id from test where description = 'VIH-1 PCR 1 Qualitatif(Sang Total)' )  ,    (select id from type_of_sample where description = 'Sang Total')  );
 
 INSERT INTO result_limits(  id, test_id, test_result_type_id, lastupdated, normal_dictionary_id)
 VALUES ( nextval( 'result_limits_seq' ) , ( select id from clinlims.test where description = 'VIH-1 PCR 1 Qualitatif(Sang Total)' ) , (select id from clinlims.type_of_test_result where test_result_type = 'D' ) ,  now() , (select max(id) from clinlims.dictionary where dict_entry = 'ADN VIH-1 Non-Détecté' ) );
