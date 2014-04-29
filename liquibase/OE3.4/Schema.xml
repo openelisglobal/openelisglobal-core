@@ -153,4 +153,10 @@
         COMMENT ON COLUMN clinlims.analysis.corrected IS 'Signifies that the result has been updated since the last patient report was generated'
     </sql>
 </changeSet>
+<changeSet id="14" author="paulsc">
+    <comment>the foreign key from the analyzer.parent_result_id to result_id is now a nulling delete</comment>
+    <dropForeignKeyConstraint baseTableName="analysis" constraintName="analysis_parent_result_fk" />
+    <addForeignKeyConstraint baseTableName="analysis" baseColumnNames="parent_result_id" constraintName="analysis_parent_result_fk" referencedTableName="result"
+                             referencedColumnNames="id" onDelete="SET NULL" />
+</changeSet>
 </databaseChangeLog>

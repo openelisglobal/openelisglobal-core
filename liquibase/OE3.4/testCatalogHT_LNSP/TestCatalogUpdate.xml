@@ -15,6 +15,10 @@
         <comment>Adds reference range for multi select</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/multiresultRefRange.sql" />
     </changeSet>
+    <changeSet id="3" author="paulsc" context="haitiLNSP">
+        <comment>Updates to the test catalog</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates.sql" />
+    </changeSet>
 
 </databaseChangeLog>
 
