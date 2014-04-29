@@ -20,6 +20,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
+import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.dao.ResultSignatureDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -91,13 +92,12 @@ public class ResultService {
      * @return The String value
      */
     public String getSimpleResultValue(){
-        DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
         if (GenericValidator.isBlankOrNull(result.getValue())) {
             return "";
         }
 
         if (ResultType.isDictionaryType( getTestType() )) {
-            return dictionaryDAO.getDataForId(result.getValue()).getDictEntry();
+            return getDictEntry(  );
         } else if (ResultType.NUMERIC.matches(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
             if (significantPlaces == 0) {
@@ -136,13 +136,12 @@ public class ResultService {
     }
 
     public String getResultValue( String separator, boolean printable, boolean includeUOM){
-		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 		if (GenericValidator.isBlankOrNull(result.getValue())) {
 			return "";
 		}
 
 		if (ResultType.DICTIONARY.matches(getTestType())) {
-			return printable ? dictionaryDAO.getDataForId(result.getValue()).getDictEntry() : result.getValue();
+			return printable ? getDictEntry(  ) : result.getValue();
 		} else if (ResultType.isMultiSelectVariant(getTestType())) {
 			StringBuilder buffer = new StringBuilder();
 			boolean firstPass = true;
@@ -186,6 +185,11 @@ public class ResultService {
             return result.getValue();
 		}
 	}
+
+    private String getDictEntry(  ){
+        Dictionary dictionary = dictionaryDAO.getDataForId( result.getValue() );
+        return dictionary != null ? dictionary.getDictEntry() : "";
+    }
 
     private String appendUOM( boolean includeUOM ){
         if( includeUOM && result.getAnalysis().getTest().getUnitOfMeasure() != null ){
