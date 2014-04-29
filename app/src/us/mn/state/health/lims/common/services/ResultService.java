@@ -49,7 +49,8 @@ public class ResultService {
 
 	public ResultService(Result result) {
 		this.result = result;
-		test = result.getAnalysis().getTest();
+
+		test = result.getAnalysis() != null ? result.getAnalysis().getTest() : null;
 	}
 
 	public String getLabSectionName() {
@@ -57,14 +58,18 @@ public class ResultService {
 	}
 
 	public String getTestName() {
-		return test.getTestName();
+		return test != null ? test.getTestName() : "";
 	}
 
 	public String getTestDescription() {
-		return test.getDescription();
+		return test != null ? test.getDescription() : "";
 	}
 
 	public String getSampleType() {
+        if( test == null){
+            return "";
+        }
+
 		TypeOfSampleTest sampleTestType = new TypeOfSampleTestDAOImpl().getTypeOfSampleTestForTest(test.getId());
 
 		if (sampleTestType != null) {
@@ -75,7 +80,7 @@ public class ResultService {
 	}
 
 	public String getLOINCCode() {
-		return test.getLoinc();
+		return test != null ? test.getLoinc() : "";
 	}
 
 	public String getTestTime() {
@@ -227,7 +232,7 @@ public class ResultService {
     }
 
 	public String getUOM() {
-		return test.getUnitOfMeasure().getUnitOfMeasureName();
+		return test != null ? test.getUnitOfMeasure().getUnitOfMeasureName() : "";
 	}
 
 	public double getlowNormalRange() {

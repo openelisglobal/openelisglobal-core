@@ -99,7 +99,6 @@ public abstract class ConfigurationProperties {
         SIGNATURES_ON_NONCONFORMITY_REPORTS,   //If true a space should be left for signatures on non-conformity reports
         NONCONFORMITY_RECEPTION_AS_UNIT, //If true then reception will be an option for where a non-conformity was identified
         NONCONFORMITY_SAMPLE_COLLECTION_AS_UNIT, //If true then sample collection will be an option for where a non-conformity was identified
-        PATIENT_REPORT_NO_ALERTS,    //If true there should not be an alert column on patient report
         ACCESSION_NUMBER_PREFIX,     //If SITEYEARNUM is the format then this is the prefix
         NOTE_EXTERNAL_ONLY_FOR_VALIDATION, //If true then only validation notes will be on patient report
         PHONE_FORMAT,                //Format of phone number

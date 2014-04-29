@@ -201,4 +201,10 @@
             <where>name = 'validationOnlyNotesAreExternal'</where>
         </update>
     </changeSet>
+    <changeSet id="17" author="paulsc">
+        <comment>drops  Patient report with no alerts from site_information table</comment>
+        <delete tableName="site_information" >
+            <where>name = 'Patient report with no alerts'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>
