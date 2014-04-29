@@ -661,6 +661,8 @@ public abstract class PatientReport extends Report{
                     Dictionary dictionary = new Dictionary();
                     dictionary.setId( result.getValue() );
                     dictionaryDAO.getData( dictionary );
+                    data.setAbnormalResult( new ResultService( result ).isAbnormalDictionaryResult() );
+
                     if( result.getAnalyte() != null && "Conclusion".equals( result.getAnalyte().getAnalyteName() ) ){
                         currentConclusion = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
                     }else{
