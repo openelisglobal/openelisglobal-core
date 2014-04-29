@@ -109,7 +109,6 @@ import java.util.*;
 public abstract class PatientReport extends Report{
 
     private static final DecimalFormat twoDecimalFormat = new DecimalFormat( "#.##" );
-    protected static final boolean noAlertColumn = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.PATIENT_REPORT_NO_ALERTS, "true" );
     private static String ADDRESS_DEPT_ID;
     private static String ADDRESS_COMMUNE_ID;
     protected String currentContactInfo = "";
@@ -535,11 +534,9 @@ public abstract class PatientReport extends Report{
         if( StatusService.getInstance().matches( reportAnalysis.getStatusId(), AnalysisStatus.Canceled ) ){
             data.setResult( StringUtil.getMessageForKey( "report.test.status.canceled" ) );
         }else if( reportAnalysis.isReferredOut() ){
-            if( noAlertColumn ){
                 data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
                 return;
-            }
-
+         /* Not sure which rules this would support -- above statement was conditional on no patient alerts
             if( noResults( resultList ) ){
                 data.setResult( StringUtil.getMessageForKey( "report.test.status.referredOut" ) );
             }else{
@@ -547,6 +544,7 @@ public abstract class PatientReport extends Report{
                 setReferredResult( data, resultList.get( 0 ) );
                 setNormalRange( data, test, resultList.get( 0 ) );
             }
+         */
         }else if( !StatusService.getInstance().matches( reportAnalysis.getStatusId(), AnalysisStatus.Finalized ) ){
             sampleCompleteMap.put( currentSampleService.getAccessionNumber(), Boolean.FALSE );
             data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
@@ -626,9 +624,9 @@ public abstract class PatientReport extends Report{
                             data.setAbnormalResult( Boolean.TRUE );
                         }
                         if( !GenericValidator.isBlankOrNull( imbed ) ){
-                            return " (<b>" + flag + "," + imbed + "</b>)";
+                            return " <b>" + flag + "," + imbed + "</b>";
                         }else{
-                            return " (<b>" + flag + "</b>)";
+                            return " <b>" + flag + "</b>";
                         }
                     }
                 }

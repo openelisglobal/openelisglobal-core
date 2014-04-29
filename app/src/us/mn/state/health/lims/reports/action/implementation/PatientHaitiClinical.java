@@ -68,7 +68,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 	@Override
 	protected String reportFileName(){
-		return noAlertColumn ? "PatientReportHaitiNoAlerts" : "PatientReportHaitiClinical";
+		return "PatientReportHaitiNoAlerts";
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
         String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER );
 
-		if( noAlertColumn && !referralResults.isEmpty()){
+		if( !referralResults.isEmpty()){
 		
 			boolean referralTestAssigned = false;
 			for( ReferralResult referralResult : referralResults){
@@ -154,13 +154,12 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 				if(GenericValidator.isBlankOrNull(reportReferralResultValue)){
 					sampleCompleteMap.put(currentSampleService.getAccessionNumber(), Boolean.FALSE);
-					data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress")
-							+ (augmentResultWithFlag() ? getResultFlag(referralResult.getResult(), "A") : ""));
+					data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress"));
 				}else{
-					data.setResult(reportReferralResultValue + (augmentResultWithFlag() ? getResultFlag(referralResult.getResult(), "A") : ""));
+					data.setResult( reportReferralResultValue );
 				}
 
-				data.setAlerts(getResultFlag(referralResult.getResult(), "A"));
+				data.setAlerts(getResultFlag(referralResult.getResult(), null));
 				data.setHasRangeAndUOM(referralResult.getResult() != null && "N".equals(referralResult.getResult().getResultType()));
 
 				reportItems.add(data);
@@ -313,8 +312,8 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 	@Override
 	protected void setReferredResult(ClinicalPatientData data, Result result){
-		data.setResult(data.getResult() + (augmentResultWithFlag() ? getResultFlag(result, "R") : ""));
-		data.setAlerts(getResultFlag(result, "R"));
+		data.setResult(data.getResult() );
+		data.setAlerts(getResultFlag(result, null));
 	}
 
 	@Override

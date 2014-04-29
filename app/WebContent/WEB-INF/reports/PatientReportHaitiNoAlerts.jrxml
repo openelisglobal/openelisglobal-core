@@ -61,6 +61,7 @@
 	<field name="collectionDateTime" class="java.lang.String"/>
 	<field name="correctedResult" class="java.lang.Boolean"/>
 	<field name="parentMarker" class="java.lang.Boolean"/>
+	<field name="alerts" class="java.lang.String"/>
 	<group name="person" isStartNewPage="true" isResetPageNumber="true">
 		<groupExpression><![CDATA[$F{accessionNumber}]]></groupExpression>
 	</group>
@@ -357,7 +358,7 @@
 					<text><![CDATA[Unité]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="256" y="14" width="75" height="29" backcolor="#CCCCCC"/>
+					<reportElement mode="Opaque" x="162" y="14" width="118" height="29" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<text><![CDATA[Résultat]]></text>
 				</staticText>
@@ -376,9 +377,9 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{testSection}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="162" y="14" width="94" height="29" isPrintWhenDetailOverflows="true" backcolor="#CCCCCC"/>
+					<reportElement mode="Opaque" x="280" y="14" width="50" height="29" isPrintWhenDetailOverflows="true" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<text><![CDATA[Date/Heure de Collecte]]></text>
+					<text><![CDATA[Alerte]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -403,20 +404,20 @@
 		<band height="158" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName1">
-					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="siteLogo">
 					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName1">
+					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA["Résultats d'Analyses"]]></subreportParameterExpression>
@@ -472,9 +473,7 @@
 					</graphicElement>
 				</rectangle>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToTallestObject" x="256" y="0" width="74" height="18">
-						<printWhenExpression><![CDATA[!$F{abnormalResult}]]></printWhenExpression>
-					</reportElement>
+					<reportElement stretchType="RelativeToTallestObject" x="163" y="0" width="117" height="18"/>
 					<box topPadding="2" bottomPadding="2" rightPadding="4">
 						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
 						<leftPen lineWidth="0.5"/>
@@ -510,28 +509,15 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{testRefRange}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToTallestObject" x="256" y="0" width="74" height="18">
-						<printWhenExpression><![CDATA[$F{abnormalResult}]]></printWhenExpression>
-					</reportElement>
-					<box topPadding="2" bottomPadding="2" rightPadding="4">
-						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
-						<leftPen lineWidth="0.5"/>
-						<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
-						<rightPen lineWidth="0.5"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
-						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{result}]]></textFieldExpression>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="162" y="0" width="94" height="18" isPrintWhenDetailOverflows="true" backcolor="#FFFFFF"/>
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="280" y="0" width="50" height="18" backcolor="#FFFFFF"/>
 					<box>
 						<leftPen lineWidth="0.5"/>
 						<rightPen lineWidth="0.5"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{collectionDateTime}]]></textFieldExpression>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+						<font fontName="SansSerif" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{alerts}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="474" y="0" width="78" height="18"/>
@@ -578,9 +564,9 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="67" splitType="Stretch">
+		<band height="83" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="4" width="370" height="61"/>
+				<reportElement x="0" y="19" width="370" height="61"/>
 				<box topPadding="0" leftPadding="4">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -592,7 +578,7 @@
 				<text><![CDATA[Remarques générales du laboratoire]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="370" y="4" width="182" height="61"/>
+				<reportElement x="370" y="19" width="182" height="61"/>
 				<box leftPadding="4">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -604,16 +590,21 @@
 				<text><![CDATA[Signature / Validation]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="372" y="44" width="100" height="20"/>
+				<reportElement x="372" y="59" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<line>
-				<reportElement key="line" x="0" y="65" width="552" height="1" forecolor="#000000"/>
+				<reportElement key="line" x="0" y="80" width="552" height="1" forecolor="#000000"/>
 				<graphicElement>
 					<pen lineWidth="2.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="552" height="19"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[ B = Inférieure à la Normale        E =  Supérieure à la Normale]]></text>
+			</staticText>
 		</band>
 	</columnFooter>
 	<pageFooter>
