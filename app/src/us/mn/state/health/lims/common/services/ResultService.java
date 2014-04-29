@@ -296,6 +296,16 @@ public class ResultService {
 		return resultLimit;
 	}
 
+    public boolean isAbnormalDictionaryResult(){
+        if( result.getValue() != null && ResultType.isDictionaryType( result.getResultType() )){
+            List<ResultLimit> limits = getResultLimits();
+            if( !limits.isEmpty()){
+                return !result.getValue().equals( limits.get(0).getDictionaryNormalId() );
+            }
+        }
+
+        return false;
+    }
 	public String getLastUpdatedTime() {
 		return  DateUtil.convertTimestampToStringDate(result.getLastupdated());
 	}
