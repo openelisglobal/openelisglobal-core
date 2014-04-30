@@ -711,7 +711,7 @@ public abstract class PatientReport extends Report{
                         @Override
                         public int compare( Result o1, Result o2 ){
                             if( o1.getGrouping() == o2.getGrouping() ){
-                                return Integer.parseInt( o1.getSortOrder() ) - Integer.parseInt( o2.getSortOrder() );
+                                return Integer.parseInt( o1.getId() ) - Integer.parseInt( o2.getId() );
                             }else{
                                 return o1.getGrouping() - o2.getGrouping();
                             }
