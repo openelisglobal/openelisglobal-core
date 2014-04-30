@@ -66,12 +66,12 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 
             //The pText stuff is to handle accents in names
 			if (queryFirstName) {
-                byte ptext[] = firstName.getBytes();
-				query.setString(FIRST_NAME_PARAM, new String(ptext, UTF_8));
+                byte firstNameBytes[] = firstName.getBytes("ISO-8859-1");
+				query.setString(FIRST_NAME_PARAM, new String(firstNameBytes, UTF_8));
 			}
 			if (queryLastName) {
-                byte ptext[] = lastName.getBytes();
-				query.setText(LAST_NAME_PARAM, new String(ptext, UTF_8));
+                byte lastNameBytes[] = lastName.getBytes("ISO-8859-1");
+				query.setText(LAST_NAME_PARAM, new String(lastNameBytes, UTF_8));
 			}
 			if (queryNationalId) {
 				query.setString(NATIONAL_ID_PARAM, nationalID);
