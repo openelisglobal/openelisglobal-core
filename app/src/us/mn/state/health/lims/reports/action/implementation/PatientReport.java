@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.reports.action.implementation;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
 import us.mn.state.health.lims.address.dao.PersonAddressDAO;
@@ -816,7 +817,8 @@ public abstract class PatientReport extends Report{
         data.setSubjectNumber( getLazyPatientIdentity( subjectNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID ) );
         data.setHealthRegion( getLazyPatientIdentity( healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID ) );
         data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID ) );
-        data.setTestName( testName );
+        testName = StringEscapeUtils.escapeHtml( testName ).replace( "&mu", "&micro" );
+        data.setTestName(  testName  );
         data.setPatientSiteNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, currentSampleService.getId() ) );
 
         if( doAnalysis ){
