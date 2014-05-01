@@ -35,6 +35,7 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -45,6 +46,7 @@ import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -108,6 +110,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	private static String REFERRAL_CONFORMATION_ID;
 
 	private boolean useTechnicianName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
+	private boolean useRejected = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.allowResultRejection, "true");
 	private boolean alwaysValidate = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ALWAYS_VALIDATE_RESULTS, "true");
 	private boolean supportReferrals = FormFields.getInstance().useField( Field.ResultsReferral );
 	private String statusRuleSet = ConfigurationProperties.getInstance().getPropertyValueUpperCase( Property.StatusRules );
@@ -132,6 +135,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 		resultValidation.setSupportReferrals(supportReferrals);
 		resultValidation.setUseTechnicianName(useTechnicianName);
+		resultValidation.setUseRejected(useRejected);
 
 		ResultsPaging paging = new ResultsPaging();
 		paging.updatePagedResults(request, dynaForm);
@@ -344,7 +348,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 	private boolean isModified(TestResultItem item){
 		return item.getIsModified()
-				&& (ResultUtil.areResults(item) || ResultUtil.areNotes(item) || ResultUtil.isReferred(item) || ResultUtil.isForcedToAcceptance(item));
+				&& (ResultUtil.areResults(item) || ResultUtil.areNotes(item) || ResultUtil.isReferred(item) || ResultUtil.isForcedToAcceptance(item) || ResultUtil.isRejected(item));
 	}
 
 	private void createResultsFromItems( List<Note> noteList ){
@@ -360,6 +364,17 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
             Note note = noteService.createSavableNote( NoteType.INTERNAL, testResultItem.getNote(), RESULT_SUBJECT, currentUserId);
             if( note != null){
                 noteList.add( note );
+            }
+            if (testResultItem.isRejected()) {
+                String rejectedReasonId = testResultItem.getRejectReasonId();
+                for (IdValuePair rejectReason : DisplayListService.getList(ListType.REJECTION_REASONS)) {
+                    if (rejectedReasonId.equals(rejectReason.getId())) {
+                        String reason = rejectReason.getValue();
+                        Note rejectNote = noteService.createSavableNote( NoteType.REJECTION_REASON, reason.substring(reason.indexOf(".") + 1), RESULT_SUBJECT, currentUserId);
+                        noteList.add(rejectNote);
+                        break;
+                    }
+                }
             }
 
             ResultSaveBean bean = ResultSaveBeanAdapter.fromTestResultItem(testResultItem);
@@ -391,7 +406,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	protected boolean analysisShouldBeUpdated(TestResultItem testResultItem, Result result){
 		return result != null && !GenericValidator.isBlankOrNull(result.getValue())
 				|| (supportReferrals && ResultUtil.isReferred(testResultItem))
-				|| ResultUtil.isForcedToAcceptance(testResultItem);
+				|| ResultUtil.isForcedToAcceptance(testResultItem) || testResultItem.isRejected();
 	}
 
 	private void addResult(Result result, TestResultItem testResultItem, Analysis analysis, boolean multipleResultsForAnalysis){
@@ -486,7 +501,9 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
     }
 
     private String getStatusForTestResult(TestResultItem testResult){
-		if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
+        if (testResult.isRejected()) {
+            return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected);
+        }else if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance);
 		}else if(noResults(testResult.getResultValue(), testResult.getMultiSelectResultValues(), testResult.getResultType())){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted);

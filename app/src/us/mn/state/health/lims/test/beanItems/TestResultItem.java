@@ -124,7 +124,28 @@ public class TestResultItem implements ResultItem, Serializable{
 	private String nextVisitDate;
 	private String forceTechApproval;
     private String reflexJSONResult;
+    private boolean rejected = false;
+    private String rejectReasonId;
+    private String considerRejectReason;
 	
+    public String getConsiderRejectReason() {
+        return considerRejectReason;
+    }
+    public void setConsiderRejectReason(String considerRejectReason) {
+        this.considerRejectReason = considerRejectReason;
+    }
+    public String getRejectReasonId() {
+        return rejectReasonId;
+    }
+    public void setRejectReasonId(String rejectReasonId) {
+        this.rejectReasonId = rejectReasonId;
+    }
+    public boolean isRejected() {
+        return rejected;
+    }
+    public void setRejected(boolean rejected) {
+        this.rejected = rejected;
+    }
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}

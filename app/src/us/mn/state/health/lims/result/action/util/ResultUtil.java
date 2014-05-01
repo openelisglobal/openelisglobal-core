@@ -72,6 +72,9 @@ public class ResultUtil {
 		return testResultItem.isReferredOut();
 	}
 	
+    public static boolean isRejected(TestResultItem testResultItem) {
+        return testResultItem.isRejected();
+    }
 	public static boolean areResults(TestResultItem item) {
 		return !(GenericValidator.isBlankOrNull(item.getResultValue()) || 
 				(ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getResultValue()))) ||

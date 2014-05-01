@@ -17,26 +17,18 @@
  */
 package us.mn.state.health.lims.result.action;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
+import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
 import us.mn.state.health.lims.referral.util.ReferralUtil;
@@ -47,6 +39,11 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.dao.TestSectionDAO;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.TestSection;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 
@@ -66,6 +63,9 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		PropertyUtils.setProperty(dynaForm, "currentDate", currentDate);
 		PropertyUtils.setProperty(dynaForm, "logbookType", request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "referralReasons", ReferralUtil.getReferralReasons());
+		List<IdValuePair> rejectReasons = DisplayListService.getList(ListType.REJECTION_REASONS);
+		rejectReasons.add(0, new IdValuePair("0",""));
+		PropertyUtils.setProperty(dynaForm, "rejectReasons", rejectReasons);
 
 		setLogbookRequest(request.getParameter("type"));
 

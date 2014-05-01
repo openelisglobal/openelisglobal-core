@@ -84,4 +84,11 @@
             <where>test_id = (select id from clinlims.test where name = 'Malaria') </where>
         </update>
     </changeSet>
+    <changeSet author="jfurlong" id="1" context="haitiLNSP">
+        <comment>Makes allowResultRejection active</comment>
+        <update tableName="site_information" schemaName="">
+            <column name="value" value="true" />
+            <where>name = 'allowResultRejection'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
