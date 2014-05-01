@@ -187,3 +187,45 @@ function removeMultiSelect(target){
     $jq(".addMultiSelect" + target.split("_")[0]).last().show();
     removeAllMultiSelectionsFor( target );
 }
+function resetCascadingMultiSelect(index) {
+	// remove all divs except for the first multiselect block				
+	$jq('#cell_' + index).find('.removeMultiSelect' + index).each(function(i) { 
+		$jq(this).click();
+	});					
+	// remove list items 
+	$jq('#cascadingMulti_' + index + '_0').find('.asmListItemRemove').each(function(i) { 
+		$jq(this).click();
+	});		
+}
+function disableCascadingMultiSelect(index){
+	$jq('#cascadingMulti_' + index + '_0').find('.asmSelect').each(function(i) { 
+		$jq(this).attr('disabled', 'true');
+	});		        
+	$jq('#cascadingMulti_' + index + '_0').find('.addMultiSelect' + index).each(function(i) { 
+		$jq(this).attr('disabled', 'true');
+	});		        
+}
+function enableCascadingMultiSelect(index) {
+	$jq('#cascadingMulti_' + index + '_0').find('.asmSelect').each(function(i) { 
+		$jq(this).removeAttr('disabled');
+	});		        
+	$jq('#cascadingMulti_' + index + '_0').find('.addMultiSelect' + index).each(function(i) { 
+		$jq(this).removeAttr('disabled');
+	});	
+}
+function resetMultiSelect(index) {
+	// remove list items 
+	$jq('#cell_' + index).find('.asmListItemRemove').each(function(i) { 
+		$jq(this).click();
+	});		
+}
+function disableMultiSelect(index){
+	$jq('#cell_' + index).find('.asmSelect').each(function(i) { 
+		$jq(this).attr('disabled', 'true');
+	});	
+}
+function enableMultiSelect(index) {
+	$jq('#cell_' + index).find('.asmSelect').each(function(i) { 
+		$jq(this).removeAttr('disabled');
+	});		        
+}

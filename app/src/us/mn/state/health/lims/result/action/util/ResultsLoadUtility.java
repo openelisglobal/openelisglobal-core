@@ -686,10 +686,11 @@ public class ResultsLoadUtility {
 		testItem.setReflexGroup(analysisService.getTriggeredReflex());
 		testItem.setChildReflex(analysisService.getTriggeredReflex() && analysisService.resultIsConclusion( result ));
         testItem.setPastNotes( notes );
-
+        testItem.setRejected(StatusService.getInstance().matches(analysisService.getStatusId(), AnalysisStatus.TechnicalRejected ));
 		//testItem.setDisplayResultAsLog(hasLogValue(analysisService.getAnalysis(), testItem.getResultValue()));
         testItem.setDisplayResultAsLog(hasLogValue(testService));
-        testItem.setNonconforming( analysisService.isParentNonConforming() );
+        testItem.setNonconforming( analysisService.isParentNonConforming() || 
+                StatusService.getInstance().matches(analysisService.getStatusId(), AnalysisStatus.TechnicalRejected ));
         Result quantifiedResult = analysisService.getQuantifiedResult();
         if( quantifiedResult != null){
             testItem.setQualifiedResultId( quantifiedResult.getId() );

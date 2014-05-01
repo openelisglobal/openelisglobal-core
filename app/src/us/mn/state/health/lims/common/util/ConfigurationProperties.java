@@ -76,6 +76,7 @@ public abstract class ConfigurationProperties {
         roleRequiredForModifyResults,//If true a separate role is needed to modify reports
         notesRequiredForModifyResults,//If true a note is required when a result is modified
         resultTechnicianName,        //If true the technicians name is needed for results
+        allowResultRejection,        //If true then a technician has the ability to reject an individual test and select a reason for rejection
         autoFillTechNameBox,         //If true a box will be provided to auto-fill technicians name for all results on page
         autoFillTechNameUser,        //If true the technicians name will be auto-filled with the name of the logged in user
         AUTOFILL_COLLECTION_DATE,    //If true the collection date will be auto-filled with current date
