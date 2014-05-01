@@ -519,7 +519,7 @@ public abstract class PatientReport extends Report{
         data.setLastName( patientService.getLastName() );
     }
 
-    protected void reportResultAndConclusion( ClinicalPatientData data, Timestamp lastReportTime ){
+    protected void reportResultAndConclusion( ClinicalPatientData data ){
         List<Result> resultList = resultDAO.getResultsByAnalysis( reportAnalysis );
 
 
@@ -838,7 +838,7 @@ public abstract class PatientReport extends Report{
         data.setLabOrderType( createLabOrderType() );
 
         if( doAnalysis ){
-            reportResultAndConclusion( data, lastReportTime );
+            reportResultAndConclusion( data );
         }
 
         return data;
