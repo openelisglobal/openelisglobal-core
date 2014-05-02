@@ -176,7 +176,7 @@
 			<form-property name="inventoryItems" type="java.util.ArrayList" />
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
-			<form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="rejectReasons" type="java.util.Collection" />
 		</form-bean>
 
 		<form-bean name="PatientResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -198,6 +198,7 @@
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+            <form-property name="rejectReasons" type="java.util.Collection" />
 		</form-bean>
 
 		<form-bean name="AccessionResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -218,6 +219,7 @@
 			<form-property name="searchFinished" type="java.lang.Boolean" initial="false" />
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
+            <form-property name="rejectReasons" type="java.util.Collection" />
 		</form-bean>
 
 		<form-bean name="StatusResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -240,6 +242,7 @@
 			<form-property name="searchFinished" type="java.lang.Boolean" initial="false" />
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
+            <form-property name="rejectReasons" type="java.util.Collection" />
 		</form-bean>
 
 		<form-bean name="InventoryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">

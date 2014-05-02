@@ -179,7 +179,7 @@ public class AnalysisService{
     }
 
     public boolean resultIsConclusion(Result currentResult){
-        if( analysis == null){return false; }
+        if( analysis == null || currentResult == null){return false; }
         List<Result> results = resultDAO.getResultsByAnalysis(analysis);
         if (results.size() == 1) {
             return false;

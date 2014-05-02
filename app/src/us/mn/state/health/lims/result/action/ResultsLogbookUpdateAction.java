@@ -369,8 +369,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
                 String rejectedReasonId = testResultItem.getRejectReasonId();
                 for (IdValuePair rejectReason : DisplayListService.getList(ListType.REJECTION_REASONS)) {
                     if (rejectedReasonId.equals(rejectReason.getId())) {
-                        String reason = rejectReason.getValue();
-                        Note rejectNote = noteService.createSavableNote( NoteType.REJECTION_REASON, reason.substring(reason.indexOf(".") + 1), RESULT_SUBJECT, currentUserId);
+                        Note rejectNote = noteService.createSavableNote( NoteType.REJECTION_REASON, rejectReason.getValue(), RESULT_SUBJECT, currentUserId);
                         noteList.add(rejectNote);
                         break;
                     }
