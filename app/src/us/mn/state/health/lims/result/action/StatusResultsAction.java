@@ -36,7 +36,6 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
-import us.mn.state.health.lims.referral.util.ReferralUtil;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.action.util.ResultsPaging;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -93,14 +92,14 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 		String newRequest = request.getParameter("blank");
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
-		PropertyUtils.setProperty(dynaForm, "referralReasons", ReferralUtil.getReferralReasons());
+		PropertyUtils.setProperty(dynaForm, "referralReasons", DisplayListService.getList( DisplayListService.ListType.REFERRAL_REASONS));
         PropertyUtils.setProperty( dynaForm, "rejectReasons", DisplayListService.getNumberedListWithLeadingBlank( DisplayListService.ListType.REJECTION_REASONS ) );
 
 		ResultsPaging paging = new ResultsPaging();
 
 		String newPage = request.getParameter("page");
 		if (GenericValidator.isBlankOrNull(newPage)) {
-			List<TestResultItem> tests = new ArrayList<TestResultItem>();
+			List<TestResultItem> tests;
 			if (GenericValidator.isBlankOrNull(newRequest) || newRequest.equals("false")) {
 				tests = setSearchResults(dynaForm);
 
@@ -175,10 +174,10 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 
 	private List<TestResultItem> getSelectedTests(DynaActionForm dynaForm) {
 		String collectionDate = dynaForm.getString("collectionDate");
-		String recievedDate = dynaForm.getString("recievedDate");
+		String receivedDate = dynaForm.getString("recievedDate");
 		String analysisStatus = dynaForm.getString("selectedAnalysisStatus");
 		String sampleStatus = dynaForm.getString("selectedSampleStatus");
-		String test = (String) dynaForm.getString("selectedTest");
+		String test = dynaForm.getString("selectedTest");
 
 		List<Analysis> analysisList = new ArrayList<Analysis>();
 
@@ -189,8 +188,8 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 			}
 		}
 
-		if (!GenericValidator.isBlankOrNull(recievedDate)) {
-			analysisList = blendLists(analysisList, getAnalysisForRecievedDate(recievedDate));
+		if (!GenericValidator.isBlankOrNull(receivedDate)) {
+			analysisList = blendLists(analysisList, getAnalysisForRecievedDate(receivedDate));
 			if (analysisList.isEmpty()) {
 				return new ArrayList<TestResultItem>();
 			}
