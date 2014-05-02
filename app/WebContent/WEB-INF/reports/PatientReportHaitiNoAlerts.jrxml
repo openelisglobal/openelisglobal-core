@@ -68,7 +68,7 @@
 	<group name="Accession Number" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{accessionNumber}]]></groupExpression>
 		<groupHeader>
-			<band height="78" splitType="Prevent">
+			<band height="92" splitType="Prevent">
 				<line>
 					<reportElement x="-1" y="-1" width="548" height="1"/>
 				</line>
@@ -97,7 +97,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{patientName}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="152" y="64" width="241" height="14"/>
+					<reportElement x="152" y="78" width="241" height="14"/>
 					<box leftPadding="4">
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -109,7 +109,7 @@
 					<textFieldExpression class="java.lang.String"><![CDATA["No d'ordre: " + $F{accessionNumber}]]></textFieldExpression>
 				</textField>
 				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-					<reportElement x="0" y="64" width="132" height="14"/>
+					<reportElement x="0" y="78" width="132" height="14"/>
 					<box leftPadding="0">
 						<pen lineWidth="0.0"/>
 						<topPen lineWidth="0.0"/>
@@ -321,6 +321,30 @@
 					</box>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{patientSiteNumber}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="56" width="89" height="14" backcolor="#CCCCCC"/>
+					<box leftPadding="4">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[Site Demandeur]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="89" y="56" width="463" height="14"/>
+					<box leftPadding="4">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{siteInfo}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
