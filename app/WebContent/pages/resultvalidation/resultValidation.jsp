@@ -157,6 +157,9 @@ function /*void*/ makeDirty(){
 }
 
 function savePage() {
+    if( !confirm("<%=StringUtil.getMessageForKey("validation.save.message")%>")){
+        return;
+    }
 
   window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
