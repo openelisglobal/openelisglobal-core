@@ -36,7 +36,6 @@ import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
 import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
 import us.mn.state.health.lims.patient.valueholder.Patient;
-import us.mn.state.health.lims.referral.util.ReferralUtil;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.action.util.ResultsPaging;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
@@ -59,7 +58,7 @@ public class PatientResultsAction extends BaseAction {
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 		PropertyUtils.setProperty(dynaForm, "displayTestKit", Boolean.FALSE);
-		PropertyUtils.setProperty(dynaForm, "referralReasons", ReferralUtil.getReferralReasons());
+		PropertyUtils.setProperty(dynaForm, "referralReasons", DisplayListService.getList( DisplayListService.ListType.REFERRAL_REASONS));
         PropertyUtils.setProperty( dynaForm, "rejectReasons", DisplayListService.getNumberedListWithLeadingBlank( DisplayListService.ListType.REJECTION_REASONS ) );
         PatientSearch patientSearch = new PatientSearch();
         patientSearch.setLoadFromServerWithPatient( true );

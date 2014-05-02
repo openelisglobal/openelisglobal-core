@@ -25,6 +25,7 @@ import org.apache.struts.action.DynaActionForm;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.IdValuePair;
@@ -41,7 +42,6 @@ import us.mn.state.health.lims.referral.dao.ReferralDAO;
 import us.mn.state.health.lims.referral.dao.ReferralResultDAO;
 import us.mn.state.health.lims.referral.daoimpl.ReferralDAOImpl;
 import us.mn.state.health.lims.referral.daoimpl.ReferralResultDAOImpl;
-import us.mn.state.health.lims.referral.util.ReferralUtil;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.result.dao.ResultDAO;
@@ -91,7 +91,7 @@ public class ReferredOutAction extends BaseAction {
 
 		List<ReferralItem> referralItems = getReferralItems();
 		PropertyUtils.setProperty(dynaForm, "referralItems", referralItems);
-		PropertyUtils.setProperty(dynaForm, "referralReasons", ReferralUtil.getReferralReasons());
+		PropertyUtils.setProperty(dynaForm, "referralReasons", DisplayListService.getList( DisplayListService.ListType.REFERRAL_REASONS ));
 
 		List<IdValuePair> referralOrganizations = getReferralOrganizations();
 		PropertyUtils.setProperty(dynaForm, "referralOrganizations", referralOrganizations);

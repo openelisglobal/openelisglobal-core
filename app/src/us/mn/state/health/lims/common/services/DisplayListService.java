@@ -33,6 +33,8 @@ import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.qaevent.dao.QaEventDAO;
 import us.mn.state.health.lims.qaevent.daoimpl.QaEventDAOImpl;
 import us.mn.state.health.lims.qaevent.valueholder.QaEvent;
+import us.mn.state.health.lims.referral.daoimpl.ReferralReasonDAOImpl;
+import us.mn.state.health.lims.referral.valueholder.ReferralReason;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -68,7 +70,8 @@ public class DisplayListService implements LocaleChangeListener {
         PATIENT_SEARCH_CRITERIA,
         PANELS,
         TESTS,
-        REJECTION_REASONS
+        REJECTION_REASONS,
+        REFERRAL_REASONS
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
@@ -96,6 +99,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.PANELS, createPanelList());
         typeToListMap.put(ListType.TESTS, createTestList());
         typeToListMap.put(ListType.REJECTION_REASONS,createFromDictionaryCategory("resultRejectionReasons"));
+        typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
@@ -120,6 +124,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.PANELS, createPanelList());
         dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
         typeToListMap.put(ListType.REJECTION_REASONS,createFromDictionaryCategory("resultRejectionReasons"));
+        typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
     }
 
     public static List<IdValuePair> getList(ListType listType) {
@@ -207,6 +212,17 @@ public class DisplayListService implements LocaleChangeListener {
 		}
 		return genders;
 	}
+
+    private static List<IdValuePair> createReferralReasonList(){
+            List<IdValuePair> referralReasons = new ArrayList<IdValuePair>();
+            List<ReferralReason> reasonList = new ReferralReasonDAOImpl().getAllReferralReasons();
+
+            for( ReferralReason reason : reasonList){
+                referralReasons.add(new IdValuePair(reason.getId(), reason.getLocalizedName()));
+            }
+
+        return referralReasons;
+    }
 
     private static List<IdValuePair> createPanelList(){
         ArrayList<IdValuePair> panels = new ArrayList<IdValuePair>(  );
