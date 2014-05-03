@@ -240,10 +240,11 @@ function validateForm(){
 	return true;
 }
 
-function /*void*/ handleReferralCheckChange(checkbox,  index ){
+function handleReferralCheckChange(checkbox,  index ){
 	var referralReason = $( "referralReasonId_" + index );
 	referralReason.value = 0;
 	referralReason.disabled = !checkbox.checked;
+    $("shadowReferred_" + index).value = checkbox.checked;
 }
 
 function /*void*/ handleReferralReasonChange(select,  index ){
@@ -860,7 +861,8 @@ function forceTechApproval(checkbox, index ){
 		</td>
 		<% if( ableToRefer ){ %>
 		<td style="white-space: nowrap" class="ruled">
-		<html:hidden name="testResult" property="referralId" indexed='true'/>
+            <html:hidden name="testResult" property="referralId" indexed='true'/>
+            <html:hidden name="testResult" property="shadowReferredOut" indexed="true" styleId='<%="shadowReferred_" + index %>' />
 		<% if(GenericValidator.isBlankOrNull(testResult.getReferralId()) || testResult.isReferralCanceled()){  %>
 			<html:checkbox name="testResult"
 						   property="referredOut"
@@ -876,7 +878,7 @@ function forceTechApproval(checkbox, index ){
 			<select name="<%="testResult[" + index + "].referralReasonId" %>"
 			        id='<%="referralReasonId_" + index%>'
 					onchange='<%="markUpdated(" + index + "); handleReferralReasonChange( this, " + index + ")" %>'
-			        <% out.print(testResult.isReferredOut() && "0".equals(testResult.getReferralReasonId()) ? "" : "disabled='true'"); %> >
+			        <% out.print(testResult.isShadowReferredOut() && "0".equals(testResult.getReferralReasonId()) ? "" : "disabled='true'"); %> >
 					<option value='0' >
 					   <logic:equal name="testResult" property="referralCanceled" value="true"  >
 					   		<bean:message key="referral.canceled" />

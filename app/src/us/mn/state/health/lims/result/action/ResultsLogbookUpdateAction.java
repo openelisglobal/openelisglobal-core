@@ -439,7 +439,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		if(supportReferrals){
 			// referredOut means the referral checkbox was checked, repeating
 			// analysis means that we have multi-select results, so only do one.
-			if(testResultItem.isReferredOut() && newAnalysisInLoop){
+			if(testResultItem.isShadowReferredOut() && newAnalysisInLoop){
 				// If it is a new result or there is no referral ID that means
 				// that a new referral has to be created if it was checked and
 				// it was canceled then we are un-canceling a canceled referral

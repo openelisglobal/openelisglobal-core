@@ -105,6 +105,8 @@ public class TestResultItem implements ResultItem, Serializable{
 	private boolean readOnly = false;
 	private boolean referredOut = false;
 	private boolean referralCanceled = false;
+    //This is the workaround for the checkbox stickiness issue
+    private boolean shadowReferredOut = false;
 	private String referralId = "";
 	private String referralReasonId = "";
 	private String multiSelectResultValues;
@@ -192,8 +194,15 @@ public class TestResultItem implements ResultItem, Serializable{
 		this.referredOut = referredOut;
 	}
 
+    public boolean isShadowReferredOut(){
+        return shadowReferredOut;
+    }
 
-	public String getTechnicianSignatureId() {
+    public void setShadowReferredOut( boolean shadowReferredOut ){
+        this.shadowReferredOut = shadowReferredOut;
+    }
+
+    public String getTechnicianSignatureId() {
 		return technicianSignatureId;
 	}
 	public void setTechnicianSignatureId(String technicianId) {

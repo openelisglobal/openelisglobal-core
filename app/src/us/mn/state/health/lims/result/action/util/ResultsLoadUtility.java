@@ -674,6 +674,7 @@ public class ResultsLoadUtility {
 		testItem.setReadOnly(isLockCurrentResults() && result != null && result.getId() != null);
 		testItem.setReferralId(referralId);
 		testItem.setReferredOut(!GenericValidator.isBlankOrNull(referralId) && !referralCanceled);
+        testItem.setShadowReferredOut( testItem.isReferredOut() );
 		testItem.setReferralReasonId(referralReasonId);
 		testItem.setReferralCanceled(referralCanceled);
 		testItem.setInitialSampleCondition(initialSampleConditions);

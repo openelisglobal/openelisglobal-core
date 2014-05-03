@@ -69,7 +69,7 @@ public class ResultUtil {
 	}
 	
 	public static boolean isReferred(TestResultItem testResultItem) {
-		return testResultItem.isReferredOut();
+		return testResultItem.isShadowReferredOut();
 	}
 	
     public static boolean isRejected(TestResultItem testResultItem) {
