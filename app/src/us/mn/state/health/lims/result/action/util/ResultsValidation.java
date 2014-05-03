@@ -119,7 +119,7 @@ public class ResultsValidation {
 	}
 	
 	private void validateReferral(TestResultItem item, List<ActionError> errors) {
-		if (item.isReferredOut() && "0".equals(item.getReferralReasonId())) {
+		if (item.isShadowReferredOut() && "0".equals(item.getReferralReasonId())) {
 			errors.add(new ActionError("error.referral.noReason"));
 		}
 	}
