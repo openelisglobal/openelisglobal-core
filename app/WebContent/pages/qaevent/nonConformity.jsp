@@ -93,56 +93,32 @@ function setMyCancelAction() {
 	setAction(window.document.forms[0], 'Cancel', 'no', '');
 }
 
-function /*void*/onChangeSearchNumber() {
-	var searchNumber = $("searchId").value;
+function onChangeSearchNumber(searchField) {
 	var searchButton = $("searchButtonId");
-	if (searchNumber === "") {
+	if (searchField.value === "") {
 		searchButton.disable();
 	} else {
-	    // validateAccessionNumberOnServer( field );
-        searchButton.enable();
-	    //searchButton.focus();
+	    validateAccessionNumberOnServer( false, searchField.id, searchField.value, processAccessionSuccess);
 	}
-}
-
-function validateAccessionNumberOnServer( field )
-{
-	new Ajax.Request (
-                      'ajaxXML',  //url
-                      {//options
-                      method: 'get', //http method
-                      parameters: 'provider=SampleEntryAccessionNumberValidationProvider&field=' + field.id + '&accessionNumber=' + field.value,
-                      indicator: 'throbbing',
-                      onSuccess:  processAccessionSuccess,
-                      onFailure:  processAccessionFailure
-                           }
-                          );
 }
 
 function processAccessionSuccess(xhr)
 {
+    //alert(xhr.responseText);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = false;
+	var success = message.firstChild.nodeValue == "valid";
 
-	if (message.firstChild.nodeValue == "valid"){
-		success = true;
-	}
-	setValidIndicaterOnField(success, labElement );
-	setSampleFieldValidity( success, labElement);
+    var searchButton = $("searchButtonId");
 
 	if( !success ){
 		alert( message.firstChild.nodeValue );
-	}
-
-	var searchButton = $("searchButtonId");
-	searchButton.enable();
-	searchButton.focus();
+        searchButton.disable();
+	}else {
+        searchButton.enable();
+        searchButton.focus();
+    }
 }
 
-function processAccessionFailure(xhr)
-{
-	//unhandled error: someday we should be nicer to the user
-}
 
 /**
  * make the text of the blank option for sample type say "all types"
@@ -248,7 +224,7 @@ function validateRecordNumber( recordElement){
 }
 
 function recordNumberSuccess( xhr){
-	//alert(xhr.responseText);		
+    //alert(xhr.responseText);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
 	var success = message.firstChild.nodeValue == "Record not Found";
@@ -346,7 +322,7 @@ function  processPhoneSuccess(xhr){
 	:
 	<input type="text" name="searchNumber"
 		maxlength='<%=Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-		value="" onkeyup="onChangeSearchNumber()" id="searchId">
+		value="" onchange="onChangeSearchNumber(this)" id="searchId">
 	&nbsp;
 	<input type="button" id="searchButtonId"
 		value='<%=StringUtil.getMessageForKey("label.button.search")%>'
