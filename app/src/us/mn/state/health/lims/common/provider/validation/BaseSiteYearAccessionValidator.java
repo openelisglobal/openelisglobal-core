@@ -20,6 +20,7 @@ import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValida
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -189,6 +190,20 @@ public abstract class BaseSiteYearAccessionValidator {
 		return ValidationResults.SUCCESS;
 	}
 
+
+    public String getInvalidFormatMessage( ValidationResults results ){
+        return StringUtil.getMessageForKey( "sample.entry.invalid.accession.number.format.corrected", getFormatPattern() );
+    }
+
+    private String getFormatPattern(){
+        StringBuilder format = new StringBuilder( getPrefix() );
+        format.append( DateUtil.getTwoDigitYear() );
+        for( int i = 0; i < getChangeableLength(); i++){
+            format.append( "#" );
+        }
+        return format.toString();
+    }
+
     protected abstract String getPrefix();
 
 	protected abstract int getIncrementStartIndex();
@@ -200,4 +215,6 @@ public abstract class BaseSiteYearAccessionValidator {
 	protected abstract int getSiteEndIndex();
 
 	protected abstract int getMaxAccessionLength();
+
+    protected abstract int getChangeableLength();
 }

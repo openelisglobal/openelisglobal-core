@@ -129,6 +129,9 @@ public class ProgramAccessionValidator implements IAccessionNumberValidator {
 		}
 	}
 
+    public String getInvalidFormatMessage( ValidationResults results ){
+        return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.format");
+    }
 	public String getNextAvailableAccessionNumber(String prefix){
 		String nextAccessionNumber = null;
 
