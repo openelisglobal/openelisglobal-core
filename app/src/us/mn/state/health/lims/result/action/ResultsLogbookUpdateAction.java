@@ -365,7 +365,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
             if( note != null){
                 noteList.add( note );
             }
-            if (testResultItem.isRejected()) {
+            if (testResultItem.isShadowRejected()) {
                 String rejectedReasonId = testResultItem.getRejectReasonId();
                 for (IdValuePair rejectReason : DisplayListService.getList(ListType.REJECTION_REASONS)) {
                     if (rejectedReasonId.equals(rejectReason.getId())) {
@@ -405,7 +405,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	protected boolean analysisShouldBeUpdated(TestResultItem testResultItem, Result result){
 		return result != null && !GenericValidator.isBlankOrNull(result.getValue())
 				|| (supportReferrals && ResultUtil.isReferred(testResultItem))
-				|| ResultUtil.isForcedToAcceptance(testResultItem) || testResultItem.isRejected();
+				|| ResultUtil.isForcedToAcceptance(testResultItem) || testResultItem.isShadowRejected();
 	}
 
 	private void addResult(Result result, TestResultItem testResultItem, Analysis analysis, boolean multipleResultsForAnalysis){
@@ -500,7 +500,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
     }
 
     private String getStatusForTestResult(TestResultItem testResult){
-        if (testResult.isRejected()) {
+        if (testResult.isShadowRejected()) {
             return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected);
         }else if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance);

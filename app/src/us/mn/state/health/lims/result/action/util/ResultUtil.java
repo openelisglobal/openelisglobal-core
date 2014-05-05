@@ -73,7 +73,7 @@ public class ResultUtil {
 	}
 	
     public static boolean isRejected(TestResultItem testResultItem) {
-        return testResultItem.isRejected();
+        return testResultItem.isShadowRejected();
     }
 	public static boolean areResults(TestResultItem item) {
 		return !(GenericValidator.isBlankOrNull(item.getResultValue()) || 

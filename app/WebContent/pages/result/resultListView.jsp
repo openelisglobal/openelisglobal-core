@@ -907,6 +907,8 @@ function forceTechApproval(checkbox, index ){
 		<% } %>
 		<% if( useRejected){ %> 
 			<td class="ruled" style='text-align: center'>
+			<html:hidden name="testResult" property="shadowRejected" indexed="true" styleId='<%="shadowRejected_" + index %>' />
+			
 			<input type="hidden" id='<%="isRejected_" + index %>' value='<%= testResult.isRejected() %>'/>
 	                <html:checkbox name="testResult"
 	                    styleId='<%="rejected_" + index%>' 
