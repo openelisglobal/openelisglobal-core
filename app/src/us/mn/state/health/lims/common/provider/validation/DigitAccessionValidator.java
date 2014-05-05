@@ -17,6 +17,7 @@
  */
 package us.mn.state.health.lims.common.provider.validation;
 
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -99,7 +100,15 @@ public class DigitAccessionValidator implements IAccessionNumberValidator {
 
 	}
 
-	public String getNextAvailableAccessionNumber(String prefix)throws IllegalStateException {
+    @Override
+    public String getInvalidFormatMessage( ValidationResults results ){
+        return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.format.corrected", getFormatPattern());
+    }
+
+    private String getFormatPattern(){
+        return "#######";
+    }
+    public String getNextAvailableAccessionNumber(String prefix)throws IllegalStateException {
 		String nextAccessionNumber = null;
 
 		SampleDAO accessionNumberDAO = new SampleDAOImpl();

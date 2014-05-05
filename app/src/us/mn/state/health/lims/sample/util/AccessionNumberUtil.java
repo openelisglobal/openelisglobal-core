@@ -52,6 +52,10 @@ public class AccessionNumberUtil {
 		return getAccessionNumberValidator().getInvalidMessage(result);
 	}
 
+    public static String getInvalidFormatMessage(ValidationResults result){
+        return getAccessionNumberValidator().getInvalidFormatMessage(result);
+    }
+
 	public static boolean needProgramCode(){
 		return getAccessionNumberValidator().needProgramCode();
 	}

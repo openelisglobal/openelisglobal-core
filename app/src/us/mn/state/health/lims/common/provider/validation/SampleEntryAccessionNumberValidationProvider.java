@@ -16,15 +16,14 @@
 */
 package us.mn.state.health.lims.common.provider.validation;
 
-import java.io.IOException;
+import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
+import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
+import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
-import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
-import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
+import java.io.IOException;
 
 /**
  * The QuickEntryAccessionNumberValidationProvider class is used to validate,
@@ -51,11 +50,11 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 		String recordType = request.getParameter("recordType");
 		String isRequired = request.getParameter("isRequired");
 		String projectFormName = request.getParameter("projectFormName");
-		String checkOnlyFormatAndIsUsed = request.getParameter("checkFormatAndUsed");
+		boolean checkOnlyFormatAndIsUsed = "true".equals(request.getParameter("checkFormatAndUsed"));
 
-		ValidationResults result = ValidationResults.SUCCESS;
+		ValidationResults result;
 		
-		if( "true".equals(checkOnlyFormatAndIsUsed)){
+		if( checkOnlyFormatAndIsUsed){
 			result = AccessionNumberUtil.correctFormat(accessionNumber);
 			
 			if( result == ValidationResults.SUCCESS){
@@ -66,7 +65,7 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 		}
 		
 
-		String returnData = accessionNumber;
+		String returnData;
 
 		switch( result ) {
 			case SUCCESS:
@@ -77,7 +76,7 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 			    returnData = result.name();
 			    break;
 			default:
-			    returnData = AccessionNumberUtil.getInvalidMessage(result);
+			    returnData = checkOnlyFormatAndIsUsed ? AccessionNumberUtil.getInvalidMessage(result) : AccessionNumberUtil.getInvalidFormatMessage( result );
 		}
 
 		response.setCharacterEncoding("UTF-8");
