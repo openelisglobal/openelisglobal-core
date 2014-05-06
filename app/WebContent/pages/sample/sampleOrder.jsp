@@ -70,7 +70,7 @@
     function checkAccessionNumber(accessionNumber) {
         //check if empty
         if (!fieldIsEmptyById("labNo")) {
-            validateAccessionNumberOnServer(false, accessionNumber.id, accessionNumber.value, processAccessionSuccess, null);
+            validateAccessionNumberOnServer(false, false, accessionNumber.id, accessionNumber.value, processAccessionSuccess, null);
         }
         else {
             setSampleFieldInvalid(accessionNumber.name);

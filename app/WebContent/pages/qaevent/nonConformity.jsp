@@ -98,7 +98,7 @@ function onChangeSearchNumber(searchField) {
 	if (searchField.value === "") {
 		searchButton.disable();
 	} else {
-	    validateAccessionNumberOnServer( false, searchField.id, searchField.value, processAccessionSuccess);
+	    validateAccessionNumberOnServer( true, true, searchField.id, searchField.value, processAccessionSuccess);
 	}
 }
 

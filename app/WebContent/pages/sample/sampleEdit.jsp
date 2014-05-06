@@ -141,7 +141,7 @@ function checkEditedAccessionNumber(changeElement){
 		return;
 	}
 	
-	validateAccessionNumberOnServer(true, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
+	validateAccessionNumberOnServer(true, false, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
 }
 
 function processEditAccessionSuccess(xhr)

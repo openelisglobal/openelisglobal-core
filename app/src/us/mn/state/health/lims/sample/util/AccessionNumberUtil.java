@@ -103,8 +103,8 @@ public class AccessionNumberUtil {
     	return getAccessionNumberValidator().getMaxAccessionLength();
     }
     
-    public static ValidationResults correctFormat(String accessionNumber){
-    	return getAccessionNumberValidator().validFormat(accessionNumber, false);
+    public static ValidationResults correctFormat(String accessionNumber, boolean validateYear){
+    	return getAccessionNumberValidator().validFormat(accessionNumber, validateYear);
     }
     
     public static boolean isUsed( String accessionNumber){

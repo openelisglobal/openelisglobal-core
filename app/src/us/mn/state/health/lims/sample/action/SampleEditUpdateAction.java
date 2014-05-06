@@ -389,7 +389,7 @@ public class SampleEditUpdateAction extends BaseAction {
 
 	private ActionMessages validateNewAccessionNumber(String accessionNumber) {
 		ActionMessages errors = new ActionMessages();
-		ValidationResults results = AccessionNumberUtil.correctFormat(accessionNumber);
+		ValidationResults results = AccessionNumberUtil.correctFormat(accessionNumber, false);
 
 		if (results != ValidationResults.SUCCESS) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("sample.entry.invalid.accession.number.format", null, null));
