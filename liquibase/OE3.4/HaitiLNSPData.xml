@@ -91,4 +91,15 @@
             <where>name = 'allowResultRejection'</where>
         </update>
     </changeSet>
+    <changeSet id="12" author="paulsc" context="haitiLNSP">
+        <comment>Change result type from multiselect to cascading multiselect for Ziehl Neelsen</comment>
+        <update tableName="test_result" >
+            <column name="tst_rslt_type" value="C" />
+            <where>test_id = (select id from clinlims.test where name='Ziehl Neelsen modifiee' )</where>
+        </update>
+        <sql>
+            update clinlims.result_limits set test_result_type_id= ( select id from clinlims.type_of_test_result where test_result_type = 'C'  )
+            where  test_id = (select id from clinlims.test where name = 'Ziehl Neelsen modifiee' );
+        </sql>
+    </changeSet>
 </databaseChangeLog>
