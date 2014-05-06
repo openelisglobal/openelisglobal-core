@@ -433,8 +433,8 @@ public abstract class PatientReport extends Report{
         }
 
         if( lowerNumber.length() != upperNumber.length() ||
-                AccessionNumberUtil.correctFormat( lowerNumber ) != IAccessionNumberValidator.ValidationResults.SUCCESS ||
-                AccessionNumberUtil.correctFormat( lowerNumber ) != IAccessionNumberValidator.ValidationResults.SUCCESS ){
+                AccessionNumberUtil.correctFormat( lowerNumber, false ) != IAccessionNumberValidator.ValidationResults.SUCCESS ||
+                AccessionNumberUtil.correctFormat( lowerNumber, false ) != IAccessionNumberValidator.ValidationResults.SUCCESS ){
             add1LineErrorMessage( "report.error.message.accession.not.valid" );
             return false;
         }

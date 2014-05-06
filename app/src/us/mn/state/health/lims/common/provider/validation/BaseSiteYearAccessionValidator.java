@@ -192,18 +192,29 @@ public abstract class BaseSiteYearAccessionValidator {
 
 
     public String getInvalidFormatMessage( ValidationResults results ){
-        return StringUtil.getMessageForKey( "sample.entry.invalid.accession.number.format.corrected", getFormatPattern() );
+        return StringUtil.getMessageForKey( "sample.entry.invalid.accession.number.format.corrected", getFormatPattern(), getFormatExample() );
     }
 
     private String getFormatPattern(){
         StringBuilder format = new StringBuilder( getPrefix() );
-        format.append( DateUtil.getTwoDigitYear() );
+        format.append( StringUtil.getMessageForKey( "date.two.digit.year" ) );
         for( int i = 0; i < getChangeableLength(); i++){
             format.append( "#" );
         }
         return format.toString();
     }
 
+    private String getFormatExample(){
+        StringBuilder format = new StringBuilder( getPrefix() );
+        format.append( DateUtil.getTwoDigitYear() );
+        for( int i = 0; i < getChangeableLength() - 1; i++){
+            format.append( "0" );
+        }
+
+        format.append( "1" );
+
+        return format.toString();
+    }
     protected abstract String getPrefix();
 
 	protected abstract int getIncrementStartIndex();

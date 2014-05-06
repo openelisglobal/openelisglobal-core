@@ -70,13 +70,13 @@ function testConnectionOnServer(connectionId, url, success, failure) {
 	});
 }
 
-function validateAccessionNumberOnServer(checkformatAndUsed, fieldId, accessionNumber, success, failure) {
+function validateAccessionNumberOnServer(ignoreYear, ignoreUsage, fieldId, accessionNumber, success, failure) {
     if( !failure ){	failure = defaultFailure;}
 	new Ajax.Request(
 			'ajaxXML', // url
 			{// options
 				method : 'get', // http method
-				parameters : 'provider=SampleEntryAccessionNumberValidationProvider&checkFormatAndUsed=' + checkformatAndUsed + '&field='	+ fieldId + '&accessionNumber=' + accessionNumber,
+				parameters : 'provider=SampleEntryAccessionNumberValidationProvider&ignoreYear=' + ignoreYear + '&ignoreUsage=' + ignoreUsage + '&field='	+ fieldId + '&accessionNumber=' + accessionNumber,
 				indicator : 'throbbing',
 				onSuccess : success,
 				onFailure : failure

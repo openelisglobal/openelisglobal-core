@@ -177,11 +177,22 @@ public class YearNumAccessionValidator implements IAccessionNumberValidator {
 
     @Override
     public String getInvalidFormatMessage( ValidationResults results ){
-        return StringUtil.getMessageForKey( "sample.entry.invalid.accession.number.format.corrected", getFormatPattern() );
+        return StringUtil.getMessageForKey( "sample.entry.invalid.accession.number.format.corrected", getFormatPattern(), getFormatExample() );
+    }
+
+    private String getFormatExample(){
+        StringBuilder format = new StringBuilder( DateUtil.getTwoDigitYear() );
+        if( useSeparator){format.append( separator );}
+        for( int i = 0; i < getChangeableLength() - 1; i++){
+            format.append( "0" );
+        }
+
+        format.append( "1" );
+        return format.toString();
     }
 
     private String getFormatPattern(){
-        StringBuilder format = new StringBuilder( DateUtil.getTwoDigitYear() );
+        StringBuilder format = new StringBuilder( StringUtil.getMessageForKey( "date.two.digit.year" ) );
         if( useSeparator){format.append( separator );}
         for( int i = 0; i < getChangeableLength(); i++){
             format.append( "#" );

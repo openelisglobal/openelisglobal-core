@@ -50,17 +50,19 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 		String recordType = request.getParameter("recordType");
 		String isRequired = request.getParameter("isRequired");
 		String projectFormName = request.getParameter("projectFormName");
-		boolean checkOnlyFormatAndIsUsed = "true".equals(request.getParameter("checkFormatAndUsed"));
+        boolean ignoreYear = "true".equals(request.getParameter("ignoreYear"));
+        boolean ignoreUsage = "true".equals(request.getParameter("ignoreUsage"));
 
 		ValidationResults result;
 		
-		if( checkOnlyFormatAndIsUsed){
-			result = AccessionNumberUtil.correctFormat(accessionNumber);
+		if( ignoreYear || ignoreUsage ){
+			result = AccessionNumberUtil.correctFormat(accessionNumber, !ignoreYear);
 			
-			if( result == ValidationResults.SUCCESS){
+			if( result == ValidationResults.SUCCESS && !ignoreUsage){
 				result = AccessionNumberUtil.isUsed(accessionNumber) ? ValidationResults.SAMPLE_FOUND : ValidationResults.SAMPLE_NOT_FOUND;
 			}
 		}else{
+            //year matters and number must not be used
 			result = AccessionNumberUtil.checkAccessionNumberValidity(accessionNumber, recordType, isRequired, projectFormName);	
 		}
 		
@@ -76,7 +78,7 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 			    returnData = result.name();
 			    break;
 			default:
-			    returnData = checkOnlyFormatAndIsUsed ? AccessionNumberUtil.getInvalidMessage(result) : AccessionNumberUtil.getInvalidFormatMessage( result );
+			    returnData = !ignoreUsage ? AccessionNumberUtil.getInvalidMessage(result) : AccessionNumberUtil.getInvalidFormatMessage( result );
 		}
 
 		response.setCharacterEncoding("UTF-8");

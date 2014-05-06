@@ -102,11 +102,15 @@ public class DigitAccessionValidator implements IAccessionNumberValidator {
 
     @Override
     public String getInvalidFormatMessage( ValidationResults results ){
-        return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.format.corrected", getFormatPattern());
+        return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.format.corrected", getFormatPattern(), getFormatExample());
     }
 
     private String getFormatPattern(){
         return "#######";
+    }
+
+    private String getFormatExample(){
+        return "0000012";
     }
     public String getNextAvailableAccessionNumber(String prefix)throws IllegalStateException {
 		String nextAccessionNumber = null;
