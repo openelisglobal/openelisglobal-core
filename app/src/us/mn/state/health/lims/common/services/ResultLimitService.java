@@ -56,7 +56,7 @@ public class ResultLimitService{
         @SuppressWarnings( "unchecked" )
         List<ResultLimit> resultLimits = resultLimitDAO.getAllResultLimitsForTest(test);
 
-        if (resultLimits == null || resultLimits.isEmpty()) {
+        if (resultLimits.isEmpty()) {
             return null;
         } else if (patient == null || patient.getBirthDate() == null && GenericValidator.isBlankOrNull(patient.getGender())) {
             return defaultResultLimit( resultLimits );
