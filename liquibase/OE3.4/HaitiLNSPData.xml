@@ -102,4 +102,11 @@
             where  test_id = (select id from clinlims.test where name = 'Ziehl Neelsen modifiee' );
         </sql>
     </changeSet>
+    <changeSet id="13" author="paulsc" context="haitiLNSP">
+        <comment>deactivate Ecouvillon Pharinge sample type</comment>
+        <update tableName="type_of_sample" >
+            <column name="is_active" valueBoolean="false" />
+            <where>description = 'Ecouvillon Pharinge'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
