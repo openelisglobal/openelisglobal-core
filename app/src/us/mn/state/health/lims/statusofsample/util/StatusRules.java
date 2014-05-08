@@ -33,7 +33,6 @@ public class StatusRules{
 
 	public void setAllowableStatusForLoadingResults(ResultsLoadUtility resultsLoadUtility) {
 		resultsLoadUtility.addIncludedAnalysisStatus(AnalysisStatus.BiologistRejected);
-		resultsLoadUtility.addIncludedAnalysisStatus(AnalysisStatus.TechnicalRejected);
 		resultsLoadUtility.addIncludedAnalysisStatus(AnalysisStatus.NotStarted);
 		resultsLoadUtility.addIncludedAnalysisStatus(AnalysisStatus.NonConforming_depricated);
 		resultsLoadUtility.addIncludedSampleStatus(OrderStatus.Entered);

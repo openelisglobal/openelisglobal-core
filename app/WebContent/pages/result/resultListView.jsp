@@ -524,7 +524,7 @@ function forceTechApproval(checkbox, index ){
 		<% }%>
         <% if( useRejected ){ %>
         <th style="text-align: center">
-            <bean:message key="result.rejected"/>
+            <bean:message key="result.rejected"/>&nbsp;
         </th>
         <% }%>
 		<th style="width:2%;text-align: left">
