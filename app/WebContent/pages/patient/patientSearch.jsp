@@ -71,17 +71,17 @@ function searchPatients()
     $jq("#resultsDiv").hide();
 
     if( criteria == 1){
-        firstName =  value;
+        firstName =  value.trim();
     }else if(criteria == 2){
-        lastName = value;
+        lastName = value.trim();
     }else if(criteria == 3){
         splitName = value.split(",");
         lastName = splitName[0].trim();
         firstName = splitName.size() == 2 ? splitName[1].trim() : "";
     }else if(criteria == 4){
-        STNumber = value;
-        subjectNumber = value;
-        nationalID = value;
+        STNumber = value.trim();
+        subjectNumber = value.trim();
+        nationalID = value.trim();
     }else if(criteria == 5){
         labNumber = value;
     }
