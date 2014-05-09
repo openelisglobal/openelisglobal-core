@@ -109,4 +109,13 @@
             <where>description = 'Ecouvillon Pharinge'</where>
         </update>
     </changeSet>
+    <changeSet id="14" author="paulsc" context="haitiLNSP" >
+        <comment>Deactivating tests with a sample type of Free text</comment>
+        <sql>
+            update clinlims.test set is_active='N' where id in (select t.id from clinlims.test t
+            join clinlims.sampletype_test st on st.test_id = t.id
+            join clinlims.type_of_sample ts on ts.id = st.sample_type_id
+            where ts.description = 'Free text');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
