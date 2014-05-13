@@ -509,7 +509,7 @@ public class ResultsValidationUtility {
 			for (TestResult testResult : testResults) {
 				// Note: result group use to be a criteria but was removed, if
 				// results are not as expected investigate
-				if ( ResultType.isDictionaryType( testResult.getTestResultType())) {
+				if ( ResultType.isDictionaryType( testResult.getTestResultType() )) {
 					dictionary = dictionaryDAO.getDataForId(testResult.getValue());
 					String displayValue = dictionary.getLocalizedName();
 
@@ -752,7 +752,9 @@ public class ResultsValidationUtility {
 		String testUnits = getUnitsByTestId(testResultItem.getTestId());
 		String testName = testResultItem.getTestName();
 		String sortOrder = testResultItem.getTestSortNumber();
-		if (testResultItem.getResult().getAnalyte() != null
+        Result result = testResultItem.getResult();
+
+        if (result != null && result.getAnalyte() != null
 				&& ANALYTE_CD4_CT_GENERATED_ID.equals(testResultItem.getResult().getAnalyte().getId())) {
 			testUnits = "";
 			testName = StringUtil.getMessageForKey("result.conclusion.cd4");
@@ -766,7 +768,7 @@ public class ResultsValidationUtility {
 		}
 
 		testUnits = augmentUOMWithRange(testUnits,	testResultItem.getResult());
-		Result result = testResultItem.getResult();
+
 
 		analysisResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
 		analysisResultItem.setTestName(testName);
@@ -779,10 +781,16 @@ public class ResultsValidationUtility {
 		analysisResultItem.setTestSortNumber(sortOrder);
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
-        if( ResultType.isMultiSelectVariant(testResultItem.getResultType())){
-            analysisResultItem.setMultiSelectResultValues(new AnalysisService( testResultItem.getAnalysis()).getJSONMultiSelectResults());
-        } else {
-            analysisResultItem.setResult(getFormattedResult(testResultItem));
+        if( result != null){
+            if( ResultType.isMultiSelectVariant( testResultItem.getResultType() ) ){
+                analysisResultItem.setMultiSelectResultValues( new AnalysisService( testResultItem.getAnalysis() ).getJSONMultiSelectResults() );
+            }else{
+                analysisResultItem.setResult( getFormattedResult( testResultItem ) );
+            }
+
+            if( ResultType.NUMERIC.matches( testResultItem.getResultType() )){
+                analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
+            }
         }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
@@ -792,9 +800,7 @@ public class ResultsValidationUtility {
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
         analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
-        if( ResultType.NUMERIC.matches( testResultItem.getResultType() )){
-                analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
-        }
+
 		return analysisResultItem;
 
 	}
