@@ -469,6 +469,7 @@ public class ResultsValidationUtility {
 	}
 
 	private String augmentUOMWithRange(String uom,	Result result) {
+        if( result == null){return uom;}
         String range = new ResultService( result ).getDisplayReferenceRange( true );
         uom = StringUtil.blankIfNull( uom );
         return GenericValidator.isBlankOrNull( range ) ? uom : (uom + " ( " + range + " )");
