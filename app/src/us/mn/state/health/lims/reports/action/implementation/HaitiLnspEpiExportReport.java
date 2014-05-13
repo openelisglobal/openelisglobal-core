@@ -22,11 +22,11 @@ public class HaitiLnspEpiExportReport extends HaitiLNSPExportReport{
     @Override
     public byte[] runReport() throws Exception{
         StringBuilder builder = new StringBuilder();
-        builder.append( TestSegmentedExportBean.getDepersonalizedHeader());
+        builder.append( TestSegmentedExportBean.getHeader());
         builder.append("\n");
 
         for(TestSegmentedExportBean testLine : testExportList){
-            builder.append(testLine.getAsDepersonalizedCSVString());
+            builder.append(testLine.getAsCSVString());
             builder.append("\n");
         }
 
