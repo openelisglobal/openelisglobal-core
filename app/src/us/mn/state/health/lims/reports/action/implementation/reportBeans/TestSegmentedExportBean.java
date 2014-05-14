@@ -34,6 +34,7 @@ public class TestSegmentedExportBean{
 	private String testName = "";
 	private String result = "";
 	private String resultDate = "";
+    private String department = "";
 
     private static final String header = "CODSITE,LNSPID,FIRSTNAME,LASTNAME,SEX,DOB,AGE,SPECIMENID,STATUT,SPECIMEN,RECEIPTDATE,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE";
     private static final String depersonalizedeader = "SPECIMEN,RECEIPTDATE,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE";
@@ -70,9 +71,9 @@ public class TestSegmentedExportBean{
         builder.append(",");
         builder.append(referringSiteName);
         builder.append(",");
-        builder.append(testBench);
+        builder.append(department);
         builder.append(",");
-        builder.append(testBench);//department and category are the same
+        builder.append(testBench);
         builder.append(",");
         builder.append(testName.replace( ",", "." ));
         builder.append(",");
@@ -150,6 +151,8 @@ public class TestSegmentedExportBean{
 	public void setResultDate(String resultDate){
 		this.resultDate = resultDate == null ? "" : resultDate;
 	}
-	
-	
+
+    public void setDepartment( String department ){
+        this.department = department;
+    }
 }

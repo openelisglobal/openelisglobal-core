@@ -27,6 +27,7 @@ import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
@@ -150,7 +151,8 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ts.setSampleType(sampleItem.getTypeOfSample().getLocalizedName());
 		ts.setTestBench(analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName());
 		ts.setTestName(analysis.getTest() == null ? "" : analysis.getTest().getTestName());
-		
+        ts.setDepartment( StringUtil.blankIfNull(patientService.getAddressComponents().get(PatientService.ADDRESS_DEPT) ) );
+
 		if(requesterOrganization != null){
 			ts.setSiteCode(requesterOrganization.getShortName());
 			ts.setReferringSiteName(requesterOrganization.getOrganizationName());
@@ -167,7 +169,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		testExportList.add(ts);
 	}
 
-	@Override
+    @Override
 	protected String errorReportFileName(){
 		return HAITI_ERROR_REPORT;
 	}
