@@ -489,8 +489,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
                     </logic:iterate>
                 </select>
             </td>
-            <td>&nbsp;<%=referredResultType%>
-            </td>
+            <td>&nbsp;</td>
             <td class="leftVertical">
                 <div class='<%="resultCell_" + index + "_" + testIndex%>'>
                     <% if( "N".equals( referredResultType ) || "A".equals( referredResultType ) || "R".equals( referredResultType ) ){ %>
@@ -505,7 +504,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
                     <select name='<%= "referralItems[" + index + "].additionalTests[" + testIndex + "].referredDictionaryResult" %>'
                             id='<%= "dictionaryResult_" + index + "_" + testIndex  %>'
                             onchange='<%="markModified(" + index + ");" %>'
-                            class='<%="referralResult_" + index + "_" + testIndex%>'
+                            class='<%="referralResult_" + index + "_" + testIndex%>' >
                     <option value="0"></option>
                     <logic:notEmpty name="additionalTests" property="dictionaryResults">
                         <logic:iterate id="optionValue" name="additionalTests" property="dictionaryResults"
