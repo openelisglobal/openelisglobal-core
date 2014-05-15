@@ -64,6 +64,7 @@ public class ReferralDAOImpl extends BaseDAOImpl implements ReferralDAO {
 		return null;
 	}
 
+    @SuppressWarnings("unchecked")
 	public Referral getReferralByAnalysisId(String analysisId) throws LIMSRuntimeException {
 
 		if (!GenericValidator.isBlankOrNull(analysisId)) {

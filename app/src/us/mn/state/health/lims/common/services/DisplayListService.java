@@ -71,7 +71,8 @@ public class DisplayListService implements LocaleChangeListener {
         PANELS,
         TESTS,
         REJECTION_REASONS,
-        REFERRAL_REASONS
+        REFERRAL_REASONS,
+        REFERRAL_ORGANIZATIONS
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
@@ -100,6 +101,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.TESTS, createTestList());
         typeToListMap.put(ListType.REJECTION_REASONS,createFromDictionaryCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
+        typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
@@ -224,6 +226,18 @@ public class DisplayListService implements LocaleChangeListener {
         return referralReasons;
     }
 
+    private static List<IdValuePair> createReferralOrganizationList(){
+        List<IdValuePair> pairs = new ArrayList<IdValuePair>();
+
+        OrganizationDAO orgDAO = new OrganizationDAOImpl();
+        List<Organization> orgs = orgDAO.getOrganizationsByTypeName("organizationName", "referralLab");
+
+        for (Organization org : orgs) {
+            pairs.add(new IdValuePair(org.getId(), org.getOrganizationName()));
+        }
+
+        return pairs;
+    }
     private static List<IdValuePair> createPanelList(){
         ArrayList<IdValuePair> panels = new ArrayList<IdValuePair>(  );
 

@@ -36,7 +36,7 @@ public class TypeOfTestResult extends BaseObject {
 
         public String getDBValue(){ return DBValue;}
         public boolean matches( String type){ return DBValue.equals( type );}
-        public static boolean isDictionaryType(String type){ return !GenericValidator.isBlankOrNull( type ) && "DMC".contains( type );}
+        public static boolean isDictionaryVariant( String type ){ return !GenericValidator.isBlankOrNull( type ) && "DMC".contains( type );}
         public static boolean isMultiSelectVariant( String type ){ return !GenericValidator.isBlankOrNull( type ) && "MC".contains( type );}
     }
 

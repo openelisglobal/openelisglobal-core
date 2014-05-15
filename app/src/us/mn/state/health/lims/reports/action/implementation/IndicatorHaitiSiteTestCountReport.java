@@ -36,7 +36,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implements IReportCreator, IReportParameterSetter {
-	private static ReportExternalImportDAO reportDAO = new ReportExternalImportDAOImpl();
+	private static ReportExternalImportDAO reportExternalImportDAO = new ReportExternalImportDAOImpl();
 	private static String EOL = System.getProperty("line.separator");
 	private static List<IdValuePair> MONTH_LIST;
 
@@ -108,7 +108,7 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 	private List<IdValuePair> getSiteList() {
 		List<IdValuePair> pairList = new ArrayList<IdValuePair>();
 
-		List<String> sites = reportDAO.getUniqueSites();
+		List<String> sites = reportExternalImportDAO.getUniqueSites();
 		for (String site : sites) {
 			pairList.add(new IdValuePair(site, site));
 		}
@@ -157,9 +157,9 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 		List<ReportExternalImport> reportImportList;
 		// get all rows for the date range sort by date and site
 		if (GenericValidator.isBlankOrNull(site)) {
-			reportImportList = reportDAO.getReportsInDateRangeSorted(beginning, end);
+			reportImportList = reportExternalImportDAO.getReportsInDateRangeSorted(beginning, end);
 		} else {
-			reportImportList = reportDAO.getReportsInDateRangeSortedForSite(beginning, end, site);
+			reportImportList = reportExternalImportDAO.getReportsInDateRangeSortedForSite(beginning, end, site);
 		}
 		String currentSite = null;
 

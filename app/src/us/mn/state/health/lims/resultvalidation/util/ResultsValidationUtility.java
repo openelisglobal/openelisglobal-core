@@ -344,7 +344,7 @@ public class ResultsValidationUtility {
 				List<ResultValidationItem> testResultItemList = getResultItemFromAnalysis(analysis);
 				//NB.  The resultValue is filled in during getResultItemFromAnalysis as a side effect of setResult
 				for (ResultValidationItem validationItem : testResultItemList) {
-					if (ResultType.isDictionaryType( validationItem.getResultType() )) {
+					if (ResultType.isDictionaryVariant( validationItem.getResultType() )) {
 						dictionary = new Dictionary();
 						String resultValue = null;
 						try {
@@ -503,14 +503,14 @@ public class ResultsValidationUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && testResults.size() > 0 && ResultType.isDictionaryType( testResults.get( 0 ).getTestResultType() )) {
+		if (testResults != null && testResults.size() > 0 && ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 			values.add(new IdValuePair("0", ""));
 
 			for (TestResult testResult : testResults) {
 				// Note: result group use to be a criteria but was removed, if
 				// results are not as expected investigate
-				if ( ResultType.isDictionaryType( testResult.getTestResultType() )) {
+				if ( ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
 					dictionary = dictionaryDAO.getDataForId(testResult.getValue());
 					String displayValue = dictionary.getLocalizedName();
 

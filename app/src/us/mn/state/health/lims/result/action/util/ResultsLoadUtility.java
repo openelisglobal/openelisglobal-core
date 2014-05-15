@@ -687,8 +687,8 @@ public class ResultsLoadUtility {
 		testItem.setReflexGroup(analysisService.getTriggeredReflex());
 		testItem.setChildReflex(analysisService.getTriggeredReflex() && analysisService.resultIsConclusion( result ));
         testItem.setPastNotes( notes );
-        testItem.setRejected(StatusService.getInstance().matches(analysisService.getStatusId(), AnalysisStatus.TechnicalRejected ));
-        testItem.setShadowRejected(testItem.isRejected());
+        testItem.setRejected( StatusService.getInstance().matches( analysisService.getStatusId(), AnalysisStatus.TechnicalRejected ) );
+        testItem.setShadowRejected( testItem.isRejected() );
 		//testItem.setDisplayResultAsLog(hasLogValue(analysisService.getAnalysis(), testItem.getResultValue()));
         testItem.setDisplayResultAsLog(hasLogValue(testService));
         testItem.setNonconforming( analysisService.isParentNonConforming() || 
@@ -732,7 +732,7 @@ public class ResultsLoadUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && !testResults.isEmpty() && ResultType.isDictionaryType( testResults.get( 0 ).getTestResultType() )) {
+		if (testResults != null && !testResults.isEmpty() && ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Collections.sort(testResults, new Comparator<TestResult>() {
@@ -749,7 +749,7 @@ public class ResultsLoadUtility {
 			
 			String qualifiedDictionaryIds = "";
 			for (TestResult testResult : testResults) {
-				if ( ResultType.isDictionaryType( testResult.getTestResultType() )) {
+				if ( ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
 					dictionary = new Dictionary();
 					dictionary.setId(testResult.getValue());
 					dictionaryDAO.getData(dictionary);
@@ -819,7 +819,7 @@ public class ResultsLoadUtility {
 	private List<IdValuePair> getAnyDictionaryValues(Result result) {
 		List<IdValuePair> values = null;
 
-		if (result != null && ResultType.isDictionaryType( result.getResultType() )) {
+		if (result != null && ResultType.isDictionaryVariant( result.getResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Dictionary dictionaryValue = new Dictionary();

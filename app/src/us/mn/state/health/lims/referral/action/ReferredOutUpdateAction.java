@@ -26,15 +26,16 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.services.ResultLimitService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -149,24 +150,22 @@ public class ReferredOutUpdateAction extends BaseAction {
 			for (ReferralSet referralSet : referralSetList) {
 				referralDAO.updateData(referralSet.referral);
 
-				for (ReferralResult referralResult : referralSet.existingReferralResults) {
+				for (ReferralResult referralResult : referralSet.updatableReferralResults ) {
 					Result result = referralResult.getResult();
 					if (result != null) {
 						if (result.getId() == null) {
 							resultDAO.insertData(result);
 						} else {
+                            result.setSysUserId( currentUserId );
 							resultDAO.updateData(result);
 						}
 					}
-					referralResultDAO.updateData(referralResult);
-				}
 
-				for (ReferralResult referralResult : referralSet.newReferralResults) {
-					if (referralResult.getResult() != null) {
-						resultDAO.insertData(referralResult.getResult());
-					}
-
-					referralResultDAO.insertData(referralResult);
+                    if( referralResult.getId() == null){
+                        referralResultDAO.insertData(referralResult);
+                    }else{
+                        referralResultDAO.updateData( referralResult );
+                    }
 				}
 
 				if (referralSet.note != null) {
@@ -312,16 +311,15 @@ public class ReferredOutUpdateAction extends BaseAction {
 	private ReferralSet createModifiedSet(ReferralItem referralItem) throws LIMSRuntimeException {
 		// place all existing referral results in list
 		ReferralSet referralSet = new ReferralSet();
-		referralSet.setOldReferralResults(referralResultDAO.getReferralResultsForReferral(referralItem.getReferralId()));
-		Referral referral = referralDAO.getReferralById(referralItem.getReferralId());
+		referralSet.setExistingReferralResults( referralResultDAO.getReferralResultsForReferral( referralItem.getReferralId() ) );
 
-		referralSet.referral = referral;
+        Referral referral = referralDAO.getReferralById(referralItem.getReferralId());
 		referral.setCanceled(false);
 		referral.setSysUserId(currentUserId);
 		referral.setOrganization(organizationDAO.getOrganizationById(referralItem.getReferredInstituteId()));
 		referral.setSentDate(DateUtil.convertStringDateToTruncatedTimestamp(referralItem.getReferredSendDate()));
 		referral.setRequesterName(referralItem.getReferrer());
-
+        referralSet.referral = referral;
 
         referralSet.note =  new NoteService(referral.getAnalysis()).createSavableNote( NoteService.NoteType.INTERNAL, referralItem.getNote(),RESULT_SUBJECT,currentUserId );
 
@@ -346,7 +344,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		}
 
 		// any leftovers get deleted
-		this.removableReferralResults.addAll(referralSet.getOldReferralResults());
+		this.removableReferralResults.addAll(referralSet.getExistingReferralResults());
 
 		return referralSet;
 	}
@@ -356,25 +354,39 @@ public class ReferredOutUpdateAction extends BaseAction {
 	 * them. Then any remaining referral results are removable.
 	 ***/
 	private void createReferralResults(IReferralResultTest referralItem, ReferralSet referralSet) {
-		String referredResultType = getReferredResultType(referralItem, null);
-		if ( ResultType.MULTISELECT.getDBValue().equals(referredResultType)) {
-			String multiResult = referralItem.getReferredMultiDictionaryResult();
-			multiResult = (multiResult != null) ? multiResult : "";
-
-			// Is this where I'm falling apart?
-			String[] ids = multiResult.trim().split(",");
-			for (String id : ids) {
-				ReferralResult referralResult = referralSet.getNextReferralResult();
-                referralItem.setReferredDictionaryResult(id);  // move particular multi result into (single) dictionary result.
-				fillReferralResultResult(referralItem, referralResult);
-			}
-		} else {
-			ReferralResult referralResult = referralSet.getNextReferralResult();
-			fillReferralResultResult(referralItem, referralResult);
-		}
+        if( referralItem.getReferredTestIdShadow() != null && !referralItem.getReferredTestId().equals( referralItem.getReferredTestIdShadow() )){
+           referralSet.updateTest( referralItem.getReferredTestIdShadow(), referralItem.getReferredTestId(),currentUserId );
+        }else{
+            String referredResultType = getReferredResultType( referralItem, null );
+            if( ResultType.isMultiSelectVariant( referredResultType ) ){
+                if( !GenericValidator.isBlankOrNull( referralItem.getMultiSelectResultValues() ) && !"{}".equals( referralItem.getMultiSelectResultValues() ) ){
+                    JSONParser parser = new JSONParser();
+                    try{
+                        JSONObject jsonResult = ( JSONObject ) parser.parse( referralItem.getMultiSelectResultValues() );
+                        for( Object key : jsonResult.keySet() ){
+                            String[] ids = ( ( String ) jsonResult.get( key ) ).trim().split( "," );
+                            //This will populate a result for each item in the multiselect referral result
+                            for( String id : ids ){
+                                ReferralResult referralResult = referralSet.getNextReferralResult();
+                                referralItem.setReferredDictionaryResult( id );  // move particular multi result into (single) dictionary result.
+                                fillReferralResultResult( referralItem, referralResult, Integer.parseInt( ( String ) key ) );
+                            }
+                        }
+                    }catch( ParseException e ){
+                        e.printStackTrace();
+                    }
+                }else{
+                    ReferralResult referralResult = referralSet.getNextReferralResult();
+                    fillReferralResultResult( referralItem, referralResult, 0 );
+                }
+            }else{
+                ReferralResult referralResult = referralSet.getNextReferralResult();
+                fillReferralResultResult( referralItem, referralResult, 0 );
+            }
+        }
 	}
 
-	private void fillReferralResultResult(IReferralResultTest referralItem, ReferralResult referralResult) {
+	private void fillReferralResultResult( IReferralResultTest referralItem, ReferralResult referralResult, int grouping ) {
 		referralResult.setSysUserId(currentUserId);
 
 		setReferredResultReportDate(referralItem, referralResult);
@@ -387,7 +399,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		}
 
 		if (result != null) {
-			setResultValuesForReferralResult(referralItem, result);
+			setResultValuesForReferralResult(referralItem, result, grouping);
 			referralResult.setResult(result);
 		}
 
@@ -399,7 +411,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 	 * referredTest.referredDictionaryResult
 	 * 
 	 */
-	private void setResultValuesForReferralResult(IReferralResultTest referredTest, Result result) {
+	private void setResultValuesForReferralResult( IReferralResultTest referredTest, Result result, int grouping ) {
 		result.setSysUserId(currentUserId);
 		result.setSortOrder("0");
 		
@@ -409,10 +421,11 @@ public class ReferredOutUpdateAction extends BaseAction {
 		ResultLimit limit = new ResultLimitService().getResultLimitForTestAndPatient(test, patient);
 		result.setMinNormal(limit != null ? limit.getLowNormal() : 0.0);
 		result.setMaxNormal(limit != null ? limit.getHighNormal()  : 0.0);
+        result.setGrouping( grouping );
 		
 		String referredResultType = getReferredResultType(referredTest, test);
 		result.setResultType(referredResultType);
-		if (ResultType.DICTIONARY.getDBValue().equals(referredResultType) || ResultType.MULTISELECT.getDBValue().equals(referredResultType)) {
+		if ( ResultType.isDictionaryVariant( referredResultType )) {
 			String dicResult = referredTest.getReferredDictionaryResult();
 			if (!(GenericValidator.isBlankOrNull(dicResult) || "0".equals(dicResult))) {
 				result.setValue(dicResult);
@@ -423,20 +436,20 @@ public class ReferredOutUpdateAction extends BaseAction {
 	}
 
 	private String getReferredResultType(IReferralResultTest referredTest, Test test) {
+		//N.B. this should not be corrected here.  It should be done on load
 		/* referredTest.getReferredResultType() is not always accurate
 		 * alpha-numeric and numeric are not differentiated
 		 */
 		
 		String referredResultType = referredTest.getReferredResultType();
 		
-		if ( !ResultType.DICTIONARY.getDBValue().equals(referredResultType) && !ResultType.MULTISELECT.getDBValue().equals(referredResultType) && test != null) {
+		if ( !ResultType.isDictionaryVariant( referredResultType ) && test != null) {
 			@SuppressWarnings("unchecked")
 			List<TestResult> testResults = testResultDAO.getAllTestResultsPerTest(test);
 			
 			if( !testResults.isEmpty()){
 				referredResultType = testResults.get(0).getTestResultType();
 			}
-			
 		}
 		
 		return referredResultType;
@@ -476,17 +489,14 @@ public class ReferredOutUpdateAction extends BaseAction {
 				Element testItem = i.next();
 
 				String testId = testItem.attribute("testId").getValue();
-				String resultType = testItem.attribute("resultType").getValue();
-				String value = testItem.attribute("result").getValue();
-				String reported = testItem.attribute("report").getValue();
 
 				ReferredTest referralTest = new ReferredTest();
 				referralTest.setReferredTestId(testId);
-				referralTest.setReferredResultType(resultType);
-				referralTest.setReferredResult(value);
-				referralTest.setReferredDictionaryResult(value);
-				referralTest.setReferredMultiDictionaryResult(value);
-				referralTest.setReferredReportDate(reported);
+				referralTest.setReferredResultType(new TestService( testId ).getResultType());
+				referralTest.setReferredResult("");
+				referralTest.setReferredDictionaryResult("");
+				referralTest.setReferredMultiDictionaryResult("");
+				referralTest.setReferredReportDate("");
 
 				newTestList.add(referralTest);
 			}
@@ -545,28 +555,41 @@ public class ReferredOutUpdateAction extends BaseAction {
 	static class ReferralSet {
 		Referral referral;
 		Note note;
-		List<ReferralResult> existingReferralResults = new ArrayList<ReferralResult>();
-		List<ReferralResult> newReferralResults = new ArrayList<ReferralResult>();
-		private List<ReferralResult> oldReferralResults = new ArrayList<ReferralResult>();
+		List<ReferralResult> updatableReferralResults = new ArrayList<ReferralResult>();
+		private List<ReferralResult> existingReferralResults = new ArrayList<ReferralResult>();
 
-		public List<ReferralResult> getOldReferralResults() {
-			return oldReferralResults;
+		public List<ReferralResult> getExistingReferralResults() {
+			return existingReferralResults;
 		}
 
-		public void setOldReferralResults(List<ReferralResult> oldReferralResults) {
-			this.oldReferralResults = oldReferralResults;
+		public void setExistingReferralResults( List<ReferralResult> existingReferralResults ) {
+			this.existingReferralResults = existingReferralResults;
 		}
 
 		ReferralResult getNextReferralResult() {
-			ReferralResult referralResult;
-			if (oldReferralResults.size() > 0) {
-				referralResult = oldReferralResults.remove(0);
-				existingReferralResults.add(referralResult);
-			} else {
-				referralResult = new ReferralResult();
-				newReferralResults.add(referralResult);
-			}
+			ReferralResult referralResult = existingReferralResults.isEmpty() ? new ReferralResult() : existingReferralResults.remove( 0 );
+			updatableReferralResults.add( referralResult );
+
 			return referralResult;
 		}
+
+        public void updateTest( String oldTestId, String newTestId, String currentUserId){
+            ReferralResult updatedReferralResult = null;
+            for( ReferralResult referralResult : existingReferralResults){
+                if( referralResult.getTestId().equals( oldTestId )){
+                    Result result = referralResult.getResult();
+                    result.setSysUserId( currentUserId );
+                    if( updatedReferralResult == null){
+                        referralResult.setTestId( newTestId );
+                        referralResult.setSysUserId( currentUserId );
+                        result.setResultType( new TestService( newTestId ).getResultType() );
+                        result.setValue( "" );
+                        updatedReferralResult = referralResult;
+                        updatableReferralResults.add(referralResult);
+                    }
+                }
+            }
+            existingReferralResults.remove( updatedReferralResult );
+          }
 	}
 }

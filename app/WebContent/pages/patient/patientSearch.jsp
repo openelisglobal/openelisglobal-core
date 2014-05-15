@@ -365,7 +365,7 @@ function setCaretPosition(ctrl, pos){
            value="<%= StringUtil.getMessageForKey("label.patient.search")%>"
            id="searchButton"
            onclick="searchPatients()"
-           disabled="true" >
+           disabled="disabled" >
 
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>

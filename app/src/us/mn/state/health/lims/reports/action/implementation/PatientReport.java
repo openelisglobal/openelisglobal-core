@@ -658,7 +658,7 @@ public abstract class PatientReport extends Report{
             //If only one result just get it and get out
             if( resultList.size() == 1 ){
                 Result result = resultList.get( 0 );
-                if( ResultType.isDictionaryType( result.getResultType() ) ){
+                if( ResultType.isDictionaryVariant( result.getResultType() ) ){
                     Dictionary dictionary = new Dictionary();
                     dictionary.setId( result.getValue() );
                     dictionaryDAO.getData( dictionary );
@@ -934,11 +934,13 @@ public abstract class PatientReport extends Report{
         if( value == null ){
             return reportResult;
         }
-        if( ResultType.DICTIONARY.getDBValue().equals( type ) || ResultType.MULTISELECT.getDBValue().equals( type ) ){
-            Dictionary dictionary = new Dictionary();
-            dictionary.setId( result.getValue() );
-            dictionaryDAO.getData( dictionary );
-            reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+        if( ResultType.isDictionaryVariant( type ) ){
+            if( result.getValue() != null && !"null".equals( result.getValue() )){
+                Dictionary dictionary = new Dictionary();
+                dictionary.setId( result.getValue() );
+                dictionaryDAO.getData( dictionary );
+                reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+            }
         }else{
             reportResult = result.getValue();
         }

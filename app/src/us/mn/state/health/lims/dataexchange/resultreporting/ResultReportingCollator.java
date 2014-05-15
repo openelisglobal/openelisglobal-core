@@ -97,7 +97,7 @@ public class ResultReportingCollator {
 		ResultXmit resultBean = new ResultXmit();
 
 		CodedValueXmit codedValue = new CodedValueXmit();
-		if ( ResultType.isDictionaryType( result.getResultType() )) {
+		if ( ResultType.isDictionaryVariant( result.getResultType() )) {
 			codedValue.setCode(DictionaryUtil.getHL7ForDictioanryById(result.getValue()));
 		}
 
@@ -239,7 +239,7 @@ public class ResultReportingCollator {
 	private boolean hasNoReportableResults(Result result, Patient patient) {
 		return noGUIDPatients.contains(patient.getId()) ||
 			   GenericValidator.isBlankOrNull(result.getValue()) ||
-			   (ResultType.isDictionaryType(result.getResultType()) && "0".equals(result.getValue()) ||
+			   (ResultType.isDictionaryVariant( result.getResultType() ) && "0".equals(result.getValue()) ||
 				!VALIDATED_RESULT_STATUS_ID.equals(result.getAnalysis().getStatusId()) );
 	}
 

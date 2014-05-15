@@ -17,7 +17,6 @@
 package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
-import org.json.simple.JSONObject;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -28,14 +27,14 @@ import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -44,6 +43,7 @@ public class AnalysisService{
     private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
     private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
     private static final ResultDAO resultDAO = new ResultDAOImpl();
+    private static final TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
     private final Analysis analysis;
 
     public AnalysisService(Analysis analysis){
@@ -102,57 +102,21 @@ public class AnalysisService{
     }
 
     public String getJSONMultiSelectResults(){
-        if( analysis == null){return ""; }
-        List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
-
-        Collections.sort( existingResults, new Comparator<Result>(){
-            @Override
-            public int compare( Result o1, Result o2 ){
-                return o1.getGrouping() - o2.getGrouping();
-            }
-        });
-
-        JSONObject jsonRep =new JSONObject();
-
-        int currentGrouping = -1;
-        StringBuilder currentString = new StringBuilder( );
-
-        for(Result result : existingResults){
-            if( ResultType.isMultiSelectVariant( result.getResultType() )){
-                if( currentGrouping != result.getGrouping()){
-                    if( currentString.length() > 1 ){
-                        currentString.setLength( currentString.length() - 1 );
-                        jsonRep.put( String.valueOf( currentGrouping ), currentString.toString() );
-                    }
-
-                    currentGrouping = result.getGrouping();
-                    currentString = new StringBuilder( );
-                }
-
-                currentString.append( result.getValue() );
-                currentString.append( "," );
-            }
-        }
-
-        if( currentString.length() > 1 ){
-            currentString.setLength( currentString.length() - 1 );
-            jsonRep.put( String.valueOf( currentGrouping ), currentString.toString() );
-        }
-
-        return jsonRep.toJSONString();
+        return analysis == null ? "" : ResultService.getJSONStringForMultiSelect(resultDAO.getResultsByAnalysis( analysis ));
     }
+
     public Result getQuantifiedResult(){
         if( analysis == null){return null; }
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         List<String> quantifiableResultsIds = new ArrayList<String>(  );
         for( Result existingResult : existingResults ){
-            if( ResultType.isDictionaryType( existingResult.getResultType() ) ){
+            if( ResultType.isDictionaryVariant( existingResult.getResultType() ) ){
                 quantifiableResultsIds.add( existingResult.getId() );
             }
         }
 
         for( Result existingResult : existingResults ){
-            if( !ResultType.isDictionaryType( existingResult.getResultType()) &&
+            if( !ResultType.isDictionaryVariant( existingResult.getResultType() ) &&
                     existingResult.getParentResult() != null &&
                     quantifiableResultsIds.contains( existingResult.getParentResult().getId()) &&
                     !GenericValidator.isBlankOrNull(existingResult.getValue())){
@@ -220,5 +184,17 @@ public class AnalysisService{
 
     public boolean patientReportHasBeenDone(){
         return analysis == null ? false : new ReportTrackingService().getLastReportForSample( analysis.getSampleItem().getSample(), ReportTrackingService.ReportType.PATIENT ) != null;
+    }
+
+    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator ){
+        return analysis == null ? "" : new NoteService( analysis ).getNotesAsString( prefixType, prefixTimestamp, noteSeparator );
+    }
+
+    public String getOrderAccessionNumber(){
+        return analysis == null ? "" : analysis.getSampleItem().getSample().getAccessionNumber();
+    }
+
+    public TypeOfSample getTypeOfSample(){
+       return analysis == null ? null : typeOfSampleDAO.getTypeOfSampleById( analysis.getSampleItem().getTypeOfSampleId() );
     }
 }
