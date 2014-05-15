@@ -96,6 +96,8 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	private List<ResultSet> newResults;
 	private List<Analysis> modifiedAnalysis;
 	private List<Result> deletableResults;
+    private List<Referral> savableReferrals;
+    private List<String> referredAnalysisIds;
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private ResultDAO resultDAO = new ResultDAOImpl();
 	private ResultSignatureDAO resultSigDAO = new ResultSignatureDAOImpl();
@@ -176,11 +178,11 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 					resultSet.testKit.setResultId(resultSet.result.getId());
 					resultInventoryDAO.insertData(resultSet.testKit);
 				}
-
-				if(resultSet.newReferral != null){
-					insertNewReferralAndReferralResult(resultSet);
-				}
 			}
+
+            for( Referral referral : savableReferrals ){
+                saveReferralsWithRequiredObjects( referral );
+            }
 
 			for(ResultSet resultSet : modifiedResults){
 				resultDAO.updateData(resultSet.result);
@@ -201,17 +203,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 					}else{
 						resultInventoryDAO.updateData(resultSet.testKit);
 					}
-				}
-
-				if(resultSet.newReferral != null){
-					// we can't just create a referral with a blank result,
-					// because referral page assumes a referralResult and a
-					// result.
-					insertNewReferralAndReferralResult(resultSet);
-				}
-
-				if(resultSet.existingReferral != null){
-					referralDAO.updateData(resultSet.existingReferral);
 				}
 			}
 
@@ -266,12 +257,16 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}
 	}
 
-	private void insertNewReferralAndReferralResult(ResultSet resultSet){
-		referralDAO.insertData(resultSet.newReferral);
-		ReferralResult referralResult = new ReferralResult();
-		referralResult.setReferralId(resultSet.newReferral.getId());
-		referralResult.setSysUserId(currentUserId);
-		referralResultDAO.insertData(referralResult);
+	private void saveReferralsWithRequiredObjects( Referral referral ){
+        if( referral.getId() != null){
+            referralDAO.updateData( referral );
+        }else{
+            referralDAO.insertData( referral );
+            ReferralResult referralResult = new ReferralResult();
+            referralResult.setReferralId( referral.getId() );
+            referralResult.setSysUserId( currentUserId );
+            referralResultDAO.insertData( referralResult );
+        }
 	}
 
 
@@ -354,10 +349,10 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	private void createResultsFromItems( List<Note> noteList ){
 
 		for(TestResultItem testResultItem : modifiedItems){
-
 			AnalysisService analysisService = new AnalysisService( testResultItem.getAnalysisId() );
             analysisService.getAnalysis().setStatusId( getStatusForTestResult( testResultItem ) );
             analysisService.getAnalysis().setSysUserId( currentUserId );
+            handleReferrals(testResultItem, analysisService.getAnalysis());
             modifiedAnalysis.add( analysisService.getAnalysis() );
 
             NoteService noteService = new NoteService( analysisService.getAnalysis() );
@@ -395,11 +390,47 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}
 	}
 
-	protected void initializeLists(){
+    private void handleReferrals( TestResultItem testResultItem, Analysis analysis ){
+
+        if(supportReferrals){
+
+            Referral referral = null;
+            // referredOut means the referral checkbox was checked, repeating
+            // analysis means that we have multi-select results, so only do one.
+            if(testResultItem.isShadowReferredOut() && !referredAnalysisIds.contains( analysis.getId() )){
+                referredAnalysisIds.add( analysis.getId() );
+                // If it is a new result or there is no referral ID that means
+                // that a new referral has to be created if it was checked and
+                // it was canceled then we are un-canceling a canceled referral
+                if(testResultItem.getResultId() == null || GenericValidator.isBlankOrNull(testResultItem.getReferralId())){
+                    referral = new Referral();
+                    referral.setReferralTypeId(REFERRAL_CONFORMATION_ID);
+                    referral.setSysUserId(currentUserId);
+                    referral.setRequestDate(new Timestamp(new Date().getTime()));
+                    referral.setRequesterName(testResultItem.getTechnician());
+                    referral.setAnalysis(analysis);
+                    referral.setReferralReasonId(testResultItem.getReferralReasonId());
+                }else if(testResultItem.isReferralCanceled()){
+                    referral = referralDAO.getReferralById(testResultItem.getReferralId());
+                    referral.setCanceled(false);
+                    referral.setSysUserId(currentUserId);
+                    referral.setRequesterName(testResultItem.getTechnician());
+                    referral.setReferralReasonId(testResultItem.getReferralReasonId());
+                }
+
+                savableReferrals.add( referral );
+
+            }
+        }
+    }
+
+    protected void initializeLists(){
 		modifiedResults = new ArrayList<ResultSet>();
 		newResults = new ArrayList<ResultSet>();
 		modifiedAnalysis = new ArrayList<Analysis>();
 		deletableResults = new ArrayList<Result>();
+        savableReferrals = new ArrayList<Referral>(  );
+        referredAnalysisIds = new ArrayList<String>(  );
 	}
 
 	protected boolean analysisShouldBeUpdated(TestResultItem testResultItem, Result result){
@@ -433,44 +464,16 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
         SampleService sampleService = new SampleService( testResultItem.getAccessionNumber() );
         Patient patient = sampleService.getPatient();
 
-		Referral referral = null;
-		Referral existingReferral = null;
-
-		if(supportReferrals){
-			// referredOut means the referral checkbox was checked, repeating
-			// analysis means that we have multi-select results, so only do one.
-			if(testResultItem.isShadowReferredOut() && newAnalysisInLoop){
-				// If it is a new result or there is no referral ID that means
-				// that a new referral has to be created if it was checked and
-				// it was canceled then we are un-canceling a canceled referral
-				if(newResult || GenericValidator.isBlankOrNull(testResultItem.getReferralId())){
-					referral = new Referral();
-					referral.setReferralTypeId(REFERRAL_CONFORMATION_ID);
-					referral.setSysUserId(currentUserId);
-					referral.setRequestDate(new Timestamp(new Date().getTime()));
-					referral.setRequesterName(testResultItem.getTechnician());
-					referral.setAnalysis(analysis);
-					referral.setReferralReasonId(testResultItem.getReferralReasonId());
-				}else if(testResultItem.isReferralCanceled()){
-					existingReferral = referralDAO.getReferralById(testResultItem.getReferralId());
-					existingReferral.setCanceled(false);
-					existingReferral.setSysUserId(currentUserId);
-					existingReferral.setRequesterName(testResultItem.getTechnician());
-					existingReferral.setReferralReasonId(testResultItem.getReferralReasonId());
-				}
-			}
-		}
-
         Map<String,List<String>> triggersToReflexesMap = new HashMap<String, List<String>>(  );
 
         getSelectedReflexes( testResultItem.getReflexJSONResult(), triggersToReflexesMap );
 
         if(newResult){
-			newResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sampleService.getSample(), triggersToReflexesMap, referral,
-					existingReferral, multipleResultsForAnalysis));
+			newResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sampleService.getSample(), triggersToReflexesMap,
+					 multipleResultsForAnalysis));
 		}else{
 			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, patient, sampleService.getSample(), triggersToReflexesMap,
-					referral, existingReferral, multipleResultsForAnalysis));
+					  multipleResultsForAnalysis));
 		}
 
 		previousAnalysis = analysis;
