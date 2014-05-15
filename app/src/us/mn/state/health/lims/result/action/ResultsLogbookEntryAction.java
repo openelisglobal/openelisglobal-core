@@ -65,7 +65,7 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		setLogbookRequest(request.getParameter("type"));
 
 		String testSectionId = getTestSelectId();
-		List<TestResultItem> tests = null;
+		List<TestResultItem> tests;
 
 		ResultsPaging paging = new ResultsPaging();
 		List<InventoryKitItem> inventoryList = new ArrayList<InventoryKitItem>();

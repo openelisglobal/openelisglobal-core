@@ -34,7 +34,7 @@ public class ResultUtil {
 	private static final TestAnalyteDAO testAnalyteDAO = new TestAnalyteDAOImpl();
 	
 	public static String getStringValueOfResult( Result result){
-		if( ResultType.isDictionaryType(result.getResultType())){
+		if( ResultType.isDictionaryVariant( result.getResultType() )){
 			return dictionaryDAO.getDictionaryById(result.getValue()).getLocalizedName();
 		}else{
 			return result.getValue();

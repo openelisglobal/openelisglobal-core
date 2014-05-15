@@ -240,7 +240,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 		if (results != null && !results.isEmpty()) {
 			String type = results.get(0).getResultType();
 
-			if ( ResultType.isDictionaryType( type )) {
+			if ( ResultType.isDictionaryVariant( type )) {
 				StringBuilder builder = new StringBuilder();
 				boolean firstNumber = true;
 				for (Result result : results) {

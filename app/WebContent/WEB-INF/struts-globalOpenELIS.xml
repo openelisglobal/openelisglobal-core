@@ -631,7 +631,6 @@
 			<form-property name="referralItems" type="java.util.Collection" />
 			<form-property name="referralOrganizations" type="java.util.Collection" />
 			<form-property name="referralReasons" type="java.util.Collection" />
-			<form-property name="nonNumericTests" type="java.util.Collection" />
 		</form-bean>
 
 		<form-bean name="webTestInfoForm" type="us.mn.state.health.lims.common.action.BaseActionForm">

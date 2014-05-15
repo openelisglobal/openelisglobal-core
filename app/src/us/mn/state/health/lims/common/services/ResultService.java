@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
+import org.json.simple.JSONObject;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -36,6 +37,8 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.sql.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ResultService {
@@ -101,7 +104,7 @@ public class ResultService {
             return "";
         }
 
-        if (ResultType.isDictionaryType( getTestType() )) {
+        if (ResultType.isDictionaryVariant( getTestType() )) {
             return getDictEntry(  );
         } else if (ResultType.NUMERIC.matches(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
@@ -278,7 +281,7 @@ public class ResultService {
             if( result.getMinNormal() != null && result.getMaxNormal() != null && !result.getMinNormal().equals( result.getMaxNormal() ) ){
                 range = ResultLimitService.getDisplayNormalRange( result.getMinNormal(), result.getMaxNormal(), String.valueOf( result.getSignificantDigits() ), "-" );
             }
-        }else if( includeSelectList && ResultType.isDictionaryType( result.getResultType() )){
+        }else if( includeSelectList && ResultType.isDictionaryVariant( result.getResultType() )){
             List<ResultLimit> limits = getResultLimits();
             if( !limits.isEmpty() && !GenericValidator.isBlankOrNull( limits.get( 0 ).getDictionaryNormalId() )){
                 range = dictionaryDAO.getDataForId( limits.get( 0 ).getDictionaryNormalId() ).getLocalizedName();
@@ -297,7 +300,7 @@ public class ResultService {
 	}
 
     public boolean isAbnormalDictionaryResult(){
-        if( result.getValue() != null && ResultType.isDictionaryType( result.getResultType() )){
+        if( result.getValue() != null && ResultType.isDictionaryVariant( result.getResultType() )){
             List<ResultLimit> limits = getResultLimits();
             if( !limits.isEmpty()){
                 return !result.getValue().equals( limits.get(0).getDictionaryNormalId() );
@@ -324,5 +327,43 @@ public class ResultService {
 
     public static List<Result> getResultsInTimePeriodInTestSection( Date lowDate, Date highDate, String testSectionId ){
         return resultDAO.getResultsForTestSectionInDateRange( testSectionId, lowDate, highDate );
+    }
+
+    public static String getJSONStringForMultiSelect( List<Result> resultList){
+        Collections.sort( resultList, new Comparator<Result>(){
+            @Override
+            public int compare( Result o1, Result o2 ){
+                return o1.getGrouping() - o2.getGrouping();
+            }
+        } );
+
+        JSONObject jsonRep =new JSONObject();
+
+        int currentGrouping = -1;
+        StringBuilder currentString = new StringBuilder( );
+
+        for(Result result : resultList){
+            if( ResultType.isMultiSelectVariant( result.getResultType() ) && result.getValue() != null){
+                if( currentGrouping != result.getGrouping()){
+                    if( currentString.length() > 1 ){
+                        currentString.setLength( currentString.length() - 1 );
+                        jsonRep.put( String.valueOf( currentGrouping ), currentString.toString() );
+                    }
+
+                    currentGrouping = result.getGrouping();
+                    currentString = new StringBuilder( );
+                }
+
+                currentString.append( result.getValue() );
+                currentString.append( "," );
+            }
+        }
+
+        if( currentString.length() > 1 ){
+            currentString.setLength( currentString.length() - 1 );
+            jsonRep.put( String.valueOf( currentGrouping ), currentString.toString() );
+        }
+
+        return jsonRep.toJSONString();
     }
 }

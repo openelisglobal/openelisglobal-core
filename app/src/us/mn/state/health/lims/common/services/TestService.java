@@ -42,12 +42,16 @@ public class TestService{
         this.test = test;
     }
 
+    public TestService(String testId){
+        this.test = testDAO.getTestById( testId );
+    }
+
     public Test getTest(){
         return test;
     }
 
     public String getTestMethodName(){
-        return test.getMethod() != null ? test.getMethod().getMethodName() : null;
+        return (test != null && test.getMethod() != null) ? test.getMethod().getMethodName() : null;
     }
 
     @SuppressWarnings("unchecked")
@@ -66,11 +70,11 @@ public class TestService{
     }
 
     public boolean isReportable(){
-        return "Y".equals(test.getIsReportable());
+        return test == null ? false : "Y".equals(test.getIsReportable());
     }
 
     public String getSortOrder(){
-        return test.getSortOrder();
+        return test == null ? "0" :test.getSortOrder();
     }
 
     public ResultDisplayType getDisplayTypeForTestMethod() {

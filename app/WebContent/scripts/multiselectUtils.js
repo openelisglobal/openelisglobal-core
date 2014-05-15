@@ -30,7 +30,8 @@ function handleMultiSelectChange(e, data) {
         removeValueForMultiSelect(accumulator, minorKey, data.value);
     }
 
-    $jq("#modified_" + splitSource[1]).val("true");
+    //The extra split is to handle the additional tests on referral page
+    $jq("#modified_" + splitSource[1].split("-")[0]).val("true");
 
     makeDirty();
 
