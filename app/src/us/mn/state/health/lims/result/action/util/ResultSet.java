@@ -17,7 +17,6 @@
 package us.mn.state.health.lims.result.action.util;
 
 import us.mn.state.health.lims.patient.valueholder.Patient;
-import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.result.valueholder.ResultInventory;
 import us.mn.state.health.lims.result.valueholder.ResultSignature;
@@ -33,22 +32,17 @@ public class ResultSet {
 	public final Patient patient;
 	public final Sample sample;
 	public final Map<String,List<String>> triggersToSelectedReflexesMap;
-	public final Referral newReferral;
-	public final Referral existingReferral;
 	public final boolean alwaysInsertSignature;
     public final boolean multipleResultsForAnalysis;
 
 	public ResultSet(Result result, ResultSignature signature, ResultInventory testKit, Patient patient, Sample sample,
-                     Map<String,List<String>> triggersToSelectedReflexesMap , Referral newReferral,
-                     Referral existingReferral, boolean multipleResultsForAnalysis) {
+                     Map<String,List<String>> triggersToSelectedReflexesMap, boolean multipleResultsForAnalysis) {
 		this.result = result;
 		this.signature = signature;
 		this.testKit = testKit;
 		this.patient = patient;
 		this.sample = sample;
 		this.triggersToSelectedReflexesMap = triggersToSelectedReflexesMap;
-		this.newReferral = newReferral;
-		this.existingReferral = existingReferral;
         this.multipleResultsForAnalysis = multipleResultsForAnalysis;
 		alwaysInsertSignature = signature != null && signature.getId() == null;
 	}
