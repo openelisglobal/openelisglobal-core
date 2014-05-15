@@ -2,8 +2,12 @@ package us.mn.state.health.lims.result.action.util;
 
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.provider.validation.DateValidationProvider;
+import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -11,6 +15,7 @@ import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -127,15 +132,55 @@ public class ResultsValidation {
 	private void validateRequiredNote(TestResultItem item, List<ActionError> errors) {
 		if( GenericValidator.isBlankOrNull(item.getNote())&&
 			!GenericValidator.isBlankOrNull(item.getResultId())){
-			
-			Result dbResult = resultDAO.getResultById(item.getResultId());
-			if( !item.getResultValue().equals(dbResult.getValue()) && !GenericValidator.isBlankOrNull(dbResult.getValue())){
-				errors.add(new ActionError("error.requiredNote.missing"));
-			}
+
+            if( resultHasChanged(item)){
+                errors.add(new ActionError("error.requiredNote.missing"));
+            }
+
 		}
 		
 	}
-	private void validateTesterSignature(TestResultItem item, List<ActionError> errors) {
+
+    private boolean resultHasChanged( TestResultItem item ){
+
+        if( TypeOfTestResult.ResultType.isMultiSelectVariant( item.getResultType() )){
+            List<Result> resultList = new AnalysisService( item.getAnalysisId() ).getResults();
+            ArrayList<String> dictionaryIds = new ArrayList<String>( resultList.size() );
+            for(Result result : resultList){
+                dictionaryIds.add( result.getValue() );
+            }
+            if( !GenericValidator.isBlankOrNull( item.getMultiSelectResultValues() ) && !"{}".equals( item.getMultiSelectResultValues() ) ){
+                JSONParser parser = new JSONParser();
+                try{
+                    int matchCount = 0;
+                    JSONObject jsonResult = ( JSONObject ) parser.parse( item.getMultiSelectResultValues() );
+                    for( Object key : jsonResult.keySet() ){
+                        String[] ids = ( ( String ) jsonResult.get( key ) ).trim().split( "," );
+
+                        for( String id : ids ){
+                            if( dictionaryIds.contains( id )){
+                                matchCount++;
+                            }else{
+                                return false;
+                            }
+                        }
+                    }
+                    return matchCount != dictionaryIds.size();
+                }catch( ParseException e ){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+
+        } else{
+            Result dbResult = resultDAO.getResultById( item.getResultId() );
+            return !item.getResultValue().equals( dbResult.getValue() ) && !GenericValidator.isBlankOrNull( dbResult.getValue() );
+        }
+
+        return false;
+    }
+
+    private void validateTesterSignature(TestResultItem item, List<ActionError> errors) {
 		// Conclusions may not need a signature. If the user changed the value
 		// and then changed it back it will be
 		// marked as dirty but the signature may still be blank.
