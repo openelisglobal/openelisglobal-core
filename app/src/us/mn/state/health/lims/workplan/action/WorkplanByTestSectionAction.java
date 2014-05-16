@@ -246,32 +246,5 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
         return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP");
     }
 
-    private void addPatientNamesToList(List<TestResultItem> workplanTestList) {
-        String currentAccessionNumber = new String();
-        int sampleGroupingNumber = 0;
-        
-        int newIndex = 0;
-        int newElementsAdded = 0;
-        int workplanTestListOrigSize = workplanTestList.size();
-        
-        for (int i=0; newIndex < (workplanTestListOrigSize + newElementsAdded) ; i++) { 
-            
-            TestResultItem testResultItem = (TestResultItem) workplanTestList.get(newIndex);
-            
-            if (!testResultItem.getAccessionNumber().equals(currentAccessionNumber)) {
-                sampleGroupingNumber++;
-                if (isPatientNameAdded()) {
-                    addPatientNameToList(testResultItem, workplanTestList, newIndex, sampleGroupingNumber);
-                    newIndex++; newElementsAdded++;
-                }
-                
-                currentAccessionNumber = testResultItem.getAccessionNumber();
-            }
-            testResultItem.setSampleGroupingNumber(sampleGroupingNumber);   
-            newIndex++;
-        }
     
-    }
-	
-
 }
