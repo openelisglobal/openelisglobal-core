@@ -795,17 +795,19 @@ function /*void*/ showHideNotes( index) {
     }
 }
 
-function /*void*/ showNote(index) {
-    var noteElement = $("showHideButton_" + index);
+function showNewNote( index){
+    if( !$jq("#note_" + index).val()){
+        showNote( index );
+    }
+}
 
+function /*void*/ showNote(index) {
     $("showHideButton_" + index).src = "./images/note-close.gif";
     $("hideShow_" + index).value = "showing";
     $("noteRow_" + index).show();
 }
 
 function /*void*/ hideNote(index) {
-    var noteElement = $("showHideButton_" + index);
-
     $("showHideButton_" + index).src = $("note_" + index).value.blank() ? "./images/note-add.gif" : "./images/note-edit.gif";
     $("hideShow_" + index).value = "hidden";
     $("noteRow_" + index).hide();
