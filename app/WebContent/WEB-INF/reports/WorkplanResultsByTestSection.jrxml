@@ -164,7 +164,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}.replaceAll("&rarr;", "-->")]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="245" y="18" width="307" height="1" forecolor="#000000"/>
