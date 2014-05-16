@@ -75,7 +75,7 @@ public class AnalysisItem  {
 	private boolean showAcceptReject = true;
 	private List<IdValuePair> dictionaryResults;
 	private boolean isMultipleResultForSample = false;
-    private String multiSelectResultValues;
+    private String multiSelectResultValues = "{}";
 	private boolean readOnly = false;
 	private boolean isReflexGroup = false;
 	private boolean isChildReflex = false;
