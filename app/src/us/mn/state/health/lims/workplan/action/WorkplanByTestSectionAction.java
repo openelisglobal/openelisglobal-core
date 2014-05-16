@@ -153,7 +153,6 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 
 				AnalysisService analysisService = new AnalysisService(analysis);
 				testResultItem = new TestResultItem();
-				//testResultItem.setTestName(analysis.getTest().getTestName());
 				testResultItem.setTestName(analysisService.getTestDisplayName( ))  ;
 				testResultItem.setAccessionNumber(currentAccessionNumber);
 				testResultItem.setReceivedDate(getReceivedDateDisplay(sample) );
