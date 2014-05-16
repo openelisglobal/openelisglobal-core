@@ -118,4 +118,14 @@
             where ts.description = 'Free text');
         </sql>
     </changeSet>
+    <changeSet id="15" author="paulsc" context="haitiLNSP">
+        <comment>Corrected spelling of Mycobacterium tuberculosis Drug Resistant test</comment>
+        <sql>
+            UPDATE clinlims.test
+            SET  description=replace(description,'Mycobacterium tuberculosis Drug Resistant','Mycobacterium tuberculosis résistant'),
+            reporting_description=replace(reporting_description,'Mycobacterium tuberculosis Drug Resistant','Mycobacterium tuberculosis résistant'),
+            name=replace(name,'Mycobacterium tuberculosis Drug Resistant','Mycobacterium tuberculosis résistant')
+            WHERE name='Mycobacterium tuberculosis Drug Resistant';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
