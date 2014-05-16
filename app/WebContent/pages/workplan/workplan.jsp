@@ -162,7 +162,7 @@ function printWorkplan() {
 					</logic:equal>
 				</td>
 				<td>
-					<bean:write name="workplanTests" property="testName"/>
+					<%=workplanTests.getTestName() %> 
 				</td>
 				<% } %>
 	    		<td>

@@ -25,6 +25,7 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
@@ -150,9 +151,9 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 					nextVisit = ObservationHistoryService.getValueForSample(ObservationType.NEXT_VISIT_DATE, sample.getId());
 				}
 
-				
+				AnalysisService analysisService = new AnalysisService(analysis);
 				testResultItem = new TestResultItem();
-				testResultItem.setTestName(analysis.getTest().getTestName());
+				testResultItem.setTestName(analysisService.getTestDisplayName( ))  ;
 				testResultItem.setAccessionNumber(currentAccessionNumber);
 				testResultItem.setReceivedDate(getReceivedDateDisplay(sample) );
 				testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
@@ -244,6 +245,6 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
     private boolean isPatientNameAdded() {
         return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP");
     }
-	
 
+    
 }
