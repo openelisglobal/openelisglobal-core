@@ -135,8 +135,8 @@ public abstract class RejectionReport extends Report implements IReportCreator{
         }
 
         item.setAccessionNumber( sampleService.getAccessionNumber().substring( PREFIX_LENGTH ) );
-        item.setReceivedDate( sampleService.getReceivedDateForDisplay() );
-        item.setCollectionDate( DateUtil.convertTimestampToStringDate( analysisService.getAnalysis().getSampleItem().getCollectionDate() ) );
+        item.setReceivedDate( sampleService.getTwoYearReceivedDateForDisplay() );
+        item.setCollectionDate( DateUtil.convertTimestampToTwoYearStringDate( analysisService.getAnalysis().getSampleItem().getCollectionDate() ) );
         item.setRejectionReason( noteText );
 
         StringBuilder nameBuilder = new StringBuilder( patientService.getLastName().toUpperCase() );

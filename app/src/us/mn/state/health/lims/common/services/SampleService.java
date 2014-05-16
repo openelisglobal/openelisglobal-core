@@ -90,6 +90,11 @@ public class SampleService {
         return sample.getReceivedDateForDisplay();
     }
 
+    public String getTwoYearReceivedDateForDisplay(){
+        String fourYearDate = getReceivedDateForDisplay();
+        int lastSlash = fourYearDate.lastIndexOf( "/" );
+        return fourYearDate.substring( 0, lastSlash + 1 ) + fourYearDate.substring( lastSlash + 3 );
+    }
     public String getReceivedDateWithTwoYearDisplay(){ return DateUtil.convertTimestampToTwoYearStringDate( sample.getReceivedTimestamp() ); }
 
     public String getReceivedTimeForDisplay(){
