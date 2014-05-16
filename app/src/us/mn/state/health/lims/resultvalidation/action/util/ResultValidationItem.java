@@ -73,7 +73,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	private boolean valid = true;
 	private boolean notIncludedInWorkplan = false;
 	private boolean readOnly = false;
-	private String multiSelectResultValues;
+	private String multiSelectResultValues = "{}";
 	private String initialSampleCondition;
 	private String sampleType;
 	private boolean failedValidation = false;
