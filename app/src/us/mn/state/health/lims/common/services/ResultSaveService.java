@@ -143,7 +143,7 @@ public class ResultSaveService {
             }
         });
 
-        if( !deletableResults.isEmpty() || !results.isEmpty()){
+        if( !deletableResults.isEmpty()  ){
             updatedResult = true;
         }
         return results;

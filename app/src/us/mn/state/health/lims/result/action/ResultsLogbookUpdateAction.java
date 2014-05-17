@@ -181,7 +181,9 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			}
 
             for( Referral referral : savableReferrals ){
-                saveReferralsWithRequiredObjects( referral );
+                if( referral != null){
+                    saveReferralsWithRequiredObjects( referral );
+                }
             }
 
 			for(ResultSet resultSet : modifiedResults){
@@ -379,6 +381,10 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
             analysisService.getAnalysis().setCorrectedSincePatientReport( resultSaveService.isUpdatedResult() &&
                                                                           analysisService.patientReportHasBeenDone()  );
 
+            if( analysisService.hasBeenCorrectedSinceLastPatientReport()){
+                noteList.add( noteService.createSavableNote( NoteType.EXTERNAL, StringUtil.getMessageForKey( "note.corrected.result" ), RESULT_SUBJECT, currentUserId ));
+            }
+
             //If there is more than one result then each user selected reflex gets mapped to that result
 			for(Result result : results){
 				addResult(result, testResultItem, analysisService.getAnalysis(), results.size() > 1);
@@ -406,9 +412,9 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
                     referral = new Referral();
                     referral.setReferralTypeId(REFERRAL_CONFORMATION_ID);
                     referral.setSysUserId(currentUserId);
-                    referral.setRequestDate(new Timestamp(new Date().getTime()));
-                    referral.setRequesterName(testResultItem.getTechnician());
-                    referral.setAnalysis(analysis);
+                    referral.setRequestDate( new Timestamp( new Date().getTime() ) );
+                    referral.setRequesterName( testResultItem.getTechnician() );
+                    referral.setAnalysis( analysis );
                     referral.setReferralReasonId(testResultItem.getReferralReasonId());
                 }else if(testResultItem.isReferralCanceled()){
                     referral = referralDAO.getReferralById(testResultItem.getReferralId());

@@ -102,7 +102,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
     private void addReferredTests(Referral referral, ClinicalPatientData parentData){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER );
+        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER, true );
 
 		if( !referralResults.isEmpty()){
 		

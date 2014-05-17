@@ -273,6 +273,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
                 AnalysisService analysisService = new AnalysisService( analysisItem.getAnalysisId() );
                 Analysis analysis = analysisService.getAnalysis();
+                NoteService noteService = new NoteService( analysis );
 
 				analysis.setSysUserId(currentUserId);
 
@@ -292,10 +293,10 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 					}
 				}
 
-                createNeedNotes( analysisItem, analysis );
+                createNeededNotes( analysisItem, noteService );
 
                 if (areResults(analysisItem)) {
-                    List<Result> results = createResultFromAnalysisItem(analysisItem, analysisService);
+                    List<Result> results = createResultFromAnalysisItem(analysisItem, analysisService, noteService);
                     for (Result result : results) {
                         resultUpdateList.add(result);
 
@@ -308,9 +309,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		}
 	}
 
-    private void createNeedNotes( AnalysisItem analysisItem, Analysis analysis ){
-        NoteService noteService = new NoteService( analysis );
-
+    private void createNeededNotes( AnalysisItem analysisItem, NoteService noteService ){
         if( analysisItem.getIsRejected()){
             Note note = noteService.createSavableNote( NoteType.INTERNAL, StringUtil.getMessageForKey( "validation.note.retest" ), RESULT_SUBJECT, currentUserId );
             noteUpdateList.add( note );
@@ -466,13 +465,14 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		return analysis;
 	}
 
-	private List<Result> createResultFromAnalysisItem(AnalysisItem analysisItem, AnalysisService analysisService){
+	private List<Result> createResultFromAnalysisItem(AnalysisItem analysisItem, AnalysisService analysisService, NoteService noteService){
 
         ResultSaveBean bean =  ResultSaveBeanAdapter.fromAnalysisItem(analysisItem);
         ResultSaveService resultSaveService = new ResultSaveService(analysisService.getAnalysis(), currentUserId );
         List<Result> results = resultSaveService.createResultsFromTestResultItem(bean,deletableList);
         if( analysisService.patientReportHasBeenDone() && resultSaveService.isUpdatedResult()){
             analysisService.getAnalysis().setCorrectedSincePatientReport( true );
+            noteUpdateList.add( noteService.createSavableNote( NoteType.EXTERNAL, StringUtil.getMessageForKey( "note.corrected.result" ), RESULT_SUBJECT, currentUserId ));
         }
         return results;
 	}

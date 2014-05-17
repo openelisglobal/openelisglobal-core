@@ -103,7 +103,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
 	private void addReferredTests(Referral referral, ClinicalPatientData parentData, boolean parentStillReferred){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>" );
+        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", true );
 
 		for(int i = 0; i < referralResults.size(); i++){
 			if(referralResults.get(i).getResult() != null &&

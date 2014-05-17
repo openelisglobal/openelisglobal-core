@@ -200,7 +200,7 @@ public class ReferredOutAction extends BaseAction {
 		if (referral.getOrganization() != null) {
 			referralItem.setReferredInstituteId(referral.getOrganization().getId());
 		}
-        String notes =  analysisService.getNotesAsString( true, true, "<br/>" );
+        String notes =  analysisService.getNotesAsString( true, true, "<br/>", false );
         if (notes != null ) {
             referralItem.setPastNotes(notes);
         }

@@ -170,7 +170,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 		currentSampleService = new SampleService(sample);
 		findPatientFromSample();
 
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>" );
+        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", false );
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
 		for (int i = 0; i < referralResults.size(); i++) {
 			i = reportReferralResultValue(referralResults, i);

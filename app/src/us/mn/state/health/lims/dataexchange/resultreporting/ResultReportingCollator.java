@@ -223,7 +223,7 @@ public class ResultReportingCollator {
 		if (result != null) {
             Analysis analysis = new Analysis();
             analysis.setId( result.getAnalysis().getId() );
-            return new NoteService( analysis ).getNotesAsString( false, false, "<br/>" );
+            return new NoteService( analysis ).getNotesAsString( false, false, "<br/>", false );
 		}
 		return null;
 	}
