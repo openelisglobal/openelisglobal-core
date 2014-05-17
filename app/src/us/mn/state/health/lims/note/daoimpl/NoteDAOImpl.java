@@ -79,12 +79,6 @@ public class NoteDAOImpl extends BaseDAOImpl implements NoteDAO {
 	public boolean insertData(Note note) throws LIMSRuntimeException {
 
 		try {
-			// bugzilla 1482 throw Exception if active record already exists
-			if (duplicateNoteExists(note)) {
-				throw new LIMSDuplicateRecordException(
-						"Duplicate record exists for " + note.getNoteType() + " " + note.getSubject());
-			}
-
 			String id = (String) HibernateUtil.getSession().save(note);
 			note.setId(id);
 

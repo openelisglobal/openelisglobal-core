@@ -524,7 +524,7 @@ public abstract class PatientReport extends Report{
 
 
         Test test = reportAnalysis.getTest();
-        String note = new NoteService( reportAnalysis ).getNotesAsString( true, true, "<br/>", FILTER );
+        String note = new NoteService( reportAnalysis ).getNotesAsString( true, true, "<br/>", FILTER, true );
         if( note != null){
             data.setNote( note );
         }

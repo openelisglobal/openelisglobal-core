@@ -411,7 +411,7 @@ public class ResultsLoadUtility {
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
             NoteType[] noteTypes = { NoteType.EXTERNAL, NoteType.INTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
-            String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes );
+            String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes, false );
 
 			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,

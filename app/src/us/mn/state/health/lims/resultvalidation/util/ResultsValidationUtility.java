@@ -388,7 +388,7 @@ public class ResultsValidationUtility {
 
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
         NoteType[] noteTypes = { NoteType.EXTERNAL, NoteType.INTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
-        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes );
+        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes, false );
 
 		if (resultList == null) {
 			return testResultList;

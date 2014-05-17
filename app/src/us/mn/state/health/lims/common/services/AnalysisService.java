@@ -186,8 +186,8 @@ public class AnalysisService{
         return analysis == null ? false : new ReportTrackingService().getLastReportForSample( analysis.getSampleItem().getSample(), ReportTrackingService.ReportType.PATIENT ) != null;
     }
 
-    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator ){
-        return analysis == null ? "" : new NoteService( analysis ).getNotesAsString( prefixType, prefixTimestamp, noteSeparator );
+    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, boolean excludeExternPrefix  ){
+        return analysis == null ? "" : new NoteService( analysis ).getNotesAsString( prefixType, prefixTimestamp, noteSeparator, excludeExternPrefix );
     }
 
     public String getOrderAccessionNumber(){

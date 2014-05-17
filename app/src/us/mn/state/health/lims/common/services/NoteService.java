@@ -114,7 +114,7 @@ public class NoteService{
         object = sampleItem;
     }
 
-    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, NoteType[] filter ){
+    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, NoteType[] filter, boolean excludeExternPrefix  ){
         boolean includeNoneConformity = false;
         List<String> dbFilter = new ArrayList<String>( filter.length );
         for( NoteType type : filter){
@@ -141,7 +141,7 @@ public class NoteService{
             }
         }
 
-        return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList );
+        return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList, excludeExternPrefix );
     }
 
     private List<Note> getNonConformityReasons(){
@@ -183,13 +183,13 @@ public class NoteService{
         return notes;
     }
 
-    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator ){
+    public String getNotesAsString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, boolean excludeExternPrefix  ){
             List<Note> noteList = noteDAO.getNotesChronologicallyByRefIdAndRefTable( objectId, tableId );
 
-            return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList );
+            return notesToString( prefixType, prefixTimestamp, noteSeparator, noteList, excludeExternPrefix );
         }
 
-    private String notesToString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, List<Note> noteList ){
+    private String notesToString( boolean prefixType, boolean prefixTimestamp, String noteSeparator, List<Note> noteList, boolean excludeExternPrefix ){
         if(noteList.isEmpty()){
             return null;
         }
@@ -198,7 +198,7 @@ public class NoteService{
 
         for( Note note : noteList ){
             if( prefixType ){
-                builder.append( getNotePrefix( note ) );
+                builder.append( getNotePrefix( note, excludeExternPrefix ) );
                 builder.append( " " );
             }
 
@@ -320,12 +320,12 @@ public class NoteService{
     public static List<Note> getTestNotesInDateRangeByType( Date lowDate, Date highDate, NoteType noteType ){
         return noteDAO.getNotesInDateRangeAndType( lowDate, highDate, noteType.DBCode, ANALYSIS_TABLE_ID);
     }
-    private String getNotePrefix(Note note) {
+    private String getNotePrefix( Note note, boolean excludeExternPrefix ) {
         if(SUPPORT_INTERNAL_EXTERNAL){
             if( Note.INTERNAL.equals(note.getNoteType())){
                 return StringUtil.getMessageForKey("note.type.internal");
             }else if( Note.EXTERNAL.equals(note.getNoteType())){
-                return StringUtil.getMessageForKey("note.type.external");
+                return excludeExternPrefix ? "" : StringUtil.getMessageForKey("note.type.external");
             }else if( Note.REJECT_REASON.equals( note.getNoteType() )){
                 return StringUtil.getMessageForKey( "note.type.rejectReason" );
             }else if(Note.NON_CONFORMITY.equals( note.getNoteType() )){
