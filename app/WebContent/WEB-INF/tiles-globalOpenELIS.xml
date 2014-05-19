@@ -90,11 +90,6 @@
 		<put name="resultsPanel" value="resultListViewCore"/>
 	</definition>
 
-	<definition name="accessionResultsCore" path="/pages/result/resultsBySearch.jsp">
-		<put name="searchPanel" value="/pages/accession/accessionSearch.jsp"/>
-		<put name="resultsPanel" value="resultListViewCore"/>
-	</definition>
-
 	<definition name="accessionSampleEditCore" path="/pages/result/resultsBySearch.jsp">
 		<put name="searchPanel" value="/pages/patient/patientSearch.jsp"/>
 		<put name="resultsPanel" value="sampleEditCore"/>
@@ -152,12 +147,6 @@
     <definition name="patientResultDefinition" extends="baseDefinition">
         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
 		<put name="body" value="patientResultsCore"/>
-		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
-	</definition>
-
-    <definition name="accessionResultDefinition" extends="baseDefinition">
-        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
-		<put name="body" value="accessionResultsCore"/>
 		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
 	</definition>
 
