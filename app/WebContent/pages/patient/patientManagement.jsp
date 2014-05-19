@@ -375,6 +375,9 @@ function  /*void*/ updatePatientAge( DOB )
 
 	var age = document.getElementById("age");
 	age.value = calculatedAge;
+
+    setValidIndicaterOnField( true, $("age").name);
+    pt_setFieldValid( $("age").name );
 }
 
 function /*void*/ handleAgeChange( age )
