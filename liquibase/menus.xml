@@ -393,7 +393,7 @@
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
 			<column name="presentation_order" valueNumeric="2" />
 			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/PatientResults.do" />
+			<column name="action_url" value="/AccessionResults.do" />
 			<column name="display_key" value="banner.menu.results.accession" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
 		</insert>
@@ -1011,7 +1011,7 @@
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
 			<column name="presentation_order" valueNumeric="2" />
 			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/PatientResults.do" />
+			<column name="action_url" value="/AccessionResults.do" />
 			<column name="display_key" value="banner.menu.results.accession" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
 		</insert>
@@ -1616,7 +1616,7 @@
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
 			<column name="presentation_order" valueNumeric="2" />
 			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/PatientResults.do" />
+			<column name="action_url" value="/AccessionResults.do" />
 			<column name="display_key" value="banner.menu.results.accession" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
 		</insert>
@@ -2163,7 +2163,7 @@
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
 			<column name="presentation_order" valueNumeric="2" />
 			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/PatientResults.do" />
+			<column name="action_url" value="/AccessionResults.do" />
 			<column name="display_key" value="banner.menu.results.accession" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
 		</insert>
@@ -2695,7 +2695,7 @@
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
 			<column name="presentation_order" valueNumeric="2" />
 			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/PatientResults.do" />
+			<column name="action_url" value="/AccessionResults.do" />
 			<column name="display_key" value="banner.menu.results.accession" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
 		</insert>
@@ -3237,7 +3237,7 @@
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
 			<column name="presentation_order" valueNumeric="2" />
 			<column name="element_id" value="menu_results_lab_no" />
-			<column name="action_url" value="/PatientResults.do" />
+			<column name="action_url" value="/AccessionResults.do" />
 			<column name="display_key" value="banner.menu.results.lab.no" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.lab.no" />
 		</insert>
