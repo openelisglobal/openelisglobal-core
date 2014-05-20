@@ -158,9 +158,7 @@ processDateSuccessById(xhr) {
     var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
     var formFieldId = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
 
-    var isValid = message == "valid";
-
-    updateFieldValidity(isValid, formFieldId);
+    updateFieldValidity(message == "valid", formFieldId);
 }
 
 /*
@@ -229,16 +227,31 @@ function checkTime(value) {
 /**
  * call for checking a date then updating a field message based on the _ID_ Ajaxed over and back.
  * @param dateElement
+ * @param successCallback -- the function to call.  If not given then default is processDateSuccessById
+ * @param dateRestriction -- must be one of "past", "future", "DNA".  If not given then default is "past"
+ * @param blankAllowed -- true or false  default is true.
  * @return
  */
 
-function checkValidDate(dateElement) {
+function checkValidDate(dateElement, successCallback, dateRestriction, blankAllowed) {
+    if( typeof successCallback === "undefined" || successCallback == null){
+        successCallback = processDateSuccessById;
+    }
+
+    if( typeof dateRestriction === "undefined" || dateRestriction == null){
+        dateRestriction = "past";
+    }
+
+    if( typeof blankAllowed === "undefined" || blankAllowed == null){
+        blankAllowed = true;
+    }
+
     if (dateElement) {
         if (dateElement.value.blank()) {
-            updateFieldValidity(true, dateElement.id);
-            return true;
+            updateFieldValidity(blankAllowed, dateElement.id);
+            return blankAllowed;
         } else {
-            isValidDate(dateElement.value, processDateSuccessById, dateElement.id, "past");
+            isValidDate(dateElement.value, successCallback, dateElement.id, dateRestriction);
             return false;
         }
     }

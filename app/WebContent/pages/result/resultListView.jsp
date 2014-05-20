@@ -334,6 +334,27 @@ function forceTechApproval(checkbox, index ){
 
 }
 
+function processDateCallbackEvaluation(xhr) {
+
+    //alert(xhr.responseText);
+    var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
+    var formFieldId = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
+    var givenDate = $jq("#" + formFieldId).val();
+    var isValid = message == "valid";
+
+    if( !isValid ){
+        if( message == 'invalid_value_to_large' ){
+            alert( '<bean:message key="error.date.inFuture"/>' );
+        }else if( message == 'invalid_value_to_small' ){
+            alert( '<bean:message key="error.date.inPast"/>' );
+        }else if( message == "invalid"){
+            alert( givenDate + " " + "<%=StringUtil.getMessageForKey("errors.date", "" )%>");
+        }
+    }
+
+    updateFieldValidity(isValid, formFieldId);
+}
+
 </script>
 
 
@@ -624,7 +645,15 @@ function forceTechApproval(checkbox, index ){
 		<% } %>
 		<!-- date cell -->
 		<td class="ruled">
-			<html:text name="testResult" property="testDate" indexed="true" size="10" tabindex='-1' onchange='<%="markUpdated(" + index + ");" %>'/>
+			<html:text name="testResult"
+                       property="testDate"
+                       indexed="true"
+                       size="10"
+                       maxlength="10"
+                       tabindex='-1'
+                       onchange='<%="markUpdated(" + index + ");checkValidDate(this, processDateCallbackEvaluation, \'past\', false)" %>'
+                       onkeyup="addDateSlashes(this, event);"
+                       styleId='<%="testDate_" + index%>'/>
 		</td>
 		<logic:equal  name="<%=formName%>" property="displayTestMethod" value="true">
 			<td class="ruled" style='text-align: center'>
