@@ -836,13 +836,18 @@ function showCachedRejectionReasonRows() {
 		}
 	}
 }
+
 function disableRejectedResults() {
 	var rows = $jq('tr[id^="row_"]');
 	for (var i=0; i<rows.length; i++) {
 	    var split = rows[i].id.split("_");
 	    var index = split[1];
-	    if ($jq('#shadowRejected_' + index).val() == 'true' &&
+	    if ($jq('#considerRejectReason_' + index).val() == 'true' &&
 	    		$jq('#isRejected_' + index).val() == 'false') {
+	    	disableResultInputs(index);
+	    } else if ($jq('#considerRejectReason_' + index).val() == 'true' &&
+	    		$jq('#isRejected_' + index).val() == 'true') {
+	    	$jq('#rejected_' + index).prop('checked', true);
 	    	disableResultInputs(index);
 	    } else {
 	    	$jq('#rejected_' + index).prop('checked', false);
