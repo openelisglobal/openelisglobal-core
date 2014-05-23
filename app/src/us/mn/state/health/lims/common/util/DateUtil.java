@@ -269,6 +269,9 @@ public class DateUtil {
         return convertTimestampToStringDate(date, locale, true);
     }
     private static String convertTimestampToStringDate( Timestamp date, String stringLocale, boolean twoYearDate) throws LIMSRuntimeException {
+        if( date == null){
+            return "";
+        }
         Locale locale = new Locale(stringLocale);
         String pattern = ResourceLocator.getInstance().getMessageResources().getMessage(locale, "date.format.formatKey");
         if( twoYearDate){
