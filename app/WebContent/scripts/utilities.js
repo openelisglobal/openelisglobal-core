@@ -874,7 +874,7 @@ function disableResultInputs(index) {
 	} else {
 		$jq('#results_' + index).val('');
 		$jq('#results_' + index).css("background-color", "#ffffff");
-		$jq('#results_' + index).attr('disabled', 'true');
+        $jq('#results_' + index).attr('readonly', 'readonly');
 	}
 }
  
