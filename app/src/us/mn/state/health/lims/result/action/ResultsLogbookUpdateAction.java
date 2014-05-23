@@ -513,7 +513,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
             return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected);
         }else if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance);
-		}else if(noResults(testResult.getResultValue(), testResult.getMultiSelectResultValues(), testResult.getResultType())){
+		}else if(noResults(testResult.getShadowResultValue(), testResult.getMultiSelectResultValues(), testResult.getResultType())){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted);
 		}else{
 			ResultLimit resultLimit = resultLimitDAO.getResultLimitById(testResult.getResultLimitId());
@@ -572,7 +572,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			}
 		}else if(StatusService.getInstance().matches(analysis.getStatusId(), AnalysisStatus.Finalized) ||
 				StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.TechnicalAcceptance ) ||
-				(analysis.isReferredOut() && !GenericValidator.isBlankOrNull(testResultItem.getResultValue()))){
+				(analysis.isReferredOut() && !GenericValidator.isBlankOrNull(testResultItem.getShadowResultValue()))){
 			analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 		}
 
