@@ -96,7 +96,7 @@ public class ResultsLoadUtility {
 
 	private List<Sample> samples;
 	private String currentDate = "";
-	private Patient currPatient;
+    private PatientService patientService;
 	private Sample currSample;
 
 	private Set<Integer> excludedAnalysisStatus = new HashSet<Integer>();
@@ -174,7 +174,7 @@ public class ResultsLoadUtility {
 			samples.add(sample);
 		}
 
-		currPatient = patient;
+        patientService = new PatientService( patient );
 
 		return getGroupedTestsForSamples();
 	}
@@ -184,12 +184,12 @@ public class ResultsLoadUtility {
 		activeKits = null;
 		inventoryNeeded = false;
 
-		currPatient = patient;
+        patientService = new PatientService( patient );
 
 		SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
 		samples = sampleHumanDAO.getSamplesForPatient(patient.getId());
 
-		return getGroupedTestsForSamples();
+		return getGroupedTestsForSamples( );
 	}
 
 	/*
@@ -232,18 +232,16 @@ public class ResultsLoadUtility {
 		List<TestResultItem> selectedTestList = new ArrayList<TestResultItem>();
 
 		for (Analysis analysis : filteredAnalysisList) {
-
-			currPatient = getPatientForSampleItem(analysis.getSampleItem());
+            patientService = new PatientService( new SampleService( analysis.getSampleItem().getSample() ).getPatient() );
 
 			String patientName = "";
 			String patientInfo;
-			String nationalId = currPatient.getNationalId();
+			String nationalId = patientService.getNationalId();
 			if (depersonalize) {
-				patientInfo = GenericValidator.isBlankOrNull(nationalId) ? currPatient.getExternalId() : currPatient
-						.getNationalId();
+				patientInfo = GenericValidator.isBlankOrNull(nationalId) ? patientService.getExternalId() : nationalId;
 			} else {
-				patientName = getDisplayNameForCurrentPatient();
-				patientInfo = currPatient.getNationalId() + ", " + currPatient.getGender() + ", " + currPatient.getBirthDateForDisplay();
+				patientName = patientService.getLastFirstName();
+				patientInfo = nationalId + ", " + patientService.getGender() + ", " + patientService.getBirthdayForDisplay();
 			}
 
 			currSample = analysis.getSampleItem().getSample();
@@ -264,24 +262,6 @@ public class ResultsLoadUtility {
 		addUserSelectionReflexes(selectedTestList);
 
 		return selectedTestList;
-	}
-
-
-	private String getDisplayNameForCurrentPatient() {
-		StringBuilder nameBuilder = new StringBuilder();
-		if (!GenericValidator.isBlankOrNull(currPatient.getPerson().getLastName())) {
-			nameBuilder.append(currPatient.getPerson().getLastName());
-		}
-
-		if (!GenericValidator.isBlankOrNull(currPatient.getPerson().getFirstName())) {
-			if (nameBuilder.length() > 0) {
-				nameBuilder.append(", ");
-			}
-
-			nameBuilder.append(currPatient.getPerson().getFirstName());
-		}
-
-		return nameBuilder.toString();
 	}
 
 	private void reverseSortByAccessionAndSequence(List<? extends ResultItem> selectedTest) {
@@ -454,12 +434,6 @@ public class ResultsLoadUtility {
 		return inventoryList.size() > 0 ? inventoryList.get(0) : null;
 	}
 
-
-	private Patient getPatientForSampleItem(SampleItem sampleItem) {
-		SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
-		return sampleHumanDAO.getPatientForSample(sampleItem.getSample());
-	}
-
 	private List<TestResultItem> getGroupedTestsForSamples() {
 
 		List<TestResultItem> testList = new ArrayList<TestResultItem>();
@@ -582,7 +556,7 @@ public class ResultsLoadUtility {
 			String techSignatureId,  String initialSampleConditions, String sampleType) {
 
         TestService testService = new TestService( analysisService.getTest() );
-        ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(testService.getTest(), currPatient);
+        ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(testService.getTest(), patientService.getPatient());
 
         String receivedDate = currSample == null ? getCurrentDate() : currSample.getReceivedDateForDisplay();
 		String testMethodName = testService.getTestMethodName();
@@ -651,7 +625,7 @@ public class ResultsLoadUtility {
 		testItem.setTestId( testService.getTest().getId() );
 		setResultLimitDependencies(resultLimit, testItem, testResults);
 		testItem.setPatientName(patientName);
-		testItem.setPatientInfo(patientInfo);
+		testItem.setPatientInfo(patientInfo );
 		testItem.setReportable(testService.isReportable());
 		testItem.setUnitsOfMeasure(uom);
 		testItem.setTestDate(testDate);

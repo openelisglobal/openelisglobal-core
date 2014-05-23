@@ -356,6 +356,9 @@ public class PatientService implements IPatientService {
 		return patient != null ? PatientUtil.getIdentityListForPatient(patient) : new ArrayList<PatientIdentity>();
 	}
 
+    public String getExternalId(){
+        return patient == null ? "" : patient.getExternalId();
+    }
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getPatient()
 	 */
