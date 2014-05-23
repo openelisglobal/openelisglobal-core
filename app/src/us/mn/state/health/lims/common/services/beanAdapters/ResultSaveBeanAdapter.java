@@ -33,7 +33,7 @@ public class ResultSaveBeanAdapter {
         bean.setQualifiedResultValue(item.getQualifiedResultValue());
         bean.setQualifiedDictionaryId(item.getQualifiedDictionaryId());
         bean.setResultId(item.getResultId());
-        bean.setResultValue(item.getResultValue());
+        bean.setResultValue(item.getShadowResultValue());
         bean.setReportable(item.getReportable());
         bean.setLowerNormalRange(item.getLowerNormalRange());
         bean.setUpperNormalRange(item.getUpperNormalRange());

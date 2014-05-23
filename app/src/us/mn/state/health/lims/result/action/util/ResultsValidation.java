@@ -97,7 +97,8 @@ public class ResultsValidation {
 	}
 	
 	private void validateResult(TestResultItem testResultItem, List<ActionError> errors) {
-	    if (GenericValidator.isBlankOrNull(testResultItem.getResultValue()) && testResultItem.isRejected())
+        String resultValue = testResultItem.getShadowResultValue();
+	    if (GenericValidator.isBlankOrNull(resultValue) && testResultItem.isRejected())
 	        return;
 
 		if (!(ResultUtil.areNotes(testResultItem) || 
@@ -107,12 +108,12 @@ public class ResultsValidation {
 			errors.add(new ActionError("errors.result.required"));
 		}
 		
-		if (!GenericValidator.isBlankOrNull(testResultItem.getResultValue()) && "N".equals(testResultItem.getResultType())) {
-			if( testResultItem.getResultValue().equals(SPECIAL_CASE)){
+		if (!GenericValidator.isBlankOrNull(resultValue) && "N".equals(testResultItem.getResultType())) {
+			if( resultValue.equals(SPECIAL_CASE)){
 				return;
 			}
 			try {
-				Double.parseDouble(testResultItem.getResultValue());
+				Double.parseDouble(resultValue);
 			} catch (NumberFormatException e) {
 				errors.add(new ActionError("errors.number.format", new StringBuilder("Result")));
 			}
@@ -174,7 +175,7 @@ public class ResultsValidation {
 
         } else{
             Result dbResult = resultDAO.getResultById( item.getResultId() );
-            return !item.getResultValue().equals( dbResult.getValue() ) && !GenericValidator.isBlankOrNull( dbResult.getValue() );
+            return !item.getShadowResultValue().equals( dbResult.getValue() ) && !GenericValidator.isBlankOrNull( dbResult.getValue() );
         }
 
         return false;
@@ -191,7 +192,7 @@ public class ResultsValidation {
 		Result result = resultDAO.getResultById(item.getResultId());
 
 		if (result != null && result.getAnalyte() != null && "Conclusion".equals(result.getAnalyte().getAnalyteName())) {
-			if (result.getValue().equals(item.getResultValue())) {
+			if (result.getValue().equals(item.getShadowResultValue())) {
 				return;
 			}
 		}

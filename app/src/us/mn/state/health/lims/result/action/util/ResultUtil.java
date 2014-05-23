@@ -76,8 +76,8 @@ public class ResultUtil {
         return testResultItem.isShadowRejected();
     }
 	public static boolean areResults(TestResultItem item) {
-		return !(GenericValidator.isBlankOrNull(item.getResultValue()) || 
-				(ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getResultValue()))) ||
+		return !(GenericValidator.isBlankOrNull(item.getShadowResultValue()) ||
+				(ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getShadowResultValue()))) ||
 				(ResultType.isMultiSelectVariant(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 

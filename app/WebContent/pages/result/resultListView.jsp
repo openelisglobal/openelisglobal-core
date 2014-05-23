@@ -331,7 +331,6 @@ function forceTechApproval(checkbox, index ){
 	}else{
 		hideNote( index);
 	}
-
 }
 
 function processDateCallbackEvaluation(xhr) {
@@ -353,6 +352,10 @@ function processDateCallbackEvaluation(xhr) {
     }
 
     updateFieldValidity(isValid, formFieldId);
+}
+
+function updateShadowResult(source, index){
+  $jq("#shadowResult_" + index).val(source.value);
 }
 
 </script>
@@ -621,6 +624,7 @@ function processDateCallbackEvaluation(xhr) {
             <html:hidden name="testResult" property="referralCanceled" indexed="true" />
             <html:hidden name="testResult" property="considerRejectReason" styleId='<%="considerRejectReason_" + index %>' indexed="true" />
             <html:hidden name="testResult" property="hasQualifiedResult" indexed="true" styleId='<%="hasQualifiedResult_" + index %>' />
+            <html:hidden name="testResult" property="shadowResultValue" indexed="true" styleId='<%="shadowResult_" + index%>' />
             <logic:equal name="testResult" property="userChoiceReflex" value="true">
                 <html:hidden name="testResult" property="reflexJSONResult"  styleId='<%="reflexServerResultId_" + index%>'  styleClass="reflexJSONResult" indexed="true"/>
             </logic:equal>
@@ -760,7 +764,8 @@ function processDateCallbackEvaluation(xhr) {
 						               "markUpdated(" + index + "); " +
 						                (testResult.isReflexGroup() && !testResult.isChildReflex() ? "updateReflexChild(" + testResult.getReflexParentGroup()  +  " ); " : "") +
 						                ( noteRequired && !"".equals(testResult.getResultValue())  ? "showNote( " + index + ");" : ""  ) + 
-						                ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" )  %>'/>
+						                ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" ) +
+						                  " updateShadowResult(this, " + index + ");"%>'/>
 						               
 				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal><logic:equal name="testResult" property="resultType" value="A">
@@ -774,7 +779,8 @@ function processDateCallbackEvaluation(xhr) {
 						  styleId='<%="results_" + index %>'
 						  onchange='<%="markUpdated(" + index + ");"  +
 						  			   ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" ) +
-						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "")%>'/>
+						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "") +
+						                " updateShadowResult(this, " + index + ");"%>'/>
 				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal><logic:equal name="testResult" property="resultType" value="R">
 				<!-- text results -->
@@ -787,7 +793,8 @@ function processDateCallbackEvaluation(xhr) {
 						  title='<%= (testResult.isValid() ? testResult.isNormal() ? "" : StringUtil.getMessageForKey("result.value.abnormal") : StringUtil.getMessageForKey("result.value.invalid")) %>'
 						  styleId='<%="results_" + index %>'
 						  onkeyup='<%="value = value.substr(0, 200); markUpdated(" + index + ");"  +
-						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "")%>'
+						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "") +
+						                " updateShadowResult(this, " + index + ");"%>'
 						  />
 				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal>
@@ -796,7 +803,8 @@ function processDateCallbackEvaluation(xhr) {
 			<select name="<%="testResult[" + index + "].resultValue" %>"
 			        onchange="<%="markUpdated(" + index + ", " + testResult.isUserChoiceReflex() +  ", \'" + testResult.getSiblingReflexKey() + "\');"   +
 						               ((noteRequired && !"".equals(testResult.getResultValue()) )? "showNote( " + index + ");" : "") +
-						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", 'D');" :"") %>"
+						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", 'D');" :"") +
+						                 " updateShadowResult(this, " + index + ");"%>"
 			        id='<%="resultId_" + index%>'
 			        <%=testResult.isReadOnly()? "disabled=\'true\'" : "" %> >
 					<option value="0"></option>

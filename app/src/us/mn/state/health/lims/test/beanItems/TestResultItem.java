@@ -72,6 +72,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	private double lowerAbnormalRange;
     private String normalRange = "";
     private int significantDigits = -1;
+    private String shadowResultValue;
 	private String resultValue;
 	private String remarks;
 	private String technician;
@@ -373,8 +374,18 @@ public class TestResultItem implements ResultItem, Serializable{
 	}
 	public void setResultValue(String results) {
 		this.resultValue = results;
+        setShadowResultValue( results );
 	}
-	public String getResultType() {
+
+    public String getShadowResultValue(){
+        return shadowResultValue;
+    }
+
+    public void setShadowResultValue( String shadowResultValue ){
+        this.shadowResultValue = shadowResultValue;
+    }
+
+    public String getResultType() {
 		return resultType;
 	}
 	public void setResultType(String resultType) {

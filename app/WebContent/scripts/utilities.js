@@ -865,16 +865,19 @@ function disableResultInputs(index) {
 		disableMultiSelect(index);
 	} else if (resultType == 'D') {
 		$jq('#resultId_' + index).val(0);
+        $jq('#shadowResult_' + index).val(0);
 		$jq('#resultId_' + index).css("background-color", "#ffffff");
-		$jq('#resultId_' + index).attr('disabled', 'true');
+		$jq('#resultId_' + index).attr('disabled', 'disabled');
 	}  else if (resultType == 'R') {
-		$jq('#results_' + index).val('');
+        $jq('#results_' + index).val('');
+        $jq('#shadowResult_' + index).val('');
 		$jq('#results_' + index).css("background-color", "#ffffff");
-		$jq('#results_' + index).attr('disabled', 'true');
+		$jq('#results_' + index).attr('disabled', 'disabled');
 	} else {
 		$jq('#results_' + index).val('');
+        $jq('#shadowResult_' + index).val('');
 		$jq('#results_' + index).css("background-color", "#ffffff");
-        $jq('#results_' + index).attr('readonly', 'readonly');
+        $jq('#results_' + index).attr('disabled', 'disabled');
 	}
 }
  
