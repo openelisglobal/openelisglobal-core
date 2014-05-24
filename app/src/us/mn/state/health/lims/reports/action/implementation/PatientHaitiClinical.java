@@ -54,6 +54,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
+        analysisStatusIds.add(Integer.parseInt( StatusService.getInstance().getStatusID( AnalysisStatus.TechnicalRejected ) ) );
 
 	}
 

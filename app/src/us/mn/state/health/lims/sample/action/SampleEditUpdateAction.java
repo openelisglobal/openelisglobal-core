@@ -30,11 +30,8 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
-import us.mn.state.health.lims.common.services.RequesterService;
-import us.mn.state.health.lims.common.services.SampleAddService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
-import us.mn.state.health.lims.common.services.SampleOrderService;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -49,6 +46,7 @@ import us.mn.state.health.lims.organization.dao.OrganizationOrganizationTypeDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationOrganizationTypeDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
@@ -153,6 +151,7 @@ public class SampleEditUpdateAction extends BaseAction {
         }
 
         Person referringPerson = orderArtifacts.getProviderPerson();
+        Patient patient = new SampleService( updatedSample ).getPatient();
 
         Transaction tx = HibernateUtil.getSession().beginTransaction();
 
@@ -183,6 +182,7 @@ public class SampleEditUpdateAction extends BaseAction {
             }
 
             if (paymentObservation != null) {
+                paymentObservation.setPatientId( patient.getId() );
                 observationDAO.insertOrUpdateData( paymentObservation );
             }
 
@@ -198,7 +198,10 @@ public class SampleEditUpdateAction extends BaseAction {
 
                 if( sampleTestCollection.initialSampleConditionIdList != null){
                     for( ObservationHistory observation : sampleTestCollection.initialSampleConditionIdList){
+                        observation.setPatientId( patient.getId() );
                         observation.setSampleItemId(sampleTestCollection.item.getId());
+                        observation.setSampleId(sampleTestCollection.item.getSample().getId());
+                        observation.setSysUserId( currentUserId );
                         observationDAO.insertData(observation);
                     }
                 }
