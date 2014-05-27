@@ -73,8 +73,7 @@
             validateAccessionNumberOnServer(false, false, accessionNumber.id, accessionNumber.value, processAccessionSuccess, null);
         }
         else {
-            setSampleFieldInvalid(accessionNumber.name);
-            setValidIndicaterOnField(false, accessionNumber.name);
+             selectFieldErrorDisplay(false, $("labNo"));
         }
 
         if( window.setSave()){setSave();}
@@ -91,7 +90,6 @@
         }
         var labElement = formField.firstChild.nodeValue;
         selectFieldErrorDisplay(success, $(labElement));
-        setSampleFieldValidity(success, labElement);
 
         if (!success) {
             alert(message.firstChild.nodeValue);

@@ -111,12 +111,7 @@ function setSampleFieldValid(field)
     var removeIndex = invalidSampleElements.indexOf( field );
     if( removeIndex != -1 )
     {
-        for( var i = removeIndex + 1; i < invalidSampleElements.length; i++ )
-        {
-            invalidSampleElements[i - 1] = invalidSampleElements[i];
-        }
-
-        invalidSampleElements.length--;
+        invalidSampleElements.splice( removeIndex,1);
     }
 }
 
@@ -314,7 +309,7 @@ function /*bool*/ requiredSampleEntryFieldsValid(){
 }
 
 function /*bool*/ sampleEntryTopValid(){
-    return invalidSampleElements.length == 0 && requiredSampleEntryFieldsValid();
+    return invalidSampleElements.length == 0 && requiredSampleEntryFieldsValid() && $jq(".error").length == 0;
 }
 
 function /*void*/ loadSamples(){
