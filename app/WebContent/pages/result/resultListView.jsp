@@ -371,7 +371,7 @@ function updateShadowResult(source, index){
         <input type="hidden" id="testRow" />
         <input type="hidden" id="targetIds" />
         <input type="hidden" id="serverResponse" />
-        <p ><input style='vertical-align:text-bottom' id='selectAll' type='checkbox' onchange='modalSelectAll(this);' >&nbsp;&nbsp;&nbsp;<b>Select all</b></p><hr>
+        <p ><input style='vertical-align:text-bottom' id='selectAll' type='checkbox' onchange='modalSelectAll(this);' >&nbsp;&nbsp;&nbsp;<b><%=StringUtil.getMessageForKey("label.button.checkAll")%></b></p><hr>
     </div>
     <div class="modal-footer">
         <button id="modal_ok" class="btn btn-primary" disabled="disabled">OK</button>
