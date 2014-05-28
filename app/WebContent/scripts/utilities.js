@@ -582,7 +582,7 @@ function FieldValidator() {
      */
     this.isAllValid = function /*boolean*/
     () {
-        return this.invalidFields.length == 0 && this.isEachRequiredFieldEntered();
+        return this.invalidFields.length == 0 && this.isEachRequiredFieldEntered() && $jq(".error").length == 0;
     }
 
     this.isAnyConflicted = function /*boolean*/
