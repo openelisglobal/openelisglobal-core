@@ -1074,6 +1074,8 @@ function  processSubjectNumberSuccess(xhr){
 					  property="patientProperties.birthDateForDisplay"
 					  styleClass="text"
 					  size="20"
+                      maxlength="10"
+                      onkeyup="addDateSlashes(this,event);"
 					  onchange="handleBirthDateChange( this, true ); updatePatientEditStatus();"
 					  styleId="dateOfBirthID" />
 			<div id="patientProperties.birthDateForDisplayMessage" class="blank" ></div>
