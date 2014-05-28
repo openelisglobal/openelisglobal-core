@@ -279,17 +279,6 @@ function  /*string*/ pt_requiredFieldsValidMessage()
 	return returnMessage;
 }
 
-
-function  /*void*/ handleBirthDateChange( dateElement, checkForValidDate )
-{
-
-	if(!checkForValidDate ){
-		updatePatientAge( dateElement );
-	}else{
-		 checkValidAgeDate( dateElement );
-	}
-}
-
 function  /*void*/ processValidateDateSuccess(xhr){
 
     //alert(xhr.responseText);
@@ -614,7 +603,7 @@ function  /*void*/ setPatientInfo(nationalID, ST_ID, subjectNumber, lastName, fi
 	} else {
 		var dobElement = $("dateOfBirthID");
 		dobElement.value = dob;
-		handleBirthDateChange(dobElement, false);
+        checkValidAgeDate(dobElement);
 	}
 
 	document.getElementById("genderID").selectedIndex = gender == undefined ? 0 : gender;
@@ -1076,7 +1065,7 @@ function  processSubjectNumberSuccess(xhr){
 					  size="20"
                       maxlength="10"
                       onkeyup="addDateSlashes(this,event);"
-					  onchange="handleBirthDateChange( this, true ); updatePatientEditStatus();"
+                      onblur="checkValidAgeDate( this ); updatePatientEditStatus();"
 					  styleId="dateOfBirthID" />
 			<div id="patientProperties.birthDateForDisplayMessage" class="blank" ></div>
 		</td>

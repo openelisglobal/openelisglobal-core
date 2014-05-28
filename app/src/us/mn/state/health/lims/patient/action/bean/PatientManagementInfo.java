@@ -49,7 +49,7 @@ public class PatientManagementInfo implements Serializable {
 	private String city;
 	private String commune;
 	private String addressDepartment;
-	private String birthDateForDisplay;
+	private String birthDateForDisplay = "";
 	private String gender;
 	private String patientType = "";
 	private static List<PatientType> patientTypes;
