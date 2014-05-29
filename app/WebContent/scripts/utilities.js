@@ -857,6 +857,12 @@ function disableRejectedResults() {
 
 function disableResultInputs(index) {
 	var resultType = $jq('#resultType_' + index).val();
+    var qualifiedResult = $jq("#qualifiedDict_" + index);
+    if( qualifiedResult){
+        qualifiedResult.val('');
+        qualifiedResult.hide();
+    }
+
 	if (resultType == 'C') {
 		resetCascadingMultiSelect(index);
 		disableCascadingMultiSelect(index);
