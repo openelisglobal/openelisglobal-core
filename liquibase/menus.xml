@@ -729,7 +729,7 @@
 		runOnChange="true">
 		<comment>Adds the menu items for Haiti LNSP</comment>
 		<delete schemaName="clinlims" tableName="menu" />
-		<sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
+		<sql>ALTER SEQUENCE clinlims.menu_seq RESTART 2;</sql>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="1" />
@@ -794,14 +794,6 @@
 			<column name="tool_tip_key" value="tooltip.banner.menu.patient.addOrEdit" />
 		</insert>
 
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_nonconformity" />
-			<column name="action_url" value="/NonConformity.do" />
-			<column name="display_key" value="banner.menu.nonconformity" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="5" />
@@ -1297,38 +1289,6 @@
             <column name="display_key" value="banner.menu.report.epi.surveillance.export" />
             <column name="tool_tip_key" value="banner.menu.report.epi.surveillance.export" />
         </insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_reports_nonconformity" />
-			<column name="display_key" value="reports.nonConformity.menu" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_reports_nonconformity_date" />
-			<column name="action_url"
-				value="/Report.do?type=patient&amp;report=haitiNonConformityByDate" />
-			<column name="display_key" value="reports.nonConformity.byDate.report" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.byDate.report" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_reports_nonconformity_section" />
-			<column name="action_url"
-				value="/Report.do?type=patient&amp;report=haitiNonConformityBySectionReason" />
-			<column name="display_key" value="reports.nonConformity.bySectionReason.report" />
-			<column name="tool_tip_key"
-				value="tooltip.reports.nonConformity.bySectionReason.report" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
