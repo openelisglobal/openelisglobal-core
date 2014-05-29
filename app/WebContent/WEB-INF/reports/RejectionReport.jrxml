@@ -195,9 +195,10 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{rejectionReason}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="553" height="15" printWhenGroupChanges="accession" backcolor="#CCCCCC"/>
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Transparent" x="0" y="0" width="553" height="15" printWhenGroupChanges="accession" backcolor="#CCCCCC"/>
 				<box>
-					<bottomPen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
 				</box>
 			</frame>
 			<textField isBlankWhenNull="true">

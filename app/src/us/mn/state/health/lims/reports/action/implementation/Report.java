@@ -130,7 +130,7 @@ public abstract class Report implements IReportCreator {
      * @return  Date
      */
     protected Date validateDate(String checkDateStr, String defaultDateStr, String badDateMessage) {
-        checkDateStr = (isBlankOrNull(checkDateStr))?defaultDateStr:checkDateStr;
+        checkDateStr = isBlankOrNull(checkDateStr) ? defaultDateStr : checkDateStr;
         Date checkDate;
         if (isBlankOrNull(checkDateStr)) {
             add1LineErrorMessage(badDateMessage);
@@ -236,6 +236,9 @@ public abstract class Report implements IReportCreator {
         }
 
         public String getHighDateStr(){
+            if( isBlankOrNull( highDateStr ) && highDate != null){
+                highDateStr = DateUtil.convertSqlDateToStringDate( highDate );
+            }
             return highDateStr;
         }
     }
