@@ -219,8 +219,8 @@ public class DateUtil {
 			// bugzilla 1857 deprecated date stuff
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(date);
-			cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(time.substring(0, 2)).intValue());
-			cal.set(Calendar.MINUTE, Integer.valueOf(time.substring(3, 5)).intValue());
+			cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf( time.substring( 0, 2 ) ) );
+			cal.set(Calendar.MINUTE, Integer.valueOf( time.substring( 3, 5 ) ) );
 			// date.setHours(Integer.valueOf(time.substring(0, 2)).intValue());
 			// System.out.println("Here I am 2 " + date);
 			// date.setMinutes(Integer.valueOf(time.substring(3,
@@ -279,15 +279,14 @@ public class DateUtil {
         }
 
         SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
-        String returnDate = null;
-        if (date != null) {
-            try {
-                returnDate = format.format(date);
-            } catch (Exception e) {
+        String returnDate;
 
-                LogEvent.logError("DateUtil", "convertTimestampToStringDate()", e.toString());
-                throw new LIMSRuntimeException("Error converting date", e);
-            }
+        try {
+            returnDate = format.format(date);
+        } catch (Exception e) {
+
+            LogEvent.logError("DateUtil", "convertTimestampToStringDate()", e.toString());
+            throw new LIMSRuntimeException("Error converting date", e);
         }
 
         return returnDate;
@@ -302,8 +301,8 @@ public class DateUtil {
 	public static String convertTimestampToStringTime(Timestamp date, String stringLocale) throws LIMSRuntimeException {
 	
 		String returnTime = null;
-		String hours = null;
-		String minutes = null;
+		String hours;
+		String minutes;
 		if (date != null) {
 			try {
 				Calendar cal = Calendar.getInstance();
@@ -323,13 +322,11 @@ public class DateUtil {
 
 				returnTime = hours + ":" + minutes;
 			} catch (Exception e) {
-				// bugzilla 2154
 				LogEvent.logError("DateUtil", "convertTimestampToStringTime()", e.toString());
 				throw new LIMSRuntimeException("Error converting date", e);
 			}
 		}
-		// System.out.println("Diane 5 convertTimestampToStringTime " +
-		// returnTime);
+
 		return returnTime;
 	}
 
@@ -348,9 +345,9 @@ public class DateUtil {
 			}
 		}
 		String returnTime = null;
-		String hours = null;
-		String minutes = null;
-		String seconds = null;
+		String hours;
+		String minutes;
+		String seconds;
 		if (date != null) {
 			try {
 				Calendar cal = Calendar.getInstance();
@@ -559,7 +556,7 @@ public class DateUtil {
 		return new Timestamp(now.getTimeInMillis());
 	}
 
-	public static Timestamp getTimestampForBegingingOfMonth() {
+	public static Timestamp getTimestampForBeginningOfMonth() {
 		Calendar now = new GregorianCalendar();
 		now.set(Calendar.DAY_OF_MONTH, 1);
 		now.set(Calendar.HOUR_OF_DAY, 0);
@@ -580,7 +577,7 @@ public class DateUtil {
 		return new GregorianCalendar().get(Calendar.MONTH);
 	}
 
-	public static Timestamp getTimestampForBeginingOfMonthAgo(int months) {
+	public static Timestamp getTimestampForBeginningOfMonthAgo( int months ) {
 		Calendar now = new GregorianCalendar();
 		now.add(Calendar.MONTH, -months);
 		now.set(Calendar.DAY_OF_MONTH, 1);
