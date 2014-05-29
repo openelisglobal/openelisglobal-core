@@ -69,7 +69,8 @@ public class DisplayListService implements LocaleChangeListener {
 		HAITI_DEPARTMENTS,
         PATIENT_SEARCH_CRITERIA,
         PANELS,
-        TESTS,
+        ORDERABLE_TESTS,
+        ALL_TESTS,
         REJECTION_REASONS,
         REFERRAL_REASONS,
         REFERRAL_ORGANIZATIONS
@@ -98,7 +99,8 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
         typeToListMap.put(ListType.PANELS, createPanelList());
-        typeToListMap.put(ListType.TESTS, createTestList());
+        typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
+        typeToListMap.put(ListType.ALL_TESTS, createTestList());
         typeToListMap.put(ListType.REJECTION_REASONS,createFromDictionaryCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
         typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
@@ -248,10 +250,21 @@ public class DisplayListService implements LocaleChangeListener {
         return panels;
     }
 
-    private static List<IdValuePair> createTestList(){
+    private static List<IdValuePair> createOrderableTestList(){
         ArrayList<IdValuePair> tests = new ArrayList<IdValuePair>(  );
 
         List<Test> testList = new TestDAOImpl().getAllActiveOrderableTests();
+        for(Test test : testList){
+            tests.add( new IdValuePair( test.getId(), test.getDescription() ) );
+        }
+
+        return tests;
+    }
+
+    private static List<IdValuePair> createTestList(){
+        ArrayList<IdValuePair> tests = new ArrayList<IdValuePair>(  );
+
+        List<Test> testList = new TestDAOImpl().getAllActiveTests(false);
         for(Test test : testList){
             tests.add( new IdValuePair( test.getId(), test.getDescription() ) );
         }

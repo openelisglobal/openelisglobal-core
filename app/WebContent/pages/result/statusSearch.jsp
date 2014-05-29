@@ -83,7 +83,7 @@ function /*void*/ dirtySearchInfo(e){
 	</td>
 	<td>
 			<html:select  name="<%=formName%>" property="selectedTest" onchange="dirtySearchInfo( event )">
-				<html:optionsCollection name="<%=formName%>"  property="testSelections" label="description" value="id"/>
+				<html:optionsCollection name="<%=formName%>"  property="testSelections" label="value" value="id"/>
 			</html:select>
 	</td>
 	<td>
