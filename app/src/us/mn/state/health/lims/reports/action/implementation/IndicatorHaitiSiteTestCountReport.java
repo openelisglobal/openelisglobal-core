@@ -131,16 +131,16 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 	private void createResults(String site, String period, BaseActionForm dynaForm) {
 
 		Timestamp beginning = null;
-		Timestamp end = DateUtil.getTimestampForBeginingOfMonthAgo( -1 );
+		Timestamp end = DateUtil.getTimestampForBeginningOfMonthAgo( -1 );
 
 		if ("year".equals(period)) {
 			beginning = DateUtil.getTimestampForBeginingOfYear();
 		} else if ("months3".equals(period)) {
-			beginning = DateUtil.getTimestampForBeginingOfMonthAgo(2);
+			beginning = DateUtil.getTimestampForBeginningOfMonthAgo( 2 );
 		} else if ("months6".equals(period)) {
-			beginning = DateUtil.getTimestampForBeginingOfMonthAgo(5);
+			beginning = DateUtil.getTimestampForBeginningOfMonthAgo( 5 );
 		} else if ("months12".equals(period)) {
-			beginning = DateUtil.getTimestampForBeginingOfMonthAgo(11);
+			beginning = DateUtil.getTimestampForBeginningOfMonthAgo( 11 );
 		} else if ("custom".equals(period)) {
 			int lowYear = Integer.parseInt(dynaForm.getString("lowerYear"));
 			int lowMonth = Integer.parseInt(dynaForm.getString("lowerMonth"));
@@ -150,8 +150,8 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 			int currentYear = DateUtil.getCurrentYear();
 			int currentMonth = DateUtil.getCurrentMonth();
 
-			beginning = DateUtil.getTimestampForBeginingOfMonthAgo(currentMonth - lowMonth + (12 * (currentYear - lowYear)));
-			end = DateUtil.getTimestampForBeginingOfMonthAgo(currentMonth - highMonth + (12 * (currentYear - highYear)) - 1 );
+			beginning = DateUtil.getTimestampForBeginningOfMonthAgo( currentMonth - lowMonth + ( 12 * ( currentYear - lowYear ) ) );
+			end = DateUtil.getTimestampForBeginningOfMonthAgo( currentMonth - highMonth + ( 12 * ( currentYear - highYear ) ) - 1 );
 		}
 
 		List<ReportExternalImport> reportImportList;
