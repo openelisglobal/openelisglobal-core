@@ -318,7 +318,7 @@ public class NoteService{
     }
 
     public static List<Note> getTestNotesInDateRangeByType( Date lowDate, Date highDate, NoteType noteType ){
-        return noteDAO.getNotesInDateRangeAndType( lowDate, highDate, noteType.DBCode, ANALYSIS_TABLE_ID);
+        return noteDAO.getNotesInDateRangeAndType( lowDate, DateUtil.addDaysToSQLDate(highDate, 1), noteType.DBCode, ANALYSIS_TABLE_ID);
     }
     private String getNotePrefix( Note note, boolean excludeExternPrefix ) {
         if(SUPPORT_INTERNAL_EXTERNAL){

@@ -595,11 +595,11 @@ public class DateUtil {
 		return new GregorianCalendar().get(Calendar.YEAR);
 	}
 
-	public static int getCuurentHour() {
+	public static int getCurrentHour() {
 		return new GregorianCalendar().get(Calendar.HOUR_OF_DAY);
 	}
 	
-	public static int getCuurentMinute() {
+	public static int getCurrentMinute() {
 		return new GregorianCalendar().get(Calendar.MINUTE);
 	}
 
@@ -658,4 +658,8 @@ public class DateUtil {
 		
 		return convertStringDateStringTimeToTimestamp(newDate, newTime);
 	}
+
+    public static java.sql.Date addDaysToSQLDate( java.sql.Date date, int days){
+        return new java.sql.Date( date.getTime() + (days*DAY_IN_MILLSEC));
+    }
 }
