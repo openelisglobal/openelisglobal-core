@@ -45,9 +45,6 @@ import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-import us.mn.state.health.lims.test.dao.TestDAO;
-import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-import us.mn.state.health.lims.test.valueholder.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +61,6 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final boolean REVERSE_SORT_ORDER = false;
 	private final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-	private final TestDAO testDAO = new TestDAOImpl();
 	private final SampleDAO sampleDAO = new SampleDAOImpl();
 	private ResultsLoadUtility resultsUtility;
 	private final InventoryUtility inventoryUtility = new InventoryUtility();
@@ -162,10 +158,9 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 	private void setSelectionLists(DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		List<DropPair> analysisStatusList = getAnalysisStatusTypes();
-		List<DropPair> testList = getTestTypes();
 
 		PropertyUtils.setProperty(dynaForm, "analysisStatusSelections", analysisStatusList);
-		PropertyUtils.setProperty(dynaForm, "testSelections", testList);
+		PropertyUtils.setProperty(dynaForm, "testSelections", DisplayListService.getListWithLeadingBlank( DisplayListService.ListType.ALL_TESTS ));
 
 		List<DropPair> sampleStatusList = getSampleStatusTypes();
 		PropertyUtils.setProperty(dynaForm, "sampleStatusSelections", sampleStatusList);
@@ -311,20 +306,6 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 
 		list.add(new DropPair(StatusService.getInstance().getStatusID(OrderStatus.Entered), StatusService.getInstance().getStatusName(OrderStatus.Entered)));
 		list.add(new DropPair(StatusService.getInstance().getStatusID(OrderStatus.Started), StatusService.getInstance().getStatusName(OrderStatus.Started)));
-
-		return list;
-	}
-
-	private List<DropPair> getTestTypes() {
-
-		List<Test> testList = testDAO.getAllActiveOrderableTests();
-
-		List<DropPair> list = new ArrayList<DropPair>();
-		list.add(new DropPair("0", ""));
-
-		for (Test test : testList) {
-			list.add(new DropPair(test.getId(), test.getDescription()));
-		}
 
 		return list;
 	}
