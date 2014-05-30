@@ -318,15 +318,15 @@ public class ResultService {
          return signatures.isEmpty() ? "" : signatures.get( 0 ).getNonUserName();
     }
     public static List<Result> getResultsInTimePeriodWithTest( Date startDate, Date endDate, String testId){
-        return resultDAO.getResultsForTestInDateRange( testId, startDate, endDate  );
+        return resultDAO.getResultsForTestInDateRange( testId, startDate, DateUtil.addDaysToSQLDate( endDate, 1)  );
     }
 
     public static List<Result> getResultsInTimePeriodInPanel( Date lowDate, Date highDate, String panelId ){
-        return resultDAO.getResultsForPanelInDateRange( panelId, lowDate, highDate );
+        return resultDAO.getResultsForPanelInDateRange( panelId, lowDate, DateUtil.addDaysToSQLDate( highDate, 1 ) );
     }
 
     public static List<Result> getResultsInTimePeriodInTestSection( Date lowDate, Date highDate, String testSectionId ){
-        return resultDAO.getResultsForTestSectionInDateRange( testSectionId, lowDate, highDate );
+        return resultDAO.getResultsForTestSectionInDateRange( testSectionId, lowDate, DateUtil.addDaysToSQLDate(highDate, 1 ) );
     }
 
     public static String getJSONStringForMultiSelect( List<Result> resultList){
