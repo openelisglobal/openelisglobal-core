@@ -99,9 +99,9 @@
     }
 
     function setCorrectSave(){
-        if( window.setSave()){
+        if( window.setSave){
             setSave();
-        }else if(window.setSaveButton()){
+        }else if(window.setSaveButton){
             setSaveButton();
         }
     }
