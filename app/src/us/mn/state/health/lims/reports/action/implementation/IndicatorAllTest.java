@@ -97,7 +97,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 
 			TestBucket bucket = new TestBucket();
 
-			bucket.testName = test.getReportingDescription();
+			bucket.testName = test.getTestName();
 			bucket.testSort = Integer.parseInt(test.getSortOrder());
 			bucket.testSection = test.getTestSection().getLocalizedName();
 			bucket.sectionSort = test.getTestSection().getSortOrderInt();
