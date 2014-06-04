@@ -24,6 +24,8 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.patientidentitytype.util.PatientIdentityTypeMap;
 import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 	private static final String ID_PARAM = "id";
 	private static final String GUID = "guid";
     private static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final String hostCharSet = getDefaultCharSet();
 
 
 	@SuppressWarnings("rawtypes")
@@ -47,6 +50,11 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 			String nationalID, String externalID, String patientID, String guid) throws LIMSRuntimeException {
 
 		List queryResults;
+
+     //   System.out.println("Default Charset=" + Charset.defaultCharset());
+     //   System.out.println("file.encoding=" + System.getProperty("file.encoding"));
+     //   System.out.println("Default Charset in Use=" + getDefaultCharSet());
+
 
 		try {
 			boolean queryFirstName = !GenericValidator.isBlankOrNull(firstName);
@@ -66,11 +74,11 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 
             //The pText stuff is to handle accents in names
 			if (queryFirstName) {
-                byte firstNameBytes[] = firstName.getBytes("ISO-8859-1");
+                byte firstNameBytes[] = firstName.getBytes(hostCharSet);
 				query.setString(FIRST_NAME_PARAM, new String(firstNameBytes, UTF_8));
 			}
 			if (queryLastName) {
-                byte lastNameBytes[] = lastName.getBytes("ISO-8859-1");
+                byte lastNameBytes[] = lastName.getBytes(hostCharSet);
 				query.setText(LAST_NAME_PARAM, new String(lastNameBytes, UTF_8));
 			}
 			if (queryNationalId) {
@@ -113,6 +121,13 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 		return results;
 	}
 
+
+
+    private static String getDefaultCharSet() {
+        OutputStreamWriter writer = new OutputStreamWriter(new ByteArrayOutputStream());
+        String enc = writer.getEncoding();
+        return enc;
+    }
 	/**
 	 * @param lastName
 	 * @param firstName
