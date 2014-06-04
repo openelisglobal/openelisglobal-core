@@ -508,7 +508,7 @@ function /*boolean*/ handleEnterEvent(){
                         </logic:iterate>
                     </select>
                         <input class='<%="addMultiSelect" + index%>' type="button" value="+" onclick='<%="addNewMultiSelect(" + index + ", this);"%>'/>
-                        <input class='<%="removeMultiSelect" + index%>' type="button" value="-" onclick="removeMultiSelect('target');" style="display: none" />
+                        <input class='<%="removeMultiSelect" + index%>' type="button" value="-" onclick="removeMultiSelect('target');" style="visibility: hidden" />
                         <html:hidden name="resultList" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>'  styleClass="multiSelectValues" />
                     <input type="text"
                            name='<%="resultList[" + index + "].qualifiedResultValue" %>'

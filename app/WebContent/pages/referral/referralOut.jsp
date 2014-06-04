@@ -235,7 +235,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
     <th><bean:message key="referral.sent.date"/></th>
     <th><bean:message key="test.testName"/><span class="requiredlabel">*</span></th>
     <th width="5%"><bean:message key="label.button.cancel.referral"/></th>
-    <th class="leftVertical"><bean:message key="result.result"/></th>
+    <th width="15%" class="leftVertical"><bean:message key="result.result"/></th>
     <th><bean:message key="referral.report.date"/></th>
 </tr>
 
@@ -424,7 +424,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
                     <input class='<%="addMultiSelect" + index%>' type="button" value="+"
                            onclick='<%="addNewMultiSelect(" + index + ", this);"%>'/>
                     <input class='<%="removeMultiSelect" + index%>' type="button" value="-"
-                           onclick="removeMultiSelect('target');" style="display: none"/>
+                           onclick="removeMultiSelect('target');" style="visibility: hidden"/>
                     <input type="text"
                            name='<%="testResult[" + index + "].qualifiedResultValue" %>'
                            value='<%= "testResult.getQualifiedResultValue()" %>'
@@ -571,7 +571,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
                         <input class='<%="addMultiSelect" + index + "-" + testIndex%>' type="button" value="+"
                                onclick="<%="addNewMultiSelect('" + index + "-" + testIndex + "', this);"%>"/>
                         <input class='<%="removeMultiSelect" + index + "-" + testIndex%>' type="button" value="-"
-                               onclick="removeMultiSelect('target');" style="display: none"/>
+                               onclick="removeMultiSelect('target');" style="visibility: hidden"/>
 
                         <input type="text"
                                name='<%="testResult[" + index + "].qualifiedResultValue" %>'

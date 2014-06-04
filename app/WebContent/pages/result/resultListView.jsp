@@ -869,7 +869,7 @@ function updateShadowResult(source, index){
                     </logic:iterate>
                 </select>
                 <input class='<%="addMultiSelect" + index%>' type="button" value="+" onclick='<%="addNewMultiSelect(" + index + ", this);"%>'/>
-                <input class='<%="removeMultiSelect" + index%>' type="button" value="-" onclick="removeMultiSelect('target');" style="display: none" />
+                <input class='<%="removeMultiSelect" + index%>' type="button" value="-" onclick="removeMultiSelect('target');" style="visibility: hidden" />
                 <html:hidden name="testResult" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>' styleClass="multiSelectValues"  />
                 <input type="text"
                        name='<%="testResult[" + index + "].qualifiedResultValue" %>'
