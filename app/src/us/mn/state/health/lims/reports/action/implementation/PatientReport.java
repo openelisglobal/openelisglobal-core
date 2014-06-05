@@ -619,17 +619,28 @@ public abstract class PatientReport extends Report{
                     }else if( Double.valueOf( result.getValue() ) > result.getMaxNormal() ){
                         flag = "E";
                     }
+                }
+            }else if( ResultType.isDictionaryVariant( result.getResultType() )){
+                boolean isAbnormal = false;
 
-                    if( !GenericValidator.isBlankOrNull( flag ) ){
-                        if( data != null ){
-                            data.setAbnormalResult( Boolean.TRUE );
-                        }
-                        if( !GenericValidator.isBlankOrNull( imbed ) ){
-                            return " <b>" + flag + "," + imbed + "</b>";
-                        }else{
-                            return " <b>" + flag + "</b>";
-                        }
-                    }
+                if( data == null){
+                    isAbnormal = new ResultService( result ).isAbnormalDictionaryResult();
+                }  else {
+                     isAbnormal = data.getAbnormalResult();
+                }
+                if( isAbnormal ){
+                    flag = "*";
+                }
+            }
+
+            if( !GenericValidator.isBlankOrNull( flag ) ){
+                if( data != null ){
+                    data.setAbnormalResult( Boolean.TRUE );
+                }
+                if( !GenericValidator.isBlankOrNull( imbed ) ){
+                    return " <b>" + flag + "," + imbed + "</b>";
+                }else{
+                    return " <b>" + flag + "</b>";
                 }
             }
         }catch( NumberFormatException e ){

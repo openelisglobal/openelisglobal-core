@@ -428,20 +428,20 @@
 		<band height="158" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName1">
-					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="siteLogo">
 					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName1">
+					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA["Résultats d'Analyses"]]></subreportParameterExpression>
@@ -644,7 +644,7 @@
 			<staticText>
 				<reportElement x="0" y="0" width="552" height="19"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[ B = Inférieure à la Normale        E =  Supérieure à la Normale]]></text>
+				<text><![CDATA[ B = Inférieure à la Normale        E =  Supérieure à la Normale        * = Anormale]]></text>
 			</staticText>
 		</band>
 	</columnFooter>
