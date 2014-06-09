@@ -16,16 +16,12 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
+import us.mn.state.health.lims.common.services.TableIdService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -45,6 +41,11 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class NonConformityByDate extends Report implements IReportCreator {
 	private String lowDateStr;
@@ -157,7 +158,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
      */
     private String findService() {
         String service = "";
-        List<ObservationHistory> oh = observationDAO.getAll(null, sample, NonConformityAction.SERVICE_OBSERVATION_TYPE_ID);
+        List<ObservationHistory> oh = observationDAO.getAll(null, sample, TableIdService.SERVICE_OBSERVATION_TYPE_ID);
         if (oh.size() > 0) {
             service = oh.get(0).getValue();
         }
