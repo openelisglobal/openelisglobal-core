@@ -196,17 +196,17 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 			}
 			allNotes.append(" : ");
 			
-			if( "0".equals(qa.getObservation(QAObservationType.SECTION))){
+			if( "0".equals(qa.getObservationValue( QAObservationType.SECTION ))){
 				allNotes.append(StringUtil.getMessageForKey("report.followup.no.section"));
 			}else{
-				allNotes.append(qa.getObservation(QAObservationType.SECTION));
+				allNotes.append(qa.getObservationForDisplay( QAObservationType.SECTION ));
 			}
 			allNotes.append(" : ");
 			
-			if( GenericValidator.isBlankOrNull(qa.getObservation(QAObservationType.AUTHORIZER))){
+			if( GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.AUTHORIZER ))){
 				allNotes.append(StringUtil.getMessageForKey("report.followup.no.authorizer"));
 			}else{
-				allNotes.append(qa.getObservation(QAObservationType.AUTHORIZER));
+				allNotes.append(qa.getObservationForDisplay( QAObservationType.AUTHORIZER ));
 			}
 			allNotes.append(" : ");
 			

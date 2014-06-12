@@ -718,7 +718,7 @@ function  processPhoneSuccess(xhr){
 						onchange='makeDirty();'>
 						<option ></option>
 						<html:optionsCollection name="<%=formName%>" property="sections"
-							label="localizedName" value="localizedName" />
+							label="localizedName" value="nameKey" />
 					</html:select>
 				</td>
 				<td>

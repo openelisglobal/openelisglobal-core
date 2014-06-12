@@ -233,9 +233,9 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 				item.setReceivedHour(receivedHour);
 				item.setService(orgName);
 
-				item.setBiologist(qa.getObservation(QAObservationType.AUTHORIZER));
+				item.setBiologist(qa.getObservationForDisplay( QAObservationType.AUTHORIZER ));
 				item.setNonConformityDate(DateUtil.convertTimestampToStringDate(qa.getLastupdated()));
-				item.setSection(qa.getObservation(QAObservationType.SECTION));
+				item.setSection(qa.getObservationForDisplay( QAObservationType.SECTION ));
 				item.setSubjectNumber(patient.getNationalId());
 				item.setSiteSubjectNumber(patient.getExternalId());
 				item.setStudy((project != null) ? project.getLocalizedName() : "");

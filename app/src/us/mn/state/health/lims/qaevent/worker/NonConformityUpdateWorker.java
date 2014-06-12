@@ -716,7 +716,7 @@ public class NonConformityUpdateWorker {
 		qaService.setCurrentUserId(webData.getCurrentSysUserId());
 		qaService.setReportTime(getCompleteDateTime());
 		qaService.setQaEventById(item.getQaEvent());
-		qaService.setObservation(QAObservationType.SECTION, item.getSection(), QAObservationValueType.LITERAL, REJECT_IF_EMPTY);
+		qaService.setObservation(QAObservationType.SECTION, item.getSection(), QAObservationValueType.KEY, REJECT_IF_EMPTY);
 		qaService.setObservation(QAObservationType.AUTHORIZER, item.getAuthorizer(), QAObservationValueType.LITERAL, REJECT_IF_EMPTY);
 		qaService.setObservation(QAObservationType.DOC_NUMBER, item.getRecordNumber(), QAObservationValueType.LITERAL, REJECT_IF_EMPTY);
 		qaService.setSampleItem(sampleItem);

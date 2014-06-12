@@ -16,8 +16,14 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-    <include file="OE4.2/Schema.xml" />
-    <include file="OE4.2/MetaData.xml" />
-    <include file="OE4.2/HaitiLNSPData.xml"/>
-    <include file="OE4.2/LocalChanges/LocalChanges.xml" />
+<changeSet author="paulsc" id="1">
+    <comment>Change test section values from strings to keys to support localization</comment>
+    <sqlFile path="OE4.2/QAObservationUpdate.sql" />
+</changeSet>
+<changeSet id="2" author="paulsc">
+    <comment>remove spaces from test_section keys</comment>
+    <sql>
+        update clinlims.test_section set display_key = trim(display_key);
+    </sql>
+</changeSet>
 </databaseChangeLog>
