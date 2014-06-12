@@ -245,7 +245,6 @@ function /*void*/ markUpdated(){
 		<html:hidden name="resultList" property="testResultType" indexed="true"/>
 		<html:hidden name="resultList" property="testId"  styleId='<%="testId_" + dataIndex%>'/>
 		<html:hidden name="resultList" property="accessionNumber"  styleId='<%="accessionNumberId_" + dataIndex%>'/>
-		<html:hidden name="resultList" property="userChoicePending"  styleId='<%="userChoicePendingId_" + dataIndex%>' indexed="true"/>
 		<logic:equal name="resultList" property="isHighlighted" value="true">
 			<tr class="yellowHighlight">
 		</logic:equal>

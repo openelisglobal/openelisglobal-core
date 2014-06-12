@@ -16,18 +16,11 @@
  */
 package us.mn.state.health.lims.reports.action;
 
-import java.util.HashMap;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.log.LogEvent;
@@ -35,6 +28,11 @@ import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.ReportTrackingService.ReportType;
 import us.mn.state.health.lims.reports.action.implementation.IReportCreator;
 import us.mn.state.health.lims.reports.action.implementation.ReportImplementationFactory;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 
 public class CommonReportPrintAction extends BaseAction {
 
@@ -49,7 +47,6 @@ public class CommonReportPrintAction extends BaseAction {
 		BaseActionForm dynaForm = (BaseActionForm) form;
 
 		PropertyUtils.setProperty(dynaForm, "reportType", request.getParameter("type"));
-		// String exportOpetion = dynaForm.getString("exportOption");
 
 		IReportCreator reportCreator = ReportImplementationFactory.getReportCreator(request.getParameter("report"));
 
@@ -87,14 +84,14 @@ public class CommonReportPrintAction extends BaseAction {
 		}
 
 		if("patient".equals(request.getParameter("type"))){
-			trackReports( reportCreator, request.getParameter("report"));	
+			trackReports( reportCreator, request.getParameter("report"), ReportType.PATIENT);
 		}
 		
 		return mapping.findForward(forward);
 	}
 
-	private void trackReports(IReportCreator reportCreator, String reportName) {
-		new ReportTrackingService().addReports(reportCreator.getReportedOrders(), ReportType.PATIENT, reportName, currentUserId);
+	private void trackReports(IReportCreator reportCreator, String reportName, ReportType reportType) {
+		new ReportTrackingService().addReports(reportCreator.getReportedOrders(), reportType, reportName, currentUserId);
 	}
 
 	@Override

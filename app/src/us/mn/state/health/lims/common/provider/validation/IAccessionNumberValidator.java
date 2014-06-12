@@ -54,6 +54,14 @@ public interface IAccessionNumberValidator {
 	 */
 	public String getInvalidMessage(ValidationResults results);
 
+    /**
+     * Helper method for getting an appropriate message for a format validation result
+     *
+     * @param results -- the result for which the message is wanted
+     * @return -- the message
+     */
+    public String getInvalidFormatMessage(ValidationResults results);
+
 	/**
 	 * @param programCode -- if used, may be null otherwise
 	 * @return The first accession number if no others are have been generated
@@ -87,4 +95,6 @@ public interface IAccessionNumberValidator {
 	 * @return
 	 */
 	public int getChangeableLength();
+
+    public String getPrefix();
 }

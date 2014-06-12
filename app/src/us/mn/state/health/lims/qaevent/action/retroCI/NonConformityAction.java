@@ -16,44 +16,22 @@
  */
 package us.mn.state.health.lims.qaevent.action.retroCI;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
-import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
-import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.PersonService;
-import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.note.dao.NoteDAO;
-import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -76,15 +54,12 @@ import us.mn.state.health.lims.provider.dao.ProviderDAO;
 import us.mn.state.health.lims.provider.daoimpl.ProviderDAOImpl;
 import us.mn.state.health.lims.provider.valueholder.Provider;
 import us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
 import us.mn.state.health.lims.sample.action.SamplePatientEntrySaveAction;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
-import us.mn.state.health.lims.sample.util.SamplePropertyUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
@@ -104,6 +79,11 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+
 public class NonConformityAction extends BaseAction{
 
 	private PatientService patientService;
@@ -112,11 +92,9 @@ public class NonConformityAction extends BaseAction{
 
 	public static String DOCTOR_OBSERVATION_TYPE_ID;
 	public static String SERVICE_OBSERVATION_TYPE_ID;
-	public static String SAMPLE_QAEVENT_TABLE_ID;
-	public static String SAMPLE_TABLE_ID;
+
 	private static final String QA_NOTE_SUBJECT = "QaEvent Note";
 
-	private static NoteDAO noteDAO = new NoteDAOImpl();
 	private static SampleDAO sampleDAO = new SampleDAOImpl();
 	private static SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 	private static TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
@@ -139,19 +117,6 @@ public class NonConformityAction extends BaseAction{
 	static{
 		DOCTOR_OBSERVATION_TYPE_ID = getOHTypeIdByName("nameOfDoctor");
 		SERVICE_OBSERVATION_TYPE_ID = getOHTypeIdByName("service");
-
-		ReferenceTablesDAO rtDAO = DAOImplFactory.getInstance().getReferenceTablesDAOImpl();
-		ReferenceTables referenceTable = new ReferenceTables();
-
-		referenceTable.setTableName("SAMPLE_QAEVENT");
-		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-		SAMPLE_QAEVENT_TABLE_ID = referenceTable.getId();
-
-		referenceTable = new ReferenceTables();
-		referenceTable.setTableName("SAMPLE");
-		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-		SAMPLE_TABLE_ID = referenceTable.getId();
-
 	}
 
 	@Override
@@ -194,7 +159,7 @@ public class NonConformityAction extends BaseAction{
 			PropertyUtils.setProperty(dynaForm, "qaEventTypes", DisplayListService.getList(ListType.QA_EVENTS));
 			PropertyUtils.setProperty(dynaForm, "qaEvents", getSampleQaEventItems(sample));
 
-			SamplePropertyUtil.loadSampleTypes(dynaForm, "typeOfSamples");
+            PropertyUtils.setProperty( dynaForm, "typeOfSamples", DisplayListService.getList( ListType.SAMPLE_TYPE ) );
 
 			PropertyUtils.setProperty(dynaForm, "readOnly", readOnly);
 			PropertyUtils.setProperty(dynaForm, "siteList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));
@@ -320,10 +285,6 @@ public class NonConformityAction extends BaseAction{
 		return providerPerson;
 	}
 
-	/**
-	 * @param sampleHuman
-	 * @return
-	 */
 	private Provider getProvider(){
 		if(sample == null){
 			return null;
@@ -407,24 +368,16 @@ public class NonConformityAction extends BaseAction{
 	}
 
 	public static String getNoteForSample(Sample sample){
-		Note note = new Note();
-		note.setReferenceTableId(SAMPLE_TABLE_ID);
-		note.setReferenceId(sample.getId());
-
-		List<Note> noteList = noteDAO.getNoteByRefIAndRefTableAndSubject(sample.getId(), SAMPLE_TABLE_ID, QA_NOTE_SUBJECT);// noteDAO.getAllNotesByRefIdRefTable(note);
-		if(!noteList.isEmpty()){
-			return noteList.get(0).getText();
-		}
-
-		return null;
+		Note note = new NoteService( sample ).getMostRecentNoteFilteredBySubject( QA_NOTE_SUBJECT );
+		return note != null ? note.getText() : null;
 	}
 
 	public static String getNoteForSampleQaEvent(SampleQaEvent sampleQaEvent){
 		if(sampleQaEvent == null || GenericValidator.isBlankOrNull(sampleQaEvent.getId())){
 			return null;
 		}else{
-			List<Note> notes = NoteUtil.getNotesForObjectAndTable(sampleQaEvent.getId(), SAMPLE_QAEVENT_TABLE_ID);
-			return (notes == null || notes.isEmpty()) ? null : notes.get(0).getText();
+            Note note = new NoteService( sampleQaEvent ).getMostRecentNoteFilteredBySubject( null );
+			return note != null ? note.getText() : null;
 		}
 	}
 

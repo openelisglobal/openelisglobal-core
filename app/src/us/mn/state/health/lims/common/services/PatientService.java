@@ -16,16 +16,13 @@
 */
 package us.mn.state.health.lims.common.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
 import us.mn.state.health.lims.address.valueholder.AddressPart;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.gender.dao.GenderDAO;
+import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
+import us.mn.state.health.lims.gender.valueholder.Gender;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
 import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
 import us.mn.state.health.lims.patient.util.PatientUtil;
@@ -40,17 +37,46 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class PatientService implements IPatientService {
-	
+
+    public static final String ADDRESS_STREET = "Street";
+    public static final String ADDRESS_STATE = "State";
+    public static final String ADDRESS_VILLAGE = "village";
+    public static final String ADDRESS_DEPT = "department";
+    public static final String ADDRESS_COMMUNE = "commune";
+    public static final String ADDRESS_ZIP = "zip";
+    public static final String ADDRESS_COUNTRY = "Country";
+    public static final String ADDRESS_CITY = "City";
+
 	private static String PATIENT_GUID_IDENTITY;
 	private static String PATIENT_NATIONAL_IDENTITY;
 	private static String PATIENT_ST_IDENTITY;
-	private static String PATIENT_SUBJECT_IDENTITY;
-	private static Map<String, String> addressPartIdToNameMap = new HashMap<String, String>();
+    private static String PATIENT_SUBJECT_IDENTITY;
+    private static String PATIENT_AKA_IDENTITY;
+    private static String PATIENT_MOTHER_IDENTITY;
+    private static String PATIENT_INSURANCE_IDENTITY;
+    private static String PATIENT_OCCUPATION_IDENTITY;
+    private static String PATIENT_ORG_SITE_IDENTITY;
+    private static String PATIENT_MOTHERS_INITIAL_IDENTITY;
+    private static String PATIENT_EDUCATION_IDENTITY;
+    private static String PATIENT_MARITAL_IDENTITY;
+    private static String PATIENT_HEALTH_DISTRICT_IDENTITY;
+    private static String PATIENT_HEALTH_REGION_IDENTITY;
+    private static String PATIENT_OB_NUMBER_IDENTITY;
+    private static String PATIENT_PC_NUMBER_IDENTITY;
+
+
+
+    private static Map<String, String> addressPartIdToNameMap = new HashMap<String, String>();
 	private static final PatientIdentityDAO patientIdentityDAO = new PatientIdentityDAOImpl();
 	private static final SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
 	private static final PatientDAO patientDAO = new PatientDAOImpl();
-	
+    private static final GenderDAO genderDAO = new GenderDAOImpl();
 	private Patient patient;
 	private PersonService personService;
 	
@@ -69,13 +95,68 @@ public class PatientService implements IPatientService {
 		if( patientType != null){
 			PATIENT_ST_IDENTITY = patientType.getId();
 		}
-				
-		patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("SUBJECT");
-		if( patientType != null){
-			PATIENT_SUBJECT_IDENTITY = patientType.getId();
-		}
 
-		List<AddressPart> parts = new AddressPartDAOImpl().getAll();
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("AKA");
+        if( patientType != null){
+            PATIENT_AKA_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("MOTHER");
+        if( patientType != null){
+            PATIENT_MOTHER_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("INSURANCE");
+        if( patientType != null){
+            PATIENT_INSURANCE_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("OCCUPATION");
+        if( patientType != null){
+            PATIENT_OCCUPATION_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("ORG_SITE");
+        if( patientType != null){
+            PATIENT_ORG_SITE_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("MOTHERS_INITIAL");
+        if( patientType != null){
+            PATIENT_MOTHERS_INITIAL_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("EDUCATION");
+        if( patientType != null){
+            PATIENT_EDUCATION_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("MARITIAL");
+        if( patientType != null){
+            PATIENT_MARITAL_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("HEALTH_DISTRICT");
+        if( patientType != null){
+            PATIENT_HEALTH_DISTRICT_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("HEALTH_REGION");
+        if( patientType != null){
+            PATIENT_HEALTH_REGION_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("OB_NUMBER");
+        if( patientType != null){
+            PATIENT_OB_NUMBER_IDENTITY = patientType.getId();
+        }
+
+        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("PC_NUMBER");
+        if( patientType != null){
+            PATIENT_PC_NUMBER_IDENTITY = patientType.getId();
+        }
+
+        List<AddressPart> parts = new AddressPartDAOImpl().getAll();
 		
 		for( AddressPart part : parts){
 			addressPartIdToNameMap.put(part.getId(), part.getPartName());
@@ -127,7 +208,7 @@ public class PatientService implements IPatientService {
 	 */
 	@Override
 	public String getGUID(){
-		return getIdentityInfo(PATIENT_GUID_IDENTITY);
+        return getIdentityInfo(PATIENT_GUID_IDENTITY);
 	}
 	
 	/* (non-Javadoc)
@@ -163,7 +244,7 @@ public class PatientService implements IPatientService {
 	}
 	
 	private String getIdentityInfo(String identityId) {
-		if( patient == null){
+		if( patient == null || GenericValidator.isBlankOrNull( identityId )){
 			return "";
 		}
 		
@@ -205,10 +286,23 @@ public class PatientService implements IPatientService {
 	public String getGender(){
 		return patient != null ? patient.getGender() : "";
 	}
-	
-	/* (non-Javadoc)
-	 * @see us.mn.state.health.lims.common.services.IPatientService#getAddressComponents()
-	 */
+
+    @Override
+    public String getLocalizedGender(){
+        String genderType = getGender();
+
+        if( genderType.length() > 0){
+            Gender gender = genderDAO.getGenderByType( genderType );
+            if( gender != null){
+                return gender.getLocalizedName();
+            }
+        }
+         return null;
+    }
+
+    /* (non-Javadoc)
+         * @see us.mn.state.health.lims.common.services.IPatientService#getAddressComponents()
+         */
 	@Override
 	public Map<String, String> getAddressComponents(){
 		return personService.getAddressComponents();
@@ -262,6 +356,9 @@ public class PatientService implements IPatientService {
 		return patient != null ? PatientUtil.getIdentityListForPatient(patient) : new ArrayList<PatientIdentity>();
 	}
 
+    public String getExternalId(){
+        return patient == null ? "" : patient.getExternalId();
+    }
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getPatient()
 	 */
@@ -269,4 +366,64 @@ public class PatientService implements IPatientService {
 	public Patient getPatient(){
 		return patient;
 	}
+
+    @Override
+    public String getAKA(){
+        return getIdentityInfo(PATIENT_AKA_IDENTITY);
+    }
+
+    @Override
+    public String getMother(){
+        return getIdentityInfo(PATIENT_MOTHER_IDENTITY);
+    }
+
+    @Override
+    public String getInsurance(){
+        return getIdentityInfo(PATIENT_INSURANCE_IDENTITY);
+    }
+
+    @Override
+    public String getOccupation(){
+        return getIdentityInfo(PATIENT_OCCUPATION_IDENTITY);
+    }
+
+    @Override
+    public String getOrgSite(){
+        return getIdentityInfo(PATIENT_ORG_SITE_IDENTITY);
+    }
+
+    @Override
+    public String getMothersInitial(){
+        return getIdentityInfo(PATIENT_MOTHERS_INITIAL_IDENTITY);
+    }
+
+    @Override
+    public String getEducation(){
+        return getIdentityInfo(PATIENT_EDUCATION_IDENTITY);
+    }
+
+    @Override
+    public String getMaritalStatus(){
+        return getIdentityInfo(PATIENT_MARITAL_IDENTITY);
+    }
+
+    @Override
+    public String getHealthDistrict(){
+        return getIdentityInfo(PATIENT_HEALTH_DISTRICT_IDENTITY);
+    }
+
+    @Override
+    public String getHealthRegion(){
+        return getIdentityInfo(PATIENT_HEALTH_REGION_IDENTITY);
+    }
+
+    @Override
+    public String getObNumber(){
+        return getIdentityInfo(PATIENT_OB_NUMBER_IDENTITY);
+    }
+
+    @Override
+    public String getPCNumber(){
+        return getIdentityInfo(PATIENT_PC_NUMBER_IDENTITY);
+    }
 }

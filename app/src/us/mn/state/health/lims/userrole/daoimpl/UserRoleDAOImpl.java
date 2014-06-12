@@ -17,15 +17,10 @@
 */
 package us.mn.state.health.lims.userrole.daoimpl;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.exception.ConstraintViolationException;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -37,6 +32,9 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.userrole.dao.UserRoleDAO;
 import us.mn.state.health.lims.userrole.valueholder.UserRole;
 import us.mn.state.health.lims.userrole.valueholder.UserRolePK;
+
+import java.math.BigInteger;
+import java.util.List;
 
 public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 
@@ -62,7 +60,7 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 		
 		try {		
 			for (UserRole data: roles) {
-				data = (UserRole)readUserRole(data.getCompoundId());
+				data = readUserRole(data.getCompoundId());
 				HibernateUtil.getSession().delete(data);
 				HibernateUtil.getSession().flush();
 				HibernateUtil.getSession().clear();
@@ -101,14 +99,13 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 	public void updateData(UserRole role) throws LIMSRuntimeException {
 		
 		UserRole oldData = readUserRole(role.getCompoundId());
-		UserRole newData = role;
 
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = role.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "SYSTEM_USER_ROLE";
-			auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
+			auditDAO.saveHistory(role,oldData,sysUserId,event,tableName);
 		}  catch (Exception e) {
 			LogEvent.logError("UserRolesDAOImpl","AuditTrail updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in UserRole AuditTrail updateData()", e);
@@ -143,7 +140,7 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 	}
 
 	public List getAllUserRoles() throws LIMSRuntimeException {
-		List list = new Vector();
+		List list;
 		try {
 			String sql = "from UserRole";
 			Query query = HibernateUtil.getSession().createQuery(sql);
@@ -159,7 +156,7 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 	}
 
 	public List getPageOfUserRoles(int startingRecNo) throws LIMSRuntimeException {
-		List list = new Vector();
+		List list;
 		try {
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
@@ -181,7 +178,7 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 	}
 
 	public UserRole readUserRole(UserRolePK userRolePK) {
-		UserRole recoveredUserRole = null;
+		UserRole recoveredUserRole;
 		try {
 			recoveredUserRole = (UserRole)HibernateUtil.getSession().get(UserRole.class, userRolePK);
 			HibernateUtil.getSession().flush();
@@ -204,7 +201,7 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<String> getRoleIdsForUser(String userId) throws LIMSRuntimeException {
-		List<String> userRoles = null;
+		List<String> userRoles;
 		
 		try{
 			String sql = "select cast(role_id AS varchar) from system_user_role where system_user_id = :userId";
@@ -219,7 +216,7 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 	}
 
 	public boolean userInRole(String userId, String roleName)	throws LIMSRuntimeException {
-		boolean inRole = false;
+		boolean inRole;
 		
 		try{
 			String sql = "select count(*) from system_user_role sur " + 

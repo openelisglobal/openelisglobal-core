@@ -16,6 +16,7 @@
     </definition>
 
   <definition name="sampleConfirmationCore" path="/pages/sample/sampleConfirmationAdd.jsp">
+        <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
   		<put name="patientInfo" value="patientManagementCore"/>
   </definition>
 
@@ -26,6 +27,7 @@
     </definition>
 
     <definition name="samplePatientEntryCore" path="/pages/sample/samplePatientEntry.jsp">
+        <put name="sampleOrder" value="/pages/sample/sampleOrder.jsp" />
 		<put name="addSample" value="/pages/sample/sampleAdd.jsp"/>
 		<put name="patientInfo" value="patientManagementCore"/>
 		<put name="patientClinicalInfo" value="/pages/patient/patientClinicalInfo.jsp"/>
@@ -94,11 +96,13 @@
 	</definition>
 
 	<definition name="accessionSampleEditCore" path="/pages/result/resultsBySearch.jsp">
-		<put name="searchPanel" value="/pages/search/compoundSearch.jsp"/>
+		<put name="searchPanel" value="/pages/patient/patientSearch.jsp"/>
 		<put name="resultsPanel" value="sampleEditCore"/>
 	</definition>
 
 	<definition name="sampleEditCore" path="/pages/sample/sampleEdit.jsp">
+        <put name="sampleOrder" value="/pages/sample/sampleOrder.jsp" />
+        <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
 		<put name="addSample" value="/pages/sample/sampleAdd.jsp"/>
 	</definition>
 
@@ -106,7 +110,11 @@
 		<put name="patientSearch"  value="/pages/patient/patientSearch.jsp" />
 	</definition>
 
-	<definition name="nonConformityDefiniton" extends="baseDefinition">
+    <definition name="patientManagementNoSearchCore" path="/pages/patient/patientManagement.jsp">
+        <put name="patientSearch"  value="/pages/common/emptyPlaceHolder.jsp" />
+    </definition>
+
+    <definition name="nonConformityDefiniton" extends="baseDefinition">
 		<put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
 		<put name="body" value="/pages/qaevent/nonConformity.jsp"/>
 		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
@@ -118,8 +126,12 @@
 		<put name="footer" value="/pages/common/emptyPlaceHolder.jsp"/>
 	</definition>
 
+    <definition name="auditTrailCore" path="/pages/audittrail/auditTrailView.jsp">
+        <put name="orderInfo" value="/pages/sample/sampleOrder.jsp" />
+        <put name="patientInfo" value="patientManagementNoSearchCore" />
+    </definition>
     <definition name="auditTrailViewDefinition" extends="baseMenuDefinition">
-		<put name="body" value="/pages/audittrail/auditTrailView.jsp"/>
+		<put name="body" value="auditTrailCore"/>
 	</definition>
 
 	<definition name="resultListViewCore" page="/pages/result/resultListView.jsp">
@@ -177,10 +189,6 @@
     <definition name="workplanDefinition" path="/pages/result/resultsBySearch.jsp">
 		<put name="searchPanel" value="/pages/workplan/workplanSearch.jsp"/>
 		<put name="resultsPanel" value="/pages/workplan/workplan.jsp"/>
-	</definition>
-	<definition name="workplanResultDefinition" extends="baseDefinition">
-		<put name="body" value="workplanDefinition"/>
-		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
 	</definition>
 	<definition name="workplanByTestSectionDefinition" extends="baseDefinition">
 		<put name="body" value="/pages/workplan/workplan.jsp"/>
@@ -269,7 +277,8 @@
     </definition>
 
     <definition name="siteInformationDefinition" extends="baseDefinition">
-    	<put name="body" value="/pages/siteinformation/siteInformation.jsp"/>
+        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+        <put name="body" value="/pages/siteinformation/siteInformation.jsp"/>
     </definition>
 
 

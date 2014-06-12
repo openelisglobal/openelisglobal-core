@@ -56,10 +56,10 @@ function /*void*/ dirtySearchInfo(e){
 	<table width="70%">
 	<tr >
 		<td >
-			<% if(useCollectionDate){ %>  <%= StringUtil.getContextualMessageForKey("sample.collectionDate") %> <% } %> <%-- <bean:message key="sample.collectionDate"/> <%} --%>
+			<% if(useCollectionDate){ %>  <%= StringUtil.getContextualMessageForKey("sample.collectionDate")  %><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span> <% } %> <%-- <bean:message key="sample.collectionDate"/> <%} --%>
 		</td>
 		<td >
-			<bean:message key="sample.receivedDate"/>
+			<bean:message key="sample.receivedDate"/><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
 		</td>
 		<td >
 			<bean:message key="test.testName"/>
@@ -83,7 +83,7 @@ function /*void*/ dirtySearchInfo(e){
 	</td>
 	<td>
 			<html:select  name="<%=formName%>" property="selectedTest" onchange="dirtySearchInfo( event )">
-				<html:optionsCollection name="<%=formName%>"  property="testSelections" label="description" value="id"/>
+				<html:optionsCollection name="<%=formName%>"  property="testSelections" label="value" value="id"/>
 			</html:select>
 	</td>
 	<td>

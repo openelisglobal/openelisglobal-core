@@ -1,10 +1,10 @@
+
+
+
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="java.util.Date, java.util.List,
-	org.apache.struts.Globals,
-	us.mn.state.health.lims.common.util.SystemConfiguration,
+	import="java.util.List,
 	us.mn.state.health.lims.common.action.IActionConstants,
-	java.util.Collection,
 	java.util.ArrayList,
 	java.text.DecimalFormat,
 	org.apache.commons.validator.GenericValidator,
@@ -19,7 +19,7 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
 	us.mn.state.health.lims.common.util.StringUtil,
     us.mn.state.health.lims.common.util.Versioning,
-	us.mn.state.health.lims.testreflex.action.util.TestReflexResolver" %>
+    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -55,13 +55,13 @@
 	boolean failedValidationMarks = false;
 	boolean noteRequired = false;
 	boolean autofillTechBox = false;
-
+    boolean useRejected = false;
  %>
 <%
 	hivKits = new ArrayList<String>();
 	syphilisKits = new ArrayList<String>();
 
-	for( InventoryKitItem item : ((List<InventoryKitItem>)inventory) ){
+	for( InventoryKitItem item : (List<InventoryKitItem>)inventory ){
 		if( item.getType().equals("HIV") ){
 	hivKits.add(item.getInventoryLocationId());
 		}else{
@@ -75,11 +75,16 @@
 
 	searchTerm = request.getParameter("searchTerm");
 
+    try{
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
+    }catch( LIMSInvalidConfigurationException e ){
+        //no-op
+    }
 	useSTNumber = FormFields.getInstance().useField(Field.StNumber);
 	useNationalID = FormFields.getInstance().useField(Field.NationalID);
 	useSubjectNumber = FormFields.getInstance().useField(Field.SubjectNumber);
 	useTechnicianName =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
+	useRejected =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.allowResultRejection, "true");
 
 	depersonalize = FormFields.getInstance().useField(Field.DepersonalizedResults);
 	ableToRefer = FormFields.getInstance().useField(Field.ResultsReferral);
@@ -90,7 +95,7 @@
 	autofillTechBox = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameBox, "true");
 %>
 
-<!-- N.B. testReflex.js is dependent on utilities.js so order is important  -->
+<link rel="stylesheet" type="text/css" href="css/bootstrap_simple.css?ver=<%= Versioning.getBuildNumber() %>" />
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/testResults.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -100,8 +105,9 @@
 <script type="text/javascript" src="scripts/jquery.asmselect.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/OEPaging.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="<%=basePath%>scripts/math-extend.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
-
+<script type="text/javascript" src="<%=basePath%>scripts/multiselectUtils.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>" />
+
 
 
 <script type="text/javascript" >
@@ -120,10 +126,10 @@ pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.cu
 
 var pageSearch; //assigned in post load function
 
-var pagingSearch = new Object();
+var pagingSearch = {};
 
 <%
-	for( IdValuePair pair : ((List<IdValuePair>)pagingSearch)){
+	for( IdValuePair pair : (List<IdValuePair>)pagingSearch){
 		out.print( "pagingSearch[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
 	}
 %>
@@ -131,6 +137,7 @@ var pagingSearch = new Object();
 
 $jq(document).ready( function() {
 			var searchTerm = '<%=searchTerm%>';
+            loadMultiSelects();
 			$jq("select[multiple]").asmSelect({
 					removeLabel: "X"
 				});
@@ -145,33 +152,18 @@ $jq(document).ready( function() {
 				 pageSearch.highlightSearch( searchTerm, false );
 			}
 			
+            $jq('#modal_ok').on('click',function(e){
+                addReflexToTests( '<%= StringUtil.getMessageForKey("button.label.edit")%>' );
+                e.preventDefault();
+                $jq('#reflexSelect').modal('hide');
 			});
 
-function handleMultiSelectChange( e, data ){
-	var id = "#multi" + e.target.id;
-	var selection = $jq(id)[0];
+            loadPagedReflexSelections('<%= StringUtil.getMessageForKey("button.label.edit")%>');
+            $jq(".asmContainer").css("display","inline-block");
+            disableRejectedResults();
+            showCachedRejectionReasonRows();
+			});
 
-	if( data.type == "add"){
-		appendValueToElementValue( selection, data.value );
-	}else{ //drop
-		var splitValues =  selection.value.split(",");
-		selection.value = "";
-
-		for( var i = 0; i < splitValues.length; i++ ){
-			if( splitValues[i] != data.value ){
-				appendValueToElementValue( selection, splitValues[i] );
-			}
-		}
-	}
-}
-
-function appendValueToElementValue( e, addString ){
-	if( e.value && e.value.length > 1 ){
-			e.value += ',';
-		}
-
-		e.value += addString;
-}
 
 function /*void*/ makeDirty(){
 	dirty=true;
@@ -196,18 +188,17 @@ function toggleKitDisplay( button ){
 }
 
 
-function /*void*/ markUpdated( index, userChoiceReflex, siblingReflexKey ){
-
+function markUpdated( index, userChoiceReflex, siblingReflexKey ){
 	if( userChoiceReflex ){
 		var siblingId = siblingReflexKey != 'null' ? $(siblingReflexKey).value : null;
-		showUserReflexChoices( index, siblingId );
+		showUserReflexChoices( index, $("resultId_" + index).value, siblingId );
 	}
 
 	$("modified_" + index).value = "true";
 
 	makeDirty();
 
-	$("saveButtonId").disabled = !unSelectedReflexs.isEmpty();
+    $jq("#saveButtonId").removeAttr("disabled");
 }
 
 function updateLogValue(element, index ){
@@ -249,10 +240,11 @@ function validateForm(){
 	return true;
 }
 
-function /*void*/ handleReferralCheckChange(checkbox,  index ){
+function handleReferralCheckChange(checkbox,  index ){
 	var referralReason = $( "referralReasonId_" + index );
 	referralReason.value = 0;
 	referralReason.disabled = !checkbox.checked;
+    $("shadowReferred_" + index).value = checkbox.checked;
 }
 
 function /*void*/ handleReferralReasonChange(select,  index ){
@@ -304,27 +296,26 @@ function updateReflexChild( group){
 
 }
 
-function /*void*/ processTestReflexCD4Failure(xhr){
+function processTestReflexCD4Failure(){
 	alert("failed");
 }
 
-function /*void*/ processTestReflexCD4Success(xhr)
+function processTestReflexCD4Success(parameters)
 {
+    var xhr = parameters.xhr;
 	//alert( xhr.responseText );
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = false, childRow, value;
+	var childRow, value;
 
 
 	if (message.firstChild.nodeValue == "valid"){
-		success = true;
 		childRow = formField.getElementsByTagName("childRow").item(0).childNodes[0].nodeValue;
 		value = formField.getElementsByTagName("value").item(0).childNodes[0].nodeValue;
 		
 		if( value && value.length > 0){
 			$("results_" + childRow).value = value;
 		}
-
 	}
 
 }
@@ -340,10 +331,53 @@ function forceTechApproval(checkbox, index ){
 	}else{
 		hideNote( index);
 	}
+}
 
+function processDateCallbackEvaluation(xhr) {
+
+    //alert(xhr.responseText);
+    var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
+    var formFieldId = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
+    var givenDate = $jq("#" + formFieldId).val();
+    var isValid = message == "valid";
+
+    if( !isValid ){
+        if( message == 'invalid_value_to_large' ){
+            alert( '<bean:message key="error.date.inFuture"/>' );
+        }else if( message == 'invalid_value_to_small' ){
+            alert( '<bean:message key="error.date.inPast"/>' );
+        }else if( message == "invalid"){
+            alert( givenDate + " " + "<%=StringUtil.getMessageForKey("errors.date", "" )%>");
+        }
+    }
+
+    updateFieldValidity(isValid, formFieldId);
+}
+
+function updateShadowResult(source, index){
+  $jq("#shadowResult_" + index).val(source.value);
 }
 
 </script>
+
+
+<!-- Modal popup-->
+<div id="reflexSelect" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="headerLabel"></h3>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" id="testRow" />
+        <input type="hidden" id="targetIds" />
+        <input type="hidden" id="serverResponse" />
+        <p ><input style='vertical-align:text-bottom' id='selectAll' type='checkbox' onchange='modalSelectAll(this);' >&nbsp;&nbsp;&nbsp;<b><%=StringUtil.getMessageForKey("label.button.checkAll")%></b></p><hr>
+    </div>
+    <div class="modal-footer">
+        <button id="modal_ok" class="btn btn-primary" disabled="disabled">OK</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    </div>
+</div>
 
 <logic:notEmpty name="<%=formName%>" property="logbookType" >
 	<html:hidden name="<%=formName%>" property="logbookType" />
@@ -351,74 +385,74 @@ function forceTechApproval(checkbox, index ){
 
 <logic:notEqual name="testCount" value="0">
 <logic:equal name="<%=formName%>" property="displayTestKit" value="true">
-	<hr width="100%" />
-	<html:button property="showKit" onclick="toggleKitDisplay(this)" >+</html:button>
+	<hr style="width:100%" />
+    <input type="button" onclick="toggleKitDisplay(this)" value="+">
 	<bean:message key="inventory.testKits"/>
 	<div id="kitView" style="display: none;" class="colorFill" >
 		<tiles:insert attribute="testKitInfo" />
 		<br/>
-		<hr width="100%" />
+		<hr style="width:100%" />
 	</div>
 </logic:equal>
 
         <logic:equal  name='<%=formName%>' property="singlePatient" value="true">
 <% if(!depersonalize){ %>        
-<table width="100%" >
+<table style="width:100%" >
 	<tr>
 		
-		<th width="20%">
+		<th style="width:20%">
 			<bean:message key="person.lastName" />
 		</th>
-		<th width="20%">
+		<th style="width:20%">
 			<bean:message key="person.firstName" />
 		</th>
-		<th width="10%">
+		<th style="width:10%">
 			<bean:message key="patient.gender" />
 		</th>
-		<th width="15%">
+		<th style="width:15%">
 			<bean:message key="patient.birthDate" />
 		</th>
 		<% if(useSTNumber){ %>
-		<th width="15%">
+		<th style="width:15%">
 			<bean:message key="patient.ST.number" />
 		</th>
 		<% } %>
 		<% if(useNationalID){ %>
-		<th width="20%">
+		<th style="width:20%">
 			<%= StringUtil.getContextualMessageForKey("patient.NationalID") %>
 		</th>
 		<% } %>
 		<% if(useSubjectNumber){ %>
-		<th width="20%">
+		<th style="width:20%">
 			<bean:message key="patient.subject.number" />
 		</th>
 		<% } %>
 	</tr>
 	<tr>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="lastName" />
 		</td>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="firstName" />
 		</td>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="gender" />
 		</td>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="dob" />
 		</td>
 		<% if(useSTNumber){ %>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="st" />
 		</td>
 		<% } %>
 		<% if(useNationalID){ %>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="nationalId" />
 		</td>
 		<% } %>
 		<% if(useSubjectNumber){ %>
-		<td align="center">
+		<td style="text-align:center">
 			<bean:write name="<%=formName%>" property="subjectNumber" />
 		</td>
 		<% } %>
@@ -467,7 +501,7 @@ function forceTechApproval(checkbox, index ){
 
 </div>
 
-<Table width="100%" border="0" cellspacing="0" >
+<Table style="width:100%" border="0" cellspacing="0" >
 	<!-- header -->
 	<tr >
 		<% if( !compactHozSpace ){ %>
@@ -486,16 +520,16 @@ function forceTechApproval(checkbox, index ){
 			<bean:message key="sample.date.format"/>
 		</th>
 		<logic:equal  name="<%=formName%>" property="displayTestMethod" value="true">
-			<th style="width: 72px; padding-right: 10px; text-align: left">
+			<th style="width: 72px; padding-right: 10px; text-align: center">
 				<bean:message key="result.method.auto"/>
 			</th>
 		</logic:equal>
 		<th style="text-align: left">
 			<bean:message key="result.test"/>
 		</th>
-		<th width="16px">&nbsp;</th>
-		<th style="width: 56px; padding-right: 10px; text-align: left"><%= StringUtil.getContextualMessageForKey("result.forceAccept.header") %></th>
-		<th width="165px" style="text-align: left">
+		<th style="width:16px">&nbsp;</th>
+		<th style="width: 56px; padding-right: 10px; text-align: center"><%= StringUtil.getContextualMessageForKey("result.forceAccept.header") %></th>
+		<th style="width:165px; text-align: left">
 			<bean:message key="result.result"/>
 		</th>
 		<% if( ableToRefer ){ %>
@@ -512,7 +546,12 @@ function forceTechApproval(checkbox, index ){
 			<% } %>
 		</th>
 		<% }%>
-		<th width="2%" style="text-align: left">
+        <% if( useRejected ){ %>
+        <th style="text-align: center">
+            <bean:message key="result.rejected"/>&nbsp;
+        </th>
+        <% }%>
+		<th style="width:2%;text-align: left">
 			<bean:message key="result.notes"/>
 		</th>
 	</tr>
@@ -531,7 +570,7 @@ function forceTechApproval(checkbox, index ){
 			<%=StringUtil.getContextualMessageForKey("resultsentry.accessionNumber")%><br/>
 			<bean:write name="testResult" property="accessionNumber"/>
 		</th>
-		<th colspan="8" />
+		<th colspan="8" ></th>
 	</tr>
 	</logic:equal>
 	<logic:equal name="testResult" property="isGroupSeparator" value="false">
@@ -539,7 +578,7 @@ function forceTechApproval(checkbox, index ){
 		<bean:define id="upperBound" name="testResult" property="upperNormalRange" />
 		<bean:define id="lowerAbnormalBound" name="testResult" property="lowerAbnormalRange" />
 		<bean:define id="upperAbnormalBound" name="testResult" property="upperAbnormalRange" />
-		<bean:define id="bound" value="<%=String.valueOf(!lowerBound.equals(upperBound))%>" />
+        <bean:define id="significantDigits" name="testResult" property="significantDigits" />
 		<bean:define id="rowColor" value='<%=(testResult.getSampleGroupingNumber() % 2 == 0) ? "evenRow" : "oddRow" %>' />
 		<bean:define id="readOnly" value='<%=testResult.isReadOnly() ? "disabled=\'true\'" : "" %>' />
 		<bean:define id="accessionNumber" name="testResult" property="accessionNumber"/>
@@ -571,7 +610,7 @@ function forceTechApproval(checkbox, index ){
 		</tr>
 	</logic:equal>
     <% } %>
-	<tr class='<%= rowColor %>'  >
+	<tr class='<%= rowColor %>'  id='<%="row_" + index %>'>
 			<html:hidden name="testResult" property="isModified"  indexed="true" styleId='<%="modified_" + index%>' />
 			<html:hidden name="testResult" property="analysisId"  indexed="true" styleId='<%="analysisId_" + index%>' />
 			<html:hidden name="testResult" property="resultId"  indexed="true" styleId='<%="hiddenResultId_" + index%>'/>
@@ -582,8 +621,13 @@ function forceTechApproval(checkbox, index ){
 			<html:hidden name="testResult" property="resultType" indexed="true" styleId='<%="resultType_" + index%>' />
 			<html:hidden name="testResult" property="valid" indexed="true"  styleId='<%="valid_" + index %>'/>
 			<html:hidden name="testResult" property="referralId" indexed="true" />
-			<html:hidden name="testResult" property="referralCanceled" indexed="true" />
-			<html:hidden name="testResult" property="userChoicePending"  styleId='<%="userChoicePendingId_" + index%>' indexed="true"/>
+            <html:hidden name="testResult" property="referralCanceled" indexed="true" />
+            <html:hidden name="testResult" property="considerRejectReason" styleId='<%="considerRejectReason_" + index %>' indexed="true" />
+            <html:hidden name="testResult" property="hasQualifiedResult" indexed="true" styleId='<%="hasQualifiedResult_" + index %>' />
+            <html:hidden name="testResult" property="shadowResultValue" indexed="true" styleId='<%="shadowResult_" + index%>' />
+            <logic:equal name="testResult" property="userChoiceReflex" value="true">
+                <html:hidden name="testResult" property="reflexJSONResult"  styleId='<%="reflexServerResultId_" + index%>'  styleClass="reflexJSONResult" indexed="true"/>
+            </logic:equal>
 			<logic:notEmpty name="testResult" property="thisReflexKey">
 					<input type="hidden" id='<%= testResult.getThisReflexKey() %>' value='<%= index %>' />
 			</logic:notEmpty>
@@ -605,10 +649,18 @@ function forceTechApproval(checkbox, index ){
 		<% } %>
 		<!-- date cell -->
 		<td class="ruled">
-			<html:text name="testResult" property="testDate" indexed="true" size="10" tabindex='-1' onchange='<%="markUpdated(" + index + ");" %>'/>
+			<html:text name="testResult"
+                       property="testDate"
+                       indexed="true"
+                       size="10"
+                       maxlength="10"
+                       tabindex='-1'
+                       onchange='<%="markUpdated(" + index + ");checkValidDate(this, processDateCallbackEvaluation, \'past\', false)" %>'
+                       onkeyup="addDateSlashes(this, event);"
+                       styleId='<%="testDate_" + index%>'/>
 		</td>
 		<logic:equal  name="<%=formName%>" property="displayTestMethod" value="true">
-			<td class="ruled">
+			<td class="ruled" style='text-align: center'>
 				<html:checkbox name="testResult"
 							property="analysisMethod"
 							indexed="true"
@@ -618,13 +670,9 @@ function forceTechApproval(checkbox, index ){
 		</logic:equal>
 		<!-- results -->
 		<logic:equal name="testResult" property="resultDisplayType" value="HIV">
-			<td valign="top" class="ruled">
+			<td style="vertical-align:top" class="ruled">
 				<html:hidden name="testResult" property="testMethod" indexed="true"/>
 				<bean:write name="testResult" property="testName"/>
-				<logic:greaterThan name="testResult" property="reflexStep" value="0">
-				&nbsp;--&nbsp;
-				<bean:message key="reflexTest.step" />&nbsp;<bean:write name="testResult" property="reflexStep"/>
-				</logic:greaterThan>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<bean:message key="inventory.testKit"/>
 				<html:select name="testResult"
@@ -645,7 +693,7 @@ function forceTechApproval(checkbox, index ){
 			</td>
 		</logic:equal>
 		<logic:equal name="testResult" property="resultDisplayType" value="SYPHILIS">
-			<td valign="middle" class="ruled">
+			<td style="vertical-align:middle; text-align: center" class="ruled">
 				<html:hidden name="testResult" property="testMethod" indexed="true"/>
 				<bean:write name="testResult" property="testName"/>
 				<logic:greaterThan name="testResult" property="reflexStep" value="0">
@@ -672,16 +720,12 @@ function forceTechApproval(checkbox, index ){
 			</td>
 		</logic:equal>
 		<logic:notEqual name="testResult" property="resultDisplayType" value="HIV"><logic:notEqual name="testResult" property="resultDisplayType" value="SYPHILIS">
-			<td valign="middle" class="ruled">
-				<bean:write name="testResult" property="testName"/>
-				<logic:equal  name="bound"  value="true" >
+			<td style="vertical-align:middle" class="ruled">
+                <%= testResult.getTestName() %>
+				<logic:notEmpty  name="testResult"  property="normalRange" >
 					<br/><bean:write name="testResult" property="normalRange"/>&nbsp;
 					<bean:write name="testResult" property="unitsOfMeasure"/>
-				</logic:equal>
-								<logic:greaterThan name="testResult" property="reflexStep" value="0">
-				&nbsp;--&nbsp;
-				<bean:message key="reflexTest.step" />&nbsp;<bean:write name="testResult" property="reflexStep"/>
-				</logic:greaterThan>
+				</logic:notEmpty>
 			</td>
 		</logic:notEqual></logic:notEqual>
 
@@ -696,7 +740,7 @@ function forceTechApproval(checkbox, index ){
 		</logic:equal>
 		</td>
 		<!-- force acceptance -->
-		<td class="ruled">
+		<td class="ruled" style='text-align: center'>
 			<html:checkbox name="testResult"
 							property="forceTechApproval"
 							indexed="true"
@@ -705,7 +749,7 @@ function forceTechApproval(checkbox, index ){
 							/>
 		</td>
 		<!-- result cell -->
-		<td id='<%="cell_" + index %>' class="ruled">
+		<td id='<%="cell_" + index %>' class="ruled" >
 			<logic:equal name="testResult" property="resultType" value="N">
 			    <input type="text" 
 			           name='<%="testResult[" + index + "].resultValue" %>' 
@@ -716,11 +760,12 @@ function forceTechApproval(checkbox, index ){
 			           title='<%= (testResult.isValid() ? testResult.isNormal() ? "" : StringUtil.getMessageForKey("result.value.abnormal") : StringUtil.getMessageForKey("result.value.invalid")) %>' 
 					   <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
 					   class='<%= (testResult.isReflexGroup() ? "reflexGroup_" + testResult.getReflexParentGroup()  : "")  +  (testResult.isChildReflex() ? " childReflex_" + testResult.getReflexParentGroup() : "") %> ' 
-					   onchange='<%="validateResults( this," + index + "," + lowerBound + "," + upperBound + "," + lowerAbnormalBound + "," + upperAbnormalBound + ", \"XXXX\" );" + 
+					   onchange='<%="validateResults( this," + index + "," + lowerBound + "," + upperBound + "," + lowerAbnormalBound + "," + upperAbnormalBound + "," + significantDigits +", \"XXXX\" );" +
 						               "markUpdated(" + index + "); " +
 						                (testResult.isReflexGroup() && !testResult.isChildReflex() ? "updateReflexChild(" + testResult.getReflexParentGroup()  +  " ); " : "") +
 						                ( noteRequired && !"".equals(testResult.getResultValue())  ? "showNote( " + index + ");" : ""  ) + 
-						                ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" )  %>'/>
+						                ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" ) +
+						                  " updateShadowResult(this, " + index + ");"%>'/>
 						               
 				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal><logic:equal name="testResult" property="resultType" value="A">
@@ -734,7 +779,8 @@ function forceTechApproval(checkbox, index ){
 						  styleId='<%="results_" + index %>'
 						  onchange='<%="markUpdated(" + index + ");"  +
 						  			   ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" ) +
-						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "")%>'/>
+						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "") +
+						                " updateShadowResult(this, " + index + ");"%>'/>
 				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal><logic:equal name="testResult" property="resultType" value="R">
 				<!-- text results -->
@@ -747,16 +793,18 @@ function forceTechApproval(checkbox, index ){
 						  title='<%= (testResult.isValid() ? testResult.isNormal() ? "" : StringUtil.getMessageForKey("result.value.abnormal") : StringUtil.getMessageForKey("result.value.invalid")) %>'
 						  styleId='<%="results_" + index %>'
 						  onkeyup='<%="value = value.substr(0, 200); markUpdated(" + index + ");"  +
-						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "")%>'
+						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "") +
+						                " updateShadowResult(this, " + index + ");"%>'
 						  />
 				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal>
-			<% if( "D".equals(testResult.getResultType()) || "Q".equals(testResult.getResultType()) ){ %>
+			<% if( "D".equals(testResult.getResultType())  ){ %>
 			<!-- dictionary results -->
 			<select name="<%="testResult[" + index + "].resultValue" %>"
 			        onchange="<%="markUpdated(" + index + ", " + testResult.isUserChoiceReflex() +  ", \'" + testResult.getSiblingReflexKey() + "\');"   +
 						               ((noteRequired && !"".equals(testResult.getResultValue()) )? "showNote( " + index + ");" : "") +
-						               (testResult.getQualifiedDictonaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictonaryId() + ");" :"") %>"
+						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", 'D');" :"") +
+						                 " updateShadowResult(this, " + index + ");"%>"
 			        id='<%="resultId_" + index%>'
 			        <%=testResult.isReadOnly()? "disabled=\'true\'" : "" %> >
 					<option value="0"></option>
@@ -770,28 +818,70 @@ function forceTechApproval(checkbox, index ){
 			           name='<%="testResult[" + index + "].qualifiedResultValue" %>' 
 			           value='<%= testResult.getQualifiedResultValue() %>' 
 			           id='<%= "qualifiedDict_" + index %>'
-			           style = '<%= "display:" + ("Q".equals(testResult.getResultType()) ? "inline" : "none") %>'
+			           style = '<%= "display:" + (testResult.isHasQualifiedResult() ? "inline" : "none") %>'
 					   <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
 					   onchange='<%="markUpdated(" + index + ");" %>'
 					    />
 			<% } %><logic:equal name="testResult" property="resultType" value="M">
 			<!-- multiple results -->
 			<select name="<%="testResult[" + index + "].multiSelectResultValues" %>"
-					id='<%="resultId_" + index%>'
+					id='<%="resultId_" + index + "_0"%>'
+                    class="<%=testResult.isUserChoiceReflex() ? "userSelection" : "" %>"
 					multiple="multiple"
 					<%=testResult.isReadOnly()? "disabled=\'disabled\'" : "" %> 
 						 title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
-						 onchange='<%="markUpdated(" + index + ");"  +
-						               ((noteRequired && !GenericValidator.isBlankOrNull(testResult.getMultiSelectResultValues())) ? "showNote( " + index + ");" : "") %>' >
+						 onchange='<%="markUpdated(" + index + "); "  +
+						               ((noteRequired && testResult.getMultiSelectResultValues() != null && testResult.getMultiSelectResultValues().length() > 2 ) ? "showNewNote( " + index + ");" : "") +
+						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", \"M\" );" :"")%>' >
 						<logic:iterate id="optionValue" name="testResult" property="dictionaryResults" type="IdValuePair" >
-						<option value='<%=optionValue.getId()%>'
-								<%if(StringUtil.textInCommaSeperatedValues(optionValue.getId(), testResult.getMultiSelectResultValues())) out.print("selected"); %>  >
+						<option value='<%=optionValue.getId()%>' >
 							<bean:write name="optionValue" property="value"/>
 						</option>
 					</logic:iterate>
 				</select>
-				<html:hidden name="testResult" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>' />
+				<html:hidden name="testResult" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>' styleClass="multiSelectValues"  />
+                <input type="text"
+                   name='<%="testResult[" + index + "].qualifiedResultValue" %>'
+                   value='<%= testResult.getQualifiedResultValue() %>'
+                   id='<%= "qualifiedDict_" + index %>'
+                   style = '<%= "display:" + ( testResult.isHasQualifiedResult() ? "inline" : "none") %>'
+                    <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
+                   onchange='<%="markUpdated(" + index + ");" %>'
+                />
 			</logic:equal>
+            <logic:equal name="testResult" property="resultType" value="C">
+                <!-- cascading multiple results -->
+                <div id='<%="cascadingMulti_" + index + "_0"%>' class='<%="cascadingMulti_" + index %>' >
+                <input type="hidden" id='<%="divCount_" + index %>' value="0" >
+                <select name="<%="testResult[" + index + "].multiSelectResultValues" %>"
+                        id='<%="resultId_" + index + "_0"%>'
+                        class="<%=testResult.isUserChoiceReflex() ? "userSelection" : "" %>"
+                        multiple="multiple"
+                        <%=testResult.isReadOnly()? "disabled=\'disabled\'" : "" %>
+                        title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
+                        onchange='<%="markUpdated(" + index + "); "  +
+						               ((noteRequired && testResult.getMultiSelectResultValues() != null && testResult.getMultiSelectResultValues().length() > 2 ) ? "showNewNote( " + index + ");" : "") +
+						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", \"M\" );" :"")%>' >
+                    <logic:iterate id="optionValue" name="testResult" property="dictionaryResults" type="IdValuePair" >
+                        <option value='<%=optionValue.getId()%>' >
+                            <bean:write name="optionValue" property="value"/>
+                        </option>
+                    </logic:iterate>
+                </select>
+                <input class='<%="addMultiSelect" + index%>' type="button" value="+" onclick='<%="addNewMultiSelect(" + index + ", this);"%>'/>
+                <input class='<%="removeMultiSelect" + index%>' type="button" value="-" onclick="removeMultiSelect('target');" style="display: none" />
+                <html:hidden name="testResult" property="multiSelectResultValues" indexed="true" styleId='<%="multiresultId_" + index%>' styleClass="multiSelectValues"  />
+                <input type="text"
+                       name='<%="testResult[" + index + "].qualifiedResultValue" %>'
+                       value='<%= testResult.getQualifiedResultValue() %>'
+                       id='<%= "qualifiedDict_" + index %>'
+                       style = '<%= "display:" + ( testResult.isHasQualifiedResult() ? "inline" : "none") %>'
+                        <%= testResult.isReadOnly() ? "disabled='disabled'" : ""%>
+                       onchange='<%="markUpdated(" + index + ");" %>'
+                        />
+
+                </div>
+            </logic:equal>
 			<% if( testResult.isDisplayResultAsLog()){ %>
 						<br/><input type='text'
 								    id='<%= "log_" + index %>'
@@ -808,7 +898,8 @@ function forceTechApproval(checkbox, index ){
 		</td>
 		<% if( ableToRefer ){ %>
 		<td style="white-space: nowrap" class="ruled">
-		<html:hidden name="testResult" property="referralId" indexed='true'/>
+            <html:hidden name="testResult" property="referralId" indexed='true'/>
+            <html:hidden name="testResult" property="shadowReferredOut" indexed="true" styleId='<%="shadowReferred_" + index %>' />
 		<% if(GenericValidator.isBlankOrNull(testResult.getReferralId()) || testResult.isReferralCanceled()){  %>
 			<html:checkbox name="testResult"
 						   property="referredOut"
@@ -824,7 +915,7 @@ function forceTechApproval(checkbox, index ){
 			<select name="<%="testResult[" + index + "].referralReasonId" %>"
 			        id='<%="referralReasonId_" + index%>'
 					onchange='<%="markUpdated(" + index + "); handleReferralReasonChange( this, " + index + ")" %>'
-			        <% out.print(testResult.isReferredOut() && "0".equals(testResult.getReferralReasonId()) ? "" : "disabled='true'"); %> >
+			        <% out.print(testResult.isShadowReferredOut() && "0".equals(testResult.getReferralReasonId()) ? "" : "disabled='true'"); %> >
 					<option value='0' >
 					   <logic:equal name="testResult" property="referralCanceled" value="true"  >
 					   		<bean:message key="referral.canceled" />
@@ -847,21 +938,51 @@ function forceTechApproval(checkbox, index ){
 					   disabled='<%= testResult.isReadOnly() %>'
 					   indexed="true" style="margin: 1px"
 					   size="10em"
+                       maxlength="18"
 					   onchange='<%="markUpdated(" + index + ");"%>'/>
 		</td>
 		<% } %>
-		<td align="left" class="ruled">
+		<% if( useRejected){ %> 
+			<td class="ruled" style='text-align: center'>
+			<html:hidden name="testResult" property="shadowRejected" indexed="true" styleId='<%="shadowRejected_" + index %>' />
+			
+			<input type="hidden" id='<%="isRejected_" + index %>' value='<%= testResult.isRejected() %>'/>
+	                <html:checkbox name="testResult"
+	                    styleId='<%="rejected_" + index%>' 
+	                    property="rejected"
+	                    indexed="true"
+	                    tabindex='-1'
+	                    onchange='<%="markUpdated(" + index + "); showHideRejectionReasons(" + index + ", \'" + StringUtil.getContextualMessageForKey( "result.delete.confirm" ) + "\' );" %>' />
+	   		</td>
+		<% } %>
+		<td style="text-align:left" class="ruled">
 						 	<img src="./images/note-add.gif"
 						 	     onclick='<%= "showHideNotes( " + index + ");" %>'
 						 	     id='<%="showHideButton_" + index %>'
 						    />
-			<html:hidden property="hideShowFlag"  styleId='<%="hideShow_" + index %>' value="hidden" />
+            <input type="hidden" name="hideShowFlag" value="hidden" id='<%="hideShow_" + index %>' >
 		</td>
 	</tr>
+	<tr id='<%="rejectReasonRow_" + index %>'
+        class='<%= rowColor %>'
+        style='<%= ("true".equals(testResult.getConsiderRejectReason()) ? "" : "display: none;") %>'>
+        <td colspan="4"></td>
+        <td colspan="6" style="text-align:right" >
+               <select name="<%="testResult[" + index + "].rejectReasonId"%>"
+                    id='<%="rejectReasonId_" + index%>'
+                    <%=testResult.isReadOnly()? "disabled=\'true\'" : "" %> >
+                    <logic:iterate id="optionValue" name="<%=formName %>" property="rejectReasons" type="IdValuePair" >
+                        <option value='<%=optionValue.getId()%>'  <%if(optionValue.getId().equals(testResult.getRejectReasonId())) out.print("selected"); %>  >
+                            <bean:write name="optionValue" property="value"/>
+                        </option>
+                    </logic:iterate>
+            </select><br/>
+       </td>
+    </tr>   
 	<logic:notEmpty name="testResult" property="pastNotes">
 		<tr class='<%= rowColor %>' >
-			<td colspan="2" align="right" valign="top"><bean:message key="label.prior.note" />: </td>
-			<td colspan="6" align="left">
+			<td colspan="2" style="text-align:right;vertical-align:top"><bean:message key="label.prior.note" />: </td>
+			<td colspan="8" style="text-align:left">
 				<%= testResult.getPastNotes() %>
 			</td>
 		</tr>
@@ -869,7 +990,7 @@ function forceTechApproval(checkbox, index ){
 	<tr id='<%="noteRow_" + index %>'
 		class='<%= rowColor %>'
 		style="display: none;">
-		<td colspan="3" valign="top" align="right"><% if(noteRequired && 
+		<td colspan="4" style="vertical-align:top;text-align:right"><% if(noteRequired &&
 														 !(GenericValidator.isBlankOrNull(testResult.getMultiSelectResultValues()) && 
 														   GenericValidator.isBlankOrNull(testResult.getResultValue()))){ %>
 													  <bean:message key="note.required.result.change"/>		
@@ -877,7 +998,7 @@ function forceTechApproval(checkbox, index ){
 													<bean:message key="note.note"/>
 													<% } %>
 													:</td>
-		<td colspan="6" align="left" >
+		<td colspan="6" style="text-align:left" >
 			<html:textarea styleId='<%="note_" + index %>'
 						   onchange='<%="markUpdated(" + index + ");"%>'
 					   	   name="testResult"
@@ -887,35 +1008,6 @@ function forceTechApproval(checkbox, index ){
 			           	   rows="3" />
 		</td>
 	</tr>
-
-	<logic:match name="testResult" property="userChoiceReflex"  value="true">
-		<tr id='<%="reflexInstruction_" + index %>' class='<%= rowColor %>' style="display: none;">
-            <td colspan="4" >&nbsp;</td>
-			<td colspan="4" valign="top"  ><bean:message key="testreflex.actionselection.instructions" /></td>
-		</tr>
-		<tr id='<%="reflexSelection_" + index %>' class='<%= rowColor %>' style="display: none;">
-		<td colspan="4" >&nbsp;</td>
-		<td colspan="4" >
-				<html:radio name="testResult"
-						    styleId = '<%="selectionOne_" + index %>'
-							property="reflexSelectionId"
-							indexed="true"
-							value=''
-							onchange='<%="reflexChoosen(" + index + ", \'" + rowColor + "\', \'" + testResult.getSiblingReflexKey() +  "\');"%>' />
-							<label id='<%="selectionOneLabel_" + index %>'  for='<%="selectionOne_" + index %>' > </label>
-				<br/>
-				<html:radio name="testResult"
-							styleId = '<%="selectionTwo_" + index %>'
-							property="reflexSelectionId"
-							indexed="true"
-							value=''
-							onchange='<%="reflexChoosen(" + index + ", \'" + rowColor + "\', \'" + testResult.getSiblingReflexKey() +  "\');"%>' />
-							<label id='<%="selectionTwoLabel_" + index %>'  for='<%="selectionTwo_" + index %>' > </label>
-			</td>
-		</tr>
-
-	</logic:match>
-
 	</logic:equal>
 	</logic:iterate>
 </Table>

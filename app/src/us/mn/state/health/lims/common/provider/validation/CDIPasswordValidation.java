@@ -29,7 +29,4 @@ public class CDIPasswordValidation implements ILoginPasswordValidation {
 		return new HaitiPasswordValidation().getInstructions();
 	}
 
-	public String getResourceKeyForInstructions() {
-		return new HaitiPasswordValidation().getResourceKeyForInstructions();
-	}
 }

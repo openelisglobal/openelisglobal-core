@@ -3,8 +3,8 @@
 <project basedir="." default="help" name="openElisGlobal">
     <property environment="env"/>
     <property name="wardir" value="${basedir}/warRoot"/>
-    <property name="projectroot" value="${basedir}/source/OESandbox/app"/>
-    <property name="db_root" value="${basedir}/source/OESandbox/liquibase"/>
+    <property name="projectroot" value="${basedir}/source/openelisglobal-core/app"/>
+    <property name="db_root" value="${basedir}/source/openelisglobal-core/liquibase"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="debug" value="true"/>
@@ -172,7 +172,7 @@
     </target>
 
    
-    <target name="build" depends="initBuild, versionNumber" description="builds application and tests" >
+    <target name="build" depends="versionNumber, initBuild" description="builds application and tests" >
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="${debug}" debuglevel="${debuglevel}" destdir="${projectroot}/WebContent/WEB-INF/classes" source="${source}" target="${target}">
             <src path="${projectroot}/src"/>

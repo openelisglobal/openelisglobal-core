@@ -3,6 +3,7 @@
 				us.mn.state.health.lims.inventory.form.InventoryKitItem,
 				us.mn.state.health.lims.common.util.IdValuePair,
 				java.util.List" %>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
@@ -109,7 +110,7 @@ function /*void*/ addNewTestKit(){
 	newRow.insertCell(7).innerHTML = TEST_KIT_PROTOTYPE_REMOVE.replace(/\#/g, nextKitValue);
 
 	newRow.id = "addedKit_" + nextKitValue;
-	newRow.className = "addedKit"
+	newRow.className = "addedKit";
 	nextKitValue++;
 
 	makeDirty();
@@ -125,10 +126,9 @@ function /*void*/ removeTestKit( index ){
 
 function /*void*/ createNewKitXML(){
 	var xml = "<?xml version='1.0' encoding='utf-8'?><newKits>";
-
 	var newKitRows = $$('tr.addedKit');
-
 	var rowsLength = newKitRows.length;
+    var i;
 
 	for( var rowIndex = 0; rowIndex < rowsLength; ++rowIndex ){
 
@@ -138,7 +138,7 @@ function /*void*/ createNewKitXML(){
 		var cells = row.getElementsByTagName("input");
 		var cellsLength = cells.length;
 
-		for( var i = 1; i < cellsLength; ++i ){ //the first cell is the kit id #
+		for( i = 1; i < cellsLength; ++i ){ //the first cell is the kit id #
 
 			xml += cells[i].className + "=\"";
 			xml += cells[i].value;
@@ -148,7 +148,7 @@ function /*void*/ createNewKitXML(){
 		cells = row.getElementsByTagName("select");
 		cellsLength = cells.length;
 
-		for( var i = 0; i < cellsLength; ++i ){
+		for( i = 0; i < cellsLength; ++i ){
 
 			xml += cells[i].className + "=\"";
 			xml += cells[i].value;
@@ -171,10 +171,10 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 
 function  /*void*/ savePage()
 {
-	var recieveDates, expirationDates;
+	var receiveDates, expirationDates,i;
 	var kits = $$("input.kitName");
 		
-	for(var i = 0; i < kits.length; ++i) {
+	for(i = 0; i < kits.length; ++i) {
 		if( kits[i].value == null || kits[i].value == "" ) {
 			alert("Le nom est obligatoire");
 			return;
@@ -183,7 +183,7 @@ function  /*void*/ savePage()
 
 	receiveDates = $$("input.receiveDate");
 
-	for(var i = 0; i < receiveDates.length; ++i) {
+	for(i = 0; i < receiveDates.length; ++i) {
 		if( !validateDate(receiveDates[i]) ){
 			alert("Mal formaté la date");
 			return;
@@ -192,7 +192,7 @@ function  /*void*/ savePage()
 	
 	expirationDates = $$("input.expirationDate");
 	
-	for(var i = 0; i < expirationDates.length; ++i) {
+	for(i = 0; i < expirationDates.length; ++i) {
 		if( !validateDate(expirationDates[i]) ){
 			alert("Mal formaté la date");
 			return;
@@ -226,32 +226,32 @@ function /*void*/ makeDirty(){
 <div id="PatientPage" class="colorFill" style="display:inline" >
 	<logic:present name="<%=formName%>" property="inventoryItems" >
 	<html:hidden name="<%=formName%>"  property="newKitsXML" styleId="newKits" />
-	<table id="testKitTable"   width="100%" >
+	<table id="testKitTable"   style="width:100%" >
 	<tr >
-		<th width="5%">
+		<th style="width:5%">
 			<bean:message key="inventory.testKit.id"/>
 		</th>
-		<th width="15%">
+		<th style="width:15%">
 			<bean:message key="inventory.testKit.name"/>
 			<span class="requiredlabel">*</span>
 		</th>
-		<th width="10%">
+		<th style="width:10%">
   			<bean:message key="inventory.testKit.type"/>
 		</th>
-		<th width="10%">
-			<bean:message key="inventory.testKit.receiveDate"/>
+		<th style="width:10%">
+			<bean:message key="inventory.testKit.receiveDate"/><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
 		</th>
-		<th width="10%">
-			<bean:message key="inventory.testKit.expiration"/>
+		<th style="width:10%">
+			<bean:message key="inventory.testKit.expiration"/><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
 		</th>
-		<th width="10%">
+		<th style="width:10%">
 			<bean:message key="inventory.testKit.lot"/>
 		</th>
-		<th width="20%">
+		<th style="width:20%">
 			<bean:message key="inventory.testKit.source"/>
 			<span class="requiredlabel">*</span>
 		</th>
-		<th width="10%">
+		<th style="width:10%">
 		</th>
 	</tr>
 	<logic:iterate id="inventoryItems"  name="<%=formName%>" property="inventoryItems" indexId="index" type="InventoryKitItem" >
@@ -312,11 +312,10 @@ function /*void*/ makeDirty(){
 				</html:select>
 			</td>
 			<td >
-				<html:button property="removeButton"
-							 styleClass="textButton"
-							 onclick='<%= "deactivateTestKit(" + index + ");" %>'>
-					<bean:message key="label.button.deactivate" />
-				</html:button>
+                <input type="button"
+                       value='<%= StringUtil.getMessageForKey("label.button.deactivate")%>'
+                       onclick='<%= "deactivateTestKit(" + index + ");"%>'
+                       class="textButton">
 			</td>
 		</tr>
 	</logic:iterate>
@@ -324,64 +323,59 @@ function /*void*/ makeDirty(){
 	<div id="inactiveInventoryItems" style="display:none" >
 	<hr>
 
-	<table width="100%" >
+	<table style="width:100%" >
 	<tr>
 		<th colspan="8"  align="left"><bean:message key="invnetory.testKit.inactiveKits"/></th>
 	</tr>
 	<logic:iterate id="item"  name="<%=formName%>" property="inventoryItems" indexId="index" type="InventoryKitItem" >
 		<tr <% if(item.getIsActive()){out.print("style=\"display:none\"");} %> id='<%="inactiveRow_" + index %>' >
-			<td width="5%">
+			<td style="width:5%">
 				<html:text name="item" property="inventoryLocationId" disabled="true" size="3" />
 			</td>
-			<td width="15%">
+			<td style="width:15%">
 				<html:text name="item" property="kitName" disabled="true" />
 			</td>
-			<td width="10%" >
+			<td style="width:10%" >
 				<html:text name="item" property="type" disabled="true" size="12" />
 			</td>
-			<td width="10%">
+			<td style="width:10%">
 				<html:text name="item" property="receiveDate" disabled="true" size="12" />
 			</td>
-			<td width="10%">
+			<td style="width:10%">
 				<html:text name="item" property="expirationDate" disabled="true" size="12" />
 			</td>
-			<td width="10%">
+			<td style="width:10%">
 				<html:text name="item" property="lotNumber" disabled="true" size="6" />
 			</td>
-			<td width="20%">
+			<td style="width:20%">
 				<html:text name="item" property="source" disabled="true" />
 			</td>
-			<td width="10%">
-				<html:button property="removeButton"
-				             styleClass="textButton"
-				             onclick='<%= "reactivateTestKit(" + index + ");" %>'>
-				      <bean:message key="label.button.reactivate" />
-				</html:button>
+			<td style="width:10%">
+                    <input type="button"
+                           value='<%= StringUtil.getMessageForKey("label.button.reactivate")%>'
+                           onclick='<%= "reactivateTestKit(" + index + ");"%>'
+                           class="textButton">
 			</td>
 		</tr>
 	</logic:iterate>
 	</table>
 	</div>
 	<br/>
-		<html:button property="addInventoryButton"
-					 styleClass="textButton"
-					 styleId="showInactiveButton"
-					 style="display:inline"
-					 onclick="showInactiveKits( this );">
-				<bean:message key="inventory.testKit.showAll"/>
-		</html:button>
-		<html:button property="addInventoryButton"
-					 styleClass="textButton"
-					 styleId="hideInactiveButton"
-					 style="display:none"
-					 onclick="hideInactiveKits( this );">
-				<bean:message key="inventory.testKit.hideInactive"/>
-		</html:button>
-		<html:button property="addInventoryButton"
-					 styleClass="textButton"
-					 onclick="addNewTestKit();">
-				<bean:message key="inventory.testKit.add"/>
-		</html:button>
+        <input type="button"
+                   value='<%= StringUtil.getMessageForKey("inventory.testKit.showAll")%>'
+                   onclick="showInactiveKits( this );"
+                   class="textButton"
+                   id="showInactiveButton">
+        <input type="button"
+               value='<%= StringUtil.getMessageForKey("inventory.testKit.hideInactive")%>'
+               onclick="hideInactiveKits( this );"
+               class="textButton"
+               style="display:none"
+               id="hideInactiveButton">
+        <input type="button"
+               value='<%= StringUtil.getMessageForKey("inventory.testKit.add")%>'
+               onclick="addNewTestKit();"
+               class="textButton">
 </logic:present>
 <logic:notPresent name="<%=formName%>" property="inventoryItems" >
 	<bean:message key="inventory.testKit.none"/>

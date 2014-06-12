@@ -23,27 +23,12 @@
  **/
 package us.mn.state.health.lims.patient.saving;
 
-import static us.mn.state.health.lims.sample.util.CI.ProjectForm.EID;
-import static us.mn.state.health.lims.sample.util.CI.ProjectForm.SPECIAL_REQUEST;
-
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -52,11 +37,12 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusSet;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -65,7 +51,6 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -115,6 +100,14 @@ import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static us.mn.state.health.lims.sample.util.CI.ProjectForm.EID;
+import static us.mn.state.health.lims.sample.util.CI.ProjectForm.SPECIAL_REQUEST;
 
 /**
  * Update/Creates, as needed, a Sample and Patient and all associated parts in
@@ -351,7 +344,7 @@ public abstract class Accessioner {
 		!GenericValidator.isBlankOrNull(projectData.getUnderInvestigationNote())) {
 
 			Note note = new Note();
-			note.setNoteType("I");
+			note.setNoteType(Note.EXTERNAL);
 			note.setReferenceId(sample.getId());
 			note.setReferenceTableId(SAMPLE_TABLE_ID);
 
@@ -366,7 +359,7 @@ public abstract class Accessioner {
 			}
 
 			note.setSysUserId(sysUserId);
-			note.setSystemUser(NoteUtil.createSystemUser(sysUserId));
+			note.setSystemUser( NoteService.createSystemUser( sysUserId ));
 
 			if (note.getId() == null) {
 				noteDAO.insertData(note);
@@ -497,8 +490,6 @@ public abstract class Accessioner {
 
 	/**
 	 * Either find it by the primary or secondary identifier or return a new one
-	 * 
-	 * @param externalId
 	 */
 	private boolean createPatientByIdentifiers() {
 		patientInDB = findPatientByIndentifiers();
@@ -724,9 +715,6 @@ public abstract class Accessioner {
 	 * 
 	 * @param organizationId
 	 *            if none null, use it; otherwise do nothing
-	 * @param ignoreId
-	 *            - the ID which is the blank selection, so treat this same as
-	 *            NO answer (null, "")
 	 */
 	protected void populateSampleOrganization(String organizationId) {
 		if (GenericValidator.isBlankOrNull(organizationId) || organizationId.equals(BaseProjectFormMapper.ORGANIZATION_ID_NONE)) {
@@ -790,8 +778,6 @@ public abstract class Accessioner {
 
 	/**
 	 * Assume all the fields on the dynaForm have the right names (see code) and
-	 * 
-	 * @param dynaForm
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException

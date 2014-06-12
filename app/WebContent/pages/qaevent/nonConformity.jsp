@@ -1,12 +1,12 @@
-<%@page import="us.mn.state.health.lims.common.provider.validation.NonConformityRecordNumberValidationProvider"%>
-<%@page import="us.mn.state.health.lims.common.formfields.FormFields.Field,
-                us.mn.state.health.lims.common.util.IdValuePair"%>
+<%@page import="us.mn.state.health.lims.common.action.IActionConstants"%>
+<%@page import="us.mn.state.health.lims.common.formfields.FormFields,
+                us.mn.state.health.lims.common.formfields.FormFields.Field"%>
 
 <%@ page language="java" contentType="text/html; charset=utf-8"%>
-<%@ page
-	import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.util.SystemConfiguration,us.mn.state.health.lims.common.util.ConfigurationProperties,us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,us.mn.state.health.lims.common.formfields.FormFields,us.mn.state.health.lims.common.util.StringUtil,us.mn.state.health.lims.common.util.Versioning,us.mn.state.health.lims.qaevent.action.retroCI.NonConformityItem"%>
-<%@page
-	import="us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem;"%>
+<%@ page import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.util.SystemConfiguration,us.mn.state.health.lims.common.util.ConfigurationProperties,us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,us.mn.state.health.lims.common.formfields.FormFields,us.mn.state.health.lims.common.util.StringUtil,us.mn.state.health.lims.common.util.Versioning,us.mn.state.health.lims.qaevent.action.retroCI.NonConformityItem"%>
+<%@ page import="us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator"%>
+<%@ page import="us.mn.state.health.lims.common.provider.validation.NonConformityRecordNumberValidationProvider" %>
+<%@ page import="us.mn.state.health.lims.common.services.PhoneNumberService, us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem" %>
 
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
@@ -23,7 +23,6 @@
 <%! String basePath = "";
     IAccessionNumberValidator accessionNumberValidator;
     boolean useProject = FormFields.getInstance().useField(Field.Project);
-    boolean useSampleCondition = FormFields.getInstance().useField(Field.SampleCondition);
     boolean useSiteList = FormFields.getInstance().useField(Field.NON_CONFORMITY_SITE_LIST);
     boolean useFullProviderInfo = FormFields.getInstance().useField(Field.QAFullProviderInfo);
     boolean useSubjectNo = FormFields.getInstance().useField(Field.QASubjectNumber);
@@ -80,17 +79,6 @@ function siteListChanged(textValue){
 	$("serviceNew").value = !textValue.blank();
 }
 
-function checkEntryPhoneNumber( phone )
-{
-
-	var regEx = new RegExp("^\\(?\\d{3}\\)?\\s?\\d{4}[- ]?\\d{4}\\s*$");
-
-	var valid = regEx.test(phone.value);
-
-//	setSampleFieldValidity( valid, phone.name );
-//	setValidIndicaterOnField(valid, phone.name);
-//	return valid;
-}
 function /*void*/loadForm() {
 	if (!$("searchId").value.empty()) {
 		var form = document.forms[0];
@@ -105,56 +93,32 @@ function setMyCancelAction() {
 	setAction(window.document.forms[0], 'Cancel', 'no', '');
 }
 
-function /*void*/onChangeSearchNumber() {
-	var searchNumber = $("searchId").value;
+function onChangeSearchNumber(searchField) {
 	var searchButton = $("searchButtonId");
-	if (searchNumber === "") {
+	if (searchField.value === "") {
 		searchButton.disable();
 	} else {
-	    // validateAccessionNumberOnServer( field );
-	    $("searchButtonId").enable();
-	    //searchButton.focus();
+	    validateAccessionNumberOnServer( true, true, searchField.id, searchField.value, processAccessionSuccess);
 	}
-}
-
-function validateAccessionNumberOnServer( field )
-{
-	new Ajax.Request (
-                      'ajaxXML',  //url
-                      {//options
-                      method: 'get', //http method
-                      parameters: 'provider=SampleEntryAccessionNumberValidationProvider&field=' + field.id + '&accessionNumber=' + field.value,
-                      indicator: 'throbbing',
-                      onSuccess:  processAccessionSuccess,
-                      onFailure:  processAccessionFailure
-                           }
-                          );
 }
 
 function processAccessionSuccess(xhr)
 {
+    //alert(xhr.responseText);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = false;
+	var success = message.firstChild.nodeValue == "valid";
 
-	if (message.firstChild.nodeValue == "valid"){
-		success = true;
-	}
-	setValidIndicaterOnField(success, labElement );
-	setSampleFieldValidity( success, labElement);
+    var searchButton = $("searchButtonId");
 
 	if( !success ){
 		alert( message.firstChild.nodeValue );
-	}
-
-	var searchButton = $("searchButtonId");
-	$("searchButtonId").enable();
-	searchButton.focus();
+        searchButton.disable();
+	}else {
+        searchButton.enable();
+        searchButton.focus();
+    }
 }
 
-function processAccessionFailure(xhr)
-{
-	//unhandled error: someday we should be nicer to the user
-}
 
 /**
  * make the text of the blank option for sample type say "all types"
@@ -241,10 +205,7 @@ function areNewTypesOfSamples() {
 	var isNew = fields.detect(function(field) {
 		var ids = $("sampleItemsTypeOfSampleIds").value;
 		var val = field.value;
-		if (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1) {
-			return true;
-		}
-		return false;
+		return (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1);
 	}) != null;
 	return isNew;
 }
@@ -263,7 +224,7 @@ function validateRecordNumber( recordElement){
 }
 
 function recordNumberSuccess( xhr){
-	//alert(xhr.responseText);		
+    //alert(xhr.responseText);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
 	var success = message.firstChild.nodeValue == "Record not Found";
@@ -327,6 +288,32 @@ function setSave(){
 		saveButton.disabled = !validToSave;
 	}	
 }
+
+function validatePhoneNumber( phoneElement){
+    validatePhoneNumberOnServer( phoneElement, processPhoneSuccess);
+}
+
+function  processPhoneSuccess(xhr){
+    //alert(xhr.responseText);
+
+    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
+    var message = xhr.responseXML.getElementsByTagName("message").item(0);
+    var success = false;
+
+    if (message.firstChild.nodeValue == "valid"){
+        success = true;
+    }
+    var labElement = formField.firstChild.nodeValue;
+    selectFieldErrorDisplay( success, $(labElement));
+    fieldValidator.setFieldValidity(success, labElement);
+
+    if( !success ){
+        alert( message.firstChild.nodeValue );
+    }
+
+    setSave();
+}
+
 </script>
 
 
@@ -335,7 +322,7 @@ function setSave(){
 	:
 	<input type="text" name="searchNumber"
 		maxlength='<%=Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-		value="" onkeyup="onChangeSearchNumber()" id="searchId">
+		value="" onchange="onChangeSearchNumber(this)" id="searchId">
 	&nbsp;
 	<input type="button" id="searchButtonId"
 		value='<%=StringUtil.getMessageForKey("label.button.search")%>'
@@ -350,7 +337,8 @@ function setSave(){
 	<table >
 		<tr>
 			<td >
-				<%= StringUtil.getContextualMessageForKey("nonconformity.date") %>
+				<%= StringUtil.getContextualMessageForKey("nonconformity.date") %>&nbsp;
+                <span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
 				:
 			</td>
 			<td>
@@ -613,17 +601,17 @@ function setSave(){
 			<tr>
 				<td align="right">
 					<bean:message key="person.phone" />&nbsp;
-					<%= StringUtil.getContextualMessageForKey("humansampleone.phone.additionalFormat") %>
+					<%= PhoneNumberService.getPhoneFormat() %>
 				</td>
 				<td>
 				<logic:equal name='<%=formName%>' property="providerWorkPhone" value="">
 					<app:text name="<%=formName%>"
 					          property="providerWorkPhone"
 						      styleId="providerWorkPhoneID"
-						      size="20"
-						      maxlength="15"
+						      size="30"
+						      maxlength="35"
 						      styleClass="text"
-						      onchange="checkEntryPhoneNumber( this );makeDirty();$('doctorNew').value = true;" />
+						      onchange="validatePhoneNumber(this);makeDirty();$('doctorNew').value = true;" />
 				    <div id="providerWorkPhoneMessage" class="blank" ></div>
 				</logic:equal>    
 				<logic:notEqual name='<%=formName%>' property="providerWorkPhone" value="">
@@ -650,31 +638,31 @@ function setSave(){
 	</table>
 	
 	<hr />
-	<table width="95%" id="qaEventsTable">
+	<table style="width:95%" id="qaEventsTable">
 		<thead>
 		<tr>
-			<th width="0%" style="display: none"></th>
+			<th style="display: none"></th>
 			<% if( FormFields.getInstance().useField(Field.QA_DOCUMENT_NUMBER)){ %>
-				<th width="100 px">
+				<th style="width:100px">
 					<bean:message key="nonConformity.document.number" /><br> <%= NonConformityRecordNumberValidationProvider.getDocumentNumberFormat() %>  :
 				</th>
 			<% } %>
-			<th width="22%">
+			<th style="width:22%">
 				<bean:message key="label.refusal.reason" /><span class="requiredlabel">*</span>
 			</th>
-			<th width="16%">
+			<th style="width:16%">
 				<bean:message key="label.sampleType" />
 			</th>
-			<th width="11%">
+			<th style="width:11%">
 				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %>
 			</th>
-			<th width="13%">
+			<th style="width:13%">
 				<%=StringUtil.getContextualMessageForKey("label.biologist") %>
 			</th>
-			<th width="">
+			<th >
 				<%= StringUtil.getContextualMessageForKey("nonconformity.note") %>
 			</th>
-			<th width="5%">
+			<th style="width:5%">
 				<bean:message key="label.remove" />
 			</th>
 		</tr>
@@ -720,7 +708,7 @@ function setSave(){
 						style="width: 99%">
 						<option value="0"></option>
 						<html:optionsCollection name="<%=formName%>"
-							property="typeOfSamples" label="localizedName" value="id" />
+							property="typeOfSamples" label="value" value="id" />
 					</html:select>
 				</td>
 				<td>
@@ -790,7 +778,7 @@ function makeDirty() {
 	setSave();
 }
 
-function /*void*/savePage() {
+function savePage() {
 	if (areNewTypesOfSamples() && !confirm(confirmNewTypeMessage)) {
 		return false;
 	}

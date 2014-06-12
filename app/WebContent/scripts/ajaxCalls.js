@@ -70,19 +70,33 @@ function testConnectionOnServer(connectionId, url, success, failure) {
 	});
 }
 
-function validateAccessionNumberOnServer(checkformatAndUsed, fieldId, accessionNumber, success, failure) {
-	if( !failure ){	failure = defaultFailure;}
+function validateAccessionNumberOnServer(ignoreYear, ignoreUsage, fieldId, accessionNumber, success, failure) {
+    if( !failure ){	failure = defaultFailure;}
 	new Ajax.Request(
 			'ajaxXML', // url
 			{// options
 				method : 'get', // http method
-				parameters : 'provider=SampleEntryAccessionNumberValidationProvider&checkFormatAndUsed=' + checkformatAndUsed + '&field='	+ fieldId + '&accessionNumber=' + accessionNumber,
+				parameters : 'provider=SampleEntryAccessionNumberValidationProvider&ignoreYear=' + ignoreYear + '&ignoreUsage=' + ignoreUsage + '&field='	+ fieldId + '&accessionNumber=' + accessionNumber,
 				indicator : 'throbbing',
 				onSuccess : success,
 				onFailure : failure
 			});
 }
 
+function generateNextScanNumber(success, failure){
+    if( !failure ){	failure = defaultFailure;}
+
+    new Ajax.Request (
+        'ajaxQueryXML',  //url
+        {//options
+            method: 'get', //http method
+            parameters: "provider=SampleEntryGenerateScanProvider",
+            //indicator: 'throbbing'
+            onSuccess:  success,
+            onFailure:  failure
+        }
+    );
+}
 function validateNonConformityRecordNumberOnServer( field, success, failure){
 	if( !failure){failure = defaultFailure;	}
 
@@ -97,6 +111,33 @@ function validateNonConformityRecordNumberOnServer( field, success, failure){
 
 }
 
+function validatePhoneNumberOnServer( field, success, failure){
+    if( !failure){failure = defaultFailure;	}
+
+    new Ajax.Request('ajaxXML',
+        {
+            method : 'get',
+            parameters : "provider=PhoneNumberValidationProvider&fieldId=" + field.id +"&value=" + field.value,
+            //indicator: 'throbbing',
+            onSuccess : success,
+            onFailure : failure
+        });
+
+}
+
+function validateSubjectNumberOnServer( subjectNumber, type, elementId, success, failure){
+    if( !failure ){	failure = defaultFailure;}
+
+    new Ajax.Request('ajaxXML',
+        {
+            method : 'get',
+            parameters : "provider=SubjectNumberValidationProvider&subjectNumber=" + subjectNumber + "&numberType=" + type + "&fieldId=" + elementId,
+            //indicator: 'throbbing',
+            onSuccess : success,
+            onFailure : failure
+        });
+
+}
 function patientSearch(lastName, firstName, STNumber, subjectNumber, nationalId, labNumber, guid, suppressExternalSearch, success, failure){
 	if( !failure){failure = defaultFailure;	}
 	
@@ -119,7 +160,7 @@ function patientSearch(lastName, firstName, STNumber, subjectNumber, nationalId,
 }
 
 function getReflexUserChoice( resultId, analysisId, testId, accessionNumber, index, success, failure){
-	if( !failure){failure = defaultFailure;	}
+    if( !failure){failure = defaultFailure;	}
 	
 	new Ajax.Request (
             'ajaxQueryXML',  //url
@@ -138,6 +179,19 @@ function getReflexUserChoice( resultId, analysisId, testId, accessionNumber, ind
 	
 }
 
+function getProvidersForOrg( orgKey, success, failure){
+    if( !failure){failure = defaultFailure;	}
+    new Ajax.Request(
+        'ajaxQueryXML',  //url
+        {//options
+            method: 'get', //http method
+            parameters: "provider=RequestersForOrganizationProvider&orgId=" + orgKey,
+            //indicator: 'throbbing'
+            onSuccess: success,
+            onFailure: failure
+        }
+    );
+}
 function defaultFailure(xhr){
 	//alert(xhr.responseText);
 }

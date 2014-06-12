@@ -17,12 +17,8 @@
  */
 package us.mn.state.health.lims.resultlimits.daoimpl;
 
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -35,6 +31,9 @@ import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.test.valueholder.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 
 	public void deleteData(List resultLimits) throws LIMSRuntimeException {
@@ -45,13 +44,12 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 			for (Object limitObj : resultLimits) {
 				ResultLimit data = (ResultLimit) limitObj;
 
-				ResultLimit oldData = (ResultLimit) readResultLimit(data.getId());
-				ResultLimit newData = new ResultLimit();
+				ResultLimit oldData = readResultLimit(data.getId());
 
 				String sysUserId = data.getSysUserId();
 				String event = IActionConstants.AUDIT_TRAIL_DELETE;
 				String tableName = "RESULT_LIMITS";
-				auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
+				auditDAO.saveHistory(new ResultLimit(), oldData, sysUserId, event, tableName);
 			}
 		} catch (Exception e) {
 			LogEvent.logError("ResultLimitsDAOImpl", "AuditTrail deleteData()", e.toString());
@@ -59,13 +57,13 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 		}
 
 		try {
-			for (int i = 0; i < resultLimits.size(); i++) {
-				ResultLimit data = (ResultLimit) resultLimits.get(i);
-				data = (ResultLimit) readResultLimit(data.getId());
-				HibernateUtil.getSession().delete(data);
-				HibernateUtil.getSession().flush();
-				HibernateUtil.getSession().clear();
-			}
+            for( Object resultLimit : resultLimits ){
+                ResultLimit data = ( ResultLimit ) resultLimit;
+                data = readResultLimit( data.getId() );
+                HibernateUtil.getSession().delete( data );
+                HibernateUtil.getSession().flush();
+                HibernateUtil.getSession().clear();
+            }
 		} catch (Exception e) {
 			LogEvent.logError("ResultLimitsDAOImpl", "deleteData()", e.toString());
 			throw new LIMSRuntimeException("Error in ResultLimit deleteData()", e);
@@ -97,14 +95,13 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 	public void updateData(ResultLimit resultLimit) throws LIMSRuntimeException {
 
 		ResultLimit oldData = readResultLimit(resultLimit.getId());
-		ResultLimit newData = resultLimit;
 
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = resultLimit.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "RESULT_LIMITS";
-			auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
+			auditDAO.saveHistory(resultLimit, oldData, sysUserId, event, tableName);
 		} catch (Exception e) {
 			LogEvent.logError("ResultLimitsDAOImpl", "AuditTrail updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in ResultLimit AuditTrail updateData()", e);
@@ -139,7 +136,7 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 	}
 
 	public List getAllResultLimits() throws LIMSRuntimeException {
-		List list = new Vector();
+		List list;
 		try {
 			String sql = "from ResultLimit";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -155,7 +152,7 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 	}
 
 	public List getPageOfResultLimits(int startingRecNo) throws LIMSRuntimeException {
-		List list = new Vector();
+		List list;
 		try {
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
@@ -177,7 +174,7 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 	}
 
 	public ResultLimit readResultLimit(String idString) {
-		ResultLimit recoveredLimit = null;
+		ResultLimit recoveredLimit;
 		try {
 			recoveredLimit = (ResultLimit) HibernateUtil.getSession().get(ResultLimit.class, idString);
 			HibernateUtil.getSession().flush();
@@ -200,10 +197,11 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 
 	public List getAllResultLimitsForTest(Test test) throws LIMSRuntimeException {
 
-		if (test == null || GenericValidator.isBlankOrNull(test.getId()))
-			return null;
+		if (test == null || GenericValidator.isBlankOrNull(test.getId())){
+            return new ArrayList<ResultLimit>();
+        }
 
-		List list = new Vector();
+		List list;
 		try {
 			String sql = "from ResultLimit rl where rl.testId = :test_id";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);

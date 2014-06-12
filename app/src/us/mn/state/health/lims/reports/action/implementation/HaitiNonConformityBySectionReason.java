@@ -20,10 +20,9 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 public class HaitiNonConformityBySectionReason extends NonConformityBySectionReason {
-	private boolean isLNSP = true;
 
-	public HaitiNonConformityBySectionReason(boolean isLNSP) {
-		this.isLNSP = isLNSP;
+	public HaitiNonConformityBySectionReason() {
+
 	}
 
 	@Override
@@ -42,14 +41,10 @@ public class HaitiNonConformityBySectionReason extends NonConformityBySectionRea
 		reportParameters.put("supportStudy", "false");
 		reportParameters.put("supportService", "false");
 		reportParameters.put("supportSiteSubject", "false");
-		if (isLNSP) {
-			reportParameters.put("siteLogo", useLogo ? "HaitiLNSP.jpg" : null);
+		
+		String logoName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
+		reportParameters.put("siteLogo", useLogo ? logoName : null);
 			reportParameters.put("labName1", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
 			reportParameters.put("labName2", "");
-		} else {
-			reportParameters.put("siteLogo", useLogo ? "labLogo.jpg" : null);
-			reportParameters.put("labName1", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-			reportParameters.put("labName2", " ");
-		}
 	}
 }

@@ -16,16 +16,16 @@
  */
 package us.mn.state.health.lims.common.services.historyservices;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PatientHistoryService extends HistoryService {
 	private static String PATIENT_TABLE_ID;
@@ -51,10 +51,8 @@ public class PatientHistoryService extends HistoryService {
 
 	@SuppressWarnings("unchecked")
 	private void setUpForPatient(Patient patient) {
-		History searchHistory = new History();
-		searchHistory.setReferenceId(patient.getId());
-		searchHistory.setReferenceTable(PATIENT_TABLE_ID);
-		historyList = auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory);
+
+		historyList = auditTrailDAO.getHistoryByRefIdAndRefTableId(patient.getId(),PATIENT_TABLE_ID);
 
 		attributeToIdentifierMap = new HashMap<String, String>();
 		attributeToIdentifierMap.put(DOB_ATTRIBUTE, StringUtil.getMessageForKey("patient.birthDate"));
@@ -70,9 +68,7 @@ public class PatientHistoryService extends HistoryService {
 		newValueMap.put(DOB_ATTRIBUTE, patient.getBirthDateForDisplay());
 
 		if (patient.getPerson() != null) {
-			searchHistory.setReferenceId(patient.getPerson().getId());
-			searchHistory.setReferenceTable(PERSON_TABLE_ID);
-			List<History> personHistory = auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory);
+			List<History> personHistory = auditTrailDAO.getHistoryByRefIdAndRefTableId(patient.getPerson().getId(),PERSON_TABLE_ID);
 			historyList.addAll(personHistory);
 
 			newValueMap.put(FIRST_NAME_ATTRIBUTE, patient.getPerson().getFirstName());

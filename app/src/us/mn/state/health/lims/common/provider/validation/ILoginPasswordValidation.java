@@ -21,7 +21,5 @@ public interface ILoginPasswordValidation {
 
 	public boolean passwordValid( String password);
 	
-	public String getResourceKeyForInstructions();
-	
 	public String getInstructions();
 }

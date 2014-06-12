@@ -13,46 +13,46 @@
         <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field"/>
 
         <property name="lastName" type="java.lang.String">
-            <column name="LAST_NAME" length="40" />
+            <column name="LAST_NAME"  />
         </property>
         <property name="firstName" type="java.lang.String">
-            <column name="FIRST_NAME" length="40" />
+            <column name="FIRST_NAME"  />
         </property>
         <property name="middleName" type="java.lang.String">
-            <column name="MIDDLE_NAME" length="30" />
+            <column name="MIDDLE_NAME"  />
         </property>
         <property name="multipleUnit" type="java.lang.String">
-            <column name="MULTIPLE_UNIT" length="30" />
+            <column name="MULTIPLE_UNIT" />
         </property>
         <property name="streetAddress" type="java.lang.String">
-            <column name="STREET_ADDRESS" length="30" />
+            <column name="STREET_ADDRESS" />
         </property>
         <property name="city" type="java.lang.String">
-            <column name="CITY" length="30" />
+            <column name="CITY"  />
         </property>
         <property name="state" type="java.lang.String">
-            <column name="STATE" length="2" />
+            <column name="STATE" />
         </property>
         <property name="zipCode" type="java.lang.String">
-            <column name="ZIP_CODE" length="10" />
+            <column name="ZIP_CODE" />
         </property>
         <property name="country" type="java.lang.String">
-            <column name="COUNTRY" length="20" />
+            <column name="COUNTRY" />
         </property>
         <property name="workPhone" type="java.lang.String">
-            <column name="WORK_PHONE" length="17" />
+            <column name="WORK_PHONE" />
         </property>
         <property name="homePhone" type="java.lang.String">
-            <column name="HOME_PHONE" length="12" />
+            <column name="HOME_PHONE" />
         </property>
         <property name="cellPhone" type="java.lang.String">
-            <column name="CELL_PHONE" length="12" />
+            <column name="CELL_PHONE" />
         </property>
         <property name="fax" type="java.lang.String">
-            <column name="FAX" length="12" />
+            <column name="FAX" />
         </property>
         <property name="email" type="java.lang.String">
-            <column name="EMAIL" length="60" />
+            <column name="EMAIL" />
         </property>
      </class>
 </hibernate-mapping>

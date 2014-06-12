@@ -59,7 +59,7 @@ public class AnalyzerResults extends BaseObject implements Cloneable{
 		return analyzerId;
 	}
 	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = accessionNumber;
+		this.accessionNumber = accessionNumber.replaceAll("\'", "");
 	}
 
 	public String getAccessionNumber() {

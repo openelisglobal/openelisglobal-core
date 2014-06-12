@@ -17,12 +17,12 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 public class DefaultFormFields extends AFormFields {
 	private HashMap<FormFields.Field, Boolean> defaultAttributes = new HashMap<FormFields.Field, Boolean>();
@@ -60,8 +60,6 @@ public class DefaultFormFields extends AFormFields {
         setFieldTrue(Field.PatientIDRequired);
 		setFieldTrue(Field.PatientNameRequired);
 		setFieldTrue(Field.SampleEntryRequestingSiteSampleId);
-		setFieldTrue(Field.PatientAgeRequired_SampleEntry);
-		setFieldTrue(Field.PatientGenderRequired_SampleEntry);
 		setFieldFalse(Field.CollectionTime);
 		setFieldFalse(Field.RequesterSiteList);
 		setFieldFalse(Field.InlineOrganizationTypes);
@@ -84,8 +82,6 @@ public class DefaultFormFields extends AFormFields {
         setFieldFalse(Field.NON_CONFORMITY_SITE_LIST);
         setFieldFalse(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE);
 		setFieldFalse(Field.PatientIDRequired_SampleConfirmation);
-		setFieldFalse(Field.PatientAgeRequired_SampleConfirmation);
-		setFieldFalse(Field.PatientGenderRequired_SampleConfirmation);
 		setFieldFalse(Field.SampleEntryUseReceptionHour);
 		setFieldFalse(Field.SampleEntryUseRequestDate);
 		setFieldFalse(Field.SampleEntryNextVisitDate);

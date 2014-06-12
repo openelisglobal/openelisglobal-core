@@ -17,22 +17,7 @@
  */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
-import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.DICT;
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.TEST_RESULT;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.hibernate.Session;
-
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
@@ -54,6 +39,17 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.DICT;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.TEST_RESULT;
 
 /**
  * @author pahill (pahill@uw.edu)
@@ -150,7 +146,7 @@ abstract public class CSVColumnBuilder {
 		ProjectDAO projectDAO = new ProjectDAOImpl();
 		List<Project> allProjects = projectDAO.getAllProjects();
 		for (Project project : allProjects) {
-			String projectTag = null;
+			String projectTag;
 			// Watch the order on these 1st 2!
 			if (project.getNameKey().contains("ARVF")) {
 				projectTag = "ARVS";
@@ -284,9 +280,7 @@ abstract public class CSVColumnBuilder {
 	/**
 	 * A utility routine for finding the project short tag (used in exporting
 	 * etc.) from a projectId.
-	 * 
-	 * @param value
-	 * @return
+
 	 */
 	public static String translateProjectId(String projectId) {
 		return (projectId == null) ? null : projectTagById.get(projectId);
@@ -364,10 +358,6 @@ abstract public class CSVColumnBuilder {
 			}
 		}
 
-		/**
-		 * @param value
-		 * @return
-		 */
 		private String translateGendResult(String gendResultAnalyteId, String sampleItemId) {
 			// 'generated CD4 Count'
 			Result gendCD4Result = resultDAO.getResultForAnalyteAndSampleItem(gendResultAnalyteId, sampleItemId);
@@ -380,10 +370,9 @@ abstract public class CSVColumnBuilder {
 
 		/**
 		 * The log value of the given value as a floating-point value.
-		 * 
-		 * @param dbName2
+		 *
 		 * @param value
-		 * @return
+		 * @return The log value
 		 */
 		private String translateLog(String value) {
 			try {
@@ -423,16 +412,16 @@ abstract public class CSVColumnBuilder {
 			String type = testResult.getTestResultType();
 			// if it is in the table D have to be translated through the
 			// dictionary, otherwise don't
-			if ("D".equals(type)) {
+			if (ResultType.DICTIONARY.getDBValue().equals(type)) {
 				return ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(value);
-			} else if ("M".equals(type)) {
+			} else if ( ResultType.MULTISELECT.getDBValue().equals(type)) {
 				return findMultiSelectItemsForTest(testResult.getTest().getId());
 			}
 			return value;
 		}
 
 		/**
-		 * @param testName
+		 * @param testId
 		 * @return
 		 * @throws SQLException
 		 */
@@ -441,7 +430,8 @@ abstract public class CSVColumnBuilder {
 			List<Result> results = resultDAO.getResultsForTestAndSample(sampleId, testId);
 			StringBuilder multi = new StringBuilder();
 			for (Result result : results) {
-				multi.append(ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(result.getValue()) + ",");
+				multi.append(ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(result.getValue()));
+                multi.append( "," );
 			}
 			
 			if( multi.length() > 0){
@@ -452,9 +442,7 @@ abstract public class CSVColumnBuilder {
 		}
 	}
 
-	/**
-	 * @return some big SQL string
-	 */
+
 	abstract public void makeSQL();
 
 	protected void defineAllObservationHistoryTypes() {

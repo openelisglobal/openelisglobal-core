@@ -17,8 +17,8 @@
 package us.mn.state.health.lims.reports.action.implementation;
 
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.reports.action.implementation.ReportSpecificationParameters.Parameter;
 
 public class ReportImplementationFactory{
 	private static final boolean isLNSP = true;
@@ -26,52 +26,52 @@ public class ReportImplementationFactory{
 	public static IReportParameterSetter getParameterSetter(String report){
 		if(!GenericValidator.isBlankOrNull(report)){
 			if(report.equals("patientARVInitial1")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.ARV.initial"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
 			}else if(report.equals("patientARVInitial2")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.ARV.initial"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
 			}else if(report.equals("patientARVFollowup1")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.ARV.followup"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.ARV.followup"), null);
 			}else if(report.equals("patientARVFollowup2")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.ARV.followup"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.ARV.followup"), null);
 			}else if(report.equals("patientEID1")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.EID"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.EID"), null);
 			}else if(report.equals("patientEID2")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.EID"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.EID"), null);
 			}else if(report.equals("patientIndeterminate1")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.indeterminate"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.indeterminate"), null);
 			}else if(report.equals("patientIndeterminate2")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.label.patient.indeterminate"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.indeterminate"), null);
 			}else if(report.equals("patientIndeterminateByLocation")){
 				return new PatientIndeterminateByLocationReport();
 			}else if(report.equals("indicatorSectionPerformance")){
-				return new IndicatorSectionPerformanceReport();
+				return new ReportSpecificationParameters( Parameter.NO_SPECIFICATION, StringUtil.getMessageForKey("reports.label.indicator.performance"), null );
 			}else if(report.equals("patientHaitiClinical") || report.equals("patientHaitiLNSP") || report.equals("patientCILNSP")){
 				return new PatientHaitiClinical();
 			}else if(report.equals("indicatorHaitiClinicalHIV")){
-				return new IndicatorHaitiHIVClinical();
+				return new IndicatorHIV();
 			}else if(report.equals("indicatorHaitiLNSPHIV")){
-				return new IndicatorHaitiHIVLNSP();
+				return new IndicatorHIVLNSP();
 			}else if(report.equals("indicatorCDILNSPHIV")){
 				return new IndicatorCDIHIVLNSP();
 			}else if(report.equals("indicatorHaitiClinicalAllTests")){
-				return new IndicatorAllTestHaitiClinical();
+				return new IndicatorAllTestClinical();
 			}else if(report.equals("indicatorHaitiLNSPAllTests")){
-				return new IndicatorAllTestHaitiLNSP();
+				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
 				return new ExportProjectByDate();
 			}else if(report.equals("referredOut")){
-				return new ReferredOutHaitiReport();
+				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport") || report.equals("HaitiLNSPExportReport")){
-				return new DateRangeParameters(StringUtil.getMessageForKey("reports.label.project.export") + " "
-						+ StringUtil.getContextualMessageForKey("sample.collectionDate"));
+				return new ReportSpecificationParameters( Parameter.DATE_RANGE,
+                        StringUtil.getMessageForKey("reports.label.project.export") + " " + StringUtil.getContextualMessageForKey("sample.collectionDate"), null);
 			}else if(report.equals("indicatorConfirmation")){
-				return new HaitiConfirmationReport();
+				return new ConfirmationReport();
 			}else if(isNonConformityByDateReport(report)){
-				return new DateRangeParameters(StringUtil.getMessageForKey("openreports.nonConformityReport"));
+				return new ReportSpecificationParameters( Parameter.DATE_RANGE, StringUtil.getMessageForKey("openreports.nonConformityReport"), null);
 			}else if(isNonConformityBySectionReport(report)){
-				return new DateRangeParameters(StringUtil.getMessageForKey("reports.nonConformity.bySectionReason.title"));
+				return new ReportSpecificationParameters( Parameter.DATE_RANGE, StringUtil.getMessageForKey("reports.nonConformity.bySectionReason.title"), null);
 			}else if(report.equals("patientSpecialReport")){
-				return new LabNumberRangeParameters(StringUtil.getMessageForKey("reports.specialRequest.title"));
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.specialRequest.title"), null);
 			}else if(report.equals("indicatorHaitiLNSPSiteTestCount")){
 				return new IndicatorHaitiSiteTestCountReport();
 			}else if(report.equals("retroCIFollowupRequiredByLocation")){
@@ -83,8 +83,22 @@ public class ReportImplementationFactory{
 			}else if(report.equals("patientAssociated")){
 				return new RetroCIPatientAssociatedReport();
 			}else if (report.equals("indicatorRealisation") ){
-				    return new DateRangeParameters(StringUtil.getMessageForKey("report.realisation"));
-			}
+				    return new ReportSpecificationParameters( Parameter.DATE_RANGE, StringUtil.getMessageForKey("report.realisation"), null);
+			}else if (report.equals("epiSurveillanceExport") ){
+                return new ReportSpecificationParameters( Parameter.DATE_RANGE, StringUtil.getMessageForKey("banner.menu.report.epi.surveillance.export"), null);
+            }else if (report.equals( "activityReportByPanel" )){
+                return new ActivityReportByPanel();
+            }else if (report.equals( "activityReportByTest" )){
+                return new ActivityReportByTest();
+            }else if (report.equals( "activityReportByTestSection" )){
+                return new ActivityReportByTestSection();
+            }else if (report.equals( "rejectionReportByPanel" )){
+                return new RejectionReportByPanel();
+            }else if (report.equals( "rejectionReportByTest" )){
+                return new RejectionReportByTest();
+            }else if (report.equals( "rejectionReportByTestSection" )){
+                return new RejectionReportByTestSection();
+            }
 		}
 
 		return null;
@@ -131,35 +145,35 @@ public class ReportImplementationFactory{
 			}else if(report.equals("patientCILNSP")){
 				return new PatientCILNSPClinical();
 			}else if(report.equals("indicatorHaitiClinicalHIV")){
-				return new IndicatorHaitiHIVClinical();
+				return new IndicatorHIV();
 			}else if(report.equals("indicatorHaitiLNSPHIV")){
-				return new IndicatorHaitiHIVLNSP();
+				return new IndicatorHIVLNSP();
 			}else if(report.equals("indicatorHaitiClinicalAllTests")){
-				return new IndicatorAllTestHaitiClinical();
+				return new IndicatorAllTestClinical();
 			}else if(report.equals("indicatorHaitiLNSPAllTests")){
-				return new IndicatorAllTestHaitiLNSP();
+				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
 				return new ExportProjectByDate();
 			}else if(report.equals("referredOut")){
-				return new ReferredOutHaitiReport();
+				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport")){
 				return new HaitiExportReport();
 			}else if(report.equals("HaitiLNSPExportReport")){
 				return new HaitiLNSPExportReport();
 			}else if(report.equals("indicatorConfirmation")){
-				return new HaitiConfirmationReport();
+				return new ConfirmationReport();
 			}else if(report.equals("retroCINonConformityByDate")){
 				return new RetroCINonConformityByDate();
 			}else if(report.equals("haitiNonConformityByDate")){
-				return new HaitiNonConformityByDate(isLNSP);
+				return new HaitiNonConformityByDate();
 			}else if(report.equals("haitiClinicalNonConformityByDate")){
-				return new HaitiNonConformityByDate(!isLNSP);
+				return new HaitiNonConformityByDate();
 			}else if(report.equals("retroCInonConformityBySectionReason")){
 				return new RetroCINonConformityBySectionReason();
 			}else if(report.equals("haitiNonConformityBySectionReason")){
-				return new HaitiNonConformityBySectionReason(isLNSP);
+				return new HaitiNonConformityBySectionReason();
 			}else if(report.equals("haitiClinicalNonConformityBySectionReason")){
-				return new HaitiNonConformityBySectionReason(!isLNSP);
+				return new HaitiNonConformityBySectionReason();
 			}else if(report.equals("indicatorHaitiLNSPSiteTestCount")){
 				return new IndicatorHaitiSiteTestCountReport();
 			}else if(report.equals("retroCIFollowupRequiredByLocation")){
@@ -176,8 +190,22 @@ public class ReportImplementationFactory{
 				return new IndicatorCDIHIVLNSP();
 			}else if(report.equals("validationBacklog")){
 				return new ValidationBacklogReport();
-			}else if (report.equals("indicatorRealisation")){
+			}else if(report.equals("indicatorRealisation")){
 				return new IPCIRealisationReport();
+            }else if(report.equals( "epiSurveillanceExport" )){
+                return new HaitiLnspEpiExportReport();
+            }else if (report.equals( "activityReportByPanel" )){
+                return new ActivityReportByPanel();
+            }else if (report.equals( "activityReportByTest" )){
+                return new ActivityReportByTest();
+            }else if (report.equals( "activityReportByTestSection" )){
+                return new ActivityReportByTestSection();
+            }else if (report.equals( "rejectionReportByPanel" )){
+                return new RejectionReportByPanel();
+            }else if (report.equals( "rejectionReportByTest" )){
+                return new RejectionReportByTest();
+            }else if (report.equals( "rejectionReportByTestSection" )){
+                return new RejectionReportByTestSection();
             }
 		}
 

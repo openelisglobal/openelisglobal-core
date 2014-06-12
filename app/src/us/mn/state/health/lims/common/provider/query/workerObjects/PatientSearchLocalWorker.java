@@ -17,17 +17,26 @@
 */
 package us.mn.state.health.lims.common.provider.query.workerObjects;
 
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.provider.query.PatientSearchResults;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
+import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
+import us.mn.state.health.lims.patient.dao.PatientDAO;
+import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
+import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
 import us.mn.state.health.lims.sample.daoimpl.SearchResultsDAOImp;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PatientSearchLocalWorker extends PatientSearchWorker {
+    private PatientDAO patientDAO = new PatientDAOImpl();
 
 	@Override
 	public String createSearchResultXML(String lastName, String firstName, String STNumber, String subjectNumber, String nationalID,
@@ -47,12 +56,14 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
 			return IActionConstants.INVALID;
 		}
 
-		SearchResultsDAO search = createSearchResultDAOImp();
+		SearchResultsDAO search = new SearchResultsDAOImp();
+        //N.B. results do not have the referrinngPatientId information but it is not displayed so for now it will be left as null
 		List<PatientSearchResults> results = search.getSearchResults(lastName, firstName, STNumber, subjectNumber, nationalID, nationalID, patientID, guid);
-
+        List<PatientSearchResults> observationResults = getObservationsByReferringPatientId(nationalID);
+        results.addAll( observationResults );
 		sortPatients(results);
 
-		if (results.size() > 0) {
+		if (!results.isEmpty()) {
 			for (PatientSearchResults singleResult : results) {
 				singleResult.setDataSourceName(StringUtil.getMessageForKey("patient.local.source"));
 				appendSearchResultRow(singleResult, xml);
@@ -66,10 +77,37 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
 		return success;
 	}
 
-	//Protected for unit tests until we start using JMock
-	protected SearchResultsDAO createSearchResultDAOImp() {
-		return new SearchResultsDAOImp();
-	}
+    private List<PatientSearchResults> getObservationsByReferringPatientId( String referringId ){
+        List<PatientSearchResults> resultList = new ArrayList<PatientSearchResults>(  );
+        List<ObservationHistory> observationList = ObservationHistoryService.getObservationsByTypeAndValue( ObservationType.REFERRERS_PATIENT_ID, referringId );
 
+        if( observationList != null){
+            for( ObservationHistory observation : observationList ){
+                Patient patient = patientDAO.getData( observation.getPatientId() );
+                if( patient != null ){
+                    resultList.add( getSearchResultsForPatient( patient, referringId ) );
+                }
+
+            }
+        }
+
+        return resultList;
+    }
+
+    private PatientSearchResults getSearchResultsForPatient(Patient patient, String referringId){
+        PatientService service = new PatientService(patient);
+
+        return new PatientSearchResults( BigDecimal.valueOf( Long.parseLong( patient.getId() ) ),
+                service.getFirstName(),
+                service.getLastName(),
+                service.getGender(),
+                service.getDOB(),
+                service.getNationalId(),
+                patient.getExternalId(),
+                service.getSTNumber(),
+                service.getSubjectNumber(),
+                service.getGUID(),
+                referringId);
+    }
 
 }

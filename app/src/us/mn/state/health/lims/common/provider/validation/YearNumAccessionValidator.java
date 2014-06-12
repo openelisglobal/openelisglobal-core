@@ -17,15 +17,16 @@
  */
 package us.mn.state.health.lims.common.provider.validation;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
+
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 public class YearNumAccessionValidator implements IAccessionNumberValidator {
 
@@ -174,7 +175,32 @@ public class YearNumAccessionValidator implements IAccessionNumberValidator {
 			return results;
 	}
 
-	@Override
+    @Override
+    public String getInvalidFormatMessage( ValidationResults results ){
+        return StringUtil.getMessageForKey( "sample.entry.invalid.accession.number.format.corrected", getFormatPattern(), getFormatExample() );
+    }
+
+    private String getFormatExample(){
+        StringBuilder format = new StringBuilder( DateUtil.getTwoDigitYear() );
+        if( useSeparator){format.append( separator );}
+        for( int i = 0; i < getChangeableLength() - 1; i++){
+            format.append( "0" );
+        }
+
+        format.append( "1" );
+        return format.toString();
+    }
+
+    private String getFormatPattern(){
+        StringBuilder format = new StringBuilder( StringUtil.getMessageForKey( "date.two.digit.year" ) );
+        if( useSeparator){format.append( separator );}
+        for( int i = 0; i < getChangeableLength(); i++){
+            format.append( "#" );
+        }
+        return format.toString();
+    }
+
+    @Override
 	public int getInvarientLength() {
 		return YEAR_END + separatorLength;
 	}
@@ -183,4 +209,9 @@ public class YearNumAccessionValidator implements IAccessionNumberValidator {
 	public int getChangeableLength() {
 		return getMaxAccessionLength() - getInvarientLength();
 	}
+
+    @Override
+    public String getPrefix(){
+        return null; //no single prefix
+    }
 }

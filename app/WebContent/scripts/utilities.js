@@ -158,9 +158,7 @@ processDateSuccessById(xhr) {
     var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
     var formFieldId = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
 
-    var isValid = message == "valid";
-
-    updateFieldValidity(isValid, formFieldId);
+    updateFieldValidity(message == "valid", formFieldId);
 }
 
 /*
@@ -229,17 +227,31 @@ function checkTime(value) {
 /**
  * call for checking a date then updating a field message based on the _ID_ Ajaxed over and back.
  * @param dateElement
+ * @param successCallback -- the function to call.  If not given then default is processDateSuccessById
+ * @param dateRestriction -- must be one of "past", "future", "DNA".  If not given then default is "past"
+ * @param blankAllowed -- true or false  default is true.
  * @return
  */
 
-function /*void*/
-checkValidDate(dateElement) {
+function checkValidDate(dateElement, successCallback, dateRestriction, blankAllowed) {
+    if( typeof successCallback === "undefined" || successCallback == null){
+        successCallback = processDateSuccessById;
+    }
+
+    if( typeof dateRestriction === "undefined" || dateRestriction == null){
+        dateRestriction = "past";
+    }
+
+    if( typeof blankAllowed === "undefined" || blankAllowed == null){
+        blankAllowed = true;
+    }
+
     if (dateElement) {
         if (dateElement.value.blank()) {
-            updateFieldValidity(true, dateElement.id);
-            return true;
+            updateFieldValidity(blankAllowed, dateElement.id);
+            return blankAllowed;
         } else {
-            isValidDate(dateElement.value, processDateSuccessById, dateElement.id, "past");
+            isValidDate(dateElement.value, successCallback, dateElement.id, dateRestriction);
             return false;
         }
     }
@@ -384,7 +396,7 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
 
     var monthSpecified = true;
     var daySpecified = true;
-
+    var years;
     var splitDOB = date.split("/");
     var monthDOB = splitDOB[monthIndex];
     var dayDOB = splitDOB[dayIndex];
@@ -408,7 +420,7 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
     var age = new Date(endDate.getTime() - dob.getTime());
 
     if (weekId) {
-        var years = age.getTime() / timeToYears;
+        years = age.getTime() / timeToYears;
 
         if (years < 2) {
             if (monthSpecified && daySpecified) {
@@ -437,7 +449,7 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
 
         }
     } else if (monthId) {
-        var years = age.getTime() / timeToYears;
+        years = age.getTime() / timeToYears;
 
         if (years < 2 || !yearId) {
             if (monthSpecified) {
@@ -479,16 +491,16 @@ updateAge(DOB, endDateField, yearId, monthId, weekId, errorMsg) {
 
 function FieldValidator() {
 
-    this.invalidFields = new Array();
-    this.requiredFields = new Array();
-    this.conflictedFields = new Array();
+    this.invalidFields = [];
+    this.requiredFields = [];
+    this.conflictedFields = [];
 
     /**
      * Call this to set a new set of required field Ids
      **/
     this.setRequiredFields = function /*void*/
     ( /*Array<String>[]*/ newRequiredFields) {
-        this.requiredFields = newRequiredFields
+        this.requiredFields = newRequiredFields;
     }
 
     this.addRequiredField = function /*void*/
@@ -505,7 +517,7 @@ function FieldValidator() {
      */
     this.removeRequiredField = function /*void*/
     ( /*String*/ fieldId) {
-        var i = this.requiredFields.indexOf(fieldId)
+        var i = this.requiredFields.indexOf(fieldId);
         if (i != -1) {
             this.requiredFields.splice(i, 1);
         }
@@ -570,7 +582,7 @@ function FieldValidator() {
      */
     this.isAllValid = function /*boolean*/
     () {
-        return this.invalidFields.length == 0 && this.isEachRequiredFieldEntered();
+        return this.invalidFields.length == 0 && this.isEachRequiredFieldEntered() && $jq(".error").length == 0;
     }
 
     this.isAnyConflicted = function /*boolean*/
@@ -671,7 +683,7 @@ setSaveButton() {
 
 function HashObj() {
     this.length = 0;
-    this.items = new Array();
+    this.items = [];
     for (var i = 0; i < arguments.length; i += 2) {
         if (typeof(arguments[i + 1]) != 'undefined') {
             this.items[arguments[i]] = arguments[i + 1];
@@ -761,12 +773,11 @@ function filterTimeKeys(field, event) {
         return;
     }
     var currentChar = v.charAt(v.length - 1);
-    if (IsTimeKey(currentChar)) {
-        return;
-    } else {
+    if (!IsTimeKey(currentChar)) {
         field.value = removeLastChar(v);
-        return;
     }
+
+    addHourTwoPoint(field,event);
 }
     
 function removeLastChar(stringToCut) {
@@ -797,30 +808,171 @@ function /*void*/ showHideNotes( index) {
     }
 }
 
-function /*void*/ showNote(index) {
-    var noteElement = $("showHideButton_" + index);
+function showNewNote( index){
+    if( !$jq("#note_" + index).val()){
+        showNote( index );
+    }
+}
 
+function /*void*/ showNote(index) {
     $("showHideButton_" + index).src = "./images/note-close.gif";
     $("hideShow_" + index).value = "showing";
     $("noteRow_" + index).show();
 }
 
 function /*void*/ hideNote(index) {
-    var noteElement = $("showHideButton_" + index);
-
     $("showHideButton_" + index).src = $("note_" + index).value.blank() ? "./images/note-add.gif" : "./images/note-edit.gif";
     $("hideShow_" + index).value = "hidden";
     $("noteRow_" + index).hide();
 }
 
-function showQuanitiy(selector, index, dictionaryIds) {
+function showCachedRejectionReasonRows() {
+	var rows = $jq('tr[id^="row_"]');
+	for (var i=0; i<rows.length; i++) {
+	    var split = rows[i].id.split("_");
+	    var index = split[1];	    
+		if ($jq('#rejectionConsidered_' + index).val() == 'true' ) {
+			$jq('#rejectReasonRow_' + index).show();
+		}
+	}
+}
 
-    if (dictionaryIds.indexOf($jq("#resultId_" + index + " option:selected").val()) != -1) {
+function disableRejectedResults() {
+	var rows = $jq('tr[id^="row_"]');
+	for (var i=0; i<rows.length; i++) {
+	    var split = rows[i].id.split("_");
+	    var index = split[1];
+	    if ($jq('#considerRejectReason_' + index).val() == 'true' &&
+	    		$jq('#isRejected_' + index).val() == 'false') {
+	    	disableResultInputs(index);
+	    } else if ($jq('#considerRejectReason_' + index).val() == 'true' &&
+	    		$jq('#isRejected_' + index).val() == 'true') {
+	    	$jq('#rejected_' + index).prop('checked', true);
+	    	disableResultInputs(index);
+	    } else {
+	    	$jq('#rejected_' + index).prop('checked', false);
+	    }
+	}
+}
+
+function disableResultInputs(index) {
+	var resultType = $jq('#resultType_' + index).val();
+    var qualifiedResult = $jq("#qualifiedDict_" + index);
+    if( qualifiedResult){
+        qualifiedResult.val('');
+        qualifiedResult.hide();
+    }
+
+	if (resultType == 'C') {
+		resetCascadingMultiSelect(index);
+		disableCascadingMultiSelect(index);
+	} else if (resultType == 'M') {
+		resetMultiSelect(index);
+		disableMultiSelect(index);
+	} else if (resultType == 'D') {
+		$jq('#resultId_' + index).val(0);
+        $jq('#shadowResult_' + index).val(0);
+		$jq('#resultId_' + index).css("background-color", "#ffffff");
+		$jq('#resultId_' + index).attr('disabled', 'disabled');
+	}  else if (resultType == 'R') {
+        $jq('#results_' + index).val('');
+        $jq('#shadowResult_' + index).val('');
+		$jq('#results_' + index).css("background-color", "#ffffff");
+		$jq('#results_' + index).attr('disabled', 'disabled');
+	} else {
+		$jq('#results_' + index).val('');
+        $jq('#shadowResult_' + index).val('');
+		$jq('#results_' + index).css("background-color", "#ffffff");
+        $jq('#results_' + index).attr('disabled', 'disabled');
+	}
+}
+ 
+function showHideRejectionReasons(index, confirmRejection) {
+	if ($jq('#rejected_' + index).prop('checked')) {
+		if(confirm( confirmRejection )) {
+			$jq("#considerRejectReason_" + index).val("true");
+			$jq("#shadowRejected_" + index).val("true");
+			$jq("#rejectReasonRow_" + index).show();
+			
+			disableResultInputs(index);
+		} else {
+			$jq('#rejected_' + index).prop('checked', false);
+		}
+	} else { 
+		$jq("#considerRejectReason_" + index).val("");
+		$jq("#shadowRejected_" + index).val("");
+		$jq("#rejectReasonRow_" + index).hide();
+			var resultType = $jq('#resultType_' + index).val();
+			if (resultType == 'C') {			
+				 enableCascadingMultiSelect(index);
+			} else if (resultType == 'M') {
+				enableMultiSelect(index);
+			} else if (resultType == 'D') {
+				$jq('#resultId_' + index).removeAttr('disabled');
+			} else if (resultType == 'R') {
+				$jq('#results_' + index).removeAttr('disabled');
+			} else {
+				$jq('#results_' + index).removeAttr('disabled');
+			}
+	}
+}
+function showQuanitiy(selector, index, dictionaryIds, context) {
+    var multipleResults, resultList, i;
+    var quantifiableFound = false;
+
+    if( context == 'M'){
+        multipleResults = $jq("#multiresultId_" + index).val();
+        if( multipleResults.length > 0){
+            resultList = multipleResults.split(',');
+            for( i = 0; i < resultList.size(); i++){
+                if(dictionaryIds.indexOf(resultList[i]) != -1){
+                  quantifiableFound = true;
+                  break;
+                }
+            }
+        }
+    }else{
+        quantifiableFound = (dictionaryIds.indexOf($jq("#resultId_" + index + " option:selected").val()) != -1);
+    }
+
+    if( quantifiableFound) {
         $jq("#qualifiedDict_" + index).show();
-        $jq("#resultType_" + index).val("Q");
+        $jq("#hasQualifiedResult_" + index).val("true");
     } else {
         $jq("#qualifiedDict_" + index).hide();
         $jq("#qualifiedDict_" + index).val("");
-        $jq("#resultType_" + index).val("D");
+        $jq("#hasQualifiedResult_" + index).val("false");
     }
+}
+
+function round(value, exp) {
+    if (typeof exp === 'undefined' || +exp === 0)
+        return Math.round(value);
+
+    value = +value;
+    exp  = +exp;
+
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+        return NaN;
+
+    // Shift
+    value = value.toString().split('e');
+    value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+    // Shift back
+    value = value.toString().split('e');
+    return (+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp))).toFixed(exp);
+}
+
+function  addHourTwoPoint(field, event) {
+    var key = event.which ? event.which : event.keyCode;
+    if (key == 8) { // delete key? do nothing
+        return;
+    }
+    var number = field.value;
+
+    if (field.value.length == 2 && field.value.indexOf(":") == -1) {
+        field.value = number + ":";
+    }
+
 }

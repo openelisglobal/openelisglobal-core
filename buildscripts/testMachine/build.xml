@@ -120,9 +120,6 @@
 		     match="build=.*"
 		     replace="build=${build.current.revision}" 
 		     byline="true" />
-
-		     
-
     </target>
 
     <target name="applyUpdate" description="Does the actual update to database" >
@@ -172,7 +169,7 @@
     </target>
 
    
-    <target name="build" depends="initBuild, versionNumber" description="builds application and tests" >
+    <target name="build" depends="versionNumber, initBuild" description="builds application and tests" >
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="${debug}" debuglevel="${debuglevel}" destdir="${projectroot}/WebContent/WEB-INF/classes" source="${source}" target="${target}">
             <src path="${projectroot}/src"/>

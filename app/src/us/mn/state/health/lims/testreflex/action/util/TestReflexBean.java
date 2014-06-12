@@ -20,11 +20,14 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 
+import java.util.List;
+import java.util.Map;
+
 public class TestReflexBean {
 	private Sample sample;
 	private Result result;
 	private Patient patient;
-	private String reflexSelectionId;
+	private Map<String,List<String>> triggersToSelectedReflexesMap;
 	
 	public Sample getSample() {
 		return sample;
@@ -44,12 +47,12 @@ public class TestReflexBean {
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
-	
-	public void setReflexSelectionId(String reflexSelectionId) {
-		this.reflexSelectionId = reflexSelectionId;
-	}
-	public String getReflexSelectionId() {
-		return reflexSelectionId;
-	}
-	
+
+    public Map<String, List<String>> getTriggersToSelectedReflexesMap(){
+        return triggersToSelectedReflexesMap;
+    }
+
+    public void setTriggersToSelectedReflexesMap( Map<String, List<String>> triggersToSelectedReflexesMap ){
+        this.triggersToSelectedReflexesMap = triggersToSelectedReflexesMap;
+    }
 }

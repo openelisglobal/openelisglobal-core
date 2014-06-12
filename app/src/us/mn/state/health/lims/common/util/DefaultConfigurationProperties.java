@@ -16,23 +16,23 @@
 */
 package us.mn.state.health.lims.common.util;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class DefaultConfigurationProperties extends ConfigurationProperties {
 
 	private static String propertyFile = "/SystemConfiguration.properties";
 	private java.util.Properties properties = null;
 	protected static Map<ConfigurationProperties.Property, KeyDefaultPair> propertiesFileMap;
-	protected static Map<String, ConfigurationProperties.Property> dbNamePropertiesMap  = new HashMap<String, ConfigurationProperties.Property>();
+	protected static Map<String, ConfigurationProperties.Property> dbNamePropertiesMap;
 	private boolean databaseLoaded = false;
 
 	{
@@ -41,14 +41,12 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		propertiesFileMap.put(Property.AmbiguousDateValue, new KeyDefaultPair("date.ambiguous.date.value", "01") );
 		propertiesFileMap.put(Property.AmbiguousDateHolder , new KeyDefaultPair("date.ambiguous.date.holder", "X") );
 		propertiesFileMap.put(Property.ReferingLabParentOrg , new KeyDefaultPair("organization.reference.lab.parent", null) );
-		propertiesFileMap.put(Property.MenuName , new KeyDefaultPair("menu.name", "TabbedMenu") );
-		propertiesFileMap.put(Property.MenuPermissions , new KeyDefaultPair("menu.permissions","") );
-		propertiesFileMap.put(Property.MenuTopItems , new KeyDefaultPair("menu.topItems", "") );
 		propertiesFileMap.put(Property.resultsResendTime , new KeyDefaultPair("results.send.retry.time", "30") );
 /*		propertiesFileMap.put(Property. , new KeyDefaultPair() );
 
 	*/
 		//config from site_information table
+		dbNamePropertiesMap  = new HashMap<String, ConfigurationProperties.Property>();
 		setDBPropertyMappingAndDefault(Property.SiteCode, "siteNumber", "" );
 		setDBPropertyMappingAndDefault(Property.TrainingInstallation, "TrainingInstallation", "false");
 		setDBPropertyMappingAndDefault(Property.PatientSearchURL, "patientSearchURL" , "");
@@ -68,6 +66,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.roleRequiredForModifyResults, "modify results role" , "false");
 		setDBPropertyMappingAndDefault(Property.notesRequiredForModifyResults, "modify results note required", "false" );
 		setDBPropertyMappingAndDefault(Property.resultTechnicianName, "ResultTechnicianName", "false");
+		setDBPropertyMappingAndDefault(Property.allowResultRejection, "allowResultRejection", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameBox, "autoFillTechNameBox", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameUser, "autoFillTechNameUser", "false");
 		setDBPropertyMappingAndDefault(Property.failedValidationMarker, "showValidationFailureIcon", "true");
@@ -79,7 +78,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.StatusRules , "statusRules", "CI");
 		setDBPropertyMappingAndDefault(Property.ReflexAction , "reflexAction", "Haiti");
 		setDBPropertyMappingAndDefault(Property.AccessionFormat , "acessionFormat", "SITEYEARNUM"); //spelled wrong in DB
-		setDBPropertyMappingAndDefault(Property.trackPatientPayment, "trackPayment", "false");
+		setDBPropertyMappingAndDefault(Property.TRACK_PATIENT_PAYMENT, "trackPayment", "false");
 		setDBPropertyMappingAndDefault(Property.ALERT_FOR_INVALID_RESULTS, "alertWhenInvalidResult", "false");
 		setDBPropertyMappingAndDefault(Property.DEFAULT_DATE_LOCALE, "default date locale", "fr-FR");
 		setDBPropertyMappingAndDefault(Property.DEFAULT_LANG_LOCALE, "default language locale", "fr-FR");
@@ -98,8 +97,12 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.RESULTS_ON_WORKPLAN, "results on workplan", "false");
 		setDBPropertyMappingAndDefault(Property.NONCONFORMITY_RECEPTION_AS_UNIT, "Reception as unit", "true");
 		setDBPropertyMappingAndDefault(Property.NONCONFORMITY_SAMPLE_COLLECTION_AS_UNIT, "Collection as unit", "false");
-		setDBPropertyMappingAndDefault(Property.PATIENT_REPORT_NO_ALERTS, "Patient report with no alerts", "false");
-		setDBPropertyMappingAndDefault(Property.ACCESSION_NUMBER_PREFIX, "Accession number prefix", "");
+        setDBPropertyMappingAndDefault(Property.ACCESSION_NUMBER_PREFIX, "Accession number prefix", "");
+        setDBPropertyMappingAndDefault(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION, "validationOnlyNotesAreExternal", "false");
+        setDBPropertyMappingAndDefault(Property.PHONE_FORMAT, "phone format", "(ddd) dddd-dddd");
+        setDBPropertyMappingAndDefault(Property.VALIDATE_PHONE_FORMAT, "validate phone format", "true");
+        setDBPropertyMappingAndDefault( Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "Allow duplicate subject number", "true" );
+        setDBPropertyMappingAndDefault( Property.VALIDATE_REJECTED_TESTS, "validateTechnicalRejection", "false" );
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

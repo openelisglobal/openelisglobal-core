@@ -17,11 +17,6 @@
 */
 package us.mn.state.health.lims.analysis.dao;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Set;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
@@ -29,6 +24,11 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author diane benz
@@ -169,5 +169,5 @@ public interface AnalysisDAO extends BaseDAO {
 
 	public Analysis getAnalysisById(String analysisId) throws LIMSRuntimeException;
 
-
+    public void updateData( Analysis analysis, boolean skipAuditTrail ) throws LIMSRuntimeException;
 }

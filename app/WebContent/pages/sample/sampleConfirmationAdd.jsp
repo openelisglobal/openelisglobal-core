@@ -101,173 +101,6 @@ function appendValueToElementValue( elem, addString ){
 	elem.val( elem.val() + addString);
 }
 
-function checkAccessionNumber( accessionNumber )
-{
-
-	//check if empty
-	if ( !fieldIsEmptyById( accessionNumber.id ) )
-	{
-		validateAccessionNumberOnServer(true, accessionNumber.id, accessionNumber.value, processAccessionSuccess, processAccessionFailure);
-	}
-	else
-	{
-		fieldValidator.setFieldValidity( false, accessionNumber.id);
-		setFieldErrorDisplay( accessionNumber);
-		setSaveButton();
-	}
-}
-
-function processAccessionSuccess(xhr)
-{
-	//alert(xhr.responseText);
-	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = false;
-	var labElement;
-	var messageValue = message.firstChild.nodeValue;
-	var	success = messageValue == "SAMPLE_NOT_FOUND" || messageValue == "valid";  
-	var labElement = $(formField.firstChild.nodeValue);
-	
-	selectFieldErrorDisplay( success, labElement);
-	
-	if( !success ){
-		if(messageValue == "SAMPLE_FOUND"){
-			alert("<%= StringUtil.getMessageForKey("sample.entry.invalid.accession.number.used") %>");
-		}else{
-			alert( message.firstChild.nodeValue );
-		}
-	}
-
-	setSaveButton();
-}
-
-function processAccessionFailure(xhr)
-{
-	//unhandled error: someday we should be nicer to the user
-}
-
-
-function getNextAccessionNumber() {
-	generateNextScanNumber();
-}
-
-function generateNextScanNumber(){
-	new Ajax.Request (
-                          'ajaxQueryXML',  //url
-                           {//options
-                             method: 'get', //http method
-                             parameters: "provider=SampleEntryGenerateScanProvider",
-                             //indicator: 'throbbing'
-                             onSuccess:  processScanSuccess,
-                             onFailure:  processScanFailure
-                           }
-                          );
-}
-
-function processScanSuccess(xhr){
-	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-	var returnedData = formField.firstChild.nodeValue;
-
-	var message = xhr.responseXML.getElementsByTagName("message").item(0);
-	var success = message.firstChild.nodeValue == "valid";
-	var target = $("labNo");
-	
-	$("labNo").value = success ? returnedData : "";
-
-	selectFieldErrorDisplay( success, target);
-	fieldValidator.setFieldValidity( success, target.id);
-	
-	setSaveButton();
-}
-
-function processScanFailure(xhr){
-	//some user friendly response needs to be given to the user
-}
-
-var requesterInfoHash = {};
-
-function getRequestersForOrg( ){
-    var orgEnteredValue = $("siteId").value,
-    	orgSelectList = $("orgRequesterId").options,
-    	orgKey = 0,
-    	searchCount = 0;
-
-	for( searchCount; searchCount < orgSelectList.length; searchCount++){
-		if( orgSelectList[searchCount].text.toUpperCase() == orgEnteredValue){
-			orgKey = orgSelectList[searchCount].value;
-			break;
-		}
-	}    
-
-	if( orgKey == 0 ){ //if no match with site list
-		var requesterList = $("personRequesterId");
-		requesterList.options.length = 0;
-		addOptionToSelect( requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>' , "0" );
-	}else{
-		new Ajax.Request (
-                          'ajaxQueryXML',  //url
-                           {//options
-                             method: 'get', //http method
-                             parameters: "provider=RequestersForOrganizationProvider&orgId=" + orgKey,
-                             //indicator: 'throbbing'
-                             onSuccess:  processRequestersSuccess,
-                             onFailure:  null
-                           }
-                          );
-	}
-}
-
-function processRequestersSuccess(xhr){
-	//alert(xhr.responseText);
-
-	var requesters = xhr.responseXML.getElementsByTagName("requester");
-	var requesterList = $("personRequesterId");
-	requesterList.options.length = 0;
-
-	if( requesters.length == 0 ){
-		addOptionToSelect( requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>' , "0" );
-	}else{
-		requesterInfoHash = {};
-		addOptionToSelect( requesterList, '' , '' );
-		for(var i = 0; i < requesters.length; ++i ){
-			addRequester(requesterList, requesters[i] );
-		}
-		addOptionToSelect( requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>' , "0" );
-	}
-}
-
-function addRequester(requesterList, requesterXml ){
-	addOptionToSelect( requesterList,
-	                   requesterXml.getAttribute("lastName") + ', ' + requesterXml.getAttribute("firstName") ,
-	                   requesterXml.getAttribute("id") );
-
-	requesterInfoHash[requesterXml.getAttribute("id")] = {'firstName': requesterXml.getAttribute("firstName"),
-														  'lastName': requesterXml.getAttribute("lastName"),
-														  'phone': requesterXml.getAttribute("phone"),
-														  'fax': requesterXml.getAttribute("fax"),
-														  'email': requesterXml.getAttribute("email")};
-}
-
-function populateRequesterDetail(requesterSelector){
-	var requesterId = requesterSelector[requesterSelector.selectedIndex].value;
-
-	var details = requesterInfoHash[requesterId];
-
-	if( details ){
-		setRequesterDetails( details );
-	}else{
-		setRequesterDetails( {'firstName': '', 'lastName': '', 'phone': '', 'fax': '', 'email': ''}  );
-	}
-}
-
-function setRequesterDetails( details ){
-	$("requesterFirstName").value = details["firstName"];
-	$("requesterLastName").value = details["lastName"];
-	$("requesterPhone").value = details["phone"];
-	$("requesterFax").value = details["fax"];
-	$("requesterEMail").value = details["email"];
-}
-
 function populateRequestForSampleType( selector, sampleIndex){
 	var selectIndex = selector.selectedIndex;
 	var selection;
@@ -281,7 +114,7 @@ function populateRequestForSampleType( selector, sampleIndex){
 	}else{
 		selection = selector.options[selectIndex];
 		currentRequestSampleIndex = sampleIndex;
-		getTestsForSampleType(selection.value, "none", processGetTestSuccess, processGetTestFailure);
+		getTestsForSampleType(selection.value, "none", processGetTestSuccess );
 	}
 
 	setSaveButton();
@@ -310,7 +143,7 @@ function processGetTestSuccess(xhr){
    }
 
 	fieldValidator.setFieldValidity( false, "requestedTests_" + currentRequestSampleIndex );
-	$("requestedTests_" + currentRequestSampleIndex).style.border = "1px solid black";
+	requestedTestTable.style.border = "1px solid black";
 	setSaveButton();
 }
 
@@ -442,8 +275,6 @@ function addNewRequesterTestResult(addButtonElement, sampleIndex){  //request fo
 		                                          replace("Tests_0", "Tests_" + sampleIndex).
 		                                          replace("inline", "none").
 		                                          replace(selectedPattern, "");
-		//see note about crap
-		if( i == 0 ){ cell.align = "right";	}
 	}
 
 	cell = newRow.insertCell( clonedCells.length );
@@ -457,17 +288,12 @@ function addNewRequesterTestResult(addButtonElement, sampleIndex){  //request fo
 	maxReferralElement.value = newTestIndex;
 }
 
-function addNewRequesterSample( newSampleButton ){ // a new sample which came in with the request
-	var cell;
+function addNewRequesterSample( ){ // a new sample which came in with the request
 	var maxSampleElement = $("maxSampleIndex");
 	var sampleIndex = parseInt(maxSampleElement.value) + 1;
-	var requestedTestRow = $("requestedTestRow_0" );
 	var protoSampleIDPattern = /_0/g;
 	var protoFunction = /this, '0'\)/g;
-	var protoMaxValue = /input value=\".\"/;
 	var protoIDPattern = /[0-9]_[0-9]/g; //this has to do with the order of replacements
-	var optionPattern = /<option .*<\/option>/gi;
-	var textAreaPattern = />.*<\/textarea>/i;
 	var selectPrototype;
 
  	var clone = $jq("#div_0" ).clone(true, true);
@@ -475,10 +301,11 @@ function addNewRequesterSample( newSampleButton ){ // a new sample which came in
 	clone.find(".sampleIndex").val( sampleIndex );
 	clone.find("#requesterSampleId_0").val("");
 	clone.find("#collectionDate_0").val("");
-        clone.find("#interviewTime_0").val("");
+    clone.find("#interviewTime_0").val("");
 	clone.find("#maxReferralTestIndex_0").val(0);
 	clone.find("#hideShow_0").val("hidden");
 	clone.find("#showHideButton_0").attr("src", "./images/note-add.gif");
+    clone.find("#showHideButton_0").attr("onclick", "showHideNotes( '"+ sampleIndex + "' )");
 	clone.find("tr:first").append("<td><input type=\"button\" value=\"" +
 				                  "<%= StringUtil.getMessageForKey("label.button.remove") %>" +
 	                              "\" class=\"textButton\"  onclick=\"removeRequesterTest( this, \'" + sampleIndex +  "\' );\" ></td>");
@@ -518,7 +345,8 @@ function addNewRequesterSample( newSampleButton ){ // a new sample which came in
 	maxSampleElement.value = sampleIndex;
 
     fieldValidator.setFieldValidity(false, "requestedTests_" + sampleIndex);
-	setValidIndicaterOnField( true, "requestedTests_" + sampleIndex);
+    setValidIndicaterOnField( true, "requestedTests_" + sampleIndex);
+    setValidIndicaterOnField( true, "interviewTime_" + sampleIndex);
 	setValidIndicaterOnField( true, "collectionDate_" + sampleIndex);
 	
 	setSaveButton();
@@ -550,7 +378,8 @@ function getTestDisplayRowHtml( name, i ){
 }
 
 function requestedTestChanged( sampleIndex ){
-	var requestedTests = $("requestedTests_" + sampleIndex ).getElementsByTagName("input");
+    var requestedTestsTable =  $("requestedTests_" + sampleIndex );
+	var requestedTests = requestedTestsTable.getElementsByTagName("input");
 	var somethingChecked = false;
 
 	for(var i = 0; i < requestedTests.length; ++i ){
@@ -560,14 +389,10 @@ function requestedTestChanged( sampleIndex ){
 		}
 	}
 
-	$("requestedTests_" + sampleIndex ).style.border = somethingChecked ? "1px solid black" : "1px solid red";
+    requestedTestsTable.style.border = somethingChecked ? "1px solid black" : "1px solid red";
 	fieldValidator.setFieldValidity( somethingChecked, "requestedTests_" + sampleIndex );
 
 	setSaveButton();
-}
-
-function processGetTestFailure(xhr){
-	//alert(xhr.responseText);
 }
 
 function getValueFromXmlElement( parent, tag ){
@@ -593,7 +418,7 @@ function loadDynamicData(){
 	$("xmlWad").value = xml;
 }
 
-function /*string*/ addSamples( xml ){
+function addSamples(  ){
 	var samplesXml = "<samples>";
 	var sampleIndexs = $$(".sampleIndex");
 
@@ -617,7 +442,7 @@ function /*string*/ addSample( sampleIndex ){
 	if( useInitialSampleCondition ){
 		var initialConditions = $("initialCondition_" + sampleIndex);
 		var optionLength = initialConditions.options.length;
-		xml = " initialConditionIds=' ";
+		var xml = " initialConditionIds=' ";
 		for( var i = 0; i < optionLength; ++i ){
 			if( initialConditions.options[i].selected ){
 				xml += initialConditions.options[i].value + ",";
@@ -709,130 +534,9 @@ function /*string*/ getNote( sampleIndex ){
 
 <input type="hidden" id="maxSampleIndex" value="0" />
 <html:hidden name='<%=formName %>' property="requestAsXML" styleId="xmlWad" />
-<table width="70%" border="0">
-	<tr>
-		<td>
-			<%=StringUtil.getContextualMessageForKey("quick.entry.accession.number")%>:
-			<span class="requiredlabel">*</span>
-		</td>
-		<td width="15%">
-			<app:text name="<%=formName%>" property="labno"
-				maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-				onchange="checkAccessionNumber(this);makeDirty();" styleClass="text"
-				styleId="labNo" />
-		</td>
-		<td id="generate">
-			<bean:message key="sample.entry.scanner.instructions" />
-			<html:button property="generate" styleClass="textButton"
-				onclick="getNextAccessionNumber(); makeDirty();">
-				<bean:message key="sample.entry.scanner.generate" />
-			</html:button>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<bean:message key="quick.entry.received.date" />
-			:
-			<span class="requiredlabel">*</span>
-			<font size="1"><bean:message key="sample.date.format" />
-			</font>
-		</td>
-		<td colspan="2">
-			<app:text name="<%=formName%>" property="receivedDate"
-				onchange="checkValidDate(this);makeDirty();"
-				onkeyup="addDateSlashes(this,event);"
-				styleClass="text"
-				maxlength="10"
-				styleId="receivedDate" />
-				
-           <% if( FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour)){ %>
-               <bean:message key="sample.receptionTime" />:
-                   <html:text name="<%=formName %>" 
-                   onkeyup="filterTimeKeys(this, event);" 
-                   property="recievedTime"
-                   styleId="receivedTime" 
-                   maxlength="5"
-                   onblur="makeDirty(); updateFieldValidity(checkValidTimeEntry(this, true), this.id );"/>
-           
-           <% } %>
-				
-		</td>
-	</tr>
-</table>
-<hr />
-<h3>
-	<bean:message key="sample.entry.requester"/>
-</h3>
-<table>
-	<tr>
-		<td>
-			<bean:message key="organization.site" />
-		</td>
-		<td colspan="5">
-		<!-- N.B. this is replaced by auto repeate -->
-		<html:select styleId="orgRequesterId" 
-								     name="<%=formName%>"
-								     property="requestingOrganization"
-								     onchange="getRequestersForOrg();makeDirty();setSaveButton();"
-								     >
-							<option value=""></option>
-							<logic:iterate name="<%=formName %>" property="requestingOrganizationList" id="org" type="us.mn.state.health.lims.common.util.IdValuePair">
-							    <option value="<%=org.getId() %>" ><%= org.getValue() %></option>
-							</logic:iterate>
-		</html:select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<bean:message key="sample.entry.contact" />
-		</td>
-		<td colspan="5">
-			<html:select name='<%= formName %>'
-			             property="personRequesterId"
-			             styleId="personRequesterId"
-			             onchange="populateRequesterDetail(this); makeDirty();">
-				<option value="0"><bean:message key="sample.entry.requester.new" /></option>
-			</html:select>
-		</td>
-	</tr>
-	<tr><td>&nbsp;</td>
-		<td>
-			<bean:message key="person.firstName" />
-		</td>
-		<td>
-			<bean:message key="person.lastName" />
-		</td>
-		<td>
-			<bean:message key="person.phone"/>
-		</td>
-		<td>
-			<bean:message key="person.fax"/>
-		</td>
-		<td>
-			<bean:message key="person.email"/>
-		</td>
 
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-			<html:text name='<%=formName%>' property="firstName" styleId="requesterFirstName" />
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="lastName"  styleId="requesterLastName" />
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone" />
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" />
-		</td>
-		<td>
-			<html:text name='<%=formName%>' property="e-mail"  styleId="requesterEMail" />
-		</td>
+<tiles:insert attribute="sampleConfirmationOrder" />
 
-	</tr>
-</table>
 <hr/>
 
 <h3><bean:message key="sample.entry.confirmation.test.request"/></h3>
@@ -846,7 +550,7 @@ function /*string*/ getNote( sampleIndex ){
 				<input type="hidden" value="0" id="maxReferralTestIndex_0" />
 				<input type="text" id="requesterSampleId_0" onchange=" makeDirty();">
 			</td>
-			<td><bean:message key="sample.collectionDate"/></td>
+			<td><bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>:</td>
 			<td><input type="text"
 			           id="collectionDate_0"
 			           name="collectionDate_0"
@@ -855,7 +559,7 @@ function /*string*/ getNote( sampleIndex ){
 			           onchange="checkValidDate(this)"/>
              <% if( FormFields.getInstance().useField(Field.CollectionTime)){ %>
                  <bean:message key="sample.collectionTime" />:
-                     <html:text name="<%=formName %>" 
+                     <html:text name="<%=formName %>"
                      onkeyup="filterTimeKeys(this, event);" 
                      property="interviewTime" 
                      styleId="interviewTime_0"
@@ -870,7 +574,7 @@ function /*string*/ getNote( sampleIndex ){
 						 	     onclick="showHideNotes( '0');"
 						 	     id="showHideButton_0"
 						    />
-				<html:hidden property="hideShowFlag"  styleId="hideShow_0" value="hidden" />
+                <input type="hidden" name="hideShowFlag" value="hidden" id="hideShow_0" >
 			</td>
 	</tr>
 	<tr id="requesterSampleRowTwo">	
@@ -897,16 +601,16 @@ function /*string*/ getNote( sampleIndex ){
 				<logic:iterate id="sampleTypes"
 							   name='<%=formName %>'
 							   property="sampleTypes"
-							   type="TypeOfSample">
+							   type="IdValuePair">
 					<option value='<%= sampleTypes.getId() %>'>
-						<%=sampleTypes.getLocalizedName() %>
+						<%=sampleTypes.getValue() %>
 					</option>
 				</logic:iterate>
 			</select>
 			</td>
 		</tr>
 		<tr id="noteRow_0"	style="display: none;">
-			<td valign="top" align="right"><bean:message key="note.note"/>:</td>
+			<td style="vertical-align:top" align="right"><bean:message key="note.note"/>:</td>
 			<td colspan="6" align="left" >
 				<textarea id="note_0"
 						   onchange="makeDirty();"
@@ -950,7 +654,7 @@ function /*string*/ getNote( sampleIndex ){
 			</td>
 		</tr>
 		<tr id="requestedTestRow_0">
-			<td valign="top"><bean:message key="sample.entry.confirmation.requested.tests"/> : <span class="requiredlabel">*</span></td>
+			<td style="vertical-align:top"><bean:message key="sample.entry.confirmation.requested.tests"/> : <span class="requiredlabel">*</span></td>
 
 			<td colspan="5">
 			<table style="background-color:#EEEEEE; color: black; border : 1px solid red" id="requestedTests_0" >
@@ -964,28 +668,28 @@ function /*string*/ getNote( sampleIndex ){
 <input type="button"
 	   class=textButton
 	   value="<%= StringUtil.getMessageForKey("sampletracking.requester.sample.add") %>"
-	   onclick="addNewRequesterSample( this )" />
+	   onclick="addNewRequesterSample( )" />
 
 <hr/>
 <hr style="width: 100%; height: 5px" />
 <html:hidden name="<%=formName%>" property="patientPK" styleId="patientPK"/>
 <table style="width:100%">
 	<tr>
-		<td width="15%" align="left">
-			<html:button property="showPatient" onclick="showHideSamples(this, 'patientInfo');" >+</html:button>
+		<td style="width:15%;text-align:left;">
+            <input type="button" value="+" onclick="showHideSamples(this, 'patientInfo');">
 			<bean:message key="sample.entry.patient" />:
 			<% if ( patientRequired ) { %><span class="requiredlabel">*</span><% } %>
 		</td>
-		<td width="15%" id="firstName"><b>&nbsp;</b></td>
-		<td width="15%">
+		<td style="width:15%" id="firstName"><b>&nbsp;</b></td>
+		<td style="width:15%">
 			<% if(useMothersName){ %><bean:message key="patient.mother.name"/>:<% } %>
 		</td>
-		<td width="15%" id="mother"><b>&nbsp;</b></td>
-		<td width="10%">
+		<td style="width:15%" id="mother"><b>&nbsp;</b></td>
+		<td style="width:10%">
 			<% if( useSTNumber){ %><bean:message key="patient.ST.number"/>:<% } %>
 		</td>
-		<td width="15%" id="st"><b>&nbsp;</b></td>
-		<td width="5%">&nbsp;</td>
+		<td style="width:15%" id="st"><b>&nbsp;</b></td>
+		<td style="width:5%">&nbsp;</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
@@ -1021,7 +725,7 @@ function /*void*/ setSave(){
 
 //all methods here either overwrite methods in tiles or all called after they are loaded
 var dirty=false;
-function /*void*/ makeDirty(){
+function makeDirty(){
 	dirty=true;
 	if( typeof(showSuccessMessage) != 'undefinded' ){
 		showSuccessMessage(false); //refers to last save
@@ -1043,16 +747,6 @@ function savePage(){
 	form.submit();
 }
 
-function setValidIndicaterOnField( success, element){
-	//Note the method this is overriding uses the name of the element, which does not have to be unique, set the id == name
-	if( !element.id ){ //element is id
-		element = $(element);
-	}
-
-	element.style.borderColor = success ? "" : "red";
-	element.style.borderWidth = success ? "" : "2";
-}
-
 // Moving autocomplete to end - needs to be at bottom for IE to trigger properly
 $jq(document).ready( function() {
         //fieldValidator declared in utilities.js
@@ -1067,24 +761,6 @@ $jq(document).ready( function() {
         $jq("select[multiple]").change(function(e, data) {
                 // handleMultiSelectChange( e, data );
                 });
-
-        //dropdown defined in customAutocomplete.js
-        autoCompId = 'siteId'; //needs to be set before the dropdown is created N.B. shouuld be passed in as arg
-        var dropdown = $jq( "select#orgRequesterId" );
-        autoCompleteWidth = dropdown.width() + 66 + 'px';
-        clearNonMatching = false;
-        capitialize = true;
-        dropdown.combobox();
-        invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIXME - add badmessage icon
-        maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>'; 
-        //$jq( "select#orgRequesterId" ).show();
-
-        //resultCallBack defined in customAutocomplete.js
-        resultCallBack = function( ) {
-                getRequestersForOrg( );
-                makeDirty();
-                setSaveButton();
-                };
 
 });
 

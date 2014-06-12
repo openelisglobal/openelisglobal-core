@@ -17,16 +17,6 @@
  */
 package us.mn.state.health.lims.analyzerresults.action;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
@@ -34,12 +24,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.action.beanitems.AnalyzerResultItem;
 import us.mn.state.health.lims.analyzerresults.dao.AnalyzerResultsDAO;
@@ -72,9 +60,13 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+
 public class AnalyzerResultsAction extends BaseAction {
 
-	protected AnalyzerType analyzerType;
+    private String analyzer;
 	private AnalyzerResultsDAO analyzerResultsDAO = new AnalyzerResultsDAOImpl();
 	private DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private TestResultDAO testResultDAO = new TestResultDAOImpl();
@@ -85,6 +77,17 @@ public class AnalyzerResultsAction extends BaseAction {
 	private TestReflexDAO testReflexDAO = new TestReflexDAOImpl();
 	private ResultDAO resultDAO = new ResultDAOImpl();
 
+    private static Map<String, String> analyzerNameToSubtitleKey = new HashMap<String, String>();
+    static{
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.COBAS_INTEGRA400_NAME, "banner.menu.results.cobas.integra");
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.SYSMEX_XT2000_NAME, "banner.menu.results.sysmex");
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.FACSCALIBUR, "banner.menu.results.facscalibur");
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.FACSCANTO, "banner.menu.results.facscanto");
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.EVOLIS, "banner.menu.results.evolis");
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.COBAS_TAQMAN, "banner.menu.results.cobas.taqman");
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.COBAS_DBS, "banner.menu.results.cobasDBS");
+        analyzerNameToSubtitleKey.put(AnalyzerTestNameCache.COBAS_C311, "banner.menu.results.cobasc311");
+    }
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -92,9 +95,8 @@ public class AnalyzerResultsAction extends BaseAction {
 
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
 
-		String analyzer = request.getParameter("type");
 		String page = request.getParameter("page");
-		setAnalyzerRequest(analyzer);
+		setAnalyzerRequest(request.getParameter("type"));
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 		PropertyUtils.setProperty(dynaForm, "analyzerType", analyzer);
@@ -236,7 +238,7 @@ public class AnalyzerResultsAction extends BaseAction {
 			}
 
 			String analyzerTestName = analyzerResult.getTestName();
-			MappedTestName mappedTestName = AnalyzerTestNameCache.instance().getMappedTest(analyzerType, analyzerTestName);
+			MappedTestName mappedTestName = AnalyzerTestNameCache.instance().getMappedTest(analyzer, analyzerTestName);
 			if (mappedTestName != null) {
 				analyzerResult.setTestName(mappedTestName.getOpenElisTestName());
 				analyzerResult.setTestId(mappedTestName.getTestId());
@@ -265,7 +267,7 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private List<AnalyzerResults> getAnalyzerResults() {
-		return analyzerResultsDAO.getResultsbyAnalyzer(AnalyzerTestNameCache.instance().getAnalyzerId(analyzerType));
+		return analyzerResultsDAO.getResultsbyAnalyzer(AnalyzerTestNameCache.instance().getAnalyzerIdForName(analyzer));
 	}
 
 	protected AnalyzerResultItem analyzerResultsToAnalyzerResultItem(AnalyzerResults result) {
@@ -336,8 +338,7 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private Sample getSampleForAnalyzerResult(AnalyzerResults result) {
-		Sample sample = sampleDAO.getSampleByAccessionNumber(result.getAccessionNumber());
-		return sample;
+		return sampleDAO.getSampleByAccessionNumber(result.getAccessionNumber());
 	}
 
 	private void setChoiceForCurrentValue(AnalyzerResultItem resultItem, AnalyzerResults analyzerResult) {
@@ -371,7 +372,7 @@ public class AnalyzerResultsAction extends BaseAction {
 			List<TestReflex> reflexesForDisplayedTest = reflexUtil.getTestReflexsForDictioanryResultTestId(analyzerResult.getResult(), analyzerResult.getTestId(), true);
 			
 			for (TestReflex possibleTestReflex : reflexesForDisplayedTest) {
-				if (TestReflexUtil.USER_CHOOSE_FLAG.equals(possibleTestReflex.getFlags())) {
+				if (TestReflexUtil.isUserChoiceReflex( possibleTestReflex )) {
 					if (GenericValidator.isBlankOrNull(possibleTestReflex.getSiblingReflexId())) {
 						if (possibleTestReflex.getActionScriptlet() != null) {
 							selectionOne = possibleTestReflex;
@@ -495,69 +496,14 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	protected String getPageSubtitleKey() {
-		String key = null;
 
-		switch (analyzerType) {
-		case COBAS_INTEGRA400: {
-			key = "banner.menu.results.cobas.integra";
-			break;
-		}
-		case SYSMEX_XT_2000: {
-			key = "banner.menu.results.sysmex";
-			break;
-		}
-		case FACSCALIBUR: {
-			key = "banner.menu.results.facscalibur";
-			break;
-		}
-        case FACSCANTO: {
-			key = "banner.menu.results.facscanto";
-			break;
-		}
-		case EVOLIS: {
-			key = "banner.menu.results.evolis";
-			break;
-		}
-		case COBAS_TAQMAN: {
-			key = "banner.menu.results.cobas.taqman";
-			break;
-		}
-		case COBAS_DBS: {
-			key = "banner.menu.results.cobasDBS";
-			break;
-		}
-		case COBAS_C311: {
-			key = "banner.menu.results.cobasc311";
-			break;
-		}
-		default: {
-			key = "banner.menu.results.analyzer";
-		}
-		}
+        return analyzerNameToSubtitleKey.get(analyzer);
 
-		return key;
 	}
 
 	protected void setAnalyzerRequest(String requestType) {
 		if (!GenericValidator.isBlankOrNull(requestType)) {
-
-			if (requestType.equals("sysmex")) {
-				analyzerType = AnalyzerType.SYSMEX_XT_2000;
-			} else if (requestType.equals("cobas_integra")) {
-				analyzerType = AnalyzerType.COBAS_INTEGRA400;
-			} else if (requestType.equals("facscalibur")) {
-				analyzerType = AnalyzerType.FACSCALIBUR;
-			} else if (requestType.equals("evolis")) {
-				analyzerType = AnalyzerType.EVOLIS;
-			} else if (requestType.equals("cobas_taqman")) {
-				analyzerType = AnalyzerType.COBAS_TAQMAN;
-			} else if (requestType.equals("facscanto")) {
-				analyzerType = AnalyzerType.FACSCANTO;
-			}else if (requestType.equals("cobasDBS")) {
-				analyzerType = AnalyzerType.COBAS_DBS;
-			}else if (requestType.equals("cobasc311")) {
-				analyzerType = AnalyzerType.COBAS_C311;
-			}
+           analyzer = AnalyzerTestNameCache.instance().getDBNameForActionName(requestType);
 		}
 	}
 }

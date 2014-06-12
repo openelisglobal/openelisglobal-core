@@ -17,37 +17,24 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.*;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.IResultSaveService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
+import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapter;
 import us.mn.state.health.lims.common.services.registration.ValidationUpdateRegister;
 import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
-import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
@@ -60,7 +47,6 @@ import us.mn.state.health.lims.reports.daoimpl.DocumentTrackDAOImpl;
 import us.mn.state.health.lims.reports.daoimpl.DocumentTypeDAOImpl;
 import us.mn.state.health.lims.reports.valueholder.DocumentTrack;
 import us.mn.state.health.lims.result.action.util.ResultSet;
-import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -74,21 +60,23 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
-import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
-import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+
+import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
 
 public class ResultValidationSaveAction extends BaseResultValidationAction implements IResultSaveService  {
 
-	private static final DecimalFormat TWO_DECIMAL_FORMAT = new DecimalFormat("##.##");
 	// DAOs
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static final SampleDAO sampleDAO = new SampleDAOImpl();
 	private static final TestResultDAO testResultDAO = new TestResultDAOImpl();
-	private static final TestAnalyteDAO testAnalyteDAO = new TestAnalyteDAOImpl();
 	private static final ResultDAO resultDAO = new ResultDAOImpl();
 	private static final NoteDAO noteDAO = new NoteDAOImpl();
 	private static final SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
@@ -99,13 +87,13 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 	private ArrayList<Sample> sampleUpdateList;
 	private ArrayList<Note> noteUpdateList;
 	private ArrayList<Result> resultUpdateList;
+    private List<Result> deletableList;
 
 	private SystemUser systemUser;
 	private ArrayList<Integer> sampleFinishedStatus = new ArrayList<Integer>();
 	private List<ResultSet> modifiedResultSet;
 	private List<ResultSet> newResultSet;
 
-	private static final String RESULT_TYPE = "I";
 	private static final String RESULT_SUBJECT = "Result Note";
 	private static final String RESULT_TABLE_ID;
 	private static final String RESULT_REPORT_ID;
@@ -154,6 +142,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		analysisUpdateList = new ArrayList<Analysis>();
 		modifiedResultSet = new ArrayList<ResultSet>();
 		newResultSet = new ArrayList<ResultSet>();
+        deletableList = new ArrayList<Result>();
 		
 		if(testSectionName.equals("serology")){
 			createUpdateElisaList(resultItemList);
@@ -164,8 +153,9 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 		try{
+            ResultSaveService.removeDeletedResultsInTransaction( deletableList,currentUserId);
 
-			// update analysis
+            // update analysis
 			for(Analysis analysis : analysisUpdateList){
 				analysisDAO.updateData(analysis);
 			}
@@ -210,7 +200,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 			updater.postTransactionalCommitUpdate(this);
 		}
 
-		if(GenericValidator.isBlankOrNull(testSectionName)){
+		if( isBlankOrNull( testSectionName )){
 			return mapping.findForward(forward);
 		}else{
 			Map<String, String> params = new HashMap<String, String>();
@@ -230,6 +220,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		for (AnalysisItem item : resultItemList) {
 			List<ActionError> errorList = new ArrayList<ActionError>();
 			validateQuantifiableItems(item, errorList);
+			
 
 			if (errorList.size() > 0) {
 				StringBuilder augmentedAccession = new StringBuilder(item.getAccessionNumber());
@@ -249,12 +240,29 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 	}
 
 	public void validateQuantifiableItems(AnalysisItem analysisItem, List<ActionError> errors){
-		if( "Q".equals(analysisItem.getResultType()) && 
-				GenericValidator.isBlankOrNull(analysisItem.getQualifiedResultValue()) &&
+		if( analysisItem.isHasQualifiedResult() &&
+				isBlankOrNull( analysisItem.getQualifiedResultValue() ) &&
 				analysisItemWillBeUpdated(analysisItem)){
 			errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
 		}
+		// verify that qualifiedResultValue has been entered if required
+		if (!isBlankOrNull( analysisItem.getQualifiedDictionaryId() )) {
+		    String[] qualifiedDictionaryIds = analysisItem.getQualifiedDictionaryId().replace("[", "").replace("]", "").split(",");
+		    Set<String> qualifiedDictIdsSet = new HashSet<String>(Arrays.asList(qualifiedDictionaryIds));
+		    
+		    
+		    if (qualifiedDictIdsSet.contains(analysisItem.getResult()) &&
+		            isBlankOrNull( analysisItem.getQualifiedResultValue() )) {
+		        errors.add(new ActionError("errors.missing.result.details", new StringBuilder("Result")));
+		      
+		    }
+
+		}
+				
+		
 	}
+
+
 	
 	private void createUpdateList(List<AnalysisItem> analysisItems, boolean areListeners){
 
@@ -262,51 +270,66 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 		for(AnalysisItem analysisItem : analysisItems){
 			if(!analysisItem.isReadOnly() && analysisItemWillBeUpdated(analysisItem)){
-				String analysisId = analysisItem.getAnalysisId();
 
-				Analysis analysis = new Analysis();
-				analysis.setId(analysisId);
-				analysisDAO.getData(analysis);
+                AnalysisService analysisService = new AnalysisService( analysisItem.getAnalysisId() );
+                Analysis analysis = analysisService.getAnalysis();
+                NoteService noteService = new NoteService( analysis );
+
 				analysis.setSysUserId(currentUserId);
 
-				if(!analysisIdList.contains(analysisId)){
+				if(!analysisIdList.contains(analysis.getId())){
 
 					if(analysisItem.getIsAccepted()){
 						analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized));
 						analysis.setReleasedDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-						analysisIdList.add(analysisId);
+						analysisIdList.add(analysis.getId());
 						analysisUpdateList.add(analysis);
 					}
 
 					if(analysisItem.getIsRejected()){
 						analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.BiologistRejected));
-						analysisIdList.add(analysisId);
+						analysisIdList.add(analysis.getId());
 						analysisUpdateList.add(analysis);
 					}
 				}
 
-				createNote(analysisItem);
+                createNeededNotes( analysisItem, noteService );
 
-				if(areResults(analysisItem)){
-					Result result = createResultFromAnalysisItem(analysisItem, analysis);
-					resultUpdateList.add(result);
-					
-					if(areListeners){
-						addResultSets(analysis, result);
-					}
-				}
-			}
+                if (areResults(analysisItem)) {
+                    List<Result> results = createResultFromAnalysisItem(analysisItem, analysisService, noteService);
+                    for (Result result : results) {
+                        resultUpdateList.add(result);
+
+                        if (areListeners) {
+                            addResultSets(analysis, result);
+                        }
+                    }
+                }
+            }
 		}
 	}
 
-	private void addResultSets(Analysis analysis, Result result){
+    private void createNeededNotes( AnalysisItem analysisItem, NoteService noteService ){
+        if( analysisItem.getIsRejected()){
+            Note note = noteService.createSavableNote( NoteType.INTERNAL, StringUtil.getMessageForKey( "validation.note.retest" ), RESULT_SUBJECT, currentUserId );
+            noteUpdateList.add( note );
+        }
+
+        if( !GenericValidator.isBlankOrNull( analysisItem.getNote() )){
+            NoteType noteType = analysisItem.getIsAccepted() ? NoteType.EXTERNAL : NoteType.INTERNAL;
+            Note note = noteService.createSavableNote( noteType, analysisItem.getNote(), RESULT_SUBJECT, currentUserId );
+            noteUpdateList.add( note );
+        }
+    }
+
+    private void addResultSets(Analysis analysis, Result result){
 		Sample sample = analysis.getSampleItem().getSample();
 		Patient patient = sampleHumanDAO.getPatientForSample(sample);
 		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
 		if( documents.isEmpty()){
-			newResultSet.add(new ResultSet(result, null,null,null, patient, sample, null, null, null));
+			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
 		}else{
-			modifiedResultSet.add(new ResultSet(result, null,null,null, patient, sample, null, null, null));
+			modifiedResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
 		}
 	}
 
@@ -346,47 +369,47 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 		Analysis analysis = new Analysis();
 
-		if(!GenericValidator.isBlankOrNull(analysisItem.getMurexResult())){
+		if(!isBlankOrNull( analysisItem.getMurexResult() )){
 			analysis = getAnalysisFromId(analysisItem.getMurexAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getBiolineResult())){
+		if(!isBlankOrNull( analysisItem.getBiolineResult() )){
 			analysis = getAnalysisFromId(analysisItem.getBiolineAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getIntegralResult())){
+		if(!isBlankOrNull( analysisItem.getIntegralResult() )){
 			analysis = getAnalysisFromId(analysisItem.getIntegralAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getVironostikaResult())){
+		if(!isBlankOrNull( analysisItem.getVironostikaResult() )){
 			analysis = getAnalysisFromId(analysisItem.getVironostikaAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getGenieIIResult())){
+		if(!isBlankOrNull( analysisItem.getGenieIIResult() )){
 			analysis = getAnalysisFromId(analysisItem.getGenieIIAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getGenieII10Result())){
+		if(!isBlankOrNull( analysisItem.getGenieII10Result() )){
 			analysis = getAnalysisFromId(analysisItem.getGenieII10AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getGenieII100Result())){
+		if(!isBlankOrNull( analysisItem.getGenieII100Result() )){
 			analysis = getAnalysisFromId(analysisItem.getGenieII100AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getWesternBlot1Result())){
+		if(!isBlankOrNull( analysisItem.getWesternBlot1Result() )){
 			analysis = getAnalysisFromId(analysisItem.getWesternBlot1AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getWesternBlot2Result())){
+		if(!isBlankOrNull( analysisItem.getWesternBlot2Result() )){
 			analysis = getAnalysisFromId(analysisItem.getWesternBlot2AnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getP24AgResult())){
+		if(!isBlankOrNull( analysisItem.getP24AgResult() )){
 			analysis = getAnalysisFromId(analysisItem.getP24AgAnalysisId());
 			analysisList.add(analysis);
 		}
-		if(!GenericValidator.isBlankOrNull(analysisItem.getInnoliaResult())){
+		if(!isBlankOrNull( analysisItem.getInnoliaResult() )){
 			analysis = getAnalysisFromId(analysisItem.getInnoliaAnalysisId());
 			analysisList.add(analysis);
 		}
@@ -401,7 +424,6 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 		String currentSampleId = "";
 		boolean sampleFinished = true;
-		List<Analysis> analysisList = new ArrayList<Analysis>();
 
 		for(AnalysisItem analysisItem : resultItemList){
 
@@ -410,7 +432,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 				currentSampleId = analysisSampleId;
 
-				analysisList = analysisDAO.getAnalysesBySampleId(currentSampleId);
+                List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(currentSampleId);
 
 				for(Analysis analysis : analysisList){
 					if(!sampleFinishedStatus.contains(Integer.parseInt(analysis.getStatusId()))){
@@ -443,122 +465,22 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		return analysis;
 	}
 
-	private void createNote(AnalysisItem testResult){
-		Note note = null;
+	private List<Result> createResultFromAnalysisItem(AnalysisItem analysisItem, AnalysisService analysisService, NoteService noteService){
 
-		if(!GenericValidator.isBlankOrNull(testResult.getNoteId())){
-			note = new Note();
-			note.setId(testResult.getNoteId());
-			noteDAO.getData(note);
-		}else if(areNotes(testResult)){
-			note = new Note();
-			note.setReferenceId(testResult.getResultId());
-			note.setReferenceTableId(ResultsLoadUtility.getResultReferenceTableId());
-			note.setNoteType(RESULT_TYPE);
-			note.setSubject(RESULT_SUBJECT);
-		}
-
-		if(note != null){
-			note.setText(testResult.getNote());
-			note.setSysUserId(currentUserId);
-			note.setSystemUser(systemUser);
-			note.setSystemUserId(currentUserId);
-			noteUpdateList.add(note);
-		}
-
+        ResultSaveBean bean =  ResultSaveBeanAdapter.fromAnalysisItem(analysisItem);
+        ResultSaveService resultSaveService = new ResultSaveService(analysisService.getAnalysis(), currentUserId );
+        List<Result> results = resultSaveService.createResultsFromTestResultItem(bean,deletableList);
+        if( analysisService.patientReportHasBeenDone() && resultSaveService.isUpdatedResult()){
+            analysisService.getAnalysis().setCorrectedSincePatientReport( true );
+            noteUpdateList.add( noteService.createSavableNote( NoteType.EXTERNAL, StringUtil.getMessageForKey( "note.corrected.result" ), RESULT_SUBJECT, currentUserId ));
+        }
+        return results;
 	}
 
-	private Result createResultFromAnalysisItem(AnalysisItem analysisItem, Analysis analysis){
-
-		Result result = new Result();
-
-		if(GenericValidator.isBlankOrNull(analysisItem.getResultId())){
-			result.setAnalysis(analysis);
-			result.setAnalysisId(analysisItem.getAnalysisId());
-			result.setResultType(analysisItem.getResultType());
-			TestAnalyte testAnalyte = getTestAnalyteForResult(result);
-
-			if(testAnalyte != null){
-				result.setAnalyte(testAnalyte.getAnalyte());
-			}
-
-		}else{
-			result.setId(analysisItem.getResultId());
-			resultDAO.getData(result);
-		}
-
-		TestResult testResult = getTestResult(analysisItem);
-		// changing from quantifiable
-		if("Q".equals(result.getTestResult().getTestResultType())){
-			String quanifiedValue = "";
-			if("Q".equals(testResult.getTestResultType())){
-				// just the qualifier value has changed
-				quanifiedValue = analysisItem.getQualifiedResultValue();
-			}
-			
-			List<Result> children = resultDAO.getChildResults(result.getId());
-			if(!children.isEmpty()){
-				updateExitingQuntifieableResult(quanifiedValue, children);
-			}
-			//changing to quantifiable from non-quantifiable
-		}else if("Q".equals(testResult.getTestResultType())){
-			List<Result> children = resultDAO.getChildResults(result.getId());
-			if(children.isEmpty()){
-				Result quantifiedResult = new Result();
-				quantifiedResult.setAnalysis(analysis);
-				quantifiedResult.setAnalysisId(analysisItem.getAnalysisId());
-				quantifiedResult.setResultType(analysisItem.getResultType());
-				TestAnalyte testAnalyte = getTestAnalyteForResult(quantifiedResult);
-
-				if(testAnalyte != null){
-					quantifiedResult.setAnalyte(testAnalyte.getAnalyte());
-				}
-				quantifiedResult.setValue(analysisItem.getQualifiedResultValue());
-				quantifiedResult.setSysUserId(currentUserId);
-				quantifiedResult.setSortOrder("0");
-				quantifiedResult.setParentResult(result);
-				resultUpdateList.add(quantifiedResult);
-			}else{
-				updateExitingQuntifieableResult(analysisItem.getQualifiedResultValue(), children);
-			}
-		}
-
-		if(testResult != null){
-			result.setTestResult(testResult);
-		}
-
-		if(analysisItem.getResult() != null && !analysisItem.getResult().equals(result.getValue())){
-			String analysisResult = analysisItem.getResult();
-			if(analysisItem.isDisplayResultAsLog()){
-				try{
-					Double value = Math.log10(Double.parseDouble(analysisResult));
-					analysisResult += "(" + String.valueOf(Double.valueOf(TWO_DECIMAL_FORMAT.format(value))) + ")";
-				}catch(NumberFormatException e){
-					// no-op use original number
-				}
-			}
-
-			result.setValue(analysisResult);
-			analysis.setRevision(String.valueOf(Integer.parseInt(analysis.getRevision()) + 1));
-			analysis.setEnteredDate(DateUtil.getNowAsTimestamp());
-		}
-		result.setSysUserId(currentUserId);
-		result.setSortOrder("0");
-
-		return result;
-	}
-
-	private void updateExitingQuntifieableResult(String quanifiedValue, List<Result> children){
-		Result quantifiedResult = children.get(0);
-		quantifiedResult.setValue(quanifiedValue);
-		quantifiedResult.setSysUserId(currentUserId);
-		quantifiedResult.setSortOrder("0");
-		resultUpdateList.add(quantifiedResult);
-	}
 
 	protected TestResult getTestResult(AnalysisItem analysisItem){
 		TestResult testResult = null;
-		if("DQ".contains(analysisItem.getResultType())){
+		if(ResultType.DICTIONARY.matches( analysisItem.getResultType() )){
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysisItem.getTestId(), analysisItem.getResult());
 		}else{
 			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(analysisItem.getTestId());
@@ -571,36 +493,10 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		return testResult;
 	}
 
-	private TestAnalyte getTestAnalyteForResult(Result result){
-
-		if(result.getTestResult() != null){
-			@SuppressWarnings("unchecked")
-			List<TestAnalyte> testAnalyteList = testAnalyteDAO.getAllTestAnalytesPerTest(result.getTestResult().getTest());
-
-			if(testAnalyteList.size() > 0){
-				int distanceFromRoot = 0;
-
-				Analysis parentAnalysis = result.getAnalysis().getParentAnalysis();
-
-				while(parentAnalysis != null){
-					distanceFromRoot++;
-					parentAnalysis = parentAnalysis.getParentAnalysis();
-				}
-
-				int index = Math.min(distanceFromRoot, testAnalyteList.size() - 1);
-
-				return testAnalyteList.get(index);
-			}
-		}
-		return null;
-	}
-
-	private boolean areNotes(AnalysisItem item){
-		return !GenericValidator.isBlankOrNull(item.getNote());
-	}
-
 	private boolean areResults(AnalysisItem item){
-		return !(GenericValidator.isBlankOrNull(item.getResult()) || ("D".equals(item.getResultType()) && "0".equals(item.getResult())));
+		return !( isBlankOrNull( item.getResult() ) ||
+                (ResultType.DICTIONARY.matches( item.getResultType() ) && "0".equals(item.getResult()))) ||
+                (ResultType.isMultiSelectVariant( item.getResultType() ) && !isBlankOrNull( item.getMultiSelectResultValues() ));
 	}
 
 	private void createSystemUser(){

@@ -171,7 +171,9 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{startDate} + " - " + $P{stopDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="329" y="10" width="243" height="20"/>
+				<reportElement x="329" y="10" width="243" height="20">
+					<printWhenExpression><![CDATA[$P{siteId} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
@@ -271,7 +273,7 @@
 					<printWhenExpression><![CDATA[$P{usePageNumbers}.equals("true")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" sur"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="523" y="16" width="40" height="20">

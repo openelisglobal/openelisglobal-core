@@ -16,17 +16,11 @@
  */
 package us.mn.state.health.lims.qaevent.worker;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.address.dao.AddressPartDAO;
 import us.mn.state.health.lims.address.dao.PersonAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
@@ -36,6 +30,7 @@ import us.mn.state.health.lims.address.valueholder.PersonAddress;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.services.QAService.QAObservationValueType;
@@ -108,6 +103,11 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class NonConformityUpdateWorker {
 
 	private Sample sample;
@@ -119,7 +119,7 @@ public class NonConformityUpdateWorker {
 
 	private List<SampleQaEvent> sampleQAEventInsertList;
 	private List<SampleQaEvent> sampleQAEventDeleteList;
-	private Map<QaObservation, SampleQaEvent> qaObservationList;
+	private Map<QaObservation, SampleQaEvent> qaObservationMap;
 	private List<NoteSet> insertableNotes;
 	private List<Note> updateableNotes;
 	private List<Note> deleteableNotes;
@@ -139,8 +139,7 @@ public class NonConformityUpdateWorker {
 	private boolean updatePatient = false;
 	private boolean useFullProviderInfo;
 	private boolean updateSampleHuman;
-	
-	public static final String NOTE_TYPE = "I";
+
 	public static final String NOTE_SUBJECT = "QaEvent Note";
 	private static final String REFERRING_ORG_TYPE_ID;
 	private static final String COMMUNE_ADDRESS_PART_ID;
@@ -170,9 +169,8 @@ public class NonConformityUpdateWorker {
 	private Organization newOrganization= null;
 	private boolean insertNewOrganizaiton = false;
 	private SampleRequester sampleRequester = null;
-	private SampleQaEvent sampleQaEvent;
 
-	private final NonConformityUpdateData webData;
+    private final NonConformityUpdateData webData;
 	private final static boolean REJECT_IF_EMPTY = true;
 
 	static{
@@ -297,7 +295,7 @@ public class NonConformityUpdateWorker {
 				if(insertNewOrganizaiton){
 					sampleRequester.setRequesterId(newOrganization.getId());
 				}
-				sampleRequester.setSampleId(sample.getId());
+				sampleRequester.setSampleId(Long.parseLong( sample.getId()));
 				sampleRequesterDAO.insertData(sampleRequester);
 			}
 
@@ -324,9 +322,9 @@ public class NonConformityUpdateWorker {
 			noteDAO.deleteData(deleteableNotes);
 			sampleQaEventDAO.deleteData(sampleQAEventDeleteList);
 
-			for (QaObservation qa : qaObservationList.keySet()) {
+			for (QaObservation qa : qaObservationMap.keySet()) {
 				if (qa.getId() == null) {
-					qa.setObservedId(qaObservationList.get(qa).getId());
+					qa.setObservedId( qaObservationMap.get( qa ).getId() );
 					qaObservationDAO.insertData(qa);
 				} else {
 					qaObservationDAO.updateData(qa);
@@ -337,7 +335,7 @@ public class NonConformityUpdateWorker {
 		} catch (LIMSRuntimeException lre) {
 			tx.rollback();
 
-			ActionError error = null;
+			ActionError error;
 			if (lre.getException() instanceof StaleObjectStateException) {
 				error = new ActionError("errors.OptimisticLockException", null, null);
 			} else {
@@ -377,7 +375,7 @@ public class NonConformityUpdateWorker {
 		sampleItemsByType = new HashMap<String, SampleItem>();
 		sampleQAEventInsertList = new ArrayList<SampleQaEvent>();
 		sampleQAEventDeleteList = new ArrayList<SampleQaEvent>();
-		qaObservationList = new HashMap<QaObservation, SampleQaEvent>();
+		qaObservationMap = new HashMap<QaObservation, SampleQaEvent>();
 		insertableNotes = new ArrayList<NoteSet>();
 		updateableNotes = new ArrayList<Note>();
 		deleteableNotes = new ArrayList<Note>();
@@ -540,8 +538,6 @@ public class NonConformityUpdateWorker {
 
 	/**
 	 * This is for when patients can not be added through the form
-	 * 
-	 * @param dynaForm
 	 */
 	private void setPatient() {
 
@@ -698,10 +694,10 @@ public class NonConformityUpdateWorker {
 				}
 				// Marked for removal
 			} else if (isOldForRemoval(item)) {
-				sampleQaEvent = new SampleQaEvent();
-				sampleQaEvent.setId(item.getId());
-				sampleQaEvent.setSysUserId(webData.getCurrentSysUserId());
-				this.sampleQAEventDeleteList.add(sampleQaEvent);
+                SampleQaEvent sampleQaEvent = new SampleQaEvent();
+				sampleQaEvent.setId( item.getId() );
+				sampleQaEvent.setSysUserId( webData.getCurrentSysUserId() );
+				this.sampleQAEventDeleteList.add( sampleQaEvent );
 				Note existingNote = findExistingQANote(item.getId());
 				if (existingNote != null) {
 					existingNote.setSysUserId(webData.getCurrentSysUserId());
@@ -709,11 +705,11 @@ public class NonConformityUpdateWorker {
 				}
 				// Updated note
 			} else {
-				sampleQaEvent = new SampleQaEvent();
-				sampleQaEvent.setId(item.getId());
+                SampleQaEvent sampleQaEvent = new SampleQaEvent();
+				sampleQaEvent.setId( item.getId() );
 				Note existingNote = findExistingQANote(item.getId());
 				if (existingNote == null) {
-					addNoteIfNeeded(item.getNote(), sampleQaEvent);
+					addNoteIfNeeded(item.getNote(), sampleQaEvent );
 				} else {
 					if ( (existingNote.getText() != null && !existingNote.getText().equals(item.getNote())) || 
 						 (existingNote.getText() == null && item.getNote() != null ) ) {
@@ -738,14 +734,11 @@ public class NonConformityUpdateWorker {
 					note.setSysUserId(webData.getCurrentSysUserId());
 					note.setSystemUserId(webData.getCurrentSysUserId());
 					updateableNotes.add(note);
-				} else {
-					// edited to the same old value, so skip updating.
 				}
 			} else {
 				NoteSet noteSet = new NoteSet();
 				noteSet.referencedSample = sample;
-				noteSet.note = createNote(noteText);
-				noteSet.note.setReferenceTableId(NonConformityAction.SAMPLE_TABLE_ID);
+				noteSet.note = new NoteService( sample ).createSavableNote( NoteService.NoteType.NON_CONFORMITY, noteText, NOTE_SUBJECT, webData.getCurrentSysUserId() );
 				insertableNotes.add(noteSet);
 			}
 		}
@@ -766,7 +759,7 @@ public class NonConformityUpdateWorker {
 		sampleQAEventInsertList.add(qaService.getSampleQaEvent());
 
 		for (QaObservation observation : qaService.getUpdatedObservations()) {
-			qaObservationList.put(observation, qaService.getSampleQaEvent());
+			qaObservationMap.put( observation, qaService.getSampleQaEvent() );
 		}
 
 		return qaService.getSampleQaEvent();
@@ -774,10 +767,9 @@ public class NonConformityUpdateWorker {
 
 	/**
 	 * 
-	 * @param item
-	 * @param sampleItem
-	 * @param sampleTypeId
-	 * @param sortOrder
+	 * @param item  The Item to be evaluated
+	 * @param sampleItem The item being checked for existence
+	 * @param sampleTypeId The type of the sample item
 	 * @return if the return is null, the there was already a sampleItem on the
 	 *         Sample for the given sampleTypeId
 	 */
@@ -803,11 +795,11 @@ public class NonConformityUpdateWorker {
 				sampleItem.setStatusId(StatusService.getInstance().getStatusID(SampleStatus.Entered));
 			}
 		}
-		addSampleQaEvent(item, sampleItem);
+		addSampleQaEvent( item, sampleItem );
 		// if the DB already has this sample type don't bother returning it to
 		// the caller (who will want to save it later), because this update
 		// action never updates sampleItems
-		return (sampleItemsOfType.size() > 0) ? null : sampleItem;
+		return (sampleItemsOfType != null && sampleItemsOfType.size() > 0) ? null : sampleItem;
 	}
 
 
@@ -817,7 +809,7 @@ public class NonConformityUpdateWorker {
 			return null;
 		}
 
-		List<Note> notes = noteDAO.getNoteByRefIAndRefTableAndSubject(sample.getId(), NonConformityAction.SAMPLE_TABLE_ID, NOTE_SUBJECT);
+		List<Note> notes = noteDAO.getNoteByRefIAndRefTableAndSubject(sample.getId(),NoteService.getReferenceTableIdForNoteBinding( NoteService.BoundTo.SAMPLE ), NOTE_SUBJECT);
 		return notes.isEmpty() ? null : notes.get(0);
 	}
 
@@ -826,7 +818,7 @@ public class NonConformityUpdateWorker {
 			return null;
 		}
 
-		List<Note> notes = noteDAO.getNoteByRefIAndRefTableAndSubject(sampleQAEventId, NonConformityAction.SAMPLE_QAEVENT_TABLE_ID, NOTE_SUBJECT);
+		List<Note> notes = noteDAO.getNoteByRefIAndRefTableAndSubject(sampleQAEventId, NoteService.getReferenceTableIdForNoteBinding( NoteService.BoundTo.QA_EVENT ), NOTE_SUBJECT);
 		return notes.isEmpty() ? null : notes.get(0);
 	}
 	
@@ -834,22 +826,9 @@ public class NonConformityUpdateWorker {
 		if (!GenericValidator.isBlankOrNull(noteText)) {
 			NoteSet noteSet = new NoteSet();
 			noteSet.referencedEvent = event;
-			noteSet.note = createNote(noteText);
-			noteSet.note.setReferenceTableId(QAService.SAMPLE_QAEVENT_TABLE_ID);
+			noteSet.note = new NoteService( event ).createSavableNote( NoteService.NoteType.NON_CONFORMITY, noteText, NOTE_SUBJECT, webData.getCurrentSysUserId() );
 			insertableNotes.add(noteSet);
 		}
-	}
-
-	private Note createNote(String noteText) {
-		Note note = new Note();
-		note.setText(noteText);
-		note.setSysUserId(webData.getCurrentSysUserId());
-		note.setNoteType(NOTE_TYPE);
-		note.setSubject(NOTE_SUBJECT);
-		note.setSystemUser(systemUser);
-		note.setSystemUserId(webData.getCurrentSysUserId());
-
-		return note;
 	}
 
 	private String getNextSampleItemSortOrder() {
@@ -875,7 +854,7 @@ public class NonConformityUpdateWorker {
 
 	/**
 	 * 
-	 * @param item
+	 * @param item The Item to be evaluated
 	 * @return TRUE if is new, contains some reason and isn't marked for delete
 	 */
 	private boolean isNonBlankNewEvent(QaEventItem item) {
@@ -883,11 +862,11 @@ public class NonConformityUpdateWorker {
 	}
 
 	/**
-	 * @param item
+	 * @param item The Item to be evaluated
 	 * @return TRUE if Is not new and is marked for removal.
 	 */
 	private boolean isOldForRemoval(QaEventItem item) {
-		return item.getId() != null && !"NEW".equals(item.getId()) && item.isRemove();
+		return item.getId() != null && !"NEW".equals( item.getId() ) && item.isRemove();
 	}
 
 	private class NoteSet {

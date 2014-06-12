@@ -17,28 +17,17 @@
  */
 package us.mn.state.health.lims.result.action;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -47,7 +36,6 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
-import us.mn.state.health.lims.referral.util.ReferralUtil;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.action.util.ResultsPaging;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -57,16 +45,22 @@ import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-import us.mn.state.health.lims.test.dao.TestDAO;
-import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-import us.mn.state.health.lims.test.valueholder.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class StatusResultsAction extends BaseAction implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static final boolean REVERSE_SORT_ORDER = false;
 	private final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-	private final TestDAO testDAO = new TestDAOImpl();
 	private final SampleDAO sampleDAO = new SampleDAOImpl();
 	private ResultsLoadUtility resultsUtility;
 	private final InventoryUtility inventoryUtility = new InventoryUtility();
@@ -94,13 +88,14 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 		String newRequest = request.getParameter("blank");
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
-		PropertyUtils.setProperty(dynaForm, "referralReasons", ReferralUtil.getReferralReasons());
+		PropertyUtils.setProperty(dynaForm, "referralReasons", DisplayListService.getList( DisplayListService.ListType.REFERRAL_REASONS));
+        PropertyUtils.setProperty( dynaForm, "rejectReasons", DisplayListService.getNumberedListWithLeadingBlank( DisplayListService.ListType.REJECTION_REASONS ) );
 
 		ResultsPaging paging = new ResultsPaging();
 
 		String newPage = request.getParameter("page");
 		if (GenericValidator.isBlankOrNull(newPage)) {
-			List<TestResultItem> tests = new ArrayList<TestResultItem>();
+			List<TestResultItem> tests;
 			if (GenericValidator.isBlankOrNull(newRequest) || newRequest.equals("false")) {
 				tests = setSearchResults(dynaForm);
 
@@ -163,10 +158,9 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 	private void setSelectionLists(DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		List<DropPair> analysisStatusList = getAnalysisStatusTypes();
-		List<DropPair> testList = getTestTypes();
 
 		PropertyUtils.setProperty(dynaForm, "analysisStatusSelections", analysisStatusList);
-		PropertyUtils.setProperty(dynaForm, "testSelections", testList);
+		PropertyUtils.setProperty(dynaForm, "testSelections", DisplayListService.getListWithLeadingBlank( DisplayListService.ListType.ALL_TESTS ));
 
 		List<DropPair> sampleStatusList = getSampleStatusTypes();
 		PropertyUtils.setProperty(dynaForm, "sampleStatusSelections", sampleStatusList);
@@ -175,10 +169,10 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 
 	private List<TestResultItem> getSelectedTests(DynaActionForm dynaForm) {
 		String collectionDate = dynaForm.getString("collectionDate");
-		String recievedDate = dynaForm.getString("recievedDate");
+		String receivedDate = dynaForm.getString("recievedDate");
 		String analysisStatus = dynaForm.getString("selectedAnalysisStatus");
 		String sampleStatus = dynaForm.getString("selectedSampleStatus");
-		String test = (String) dynaForm.getString("selectedTest");
+		String test = dynaForm.getString("selectedTest");
 
 		List<Analysis> analysisList = new ArrayList<Analysis>();
 
@@ -189,8 +183,8 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 			}
 		}
 
-		if (!GenericValidator.isBlankOrNull(recievedDate)) {
-			analysisList = blendLists(analysisList, getAnalysisForRecievedDate(recievedDate));
+		if (!GenericValidator.isBlankOrNull(receivedDate)) {
+			analysisList = blendLists(analysisList, getAnalysisForRecievedDate(receivedDate));
 			if (analysisList.isEmpty()) {
 				return new ArrayList<TestResultItem>();
 			}
@@ -312,20 +306,6 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 
 		list.add(new DropPair(StatusService.getInstance().getStatusID(OrderStatus.Entered), StatusService.getInstance().getStatusName(OrderStatus.Entered)));
 		list.add(new DropPair(StatusService.getInstance().getStatusID(OrderStatus.Started), StatusService.getInstance().getStatusName(OrderStatus.Started)));
-
-		return list;
-	}
-
-	private List<DropPair> getTestTypes() {
-
-		List<Test> testList = testDAO.getAllActiveOrderableTests();
-
-		List<DropPair> list = new ArrayList<DropPair>();
-		list.add(new DropPair("0", ""));
-
-		for (Test test : testList) {
-			list.add(new DropPair(test.getId(), test.getDescription()));
-		}
 
 		return list;
 	}

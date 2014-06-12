@@ -1,9 +1,60 @@
+# compiled code #
 *.class
 
 # Package Files #
 *.war
 *.ear
 
+#local use files
+liqubase.properties
+
 # IDE files #
 .project
 .idea
+app/out/
+app.iml
+liquibase.iml
+liquibase/.ssh/known_hosts
+app/postgresql-9.2-1002.jdbc4.jar
+app/postgresql-driver-license.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/QualifiedOptions.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/analyzeCode.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/billingCode.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/currentDictNames.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/currentSampleTypes.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/currentUOM.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/dictNormal.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/loincCodes.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/maxNormal.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/maxValid.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/minNormal.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/minValid.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/newUOM.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/orderType.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/MassiveTestResults.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/MassiveUOM.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/SectionOrder.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/Test.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/TestSampleTypes.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/dictionaryResult.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/orderTypeResult.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/panelResults.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/resultLimitResults.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/sampleTypeOutput.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/sampleTypeTestResults.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/testCodeResult.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/testPanel.sql
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/testResults.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/output/typePanelResults.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/panels.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/printName.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/resultType.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/sampleType.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/scripts.iml
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/selectList.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/testName.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/testOrder.txt
+liquibase/OE3.4/testCatalogCI_IPCI/scripts/testSections.txt
+liquibase/lb.iml
+liquibase/postgresql-9.2-1002.jdbc3.jar
+liquibase/postgresql-driver-license.txt

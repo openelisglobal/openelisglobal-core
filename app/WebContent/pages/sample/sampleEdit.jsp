@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
-			us.mn.state.health.lims.common.util.SystemConfiguration,
+			us.mn.state.health.lims.common.formfields.FormFields,
 			us.mn.state.health.lims.common.util.ConfigurationProperties,
 			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	        us.mn.state.health.lims.common.formfields.FormFields,
 	        us.mn.state.health.lims.common.util.StringUtil,
+	        us.mn.state.health.lims.common.util.SystemConfiguration,
             us.mn.state.health.lims.common.util.Versioning,
-	        us.mn.state.health.lims.sample.bean.SampleEditItem,
-	        us.mn.state.health.lims.sample.util.AccessionNumberUtil,
-	        us.mn.state.health.lims.common.util.IdValuePair" %>
+            us.mn.state.health.lims.sample.bean.SampleEditItem,
+	        us.mn.state.health.lims.sample.util.AccessionNumberUtil" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -22,15 +21,16 @@
 <bean:define id="idSeparator"	value='<%=SystemConfiguration.getInstance().getDefaultIdSeparator()%>' />
 <bean:define id="accessionFormat" value='<%=ConfigurationProperties.getInstance().getPropertyValue(Property.AccessionFormat)%>' />
 <bean:define id="genericDomain" value='' />
-<bean:define id="accessionNumber " name="<%=formName %>" property="accessionNumber"/>
-<bean:define id="newAccessionNumber " name="<%=formName %>" property="newAccessionNumber"/>
+<bean:define id="accessionNumber" name="<%=formName %>" property="accessionNumber"/>
+<bean:define id="newAccessionNumber" name="<%=formName %>" property="newAccessionNumber"/>
+<bean:define id="cancelableResults"   name="<%=formName%>" property="ableToCancelResults" type="java.lang.Boolean" />
 
 <%!
 	String basePath = "";
 	int editableAccession = 0;
 	int nonEditableAccession = 0;
 	int maxAccessionLength = 0;
-	boolean trackPayments = false;
+    boolean useCollectionDate = true;
 %>
 <%
 	String path = request.getContextPath();
@@ -38,18 +38,27 @@
 	editableAccession = AccessionNumberUtil.getChangeableLength();
 	nonEditableAccession = AccessionNumberUtil.getInvarientLength();
 	maxAccessionLength = editableAccession + nonEditableAccession;
-	trackPayments = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true");
+    useCollectionDate = FormFields.getInstance().useField( FormFields.Field.CollectionDate);
 %>
 
+<script src="scripts/ui/jquery.ui.core.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.widget.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.button.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.menu.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.position.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.autocomplete.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/customAutocomplete.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
+<link rel="stylesheet" href="css/jquery_ui/jquery.ui.all.css?ver=<%= Versioning.getBuildNumber() %>">
+<link rel="stylesheet" href="css/customAutocomplete.css?ver=<%= Versioning.getBuildNumber() %>">
 
 <script type="text/javascript" >
 
 var checkedCount = 0;
-var paymentChanged = false;
 var currentSampleType;
 var sampleIdStart = 0;
+var orderChanged = false;
 
 $jq(function() {
    	var maxAccessionNumber = $("maxAccessionNumber").value;
@@ -63,13 +72,6 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 	setAction(window.document.forms[0], 'Cancel', 'no', '');
 }
 
-function setPaymentChanged(){
-
-	paymentChanged = true;
-	
-	setSaveButton();
-}
-
 function /*void*/ addRemoveRequest( checkbox ){
 	checkedCount = Math.max(checkedCount + (checkbox.checked ? 1 : -1), 0 );
 
@@ -81,19 +83,13 @@ function /*void*/ addRemoveRequest( checkbox ){
 
 }
 
-function setSaveButton(){
-	var newAccession = $("newAccessionNumber").value;
-	var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>"; 
-
-    $("saveButtonId").disabled = errorsOnForm() || !sampleAddValid(false) || (checkedCount == 0  && !accessionChanged && !paymentChanged && !samplesHaveBeenAdded() );
-}
 
 // Adds warning when leaving page if tests are checked
 function formWarning(){
 	var newAccession = $("newAccessionNumber").value;
 	var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>"; 
 
-  	if ( checkedCount > 0 || accessionChanged || paymentChanged || samplesHaveBeenAdded()) {
+  	if ( checkedCount > 0 || accessionChanged || samplesHaveBeenAdded()) {
     	return "<bean:message key="banner.menu.dataLossWarning"/>";
 	}
 }
@@ -104,6 +100,12 @@ function /*void*/ savePage(){
 		alert('<%= StringUtil.getMessageForKey("warning.sample.missing.test")%>');
 		return;
 	}
+
+
+    if( $jq(".testWithResult:checked").size() > 0 &&
+        !confirm("<%= StringUtil.getMessageForKey("test.modify.save.warning")%>") ) {
+            return;
+    }
 	window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	loadSamples();
 	
@@ -112,7 +114,7 @@ function /*void*/ savePage(){
 	form.submit();
 }
 
-function checkAccessionNumber(changeElement){
+function checkEditedAccessionNumber(changeElement){
 	var accessionNumber;
 	clearFieldErrorDisplay( changeElement );
 
@@ -139,19 +141,17 @@ function checkAccessionNumber(changeElement){
 		return;
 	}
 	
-	validateAccessionNumberOnServer(true, changeElement.id, accessionNumber, processAccessionSuccess, processAccessionFailure);
+	validateAccessionNumberOnServer(true, false, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
 }
 
-function processAccessionSuccess(xhr)
+function processEditAccessionSuccess(xhr)
 {
-
 	//alert( xhr.responseText );
 	var accessionNumberUpdate;
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
 	var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
 
 	if (message == "SAMPLE_FOUND"){
-		//$(formField).style.borderColor = "red";
 		setFieldErrorDisplay( $(formField) );
 		setSaveButton();
 		alert('<%=StringUtil.getMessageForKey("errors.may_not_reuse_accession_number")%>');
@@ -184,11 +184,91 @@ function updateSampleItemNumbers(newAccessionNumber){
 		}
 }
 
-function processAccessionFailure(xhr)
+function checkValidEntryDate(date, dateRange, blankAllowed)
 {
-	//unhandled error: someday we should be nicer to the user
+    $jq("#sampleItemChanged_" + date.id.split("_")[1]).val(true);
+    if((!date.value || date.value == "") && !blankAllowed){
+        setSaveButton();
+        return;
+    } else if ((!date.value || date.value == "") && blankAllowed) {
+        setValidIndicaterOnField(true, date.id);
+        setSaveButton();
+        return;
+    }
+
+
+    if( !dateRange || dateRange == ""){
+        dateRange = 'past';
+    }
+
+    //ajax call from utilites.js
+    isValidDate( date.value, processValidateEntryDateSuccess, date.id, dateRange );
 }
 
+function  /*void*/ processValidateEntryDateSuccess(xhr){
+
+    //alert(xhr.responseText);
+
+    var message = xhr.responseXML.getElementsByTagName("message").item(0).firstChild.nodeValue;
+    var formField = xhr.responseXML.getElementsByTagName("formfield").item(0).firstChild.nodeValue;
+
+    var isValid = message == "<%=IActionConstants.VALID%>";
+
+    //utilites.js
+    selectFieldErrorDisplay( isValid, $(formField));
+    setSaveButton();
+
+    if( message == '<%=IActionConstants.INVALID_TO_LARGE%>' ){
+        alert( '<bean:message key="error.date.inFuture"/>' );
+    }else if( message == '<%=IActionConstants.INVALID_TO_SMALL%>' ){
+        alert( '<bean:message key="error.date.inPast"/>' );
+    }
+}
+
+
+function checkValidTime(time, blankAllowed)
+{
+    var lowRangeRegEx = new RegExp("^[0-1]{0,1}\\d:[0-5]\\d$");
+    var highRangeRegEx = new RegExp("^2[0-3]:[0-5]\\d$");
+
+    $jq("#sampleItemChanged_" + time.id.split("_")[1]).val(true);
+    if (time.value.blank() && blankAllowed == true) {
+        clearFieldErrorDisplay(time);
+        setSaveButton();
+        return;
+    }
+
+    if( lowRangeRegEx.test(time.value) ||
+            highRangeRegEx.test(time.value) )
+    {
+        if( time.value.length == 4 )
+        {
+            time.value = "0" + time.value;
+        }
+        clearFieldErrorDisplay(time);
+    }
+    else
+    {
+        setFieldErrorDisplay(time);
+ //       setSampleFieldInvalid(time.name);
+    }
+
+    setSaveButton();
+}
+
+//all methods here either overwrite methods in tiles or all called after they are loaded
+var dirty=false;
+function makeDirty(){
+    dirty=true;
+    if( typeof(showSuccessMessage) != 'undefinded' ){
+        showSuccessMessage(false); //refers to last save
+    }
+    // Adds warning when leaving page if content has been entered into makeDirty form fields
+    function formWarning(){
+        return "<bean:message key="banner.menu.dataLossWarning"/>";
+    }
+    window.onbeforeunload = formWarning;
+}
 
 </script>
 
@@ -197,8 +277,7 @@ function processAccessionFailure(xhr)
 <logic:equal name="<%=formName%>" property="noSampleFound" value="false">
 <DIV  id="patientInfo" class='textcontent'>
 <bean:message key="sample.entry.patient"/>:&nbsp;
-<bean:write name="<%=formName%>" property="firstName"/>&nbsp;
-<bean:write name="<%=formName%>" property="lastName"/>&nbsp;
+<bean:write name="<%=formName%>" property="patientName"/>&nbsp;
 <bean:write name="<%=formName%>" property="dob"/>&nbsp;
 <bean:write name="<%=formName%>" property="gender"/>&nbsp;
 <bean:write name="<%=formName%>" property="nationalId"/>
@@ -209,27 +288,7 @@ function processAccessionFailure(xhr)
 <html:hidden name="<%=formName%>" property="newAccessionNumber" styleId="newAccessionNumber"/>
 <html:hidden name="<%=formName%>" property="isEditable"/>
 <html:hidden name="<%=formName%>" property="maxAccessionNumber" styleId="maxAccessionNumber"/>
-<bean:define id="paymentSelection" name="<%=formName %>"  property="paymentOptionSelection"/>
 
-<% if( trackPayments){ %>
-	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.patientPayment") %></h1>  
-	<bean:message key="sample.entry.patientPayment"/>: 
-		<html:select name="<%=formName %>" 
-		             property="paymentOptionSelection" 
-		             onchange="setPaymentChanged();"
-		             >
-					<option value='' ></option>
-		<logic:iterate id="optionValue" name='<%=formName%>' property="paymentOptions" type="IdValuePair" >
-						<% if( optionValue.getId().equals(paymentSelection) ){ %>
-							   	<option value='<%=optionValue.getId()%>' selected="selected" >	
-						<% }else {%>
-								<option value='<%=optionValue.getId()%>' >	
-						<% } %>
-						<bean:write name="optionValue" property="value"/>
-					</option>
-		</logic:iterate>
-		</html:select>
-<% } %>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
 	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.accessionNumber") %></h1>  
 	<div id="accessionEditDiv" class="TableMatch">
@@ -239,34 +298,53 @@ function processAccessionFailure(xhr)
 		       value='<%= ((String)newAccessionNumber).length() == maxAccessionLength ? ((String)newAccessionNumber).substring(nonEditableAccession, maxAccessionLength) : "" %>'
 		       maxlength="<%= editableAccession%>"
 		       size="<%= editableAccession%>"
-		       onchange="checkAccessionNumber(this);"
+		       onchange="checkEditedAccessionNumber(this);"
 		       id="accessionEdit">
 		       
 	<br/><br/><hr/>
 	</div>
 </logic:equal>
+    <bean:define id="confirmationSample" name='<%=formName%>' property="isConfirmationSample" type="java.lang.Boolean" />
+    <div id="sampleOrder" class="colorFill" >
+        <% if( confirmationSample ){ %>
+        <tiles:insert attribute="sampleConfirmationOrder" />
+        <% }else{ %>
+        <tiles:insert attribute="sampleOrder" />
+        <% } %>
+    </div>
 
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
 	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.tests") %></h1>
 </logic:equal>
-<table width="60%">
-<caption><bean:message key="sample.edit.existing.tests"/></caption>
+<table style="width:60%">
+<caption><div><bean:message key="sample.edit.existing.tests"/></div>
+    <span style="color: red"><small><small><%= cancelableResults ? StringUtil.getMessageForKey( "test.modify.static.warning" ) : "" %></small></small></span></caption>
 <tr>
 <th><%= StringUtil.getContextualMessageForKey("quick.entry.accession.number") %></th>
 <th><bean:message key="sample.entry.sample.type"/></th>
+<% if( useCollectionDate ){ %>
+<th >
+    <bean:message key="sample.collectionDate"/>&nbsp;<bean:message key="sample.date.format"/>
+</th>
+<th >
+    <bean:message key="sample.collectionTime"/>
+</th>
+<% } %>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
-	<th width="16px"><bean:message key="sample.edit.remove.sample" /></th>
+	<th style="width:16px"><bean:message key="sample.edit.remove.sample" /></th>
 </logic:equal>
 <th><bean:message key="test.testName"/></th>
+<th><bean:message key="test.has.result"/></th>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
-	<th width="16px"><bean:message key="sample.edit.remove.tests" /></th>
+	<th style="width:16px"><bean:message key="sample.edit.remove.tests" /></th>
 </logic:equal>
 <logic:equal name='<%=formName%>' property="isEditable" value="false" >
 	<th><bean:message key="analysis.status" /></th>
 </logic:equal>
 
 </tr>
-	<logic:iterate id="existingTests" name="<%=formName%>"  property="existingTests" indexId="index" type="SampleEditItem">
+	<logic:iterate id="existingTests" name="<%=formName%>"  property="existingTests" indexId="index" type="us.mn.state.health.lims.sample.bean.SampleEditItem">
+        <html:hidden property="sampleItemChanged" name="existingTests" styleId='<%= "sampleItemChanged_" + index %>' styleClass="sampleItemChanged" indexed="true"/>
 	<tr>
 		<td>
 			<html:hidden name="existingTests" property="analysisId" indexed="true"/>
@@ -275,23 +353,54 @@ function processAccessionFailure(xhr)
 		<td>
 			<bean:write name="existingTests" property="sampleType"/>
 		</td>
+        <% if( useCollectionDate ){ %>
+        <td >
+            <% if( existingTests.getCollectionDate() != null ){%>
+            <html:text name='existingTests'
+                       property='collectionDate'
+                       maxlength='10'
+                       size ='12'
+                       onchange="checkValidEntryDate(this, 'past', true);"
+                       styleId='<%= "collectionDate_" + index %>'
+                       styleClass='text'
+                       indexed="true"/>
+            <% } %>
+        </td>
+        <td >
+            <% if( existingTests.getCollectionDate() != null ){%>
+            <html:text name='existingTests'
+                       property='collectionTime'
+                       maxlength='10'
+                       size ='12'
+                       onkeyup='filterTimeKeys(this, event);'
+                       onblur='checkValidTime(this, true);'
+                       styleId='<%= "collectionTime_" + index %>'
+                       styleClass='text'
+                       indexed="true"/>
+            <% } %>
+        </td>
+        <% } %>
 		<logic:equal name='<%=formName%>' property="isEditable" value="true" >
-		    <td>
-				<% if( existingTests.getAccessionNumber() != null ){
-				         if( existingTests.isCanRemoveSample()){ %>
-				<html:checkbox name='existingTests' property='removeSample' indexed='true' onchange="addRemoveRequest(this);" />
-				<% }else{ %>
-				<html:checkbox name='existingTests' property='removeSample' indexed='true' disabled="true" />
-				<% }} %>
-			</td>
+            <td>
+                <% if( existingTests.getAccessionNumber() != null ){
+                    if( existingTests.isCanRemoveSample() ){ %>
+                <html:checkbox name='existingTests' property='removeSample' indexed='true' onchange="addRemoveRequest(this);"/>
+                <% }else{ %>
+                <html:checkbox name='existingTests' property='removeSample' indexed='true' disabled="true"/>
+                <% }
+                } %>
+            </td>
 		</logic:equal>
 		<td>
 			<bean:write name="existingTests" property="testName"/>
 		</td>
+            <td style="text-align: center">
+                <%= existingTests.isHasResults() ? "X" : ""%>
+            </td>
 		<logic:equal name='<%=formName%>' property="isEditable" value="true" >
 			<td>
 				<% if( existingTests.isCanCancel()){ %>
-				<html:checkbox name='existingTests' property='canceled' indexed='true' onchange="addRemoveRequest(this);" />
+                <input type="checkbox" name='<%="existingTests[" + index +"].canceled"%>' value="on" onchange="addRemoveRequest(this);" <%=existingTests.isHasResults() ? "class='testWithResult'" : ""%>>
 				<% }else{ %>
 				<html:checkbox name='existingTests' property='canceled' indexed='true' disabled="true" />
 				<% } %>
@@ -308,7 +417,7 @@ function processAccessionFailure(xhr)
 <hr/>
 <br/>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
-<table id="availableTestTable" width="80%">
+<table id="availableTestTable" style="width:80%">
 <caption><bean:message key="sample.edit.available.tests"/></caption>
 <tr>
 <th><%= StringUtil.getContextualMessageForKey("quick.entry.accession.number") %></th>
@@ -347,3 +456,17 @@ function processAccessionFailure(xhr)
 <logic:equal name="<%=formName%>" property="noSampleFound" value="true">
 	<bean:message key="sample.edit.sample.notFound"/>
 </logic:equal>
+
+<script type="text/javascript" >
+
+    function setSaveButton(){
+        var newAccession = $("newAccessionNumber").value;
+        var accessionChanged = newAccession.length > 1 && newAccession != "<%=accessionNumber%>";
+        var sampleItemChanged = $jq(".sampleItemChanged[value='true']").length > 0;
+        var sampleAddIsValid = typeof(sampleAddValid) != 'undefined' ?  sampleAddValid(false) : true;
+        var sampleConfirmationIsValid = typeof(sampleConfirmationValid) != 'undefined' ?  sampleConfirmationValid() : true;
+
+        $("saveButtonId").disabled = errorsOnForm() || !sampleAddIsValid || !sampleConfirmationIsValid || (checkedCount == 0  && !accessionChanged && !samplesHaveBeenAdded() && !orderChanged && !sampleItemChanged );
+    }
+
+</script>

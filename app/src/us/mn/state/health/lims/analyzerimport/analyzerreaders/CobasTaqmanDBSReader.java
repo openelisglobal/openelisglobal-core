@@ -16,13 +16,8 @@
  */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
@@ -35,6 +30,9 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CobasTaqmanDBSReader extends AnalyzerLineInserter {
 
@@ -84,10 +82,10 @@ public class CobasTaqmanDBSReader extends AnalyzerLineInserter {
 			return false;
 		}
 
-		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.COBAS_DBS, TEST_NAME);
+		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerTestNameCache.COBAS_DBS, TEST_NAME);
 
 		if (mappedName == null) {
-			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerType.COBAS_DBS, TEST_NAME);
+			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerTestNameCache.COBAS_DBS, TEST_NAME);
 		}
 
 		for (int i = 1; i < lines.size(); ++i) {

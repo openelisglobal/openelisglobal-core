@@ -16,24 +16,11 @@
  */
 package us.mn.state.health.lims.sample.action;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.DynaActionForm;
+import org.apache.struts.action.*;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -43,13 +30,10 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
-import us.mn.state.health.lims.common.services.SampleAddService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -57,18 +41,24 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
-import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory.ValueType;
-import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
-import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
+import us.mn.state.health.lims.organization.dao.OrganizationDAO;
+import us.mn.state.health.lims.organization.dao.OrganizationOrganizationTypeDAO;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationOrganizationTypeDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.person.dao.PersonDAO;
+import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
+import us.mn.state.health.lims.person.valueholder.Person;
+import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
+import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
+import us.mn.state.health.lims.requester.valueholder.SampleRequester;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
+import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
@@ -79,30 +69,31 @@ import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SampleEditUpdateAction extends BaseAction {
 
 	private static final String DEFAULT_ANALYSIS_TYPE = "MANUAL";
-	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-	private SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
-	private SampleDAO sampleDAO = new SampleDAOImpl();
-	private TestDAO testDAO = new TestDAOImpl();
-	private static String PAYMENT_STATUS_OBSERVATION_ID = null;
-	private static String CANCELED_TEST_STATUS_ID = null;
-	private static String CANCELED_SAMPLE_STATUS_ID = null;
-	private boolean deletePaymentHistory = false;
+	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+	private static final SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
+	private static final SampleDAO sampleDAO = new SampleDAOImpl();
+	private static final TestDAO testDAO = new TestDAOImpl();
+	private static final String CANCELED_TEST_STATUS_ID;
+	private static final String CANCELED_SAMPLE_STATUS_ID;
 	private ObservationHistory paymentObservation = null;
-	private ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
-	private TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
-	private SampleAddService sampleAddService; 
+	private static final ObservationHistoryDAO observationDAO = new ObservationHistoryDAOImpl();
+	private static final TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
+    private static final PersonDAO personDAO = new PersonDAOImpl();
+    private static final SampleRequesterDAO sampleRequesterDAO = new SampleRequesterDAOImpl();
+    private static final OrganizationDAO organizationDAO = new OrganizationDAOImpl();
+    private static final OrganizationOrganizationTypeDAO orgOrgTypeDAO = new OrganizationOrganizationTypeDAOImpl();
 
 	static {
-		ObservationHistoryTypeDAO ohtDAO = new ObservationHistoryTypeDAOImpl();
-		ObservationHistoryType observationType = ohtDAO.getByName("paymentStatus");
-		if (observationType != null) {
-			PAYMENT_STATUS_OBSERVATION_ID = observationType.getId();
-		}
-
-
 		CANCELED_TEST_STATUS_ID = StatusService.getInstance().getStatusID(AnalysisStatus.Canceled);
 		CANCELED_SAMPLE_STATUS_ID = StatusService.getInstance().getStatusID(SampleStatus.Canceled);
 	}
@@ -111,130 +102,205 @@ public class SampleEditUpdateAction extends BaseAction {
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		String forward = "success";
-
-		ActionMessages errors = null;
+		ActionMessages errors;
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 
-		boolean accessionNumberChanged = accessionNumberChanged(dynaForm);
+		boolean sampleChanged = accessionNumberChanged(dynaForm);
 		Sample updatedSample = null;
-		if (accessionNumberChanged) {
+
+		if (sampleChanged) {
 			errors = validateNewAccessionNumber(dynaForm.getString("newAccessionNumber"));
 			if (!errors.isEmpty()) {
 				saveErrors(request, errors);
 				request.setAttribute(Globals.ERROR_KEY, errors);
-				forward = FWD_FAIL;
 				return mapping.findForward(FWD_FAIL);
 			} else {
 				updatedSample = updateAccessionNumberInSample(dynaForm);
 			}
 		}
 
-		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.trackPatientPayment, "true")) {
-			setPaymentObservation(dynaForm, updatedSample);
-		}
+        List<SampleEditItem> existingTests = (List<SampleEditItem>)dynaForm.get( "existingTests" );
+        List<Analysis> cancelAnalysisList = createRemoveList(existingTests );
+        List<SampleItem> updateSampleItemList = createSampleItemUpdateList( existingTests );
+        List<SampleItem> cancelSampleItemList = createCancelSampleList(existingTests, cancelAnalysisList);
+        List<Analysis> addAnalysisList = createAddAanlysisList((List<SampleEditItem>) dynaForm.get("possibleTests"));
 
-		if (forward == FWD_SUCCESS) {
+        if( updatedSample == null){
+            updatedSample = sampleDAO.getSampleByAccessionNumber(dynaForm.getString("accessionNumber"));
+        }
 
-			List<Analysis> cancelAnalysisList = createRemoveList((List<SampleEditItem>) dynaForm.get("existingTests"));
-			List<SampleItem> cancelSampleItemList = createCancelSampleList((List<SampleEditItem>) dynaForm.get("existingTests"),
-					cancelAnalysisList);
-			List<Analysis> addAnalysisList = createAddAanlysisList((List<SampleEditItem>) dynaForm.get("possibleTests"));
+        String receivedDateForDisplay = updatedSample.getReceivedDateForDisplay();
+        String collectionDateFromRecieveDate = null;
+        boolean useReceiveDateForCollectionDate = !FormFields.getInstance().useField(Field.CollectionDate);
 
-			List<SampleTestCollection> addedSamples = createAddSampleList(dynaForm, addAnalysisList, updatedSample);
-			Transaction tx = HibernateUtil.getSession().beginTransaction();
+        if (useReceiveDateForCollectionDate) {
+            collectionDateFromRecieveDate = receivedDateForDisplay + " 00:00:00";
+        }
 
-			try {
+        SampleAddService sampleAddService = new SampleAddService(dynaForm.getString("sampleXML"), currentUserId, updatedSample, collectionDateFromRecieveDate);
+        List<SampleTestCollection> addedSamples = createAddSampleList(dynaForm, sampleAddService);
 
-				for (Analysis analysis : cancelAnalysisList) {
-					analysisDAO.updateData(analysis);
-				}
+        SampleOrderService sampleOrderService = new SampleOrderService( (SampleOrderItem )dynaForm.get("sampleOrderItems") );
+        SampleOrderService.SampleOrderPersistenceArtifacts orderArtifacts = sampleOrderService.getPersistenceArtifacts( updatedSample, currentUserId);
 
-				for (Analysis analysis : addAnalysisList) {
-					if (analysis.getId() == null) {
-						analysisDAO.insertData(analysis, false); // don't check
-																	// for
-																	// duplicates
-					} else {
-						analysisDAO.updateData(analysis);
-					}
-				}
+        if( orderArtifacts.getSample() != null){
+            sampleChanged = true;
+            updatedSample = orderArtifacts.getSample();
+        }
 
-				for (SampleItem sampleItem : cancelSampleItemList) {
-					sampleItemDAO.updateData(sampleItem);
-				}
+        Person referringPerson = orderArtifacts.getProviderPerson();
+        Patient patient = new SampleService( updatedSample ).getPatient();
 
-				if (accessionNumberChanged) {
-					sampleDAO.updateData(updatedSample);
-				}
+        Transaction tx = HibernateUtil.getSession().beginTransaction();
 
-				if (paymentObservation != null) {
-					if (deletePaymentHistory) {
-						List<ObservationHistory> shortList = new ArrayList<ObservationHistory>();
-						shortList.add(paymentObservation);
-						observationDAO.delete(shortList);
-					} else if (GenericValidator.isBlankOrNull(paymentObservation.getId())) {
-						observationDAO.insertData(paymentObservation);
-					} else {
-						observationDAO.updateData(paymentObservation);
-					}
-				}
+        try {
 
-				for( SampleTestCollection sampleTestCollection : addedSamples){
-					sampleItemDAO.insertData(sampleTestCollection.item);
+            for( SampleItem sampleItem : updateSampleItemList){
+                sampleItemDAO.updateData( sampleItem );
+            }
 
-					for (Test test : sampleTestCollection.tests) {
-						testDAO.getData(test);
+            for (Analysis analysis : cancelAnalysisList) {
+                analysisDAO.updateData(analysis);
+            }
 
-						Analysis analysis = populateAnalysis(sampleTestCollection, test, sampleTestCollection.testIdToUserSectionMap.get(test.getId()) );
-						analysisDAO.insertData(analysis, false); // false--do not check
-						// for duplicates
-					}
-					
-					if( sampleTestCollection.initialSampleConditionIdList != null){
-						for( ObservationHistory observation : sampleTestCollection.initialSampleConditionIdList){
-							observation.setSampleItemId(sampleTestCollection.item.getId());
-							observationDAO.insertData(observation);
-						}
-					}
-				}
-				
-				tx.commit();
-			} catch (LIMSRuntimeException lre) {
-				tx.rollback();
-				errors = new ActionMessages();
-				if (lre.getException() instanceof StaleObjectStateException) {
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.OptimisticLockException", null, null));
-				} else {
-					lre.printStackTrace();
-					errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.UpdateException", null, null));
-				}
+            for (Analysis analysis : addAnalysisList) {
+                if (analysis.getId() == null) {
+                    analysisDAO.insertData(analysis, false); // don't check for duplicates
+                } else {
+                    analysisDAO.updateData(analysis);
+                }
+            }
 
-				saveErrors(request, errors);
-				request.setAttribute(Globals.ERROR_KEY, errors);
+            for (SampleItem sampleItem : cancelSampleItemList) {
+                sampleItemDAO.updateData(sampleItem);
+            }
 
-				return mapping.findForward(FWD_FAIL);
+            if (sampleChanged ) {
+                sampleDAO.updateData(updatedSample);
+            }
 
-			} finally {
-				HibernateUtil.closeSession();
-			}
-		}
+            if (paymentObservation != null) {
+                paymentObservation.setPatientId( patient.getId() );
+                observationDAO.insertOrUpdateData( paymentObservation );
+            }
 
-		String sampleEditWritability = (String) request.getSession().getAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE);
+            for( SampleTestCollection sampleTestCollection : addedSamples){
+                sampleItemDAO.insertData(sampleTestCollection.item);
 
-		if (GenericValidator.isBlankOrNull(sampleEditWritability)) {
-			return mapping.findForward(forward);
+                for (Test test : sampleTestCollection.tests) {
+                    testDAO.getData(test);
+
+                    Analysis analysis = populateAnalysis(sampleTestCollection, test, sampleTestCollection.testIdToUserSectionMap.get(test.getId()), sampleAddService );
+                    analysisDAO.insertData(analysis, false); // false--do not check for duplicates
+                }
+
+                if( sampleTestCollection.initialSampleConditionIdList != null){
+                    for( ObservationHistory observation : sampleTestCollection.initialSampleConditionIdList){
+                        observation.setPatientId( patient.getId() );
+                        observation.setSampleItemId(sampleTestCollection.item.getId());
+                        observation.setSampleId(sampleTestCollection.item.getSample().getId());
+                        observation.setSysUserId( currentUserId );
+                        observationDAO.insertData(observation);
+                    }
+                }
+            }
+
+            if( referringPerson != null){
+                if(referringPerson.getId() == null){
+                    personDAO.insertData( referringPerson );
+                }else{
+                    personDAO.updateData( referringPerson );
+                }
+            }
+
+            for(ObservationHistory observation : orderArtifacts.getObservations()){
+                observationDAO.insertOrUpdateData( observation );
+            }
+
+            if( orderArtifacts.getSamplePersonRequester() != null){
+                SampleRequester samplePersonRequester = orderArtifacts.getSamplePersonRequester();
+                samplePersonRequester.setRequesterId( orderArtifacts.getProviderPerson().getId() );
+                sampleRequesterDAO.insertOrUpdateData( samplePersonRequester );
+            }
+
+            if( orderArtifacts.getProviderOrganization() != null ){
+                boolean link = orderArtifacts.getProviderOrganization().getId() == null;
+                organizationDAO.insertOrUpdateData( orderArtifacts.getProviderOrganization() );
+                if( link){
+                    orgOrgTypeDAO.linkOrganizationAndType( orderArtifacts.getProviderOrganization(), RequesterService.REFERRAL_ORG_TYPE_ID );
+                }
+            }
+
+            if( orderArtifacts.getSampleOrganizationRequester() != null){
+                if(orderArtifacts.getProviderOrganization() != null ){
+                    orderArtifacts.getSampleOrganizationRequester().setRequesterId( orderArtifacts.getProviderOrganization().getId() );
+                }
+                sampleRequesterDAO.insertOrUpdateData( orderArtifacts.getSampleOrganizationRequester());
+            }
+
+            if( orderArtifacts.getDeletableSampleOrganizationRequester() != null){
+                sampleRequesterDAO.delete(orderArtifacts.getDeletableSampleOrganizationRequester());
+            }
+
+            tx.commit();
+        } catch (LIMSRuntimeException lre) {
+            tx.rollback();
+            errors = new ActionMessages();
+            if (lre.getException() instanceof StaleObjectStateException) {
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.OptimisticLockException", null, null));
+            } else {
+                lre.printStackTrace();
+                errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("errors.UpdateException", null, null));
+            }
+
+            saveErrors(request, errors);
+            request.setAttribute(Globals.ERROR_KEY, errors);
+
+            return mapping.findForward(FWD_FAIL);
+
+        } finally {
+            HibernateUtil.closeSession();
+        }
+
+
+		String sampleEditWritable = (String) request.getSession().getAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE);
+
+		if (GenericValidator.isBlankOrNull(sampleEditWritable)) {
+			return mapping.findForward(FWD_SUCCESS);
 		} else {
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("type", sampleEditWritability);
-			return getForwardWithParameters(mapping.findForward(forward), params);
+			params.put("type", sampleEditWritable);
+			return getForwardWithParameters(mapping.findForward(FWD_SUCCESS), params);
 		}
 
 	}
 
-	private Analysis populateAnalysis(SampleTestCollection sampleTestCollection, Test test, String userSelectedTestSection) {
+    private List<SampleItem> createSampleItemUpdateList( List<SampleEditItem> existingTests ){
+        List<SampleItem> modifyList = new ArrayList<SampleItem>(  );
+
+        for( SampleEditItem editItem : existingTests){
+            if(editItem.isSampleItemChanged()){
+                SampleItem sampleItem = sampleItemDAO.getData( editItem.getSampleItemId() );
+                if( sampleItem != null ){
+                    String collectionTime = editItem.getCollectionDate();
+                    if(GenericValidator.isBlankOrNull( collectionTime )){
+                        sampleItem.setCollectionDate( null );
+                    } else {
+                        collectionTime += " " + (GenericValidator.isBlankOrNull(editItem.getCollectionTime()) ? "00:00" : editItem.getCollectionTime());
+                        sampleItem.setCollectionDate( DateUtil.convertStringDateToTimestamp( collectionTime ));
+                    }
+                    sampleItem.setSysUserId( currentUserId );
+                    modifyList.add( sampleItem );
+                }
+            }
+        }
+
+        return modifyList;
+    }
+
+    private Analysis populateAnalysis(SampleTestCollection sampleTestCollection, Test test, String userSelectedTestSection, SampleAddService sampleAddService) {
 		java.sql.Date collectionDateTime = DateUtil.convertStringDateTimeToSqlDate(sampleTestCollection.collectionDate);
 		TestSection testSection = test.getTestSection();
 		if( !GenericValidator.isBlankOrNull(userSelectedTestSection)){
@@ -257,21 +323,8 @@ public class SampleEditUpdateAction extends BaseAction {
 		return analysis;
 	}
 	
-	private List<SampleTestCollection> createAddSampleList(DynaActionForm dynaForm, List<Analysis> addAnalysisList, Sample sample) {
-		if( sample == null){
-			sample = sampleDAO.getSampleByAccessionNumber(dynaForm.getString("accessionNumber"));
-		}
-		
-		String receivedDateForDisplay = sample.getReceivedDateForDisplay();
-		String collectionDateFromRecieveDate = null;
-		boolean useReceiveDateForCollectionDate = !FormFields.getInstance().useField(Field.CollectionDate);
-		
-		if (useReceiveDateForCollectionDate) {
-			collectionDateFromRecieveDate = receivedDateForDisplay + " 00:00:00";
-		}
-		
-		sampleAddService = new SampleAddService(dynaForm.getString("sampleXML"), currentUserId, sample, collectionDateFromRecieveDate);
-		
+	private List<SampleTestCollection> createAddSampleList(DynaActionForm dynaForm, SampleAddService sampleAddService) {
+
 		String maxAccessionNumber = dynaForm.getString("maxAccessionNumber");
 		if( !GenericValidator.isBlankOrNull(maxAccessionNumber)){		
 			sampleAddService.setInitialSampleItemOrderValue(Integer.parseInt(maxAccessionNumber.split("-")[1]));
@@ -336,53 +389,10 @@ public class SampleEditUpdateAction extends BaseAction {
 		return false;
 	}
 
-	private void setPaymentObservation(DynaActionForm dynaForm, Sample updatedSample) {
-		deletePaymentHistory = false;
-		paymentObservation = null;
-		String paymentValue = dynaForm.getString("paymentOptionSelection");
-
-		/*
-		 * Cases to handle 1. value in DB no selected value 2. value in DB
-		 * selected value different 3. value in DB selected value same 4. no
-		 * value in DB selected value 5. no value in DB no selected value
-		 */
-
-		if (updatedSample == null) {
-			updatedSample = sampleDAO.getSampleByAccessionNumber(dynaForm.getString("accessionNumber"));
-		}
-
-		paymentObservation = observationDAO.getObservationHistoriesBySampleIdAndType(updatedSample.getId(), PAYMENT_STATUS_OBSERVATION_ID);
-		if (paymentObservation != null) {
-			if (GenericValidator.isBlankOrNull(paymentValue)) {
-				deletePaymentHistory = true;
-			} else {
-				if (paymentObservation.getValue().equals(paymentValue)) {
-					paymentObservation = null;
-				} else {
-					paymentObservation.setValue(paymentValue);
-				}
-			}
-		} else if (!GenericValidator.isBlankOrNull(paymentValue)) {
-			Patient patient = new SampleHumanDAOImpl().getPatientForSample(updatedSample);
-			if (patient != null) {
-				paymentObservation = new ObservationHistory();
-				paymentObservation.setSampleId(updatedSample.getId());
-				paymentObservation.setObservationHistoryTypeId(PAYMENT_STATUS_OBSERVATION_ID);
-				paymentObservation.setValueType(ValueType.DICTIONARY);
-				paymentObservation.setPatientId(patient.getId());
-				paymentObservation.setValue(paymentValue);
-			}
-		}
-
-		if (paymentObservation != null) {
-			paymentObservation.setSysUserId(currentUserId);
-		}
-
-	}
 
 	private ActionMessages validateNewAccessionNumber(String accessionNumber) {
 		ActionMessages errors = new ActionMessages();
-		ValidationResults results = AccessionNumberUtil.correctFormat(accessionNumber);
+		ValidationResults results = AccessionNumberUtil.correctFormat(accessionNumber, false);
 
 		if (results != ValidationResults.SUCCESS) {
 			errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("sample.entry.invalid.accession.number.format", null, null));
@@ -407,12 +417,9 @@ public class SampleEditUpdateAction extends BaseAction {
 	private boolean accessionNumberChanged(DynaActionForm dynaForm) {
 		String newAccessionNumber = dynaForm.getString("newAccessionNumber");
 
-		if (GenericValidator.isBlankOrNull(newAccessionNumber)) {
-			return false;
-		}
+        return !GenericValidator.isBlankOrNull( newAccessionNumber ) && !newAccessionNumber.equals( dynaForm.getString( "accessionNumber" ) );
 
-		return !newAccessionNumber.equals(dynaForm.getString("accessionNumber"));
-	}
+    }
 
 	private List<Analysis> createRemoveList(List<SampleEditItem> tests) {
 		List<Analysis> removeAnalysisList = new ArrayList<Analysis>();
@@ -427,7 +434,7 @@ public class SampleEditUpdateAction extends BaseAction {
 		return removeAnalysisList;
 	}
 
-	private Analysis getCancelableAnalysis(SampleEditItem sampleEditItem) {
+    private Analysis getCancelableAnalysis(SampleEditItem sampleEditItem) {
 		Analysis analysis = new Analysis();
 		analysis.setId(sampleEditItem.getAnalysisId());
 		analysisDAO.getData(analysis);

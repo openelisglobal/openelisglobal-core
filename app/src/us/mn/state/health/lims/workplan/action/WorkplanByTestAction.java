@@ -17,33 +17,31 @@
  */
 package us.mn.state.health.lims.workplan.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
-import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
+import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.valueholder.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class WorkplanByTestAction extends BaseWorkplanAction {
 
@@ -152,6 +150,7 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 		List<TestResultItem> workplanTestList = new ArrayList<TestResultItem>();
 		String currentAccessionNumber = new String();
 		String subjectNumber = new String();
+		String patientName = new String();
 		String nextVisit = new String();
 		int sampleGroupingNumber = 0;
 
@@ -174,10 +173,12 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 					sampleGroupingNumber++;
 					currentAccessionNumber = testResultItem.getAccessionNumber();
 					subjectNumber = getSubjectNumber(analysis);
-					nextVisit = ObservationHistoryService.getValue(ObservationType.NEXT_VISIT_DATE, sample);
+					patientName = getPatientName(analysis);
+					nextVisit = ObservationHistoryService.getValueForSample( ObservationType.NEXT_VISIT_DATE, sample.getId() );
 				}
 				testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
 				testResultItem.setPatientInfo(subjectNumber);
+				testResultItem.setPatientName(patientName);
 				testResultItem.setNextVisitDate(nextVisit);
 				
 				
@@ -237,15 +238,9 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 
 		return workplanTestList;
 	}
-
+		
 	private String getTestName(String testId) {
-
-		Test test = new Test();
-		test.setId(testId);
-
-		test = testDAO.getTestById(test);
-
-		return test.getName();
+		return testDAO.getNameForTestId( testId );
 	}
 
 	class TestDescriptionComparator implements Comparator<Test> {

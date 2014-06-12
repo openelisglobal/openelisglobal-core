@@ -16,19 +16,10 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
@@ -51,6 +42,8 @@ import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 
+import java.util.*;
+
 public class RetroCINonConformityNotification extends RetroCIReport implements IReportCreator, IReportParameterSetter {
 
 	private static SampleQaEventDAO sampleQADAO = new SampleQaEventDAOImpl();
@@ -58,7 +51,6 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 	private static SampleDAO sampleDAO = new SampleDAOImpl();
 	private List<NonConformityReportData> reportItems;
 	private String requestedAccessionNumber;
-	private String serviceId;
 	private List<String> sampleQaEventIds;
 	private Set<String> checkIdsForPriorPrintRecord;
 	
@@ -70,10 +62,8 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 	public void setRequestParameters(BaseActionForm dynaForm) {
 		try {
 			PropertyUtils.setProperty(dynaForm, "reportName", StringUtil.getMessageForKey("reports.nonConformity.notification.report"));
-			PropertyUtils.setProperty(dynaForm, "useSiteList", Boolean.TRUE);
+            PropertyUtils.setProperty(dynaForm, "selectList", new ReportSpecificationList( getSiteList(), StringUtil.getMessageForKey( "report.select.site" )));
 			PropertyUtils.setProperty(dynaForm, "useAccessionDirect", Boolean.TRUE);
-			PropertyUtils.setProperty(dynaForm, "siteList", getSiteList());
-			PropertyUtils.setProperty(dynaForm, "siteName", "");
 			PropertyUtils.setProperty(dynaForm, "instructions",
 					StringUtil.getMessageForKey("reports.nonConformity.notification.report.instructions"));
 		} catch (Exception e) {
@@ -133,20 +123,21 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 		checkIdsForPriorPrintRecord = new HashSet<String>();
 		errorFound = false;
 		requestedAccessionNumber = dynaForm.getString("accessionDirect");
-		serviceId = dynaForm.getString("siteName");
+        ReportSpecificationList specificationList = (ReportSpecificationList)dynaForm.get("selectList");
+
 		createReportParameters();
 
-		errorFound = !validateSubmitParameters();
+		errorFound = !validateSubmitParameters(specificationList.getSelection());
 		if (errorFound) {
 			return;
 		}
-		createReportItems();
+		createReportItems(specificationList.getSelection());
 		if (this.reportItems.size() == 0) {
 			add1LineErrorMessage("report.error.message.noPrintableItems");
 		}
 	}
 
-	private boolean validateSubmitParameters() {
+	private boolean validateSubmitParameters(String serviceId) {
 		if (GenericValidator.isBlankOrNull(requestedAccessionNumber) && (GenericValidator.isBlankOrNull(serviceId) || "0".equals(serviceId))) {
 			add1LineErrorMessage("report.error.message.noParameters");
 			return false;
@@ -163,9 +154,9 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 		return true;
 	}
 
-	private void createReportItems() {
+	private void createReportItems(String serviceId) {
 		reportItems = new ArrayList<NonConformityReportData>();
-		List<Sample> samples = getNonConformingSamples();
+		List<Sample> samples = getNonConformingSamples(serviceId);
 
 		samples = sortAndFilterSamples(samples);
 
@@ -175,7 +166,7 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 
 	}
 
-	private List<Sample> getNonConformingSamples() {
+	private List<Sample> getNonConformingSamples(String serviceId) {
 		List<Sample> samples = new ArrayList<Sample>();
 
 		if (!GenericValidator.isBlankOrNull(requestedAccessionNumber)) {

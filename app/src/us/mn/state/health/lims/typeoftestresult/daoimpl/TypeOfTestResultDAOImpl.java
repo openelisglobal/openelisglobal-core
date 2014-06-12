@@ -15,24 +15,24 @@
 */
 package us.mn.state.health.lims.typeoftestresult.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.beanutils.PropertyUtils;
-
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSDuplicateRecordException;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.typeoftestresult.dao.TypeOfTestResultDAO;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
+
+import java.util.List;
 
 /**
  * @author diane benz
@@ -46,7 +46,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 			for (int i = 0; i < typeOfTestResults.size(); i++) {
 				TypeOfTestResult data = (TypeOfTestResult)typeOfTestResults.get(i);
 			
-				TypeOfTestResult oldData = (TypeOfTestResult)readTypeOfTestResult(data.getId());
+				TypeOfTestResult oldData = readTypeOfTestResult(data.getId());
 				TypeOfTestResult newData = new TypeOfTestResult();
 
 				String sysUserId = data.getSysUserId();
@@ -55,7 +55,6 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 				auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
 			}
 		}  catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("TypeOfTestResultDAOImpl","AuditTrail deleteData()",e.toString());
 			throw new LIMSRuntimeException("Error in TypeOfTestResult AuditTrail deleteData()", e);
 		}  
@@ -63,14 +62,13 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 		try {		
 			for (int i = 0; i < typeOfTestResults.size(); i++) {
 				TypeOfTestResult data = (TypeOfTestResult) typeOfTestResults.get(i);
-				//bugzilla 2206
-				data = (TypeOfTestResult)readTypeOfTestResult(data.getId());
+
+				data = readTypeOfTestResult(data.getId());
 				HibernateUtil.getSession().delete(data);
 				HibernateUtil.getSession().flush();
 				HibernateUtil.getSession().clear();			
 			}			
 		} catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("TypeOfTestResultDAOImpl","deleteData()",e.toString());
 			throw new LIMSRuntimeException("Error in TypeOfTestResult deleteData()", e);
 		}
@@ -120,18 +118,15 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 					e);
 		}
 		
-		TypeOfTestResult oldData = (TypeOfTestResult)readTypeOfTestResult(typeOfTestResult.getId());
-		TypeOfTestResult newData = typeOfTestResult;
+		TypeOfTestResult oldData = readTypeOfTestResult(typeOfTestResult.getId());
 
-		//add to audit trail
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = typeOfTestResult.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "TYPE_OF_TEST_RESULT";
-			auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
+			auditDAO.saveHistory(typeOfTestResult,oldData,sysUserId,event,tableName);
 		}  catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("TypeOfTestResultDAOImpl","AuditTrail updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in TypeOfTestResult AuditTrail updateData()", e);
 		}  
@@ -167,7 +162,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 	}
 
 	public List getAllTypeOfTestResults() throws LIMSRuntimeException {
-		List list = new Vector();
+		List list;
 		try {
 			String sql = "from TypeOfTestResult";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -186,12 +181,11 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 	}
 
 	public List getPageOfTypeOfTestResults(int startingRecNo) throws LIMSRuntimeException {
-		List list = new Vector();
+		List list;
 		try {
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
-			
-			//bugzilla 1399
+
 			String sql = "from TypeOfTestResult t order by t.description";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setFirstResult(startingRecNo-1);
@@ -210,7 +204,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 	}
 
 	public TypeOfTestResult readTypeOfTestResult(String idString) {
-		TypeOfTestResult data = null;
+		TypeOfTestResult data;
 		try {
 			data = (TypeOfTestResult)HibernateUtil.getSession().get(TypeOfTestResult.class, idString);
 			HibernateUtil.getSession().flush();
@@ -243,7 +237,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 	//overriding BaseDAOImpl bugzilla 1427 pass in name not id
 	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException {	
 				
-		List list = new Vector();
+		List list;
 		try {			
 			String sql = "from "+table+" t where description >= "+ enquote(id) + " order by t.description";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -264,7 +258,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 	//overriding BaseDAOImpl bugzilla 1427 pass in name not id
 	public List getPreviousRecord(String id, String table, Class clazz) throws LIMSRuntimeException {		
 		
-		List list = new Vector();
+		List list;
 		try {			
 			String sql = "from "+table+" t order by t.description desc where description <= "+ enquote(id);
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -285,7 +279,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 	private boolean duplicateTypeOfTestResultExists(TypeOfTestResult typeOfTestResult) throws LIMSRuntimeException {
 		try {
 
-			List list = new ArrayList();
+			List list;
 
 			// not case sensitive hemolysis and Hemolysis are considered
 			// duplicates
@@ -307,11 +301,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 
-			if (list.size() > 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return list.size() > 0;
 
 		} catch (Exception e) {
 			//bugzilla 2154
@@ -341,12 +331,26 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 			HibernateUtil.getSession().clear();
 
 		} catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("TypeOfTestResultDAOImpl","getTypeOfTestResultByType()",e.toString());
-			throw new LIMSRuntimeException(
-					"Error in getTypeOfTestResultByType()", e);
+			throw new LIMSRuntimeException(	"Error in getTypeOfTestResultByType()", e);
 		}
 
 		return totr;
 	}
+
+    @Override
+    public TypeOfTestResult getTypeOfTestResultByType( String type ) throws LIMSRuntimeException{
+        String sql ="from TypeOfTestResult ttr where ttr.testResultType = :type";
+        try{
+            Query query = HibernateUtil.getSession().createQuery( sql );
+            query.setString( "type", type );
+            TypeOfTestResult typeOfTestResult = (TypeOfTestResult)query.uniqueResult();
+            closeSession();
+            return typeOfTestResult;
+        }catch( HibernateException e ){
+            handleException( e, "getTypeOfTestResultByType" );
+        }
+
+        return null;
+    }
 }

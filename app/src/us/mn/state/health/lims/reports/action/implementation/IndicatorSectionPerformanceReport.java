@@ -16,18 +16,8 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
-import org.apache.commons.beanutils.PropertyUtils;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -37,7 +27,6 @@ import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
@@ -49,8 +38,10 @@ import us.mn.state.health.lims.test.dao.TestSectionDAO;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
+import java.util.*;
+
 @SuppressWarnings("unchecked")
-public class IndicatorSectionPerformanceReport extends RetroCIReport implements IReportParameterSetter, IReportCreator{
+public class IndicatorSectionPerformanceReport extends RetroCIReport implements  IReportCreator{
 
 	private List<SectionPerformanceData> reportItems;
 	private static String BIOCHEMISTRY_SECTION_ID;
@@ -85,21 +76,6 @@ public class IndicatorSectionPerformanceReport extends RetroCIReport implements 
 	@Override
 	protected String reportFileName(){
 		return "RetroCI_backlog";
-	}
-
-	public void setRequestParameters(BaseActionForm dynaForm){
-		try{
-			PropertyUtils.setProperty(dynaForm, "reportName", StringUtil.getMessageForKey("reports.label.indicator.performance"));
-			PropertyUtils.setProperty(dynaForm, "noRequestSpecifications", Boolean.TRUE);
-
-			//PropertyUtils.setProperty(dynaForm, "exportOptions", getExportOptions());
-		}catch(IllegalAccessException e){
-			e.printStackTrace();
-		}catch(InvocationTargetException e){
-			e.printStackTrace();
-		}catch(NoSuchMethodException e){
-			e.printStackTrace();
-		}
 	}
 
 	public JRDataSource getReportDataSource() throws IllegalStateException{

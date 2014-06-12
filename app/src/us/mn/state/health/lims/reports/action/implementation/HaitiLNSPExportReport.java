@@ -16,25 +16,20 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
-import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -56,6 +51,10 @@ import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 public class HaitiLNSPExportReport extends CSVExportReport{
 
 	private DateRange dateRange;
@@ -70,7 +69,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 	private static final SampleRequesterDAO sampleRequesterDAO = new SampleRequesterDAOImpl();
 	private static final OrganizationDAO organizationDAO = new OrganizationDAOImpl();
 	private static final long ORGANIZTION_REFERRAL_TYPE_ID;
-	private List<TestSegmentedExportBean> testExportList;
+	protected List<TestSegmentedExportBean> testExportList;
 
 	static{
 		String orgTypeId = new RequesterTypeDAOImpl().getRequesterTypeByName("organization").getId();
@@ -152,7 +151,8 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ts.setSampleType(sampleItem.getTypeOfSample().getLocalizedName());
 		ts.setTestBench(analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName());
 		ts.setTestName(analysis.getTest() == null ? "" : analysis.getTest().getTestName());
-		
+        ts.setDepartment( StringUtil.blankIfNull(patientService.getAddressComponents().get(PatientService.ADDRESS_DEPT) ) );
+
 		if(requesterOrganization != null){
 			ts.setSiteCode(requesterOrganization.getShortName());
 			ts.setReferringSiteName(requesterOrganization.getOrganizationName());
@@ -163,13 +163,13 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 
 			List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 			if(!resultList.isEmpty()){
-				setAppropriateResults(resultList, ts);
+				setAppropriateResults(resultList, analysis, ts);
 			}
 		}
 		testExportList.add(ts);
 	}
 
-	@Override
+    @Override
 	protected String errorReportFileName(){
 		return HAITI_ERROR_REPORT;
 	}
@@ -223,7 +223,6 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 	}
 
 	private String createReadableAge(String dob){
-		System.out.println(dob);
 		if(GenericValidator.isBlankOrNull(dob)){
 			return "";
 		}
@@ -232,7 +231,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		Date dobDate = DateUtil.convertStringDateToSqlDate(dob);
 		int months = DateUtil.getAgeInMonths(dobDate, DateUtil.getNowAsSqlDate());
 		if(months > 35){
-			return ((int)months / 12) + " A";
+			return (months / 12) + " A";
 		}else if(months > 0){
 			return months + " M";
 		}else{
@@ -242,61 +241,14 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 
 	}
 
-	private void setAppropriateResults(List<Result> resultList, TestSegmentedExportBean data){
+	private void setAppropriateResults(List<Result> resultList, Analysis analysis, TestSegmentedExportBean data){
 		Result result = resultList.get(0);
-		String reportResult = "";
-		if("D".equals(result.getResultType())){
-			Dictionary dictionary = new Dictionary();
-			for(Result siblingResult : resultList){
-				if(!GenericValidator.isBlankOrNull(siblingResult.getValue()) && !"null".endsWith(siblingResult.getValue())){
-					dictionary.setId(siblingResult.getValue());
-					dictionaryDAO.getData(dictionary);
-					reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
-					if(siblingResult.getAnalyte() != null && "Conclusion".equals(siblingResult.getAnalyte().getAnalyteName())){
-						break;
-					}
-				}
-			}
-		}else if("Q".equals(result.getResultType())){
-			List<Result> childResults = resultDAO.getChildResults(result.getId());
-			String childResult = childResults.get(0).getValue();
-
-			Dictionary dictionary = new Dictionary();
-			dictionary.setId(result.getValue());
-			dictionaryDAO.getData(dictionary);
-
-			reportResult = (dictionary.getId() != null ? dictionary.getLocalizedName() : "") + ": " + ("".equals(childResult) ? "n/a" : childResult);
-
-		}else if("M".equals(result.getResultType())){
-			Dictionary dictionary = new Dictionary();
-			StringBuilder multiResult = new StringBuilder();
-
-			Collections.sort(resultList, new Comparator<Result>(){
-				@Override
-				public int compare(Result o1, Result o2){
-					return Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
-				}
-			});
-
-			for(Result subResult : resultList){
-				dictionary.setId(subResult.getValue());
-				dictionaryDAO.getData(dictionary);
-
-				if(dictionary.getId() != null){
-					multiResult.append(dictionary.getLocalizedName());
-					multiResult.append(", ");
-				}
-			}
-
-			if(multiResult.length() > 1){
-				// remove last ","
-				multiResult.setLength(multiResult.length() - 2);
-			}
-
-			reportResult = multiResult.toString();
-		}else{
-			reportResult = result.getValue();
-		}
+        ResultService resultService = new ResultService( result );
+		String reportResult = resultService.getResultValue( true );
+        Result quantifiableResult = new AnalysisService(analysis).getQuantifiedResult();
+        if( quantifiableResult != null){
+            reportResult += ":" + quantifiableResult.getValue();
+        }
 
 		data.setResult(reportResult.replace(",", ";"));
 

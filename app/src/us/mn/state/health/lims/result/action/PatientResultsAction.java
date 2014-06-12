@@ -17,51 +17,53 @@
  */
 package us.mn.state.health.lims.result.action;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
+import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
 import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
 import us.mn.state.health.lims.patient.valueholder.Patient;
-import us.mn.state.health.lims.referral.util.ReferralUtil;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.action.util.ResultsPaging;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 
-public class PatientResultsAction extends BaseAction {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
-	private ResultsLoadUtility resultsUtility;
-	private InventoryUtility inventoryUtility = new InventoryUtility();
+public class PatientResultsAction extends BaseAction {
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		resultsUtility = new ResultsLoadUtility(currentUserId);
+
+        ResultsLoadUtility resultsUtility = new ResultsLoadUtility( currentUserId );
 		String forward = FWD_SUCCESS;
 
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 		PropertyUtils.setProperty(dynaForm, "displayTestKit", Boolean.FALSE);
-		PropertyUtils.setProperty(dynaForm, "referralReasons", ReferralUtil.getReferralReasons());
+		PropertyUtils.setProperty(dynaForm, "referralReasons", DisplayListService.getList( DisplayListService.ListType.REFERRAL_REASONS));
+        PropertyUtils.setProperty( dynaForm, "rejectReasons", DisplayListService.getNumberedListWithLeadingBlank( DisplayListService.ListType.REJECTION_REASONS ) );
+        PatientSearch patientSearch = new PatientSearch();
+        patientSearch.setLoadFromServerWithPatient( true );
+        patientSearch.setSelectedPatientActionButtonText( StringUtil.getMessageForKey( "resultsentry.patient.search" ) );
+        PropertyUtils.setProperty(dynaForm, "patientSearch", patientSearch);
 
 		ResultsPaging paging = new ResultsPaging();
 		String newPage = request.getParameter("page");
@@ -70,28 +72,28 @@ public class PatientResultsAction extends BaseAction {
 			String patientID = request.getParameter("patientID");
 
 			if (!GenericValidator.isBlankOrNull(patientID)) {
-				List<TestResultItem> results = new ArrayList<TestResultItem>();
+
 				PropertyUtils.setProperty(dynaForm, "searchFinished", Boolean.TRUE);
 				Patient patient = getPatient(patientID);
 
 				String statusRules = ConfigurationProperties.getInstance().getPropertyValueUpperCase(Property.StatusRules);
 				if (statusRules.equals(	IActionConstants.STATUS_RULES_RETROCI)) {
-					resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.TechnicalRejected);
-					resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.Canceled);
+					resultsUtility.addExcludedAnalysisStatus( AnalysisStatus.TechnicalRejected );
+					resultsUtility.addExcludedAnalysisStatus( AnalysisStatus.Canceled );
 				}else if (statusRules.equals(IActionConstants.STATUS_RULES_HAITI) ||
 						  statusRules.equals(IActionConstants.STATUS_RULES_HAITI_LNSP) ) {
-					resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.ReferredIn);
-					resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.Canceled);
+					resultsUtility.addExcludedAnalysisStatus( AnalysisStatus.ReferredIn );
+					resultsUtility.addExcludedAnalysisStatus( AnalysisStatus.Canceled );
 				}
 
-				results = resultsUtility.getGroupedTestsForPatient(patient);
+                List<TestResultItem> results = resultsUtility.getGroupedTestsForPatient( patient );
 
 				PropertyUtils.setProperty(dynaForm, "testResult", results);
 
 				// move this out of results utility
-				resultsUtility.addIdentifingPatientInfo(patient, dynaForm);
+				resultsUtility.addIdentifingPatientInfo( patient, dynaForm );
 
-				if (resultsUtility.inventoryNeeded()) {
+				if ( resultsUtility.inventoryNeeded()) {
 					addInventory(dynaForm);
 					PropertyUtils.setProperty(dynaForm, "displayTestKit", true);
 				} else {
@@ -101,7 +103,6 @@ public class PatientResultsAction extends BaseAction {
 				 paging.setDatabaseResults(request, dynaForm, results);
 
 			} else {
-				PropertyUtils.setProperty(dynaForm, "buttonText", StringUtil.getMessageForKey("resultsentry.patient.search"));
 				PropertyUtils.setProperty(dynaForm, "testResult", new ArrayList<TestResultItem>());
 				PropertyUtils.setProperty(dynaForm, "searchFinished", Boolean.FALSE);
 			}
@@ -113,7 +114,7 @@ public class PatientResultsAction extends BaseAction {
 	}
 
 	private void addInventory(DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
+        InventoryUtility inventoryUtility = new InventoryUtility();
 		List<InventoryKitItem> list = inventoryUtility.getExistingActiveInventory();
 		PropertyUtils.setProperty(dynaForm, "inventoryItems", list);
 	}

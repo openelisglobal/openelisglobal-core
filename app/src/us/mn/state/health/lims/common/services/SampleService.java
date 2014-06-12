@@ -16,23 +16,42 @@
  */
 package us.mn.state.health.lims.common.services;
 
-import java.sql.Date;
-import java.util.List;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.sample.dao.SampleDAO;
+import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
+import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
+
+import java.sql.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class SampleService {
+    private static final SampleDAO sampleDAO = new SampleDAOImpl();
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+    private static final SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
+    private static final Set<Integer> CONFIRMATION_STATUS_SET = new HashSet<Integer>(  );
+
 	private Sample sample;
-	
-	public SampleService( Sample sample){
+
+
+    public SampleService( Sample sample){
 		this.sample = sample;
 	}
 
+    public SampleService( String accessionNumber){
+        this.sample = sampleDAO.getSampleByAccessionNumber( accessionNumber );
+    }
+    static {
+        CONFIRMATION_STATUS_SET.add( Integer.parseInt( StatusService.getInstance().getStatusID( StatusService.AnalysisStatus.ReferredIn ) ) );
+    }
 	/**
 	 * Gets the date of when the order was completed
 	 * @return The date of when it was completed, null if it was not yet completed
@@ -40,21 +59,61 @@ public class SampleService {
 	public Date getCompletedDate(){
 		Date date = null;
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
-		
-		for( Analysis analysis : analysisList){
-			if( analysis.getCompletedDate() == null ){
-				return null;
-			}else if(date == null){
-				date = analysis.getCompletedDate();
-			}else if( analysis.getCompletedDate().after(date)){
-				date = analysis.getCompletedDate();
-			}
-		}
-		
-		return date;
+
+        for( Analysis analysis : analysisList ){
+            if( !isCanceled( analysis ) ){
+                if( analysis.getCompletedDate() == null ){
+                    return null;
+                }else if( date == null ){
+                    date = analysis.getCompletedDate();
+                }else if( analysis.getCompletedDate().after( date ) ){
+                    date = analysis.getCompletedDate();
+                }
+            }
+        }
+        return date;
 	}
-	
-	public Date getOrderedDate(){
+
+    private boolean isCanceled( Analysis analysis ){
+        return StatusService.getInstance().getStatusID( StatusService.AnalysisStatus.Canceled ).equals( analysis.getStatusId() );
+    }
+
+    public Date getOrderedDate(){
 		return sample.getReceivedDate();
 	}
+
+    public String getAccessionNumber(){
+        return sample.getAccessionNumber();
+    }
+
+    public String getReceivedDateForDisplay(){
+        return sample.getReceivedDateForDisplay();
+    }
+
+    public String getTwoYearReceivedDateForDisplay(){
+        String fourYearDate = getReceivedDateForDisplay();
+        int lastSlash = fourYearDate.lastIndexOf( "/" );
+        return fourYearDate.substring( 0, lastSlash + 1 ) + fourYearDate.substring( lastSlash + 3 );
+    }
+    public String getReceivedDateWithTwoYearDisplay(){ return DateUtil.convertTimestampToTwoYearStringDate( sample.getReceivedTimestamp() ); }
+
+    public String getReceivedTimeForDisplay(){
+        return sample.getReceivedTimeForDisplay();
+    }
+
+    public boolean isConfirmationSample(){
+        return !analysisDAO.getAnalysesBySampleIdAndStatusId( sample.getId(), CONFIRMATION_STATUS_SET ).isEmpty();
+    }
+
+    public Sample getSample(){
+        return sample;
+    }
+
+    public String getId(){
+        return sample.getId();
+    }
+
+    public Patient getPatient(){
+        return sampleHumanDAO.getPatientForSample( sample );
+    }
 }

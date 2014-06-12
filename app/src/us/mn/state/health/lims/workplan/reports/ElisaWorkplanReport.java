@@ -30,6 +30,7 @@ public class ElisaWorkplanReport implements IWorkplanReport {
 	private final HashMap<String, Object> parameterMap = new HashMap<String, Object>();
 	private String testSection = "";
 	private String messageKey = "banner.menu.workplan.";
+	protected String reportPath = "";
 	
 	public ElisaWorkplanReport(String testSection) {
 		messageKey = messageKey + testSection;
@@ -52,5 +53,12 @@ public class ElisaWorkplanReport implements IWorkplanReport {
 		List<AnalysisItem> workplanTests  = (List<AnalysisItem>) dynaForm.get("resultList");
 		return workplanTests;
 	}
+
+    @Override
+    public void setReportPath(String reportPath) {
+        this.reportPath = reportPath;
+        
+    }
+
 
 }

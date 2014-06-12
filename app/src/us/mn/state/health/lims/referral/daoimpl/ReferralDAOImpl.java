@@ -16,14 +16,9 @@
  */
 package us.mn.state.health.lims.referral.daoimpl;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -32,6 +27,10 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.referral.dao.ReferralDAO;
 import us.mn.state.health.lims.referral.valueholder.Referral;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  */
@@ -65,6 +64,7 @@ public class ReferralDAOImpl extends BaseDAOImpl implements ReferralDAO {
 		return null;
 	}
 
+    @SuppressWarnings("unchecked")
 	public Referral getReferralByAnalysisId(String analysisId) throws LIMSRuntimeException {
 
 		if (!GenericValidator.isBlankOrNull(analysisId)) {
@@ -73,9 +73,9 @@ public class ReferralDAOImpl extends BaseDAOImpl implements ReferralDAO {
 			try {
 				Query query = HibernateUtil.getSession().createQuery(sql);
 				query.setInteger("analysisId", Integer.parseInt(analysisId));
-				Referral referral = (Referral)query.uniqueResult();
+				List<Referral> referralList = query.list();
 				closeSession();
-				return referral;
+				return referralList.isEmpty() ? null : referralList.get( referralList.size() - 1);
 			} catch (HibernateException e) {
 				handleException(e, "getReferralByAnalysisId");
 			}
