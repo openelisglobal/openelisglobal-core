@@ -18,24 +18,9 @@
 package us.mn.state.health.lims.analyzerimport;
 
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.*;
 import us.mn.state.health.lims.analyzerimport.analyzerreaders.CobasReader;
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.dao.AnalyzerResultsDAO;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -45,6 +30,15 @@ import us.mn.state.health.lims.common.util.HibernateProxy;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.dao.TestDAO;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class CobasReaderTest {
 
@@ -96,9 +90,9 @@ public class CobasReaderTest {
 		
 		AnalyzerTestNameCache testNameCache = mock(AnalyzerTestNameCache.class);
 		AnalyzerTestNameCache.setTestInstance(testNameCache);
-		when(testNameCache.getMappedTest(AnalyzerType.COBAS_INTEGRA400, "ASTL")).thenReturn(createMappedTestName("1"));
-		when(testNameCache.getMappedTest(AnalyzerType.COBAS_INTEGRA400, "ALTL")).thenReturn(createMappedTestName("2"));
-		when(testNameCache.getEmptyMappedTestName(eq(AnalyzerType.COBAS_INTEGRA400), anyString())).thenReturn(createMappedTestName("3"));
+		when(testNameCache.getMappedTest(AnalyzerTestNameCache.COBAS_INTEGRA400_NAME, "ASTL")).thenReturn(createMappedTestName("1"));
+		when(testNameCache.getMappedTest(AnalyzerTestNameCache.COBAS_INTEGRA400_NAME, "ALTL")).thenReturn(createMappedTestName("2"));
+		when(testNameCache.getEmptyMappedTestName(eq(AnalyzerTestNameCache.COBAS_INTEGRA400_NAME), anyString())).thenReturn(createMappedTestName("3"));
 		
 		AnalyzerResultsDAO analyzerResultDAO = mock( AnalyzerResultsDAO.class);
 		CobasReader.setAnalyzerResultDAO(analyzerResultDAO);
