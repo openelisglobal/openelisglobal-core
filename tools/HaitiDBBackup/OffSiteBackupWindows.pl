@@ -42,7 +42,7 @@ sub sendOffsite{
    		my $command = $curlExe . ' -k --user ' . $upLoadUserName . ':' . $upLoadPassword
    					. ' --url ' . $upLoadtargetURL 
    					. ' --form "dataFileName=@' . $file;
-        my $command = $curlExe . ' -T ' . $file . ' ' .$upLoadUserName . ':' . $upLoadPassword . ' ' . $upLoadtargetURL
+
   		my $retryCount = 0;
    		my $sendSuccess = 0; #false
            
@@ -69,20 +69,20 @@ sub sendOffsite{
 	}           
 }
 
-my $postgres_pwd  = 'clinlims';
-my $postgres_base = 'C:\\"Program Files"\\Postgres\8.4\\';
+my $postgres_pwd  = '<password>';
+my $postgres_base = 'C:\\"Program Files"\\Postgres\\8.3\\';
 my $keepFileDays  = 30;
 my $siteId = 'setSiteID';
-my $upLoadtargetURL = 'https://sodium.cirg.washington.edu/paul-test/receive-file.pl';
-my $upLoadUserName = 'test';
-my $upLoadPassword = 'ied1poh2Ku';
+my $upLoadtargetURL = 'https://<url>';
+my $upLoadUserName = '<name>';
+my $upLoadPassword = '<password>';
 
 my $snapShotFileBase     = 'lastSnapshot_' . $siteId; 
 my $snapShotFileName     = $snapShotFileBase . '.backup'; 
-my $cmd = 'bin\pg_dump.exe -h localhost -U clinlims >' . $snapShotFileName;
+my $cmd = 'bin\pg_dump.exe -h localhost -p 5432 -U clinlims --disable-triggers -Z 9 -F p -a -v -f "' . $snapShotFileName . '" -n \"clinlims\" clinlims';
 
 my $backBaseDir          = cwd();
-my $baseFileName         = 'CDIOpenElisDB';
+my $baseFileName         = 'haitiOpenElisDB';
 my $dailyDir             = "$backBaseDir\\daily";
 my $cumulativeDir        = "$backBaseDir\\cumulative";
 my $queueDir             = "$backBaseDir\\transmissionQueue";
@@ -100,7 +100,7 @@ copy( $snapShotFileName, "$queueDir/$todaysCummlativeFile" ) or die "File cannot
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 
-#sendOffsite($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword);
+sendOffsite($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword);
 
    
 

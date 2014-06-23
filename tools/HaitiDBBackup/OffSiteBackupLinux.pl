@@ -1,6 +1,7 @@
-
+#!/usr/bin/perl -w
 use File::Copy;
 use File::stat;
+use File::Basename;
 use Cwd;
 
 sub getTimeStamp {
@@ -31,26 +32,25 @@ sub sendOffsite{
 	my $upLoadUserName = shift;
 	my $upLoadPassword = shift;
 	
-	my $maxRetryCount = 16;
-	my $curlExe = 'C:\curl\curl.exe';
+	my $maxRetryCount = 1;
+	my $curlExe = 'curl';
 
 	chdir "$queueDir";
 
-	my @files = <$queueDir/*.backup>; 
+	my @files = <$queueDir/*.backup.gz>; 
 
 	foreach $file (@files) {
-   		my $command = $curlExe . ' -k --user ' . $upLoadUserName . ':' . $upLoadPassword
-   					. ' --url ' . $upLoadtargetURL 
-   					. ' --form "dataFileName=@' . $file;
-
+	    my $command = $curlExe . ' -T ' . $file . ' --user ' .$upLoadUserName . ':' . $upLoadPassword . ' ' . $upLoadtargetURL . basename($file);
+        #print basename($file) . "\n";
   		my $retryCount = 0;
    		my $sendSuccess = 0; #false
+	    
            
    		while ($retryCount < $maxRetryCount) {
    			my $curlReturn = `$command`;
         	my $returnStatus = $?;
-        	
-        	if (($returnStatus != 0) || ($curlReturn ne 'success')) {
+			
+        	if (($returnStatus != 0) ) {
         		print "Curl had an error. Curl said \n$curlReturn\n"
         				. "Return status $returnStatus\n";
         		$retryCount = $retryCount + 1;
@@ -69,34 +69,36 @@ sub sendOffsite{
 	}           
 }
 
-my $postgres_pwd  = 'n4iatJLtPf7DbJfCmunb';
-my $postgres_base = 'C:\\"Program Files"\\Postgres\\8.3\\';
+my $postgres_pwd  = 'clinlims';
 my $keepFileDays  = 30;
-my $siteId = 'setSiteID';
-my $upLoadtargetURL = 'https://sodium.cirg.washington.edu/paul-test/receive-file.pl';
-my $upLoadUserName = 'test';
-my $upLoadPassword = 'ied1poh2Ku';
+my $siteId = 'IPCI';
+#my $upLoadtargetURL = 'https://openelis-recv.cirg.washington.edu/receive-file/receive-file.pl';
+my $upLoadtargetURL ='ftp://192.168.1.1/EFI/backup';
+my $upLoadUserName = 'backup';
+my $upLoadPassword = 'backupoe';
 
 my $snapShotFileBase     = 'lastSnapshot_' . $siteId; 
 my $snapShotFileName     = $snapShotFileBase . '.backup'; 
-my $cmd = 'bin\pg_dump.exe -h localhost -p 5432 -U clinlims --disable-triggers -Z 9 -F p -a -v -f "' . $snapShotFileName . '" -n \"clinlims\" clinlims';
-
+my $snapShotFileNameZipped     = $snapShotFileName . '.gz'; 
+my $cmd = 'pg_dump -h localhost  -U clinlims -f "' . $snapShotFileName . '" -n \"clinlims\" ci_lnsp';
+my $zipCmd = 'gzip -f ' .  $snapShotFileName;
 my $backBaseDir          = cwd();
-my $baseFileName         = 'haitiOpenElisDB';
-my $dailyDir             = "$backBaseDir\\daily";
-my $cumulativeDir        = "$backBaseDir\\cumulative";
-my $queueDir             = "$backBaseDir\\transmissionQueue";
+my $baseFileName         = 'CI_IPCIOpenElis';
+my $dailyDir             = "$backBaseDir/daily";
+my $cumulativeDir        = "$backBaseDir/cumulative";
+my $queueDir             = "$backBaseDir/transmissionQueue";
 my $timeStamp            = getTimeStamp();
-my $todaysCummlativeFile = "$baseFileName$siteId$timeStamp.backup";
+my $todaysCummlativeFile = "$siteId$baseFileName$timeStamp.backup.gz";
 my $maxTimeSpan = 60 * 60 * 24 * $keepFileDays;
 
 $ENV{'PGPASSWORD'} = "$postgres_pwd";
 
 chdir "$dailyDir";
-my $response = system("$postgres_base$cmd")  and warn "Error while running: $! \n";
+my $response = system("$cmd")  and warn "Error while running: $! \n";
+system("$zipCmd")  and warn "Error while running: $! \n";
 
-copy( $snapShotFileName, "$cumulativeDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
-copy( $snapShotFileName, "$queueDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
+copy( $snapShotFileNameZipped, "$cumulativeDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
+copy( $snapShotFileNameZipped, "$queueDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 
