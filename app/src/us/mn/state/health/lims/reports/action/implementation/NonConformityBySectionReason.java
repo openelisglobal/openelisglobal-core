@@ -17,17 +17,18 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class NonConformityBySectionReason extends NonConformityBy {
@@ -67,13 +68,13 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
     
     @Override
     void createReportItems() {
-        sampleQaEvents = sampleQaEventDAO.getSampleQaEventsByUpdatedDate(dateRange.getLowDate(), dateRange.getHighDate());
+        sampleQaEvents = sampleQaEventDAO.getSampleQaEventsByUpdatedDate(dateRange.getLowDate(), DateUtil.addDaysToSQLDate(dateRange.getHighDate(), 1));
         reportItems = new ArrayList<CountReportItem>();
         // put them all in a list as reportable counts
         for (SampleQaEvent event : sampleQaEvents) {
             CountReportItem item = new CountReportItem();
             QAService qa = new QAService(event);
-            item.setGroup(qa.getObservation(QAObservationType.SECTION));
+            item.setGroup(qa.getObservationForDisplay( QAObservationType.SECTION ));
             item.setCategory(qa.getQAEvent().getLocalizedName());
             item.setCategoryCount(0);
             reportItems.add(item);            

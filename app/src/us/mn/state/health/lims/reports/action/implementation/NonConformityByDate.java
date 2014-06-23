@@ -16,16 +16,12 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
+import us.mn.state.health.lims.common.services.TableIdService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -45,6 +41,11 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class NonConformityByDate extends Report implements IReportCreator {
 	private String lowDateStr;
@@ -96,13 +97,13 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
         lowDateStr = dynaForm.getString("lowerDateRange");
         highDateStr = dynaForm.getString("upperDateRange");
         dateRange = new DateRange(lowDateStr, highDateStr);
-        
-        createReportParameters();
+
         errorFound = !validateSubmitParameters();
         if ( errorFound ) {
             return;
         }
-   
+
+        createReportParameters();
         reportItems = new ArrayList<NonConformityReportData>();
 
         createReportItems();
@@ -139,11 +140,10 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
                 data.setReceivedDate(sample.getReceivedDateForDisplay() + " " + sample.getReceivedTimeForDisplay());
 
                 data.setNonConformityDate(DateUtil.convertTimestampToStringDate( qa.getLastupdated()));
-                String section =  qa.getObservation(QAObservationType.SECTION);
-                data.setSection((("0".equals(section))?"":section));
-                data.setNonConformityReason(qaEvent.getLocalizedName());
-                data.setSampleType(sampleType);
-                data.setBiologist(qa.getObservation(QAObservationType.AUTHORIZER));;
+                data.setSection(qa.getObservationForDisplay( QAObservationType.SECTION ));
+                data.setNonConformityReason( qaEvent.getLocalizedName() );
+                data.setSampleType( sampleType );
+                data.setBiologist( qa.getObservationForDisplay( QAObservationType.AUTHORIZER ) );
                 data.setQaNote(noteForSampleQaEvent);
                 data.setSampleNote(noteForSample);
 
@@ -157,7 +157,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
      */
     private String findService() {
         String service = "";
-        List<ObservationHistory> oh = observationDAO.getAll(null, sample, NonConformityAction.SERVICE_OBSERVATION_TYPE_ID);
+        List<ObservationHistory> oh = observationDAO.getAll(null, sample, TableIdService.SERVICE_OBSERVATION_TYPE_ID);
         if (oh.size() > 0) {
             service = oh.get(0).getValue();
         }

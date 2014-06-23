@@ -99,9 +99,9 @@ function displayHelp(){
 		}).supposition();
 	});
 </script>
-<!--[if ie]>
+<!--[if ie]-->
 <link rel="stylesheet" type="text/css" href="<%=basePath%>css/menu-ie7.css?ver=<%= Versioning.getBuildNumber() %>" />
-<![endif]-->
+<!--[endif]-->
 
 <div id="header">
   	<div id="oe-logo" style="width: 89px" onclick="navigateToHomePage();"><img src="images/openelis_logo.png" title="OpenELIS" alt="OpenELIS" /></div>

@@ -63,8 +63,10 @@ public class PersonService {
 		if( !GenericValidator.isBlankOrNull(lastName) && !GenericValidator.isBlankOrNull(firstName)){
 			lastName += ", ";
 		}
-		
-		return lastName += firstName;
+
+        lastName += firstName;
+
+		return lastName;
 				
 	}
 	

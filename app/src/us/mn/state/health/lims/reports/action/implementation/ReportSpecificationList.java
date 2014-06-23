@@ -65,4 +65,16 @@ public class ReportSpecificationList implements Serializable{
     public void setSelection( String selection ){
         this.selection = selection;
     }
+
+    public String getSelectionAsName(){
+        String selection = getSelection();
+
+        for( IdValuePair pair : getList()){
+            if( selection.equals( pair.getId() )){
+                return pair.getValue();
+            }
+        }
+
+        return "";
+    }
 }
