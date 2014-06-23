@@ -27,7 +27,6 @@ import us.mn.state.health.lims.common.services.SampleService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ActivityReportBean;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -165,18 +164,5 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         filler.setPatientOrTestName( item.getNonPrintingPatient() );
 
         return filler;
-    }
-
-    protected String getNameForId( ReportSpecificationList list ){
-
-        String selection = list.getSelection();
-
-        for( IdValuePair pair : list.getList()){
-            if( selection.equals( pair.getId() )){
-                return pair.getValue();
-            }
-        }
-
-        return "";
     }
 }

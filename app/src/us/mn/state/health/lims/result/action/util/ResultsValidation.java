@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.DateValidationProvider;
 import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -24,10 +26,10 @@ import java.util.List;
 public class ResultsValidation {
 
 	private static final String SPECIAL_CASE = "XXXX";
-	private boolean supportReferrals = false;
-	private boolean useTechnicianName = false;
+	private boolean supportReferrals = FormFields.getInstance().useField( Field.ResultsReferral );
+	private boolean useTechnicianName = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.resultTechnicianName, "true");
 	private boolean noteRequiredForChangedResults = false;
-	private boolean useRejected = false;
+	private boolean useRejected = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.allowResultRejection, "true");
 	
 	private static ResultDAO resultDAO = new ResultDAOImpl();
 	
@@ -206,17 +208,5 @@ public class ResultsValidation {
         if (item.isRejected() && "0".equals(item.getRejectReasonId())) {
             errors.add(new ActionError("error.reject.noReason"));
         }
-    }
-
-	public void setSupportReferrals(boolean supportReferrals) {
-		this.supportReferrals = supportReferrals;
-	}
-
-	public void setUseTechnicianName(boolean useTechnicianName) {
-		this.useTechnicianName = useTechnicianName;
-	}
-
-    public void setUseRejected(boolean useRejected) {
-        this.useRejected = useRejected;
     }
 }

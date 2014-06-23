@@ -44,7 +44,7 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
     @Override
     protected void buildReportContent( ReportSpecificationList testSelection ){
 
-        testName = getNameForId( testSelection  );
+        testName = testSelection.getSelectionAsName();
         createReportParameters();
 
         List<Result> resultList = ResultService.getResultsInTimePeriodWithTest( dateRange.getLowDate(), dateRange.getHighDate(), testSelection.getSelection() );

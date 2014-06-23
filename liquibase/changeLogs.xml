@@ -2225,6 +2225,7 @@ ALTER TABLE sampletracking OWNER TO clinlims;
 <include file="OE3.3/HaitiLNSPData.xml"/>
 <include file="OE3.3/CDIRegLabData.xml"/>
 <include file="OE3.4/Base.xml"/>
+<include file="OE4.2/Base.xml"/>
 </databaseChangeLog>
 
 

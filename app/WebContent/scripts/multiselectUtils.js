@@ -154,16 +154,17 @@ function createNewMultiSelect( index, minorIndex){
     select.attr("id", "resultId_" + index + "_" + nextDivCount);
     var add = $jq(".addMultiSelect" + index).last().clone();
     var remove = $jq(".removeMultiSelect" + index).first().clone();
-    remove.attr("onclick", remove.attr("onclick").replace("target", index + "_" + nextDivCount));
+       remove.attr("onclick", remove.attr("onclick").replace("target", index + "_" + nextDivCount));
     var newDiv = $jq('#cascadingMulti_' + index + "_" + nextDivCount);
     $jq(".addMultiSelect" + index).hide();
-    add.show();
-    remove.show();
-    select.show();
 
     select.appendTo(newDiv);
     add.appendTo(newDiv);
     remove.appendTo(newDiv);
+
+    add.show();
+    remove.css('visibility', 'visible');
+    select.show();
 
     divCount.val(nextDivCount);
     return select;
@@ -184,6 +185,8 @@ function addNewMultiSelect( index ){
 }
 
 function removeMultiSelect(target){
+    //ie chokes if we just remove the div so we need to empty it first
+    $jq("#cascadingMulti_" + target).empty();
     $jq("#cascadingMulti_" + target).remove();
     $jq(".addMultiSelect" + target.split("_")[0]).last().show();
     removeAllMultiSelectionsFor( target );
