@@ -16,6 +16,7 @@
     <property name="installerDir" value="${basedir}/installers"/>
     <property name="installerTemplateDir" value="${basedir}/source/openelisglobal-core/installerTemplate" />
     <property name="tomcatVersion" value="tomcat5.5" />
+    <property file="./build.txt" />
 
 
     <path id="Web App Libraries.libraryclasspath">
@@ -333,9 +334,11 @@
             <fileset dir="${db_root}/" />
         </copy>
         <copy  file="/usr/share/${tomcatVersion}/webapps/${context}.war" todir="${installerDir}/${context}/linux/warFiles/${context}.war" />
+        <echo message="Copying ${basedir}/source/openelisglobal-core/tools/DBBackup/installerTemplates/${backupTemplate} to ${installerDir}/${context}/linux/templates/DatabaseBackup.pl" />
+        <copy  verbose="true" file="${basedir}/source/openelisglobal-core/tools/DBBackup/installerTemplates/${backupTemplate}"
+               tofile="${installerDir}/${context}/linux/templates/DatabaseBackup.pl" />
         <exec failifexecutionfails="true" failonerror="true"
-              executable="pg_dump"
-              output="databaseInstall.txt">
+              executable="pg_dump">
             <env key="PGPASSWORD" value="${clinlimsPW}" />
             <arg value="-U" />
             <arg value="clinlims" />
@@ -346,14 +349,15 @@
             <arg value="${dbName}" />
         </exec>
 
-        <exec failifexecutionfails="true" failonerror="true" executable="tar" output="tar.txt" dir="${installerDir}" >
+        <echo message="compressing to ${context}_${release}_Installer.tar.gz" />
+        <exec failifexecutionfails="true" failonerror="true" executable="tar"  dir="${installerDir}" >
             <arg value="-cf" />
-            <arg value="${context}Installer.tar" />
+            <arg value="${context}_${release}_Installer.tar" />
             <arg value="${context}/" />
         </exec>
 
-        <exec failifexecutionfails="true" failonerror="true" executable="gzip" output="gzip.txt" dir="${installerDir}" >
-            <arg value="${context}Installer.tar" />
+        <exec failifexecutionfails="true" failonerror="true" executable="gzip"  dir="${installerDir}" >
+            <arg value="${context}_${release}_Installer.tar" />
         </exec>
 
     </target>
@@ -361,12 +365,7 @@
 
     <target name="installers">
         <mkdir dir="${installerDir}"/>
-        <property name="build" value=""/>
-        <exec executable="sed '2!d' ./build.properties | sed 's/release=//'" >
-            <redirector outputproperty="build" />
-        </exec>
 
-        <echo message="${build}" />
         <delete>
             <fileset dir="${installerDir}" includes="**/*"/>
         </delete>
@@ -374,9 +373,35 @@
         <antcall target="buildInstaller">
             <param name="context" value="CDIOpenElis"/>
             <param name="dbName" value="cdielis"/>
+            <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
         </antcall>
 
+        <antcall target="buildInstaller">
+            <param name="context" value="CDI_RegLabOpenElis"/>
+            <param name="dbName" value="ci_reg_lab"/>
+            <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
+        </antcall>
 
+        <antcall target="buildInstaller">
+            <param name="context" value="CI_IPCIOpenElis"/>
+            <param name="dbName" value="ci_ipci"/>
+            <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
+        </antcall>
+        <antcall target="buildInstaller">
+            <param name="context" value="CI_LNSPOpenElis"/>
+            <param name="dbName" value="cilnsp"/>
+            <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
+        </antcall>
+        <antcall target="buildInstaller">
+            <param name="context" value="haitiOpenElis"/>
+            <param name="dbName" value="clinlims"/>
+            <param name="backupTemplate" value="HaitiBackup.pl" />
+        </antcall>
+        <antcall target="buildInstaller">
+            <param name="context" value="LNSP_HaitiOpenElis"/>
+            <param name="dbName" value="lnsphaiti"/>
+            <param name="backupTemplate" value="HaitiBackup.pl" />
+        </antcall>
     </target>
 
 
