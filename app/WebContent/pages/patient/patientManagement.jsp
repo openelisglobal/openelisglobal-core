@@ -31,6 +31,7 @@
 	boolean supportPatientType = true;
 	boolean supportInsurance = true;
 	boolean supportSubjectNumber = true;
+    boolean subjectNumberRequired = true;
 	boolean supportNationalID = true;
 	boolean supportOccupation = true;
 	boolean supportCommune = true;
@@ -52,6 +53,7 @@
 	supportPatientType = FormFields.getInstance().useField(Field.PatientType);
 	supportInsurance = FormFields.getInstance().useField(Field.InsuranceNumber);
 	supportSubjectNumber = FormFields.getInstance().useField(Field.SubjectNumber);
+    subjectNumberRequired = FormFields.getInstance().useField( Field.SubjectNumberRequired );
 	supportNationalID = FormFields.getInstance().useField(Field.NationalID);
 	supportOccupation = FormFields.getInstance().useField(Field.Occupation);
 	supportCommune = FormFields.getInstance().useField(Field.Commune);
@@ -87,6 +89,7 @@ var supportMothersName = <%= supportMothersName %>;
 var supportPatientType = <%= supportPatientType %>;
 var supportInsurance = <%= supportInsurance %>;
 var supportSubjectNumber = <%= supportSubjectNumber %>;
+var subjectNumberRequired = <%= subjectNumberRequired %>;
 var supportNationalID = <%= supportNationalID %>;
 var supportMothersInitial = <%= supportMothersInitial %>;
 var supportCommune = <%= supportCommune %>;
@@ -124,7 +127,7 @@ if( patientIDRequired){
 	pt_requiredOneOfFields.push("patientGUID_ID") ;
 	if (supportSTNumber) {
 		pt_requiredOneOfFields.push("ST_ID");
-	} else if (supportSubjectNumber){
+	} else if (supportSubjectNumber && subjectNumberRequired){
 		pt_requiredOneOfFields = new Array("subjectNumberID");
 	}
 }
@@ -814,7 +817,9 @@ function  processSubjectNumberSuccess(xhr){
         </td>
         <td style="text-align:right;">
             <bean:message key="patient.subject.number"/>:
+            <% if(subjectNumberRequired){ %>
             <span class="requiredlabel">*</span>
+            <% } %>
         </td>
         <td>
             <nested:text name='<%=formName%>'

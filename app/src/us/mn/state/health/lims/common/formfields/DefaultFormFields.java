@@ -42,15 +42,10 @@ public class DefaultFormFields extends AFormFields {
 		setFieldTrue(Field.InsuranceNumber);
 		setFieldTrue(Field.CollectionDate);
 		setFieldTrue(Field.OrgLocalAbrev);
-		setFieldTrue(Field.OrgState);
-		setFieldTrue(Field.ZipCode);
-		setFieldTrue(Field.MLS);
 		setFieldTrue(Field.ProviderInfo);
 		setFieldTrue(Field.NationalID);
 		setFieldTrue(Field.Occupation);
 		setFieldTrue(Field.OrganizationAddressInfo);
-		setFieldTrue(Field.OrganizationCLIA);
-		setFieldTrue(Field.OrganizationParent);
 		setFieldTrue(Field.OrganizationShortName);
 		setFieldTrue(Field.OrganizationMultiUnit);
 		setFieldTrue(Field.OrganizationOrgId);
@@ -60,14 +55,18 @@ public class DefaultFormFields extends AFormFields {
         setFieldTrue(Field.PatientIDRequired);
 		setFieldTrue(Field.PatientNameRequired);
 		setFieldTrue(Field.SampleEntryRequestingSiteSampleId);
+
+        setFieldFalse(Field.OrgState);
+        setFieldFalse(Field.ZipCode);
+        setFieldFalse(Field.MLS);
 		setFieldFalse(Field.CollectionTime);
 		setFieldFalse(Field.RequesterSiteList);
 		setFieldFalse(Field.InlineOrganizationTypes);
 		setFieldFalse(Field.SubjectNumber);
+        setFieldFalse(Field.SubjectNumberRequired );
 		setFieldFalse(Field.Commune);
 		setFieldFalse(Field.AddressDepartment);
 		setFieldFalse(Field.MotherInitial);
-		setFieldFalse(Field.ResultsAccept);
 		setFieldFalse(Field.SearchSampleStatus);
 		setFieldFalse(Field.DepersonalizedResults);
 		setFieldFalse(Field.SEARCH_PATIENT_WITH_LAB_NO);
@@ -76,6 +75,8 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.InitialSampleCondition);
 		setFieldFalse(Field.AddressCommune);
 		setFieldFalse(Field.AddressVillage);
+        setFieldFalse(Field.OrganizationCLIA);
+        setFieldFalse(Field.OrganizationParent);
 		setFieldFalse(Field.PatientRequired_SampleConfirmation);
         setFieldFalse(Field.SampleCondition);
         setFieldFalse(Field.Project);        

@@ -40,12 +40,12 @@ public class FormFields {
 		MLS,                                    //Include indicator if organization is a sentinel lab
 		InlineOrganizationTypes,                //Should organization types be included when specifying organizations
 		SubjectNumber,                          //Include subject number with patient info
+        SubjectNumberRequired,                  //If using subject number is it required
 		ProviderInfo,                           //Include provider information on order form
 		NationalID,                             //Include national ID with patient info
 		Occupation,                             //Include occupation with patient info
 		Commune,                                //Is commune part of an address
 		MotherInitial,                          //Include mothers first initial with patient info
-		ResultsAccept,                          //No longer used
 		SearchSampleStatus,                     //Can patients be searched for by status
 		OrganizationAddressInfo,                //Include address info with organization info
 		OrganizationCLIA,                       //Include CLIA status with organization info
