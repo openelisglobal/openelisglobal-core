@@ -15,11 +15,11 @@
  */
 package us.mn.state.health.lims.common.provider.validation;
 
+import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.provider.query.PatientSearchResults;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.sample.dao.SearchResultsDAO;
 import us.mn.state.health.lims.sample.daoimpl.SearchResultsDAOImp;
 
 import javax.servlet.ServletException;
@@ -31,38 +31,40 @@ import java.util.List;
 /**
  * The QuickEntryAccessionNumberValidationProvider class is used to validate,
  * via AJAX.
- * 
  */
-public class SubjectNumberValidationProvider extends BaseValidationProvider {
+public class SubjectNumberValidationProvider extends BaseValidationProvider{
 
-	public SubjectNumberValidationProvider() {
-		super();
-	}
+    public SubjectNumberValidationProvider(){
+        super();
+    }
 
-	public SubjectNumberValidationProvider( AjaxServlet ajaxServlet ) {
-		this.ajaxServlet = ajaxServlet;
-	}
+    public SubjectNumberValidationProvider( AjaxServlet ajaxServlet ){
+        this.ajaxServlet = ajaxServlet;
+    }
 
-	@Override
-	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    public void processRequest( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException{
 
         String queryResponse = "valid";
         String fieldId = request.getParameter( "fieldId" );
-        String number = request.getParameter("subjectNumber");
-        String numberType = request.getParameter("numberType");
-        String STNumber = numberType.equals("STnumber") ? number : null;
-        String subjectNumber = numberType.equals("subjectNumber") ? number : null;
-        String nationalId = numberType.equals("nationalId") ? number : null;
+        String number = request.getParameter( "subjectNumber" );
+        String numberType = request.getParameter( "numberType" );
+        String STNumber = numberType.equals( "STnumber" ) ? number : null;
+        String subjectNumber = numberType.equals( "subjectNumber" ) ? number : null;
+        String nationalId = numberType.equals( "nationalId" ) ? number : null;
 
-        SearchResultsDAO search = new SearchResultsDAOImp();
-        List<PatientSearchResults> results = search.getSearchResults(null, null, STNumber, subjectNumber, nationalId, null, null, null);
 
-        boolean allowDuplicates = ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "true" );
-        if(  !results.isEmpty() ){
-                queryResponse = (allowDuplicates ? "warning#Warning: " : "fail#Error: ") + StringUtil.getMessageForKey("error.duplicate.subjectNumber.warning", number);
+        //We just care about duplicates but blank values do not count as duplicates
+        if( !( GenericValidator.isBlankOrNull( STNumber ) && GenericValidator.isBlankOrNull( subjectNumber ) && GenericValidator.isBlankOrNull( nationalId ) ) ){
+            List<PatientSearchResults> results = new SearchResultsDAOImp().getSearchResults( null, null, STNumber, subjectNumber, nationalId, null, null, null );
+
+
+            boolean allowDuplicates = ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "true" );
+            if( !results.isEmpty() ){
+                queryResponse = ( allowDuplicates ? "warning#Warning: " : "fail#Error: " ) + StringUtil.getMessageForKey( "error.duplicate.subjectNumber.warning", number );
+            }
         }
-
-        response.setCharacterEncoding("UTF-8");
-        ajaxServlet.sendData(fieldId, queryResponse, request, response);
+        response.setCharacterEncoding( "UTF-8" );
+        ajaxServlet.sendData( fieldId, queryResponse, request, response );
     }
 }
