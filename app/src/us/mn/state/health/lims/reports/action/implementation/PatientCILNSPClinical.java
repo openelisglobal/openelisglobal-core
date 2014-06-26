@@ -361,7 +361,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
 	@Override
 	protected String getSiteLogo(){
-		return isLNSP ? "HaitiLNSP.jpg" : "labLogo.jpg";
+		return "labLogo.jpg";
 	}
 
 	@Override
