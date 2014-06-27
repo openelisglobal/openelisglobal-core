@@ -130,7 +130,7 @@ function tweekSampleTypeOptions() {
 	}
 	var fields = eventsTable.getElementsBySelector(".typeOfSample");
 	fields.each(function(field) {
-				field.options[0].text = "<bean:message key='nonConformant.allSampleTypesText'/>";
+				field.options[1].text = "<bean:message key='nonConformant.allSampleTypesText'/>";
 			});
 }
 
@@ -202,12 +202,11 @@ function areNewTypesOfSamples() {
 		return false; // we don't worry about sample types when there aren't any at all
 	}
 
-	var isNew = fields.detect(function(field) {
-		var ids = $("sampleItemsTypeOfSampleIds").value;
-		var val = field.value;
-		return (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1);
-	}) != null;
-	return isNew;
+    return fields.detect(function (field) {
+        var ids = $("sampleItemsTypeOfSampleIds").value;
+        var val = field.value;
+        return (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1);
+    }) != null;
 }
 
 function /*boolean*/ handleEnterEvent(){
@@ -271,7 +270,7 @@ function setSave(){
 			var jqRow = $jq(rowElement);
 			if(validToSave && jqRow.is(":visible")){
 				//if row is visible and the required field is blank make sure no other field has a value
-				if( !(jqRow.find(".qaEventEnable").is(":checked") ) && jqRow.find(".requiredField").val() == "0" ){
+				if( !(jqRow.find(".qaEventEnable").is(":checked") ) && requiredSelectionsNotDone( jqRow ) ){
 					jqRow.find(".qaEventElement").each( function(index, element){
 						var cellValue = $jq(element).val(); 
 						if( !(cellValue.length == 0 || cellValue == "0" )){
@@ -287,6 +286,19 @@ function setSave(){
 	if( saveButton){
 		saveButton.disabled = !validToSave;
 	}	
+}
+
+function requiredSelectionsNotDone( jqRow ){
+    var done = true;
+
+    jqRow.find(".requiredField").each( function(index, element){
+        if( element.value == 0 ){
+            done = false;
+            return;
+        }
+    });
+
+    return !done;
 }
 
 function validatePhoneNumber( phoneElement){
@@ -651,7 +663,7 @@ function  processPhoneSuccess(xhr){
 				<bean:message key="label.refusal.reason" /><span class="requiredlabel">*</span>
 			</th>
 			<th style="width:16%">
-				<bean:message key="label.sampleType" />
+				<bean:message key="label.sampleType" /><span class="requiredlabel">*</span>
 			</th>
 			<th style="width:11%">
 				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %>
@@ -702,11 +714,12 @@ function  processPhoneSuccess(xhr){
 					</html:select>
 				</td>
 				<td>
-					<html:select styleId='<%="sampleType" + index%>' name="qaEvents"
-						styleClass="readOnly qaEventElement typeOfSample" disabled="false"
+                    <html:select styleId='<%="sampleType" + index%>' name="qaEvents"
+						styleClass="readOnly qaEventElement typeOfSample requiredField" disabled="false"
 						property="sampleType" onchange='makeDirty();' indexed="true"
 						style="width: 99%">
-						<option value="0"></option>
+                        <option value="0"></option>
+                        <option value="-1"  <%= (qaEvents.getSampleType() != null && qaEvents.getSampleType().equals("-1")) ? "selected='selected'" : ""%> ></option>
 						<html:optionsCollection name="<%=formName%>"
 							property="typeOfSamples" label="value" value="id" />
 					</html:select>

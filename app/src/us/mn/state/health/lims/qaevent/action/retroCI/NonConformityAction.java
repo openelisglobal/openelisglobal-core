@@ -307,7 +307,8 @@ public class NonConformityAction extends BaseAction{
 				item.setId(qa.getEventId());
 				item.setQaEvent(qa.getQAEvent().getId());
 				SampleItem sampleItem = qa.getSampleItem();
-				item.setSampleType((sampleItem == null) ? null : sampleItem.getTypeOfSampleId());
+                // -1 is the index for "all samples"
+				item.setSampleType((sampleItem == null) ? "-1" : sampleItem.getTypeOfSampleId());
 				item.setSection(qa.getObservationValue( QAObservationType.SECTION ));
 				item.setAuthorizer(qa.getObservationValue( QAObservationType.AUTHORIZER ));
 				item.setRecordNumber(qa.getObservationValue( QAObservationType.DOC_NUMBER ));

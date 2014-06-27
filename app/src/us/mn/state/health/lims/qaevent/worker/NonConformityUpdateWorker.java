@@ -650,7 +650,8 @@ public class NonConformityUpdateWorker {
 			// New event
 			if (isNonBlankNewEvent(item)) {
 				String sampleType = item.getSampleType();
-				if (sampleType.equals("0")) {
+                //All samples has an id of -1
+				if (sampleType.equals("-1") ) {
 					addSampleQaEvent(item, null);
 				} else {
 					insertSampleItems = true;
