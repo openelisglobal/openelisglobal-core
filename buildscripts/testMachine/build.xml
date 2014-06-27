@@ -12,7 +12,7 @@
     <property name="debug" value="true"/>
     <property name="target" value="1.5"/>
     <property name="source" value="1.5"/>
-    <property name="clinlimsPW" value=""/>
+    <property name="clinlimsPW" value="clinlims"/>
     <property name="installerDir" value="${basedir}/installers"/>
     <property name="installerTemplateDir" value="${basedir}/source/openelisglobal-core/installerTemplate" />
     <property name="tomcatVersion" value="tomcat5.5" />
@@ -325,7 +325,8 @@
         <copy todir="${installerDir}/${context}/linux/liquibase/" >
             <fileset dir="${db_root}/" />
         </copy>
-        <copy  file="/usr/share/${tomcatVersion}/webapps/${context}.war" todir="${installerDir}/${context}/linux/warFiles" />
+
+        <copy  file="/usr/share/${tomcatVersion}/webapps/${context}.war" todir="${installerDir}/${context}/linux/warFiles/" />
         <echo message="Copying ${basedir}/source/openelisglobal-core/tools/DBBackup/installerTemplates/${backupTemplate} to ${installerDir}/${context}/linux/templates/DatabaseBackup.pl" />
         <!-- we're using tofile due to ant version on our build machine, todir would be better -->
         <copy  verbose="true" file="${basedir}/source/openelisglobal-core/tools/DBBackup/installerTemplates/${backupTemplate}"
@@ -353,9 +354,7 @@
     <target name="installers">
         <mkdir dir="${installerDir}"/>
 
-        <delete>
-            <fileset dir="${installerDir}" includes="**/*"/>
-        </delete>
+        <delete dir="${installerDir}/" />
 
         <antcall target="buildInstaller">
             <param name="context" value="CDIOpenElis"/>
