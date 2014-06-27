@@ -20,5 +20,5 @@
     <include file="OE4.2/MetaData.xml" />
     <include file="OE4.2/HaitiLNSPData.xml"/>
     <include file="OE4.2/LocalChanges/LocalChanges.xml" />
-    <include file="OE4.2/CDIReglabData.xml" />
+    <include file="OE4.2/CDIRegLabData.xml" />
 </databaseChangeLog>
