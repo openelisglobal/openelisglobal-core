@@ -325,23 +325,16 @@
         <copy todir="${installerDir}/${context}/linux/liquibase/" >
             <fileset dir="${db_root}/" />
         </copy>
-        <copy  file="/usr/share/${tomcatVersion}/webapps/${context}.war" todir="${installerDir}/${context}/linux/warFiles/${context}.war" />
+        <copy  file="/usr/share/${tomcatVersion}/webapps/${context}.war" todir="${installerDir}/${context}/linux/warFiles" />
         <echo message="Copying ${basedir}/source/openelisglobal-core/tools/DBBackup/installerTemplates/${backupTemplate} to ${installerDir}/${context}/linux/templates/DatabaseBackup.pl" />
         <!-- we're using tofile due to ant version on our build machine, todir would be better -->
         <copy  verbose="true" file="${basedir}/source/openelisglobal-core/tools/DBBackup/installerTemplates/${backupTemplate}"
                tofile="${installerDir}/${context}/linux/templates/DatabaseBackup.pl" />
 
-        <exec failifexecutionfails="true" failonerror="true"
-              executable="pg_dump">
-            <env key="PGPASSWORD" value="${clinlimsPW}" />
-            <arg value="-U" />
-            <arg value="clinlims" />
-            <arg value="-h" />
-            <arg value="localhost" />
-            <arg value="-f" />
-            <arg value="${installerDir}/${context}/linux/databaseFiles/databaseInstall.backup" />
-            <arg value="${dbName}" />
-        </exec>
+        <copy  verbose="true" file="${installerDir}/${context}/baseDatabases/${context}.backup"
+               tofile="${installerDir}/${context}/linux/databaseFiles/databaseInstall.backup" />
+
+        <delete dir="${installerDir}/${context}/baseDatabases" />
 
         <echo message="compressing to ${context}_${release}_Installer.tar.gz" />
         <exec failifexecutionfails="true" failonerror="true" executable="tar"  dir="${installerDir}" >
