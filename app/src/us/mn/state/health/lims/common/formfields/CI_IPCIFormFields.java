@@ -47,7 +47,7 @@ public class CI_IPCIFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
 		settings.put(Field.AddressCity, Boolean.FALSE);
 		settings.put(Field.AddressCommune, Boolean.TRUE);
-		settings.put(Field.AddressVillage, Boolean.FALSE);
+		settings.put(Field.AddressVillage, Boolean.TRUE);
 		settings.put(Field.PatientRequired, Boolean.TRUE);
 		settings.put(Field.SampleCondition, Boolean.FALSE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);
