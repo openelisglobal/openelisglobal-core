@@ -64,6 +64,7 @@ public abstract class RejectionReport extends Report implements IReportCreator{
         reportParameters.put( "startDate", dateRange.getLowDateStr() );
         reportParameters.put( "endDate", dateRange.getHighDateStr() );
         reportParameters.put( "splitNameAndTest", getSplitNameAndTest() );
+        reportParameters.put( "isTestReport", isTestReport());
 
     }
 
@@ -72,6 +73,8 @@ public abstract class RejectionReport extends Report implements IReportCreator{
     protected abstract boolean getSplitNameAndTest();
 
     protected abstract void buildReportContent( ReportSpecificationList testSelection );
+
+    protected abstract boolean isTestReport();
 
     protected String getSiteLogo(){
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
