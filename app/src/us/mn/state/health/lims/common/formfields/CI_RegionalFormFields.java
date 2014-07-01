@@ -74,7 +74,7 @@ public class CI_RegionalFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.PatientEducation, Boolean.TRUE);
 		settings.put(Field.SampleEntryPatientClinical, Boolean.FALSE);
 		settings.put(Field.SampleEntryRequesterLastNameRequired, Boolean.TRUE);
-//		settings.put(Field.QAFullProviderInfo, Boolean.TRUE);
+		settings.put(Field.QA_REQUESTER_SAMPLE_ID, Boolean.FALSE);
 		settings.put(Field.QASubjectNumber, Boolean.TRUE);
 		settings.put(Field.QATimeWithDate, Boolean.TRUE);
         settings.put(Field.PatientIDRequired, Boolean.FALSE);

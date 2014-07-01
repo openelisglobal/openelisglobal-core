@@ -42,7 +42,7 @@ public class CI_RETROFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.DepersonalizedResults, Boolean.TRUE);
 		settings.put(Field.SEARCH_PATIENT_WITH_LAB_NO, Boolean.TRUE);
 		settings.put(Field.Project, Boolean.TRUE);
-		settings.put(Field.QAFullProviderInfo, Boolean.FALSE);
+		settings.put(Field.QA_FULL_PROVIDER_INFO, Boolean.FALSE);
 		settings.put(Field.QASubjectNumber, Boolean.FALSE);
 
 		return settings;

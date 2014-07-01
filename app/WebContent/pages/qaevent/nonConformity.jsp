@@ -3,8 +3,7 @@
                 us.mn.state.health.lims.common.formfields.FormFields.Field"%>
 
 <%@ page language="java" contentType="text/html; charset=utf-8"%>
-<%@ page import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.util.SystemConfiguration,us.mn.state.health.lims.common.util.ConfigurationProperties,us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,us.mn.state.health.lims.common.formfields.FormFields,us.mn.state.health.lims.common.util.StringUtil,us.mn.state.health.lims.common.util.Versioning,us.mn.state.health.lims.qaevent.action.retroCI.NonConformityItem"%>
-<%@ page import="us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator"%>
+<%@ page import="us.mn.state.health.lims.common.util.SystemConfiguration,us.mn.state.health.lims.common.util.ConfigurationProperties,us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,us.mn.state.health.lims.common.util.StringUtil,us.mn.state.health.lims.common.util.Versioning,us.mn.state.health.lims.qaevent.action.retroCI.NonConformityItem"%>
 <%@ page import="us.mn.state.health.lims.common.provider.validation.NonConformityRecordNumberValidationProvider" %>
 <%@ page import="us.mn.state.health.lims.common.services.PhoneNumberService, us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem" %>
 
@@ -24,7 +23,6 @@
     IAccessionNumberValidator accessionNumberValidator;
     boolean useProject = FormFields.getInstance().useField(Field.Project);
     boolean useSiteList = FormFields.getInstance().useField(Field.NON_CONFORMITY_SITE_LIST);
-    boolean useFullProviderInfo = FormFields.getInstance().useField(Field.QAFullProviderInfo);
     boolean useSubjectNo = FormFields.getInstance().useField(Field.QASubjectNumber);
     boolean useNationalID = FormFields.getInstance().useField(Field.NationalID);
 %>
@@ -496,7 +494,8 @@ function  processPhoneSuccess(xhr){
 					</tr>
 			</logic:notEqual>
 		<html:hidden name='<%=formName%>' styleId="doctorNew" property="doctorNew" />
-		<%  if (useFullProviderInfo) { %>				
+		<%  if (FormFields.getInstance().useField(Field.QA_FULL_PROVIDER_INFO )) { %>
+        <% if( FormFields.getInstance().useField( Field.QA_REQUESTER_SAMPLE_ID )) { %>
 					<tr>
 						<td><bean:message key="sample.clientReference" />:</td>
 						<td >
@@ -512,6 +511,7 @@ function  processPhoneSuccess(xhr){
 						</td>
 					<td colspan="2">&nbsp;</td>
 				</tr>
+        <% } %>
 				<tr>
 					<td><%= StringUtil.getContextualMessageForKey("nonconformity.provider.label") %></td>
 				</tr>
