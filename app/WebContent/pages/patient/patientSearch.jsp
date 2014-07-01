@@ -339,8 +339,11 @@ function setCaretPosition(ctrl, pos){
 </script>
 
 <div id="PatientPage" class="colorFill patientSearch" style="display:inline;" >
-	
+
 	<h2><bean:message key="sample.entry.search"/></h2>
+    <logic:present property="warning" name="<%=formName%>" >
+        <h3 class="important-text"><bean:message key="order.modify.search.warning" /></h3>
+    </logic:present>
     <select id="searchCriteria"  style="float:left" onchange="enableSearchButton()" tabindex="1">
         <%
             for(IdValuePair pair : patientSearch.getSearchCriteria()){
