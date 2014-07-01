@@ -807,7 +807,7 @@ function  processSubjectNumberSuccess(xhr){
         </td>
     </tr>
     <tr>
-        <td style="width:5%">&nbsp;
+        <td >&nbsp;
 
         </td>
         <%} %>
@@ -831,16 +831,16 @@ function  processSubjectNumberSuccess(xhr){
         </td>
     </tr>
     <tr>
-        <td style="width:5%">&nbsp;
+        <td >&nbsp;
 
         </td>
         <% } %>
         <% if( supportNationalID ){ %>
-        <td style="width:25%;text-align:right;">
+        <td style="text-align:right;">
             <%=StringUtil.getContextualMessageForKey("patient.NationalID") %>:
 
         </td>
-        <td style="width:25%">
+        <td >
             <nested:text name='<%=formName%>'
                          property="patientProperties.nationalId"
                          onchange="validateSubjectNumber(this, 'nationalId');updatePatientEditStatus();"
@@ -848,27 +848,27 @@ function  processSubjectNumberSuccess(xhr){
                          styleClass="text"
                          size="60"/>
         </td>
-        <td style="width:10%">&nbsp;
+        <td >&nbsp;
 
         </td>
-        <td style="width:15%">&nbsp;
+        <td >&nbsp;
 
         </td>
     </tr>
     <%} %>
     <tr class="spacerRow" ><td colspan="2">&nbsp;</td></tr>
 	<tr>
-		<td style="width:15%">
+		<td style="width: 220px">
 			<bean:message key="patient.name" />
 		</td>
-		<td style="width:10%;text-align:right;">
+		<td style="text-align:right;">
 			<bean:message key="patient.epiLastName" />
 			:
 			<% if( patientNamesRequired){ %>
 				<span class="requiredlabel">*</span>
 			<% } %>
 		</td>
-		<td style="width:20%">
+		<td >
 			<nested:text name='<%=formName%>'
 					  property="patientProperties.lastName"
 					  styleClass="text"
@@ -876,14 +876,14 @@ function  processSubjectNumberSuccess(xhr){
 				      onchange="updatePatientEditStatus();"
 				      styleId="lastNameID"/>
 		</td>
-		<td style="width:10%;text-align:right;">
+		<td style="text-align:right;">
 			<bean:message key="patient.epiFirstName" />
 			:
 			<% if( patientNamesRequired){ %>
 				<span class="requiredlabel">*</span>
 			<% } %>	
 		</td>
-		<td style="width:20%">
+		<td >
 			<nested:text name='<%=formName%>'
 					  property="patientProperties.firstName"
 					  styleClass="text"
