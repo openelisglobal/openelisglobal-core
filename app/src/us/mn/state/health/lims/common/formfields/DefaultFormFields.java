@@ -51,7 +51,8 @@ public class DefaultFormFields extends AFormFields {
 		setFieldTrue(Field.OrganizationOrgId);
 		setFieldTrue(Field.AddressCity);
 		setFieldTrue(Field.PatientRequired);
-        setFieldTrue(Field.QAFullProviderInfo);
+        setFieldTrue(Field.QA_FULL_PROVIDER_INFO );
+        setFieldTrue(Field.QA_REQUESTER_SAMPLE_ID);
         setFieldTrue(Field.PatientIDRequired);
 		setFieldTrue(Field.PatientNameRequired);
 		setFieldTrue(Field.SampleEntryRequestingSiteSampleId);

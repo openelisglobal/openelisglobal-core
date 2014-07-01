@@ -165,7 +165,7 @@ public class NonConformityUpdateWorker {
 	}
 
 	public String update() {
-		useFullProviderInfo = FormFields.getInstance().useField(FormFields.Field.QAFullProviderInfo);
+		useFullProviderInfo = FormFields.getInstance().useField(FormFields.Field.QA_FULL_PROVIDER_INFO );
 
 		createSystemUser();
 		clearMembers();

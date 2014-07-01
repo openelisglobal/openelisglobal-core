@@ -69,7 +69,8 @@ public class FormFields {
 		InitialSampleCondition,                 //Allow for collection of sample condition with sample entry
 		PatientRequired,                        // By default, a (minimal) patient to go with a sample is required.
 		PatientRequired_SampleConfirmation,     //Is patient required for sample confirmation
-		QAFullProviderInfo,                     //Include provider information on non-conformity
+        QA_FULL_PROVIDER_INFO,                     //Include provider information on non-conformity
+        QA_REQUESTER_SAMPLE_ID,                 //If provider info is used on non-conformity should it include provider sample id
 		QASubjectNumber,                        //Include subject number be on non-conformity
 		QATimeWithDate,                         //Include time in addition to date on non-conformity
 		PatientIDRequired,                      //Is patient ID required for patient
