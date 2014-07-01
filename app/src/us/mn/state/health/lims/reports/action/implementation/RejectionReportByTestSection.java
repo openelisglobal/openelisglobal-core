@@ -98,4 +98,9 @@ public class RejectionReportByTestSection extends RejectionReport implements IRe
         injectPatientLineAndCopyToFinalList( rawResults );
     }
 
+    @Override
+    protected boolean isTestReport(){
+        return false;
+    }
+
 }

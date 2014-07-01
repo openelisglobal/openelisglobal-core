@@ -84,6 +84,11 @@ public class RejectionReportByTest extends RejectionReport implements IReportCre
         } );
     }
 
+    @Override
+    protected boolean isTestReport(){
+        return true;
+    }
+
 
     @Override
     protected String getActivityLabel(){
