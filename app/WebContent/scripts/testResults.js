@@ -15,24 +15,10 @@ var outOfValidRangeMsg = null;
 function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, lowerAbnormal, upperAbnormal, significantDigits, specialCase ){
     var isSpecialCase = specialCase == resultBox.value.toUpperCase();
     var roundedValue, splitRoundedValue;
+    var validFormat = validateNumberFormat( resultBox,row, significantDigits);
 
-    if(resultBox.value.blank()){
-        resultBox.title = "";
-        resultBox.style.borderColor = "";
-        resultBox.style.background = "#ffffff";
-        $("valid_" + row).value = false;
-        return;
-    }
+    resultBox.style.borderColor = validFormat ? "" : "red";
 
-    if(isNaN(resultBox.value)){
-        resultBox.style.borderColor = "red";
-        $("valid_" + row).value = false;
-        return;
-    }
-
-    if( !isNaN(significantDigits)){
-        resultBox.value = round( resultBox.value, significantDigits);
-    }
 
 	if( isSpecialCase ){
 		resultBox.title = "";
@@ -42,8 +28,6 @@ function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, low
 		$("valid_" + row).value = true;
 		return;
 	}
-
-	resultBox.style.borderColor = "";
 
 	if( lowerAbnormal != upperAbnormal &&
 	   (resultBox.value < lowerAbnormal || resultBox.value > upperAbnormal) ){
@@ -66,6 +50,35 @@ function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, low
 	}
 }
 
+function validateNumberFormat( resultBox, row, significantDigits){
+    if(resultBox.value.blank()){
+        resultBox.title = "";
+        resultBox.style.background = "#ffffff";
+        $("valid_" + row).value = false;
+        return true;
+    }
+
+    if( resultBox.value.trim() == "."){
+        resultBox.value = "0.0";
+    }
+
+    if(isNaN(resultBox.value)){
+        $("valid_" + row).value = false;
+        return false;
+    }
+
+    if( !isNaN(significantDigits)){
+        resultBox.value = round( resultBox.value, significantDigits);
+    }
+
+    return true;
+}
+
+function checkNumberFormat( resultBox, row, significantDigits){
+    var validFormat = validateNumberFormat( resultBox, row, significantDigits);
+
+    resultBox.style.borderColor = validFormat ? "" : "red";
+}
 /*
  * evaluates if the given name is valid.  Delegates to us.mn.state.health.lims.common.util.validator.UserValidationProvider
  *
