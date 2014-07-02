@@ -50,6 +50,7 @@
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>" />
 <script type="text/javascript" src="<%=basePath%>scripts/testReflex.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/multiselectUtils.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
+<script type="text/javascript" src="<%=basePath%>scripts/testResults.js?ver=<%=Versioning.getBuildNumber() %>" ></script>
 
 
 <script type="text/javascript" >
@@ -380,7 +381,7 @@ function /*boolean*/ handleEnterEvent(){
 			<html:hidden name="resultList" property="noteId" indexed="true" />
 			<html:hidden name="resultList" property="resultId"  indexed="true" styleId='<%="resultIdValue_" + index%>'/>
             <html:hidden name="resultList" property="hasQualifiedResult" indexed="true" styleId='<%="hasQualifiedResult_" + index %>' />
-
+            <html:hidden name="resultList" property="valid" indexed="true" styleId='<%="valid_" + index%>' />
 			<%if( resultList.isMultipleResultForSample() && showAccessionNumber ){ 
 			     showAccessionNumber = false; %>
 			<tr  class='<%=(rowColorIndex % 2 == 0) ? "evenRow" : "oddRow" %>'  >
@@ -440,8 +441,9 @@ function /*boolean*/ handleEnterEvent(){
 					           id='<%= "resultId_" + index %>'
 							   class='<%= (resultList.getIsHighlighted() ? "invalidHighlight " : " ") + (resultList.isReflexGroup() ? "reflexGroup_" + resultList.getSampleGroupingNumber()  : "")  +  
 							              (resultList.isChildReflex() ? " childReflex_" + resultList.getSampleGroupingNumber(): "") %> ' 
-							   onchange='<%=  "markUpdated(); makeDirty(); updateLogValue(this, " + index + "); trim(this, " + resultList.getSignificantDigits() + ");" +
-								                (resultList.isReflexGroup() && !resultList.isChildReflex() ? "updateReflexChild(" + resultList.getSampleGroupingNumber()  +  " ); " : "")  %>'/>
+							   onchange='<%=  "markUpdated(); makeDirty(); updateLogValue(this, " + index + "); " +
+								                (resultList.isReflexGroup() && !resultList.isChildReflex() ? "updateReflexChild(" + resultList.getSampleGroupingNumber()  +  " ); " : "") +
+								                  "checkNumberFormat( this," + index + ", " + resultList.getSignificantDigits() + ");" %>'/>
 	    				<% } %>
 						<bean:write name="resultList" property="units"/>
 					<% }else if( ResultType.DICTIONARY.matches(resultList.getResultType())){ %>

@@ -86,7 +86,8 @@ public class AnalysisItem  {
     private String qualifiedResultId;
     private boolean hasQualifiedResult = false;
     private int significantDigits = 0;
-    private String rejectReasonId;                                                            
+    private String rejectReasonId;
+    private boolean valid = true;
 
 	public String getRejectReasonId() {
         return rejectReasonId;
@@ -602,5 +603,13 @@ public class AnalysisItem  {
 
     public void setSignificantDigits( int significantDigits ){
         this.significantDigits = significantDigits;
+    }
+
+    public boolean isValid(){
+        return valid;
+    }
+
+    public void setValid( boolean valid ){
+        this.valid = valid;
     }
 }
