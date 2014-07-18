@@ -15,13 +15,13 @@
 */
 package us.mn.state.health.lims.testresult.valueholder;
 
-import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
-import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
-import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
+import us.mn.state.health.lims.test.valueholder.Test;
 
-public class TestResult extends EnumValueItemImpl {
+public class TestResult extends BaseObject{
 
 	private static final long serialVersionUID = 1L;
 	private String id;
@@ -38,6 +38,7 @@ public class TestResult extends EnumValueItemImpl {
 	private String scriptletName;
 	private ValueHolderInterface scriptlet;
     private Boolean isQuantifiable = false;
+    private Boolean isActive = true;
 
     public TestResult() {
 		super();
@@ -175,5 +176,13 @@ public class TestResult extends EnumValueItemImpl {
 
     public void setIsQuantifiable( Boolean isQuantifiable ){
         this.isQuantifiable = isQuantifiable;
+    }
+
+    public Boolean getIsActive(){
+        return isActive;
+    }
+
+    public void setIsActive( Boolean isActive ){
+        this.isActive = isActive;
     }
 }

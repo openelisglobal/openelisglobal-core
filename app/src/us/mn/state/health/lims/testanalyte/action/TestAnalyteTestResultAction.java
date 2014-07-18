@@ -15,18 +15,10 @@
 */
 package us.mn.state.health.lims.testanalyte.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -51,6 +43,12 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -143,7 +141,7 @@ public class TestAnalyteTestResultAction extends BaseAction {
 			List testAnalytes = testAnalyteDAO.getAllTestAnalytesPerTest(test);
 
 			TestResultDAO testResultDAO = new TestResultDAOImpl();
-			List testResults = testResultDAO.getAllTestResultsPerTest(test);
+			List testResults = testResultDAO.getAllActiveTestResultsPerTest( test );
 
 			DictionaryDAO dictDAO = new DictionaryDAOImpl();
 

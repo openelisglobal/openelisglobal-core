@@ -16,13 +16,7 @@
  */
 package us.mn.state.health.lims.testreflex.action.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
@@ -46,6 +40,11 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RetroCIReflexActions extends ReflexAction {
 
@@ -125,7 +124,7 @@ public class RetroCIReflexActions extends ReflexAction {
 
 		TestResultDAO testResultDAO = new TestResultDAOImpl();
 		@SuppressWarnings("unchecked")
-		List<TestResult> resultList = testResultDAO.getAllTestResultsPerTest(test);
+		List<TestResult> resultList = testResultDAO.getAllActiveTestResultsPerTest( test );
 		TEST_RESULT_CD4_CALCULATED = resultList.get(0);
 	}
 

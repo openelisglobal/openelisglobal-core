@@ -482,7 +482,7 @@ public class AnalyzerResultsAction extends BaseAction {
 
 		List<Dictionary> dictionaryList = new ArrayList<Dictionary>();
 
-		List<TestResult> testResults = testResultDAO.getTestResultsByTest(result.getTestId());
+		List<TestResult> testResults = testResultDAO.getActiveTestResultsByTest( result.getTestId() );
 
 		for (TestResult testResult : testResults) {
 			dictionaryList.add(dictionaryDAO.getDictionaryById(testResult.getValue()));

@@ -496,7 +496,7 @@ public class ResultsValidationUtility {
 
 	@SuppressWarnings("unchecked")
 	private List<TestResult> getPossibleResultsForTest(Test test) {
-		return testResultDAO.getAllTestResultsPerTest(test);
+		return testResultDAO.getAllActiveTestResultsPerTest( test );
 	}
 
 	private List<IdValuePair> getAnyDictonaryValues(List<TestResult> testResults) {
