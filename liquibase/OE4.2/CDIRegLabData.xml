@@ -28,7 +28,7 @@
             <column name="lastupdated" valueDate=" now() " />
         </insert>
 	</changeSet>
-    <changeSet id="2" author="paulsc">
+    <changeSet id="2" author="paulsc" context="ci_regional">
         <comment>Change uom for Concentration Corpusculaire Moyenne en Hémoglobine</comment>
         <update tableName="test" >
             <column name="uom_id" valueNumeric=" (select id from clinlims.unit_of_measure where name = 'g/dL') " />

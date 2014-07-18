@@ -64,7 +64,7 @@ public class EvolisReader extends AnalyzerLineInserter {
 		test = testDAO.getTestByName(test);
 		
 		
-		List<TestResult> testResults = testResultDAO.getTestResultsByTest( test.getId() );
+		List<TestResult> testResults = testResultDAO.getActiveTestResultsByTest( test.getId() );
 		
 		for( TestResult testResult : testResults){
 			String dictionaryValue = dictioanryDAO.getDictionaryById(testResult.getValue()).getDictEntry();

@@ -22,4 +22,13 @@
         alter table clinlims.qa_observation alter column value type varchar(120);
     </sql>
 </changeSet>
+<changeSet id="2" author="paulsc">
+    <comment>Adds an is_active column to test_result</comment>
+    <addColumn tableName="test_result">
+        <column name="is_active" type="boolean" defaultValueBoolean="true" />
+    </addColumn>
+    <sql>
+        COMMENT ON COLUMN clinlims.test_result.is_active IS 'Is this test_result active.  If a select list option is removed it still may be referenced by a result so we have to inactivate it';
+    </sql>
+</changeSet>
 </databaseChangeLog>

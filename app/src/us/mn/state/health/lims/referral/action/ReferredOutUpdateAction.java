@@ -445,7 +445,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		
 		if ( !ResultType.isDictionaryVariant( referredResultType ) && test != null) {
 			@SuppressWarnings("unchecked")
-			List<TestResult> testResults = testResultDAO.getAllTestResultsPerTest(test);
+			List<TestResult> testResults = testResultDAO.getAllActiveTestResultsPerTest( test );
 			
 			if( !testResults.isEmpty()){
 				referredResultType = testResults.get(0).getTestResultType();

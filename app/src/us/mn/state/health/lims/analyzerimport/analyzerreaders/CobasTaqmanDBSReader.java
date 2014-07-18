@@ -56,7 +56,7 @@ public class CobasTaqmanDBSReader extends AnalyzerLineInserter {
 	static{
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 		Test test = new TestDAOImpl().getActiveTestByName("DNA PCR").get(0);
-		List<TestResult> testResults = new TestResultDAOImpl().getTestResultsByTest(test.getId());
+		List<TestResult> testResults = new TestResultDAOImpl().getActiveTestResultsByTest( test.getId() );
 		
 		for(TestResult testResult : testResults){
 			Dictionary dictionary = dictionaryDAO.getDataForId(testResult.getValue());

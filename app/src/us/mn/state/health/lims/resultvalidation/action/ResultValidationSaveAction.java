@@ -483,7 +483,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		if(ResultType.DICTIONARY.matches( analysisItem.getResultType() )){
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysisItem.getTestId(), analysisItem.getResult());
 		}else{
-			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(analysisItem.getTestId());
+			List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( analysisItem.getTestId() );
 			// we are assuming there is only one testResult for a numeric type
 			// result
 			if(!testResultList.isEmpty()){

@@ -56,7 +56,7 @@ public class TestService{
 
     @SuppressWarnings("unchecked")
     public List<TestResult> getPossibleTestResults( ) {
-        return testResultDAO.getAllTestResultsPerTest(test);
+        return testResultDAO.getAllActiveTestResultsPerTest( test );
     }
 
     public String getUOM(boolean isCD4Conclusion){

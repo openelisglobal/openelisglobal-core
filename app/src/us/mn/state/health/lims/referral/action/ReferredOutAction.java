@@ -352,7 +352,7 @@ public class ReferredOutAction extends BaseAction {
 		List<NonNumericTests> nonNumericTestList = new ArrayList<NonNumericTests>();
 		TestResultDAO testResultDAO = new TestResultDAOImpl();
 		for (String testId : testIdSet) {
-			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(testId);
+			List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( testId );
 
 			if (!(testResultList == null || testResultList.isEmpty())) {
 				NonNumericTests nonNumericTests = new NonNumericTests();

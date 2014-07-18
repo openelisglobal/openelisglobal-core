@@ -746,7 +746,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(resultItem.getTestId(), resultItem.getResult());
 			return testResult;
 		} else {
-			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(resultItem.getTestId());
+			List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( resultItem.getTestId() );
 			// we are assuming there is only one testResult for a numeric
 			// type result
 			if (!testResultList.isEmpty()) {
