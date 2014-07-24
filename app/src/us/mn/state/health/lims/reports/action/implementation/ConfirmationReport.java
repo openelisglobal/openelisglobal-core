@@ -26,6 +26,7 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -214,14 +215,14 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 			if (analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))) {
 				
 				if( analysis.getTest() != null){
-					requestTestList.add(analysis.getTest().getTestName());
+					requestTestList.add( TestService.getLocalizedTestName( analysis.getTest()) );
 					requestResultList.add(getResultsForAnalysis(analysis));
 				}else{
 					requestTestList.add(StringUtil.getMessageForKey("test.name.notSpecified") );
 					requestResultList.add("");
 				}
 			} else {
-				labTestList.add(analysis.getTest().getTestName());
+				labTestList.add(TestService.getLocalizedTestName(analysis.getTest()));
 				labResultList.add(getResultsForAnalysis(analysis));
 				completionDate.add( getCompleationDate( analysis ) );
 			}

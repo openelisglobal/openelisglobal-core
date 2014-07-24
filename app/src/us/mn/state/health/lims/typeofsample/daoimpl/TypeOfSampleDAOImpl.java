@@ -17,15 +17,9 @@
 */
 package us.mn.state.health.lims.typeofsample.daoimpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -38,6 +32,8 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import java.util.*;
 
 /**
  * @author diane benz
@@ -339,8 +335,24 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		return list;
 	
 	}
-	
-	private String getKeyForDomain(SampleDomain domain) {
+
+    @Override
+    public TypeOfSample getTypeOfSampleByLocalAbbrevAndDomain( String localAbbrev, String domain ) throws LIMSRuntimeException{
+        String sql = "From TypeOfSample tos where tos.localAbbreviation = :localAbbrev and tos.domain = :domain";
+        try{
+            Query query = HibernateUtil.getSession().createQuery( sql );
+            query.setString( "localAbbrev", localAbbrev );
+            query.setString( "domain", domain );
+            TypeOfSample typeOfSample = (TypeOfSample)query.uniqueResult();
+            closeSession();
+            return typeOfSample;
+        }catch( HibernateException he ){
+            handleException( he, "getTypeOfSampeByLocalAbbreviationAndDomain" );
+        }
+        return null;
+    }
+
+    private String getKeyForDomain(SampleDomain domain) {
 		String domainKey = "H";
 		switch (domain) {
 		case ANIMAL: {

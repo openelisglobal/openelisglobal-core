@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -293,12 +294,7 @@ public class TestAnalyteTestResultAction extends BaseAction {
 			ActionForm form) {
 		BaseActionForm dynaForm = (BaseActionForm) form;
 		Test test = (Test) dynaForm.get("test");
-
-		String testName = "";
-		if (test.getTestName() != null) {
-			testName = test.getTestName();
-		}
-		return testName;
+        return TestService.getLocalizedTestName( test );
 	}
 
 	protected String getPageSubtitleKey() {
@@ -314,11 +310,7 @@ public class TestAnalyteTestResultAction extends BaseAction {
 
 		BaseActionForm dynaForm = (BaseActionForm) form;
 		Test test = (Test) dynaForm.get("test");
-		String testName = "";
-		if (test.getTestName() != null) {
-			testName = test.getTestName();
-		}
-		return testName;
+        return TestService.getLocalizedTestName( test );
 	}
 
 }

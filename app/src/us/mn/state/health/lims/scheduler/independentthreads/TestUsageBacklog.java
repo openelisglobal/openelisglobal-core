@@ -16,23 +16,14 @@
  */
 package us.mn.state.health.lims.scheduler.independentthreads;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.services.IdToNameMappingService;
-import us.mn.state.health.lims.common.services.IdToNameMappingService.Entity;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -42,6 +33,13 @@ import us.mn.state.health.lims.dataexchange.aggregatereporting.daoimpl.ReportQue
 import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.ReportExternalExport;
 import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.ReportQueueType;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TestUsageBacklog extends Thread {
 
@@ -102,7 +100,7 @@ public class TestUsageBacklog extends Thread {
 		List<Analysis> analysisList = analysisDAO.getAnalysisCompleteInRange(dayOne, dayTwo);
 
 		Map<String, Integer> testBucket = new HashMap<String, Integer>();
-		for (String key : IdToNameMappingService.getMap(Entity.TEST_DESCRIPTION).keySet()) {
+		for (String key : TestService.getMap( TestService.Entity.TEST_DESCRIPTION ).keySet()) {
 			testBucket.put(key, 0);
 		}
 
@@ -116,7 +114,7 @@ public class TestUsageBacklog extends Thread {
 		JSONObject json = new JSONObject();
 		for (String id : testBucket.keySet()) {
 			if( testBucket.get(id).intValue() > 0){
-				json.put(IdToNameMappingService.getMap(Entity.TEST_DESCRIPTION).get(id), testBucket.get(id));
+				json.put(TestService.getMap(TestService.Entity.TEST_DESCRIPTION).get(id), testBucket.get(id));
 			}
 		}
 

@@ -19,6 +19,7 @@ package us.mn.state.health.lims.common.provider.query;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.XMLUtil;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
@@ -80,7 +81,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 			@Override
 			public int compare(Test t1, Test t2){
 				if(GenericValidator.isBlankOrNull(t1.getSortOrder()) || GenericValidator.isBlankOrNull(t2.getSortOrder())){
-					return t1.getTestName().compareTo(t2.getTestName());
+					return TestService.getLocalizedTestName( t1 ).compareTo(TestService.getLocalizedTestName( t2 ));
 				}
 
 				try{
@@ -96,7 +97,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 					}
 
 				}catch(NumberFormatException e){
-					return t1.getTestName().compareTo(t2.getTestName());
+                    return TestService.getLocalizedTestName( t1 ).compareTo(TestService.getLocalizedTestName( t2 ));
 				}
 
 			}
@@ -126,7 +127,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 
 	private void addTest(Test test, StringBuilder xml){
 		xml.append("<test>");
-		XMLUtil.appendKeyValue("name", StringEscapeUtils.escapeXml(test.getTestName()), xml);
+		XMLUtil.appendKeyValue("name", StringEscapeUtils.escapeXml( TestService.getLocalizedTestName( test)), xml);
 		XMLUtil.appendKeyValue("id", test.getId(), xml);
 		XMLUtil.appendKeyValue("userBenchChoice", String.valueOf(USER_TEST_SECTION_ID.equals(test.getTestSection().getId())), xml);
         if( isVariableTypeOfSample){
@@ -195,7 +196,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 		Map<String, Integer> testNameOrderMap = new HashMap<String, Integer>();
 
 		for(int i = 0; i < tests.size(); i++){
-			testNameOrderMap.put(tests.get(i).getTestName(), new Integer(i));
+			testNameOrderMap.put(TestService.getLocalizedTestName( tests.get(i)), new Integer(i));
 		}
 
 		PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
@@ -236,12 +237,12 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 	}
 
 	private String getDerivedNameFromPanel(PanelItem item){
-		//This cover the transition in the DBbetween the panel_item being linked by name
+		//This cover the transition in the DB between the panel_item being linked by name
 		// to being linked by id
 		if(item.getTestId() != null){
 			Test test = testDAO.getTestById(item.getTestId());
 			if(test != null){
-				return test.getTestName();
+				return TestService.getLocalizedTestName( test );
 			}
 		}else{
 			return item.getTestName();

@@ -230,7 +230,7 @@ public class SampleEditAction extends BaseAction {
 			SampleEditItem sampleEditItem = new SampleEditItem();
 
 			sampleEditItem.setTestId(analysis.getTest().getId());
-			sampleEditItem.setTestName(analysis.getTest().getTestName());
+			sampleEditItem.setTestName(TestService.getLocalizedTestName(analysis.getTest()));
 			sampleEditItem.setSampleItemId(sampleItem.getId());
 
 			boolean canCancel = allowedToCancelAll ||

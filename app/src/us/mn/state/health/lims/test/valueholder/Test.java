@@ -15,8 +15,6 @@
 */
 package us.mn.state.health.lims.test.valueholder;
 
-import java.sql.Date;
-
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -24,10 +22,13 @@ import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.label.valueholder.Label;
+import us.mn.state.health.lims.localization.valueholder.Localization;
 import us.mn.state.health.lims.method.valueholder.Method;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 import us.mn.state.health.lims.testtrailer.valueholder.TestTrailer;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
+
+import java.sql.Date;
 
 /**
  * @author benzd1
@@ -57,8 +58,6 @@ public class Test extends EnumValueItemImpl {
 	private String scriptletName;
 
 	private ValueHolderInterface scriptlet;
-
-	// private String testReflxId;
 
 	private String unitOfMeasureId;
 
@@ -100,9 +99,13 @@ public class Test extends EnumValueItemImpl {
 
 	private String sortOrder;
 
-	private String localAbbrev;
+	private String localCode;
 	
 	private Boolean orderable;
+
+    private ValueHolder localizedTestName;
+
+    private ValueHolder localizedReportingName;
 	
 	public String getSortOrder() {
 		return sortOrder;
@@ -119,6 +122,8 @@ public class Test extends EnumValueItemImpl {
 		this.testTrailer = new ValueHolder();
 		this.testSection = new ValueHolder();
 		this.scriptlet = new ValueHolder();
+        localizedTestName = new ValueHolder( );
+        localizedReportingName = new ValueHolder( );
 	}
 
 	public void setId(String id) {
@@ -450,12 +455,12 @@ public class Test extends EnumValueItemImpl {
 		return testName;
 	}
 
-	public void setLocalAbbrev(String localAbbrev) {
-		this.localAbbrev = localAbbrev;
+	public void setLocalCode( String localCode ) {
+		this.localCode = localCode;
 	}
 
-	public String getLocalAbbrev() {
-		return localAbbrev;
+	public String getLocalCode() {
+		return localCode;
 	}
 
 	public Boolean getOrderable() {
@@ -465,4 +470,20 @@ public class Test extends EnumValueItemImpl {
 	public void setOrderable(Boolean orderable) {
 		this.orderable = orderable;
 	}
+
+    public Localization getLocalizedTestName(){
+        return (Localization)localizedTestName.getValue();
+    }
+
+    public void setLocalizedTestName( Localization localizedName ){
+        this.localizedTestName.setValue( localizedName );
+    }
+
+    public Localization getLocalizedReportingName(){
+        return (Localization)localizedReportingName.getValue();
+    }
+
+    public void setLocalizedReportingName( Localization localizedReportingName ){
+        this.localizedReportingName.setValue( localizedReportingName );
+    }
 }

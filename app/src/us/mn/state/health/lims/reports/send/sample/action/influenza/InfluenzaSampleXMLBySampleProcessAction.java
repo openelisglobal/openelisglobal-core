@@ -15,21 +15,6 @@
 */
 package us.mn.state.health.lims.reports.send.sample.action.influenza;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
@@ -39,7 +24,6 @@ import org.apache.struts.action.ActionMessages;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Marshaller;
 import org.xml.sax.InputSource;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -49,6 +33,7 @@ import us.mn.state.health.lims.common.exception.LIMSCannotCreateXMLException;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.provider.validation.AccessionNumberValidationProvider;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -65,6 +50,11 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
 
 
 /**
@@ -216,7 +206,7 @@ public class InfluenzaSampleXMLBySampleProcessAction extends BaseAction {
 					Analysis analysis = (Analysis) analyses.get(i);
 					
 					//only process influenza type samples
-					if (!analysis.getTest().getDescription().toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !analysis.getTest().getTestName().equals(HL7_INFLUENZA_TEST_NAME)) {
+					if (!TestService.getLocalizedAugmentedTestName( analysis.getTest()).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getLocalizedTestName( analysis.getTest()).equals( HL7_INFLUENZA_TEST_NAME ) ) {
 						continue;
 					}
 					
@@ -297,7 +287,7 @@ public class InfluenzaSampleXMLBySampleProcessAction extends BaseAction {
 						Analysis analysis = (Analysis) analyses.get(i);
 						
 						//only process influenza type samples
-						if (!analysis.getTest().getDescription().toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !analysis.getTest().getTestName().equals(HL7_INFLUENZA_TEST_NAME)) {
+						if (!TestService.getLocalizedAugmentedTestName( analysis.getTest()).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getLocalizedTestName(analysis.getTest()).equals(HL7_INFLUENZA_TEST_NAME)) {
 							continue;
 						}
 						
@@ -389,7 +379,7 @@ public class InfluenzaSampleXMLBySampleProcessAction extends BaseAction {
 						Analysis analysis = (Analysis) analyses.get(i);
 						
 						//only process influenza type samples
-						if (!analysis.getTest().getDescription().toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !analysis.getTest().getTestName().equals(HL7_INFLUENZA_TEST_NAME)) {
+						if (!TestService.getLocalizedAugmentedTestName( analysis.getTest()).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getLocalizedTestName(analysis.getTest()).equals(HL7_INFLUENZA_TEST_NAME)) {
 							continue;
 						}
 						

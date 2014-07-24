@@ -15,6 +15,8 @@
 */
 package us.mn.state.health.lims.qaevent.valueholder;
 
+import us.mn.state.health.lims.common.services.TestService;
+
 import java.util.Comparator;
 
 /**
@@ -28,7 +30,7 @@ public class Test_QaEventComparator implements Comparable {
    // You can put the default sorting capability here
    public int compareTo(Object obj) {
       Test_QaEvents q = (Test_QaEvents)obj;
-      return this.name.compareTo(q.getAnalysis().getTest().getDescription());
+      return this.name.compareTo( TestService.getLocalizedAugmentedTestName( q.getAnalysis().getTest()) );
    }
    
  
@@ -40,7 +42,7 @@ public class Test_QaEventComparator implements Comparable {
 	    	  Test_QaEvents q_a = (Test_QaEvents)a;
 	    	  Test_QaEvents q_b = (Test_QaEvents)b;
 	 
-	         return ((q_a.getAnalysis().getTest().getDescription().toLowerCase()).compareTo(q_b.getAnalysis().getTest().getDescription().toLowerCase()));
+	         return ((TestService.getLocalizedAugmentedTestName( q_a.getAnalysis().getTest()).toLowerCase()).compareTo(TestService.getLocalizedAugmentedTestName( q_b.getAnalysis().getTest()).toLowerCase()));
 
 	      }
 	   };
