@@ -110,6 +110,7 @@ public class DisplayListService implements LocaleChangeListener {
 
     @Override
     public void localeChanged(String locale) {
+        System.out.println(locale);
         //refreshes those lists which are dependent on local
         typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
@@ -129,6 +130,9 @@ public class DisplayListService implements LocaleChangeListener {
         dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
         typeToListMap.put(ListType.REJECTION_REASONS,createFromDictionaryCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
+        new TestService( (Test)null ).localeChanged( locale );
+        typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
+        typeToListMap.put(ListType.ALL_TESTS, createTestList());
     }
 
     public static List<IdValuePair> getList(ListType listType) {
@@ -255,7 +259,7 @@ public class DisplayListService implements LocaleChangeListener {
 
         List<Test> testList = new TestDAOImpl().getAllActiveOrderableTests();
         for(Test test : testList){
-            tests.add( new IdValuePair( test.getId(), test.getDescription() ) );
+            tests.add( new IdValuePair( test.getId(), TestService.getLocalizedAugmentedTestName( test )) );
         }
 
         return tests;
@@ -266,7 +270,7 @@ public class DisplayListService implements LocaleChangeListener {
 
         List<Test> testList = new TestDAOImpl().getAllActiveTests(false);
         for(Test test : testList){
-            tests.add( new IdValuePair( test.getId(), test.getDescription() ) );
+            tests.add( new IdValuePair( test.getId(), TestService.getLocalizedAugmentedTestName( test ) ) );
         }
 
         return tests;

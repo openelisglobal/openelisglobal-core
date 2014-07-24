@@ -61,7 +61,7 @@ public class AnalysisService{
     public String getTestDisplayName( ){
         if( analysis == null){return ""; }
         Test test = getTest();
-        String name = test.getDescription();
+        String name = TestService.getLocalizedAugmentedTestName( test );
 
         TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleForTest( test.getId() );
 

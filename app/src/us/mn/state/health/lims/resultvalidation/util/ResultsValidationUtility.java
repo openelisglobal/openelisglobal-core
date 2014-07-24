@@ -432,7 +432,7 @@ public class ResultsValidationUtility {
 
 		List<TestResult> testResults = getPossibleResultsForTest(test);
 
-		String displayTestName = test.getDescription();
+		String displayTestName = TestService.getLocalizedAugmentedTestName( test );
 //		displayTestName = augmentTestNameWithRange(displayTestName, result);
 		
 		ResultValidationItem testItem = new ResultValidationItem();

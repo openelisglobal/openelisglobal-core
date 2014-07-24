@@ -171,7 +171,6 @@ public class StringUtil {
 				String post = phone.substring(9, 13);
 				returnPhone = area + "/" + pre + "-" + post;
 			} catch (Exception e) {
-				// bugzilla 2154
 				LogEvent.logError("StringUtil", "formatPhone()", e.toString());
 			}
 
@@ -247,7 +246,6 @@ public class StringUtil {
 			}
 			return "";
 		} catch (Exception e) {
-			// bugzilla 2154
 			LogEvent.logError("StringUtil", "trim()", e.toString());
 			throw new LIMSRuntimeException("Error trimming string ", e);
 		}

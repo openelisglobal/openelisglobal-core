@@ -15,12 +15,13 @@
 */
 package us.mn.state.health.lims.test.valueholder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author benzd1
@@ -46,8 +47,8 @@ public class AssignableTest extends EnumValueItemImpl implements IActionConstant
     
     public AssignableTest(Test aTest) {
     	this.id = aTest.getId();
-    	this.assignableTestName = aTest.getTestName();
-    	this.description = aTest.getDescription();
+    	this.assignableTestName = TestService.getLocalizedTestName( aTest );
+    	this.description = TestService.getLocalizedAugmentedTestName( aTest );
     	this.displayValue = aTest.getTestDisplayValue();
     	this.type = ASSIGNABLE_TEST_TYPE_TEST;
     	this.tooltipText = "";

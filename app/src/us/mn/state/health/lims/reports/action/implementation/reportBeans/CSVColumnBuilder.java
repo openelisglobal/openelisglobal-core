@@ -23,6 +23,7 @@ import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -127,7 +128,7 @@ abstract public class CSVColumnBuilder {
 			testResultsByTestName = new HashMap<String, TestResult>();
 			List<TestResult> allTestResults = new TestResultDAOImpl().getAllTestResults();
 			for (TestResult testResult : allTestResults) {
-				String key = testResult.getTest().getDescription();
+				String key = TestService.getLocalizedAugmentedTestName( testResult.getTest());
 				testResultsByTestName.put(key, testResult);
 			}
 		}
@@ -496,7 +497,7 @@ abstract public class CSVColumnBuilder {
 		query.append("\n as " + listName + " ( " // inner use of the list name
 				+ "\"si_id\" numeric(10) ");
 		for (Test col : allTests) {
-			String testName = testColumnName(col);
+			String testName = TestService.getLocalizedAugmentedTestName( col );
 			if (!"CD4".equals(testName)) { // CD4 is listed as a test name but
 											// it isn't clear it should be line
 											// 446 may also have to be changed
@@ -588,23 +589,11 @@ abstract public class CSVColumnBuilder {
 	 */
 	protected void addAllResultsColumns() {
 		for (Test test : allTests) {
-			String testTag = testColumnName(test);
+			String testTag = TestService.getLocalizedAugmentedTestName( test);
 			if (!"CD4".equals(testTag)) {
-				add(testTag, test.getDescription(), TEST_RESULT);
+				add(testTag, TestService.getLocalizedAugmentedTestName( test ), TEST_RESULT );
 			}
 		}
-	}
-
-	/**
-	 * Build a name usable as a test column for SQL queries. This trivial method
-	 * is used to draw attention to the fact that the names in the query better
-	 * match the columns data structure, whatever name is used, so that a column
-	 * can find the value in the results. There used to be some problem with
-	 * some of the tests, but maybe after re-organizing the SQL, the problem is
-	 * gone, so now we're just using the test.name as the column.
-	 */
-	private String testColumnName(Test test) {
-		return test.getDescription();
 	}
 
 	/**

@@ -15,14 +15,9 @@
  */
 package us.mn.state.health.lims.testreflex.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
@@ -30,14 +25,19 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSDuplicateRecordException;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testreflex.dao.TestReflexDAO;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author diane benz 11/17/2007 instead of printing StackTrace log error
@@ -85,9 +85,9 @@ public class TestReflexDAOImpl extends BaseDAOImpl implements TestReflexDAO {
 		try {
 			// bugzilla 1482 throw Exception if record already exists
 			if (duplicateTestReflexExists(testReflex)) {
-				throw new LIMSDuplicateRecordException("Duplicate record exists for " + testReflex.getTest().getTestName() + BLANK
+				throw new LIMSDuplicateRecordException("Duplicate record exists for " + TestService.getLocalizedTestName( testReflex.getTest()) + BLANK
 						+ testReflex.getTestAnalyte().getAnalyte().getAnalyteName() + BLANK + testReflex.getTestResult().getValue() + BLANK
-						+ testReflex.getAddedTest().getTestName());
+						+ TestService.getLocalizedTestName( testReflex.getAddedTest()));
 			}
 
 			String id = (String) HibernateUtil.getSession().save(testReflex);
@@ -116,10 +116,10 @@ public class TestReflexDAOImpl extends BaseDAOImpl implements TestReflexDAO {
 			if (duplicateTestReflexExists(testReflex)) {
 				throw new LIMSDuplicateRecordException(
 						"Duplicate record exists for "
-						+ testReflex.getTest().getTestName() + BLANK
+						+ TestService.getLocalizedTestName( testReflex.getTest()) + BLANK
 						+ testReflex.getTestAnalyte().getAnalyte().getAnalyteName() +BLANK
 						+ testReflex.getTestResult().getValue() + BLANK
-						+ testReflex.getAddedTest().getTestName());
+						+ TestService.getLocalizedTestName( testReflex.getAddedTest()));
 			}
 		} catch (Exception e) {
 			// bugzilla 2154
@@ -440,18 +440,18 @@ public class TestReflexDAOImpl extends BaseDAOImpl implements TestReflexDAO {
 
 			// not case sensitive hemolysis and Hemolysis are considered
 			// duplicates
-			String sql = "from TestReflex t where trim(lower(t.test.testName)) = :testName and " +
+			String sql = "from TestReflex t where t.test.localizedTestName = :localizedTestNameId and " +
 			             "trim(lower(t.testAnalyte.analyte.analyteName)) = :analyteName and " +
 			             "t.testResult.id = :resultId and " +
-			             "(trim(lower(t.addedTest.testName)) = :addedTestName or " +
+			             "t.addedTest.localizedTestName = :addedTestNameId or " +
 			             "trim(lower(t.actionScriptlet.scriptletName)) = :scriptletName  ) and " +
 			             " t.id != :testId";
 			Query query = HibernateUtil.getSession().createQuery(
 					sql);
-			query.setString("testName", testReflex.getTest().getTestName().toLowerCase().trim());
+			query.setInteger( "localizedTestName", Integer.parseInt( testReflex.getTest().getLocalizedTestName().getId() ));
 			query.setString("analyteName", testReflex.getTestAnalyte().getAnalyte().getAnalyteName().toLowerCase().trim());
 			query.setInteger("resultId", Integer.parseInt(testReflex.getTestResult().getId()));
-			query.setString("addedTestName", testReflex.getAddedTest() == null ? null : testReflex.getAddedTest().getTestName().toLowerCase().trim());
+			query.setInteger( "addedTestNameId", testReflex.getAddedTest() == null ? -1 : Integer.parseInt( testReflex.getAddedTest().getLocalizedTestName().getId() ) );
 			query.setString("scriptletName", testReflex.getActionScriptlet() == null ? null : testReflex.getActionScriptlet().getScriptletName().toLowerCase().trim());
 
 			String testReflexId = StringUtil.isNullorNill(testReflex.getId()) ? "0" : testReflex.getId();

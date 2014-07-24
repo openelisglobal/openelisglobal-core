@@ -25,6 +25,7 @@ import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -172,7 +173,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 
 		for (Analysis analysis : analysisList) {
 
-			String testName = analysis.getTest().getTestName();
+			String testName = TestService.getLocalizedTestName( analysis.getTest());
 
 			TestBucket bucket = testBuckets.get(testName);
 

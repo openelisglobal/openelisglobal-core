@@ -16,13 +16,9 @@
 */
 package us.mn.state.health.lims.common.services.historyservices;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.valueholder.History;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
@@ -33,6 +29,11 @@ import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NoteHistoryService extends HistoryService {
 
@@ -72,7 +73,7 @@ public class NoteHistoryService extends HistoryService {
 			
 			for(Note note : notes){
 				searchHistory.setReferenceId(note.getId());
-				noteIdToIndicatorMap.put(note.getId(), result.getAnalysis().getTest().getTestName() );
+				noteIdToIndicatorMap.put(note.getId(), TestService.getLocalizedTestName( result.getAnalysis().getTest()) );
 				historyList.addAll(auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory));
 			}	
 		}

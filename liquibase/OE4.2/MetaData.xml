@@ -26,4 +26,16 @@
         update clinlims.test_section set display_key = trim(display_key);
     </sql>
 </changeSet>
+    <changeSet id="3" author="paulsc">
+        <comment>Adds setting to augment test name with sample type</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name" value="augmentTestNameWithType" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="If true then in certain places the test name will have the the test type" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'hiddenProperties' ) " />
+            <column name="value_type" value="boolean" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>

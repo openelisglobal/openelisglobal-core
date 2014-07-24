@@ -8,6 +8,7 @@
     us.mn.state.health.lims.analyte.valueholder.Analyte,
 	us.mn.state.health.lims.testresult.valueholder.TestResult,
 	us.mn.state.health.lims.analysis.valueholder.Analysis" %>
+<%@ page import="us.mn.state.health.lims.common.services.TestService" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -124,7 +125,7 @@ function saveItToParentForm(form) {
       
     </td>
     <td>
-     <% out.println(originalTest.getTestName()); %>
+     <% out.println( TestService.getLocalizedTestName( originalTest )); %>
     </td>
     <td>
      <% out.println(originalAnalyte.getAnalyteName()); %>

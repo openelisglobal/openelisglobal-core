@@ -861,11 +861,11 @@ public abstract class PatientReport extends Report{
         if( useReportingDescription() ){
             testName = reportAnalysis.getTest().getReportingDescription();
         }else{
-            testName = reportAnalysis.getTest().getTestName();
+            testName = TestService.getLocalizedTestName(reportAnalysis.getTest());
         }
 
         if( GenericValidator.isBlankOrNull( testName ) ){
-            testName = reportAnalysis.getTest().getTestName();
+            testName = TestService.getLocalizedTestName(reportAnalysis.getTest());
         }
         return (indent ? "    " : "") + testName;
     }

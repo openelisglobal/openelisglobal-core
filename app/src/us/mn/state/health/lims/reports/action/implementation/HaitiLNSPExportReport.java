@@ -21,10 +21,7 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.AnalysisService;
-import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -150,7 +147,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ts.setStatus(StatusService.getInstance().getStatusName(StatusService.getInstance().getAnalysisStatusForID(analysis.getStatusId())));
 		ts.setSampleType(sampleItem.getTypeOfSample().getLocalizedName());
 		ts.setTestBench(analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName());
-		ts.setTestName(analysis.getTest() == null ? "" : analysis.getTest().getTestName());
+		ts.setTestName( TestService.getLocalizedTestName( analysis.getTest()) );
         ts.setDepartment( StringUtil.blankIfNull(patientService.getAddressComponents().get(PatientService.ADDRESS_DEPT) ) );
 
 		if(requesterOrganization != null){

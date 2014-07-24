@@ -105,7 +105,8 @@ public abstract class ConfigurationProperties {
         PHONE_FORMAT,                //Format of phone number
         VALIDATE_PHONE_FORMAT,       //If true then entered phone numbers will be validated against format
         ALLOW_DUPLICATE_SUBJECT_NUMBERS, //If true then duplicate subject numbers are allowed
-        VALIDATE_REJECTED_TESTS //If true then if the technician rejects a test the next step is validation
+        VALIDATE_REJECTED_TESTS, //If true then if the technician rejects a test the next step is validation
+        TEST_NAME_AUGMENTED   //If true then in some places the test name will be suffixed with the sample type
     }
 
 	

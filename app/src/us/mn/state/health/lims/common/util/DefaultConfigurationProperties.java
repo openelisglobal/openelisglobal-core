@@ -103,6 +103,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault(Property.VALIDATE_PHONE_FORMAT, "validate phone format", "true");
         setDBPropertyMappingAndDefault( Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "Allow duplicate subject number", "true" );
         setDBPropertyMappingAndDefault( Property.VALIDATE_REJECTED_TESTS, "validateTechnicalRejection", "false" );
+        setDBPropertyMappingAndDefault( Property.TEST_NAME_AUGMENTED, "augmentTestNameWithType", "true" );
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

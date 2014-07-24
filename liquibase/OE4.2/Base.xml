@@ -22,4 +22,12 @@
     <include file="OE4.2/LocalChanges/LocalChanges.xml" />
     <include file="OE4.2/CDIRegLabData.xml" />
     <include file="OE4.2/CrosscuttingData.xml" />
+    <include file="OE4.2/testCatalogCI_Regional_labs/updateCatalog.xml" />
+    <include file="OE4.2/testCatalogCI_IPCI/updateCatalog.xml" />
+    <include file="OE4.2/testCatalogCI_LNSP/updateCatalog.xml" />
+    <include file="OE4.2/testCatalogCI_RetroCI/updateCatalog.xml" />
+    <include file="OE4.2/testCatalogHT_LNSP/updateCatalog.xml" />
+    <include file="OE4.2/testCatalogHT_Clinical/updateCatalog.xml" />
+    <include file="OE4.2/RetroCIData.xml" />
+    <include file="OE4.2/PostCatalogUpdate.xml" />
 </databaseChangeLog>

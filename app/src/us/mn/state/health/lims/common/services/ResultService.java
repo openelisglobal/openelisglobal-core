@@ -61,11 +61,11 @@ public class ResultService {
 	}
 
 	public String getTestName() {
-		return test != null ? test.getTestName() : "";
+		return TestService.getLocalizedTestName(test);
 	}
 
 	public String getTestDescription() {
-		return test != null ? test.getDescription() : "";
+		return TestService.getLocalizedAugmentedTestName( test );
 	}
 
 	public String getSampleType() {

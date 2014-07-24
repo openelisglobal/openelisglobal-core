@@ -29,6 +29,7 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -122,7 +123,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 						testResultItem.setPatientInfo(getSubjectNumber(analysis));
 						testResultItem.setNextVisitDate(ObservationHistoryService.getValueForSample( ObservationType.NEXT_VISIT_DATE, sample.getId() ));
 						testResultItem.setReceivedDate(getReceivedDateDisplay(sample));
-						testResultItem.setTestName(analysis.getTest().getTestName());
+						testResultItem.setTestName( TestService.getLocalizedTestName( analysis.getTest()));
 						testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
 						if (addPatientName)
 						    testResultItem.setPatientName(getPatientName(analysis));
