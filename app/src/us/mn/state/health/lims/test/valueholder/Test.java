@@ -187,10 +187,18 @@ public class Test extends EnumValueItemImpl {
 				this.activeEndDateForDisplay, locale);
 	}
 
+    /**
+     * This is descriptive only and should not be displayed to the end user
+     * @return  the description
+     */
 	public String getDescription() {
 		return description;
 	}
 
+    /**
+     * Description of this test
+     * @param description  the description
+     */
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -227,10 +235,20 @@ public class Test extends EnumValueItemImpl {
 		this.loinc = loinc;
 	}
 
+    /**
+     * @deprecated reporting descriptions are now in localization table
+     * @return do not use
+     */
+    @Deprecated
 	public String getReportingDescription() {
 		return reportingDescription;
 	}
 
+    /**
+     * @deprecated reporting descriptions are now in localization table
+     * @param reportingDescription ignored
+     */
+    @Deprecated
 	public void setReportingDescription(String reportingDescription) {
 		this.reportingDescription = reportingDescription;
 	}
@@ -292,10 +310,20 @@ public class Test extends EnumValueItemImpl {
 		this.unitOfMeasureId = unitOfMeasureId;
 	}
 
+    /**
+     * @deprecated names are now in localization table
+     * @return Do not use
+     */
+    @Deprecated
 	public String getTestName() {
 		return testName;
 	}
 
+    /**
+     * @deprecated names are now in localization table
+     * @param testName ignored
+     */
+    @Deprecated
 	public void setTestName(String testName) {
 		this.testName = testName;
 		this.name = testName;

@@ -58,7 +58,8 @@ public class TestService implements LocaleChangeListener{
 
     public enum Entity{
         TEST_NAME,
-        TEST_DESCRIPTION
+        TEST_AUGMENTED_NAME,
+        TEST_REPORTING_NAME
     }
 
     static{
@@ -67,7 +68,8 @@ public class TestService implements LocaleChangeListener{
 
         entityToMap = new HashMap<Entity, Map<String, String>>();
         entityToMap.put( Entity.TEST_NAME, createTestIdToNameMap() );
-        entityToMap.put(Entity.TEST_DESCRIPTION, createTestIdToDescriptionMap());
+        entityToMap.put(Entity.TEST_AUGMENTED_NAME, createTestIdToAugmentedNameMap());
+        entityToMap.put(Entity.TEST_REPORTING_NAME, createTestIdToReportingNameMap());
 
         SystemConfiguration.getInstance().addLocalChangeListener( INSTANCE );
     }
@@ -75,6 +77,9 @@ public class TestService implements LocaleChangeListener{
     @Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;
+        entityToMap.put( Entity.TEST_NAME, createTestIdToNameMap() );
+        entityToMap.put(Entity.TEST_AUGMENTED_NAME, createTestIdToAugmentedNameMap());
+        entityToMap.put(Entity.TEST_REPORTING_NAME, createTestIdToReportingNameMap());
     }
 
     public TestService(Test test){
@@ -171,11 +176,23 @@ public class TestService implements LocaleChangeListener{
         return getLocalizedTestName( test.getId() );
     }
 
+    public static String getLocalizedReportingTestName( String testId){
+        String name = entityToMap.get(Entity.TEST_REPORTING_NAME).get( testId );
+        return name == null ? "" : name;
+    }
+
+    public static String getLocalizedReportingTestName( Test test ){
+        if( test == null){
+            return "";
+        }
+
+        return getLocalizedTestName( test.getId() );
+    }
+
     public static String getLocalizedTestName( String testId){
         String name = entityToMap.get(Entity.TEST_NAME).get( testId );
         return name == null ? "" : name;
     }
-
     /**
      * Returns the test name augmented with the sample type IF  ConfigurationProperties.Property.TEST_NAME_AUGMENTED
      * is true. If it is not true just the test name will be returned.  The test name will be correct for the current locale
@@ -197,7 +214,7 @@ public class TestService implements LocaleChangeListener{
      * @return The test name or the augmented test name
      */
     public static String getLocalizedAugmentedTestName( String testId ){
-        String description = entityToMap.get(Entity.TEST_DESCRIPTION).get( testId );
+        String description = entityToMap.get(Entity.TEST_AUGMENTED_NAME ).get( testId );
         return description == null ? "" : description;
     }
     private static Map<String, String> createTestIdToNameMap() {
@@ -221,7 +238,7 @@ public class TestService implements LocaleChangeListener{
             return localization.getEnglish();
         }
     }
-    private static Map<String, String> createTestIdToDescriptionMap() {
+    private static Map<String, String> createTestIdToAugmentedNameMap() {
         Map<String, String> testIdToNameMap = new HashMap<String, String>();
 
         List<Test> tests = new TestDAOImpl().getAllActiveTests(false);
@@ -233,6 +250,27 @@ public class TestService implements LocaleChangeListener{
         return testIdToNameMap;
     }
 
+    private static Map<String, String> createTestIdToReportingNameMap(){
+        Map<String, String> testIdToNameMap = new HashMap<String, String>();
+
+        List<Test> tests = new TestDAOImpl().getAllActiveTests(false);
+
+        for (Test test : tests) {
+            testIdToNameMap.put(test.getId(), buildReportingTestName( test ) );
+        }
+
+        return testIdToNameMap;
+    }
+
+    private static String buildReportingTestName( Test test ){
+        Localization localization = test.getLocalizedReportingName();
+
+        if( LANGUAGE_LOCALE.equals( ConfigurationProperties.LOCALE.FRENCH.getRepresentation() )){
+            return localization.getFrench();
+        }else{
+            return localization.getEnglish();
+        }
+    }
     private static String buildAugmentedTestName( Test test ){
         Localization localization = test.getLocalizedTestName();
 
