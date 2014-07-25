@@ -23,6 +23,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.SampleService;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -184,7 +185,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 				Test test = new Test();
 				test.setId(testId);
 				testDAO.getData(test);
-				data.setReferralTestName(test.getReportingDescription());
+				data.setReferralTestName( TestService.getLocalizedReportingTestName( test ) );
 				
 				String uom = getUnitOfMeasure( test);
 				if (reportReferralResultValue != null) {

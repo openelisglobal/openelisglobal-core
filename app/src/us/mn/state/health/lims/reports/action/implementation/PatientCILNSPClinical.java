@@ -26,6 +26,7 @@ import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -126,7 +127,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 					Test test = new Test();
 					test.setId(testId);
 					testDAO.getData(test);
-					data.setTestName(test.getReportingDescription());
+					data.setTestName( TestService.getLocalizedReportingTestName( test ) );
 
 					String uom = getUnitOfMeasure( test);
 					if(reportReferralResultValue != null){

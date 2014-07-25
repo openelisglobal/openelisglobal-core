@@ -102,7 +102,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 			bucket.testSection = test.getTestSection().getLocalizedName();
 			bucket.sectionSort = test.getTestSection().getSortOrderInt();
 			
-			testNameToBucketList.put(test.getReportingDescription(), bucket);
+			testNameToBucketList.put( TestService.getLocalizedReportingTestName(test), bucket);
 			testBucketList.add(bucket);
 		}
 
@@ -211,14 +211,14 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
                 testBucket = concatSection_TestToBucketMap.get( concatedName );
                 if( testBucket == null ){
                     testBucket = new TestBucket();
-                    testBucket.testName = test.getReportingDescription();
+                    testBucket.testName = TestService.getLocalizedReportingTestName( test );
                     testBucket.testSort = Integer.parseInt( test.getSortOrder() );
                     testBucket.testSection = analysis.getTestSection().getLocalizedName();
                     testBucket.sectionSort = analysis.getTestSection().getSortOrderInt();
                     concatSection_TestToBucketMap.put( concatedName, testBucket );
                 }
             }else{
-                testBucket = testNameToBucketList.get( test.getReportingDescription() );
+                testBucket = testNameToBucketList.get( TestService.getLocalizedReportingTestName(test));
             }
 
             if( testBucket != null ){

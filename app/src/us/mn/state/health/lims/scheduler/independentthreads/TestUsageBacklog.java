@@ -100,7 +100,7 @@ public class TestUsageBacklog extends Thread {
 		List<Analysis> analysisList = analysisDAO.getAnalysisCompleteInRange(dayOne, dayTwo);
 
 		Map<String, Integer> testBucket = new HashMap<String, Integer>();
-		for (String key : TestService.getMap( TestService.Entity.TEST_DESCRIPTION ).keySet()) {
+		for (String key : TestService.getMap( TestService.Entity.TEST_AUGMENTED_NAME ).keySet()) {
 			testBucket.put(key, 0);
 		}
 
@@ -114,7 +114,7 @@ public class TestUsageBacklog extends Thread {
 		JSONObject json = new JSONObject();
 		for (String id : testBucket.keySet()) {
 			if( testBucket.get(id).intValue() > 0){
-				json.put(TestService.getMap(TestService.Entity.TEST_DESCRIPTION).get(id), testBucket.get(id));
+				json.put(TestService.getMap(TestService.Entity.TEST_AUGMENTED_NAME ).get(id), testBucket.get(id));
 			}
 		}
 

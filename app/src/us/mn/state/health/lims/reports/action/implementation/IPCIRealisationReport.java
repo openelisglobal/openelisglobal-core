@@ -189,7 +189,7 @@ public class  IPCIRealisationReport  extends Report {
 					testBucket = concatSection_TestToBucketMap.get(concatedName);
 					if (testBucket == null) {
 						testBucket = new TestBucket();
-						testBucket.testName = test.getReportingDescription();
+						testBucket.testName = TestService.getLocalizedReportingTestName(test);
 						testBucket.testSection = analysis.getTestSection().getLocalizedName();
 						concatSection_TestToBucketMap.put(concatedName, testBucket);
 					}

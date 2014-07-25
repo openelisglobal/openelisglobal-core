@@ -859,7 +859,7 @@ public abstract class PatientReport extends Report{
         String testName;
 
         if( useReportingDescription() ){
-            testName = reportAnalysis.getTest().getReportingDescription();
+            testName = TestService.getLocalizedReportingTestName(reportAnalysis.getTest() );
         }else{
             testName = TestService.getLocalizedTestName(reportAnalysis.getTest());
         }
