@@ -278,7 +278,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 
 	@Override
 	protected String getNameForReportRequest() {
-		return StringUtil.getMessageForKey("report.confirmation.title");
+		return StringUtil.getMessageForKey("report.confirmation.request");
 	}
 
 	@Override
