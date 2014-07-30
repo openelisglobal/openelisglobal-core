@@ -47,4 +47,20 @@ public class MenuDAOImpl implements MenuDAO {
 		} 
 	}
 
+	public Menu getMenuByElementId(String elementId)  throws LIMSRuntimeException {
+		String sql = "From Menu m where m.elementId = :elementId";
+		try {
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setString("elementId", elementId);
+			Menu menu = (Menu)query.uniqueResult();
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+			return menu;
+		} catch (HibernateException e) {
+			LogEvent.logError("MenuDAOImpl","getMenuByElementId()",e.toString());
+			throw new LIMSRuntimeException("Error in Menu getMenuByElementId()", e);
+		}
+		
+	}
+
 }

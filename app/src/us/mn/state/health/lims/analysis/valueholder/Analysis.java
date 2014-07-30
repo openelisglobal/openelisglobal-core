@@ -78,7 +78,7 @@ public class Analysis extends BaseObject {
 	private boolean referredOut = false;
     private String sampleTypeName;
 	private List<Analysis> children;
-
+    private boolean correctedSincePatientReport;
 
 	public Analysis() {
 		super();
@@ -507,5 +507,11 @@ public class Analysis extends BaseObject {
 		this.referredOut = referredOut;
 	}
 
+    public boolean isCorrectedSincePatientReport(){
+        return correctedSincePatientReport;
+    }
 
+    public void setCorrectedSincePatientReport( boolean correctedSincePatientReport ){
+        this.correctedSincePatientReport = correctedSincePatientReport;
+    }
 }

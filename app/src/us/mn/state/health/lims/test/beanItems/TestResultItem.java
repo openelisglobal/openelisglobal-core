@@ -41,9 +41,12 @@ public class TestResultItem implements ResultItem, Serializable{
 	private boolean isGroupSeparator = false;
 	private int sampleGroupingNumber = 1;  //display only -- groups like samples together
 
-
+	/*
+	 * Used for inserting Patient Names/o into lists of TestResultItems
+	 */
+	private boolean isServingAsTestGroupIdentifier = false;
 	
-	private static String NO = "no";
+    private static String NO = "no";
 	@SuppressWarnings("unused")
 	private static String YES = "yes";
 
@@ -67,13 +70,17 @@ public class TestResultItem implements ResultItem, Serializable{
 	private double lowerNormalRange = 0;
 	private double upperAbnormalRange;
 	private double lowerAbnormalRange;
+    private String normalRange = "";
+    private int significantDigits = -1;
+    private String shadowResultValue;
 	private String resultValue;
 	private String remarks;
 	private String technician;
 	private boolean reportable;
 	private String patientName;
 	private String patientInfo;
-	private String unitsOfMeasure = "";
+	private String nationalId;
+    private String unitsOfMeasure = "";
 
 //	private String testSortNumber;
 	private String resultType;
@@ -99,6 +106,11 @@ public class TestResultItem implements ResultItem, Serializable{
 	private boolean readOnly = false;
 	private boolean referredOut = false;
 	private boolean referralCanceled = false;
+    
+	//This is the workaround for the checkbox stickiness issue
+    private boolean shadowReferredOut = false;
+    private boolean shadowRejected = false;
+    
 	private String referralId = "";
 	private String referralReasonId = "";
 	private String multiSelectResultValues;
@@ -111,13 +123,35 @@ public class TestResultItem implements ResultItem, Serializable{
 	private int reflexParentGroup = 0;
 	private boolean isChildReflex = false;
 	private boolean displayResultAsLog = false;
-	private String qualifiedDictonaryId = null;
+	private String qualifiedDictionaryId = null;
 	private String qualifiedResultValue = "";
 	private String qualifiedResultId;
+    private boolean hasQualifiedResult = false;
 	private String nextVisitDate;
 	private String forceTechApproval;
     private String reflexJSONResult;
+    private boolean rejected = false;
+    private String rejectReasonId;
+    private String considerRejectReason;
 	
+    public String getConsiderRejectReason() {
+        return considerRejectReason;
+    }
+    public void setConsiderRejectReason(String considerRejectReason) {
+        this.considerRejectReason = considerRejectReason;
+    }
+    public String getRejectReasonId() {
+        return rejectReasonId;
+    }
+    public void setRejectReasonId(String rejectReasonId) {
+        this.rejectReasonId = rejectReasonId;
+    }
+    public boolean isRejected() {
+        return rejected;
+    }
+    public void setRejected(boolean rejected) {
+        this.rejected = rejected;
+    }
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
@@ -164,8 +198,22 @@ public class TestResultItem implements ResultItem, Serializable{
 		this.referredOut = referredOut;
 	}
 
+    public boolean isShadowReferredOut(){
+        return shadowReferredOut;
+    }
 
-	public String getTechnicianSignatureId() {
+    public void setShadowReferredOut( boolean shadowReferredOut ){
+        this.shadowReferredOut = shadowReferredOut;
+    }
+    
+    public boolean isShadowRejected() {
+        return shadowRejected;
+    }
+    public void setShadowRejected(boolean shadowRejected) {
+        this.shadowRejected = shadowRejected;
+    }
+    
+    public String getTechnicianSignatureId() {
 		return technicianSignatureId;
 	}
 	public void setTechnicianSignatureId(String technicianId) {
@@ -321,17 +369,23 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setTestId(String testId) {
 		this.testId = testId;
 	}
-	public String getNormalRange() {
-		return String.valueOf(lowerNormalRange) + "-" + String.valueOf(upperNormalRange);
-	}
-
 	public String getResultValue() {
 		return resultValue;
 	}
 	public void setResultValue(String results) {
 		this.resultValue = results;
+        setShadowResultValue( results );
 	}
-	public String getResultType() {
+
+    public String getShadowResultValue(){
+        return shadowResultValue;
+    }
+
+    public void setShadowResultValue( String shadowResultValue ){
+        this.shadowResultValue = shadowResultValue;
+    }
+
+    public String getResultType() {
 		return resultType;
 	}
 	public void setResultType(String resultType) {
@@ -543,18 +597,17 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setDisplayResultAsLog(boolean displayResultAsLog) {
 		this.displayResultAsLog = displayResultAsLog;
 	}
-
 	public boolean isNonconforming() {
 		return nonconforming;
 	}
 	public void setNonconforming(boolean nonconforming) {
 		this.nonconforming = nonconforming;
 	}
-	public String getQualifiedDictonaryId() {
-		return qualifiedDictonaryId;
+	public String getQualifiedDictionaryId() {
+		return qualifiedDictionaryId;
 	}
-	public void setQualifiedDictonaryId(String qualifiedDictonaryId) {
-		this.qualifiedDictonaryId = qualifiedDictonaryId;
+	public void setQualifiedDictionaryId( String qualifiedDictionaryId ) {
+		this.qualifiedDictionaryId = qualifiedDictionaryId;
 	}
 	public String getQualifiedResultValue() {
 		return qualifiedResultValue;
@@ -565,7 +618,16 @@ public class TestResultItem implements ResultItem, Serializable{
 	public String getQualifiedResultId() {
 		return qualifiedResultId;
 	}
-	public void setQualifiedResultId(String qualifiedResultId) {
+
+    public boolean isHasQualifiedResult(){
+        return hasQualifiedResult;
+    }
+
+    public void setHasQualifiedResult( boolean hasQualifiedResult ){
+        this.hasQualifiedResult = hasQualifiedResult;
+    }
+
+    public void setQualifiedResultId(String qualifiedResultId) {
 		this.qualifiedResultId = qualifiedResultId;
 	}
 	public String getNextVisitDate(){
@@ -580,12 +642,37 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setForceTechApproval(String forceTechApproval){
 		this.forceTechApproval = forceTechApproval;
 	}
-
     public String getReflexJSONResult(){
         return reflexJSONResult;
     }
-
     public void setReflexJSONResult( String reflexJSONResult ){
         this.reflexJSONResult = reflexJSONResult;
     }
+    public String getNormalRange(){
+        return normalRange;
+    }
+    public void setNormalRange( String normalRange ){
+        this.normalRange = normalRange;
+    }
+    public int getSignificantDigits(){
+        return significantDigits;
+    }
+    public void setSignificantDigits( int significantDigits ){
+        this.significantDigits = significantDigits;
+    }
+    public boolean isServingAsTestGroupIdentifier() {
+        return isServingAsTestGroupIdentifier;
+    }
+    public void setServingAsTestGroupIdentifier(
+            boolean isServingAsTestGroupIdentifier) {
+        this.isServingAsTestGroupIdentifier = isServingAsTestGroupIdentifier;
+    }
+    public String getNationalId() {
+        return nationalId;
+    }
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+
 }

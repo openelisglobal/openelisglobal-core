@@ -16,22 +16,9 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.ws.Response;
-
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -42,6 +29,13 @@ import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMessages;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
+
 
 public abstract class Report implements IReportCreator {
     
@@ -49,8 +43,6 @@ public abstract class Report implements IReportCreator {
     public static final String HAITI_ERROR_REPORT = "HaitiNoticeOfReportError";
     
 	protected static final String CSV = "csv";
-	protected static final String EXCEL = "excel";
-	protected static final String PDF = "pdf";
 
 	protected boolean initialized = false;
     protected boolean errorFound = false;
@@ -69,16 +61,7 @@ public abstract class Report implements IReportCreator {
 	public String getResponseHeaderContent(){
 		return null;
 	}
-	
-	protected Collection<String> getExportOptions() {
-		List<String> exportList = new ArrayList<String>();
 
-		exportList.add(PDF);
-		exportList.add(EXCEL);
-		exportList.add(CSV);
-
-		return exportList;
-	}
 
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#getContentType()
@@ -99,30 +82,20 @@ public abstract class Report implements IReportCreator {
         reportParameters.put("usePageNumbers", ConfigurationProperties.getInstance().getPropertyValue(Property.USE_PAGE_NUMBERS_ON_REPORTS));
     }
 
-    /**
-     * Nearly every report does PDF this routine does that, but some do other things like export to CSV which involves messing with the response and the headers
-     * @param response response, so that appropriate things can be set into it.
-     * @param fullReportFilename - valid full path to write the report
-     * @throws JRException
-     * @throws IllegalStateException
-     * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#runReport(java.lang.String, Response)
-     */
+
     @Override
     public byte[] runReport( ) throws Exception {
         return JasperRunManager.runReportToPdf(fullReportFilename, getReportParameters(), getReportDataSource()); 
     }
 
 
-    /**
-     * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#getReportDataSource()
-     */
     public abstract JRDataSource getReportDataSource() throws IllegalStateException;
 
     public HashMap<String, ?> getReportParameters() throws IllegalStateException {
         if (!initialized) {
             throw new IllegalStateException("initializeReport not called first");
         }
-        return reportParameters;
+        return reportParameters != null ? reportParameters : new HashMap<String, Object>();
     }
 
     /**
@@ -154,10 +127,10 @@ public abstract class Report implements IReportCreator {
      * @param checkDateStr - date to check
      * @param defaultDateStr - will use this date if the 1st one is null or blank.
      * @param badDateMessage - message to report if the date is bad (blank or not valid form).
-     * @return
+     * @return  Date
      */
     protected Date validateDate(String checkDateStr, String defaultDateStr, String badDateMessage) {
-        checkDateStr = (isBlankOrNull(checkDateStr))?defaultDateStr:checkDateStr;
+        checkDateStr = isBlankOrNull(checkDateStr) ? defaultDateStr : checkDateStr;
         Date checkDate;
         if (isBlankOrNull(checkDateStr)) {
             add1LineErrorMessage(badDateMessage);
@@ -177,7 +150,7 @@ public abstract class Report implements IReportCreator {
      * @return true, if location is not blank or "0" is is found in the DB; false otherwise
      */
     protected Organization getValidOrganization(String locationStr) {
-        if (isBlankOrNull(locationStr) || "0".equals(Integer.decode(locationStr))) {
+        if (isBlankOrNull(locationStr) || "0".equals(locationStr)) {
             add1LineErrorMessage("report.error.message.location.missing");
             return null;
         }
@@ -190,9 +163,6 @@ public abstract class Report implements IReportCreator {
         return org;
     }
 
-    /**
-     * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#getReportFileName()
-     */
     public String getReportFileName() {
         return errorFound ? errorReportFileName() : reportFileName();
     }
@@ -217,8 +187,7 @@ public abstract class Report implements IReportCreator {
          */
         public Date getHighDateAtEndOfDay() {
             // not perfect in areas with Daylight Savings Time. Will over shoot on the spring forward day and undershoot on the fall back day.
-            Date newDate = new Date(highDate.getTime() + 24*60*60*1000);
-            return newDate;
+            return new Date(highDate.getTime() + 24*60*60*1000);
         }
 
         public DateRange(String lowDateStr, String highDateStr) {
@@ -231,7 +200,7 @@ public abstract class Report implements IReportCreator {
          * <li>they can't both be empty
          * <li>they have to be well formed.
          *
-         * @return
+         * @return true if valid, false otherwise
          */
         public boolean validateHighLowDate(String missingDateMessage) {
             lowDate = validateDate(lowDateStr,  null, missingDateMessage );
@@ -257,9 +226,20 @@ public abstract class Report implements IReportCreator {
                 if ( !GenericValidator.isBlankOrNull(highDateStr)) {
                     range += "  -  " + highDateStr;
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored ) {
             }
             return range;
+        }
+
+        public String getLowDateStr(){
+            return lowDateStr;
+        }
+
+        public String getHighDateStr(){
+            if( isBlankOrNull( highDateStr ) && highDate != null){
+                highDateStr = DateUtil.convertSqlDateToStringDate( highDate );
+            }
+            return highDateStr;
         }
     }
     

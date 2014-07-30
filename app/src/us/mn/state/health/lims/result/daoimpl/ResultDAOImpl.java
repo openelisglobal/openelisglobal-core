@@ -17,13 +17,9 @@
  */
 package us.mn.state.health.lims.result.daoimpl;
 
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
@@ -40,43 +36,43 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
+import java.sql.Date;
+import java.util.List;
+
 /**
  * @author diane benz
  */
 public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 
 	public void deleteData(List results) throws LIMSRuntimeException {
-		// add to audit trail
+		
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
-			for (int i = 0; i < results.size(); i++) {
-				Result data = (Result) results.get(i);
+            for( Object result : results ){
+                Result data = ( Result ) result;
+                Result oldData = readResult( data.getId() );
 
-				Result oldData = (Result) readResult(data.getId());
-				Result newData = new Result();
-
-				String sysUserId = data.getSysUserId();
-				String event = IActionConstants.AUDIT_TRAIL_DELETE;
-				String tableName = "RESULT";
-				auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
-			}
+                String sysUserId = data.getSysUserId();
+                String event = IActionConstants.AUDIT_TRAIL_DELETE;
+                String tableName = "RESULT";
+                auditDAO.saveHistory( new Result(), oldData, sysUserId, event, tableName );
+            }
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "AuditTrail deleteData()", e.toString());
 			throw new LIMSRuntimeException("Error in Result AuditTrail deleteData()", e);
 		}
 
 		try {
-			for (int i = 0; i < results.size(); i++) {
-				Result data = (Result) results.get(i);
-				// bugzilla 2206
-				data = (Result) readResult(data.getId());
-				HibernateUtil.getSession().delete(data);
-				HibernateUtil.getSession().flush();
-				HibernateUtil.getSession().clear();
-			}
+            for( Object result : results ){
+                Result data = ( Result ) result;
+                data = readResult( data.getId() );
+                HibernateUtil.getSession().delete( data );
+                HibernateUtil.getSession().flush();
+                HibernateUtil.getSession().clear();
+            }
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "deleteData()", e.toString());
 			throw new LIMSRuntimeException("Error in Result deleteData()", e);
 		}
@@ -116,7 +112,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			HibernateUtil.getSession().clear();
 
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "insertData()", e.toString());
 			throw new LIMSRuntimeException("Error in Result insertData()", e);
 		}
@@ -126,18 +122,17 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 
 	public void updateData(Result result) throws LIMSRuntimeException {
 
-		Result oldData = (Result) readResult(result.getId());
-		Result newData = result;
+		Result oldData = readResult(result.getId());
 
-		// add to audit trail
+		
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = result.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "RESULT";
-			auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
+			auditDAO.saveHistory(result, oldData, sysUserId, event, tableName);
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "AuditTrail insertData()", e.toString());
 			throw new LIMSRuntimeException("Error in Result AuditTrail updateData()", e);
 		}
@@ -149,7 +144,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			HibernateUtil.getSession().evict(result);
 			HibernateUtil.getSession().refresh(result);
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in Result updateData()", e);
 		}
@@ -166,14 +161,14 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 				result.setId(null);
 			}
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "getData()", e.toString());
 			throw new LIMSRuntimeException("Error in Result getData()", e);
 		}
 	}
 
 	public void getResultByAnalysisAndAnalyte(Result result, Analysis analysis, TestAnalyte ta) throws LIMSRuntimeException {
-		List results = new Vector();
+		List results;
 		try {
 			Analyte analyte = ta.getAnalyte();
 
@@ -186,7 +181,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 
-			Result thisResult = new Result();
+			Result thisResult;
 			if (results != null && results.size() > 0) {
 				thisResult = (Result) results.get(0);
 			} else {
@@ -199,7 +194,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			}
 
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "getResultByAnalysisAndAnalyte()", e.toString());
 			throw new LIMSRuntimeException("Error in Result getResultByAnalysisAndAnalyte()", e);
 		}
@@ -234,7 +229,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 	 * us.mn.state.health.lims.testresult.valueholder.TestResult)
 	 */
 	public void getResultByTestResult(Result result, TestResult testResult) throws LIMSRuntimeException {
-		List results = new Vector();
+		List results;
 		try {
 			String sql = "from Result r where r.testResult = :testResultId";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -244,7 +239,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 
-			Result thisResult = new Result();
+			Result thisResult;
 			if (results != null && results.size() > 0) {
 				thisResult = (Result) results.get(0);
 			} else {
@@ -257,14 +252,14 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			}
 
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "getResultByTestResult()", e.toString());
 			throw new LIMSRuntimeException("Error in Result getResultByTestResult()", e);
 		}
 	}
 
 	public List getAllResults() throws LIMSRuntimeException {
-		List results = new Vector();
+		List results;
 		try {
 			String sql = "from Result";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -272,7 +267,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "getAllResults()", e.toString());
 			throw new LIMSRuntimeException("Error in Result getAllResults()", e);
 		}
@@ -281,7 +276,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 	}
 
 	public List getPageOfResults(int startingRecNo) throws LIMSRuntimeException {
-		List results = new Vector();
+		List results;
 		try {
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
@@ -295,7 +290,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "getPageOfResults()", e.toString());
 			throw new LIMSRuntimeException("Error in Result getPageOfResults()", e);
 		}
@@ -304,13 +299,13 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 	}
 
 	public Result readResult(String idString) {
-		Result data = null;
+		Result data;
 		try {
 			data = (Result) HibernateUtil.getSession().get(Result.class, idString);
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			// bugzilla 2154
+			
 			LogEvent.logError("ResultDAOImpl", "readResult()", e.toString());
 			throw new LIMSRuntimeException("Error in Result readResult()", e);
 		}
@@ -456,7 +451,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
             return resultList;
 
         } catch(HibernateException e){
-            handleException(e, "getResultsForAnalysisIdList");
+            handleException(e, "getResultsForTestAndSample");
         }
         return null;
 	}
@@ -496,4 +491,70 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 		
 		return null;
 	}
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public List<Result> getResultsForTestInDateRange( String testId, Date startDate, Date endDate ) throws LIMSRuntimeException{
+        String sql = "FROM Result r WHERE r.analysis.test.id = :testId AND r.lastupdated BETWEEN :lowDate AND :highDate";
+
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("testId", Integer.valueOf(testId));
+            query.setDate("lowDate", startDate);
+            query.setDate("highDate", endDate);
+
+            List<Result> resultList = query.list();
+
+            closeSession();
+            return resultList;
+
+        } catch(HibernateException e){
+            handleException(e, "getResultsForTestInDateRange");
+        }
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public List<Result> getResultsForPanelInDateRange( String panelId, Date lowDate, Date highDate ) throws LIMSRuntimeException{
+        String sql = "FROM Result r WHERE r.analysis.panel.id = :panelId AND r.lastupdated BETWEEN :lowDate AND :highDate";
+
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("panelId", Integer.valueOf(panelId));
+            query.setDate("lowDate", lowDate);
+            query.setDate("highDate", highDate);
+
+            List<Result> resultList = query.list();
+
+            closeSession();
+            return resultList;
+
+        } catch(HibernateException e){
+            handleException(e, "getResultsForPanelInDateRange");
+        }
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public List<Result> getResultsForTestSectionInDateRange( String testSectionId, Date lowDate, Date highDate ) throws LIMSRuntimeException{
+        String sql = "FROM Result r WHERE r.analysis.testSection.id = :testSectionId AND r.lastupdated BETWEEN :lowDate AND :highDate";
+
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("testSectionId", Integer.valueOf(testSectionId));
+            query.setDate("lowDate", lowDate);
+            query.setDate("highDate", highDate);
+
+            List<Result> resultList = query.list();
+
+            closeSession();
+            return resultList;
+
+        } catch(HibernateException e){
+            handleException(e, "getResultsForTestSectionInDateRange");
+        }
+        return null;
+    }
 }

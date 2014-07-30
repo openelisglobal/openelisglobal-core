@@ -17,11 +17,14 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.util.List;
-
+import org.hibernate.Transaction;
 import us.mn.state.health.lims.analyzerresults.dao.AnalyzerResultsDAO;
 import us.mn.state.health.lims.analyzerresults.daoimpl.AnalyzerResultsDAOImpl;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
+import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.util.HibernateProxy;
+
+import java.util.List;
 
 public abstract class AnalyzerLineInserter {
 	private static AnalyzerResultsDAO analyzerResultDAO = null;
@@ -30,6 +33,26 @@ public abstract class AnalyzerLineInserter {
 		getAnalyzerResultDAO().insertAnalyzerResults(results, systemUserId);
 	}
 
+    protected boolean persistImport(String currentUserId, List<AnalyzerResults> results) {
+        if (results.size() > 0) {
+
+            Transaction tx = HibernateProxy.beginTransaction();
+
+            try {
+
+                persistResults(results, currentUserId);
+
+                tx.commit();
+
+            } catch (LIMSRuntimeException lre) {
+                tx.rollback();
+                return false;
+            } finally {
+                HibernateProxy.closeSession();
+            }
+        }
+        return true;
+    }
 	private AnalyzerResultsDAO getAnalyzerResultDAO() {
 		if( analyzerResultDAO == null){
 			analyzerResultDAO = new AnalyzerResultsDAOImpl();

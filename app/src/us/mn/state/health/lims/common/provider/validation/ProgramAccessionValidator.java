@@ -129,6 +129,9 @@ public class ProgramAccessionValidator implements IAccessionNumberValidator {
 		}
 	}
 
+    public String getInvalidFormatMessage( ValidationResults results ){
+        return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.format");
+    }
 	public String getNextAvailableAccessionNumber(String prefix){
 		String nextAccessionNumber = null;
 
@@ -309,7 +312,12 @@ public class ProgramAccessionValidator implements IAccessionNumberValidator {
 		return getMaxAccessionLength() - getInvarientLength();
 	}
 
-	private static ProjectDAO getProjectDAO() {
+    @Override
+    public String getPrefix(){
+        return null; //no single prefix
+    }
+
+    private static ProjectDAO getProjectDAO() {
 		if( projectDAO == null){
 			projectDAO = new ProjectDAOImpl();
 		}

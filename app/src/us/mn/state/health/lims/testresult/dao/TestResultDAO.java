@@ -15,13 +15,13 @@
 */
 package us.mn.state.health.lims.testresult.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import java.util.List;
 
 /**
  * @author diane benz
@@ -57,13 +57,13 @@ public interface TestResultDAO extends BaseDAO {
 	public List getTestResultsByTestAndResultGroup(TestAnalyte testAnalyte)
 			throws LIMSRuntimeException;
 
-	public List getAllTestResultsPerTest(Test test) throws LIMSRuntimeException;
+	public List getAllActiveTestResultsPerTest( Test test ) throws LIMSRuntimeException;
 
 	/*
 	 * Finds a TestResult by a test id and dictionary result id
 	 */
 	public TestResult getTestResultsByTestAndDictonaryResult(String testId, String result)throws LIMSRuntimeException;
 
-	public List<TestResult> getTestResultsByTest(String testId)throws LIMSRuntimeException;
+	public List<TestResult> getActiveTestResultsByTest( String testId )throws LIMSRuntimeException;
 
 }

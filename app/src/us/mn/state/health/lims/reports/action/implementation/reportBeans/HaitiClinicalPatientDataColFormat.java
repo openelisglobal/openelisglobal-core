@@ -58,7 +58,7 @@ public class HaitiClinicalPatientDataColFormat {
     private String labOrderType;
 	
  
-    public HaitiClinicalPatientDataColFormat(HaitiClinicalPatientData data){
+    public HaitiClinicalPatientDataColFormat(ClinicalPatientData data){
     	setNationalId(data.getNationalId());
     	setGender(data.getGender());
     	setStNumber(data.getStNumber());

@@ -15,21 +15,20 @@
 */
 package us.mn.state.health.lims.analysis.action;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.TestService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -80,7 +79,7 @@ public class AnalysisAction extends BaseAction {
 
 			// initialize testName
 			if (analysis.getTest() != null) {
-				analysis.setTestName(analysis.getTest().getTestName());
+				analysis.setTestName( TestService.getLocalizedTestName( analysis.getTest()));
 			}
 
 			isNew = false; // this is to set correct page title

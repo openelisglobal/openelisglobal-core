@@ -66,6 +66,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.roleRequiredForModifyResults, "modify results role" , "false");
 		setDBPropertyMappingAndDefault(Property.notesRequiredForModifyResults, "modify results note required", "false" );
 		setDBPropertyMappingAndDefault(Property.resultTechnicianName, "ResultTechnicianName", "false");
+		setDBPropertyMappingAndDefault(Property.allowResultRejection, "allowResultRejection", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameBox, "autoFillTechNameBox", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameUser, "autoFillTechNameUser", "false");
 		setDBPropertyMappingAndDefault(Property.failedValidationMarker, "showValidationFailureIcon", "true");
@@ -96,13 +97,13 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.RESULTS_ON_WORKPLAN, "results on workplan", "false");
 		setDBPropertyMappingAndDefault(Property.NONCONFORMITY_RECEPTION_AS_UNIT, "Reception as unit", "true");
 		setDBPropertyMappingAndDefault(Property.NONCONFORMITY_SAMPLE_COLLECTION_AS_UNIT, "Collection as unit", "false");
-		setDBPropertyMappingAndDefault(Property.PATIENT_REPORT_NO_ALERTS, "Patient report with no alerts", "false");
         setDBPropertyMappingAndDefault(Property.ACCESSION_NUMBER_PREFIX, "Accession number prefix", "");
         setDBPropertyMappingAndDefault(Property.NOTE_EXTERNAL_ONLY_FOR_VALIDATION, "validationOnlyNotesAreExternal", "false");
         setDBPropertyMappingAndDefault(Property.PHONE_FORMAT, "phone format", "(ddd) dddd-dddd");
         setDBPropertyMappingAndDefault(Property.VALIDATE_PHONE_FORMAT, "validate phone format", "true");
         setDBPropertyMappingAndDefault( Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "Allow duplicate subject number", "true" );
-
+        setDBPropertyMappingAndDefault( Property.VALIDATE_REJECTED_TESTS, "validateTechnicalRejection", "false" );
+        setDBPropertyMappingAndDefault( Property.TEST_NAME_AUGMENTED, "augmentTestNameWithType", "true" );
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

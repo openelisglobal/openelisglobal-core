@@ -16,6 +16,13 @@
         <comment>Insert new tests</comment>
         <sqlFile path="OE3.4/testCatalogCI_LNSP/insertTests.sql"/>
     </changeSet>
+    <changeSet id="4" author="paulsc" context="ciLNSP">
+        <comment>Add significant digits to test_result</comment>
+        <update tableName="test_result" >
+            <column name="significant_digits" valueNumeric="0" />
+        </update>
+        <sqlFile path="OE3.4/testCatalogCI_LNSP/significantDigits.sql"/>
+    </changeSet>
 
 </databaseChangeLog>
 

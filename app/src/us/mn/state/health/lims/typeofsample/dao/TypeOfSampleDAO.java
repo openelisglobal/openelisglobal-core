@@ -15,12 +15,11 @@
 */
 package us.mn.state.health.lims.typeofsample.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO.SampleDomain;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import java.util.List;
 
 /**
  * @author diane benz
@@ -52,7 +51,6 @@ public interface TypeOfSampleDAO extends BaseDAO {
 	public void updateData(TypeOfSample typeOfSample)
 			throws LIMSRuntimeException;
 
-	//bugzilla 1387 added domain parm
 	public List getTypes(String filter, String domain) throws LIMSRuntimeException;
 
 	public List getTypesForDomain(SampleDomain domain) throws LIMSRuntimeException;
@@ -61,14 +59,13 @@ public interface TypeOfSampleDAO extends BaseDAO {
 
 	public List getPreviousTypeOfSampleRecord(String id) throws LIMSRuntimeException;
 
-	//bugzilla 1411
 	public Integer getTotalTypeOfSampleCount() throws LIMSRuntimeException;
 
-	//bugzilla 1367
 	public TypeOfSample getTypeOfSampleByDescriptionAndDomain(TypeOfSample tos, boolean ignoreCase) throws LIMSRuntimeException;
 
 	public TypeOfSample getTypeOfSampleById(String typeOfSampleId) throws LIMSRuntimeException;
 
 	public List<TypeOfSample> getTypesForDomainBySortOrder(SampleDomain human) throws LIMSRuntimeException;
 
+    public TypeOfSample getTypeOfSampleByLocalAbbrevAndDomain( String localAbbrev, String domain) throws LIMSRuntimeException;
 }

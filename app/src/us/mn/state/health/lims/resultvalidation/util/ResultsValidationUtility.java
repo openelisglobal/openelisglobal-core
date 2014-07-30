@@ -24,11 +24,10 @@ import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.QAService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
-import us.mn.state.health.lims.common.services.TestIdentityService;
 import us.mn.state.health.lims.common.tools.StopWatch;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -37,17 +36,12 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
-import us.mn.state.health.lims.note.util.NoteUtil;
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
 import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -67,16 +61,15 @@ import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.*;
 
 public class ResultsValidationUtility {
 
-	public enum TestSectionType {
-		UNKNOWN, IMMUNOLOGY, HEMATOLOGY, BIOCHEMISTRY, SEROLOGY, VIROLOGY
-	}
 
-//	private static String VIRAL_LOAD_ID = "";
+
+    //	private static String VIRAL_LOAD_ID = "";
 	private static String ANALYTE_CD4_CT_GENERATED_ID;
 
 	private static String CONCLUSION_ID;
@@ -89,7 +82,6 @@ public class ResultsValidationUtility {
 	private final TestDAO testDAO = new TestDAOImpl();
 	private final SampleDAO sampleDAO = new SampleDAOImpl();
 	private final ObservationHistoryDAO observationHistoryDAO = new ObservationHistoryDAOImpl();
-	private static String RESULT_TABLE_ID;
 	private static String SAMPLE_STATUS_OBSERVATION_HISTORY_TYPE_ID;
 	private static String CD4_COUNT_SORT_NUMBER;
 
@@ -99,7 +91,7 @@ public class ResultsValidationUtility {
 	private Map<String, Boolean> accessionToValidMap;
 	private String totalTestName = "";
 
-	static {
+    static {
 		notValidStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized)));
 		notValidStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected)));
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
@@ -117,11 +109,6 @@ public class ResultsValidationUtility {
 		if( test != null){
 			CD4_COUNT_SORT_NUMBER = test.getSortOrder();
 		}
-		
-		ReferenceTablesDAO refTablesDAO = new ReferenceTablesDAOImpl();
-		ReferenceTables refTable = new ReferenceTables();
-		refTable.setTableName("RESULT");
-		RESULT_TABLE_ID = refTablesDAO.getReferenceTableByName(refTable).getId();
 
 		ObservationHistoryTypeDAO ohTypeDAO = new ObservationHistoryTypeDAOImpl();
 		ObservationHistoryType oht = ohTypeDAO.getByName("SampleRecordStatus");
@@ -235,12 +222,7 @@ public class ResultsValidationUtility {
 		if (name.equals("Lymph %")) {
 			Result result = resultDAO.getResultById(resultItem.getResultId());
 
-			if (result == null || result.getAnalyte() == null) {
-				return true;
-			} else {
-				return !ANALYTE_CD4_CT_GENERATED_ID.equals(result.getAnalyte().getId());
-			}
-
+            return result == null || result.getAnalyte() == null || !ANALYTE_CD4_CT_GENERATED_ID.equals( result.getAnalyte().getId() );
 		} else {
 			return name.equals("Neut %") || name.equals("Mono %") || name.equals("Eo %") || name.equals("Baso %");
 		}
@@ -250,12 +232,12 @@ public class ResultsValidationUtility {
 		ResultValidationItem item = new ResultValidationItem();
 
 		item.setTestName(totalTestName);
-		item.setUnitsOfMeasure("%");
-		item.setAccessionNumber(resultItem.getAccessionNumber());
-		item.setResult(new Result());
-		item.getResult().setValue("0");
-		item.setResultType("N");
-		item.setTestSortNumber("0");
+		item.setUnitsOfMeasure( "%" );
+		item.setAccessionNumber( resultItem.getAccessionNumber() );
+		item.setResult( new Result() );
+		item.getResult().setValue( "0" );
+		item.setResultType( ResultType.NUMERIC.getDBValue() );
+		item.setTestSortNumber( "0" );
 		return item;
 	}
 
@@ -275,10 +257,10 @@ public class ResultsValidationUtility {
 			if (total.startsWith("99.9999")) {
 				totalItem.getResult().setValue("100.0");
 			} else {
-				int seperatorIndex = total.indexOf('.');
+				int separatorIndex = total.indexOf('.');
 
-				if (seperatorIndex > 0) {
-					totalItem.getResult().setValue(total.substring(0, seperatorIndex + 2));
+				if (separatorIndex > 0) {
+					totalItem.getResult().setValue(total.substring(0, separatorIndex + 2));
 				}
 			}
 		}
@@ -362,7 +344,7 @@ public class ResultsValidationUtility {
 				List<ResultValidationItem> testResultItemList = getResultItemFromAnalysis(analysis);
 				//NB.  The resultValue is filled in during getResultItemFromAnalysis as a side effect of setResult
 				for (ResultValidationItem validationItem : testResultItemList) {
-					if (isDictionaryType(validationItem.getResultType())) {
+					if (ResultType.isDictionaryVariant( validationItem.getResultType() )) {
 						dictionary = new Dictionary();
 						String resultValue = null;
 						try {
@@ -370,17 +352,17 @@ public class ResultsValidationUtility {
 							dictionaryDAO.getData(dictionary);
 							resultValue = GenericValidator.isBlankOrNull(dictionary.getLocalAbbreviation()) ? dictionary.getDictEntry()
 									: dictionary.getLocalAbbreviation();
-
 						} catch (Exception e) {
-
+                            //no-op
 						}
 
 						validationItem.setResultValue(resultValue);
 
 					}
 
-					validationItem.setAnalysisStatusId(analysis.getStatusId());
-					validationItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
+                    validationItem.setAnalysis( analysis );
+					validationItem.setNonconforming( QAService.isAnalysisParentNonConforming( analysis ) ||
+                            StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.TechnicalRejected ) );
 					selectedTestList.add(validationItem);
 				}
 			}
@@ -389,22 +371,24 @@ public class ResultsValidationUtility {
 		return selectedTestList;
 	}
 
-	private boolean sampleReadyForValidation(Sample sample) {
+    private boolean sampleReadyForValidation(Sample sample) {
 
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
 
 		if (valid == null) {
-			valid = new Boolean(getSampleRecordStatus(sample) == StatusService.RecordStatus.ValidationRegistration);
+			valid = getSampleRecordStatus( sample ) == StatusService.RecordStatus.ValidationRegistration;
 			accessionToValidMap.put(sample.getAccessionNumber(), valid);
 		}
 
-		return valid.booleanValue();
+		return valid;
 	}
 
 	public List<ResultValidationItem> getResultItemFromAnalysis(Analysis analysis) throws LIMSRuntimeException {
 		List<ResultValidationItem> testResultList = new ArrayList<ResultValidationItem>();
 
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
+        NoteType[] noteTypes = { NoteType.EXTERNAL, NoteType.INTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
+        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes, false );
 
 		if (resultList == null) {
 			return testResultList;
@@ -422,15 +406,17 @@ public class ResultsValidationUtility {
 
 		ResultValidationItem parentItem = null;
 		for (Result result : resultList) {
-			if( parentItem != null && parentItem.getResultId().equals(result.getParentResult().getId())){
+			if( parentItem != null && result.getParentResult() != null && parentItem.getResultId().equals(result.getParentResult().getId())){
 				parentItem.setQualifiedResultValue(result.getValue());
-				parentItem.setResultType("Q");
+				parentItem.setHasQualifiedResult( true );
+                parentItem.setQualificationResultId(result.getId());
 				continue;
 			}
 			
 			ResultValidationItem resultItem = createTestResultItem(analysis, analysis.getTest(), analysis.getSampleItem().getSortOrder(),
-					result, analysis.getSampleItem().getSample().getAccessionNumber());
+					result, analysis.getSampleItem().getSample().getAccessionNumber(), notes);
 
+            notes = null;//we only want it once
 			if( resultItem.getQualifiedDictionaryId() != null){
 				parentItem = resultItem;
 			}
@@ -442,17 +428,17 @@ public class ResultsValidationUtility {
 	}
 
 	private ResultValidationItem createTestResultItem(Analysis analysis, Test test, String sequenceNumber, Result result,
-			String accessionNumber) {
+			String accessionNumber, String notes) {
 
 		List<TestResult> testResults = getPossibleResultsForTest(test);
 
-		String displayTestName = test.getDescription();
+		String displayTestName = TestService.getLocalizedAugmentedTestName( test );
 //		displayTestName = augmentTestNameWithRange(displayTestName, result);
 		
 		ResultValidationItem testItem = new ResultValidationItem();
 
 		testItem.setAccessionNumber(accessionNumber);
-		testItem.setAnalysisId(analysis.getId());
+        testItem.setAnalysis( analysis );
 		testItem.setSequenceNumber(sequenceNumber);
 		testItem.setTestName(displayTestName);
 		testItem.setTestId(test.getId());
@@ -460,28 +446,11 @@ public class ResultsValidationUtility {
 		testItem.setResult(result);
 		testItem.setDictionaryResults(getAnyDictonaryValues(testResults));
 		testItem.setResultType(getTestResultType(testResults ));
-		testItem.setAnalysisStatusId(analysis.getStatusId());
 		testItem.setTestSortNumber(test.getSortOrder());
 		testItem.setReflexGroup(analysis.getTriggeredReflex());
 		testItem.setChildReflex(analysis.getTriggeredReflex() && isConclusion(result, analysis));
 		testItem.setQualifiedDictionaryId(getQualifiedDictionaryId(testResults));
-
-		if (result != null && !GenericValidator.isBlankOrNull(result.getId())) {
-			List<Note> noteList = NoteUtil.getNotesForObjectAndTable(result.getId(), RESULT_TABLE_ID);
-
-			if (!(noteList == null || noteList.isEmpty())) {
-				StringBuilder builder = new StringBuilder();
-                builder.append(NoteUtil.getNotePrefix(noteList.get(noteList.size() - 1)));
-                builder.append(noteList.get(noteList.size() - 1).getText());
-				for(int i = noteList.size() - 2; i >= 0; i--){
-					builder.append("<br>");
-                    builder.append(NoteUtil.getNotePrefix(noteList.get(i)));
-					builder.append(noteList.get(i).getText());
-				}
-				
-				testItem.setPastNotes(builder.toString());
-			}
-		}
+        testItem.setPastNotes( notes );
 
 		return testItem;
 	}
@@ -489,28 +458,21 @@ public class ResultsValidationUtility {
 	private String getQualifiedDictionaryId(List<TestResult> testResults){
 	    String qualDictionaryIds = "";
 	    for( TestResult testResult : testResults){
-			if( "Q".equals(testResult.getTestResultType())){
-			    
-		        if (testResult.getTestResultType().equals("Q")) {
-		            if( qualDictionaryIds != ""){
-		                qualDictionaryIds += ",";
-		            }
-		            qualDictionaryIds += testResult.getValue();
-		        }
+			if( testResult.getIsQuantifiable()){
+                if( !"".equals(qualDictionaryIds )){
+                    qualDictionaryIds += ",";
+                }
+                qualDictionaryIds += testResult.getValue();
 			}
 		}
-		return qualDictionaryIds == "" ?  null : "[" + qualDictionaryIds + "]";
+		return  "".equals(qualDictionaryIds) ?  null : "[" + qualDictionaryIds + "]";
 	}
 
 	private String augmentUOMWithRange(String uom,	Result result) {
-		Double max = result.getMaxNormal();
-		Double min = result.getMinNormal();		
-	
-		if( min == null || max == null || min.equals(max)){
-			return uom;
-		}
-				
-		return uom + "  ( " + String.valueOf(min) + " - " + String.valueOf(max) + " )";
+        if( result == null){return uom;}
+        String range = new ResultService( result ).getDisplayReferenceRange( true );
+        uom = StringUtil.blankIfNull( uom );
+        return GenericValidator.isBlankOrNull( range ) ? uom : (uom + " ( " + range + " )");
 	}
 
 	private boolean isConclusion(Result testResult, Analysis analysis) {
@@ -534,21 +496,21 @@ public class ResultsValidationUtility {
 
 	@SuppressWarnings("unchecked")
 	private List<TestResult> getPossibleResultsForTest(Test test) {
-		return testResultDAO.getAllTestResultsPerTest(test);
+		return testResultDAO.getAllActiveTestResultsPerTest( test );
 	}
 
 	private List<IdValuePair> getAnyDictonaryValues(List<TestResult> testResults) {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && testResults.size() > 0 && isDictionaryType(testResults.get(0).getTestResultType())) {
+		if (testResults != null && testResults.size() > 0 && ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 			values.add(new IdValuePair("0", ""));
 
 			for (TestResult testResult : testResults) {
 				// Note: result group use to be a criteria but was removed, if
 				// results are not as expected investigate
-				if (isDictionaryType(testResult.getTestResultType())) {
+				if ( ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
 					dictionary = dictionaryDAO.getDataForId(testResult.getValue());
 					String displayValue = dictionary.getLocalizedName();
 
@@ -564,12 +526,9 @@ public class ResultsValidationUtility {
 		return values;
 	}
 
-	private boolean isDictionaryType(String resultType){
-		return "DQM".contains(resultType);
-	}
 
 	private String getTestResultType(List<TestResult> testResults) {
-		String testResultType = "N";
+		String testResultType = ResultType.NUMERIC.getDBValue();
 
 		if (testResults != null && testResults.size() > 0) {
 			testResultType = testResults.get(0).getTestResultType();
@@ -601,7 +560,6 @@ public class ResultsValidationUtility {
 					}
 					readyForValidation = true;
 
-					analysisResultItem = new AnalysisItem();
 					analysisResultItem = testResultItemToELISAAnalysisItem(tResultItem);
 
 					currentAccessionNumber = analysisResultItem.getAccessionNumber();
@@ -621,7 +579,7 @@ public class ResultsValidationUtility {
 				readyForValidation = false;
 			}
 
-			String finalResult = checkIfFinalResult(tResultItem.getAnalysisId());
+			String finalResult = checkIfFinalResult(tResultItem.getAnalysis().getId());
 
 			if (!GenericValidator.isBlankOrNull(finalResult)) {
 				analysisResultItem.setFinalResult(finalResult);
@@ -672,12 +630,12 @@ public class ResultsValidationUtility {
 		elisaResultItem.setTestName(testResultItem.getTestName());
 		elisaResultItem.setResult(testResultItem.getResultValue());
 		elisaResultItem.setSampleGroupingNumber(testResultItem.getSampleGroupingNumber());
-		elisaResultItem.setAnalysisId(testResultItem.getAnalysisId());
-		elisaResultItem.setStatusId(testResultItem.getAnalysisStatusId());
+		elisaResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		elisaResultItem.setStatusId(testResultItem.getAnalysis().getStatusId());
 		elisaResultItem.setNote(testResultItem.getNote());
 		elisaResultItem.setNoteId(testResultItem.getNoteId());
 		elisaResultItem.setResultId(testResultItem.getResultId());
-		elisaResultItem.setNonconforming(testResultItem.isNonconforming());
+		elisaResultItem.setNonconforming(testResultItem.isNonconforming() );
 
 		// elisaResultItem.setResult(testResultItem.getResult().getValue());
 
@@ -690,8 +648,8 @@ public class ResultsValidationUtility {
 
 	public AnalysisItem addTestResultToELISAAnalysisItem(ResultValidationItem testResultItem, AnalysisItem eItem) {
 
-		eItem.setAnalysisId(testResultItem.getAnalysisId());
-		eItem.setStatusId(testResultItem.getAnalysisStatusId());
+		eItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		eItem.setStatusId(testResultItem.getAnalysis().getStatusId());
 		if( testResultItem.isNonconforming()){
 			eItem.setNonconforming(true);
 		}
@@ -747,8 +705,33 @@ public class ResultsValidationUtility {
 	public List<AnalysisItem> testResultListToAnalysisItemList(List<ResultValidationItem> testResultList) {
 		List<AnalysisItem> analysisResultList = new ArrayList<AnalysisItem>();
 
-		for (ResultValidationItem tResultItem : testResultList) {
-			analysisResultList.add(testResultItemToAnalysisItem(tResultItem));
+        /*
+        The issue with multiselect results is that each selection is one ResultValidationItem but they all need to
+        be condensed into one AnalysisItem.  There is a many to one mapping.  The first multiselect result we have gets rolled into
+        one AnalysisItem and the rest are skipped but we want to capture any qualified results
+         */
+        boolean multiResultEntered = false;
+        String currentAccession = null;
+        AnalysisItem currentMultiSelectAnalysisItem = null;
+		for (ResultValidationItem testResultItem : testResultList) {
+            if( !testResultItem.getAccessionNumber().equals(currentAccession)){
+                currentAccession = testResultItem.getAccessionNumber();
+                currentMultiSelectAnalysisItem = null;
+                multiResultEntered = false;
+            }
+            if( !multiResultEntered){
+                AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
+                analysisResultList.add(convertedItem);
+                if( ResultType.isMultiSelectVariant( testResultItem.getResultType() )){
+                    multiResultEntered = true;
+                    currentMultiSelectAnalysisItem = convertedItem;
+                }
+            }
+            if(currentMultiSelectAnalysisItem != null && testResultItem.isHasQualifiedResult() ){
+                currentMultiSelectAnalysisItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
+                currentMultiSelectAnalysisItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
+                currentMultiSelectAnalysisItem.setHasQualifiedResult(true);
+            }
 		}
 
 		return analysisResultList;
@@ -770,7 +753,9 @@ public class ResultsValidationUtility {
 		String testUnits = getUnitsByTestId(testResultItem.getTestId());
 		String testName = testResultItem.getTestName();
 		String sortOrder = testResultItem.getTestSortNumber();
-		if (testResultItem.getResult().getAnalyte() != null
+        Result result = testResultItem.getResult();
+
+        if (result != null && result.getAnalyte() != null
 				&& ANALYTE_CD4_CT_GENERATED_ID.equals(testResultItem.getResult().getAnalyte().getId())) {
 			testUnits = "";
 			testName = StringUtil.getMessageForKey("result.conclusion.cd4");
@@ -784,11 +769,12 @@ public class ResultsValidationUtility {
 		}
 
 		testUnits = augmentUOMWithRange(testUnits,	testResultItem.getResult());
-		
+
+
 		analysisResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
 		analysisResultItem.setTestName(testName);
 		analysisResultItem.setUnits(testUnits);
-		analysisResultItem.setAnalysisId(testResultItem.getAnalysisId());
+		analysisResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
 		analysisResultItem.setPastNotes(testResultItem.getPastNotes());
 		analysisResultItem.setResultId(testResultItem.getResultId());
 		analysisResultItem.setResultType(testResultItem.getResultType());
@@ -796,24 +782,37 @@ public class ResultsValidationUtility {
 		analysisResultItem.setTestSortNumber(sortOrder);
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
-		analysisResultItem.setResult(getFormatedResult(testResultItem));
+        if( result != null){
+            if( ResultType.isMultiSelectVariant( testResultItem.getResultType() ) ){
+                analysisResultItem.setMultiSelectResultValues( new AnalysisService( testResultItem.getAnalysis() ).getJSONMultiSelectResults() );
+            }else{
+                analysisResultItem.setResult( getFormattedResult( testResultItem ) );
+            }
+
+            if( ResultType.NUMERIC.matches( testResultItem.getResultType() )){
+                analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
+            }
+        }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
-		analysisResultItem.setNonconforming(testResultItem.isNonconforming());
+		analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
+                StatusService.getInstance().matches( testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected ));
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
+        analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
+        analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
 
 		return analysisResultItem;
 
 	}
 
-	private String getFormatedResult(ResultValidationItem testResultItem) {
-		String result = testResultItem.getResult().getValue();
+	private String getFormattedResult(ResultValidationItem testResultItem) {
+        String result = testResultItem.getResult().getValue();
 		if( TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()) && !GenericValidator.isBlankOrNull(result)){
-			result = result.split("\\(")[0].trim();
-		}
-		
-		return result;
+			return result.split("\\(")[0].trim();
+		}else{
+            return new ResultService(testResultItem.getResult()).getResultValue( false );
+        }
 	}
 
 	public String getUnitsByTestId(String testId) {

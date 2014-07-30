@@ -15,43 +15,32 @@
 */
 package us.mn.state.health.lims.testresult.valueholder;
 
-import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
-import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
-import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
+import us.mn.state.health.lims.test.valueholder.Test;
 
-public class TestResult extends EnumValueItemImpl {
+public class TestResult extends BaseObject{
 
 	private static final long serialVersionUID = 1L;
-
 	private String id;
-
 	private ValueHolderInterface test;
-
 	private String testName;
-
 	private String resultGroup;
-	
 	private String sortOrder;
-
 	private String flags;
-
 	private String testResultType;
-
 	private String value;
-
 	private String significantDigits;
-
 	private String quantLimit;
-
 	private String contLevel;
-	
 	private String scriptletName;
-
 	private ValueHolderInterface scriptlet;
+    private Boolean isQuantifiable = false;
+    private Boolean isActive = true;
 
-	public TestResult() {
+    public TestResult() {
 		super();
 		this.test = new ValueHolder();
 		this.scriptlet = new ValueHolder();
@@ -173,12 +162,27 @@ public class TestResult extends EnumValueItemImpl {
 		return this.scriptlet;
 	}
 
-	//bugzilla 1845 added testResult sortOrder
 	public String getSortOrder() {
 		return sortOrder;
 	}
-	//bugzilla 1845 added testResult sortOrder
+
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
+
+    public Boolean getIsQuantifiable(){
+        return isQuantifiable;
+    }
+
+    public void setIsQuantifiable( Boolean isQuantifiable ){
+        this.isQuantifiable = isQuantifiable;
+    }
+
+    public Boolean getIsActive(){
+        return isActive;
+    }
+
+    public void setIsActive( Boolean isActive ){
+        this.isActive = isActive;
+    }
 }

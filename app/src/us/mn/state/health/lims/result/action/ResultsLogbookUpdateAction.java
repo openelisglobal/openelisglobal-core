@@ -34,21 +34,24 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
-import us.mn.state.health.lims.common.services.IResultSaveService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
+import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
+import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapter;
 import us.mn.state.health.lims.common.services.registration.ResultUpdateRegister;
 import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
+import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.referral.dao.ReferralDAO;
@@ -76,37 +79,24 @@ import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
-import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
-import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexBean;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
-import us.mn.state.health.lims.testresult.dao.TestResultDAO;
-import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
-import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class ResultsLogbookUpdateAction extends BaseAction implements IResultSaveService{
+public class ResultsLogbookUpdateAction extends BaseAction {
 
-	private List<TestResultItem> modifiedItems;
-	private List<ResultSet> modifiedResults;
-	private List<ResultSet> newResults;
-	private List<Analysis> modifiedAnalysis;
-	private List<Result> deletableResults;
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private ResultDAO resultDAO = new ResultDAOImpl();
-	private TestResultDAO testResultDAO = new TestResultDAOImpl();
 	private ResultSignatureDAO resultSigDAO = new ResultSignatureDAOImpl();
 	private ResultInventoryDAO resultInventoryDAO = new ResultInventoryDAOImpl();
 	private NoteDAO noteDAO = new NoteDAOImpl();
 	private SampleDAO sampleDAO = new SampleDAOImpl();
-	private SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
 	private ReferralDAO referralDAO = new ReferralDAOImpl();
 	private ReferralResultDAO referralResultDAO = new ReferralResultDAOImpl();
 	private ResultLimitDAO resultLimitDAO = new ResultLimitDAOImpl();
@@ -114,12 +104,10 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	private static final String RESULT_SUBJECT = "Result Note";
 	private static String REFERRAL_CONFORMATION_ID;
 
-	private boolean useTechnicianName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
+    private boolean useTechnicianName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
 	private boolean alwaysValidate = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ALWAYS_VALIDATE_RESULTS, "true");
-	private boolean supportReferrals = FormFields.getInstance().useField(Field.ResultsReferral);
-	private String statusRuleSet = ConfigurationProperties.getInstance().getPropertyValueUpperCase(Property.StatusRules);
-	private Analysis previousAnalysis;
-	private ResultsValidation resultValidation = new ResultsValidation();
+    private boolean supportReferrals = FormFields.getInstance().useField( Field.ResultsReferral );
+	private String statusRuleSet = ConfigurationProperties.getInstance().getPropertyValueUpperCase( Property.StatusRules );
 
 	static{
 		ReferralTypeDAO referralTypeDAO = new ReferralTypeDAOImpl();
@@ -137,16 +125,14 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 		BaseActionForm dynaForm = (BaseActionForm)form;
 
-		resultValidation.setSupportReferrals(supportReferrals);
-		resultValidation.setUseTechnicianName(useTechnicianName);
-
 		ResultsPaging paging = new ResultsPaging();
 		paging.updatePagedResults(request, dynaForm);
 		List<TestResultItem> tests = paging.getResults(request);
 
-		setModifiedItems(tests);
+        ResultsUpdateDataSet actionDataSet = new ResultsUpdateDataSet( currentUserId );
+		actionDataSet.filterModifiedItems( tests );
 
-		ActionMessages errors = resultValidation.validateModifiedItems(modifiedItems);
+		ActionMessages errors =  actionDataSet.validateModifiedItems();
 
 		if(errors.size() > 0){
 			saveErrors(request, errors);
@@ -155,13 +141,18 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			return mapping.findForward(FWD_VALIDATION_ERROR);
 		}
 
-		initializeLists();
-		createResultsFromItems();
+
+		createResultsFromItems(actionDataSet);
+        createAnalysisOnlyUpdates(actionDataSet);
 
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 		try{
-			for(ResultSet resultSet : newResults){
+            for(Note note: actionDataSet.getNoteList()){
+                noteDAO.insertData( note );
+            }
+
+			for(ResultSet resultSet : actionDataSet.getNewResults()){
 
 				resultDAO.insertData(resultSet.result);
 
@@ -174,18 +165,15 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 					resultSet.testKit.setResultId(resultSet.result.getId());
 					resultInventoryDAO.insertData(resultSet.testKit);
 				}
-
-				if(resultSet.note != null){
-					resultSet.note.setReferenceId(resultSet.result.getId());
-					noteDAO.insertData(resultSet.note);
-				}
-
-				if(resultSet.newReferral != null){
-					insertNewReferralAndReferralResult(resultSet);
-				}
 			}
 
-			for(ResultSet resultSet : modifiedResults){
+            for( Referral referral : actionDataSet.getSavableReferrals()){
+                if( referral != null){
+                    saveReferralsWithRequiredObjects( referral );
+                }
+            }
+
+			for(ResultSet resultSet : actionDataSet.getModifiedResults()){
 				resultDAO.updateData(resultSet.result);
 
 				if(resultSet.signature != null){
@@ -205,40 +193,20 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 						resultInventoryDAO.updateData(resultSet.testKit);
 					}
 				}
-
-				if(resultSet.note != null){
-					resultSet.note.setReferenceId(resultSet.result.getId());
-					if(resultSet.note.getId() == null){
-						noteDAO.insertData(resultSet.note);
-					}else{
-						noteDAO.updateData(resultSet.note);
-					}
-				}
-
-				if(resultSet.newReferral != null){
-					// we can't just create a referral with a blank result,
-					// because referral page assumes a referralResult and a
-					// result.
-					insertNewReferralAndReferralResult(resultSet);
-				}
-
-				if(resultSet.existingReferral != null){
-					referralDAO.updateData(resultSet.existingReferral);
-				}
 			}
 
-			for(Analysis analysis : modifiedAnalysis){
+			for(Analysis analysis : actionDataSet.getModifiedAnalysis()){
 				analysisDAO.updateData(analysis);
 			}
 
-			removeDeletedResults();
+            ResultSaveService.removeDeletedResultsInTransaction( actionDataSet.getDeletableResults(),currentUserId);
 
-			setTestReflexes();
+			setTestReflexes( actionDataSet );
 
-			setSampleStatus();
+			setSampleStatus( actionDataSet );
 
 			for(IResultUpdate updater : updaters){
-				updater.transactionalUpdate(this);
+				updater.transactionalUpdate(actionDataSet);
 			}
 
 			tx.commit();
@@ -263,7 +231,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}
 
 		for(IResultUpdate updater : updaters){
-			updater.postTransactionalCommitUpdate(this);
+			updater.postTransactionalCommitUpdate(actionDataSet);
 		}
 
 		setSuccessFlag(request, forward);
@@ -278,41 +246,25 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}
 	}
 
-	private void insertNewReferralAndReferralResult(ResultSet resultSet){
-		referralDAO.insertData(resultSet.newReferral);
-		ReferralResult referralResult = new ReferralResult();
-		referralResult.setReferralId(resultSet.newReferral.getId());
-		referralResult.setSysUserId(currentUserId);
-		referralResultDAO.insertData(referralResult);
+    private void saveReferralsWithRequiredObjects( Referral referral ){
+        if( referral.getId() != null){
+            referralDAO.updateData( referral );
+        }else{
+            referralDAO.insertData( referral );
+            ReferralResult referralResult = new ReferralResult();
+            referralResult.setReferralId( referral.getId() );
+            referralResult.setSysUserId( currentUserId );
+            referralResultDAO.insertData( referralResult );
+        }
 	}
 
-	private void removeDeletedResults(){
-		for(Result result : deletableResults){
-			List<ResultSignature> signatures = resultSigDAO.getResultSignaturesByResult(result);
-			List<ReferralResult> referrals = referralResultDAO.getReferralsByResultId(result.getId());
 
-			for(ResultSignature signature : signatures){
-				signature.setSysUserId(currentUserId);
-			}
 
-			resultSigDAO.deleteData(signatures);
-
-			for(ReferralResult referral : referrals){
-				referral.setSysUserId(currentUserId);
-				referralResultDAO.deleteData(referral);
-			}
-
-			result.setSysUserId(currentUserId);
-			resultDAO.deleteData(result);
-		}
-
-	}
-
-	protected void setTestReflexes(){
+	protected void setTestReflexes(ResultsUpdateDataSet actionDataSet){
 		TestReflexUtil testReflexUtil = new TestReflexUtil();
-		testReflexUtil.setCurrentUserId(currentUserId);
-		testReflexUtil.addNewTestsToDBForReflexTests(convertToTestReflexBeanList(newResults));
-		testReflexUtil.updateModifiedReflexes(convertToTestReflexBeanList(modifiedResults));
+		testReflexUtil.setCurrentUserId( currentUserId );
+		testReflexUtil.addNewTestsToDBForReflexTests( convertToTestReflexBeanList( actionDataSet.getNewResults()) );
+		testReflexUtil.updateModifiedReflexes( convertToTestReflexBeanList( actionDataSet.getModifiedResults()) );
 	}
 
 	private List<TestReflexBean> convertToTestReflexBeanList(List<ResultSet> resultSetList){
@@ -321,7 +273,22 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		for(ResultSet resultSet : resultSetList){
 			TestReflexBean reflex = new TestReflexBean();
 			reflex.setPatient(resultSet.patient);
-            reflex.setTriggersToSelectedReflexesMap( resultSet.triggersToSelectedReflexesMap );
+
+            if( resultSet.triggersToSelectedReflexesMap.size() > 0 && resultSet.multipleResultsForAnalysis){
+                for( String trigger : resultSet.triggersToSelectedReflexesMap.keySet()){
+                    if( trigger.equals( resultSet.result.getValue() )){
+                        HashMap<String, List<String>> reducedMap = new HashMap<String, List<String>>( 1 );
+                        reducedMap.put( trigger, resultSet.triggersToSelectedReflexesMap.get( trigger ) );
+                        reflex.setTriggersToSelectedReflexesMap( reducedMap );
+                    }
+                }
+                if( reflex.getTriggersToSelectedReflexesMap() == null){
+                    reflex.setTriggersToSelectedReflexesMap( new HashMap<String, List<String>>(  ) );
+                }
+            }else{
+                reflex.setTriggersToSelectedReflexesMap( resultSet.triggersToSelectedReflexesMap );
+            }
+
 			reflex.setResult(resultSet.result);
 			reflex.setSample(resultSet.sample);
 			reflexBeanList.add(reflex);
@@ -330,10 +297,10 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		return reflexBeanList;
 	}
 
-	private void setSampleStatus(){
+	private void setSampleStatus(ResultsUpdateDataSet actionDataSet){
 		Set<Sample> sampleSet = new HashSet<Sample>();
 
-		for(ResultSet resultSet : newResults){
+		for(ResultSet resultSet : actionDataSet.getNewResults()){
 			sampleSet.add(resultSet.sample);
 		}
 
@@ -353,54 +320,106 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		}
 	}
 
-	private void setModifiedItems(List<TestResultItem> allItems){
-		modifiedItems = new ArrayList<TestResultItem>();
+    private void createAnalysisOnlyUpdates( ResultsUpdateDataSet actionDataSet ){
+        for(TestResultItem testResultItem : actionDataSet.getAnalysisOnlyChangeResults()){
+            AnalysisService analysisService = new AnalysisService( testResultItem.getAnalysisId() );
+            analysisService.getAnalysis().setSysUserId( currentUserId );
+            analysisService.getAnalysis().setCompletedDate( DateUtil.convertStringDateToSqlDate( testResultItem.getTestDate() ) );
+            analysisService.getAnalysis().setAnalysisType( testResultItem.getAnalysisMethod() );
+            actionDataSet.getModifiedAnalysis().add( analysisService.getAnalysis() );
+        }
+    }
 
-		for(TestResultItem item : allItems){
-			if(isModified(item)){
-				modifiedItems.add(item);
-			}
-		}
-	}
+	private void createResultsFromItems( ResultsUpdateDataSet actionDataSet ){
 
-	private boolean isModified(TestResultItem item){
-		return item.getIsModified()
-				&& (ResultUtil.areResults(item) || ResultUtil.areNotes(item) || ResultUtil.isReferred(item) || ResultUtil.isForcedToAcceptance(item));
-	}
+		for(TestResultItem testResultItem : actionDataSet.getModifiedItems()){
+			AnalysisService analysisService = new AnalysisService( testResultItem.getAnalysisId() );
+            analysisService.getAnalysis().setStatusId( getStatusForTestResult( testResultItem ) );
+            analysisService.getAnalysis().setSysUserId( currentUserId );
+            handleReferrals(testResultItem, analysisService.getAnalysis(), actionDataSet);
+            actionDataSet.getModifiedAnalysis().add( analysisService.getAnalysis() );
 
-	private void createResultsFromItems(){
+            NoteService noteService = new NoteService( analysisService.getAnalysis() );
+            actionDataSet.addToNoteList( noteService.createSavableNote( NoteType.INTERNAL, testResultItem.getNote(), RESULT_SUBJECT, currentUserId ) );
 
-		for(TestResultItem testResultItem : modifiedItems){
+            if (testResultItem.isShadowRejected()) {
+                String rejectedReasonId = testResultItem.getRejectReasonId();
+                for (IdValuePair rejectReason : DisplayListService.getList(ListType.REJECTION_REASONS)) {
+                    if (rejectedReasonId.equals(rejectReason.getId())) {
+                        actionDataSet.addToNoteList( noteService.createSavableNote( NoteType.REJECTION_REASON, rejectReason.getValue(), RESULT_SUBJECT, currentUserId) );
+                        break;
+                    }
+                }
+            }
 
-			Analysis analysis = analysisDAO.getAnalysisById(testResultItem.getAnalysisId());
-			List<Result> results = createResultFromTestResultItem(testResultItem, analysis);
+            ResultSaveBean bean = ResultSaveBeanAdapter.fromTestResultItem(testResultItem);
+            ResultSaveService resultSaveService = new ResultSaveService(analysisService.getAnalysis(),currentUserId);
+            //deletable Results will be written to, not read
+			List<Result> results = resultSaveService.createResultsFromTestResultItem( bean, actionDataSet.getDeletableResults());
 
+            analysisService.getAnalysis().setCorrectedSincePatientReport( resultSaveService.isUpdatedResult() &&
+                                                                          analysisService.patientReportHasBeenDone()  );
+
+            if( analysisService.hasBeenCorrectedSinceLastPatientReport()){
+                actionDataSet.addToNoteList( noteService.createSavableNote( NoteType.EXTERNAL, StringUtil.getMessageForKey( "note.corrected.result" ), RESULT_SUBJECT, currentUserId ) );
+            }
+
+            //If there is more than one result then each user selected reflex gets mapped to that result
 			for(Result result : results){
-				addResult(result, testResultItem, analysis);
+				addResult(result, testResultItem, analysisService.getAnalysis(), results.size() > 1, actionDataSet);
 
 				if(analysisShouldBeUpdated(testResultItem, result)){
-					updateAndAddAnalysisToModifiedList(testResultItem, testResultItem.getTestDate(), analysis);
+					updateAnalysis( testResultItem, testResultItem.getTestDate(), analysisService.getAnalysis() );
 				}
 			}
 		}
 	}
 
-	protected void initializeLists(){
-		modifiedResults = new ArrayList<ResultSet>();
-		newResults = new ArrayList<ResultSet>();
-		modifiedAnalysis = new ArrayList<Analysis>();
-		deletableResults = new ArrayList<Result>();
-	}
+    private void handleReferrals( TestResultItem testResultItem, Analysis analysis, ResultsUpdateDataSet actionDataSet ){
+
+        if(supportReferrals){
+
+            Referral referral = null;
+            // referredOut means the referral checkbox was checked, repeating
+            // analysis means that we have multi-select results, so only do one.
+            if(testResultItem.isShadowReferredOut() && !actionDataSet.getReferredAnalysisIds().contains( analysis.getId() )){
+                actionDataSet.getReferredAnalysisIds().add( analysis.getId() );
+                // If it is a new result or there is no referral ID that means
+                // that a new referral has to be created if it was checked and
+                // it was canceled then we are un-canceling a canceled referral
+                if(testResultItem.getResultId() == null || GenericValidator.isBlankOrNull(testResultItem.getReferralId())){
+                    referral = new Referral();
+                    referral.setReferralTypeId(REFERRAL_CONFORMATION_ID);
+                    referral.setSysUserId(currentUserId);
+                    referral.setRequestDate( new Timestamp( new Date().getTime() ) );
+                    referral.setRequesterName( testResultItem.getTechnician() );
+                    referral.setAnalysis( analysis );
+                    referral.setReferralReasonId(testResultItem.getReferralReasonId());
+                }else if(testResultItem.isReferralCanceled()){
+                    referral = referralDAO.getReferralById(testResultItem.getReferralId());
+                    referral.setCanceled(false);
+                    referral.setSysUserId(currentUserId);
+                    referral.setRequesterName(testResultItem.getTechnician());
+                    referral.setReferralReasonId(testResultItem.getReferralReasonId());
+                }
+
+                actionDataSet.getSavableReferrals().add( referral );
+
+            }
+        }
+    }
+
+
 
 	protected boolean analysisShouldBeUpdated(TestResultItem testResultItem, Result result){
 		return result != null && !GenericValidator.isBlankOrNull(result.getValue())
 				|| (supportReferrals && ResultUtil.isReferred(testResultItem))
-				|| ResultUtil.isForcedToAcceptance(testResultItem);
+				|| ResultUtil.isForcedToAcceptance(testResultItem) || testResultItem.isShadowRejected();
 	}
 
-	private void addResult(Result result, TestResultItem testResultItem, Analysis analysis){
+	private void addResult(Result result, TestResultItem testResultItem, Analysis analysis, boolean multipleResultsForAnalysis, ResultsUpdateDataSet actionDataSet){
 		boolean newResult = result.getId() == null;
-		boolean newAnalysisInLoop = analysis != previousAnalysis;
+		boolean newAnalysisInLoop = analysis != actionDataSet.getPreviousAnalysis();
 
 		ResultSignature technicianResultSignature = null;
 
@@ -410,10 +429,6 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 
 		ResultInventory testKit = createTestKitLinkIfNeeded(testResultItem, ResultsLoadUtility.TESTKIT);
 
-		Note note = NoteUtil.createSavableNote(null, testResultItem.getNote(), testResultItem.getResultId(),
-				ResultsLoadUtility.getResultReferenceTableId(), RESULT_SUBJECT, currentUserId, NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
-
-		analysis.setStatusId(getStatusForTestResult(testResultItem));
 		analysis.setReferredOut(testResultItem.isReferredOut());
 		analysis.setEnteredDate(DateUtil.getNowAsTimestamp());
 
@@ -424,59 +439,22 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 			analysis.setRevision(String.valueOf(Integer.parseInt(analysis.getRevision()) + 1));
 		}
 
-		Sample sample = sampleDAO.getSampleByAccessionNumber(testResultItem.getAccessionNumber());
-		Patient patient = null;
-
-		if("H".equals(sample.getDomain())){
-			SampleHuman sampleHuman = new SampleHuman();
-			sampleHuman.setSampleId(sample.getId());
-			sampleHumanDAO.getDataBySample(sampleHuman);
-
-			patient = new Patient();
-			patient.setId(sampleHuman.getPatientId());
-		}
-
-		Referral referral = null;
-		Referral existingReferral = null;
-
-		if(supportReferrals){
-			// referredOut means the referral checkbox was checked, repeating
-			// analysis means that we have multi-select results, so only do one.
-			if(testResultItem.isReferredOut() && newAnalysisInLoop){
-				// If it is a new result or there is no referral ID that means
-				// that a new referral has to be created if it was checked and
-				// it was canceled then we are un-canceling a canceled referral
-				if(newResult || GenericValidator.isBlankOrNull(testResultItem.getReferralId())){
-					referral = new Referral();
-					referral.setReferralTypeId(REFERRAL_CONFORMATION_ID);
-					referral.setSysUserId(currentUserId);
-					referral.setRequestDate(new Timestamp(new Date().getTime()));
-					referral.setRequesterName(testResultItem.getTechnician());
-					referral.setAnalysis(analysis);
-					referral.setReferralReasonId(testResultItem.getReferralReasonId());
-				}else if(testResultItem.isReferralCanceled()){
-					existingReferral = referralDAO.getReferralById(testResultItem.getReferralId());
-					existingReferral.setCanceled(false);
-					existingReferral.setSysUserId(currentUserId);
-					existingReferral.setRequesterName(testResultItem.getTechnician());
-					existingReferral.setReferralReasonId(testResultItem.getReferralReasonId());
-				}
-			}
-		}
+        SampleService sampleService = new SampleService( testResultItem.getAccessionNumber() );
+        Patient patient = sampleService.getPatient();
 
         Map<String,List<String>> triggersToReflexesMap = new HashMap<String, List<String>>(  );
 
         getSelectedReflexes( testResultItem.getReflexJSONResult(), triggersToReflexesMap );
 
         if(newResult){
-			newResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, triggersToReflexesMap, referral,
-					existingReferral));
+			actionDataSet.getNewResults().add( new ResultSet( result, technicianResultSignature, testKit, patient, sampleService.getSample(), triggersToReflexesMap,
+                    multipleResultsForAnalysis ) );
 		}else{
-			modifiedResults.add(new ResultSet(result, technicianResultSignature, testKit, note, patient, sample, triggersToReflexesMap,
-					referral, existingReferral));
+			actionDataSet.getModifiedResults().add( new ResultSet( result, technicianResultSignature, testKit, patient, sampleService.getSample(), triggersToReflexesMap,
+                    multipleResultsForAnalysis ) );
 		}
 
-		previousAnalysis = analysis;
+		actionDataSet.setPreviousAnalysis(analysis);
 	}
 
     private void getSelectedReflexes( String reflexJSONResult, Map<String, List<String>> triggersToReflexesMap ){
@@ -486,13 +464,15 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
                 JSONObject jsonResult = ( JSONObject ) parser.parse( reflexJSONResult.replaceAll( "'", "\"" ) );
 
                 for(Object compoundReflexes : jsonResult.values()){
-                    String triggerIds = (String)((JSONObject)compoundReflexes).get( "triggerIds" );
-                    List<String> selectedReflexIds = new ArrayList<String>(  );
-                    JSONArray selectedReflexes = (JSONArray)( ( JSONObject ) compoundReflexes ).get( "selected" );
-                    for( Object selectedReflex : selectedReflexes){
-                        selectedReflexIds.add (((String)selectedReflex));
+                    if( compoundReflexes != null){
+                        String triggerIds = ( String ) ( ( JSONObject ) compoundReflexes ).get( "triggerIds" );
+                        List<String> selectedReflexIds = new ArrayList<String>();
+                        JSONArray selectedReflexes = ( JSONArray ) ( ( JSONObject ) compoundReflexes ).get( "selected" );
+                        for( Object selectedReflex : selectedReflexes ){
+                            selectedReflexIds.add( ( ( String ) selectedReflex ) );
+                        }
+                        triggersToReflexesMap.put( triggerIds.trim(), selectedReflexIds );
                     }
-                    triggersToReflexesMap.put( triggerIds.trim(), selectedReflexIds );
                 }
             }catch( ParseException e ){
                 e.printStackTrace();
@@ -501,9 +481,11 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
     }
 
     private String getStatusForTestResult(TestResultItem testResult){
-		if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
+        if (testResult.isShadowRejected()) {
+            return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected);
+        }else if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance);
-		}else if(noResults(testResult.getResultValue(), testResult.getMultiSelectResultValues(), testResult.getResultType())){
+		}else if(noResults(testResult.getShadowResultValue(), testResult.getMultiSelectResultValues(), testResult.getResultType())){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted);
 		}else{
 			ResultLimit resultLimit = resultLimitDAO.getResultLimitById(testResult.getResultLimitId());
@@ -518,7 +500,7 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 	private boolean noResults(String value, String multiSelectValue, String type){
 
 		return (GenericValidator.isBlankOrNull(value) && GenericValidator.isBlankOrNull(multiSelectValue)) ||
-				("D".equals(type) && "0".equals(value));
+				( ResultType.DICTIONARY.matches(type) && "0".equals(value));
 	}
 
 	private ResultInventory createTestKitLinkIfNeeded(TestResultItem testResult, String testKitName){
@@ -527,13 +509,13 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		if((TestResultItem.ResultDisplayType.SYPHILIS == testResult.getRawResultDisplayType() || TestResultItem.ResultDisplayType.HIV == testResult
 				.getRawResultDisplayType()) && ResultsLoadUtility.TESTKIT.equals(testKitName)){
 
-			testKit = creatTestKit(testResult, testKitName, testResult.getTestKitId());
+			testKit = createTestKit( testResult, testKitName, testResult.getTestKitId() );
 		}
 
 		return testKit;
 	}
 
-	private ResultInventory creatTestKit(TestResultItem testResult, String testKitName, String testKitId) throws LIMSRuntimeException{
+	private ResultInventory createTestKit( TestResultItem testResult, String testKitName, String testKitId ) throws LIMSRuntimeException{
 		ResultInventory testKit;
 		testKit = new ResultInventory();
 
@@ -548,163 +530,25 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		return testKit;
 	}
 
-	private void updateAndAddAnalysisToModifiedList(TestResultItem testResultItem, String testDate, Analysis analysis){
-		String testMethod = testResultItem.getAnalysisMethod();
-		analysis.setAnalysisType(testMethod);
+	private void updateAnalysis( TestResultItem testResultItem, String testDate, Analysis analysis ){
+		analysis.setAnalysisType(testResultItem.getAnalysisMethod());
 		analysis.setStartedDateForDisplay(testDate);
 
 		// This needs to be refactored -- part of the logic is in
-		// getStatusForTestResult
+		// getStatusForTestResult. RetroCI over rides to whatever was set before
 		if(statusRuleSet.equals(IActionConstants.STATUS_RULES_RETROCI)){
 			if( !StatusService.getInstance().getStatusID(AnalysisStatus.Canceled).equals(analysis.getStatusId() )){
 				analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 				analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance));
 			}
-		}else if(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized).equals(analysis.getStatusId()) ||
-				StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance).equals(analysis.getStatusId()) ||
-				(analysis.isReferredOut() && !GenericValidator.isBlankOrNull(testResultItem.getResultValue()))){
+		}else if(StatusService.getInstance().matches(analysis.getStatusId(), AnalysisStatus.Finalized) ||
+				StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.TechnicalAcceptance ) ||
+				(analysis.isReferredOut() && !GenericValidator.isBlankOrNull(testResultItem.getShadowResultValue()))){
 			analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 		}
 
-		analysis.setSysUserId(currentUserId);
-		modifiedAnalysis.add(analysis);
 	}
 
-	private List<Result> createResultFromTestResultItem(TestResultItem testResultItem, Analysis analysis){
-		List<Result> results = new ArrayList<Result>();
-
-		if("M".equals(testResultItem.getResultType())){
-			String[] multiResults = testResultItem.getMultiSelectResultValues().split(",");
-			List<Result> existingResults = resultDAO.getResultsByAnalysis(analysis);
-
-            for( String resultAsString : multiResults){
-				Result existingResultFromDB = null;
-				for(Result existingResult : existingResults){
-					if(resultAsString.equals(existingResult.getValue())){
-						existingResultFromDB = existingResult;
-						break;
-					}
-				}
-
-				if(existingResultFromDB != null){
-					existingResults.remove(existingResultFromDB);
-					existingResultFromDB.setSysUserId(currentUserId);
-					results.add(existingResultFromDB);
-					continue;
-				}
-				Result result = new Result();
-
-				setTestResultsForDictionaryResult(testResultItem.getTestId(), resultAsString, result);
-				setNewResultValues(testResultItem, analysis, result);
-				setStandardResultValues(resultAsString, result);
-				result.setSortOrder(getResultSortOrder(analysis, result.getValue()));
-
-				results.add(result);
-			}
-			deletableResults.addAll(existingResults);
-		}else{
-			Result result = new Result();
-			Result qualifiedResult = null;
-
-			boolean newResult = GenericValidator.isBlankOrNull(testResultItem.getResultId());
-			boolean isQualifiedResult = "Q".equals(testResultItem.getResultType());
-
-			if(!newResult){
-				result.setId(testResultItem.getResultId());
-				resultDAO.getData(result);
-
-				if(!GenericValidator.isBlankOrNull(testResultItem.getQualifiedResultId())){
-					qualifiedResult = new Result();
-					qualifiedResult.setId(testResultItem.getQualifiedResultId());
-					resultDAO.getData(qualifiedResult);
-				}else if(isQualifiedResult){
-					qualifiedResult = new Result();
-					setNewResultValues(testResultItem, analysis, qualifiedResult);
-					qualifiedResult.setResultType("A");
-					qualifiedResult.setParentResult(result);
-				}
-			}
-
-			if("D".equals(testResultItem.getResultType()) || isQualifiedResult){
-				setTestResultsForDictionaryResult(testResultItem.getTestId(), testResultItem.getResultValue(), result);
-			}else{
-				List<TestResult> testResultList = testResultDAO.getTestResultsByTest(testResultItem.getTestId());
-				// we are assuming there is only one testResult for a numeric
-				// type result
-				if(!testResultList.isEmpty()){
-					result.setTestResult(testResultList.get(0));
-				}
-			}
-
-			if(newResult){
-				setNewResultValues(testResultItem, analysis, result);
-				if(isQualifiedResult){
-					qualifiedResult = new Result();
-					setNewResultValues(testResultItem, analysis, qualifiedResult);
-					qualifiedResult.setResultType("A");
-					qualifiedResult.setParentResult(result);
-				}
-			}else{
-				setAnalyteForResult(result);
-			}
-
-			setStandardResultValues(testResultItem.getResultValue(), result);
-			results.add(result);
-
-			if(isQualifiedResult){
-				setStandardResultValues(testResultItem.getQualifiedResultValue(), qualifiedResult);
-				results.add(qualifiedResult);
-			}else if(qualifiedResult != null){ // covers the case where user
-												// made change from qualified to
-												// non-qualified
-				setStandardResultValues("", qualifiedResult);
-				results.add(qualifiedResult);
-			}
-		}
-
-		return results;
-	}
-
-	private String getResultSortOrder(Analysis analysis, String resultValue){
-		TestResult testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysis.getTest().getId(), resultValue);
-		return testResult == null ? "0" : testResult.getSortOrder();
-	}
-
-	private void setStandardResultValues(String value, Result result){
-		result.setValue(value);
-		result.setSysUserId(currentUserId);
-		result.setSortOrder("0");
-	}
-
-	private void setNewResultValues(TestResultItem testResultItem, Analysis analysis, Result result){
-		result.setAnalysis(analysis);
-		result.setAnalysisId(testResultItem.getAnalysisId());
-		result.setIsReportable(testResultItem.getReportable());
-		result.setResultType(testResultItem.getResultType());
-		result.setMinNormal(testResultItem.getLowerNormalRange());
-		result.setMaxNormal(testResultItem.getUpperNormalRange());
-
-		setAnalyteForResult(result);
-	}
-
-	private void setAnalyteForResult(Result result){
-		TestAnalyte testAnalyte = ResultUtil.getTestAnalyteForResult(result);
-
-		if(testAnalyte != null){
-			result.setAnalyte(testAnalyte.getAnalyte());
-		}
-	}
-
-	private TestResult setTestResultsForDictionaryResult(String testId, String dictValue, Result result){
-		TestResult testResult;
-		testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(testId, dictValue);
-
-		if(testResult != null){
-			result.setTestResult(testResult);
-		}
-
-		return testResult;
-	}
 
 	private ResultSignature createTechnicianSignatureFromResultItem(TestResultItem testResult){
 		ResultSignature sig = null;
@@ -759,18 +603,4 @@ public class ResultsLogbookUpdateAction extends BaseAction implements IResultSav
 		return "banner.menu.results";
 	}
 
-	@Override
-	public String getCurrentUserId(){
-		return currentUserId;
-	}
-
-	@Override
-	public List<ResultSet> getNewResults(){
-		return newResults;
-	}
-
-	@Override
-	public List<ResultSet> getModifiedResults(){
-		return modifiedResults;
-	}
 }

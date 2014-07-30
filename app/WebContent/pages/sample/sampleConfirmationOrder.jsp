@@ -69,7 +69,7 @@
 
     function checkAccessionNumber(accessionNumber) {
         if (!fieldIsEmptyById(accessionNumber.id)) {
-            validateAccessionNumberOnServer(true, accessionNumber.id, accessionNumber.value, processAccessionSuccess);
+            validateAccessionNumberOnServer(false, false, accessionNumber.id, accessionNumber.value, processAccessionSuccess);
         }
         else {
             fieldValidator.setFieldValidity(false, accessionNumber.id);

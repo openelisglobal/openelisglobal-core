@@ -15,11 +15,11 @@
 */
 package us.mn.state.health.lims.analyzer.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+
+import java.util.List;
 
 public interface AnalyzerDAO extends BaseDAO {
 
@@ -37,4 +37,5 @@ public interface AnalyzerDAO extends BaseDAO {
 
 	public Analyzer getAnalyzerById(Analyzer analyzer) throws LIMSRuntimeException;
 
+    public Analyzer getAnalyzerByName(String name) throws LIMSRuntimeException;
 }

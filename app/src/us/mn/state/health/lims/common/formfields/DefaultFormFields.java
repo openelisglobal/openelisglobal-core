@@ -17,12 +17,12 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 public class DefaultFormFields extends AFormFields {
 	private HashMap<FormFields.Field, Boolean> defaultAttributes = new HashMap<FormFields.Field, Boolean>();
@@ -42,34 +42,32 @@ public class DefaultFormFields extends AFormFields {
 		setFieldTrue(Field.InsuranceNumber);
 		setFieldTrue(Field.CollectionDate);
 		setFieldTrue(Field.OrgLocalAbrev);
-		setFieldTrue(Field.OrgState);
-		setFieldTrue(Field.ZipCode);
-		setFieldTrue(Field.MLS);
 		setFieldTrue(Field.ProviderInfo);
 		setFieldTrue(Field.NationalID);
 		setFieldTrue(Field.Occupation);
 		setFieldTrue(Field.OrganizationAddressInfo);
-		setFieldTrue(Field.OrganizationCLIA);
-		setFieldTrue(Field.OrganizationParent);
 		setFieldTrue(Field.OrganizationShortName);
 		setFieldTrue(Field.OrganizationMultiUnit);
 		setFieldTrue(Field.OrganizationOrgId);
 		setFieldTrue(Field.AddressCity);
 		setFieldTrue(Field.PatientRequired);
-        setFieldTrue(Field.QAFullProviderInfo);
+        setFieldTrue(Field.QA_FULL_PROVIDER_INFO );
+        setFieldTrue(Field.QA_REQUESTER_SAMPLE_ID);
         setFieldTrue(Field.PatientIDRequired);
 		setFieldTrue(Field.PatientNameRequired);
 		setFieldTrue(Field.SampleEntryRequestingSiteSampleId);
-		setFieldTrue(Field.PatientAgeRequired_SampleEntry);
-		setFieldTrue(Field.PatientGenderRequired_SampleEntry);
+
+        setFieldFalse(Field.OrgState);
+        setFieldFalse(Field.ZipCode);
+        setFieldFalse(Field.MLS);
 		setFieldFalse(Field.CollectionTime);
 		setFieldFalse(Field.RequesterSiteList);
 		setFieldFalse(Field.InlineOrganizationTypes);
 		setFieldFalse(Field.SubjectNumber);
+        setFieldFalse(Field.SubjectNumberRequired );
 		setFieldFalse(Field.Commune);
 		setFieldFalse(Field.AddressDepartment);
 		setFieldFalse(Field.MotherInitial);
-		setFieldFalse(Field.ResultsAccept);
 		setFieldFalse(Field.SearchSampleStatus);
 		setFieldFalse(Field.DepersonalizedResults);
 		setFieldFalse(Field.SEARCH_PATIENT_WITH_LAB_NO);
@@ -78,14 +76,14 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.InitialSampleCondition);
 		setFieldFalse(Field.AddressCommune);
 		setFieldFalse(Field.AddressVillage);
+        setFieldFalse(Field.OrganizationCLIA);
+        setFieldFalse(Field.OrganizationParent);
 		setFieldFalse(Field.PatientRequired_SampleConfirmation);
         setFieldFalse(Field.SampleCondition);
         setFieldFalse(Field.Project);        
         setFieldFalse(Field.NON_CONFORMITY_SITE_LIST);
         setFieldFalse(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE);
 		setFieldFalse(Field.PatientIDRequired_SampleConfirmation);
-		setFieldFalse(Field.PatientAgeRequired_SampleConfirmation);
-		setFieldFalse(Field.PatientGenderRequired_SampleConfirmation);
 		setFieldFalse(Field.SampleEntryUseReceptionHour);
 		setFieldFalse(Field.SampleEntryUseRequestDate);
 		setFieldFalse(Field.SampleEntryNextVisitDate);

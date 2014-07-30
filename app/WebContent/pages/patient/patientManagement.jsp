@@ -31,6 +31,7 @@
 	boolean supportPatientType = true;
 	boolean supportInsurance = true;
 	boolean supportSubjectNumber = true;
+    boolean subjectNumberRequired = true;
 	boolean supportNationalID = true;
 	boolean supportOccupation = true;
 	boolean supportCommune = true;
@@ -52,6 +53,7 @@
 	supportPatientType = FormFields.getInstance().useField(Field.PatientType);
 	supportInsurance = FormFields.getInstance().useField(Field.InsuranceNumber);
 	supportSubjectNumber = FormFields.getInstance().useField(Field.SubjectNumber);
+    subjectNumberRequired = FormFields.getInstance().useField( Field.SubjectNumberRequired );
 	supportNationalID = FormFields.getInstance().useField(Field.NationalID);
 	supportOccupation = FormFields.getInstance().useField(Field.Occupation);
 	supportCommune = FormFields.getInstance().useField(Field.Commune);
@@ -61,13 +63,13 @@
 	if("SampleConfirmationEntryForm".equals( formName )){
 		patientIDRequired = FormFields.getInstance().useField(Field.PatientIDRequired_SampleConfirmation);
 		patientRequired = FormFields.getInstance().useField(Field.PatientRequired_SampleConfirmation );
-		patientAgeRequired = FormFields.getInstance().useField(Field.PatientAgeRequired_SampleConfirmation );
-		patientGenderRequired = FormFields.getInstance().useField(Field.PatientGenderRequired_SampleConfirmation );
+		patientAgeRequired = false;
+		patientGenderRequired = false;
 	}else{
 		patientIDRequired = FormFields.getInstance().useField(Field.PatientIDRequired);
 	    patientRequired = FormFields.getInstance().useField(Field.PatientRequired );
-	    patientAgeRequired = FormFields.getInstance().useField(Field.PatientAgeRequired_SampleEntry );
-		patientGenderRequired = FormFields.getInstance().useField(Field.PatientGenderRequired_SampleEntry);
+	    patientAgeRequired = true;
+		patientGenderRequired = true;
 	}
 	
 	patientNamesRequired = FormFields.getInstance().useField(Field.PatientNameRequired);
@@ -87,6 +89,7 @@ var supportMothersName = <%= supportMothersName %>;
 var supportPatientType = <%= supportPatientType %>;
 var supportInsurance = <%= supportInsurance %>;
 var supportSubjectNumber = <%= supportSubjectNumber %>;
+var subjectNumberRequired = <%= subjectNumberRequired %>;
 var supportNationalID = <%= supportNationalID %>;
 var supportMothersInitial = <%= supportMothersInitial %>;
 var supportCommune = <%= supportCommune %>;
@@ -124,7 +127,7 @@ if( patientIDRequired){
 	pt_requiredOneOfFields.push("patientGUID_ID") ;
 	if (supportSTNumber) {
 		pt_requiredOneOfFields.push("ST_ID");
-	} else if (supportSubjectNumber){
+	} else if (supportSubjectNumber && subjectNumberRequired){
 		pt_requiredOneOfFields = new Array("subjectNumberID");
 	}
 }
@@ -279,17 +282,6 @@ function  /*string*/ pt_requiredFieldsValidMessage()
 	return returnMessage;
 }
 
-
-function  /*void*/ handleBirthDateChange( dateElement, checkForValidDate )
-{
-
-	if(!checkForValidDate ){
-		updatePatientAge( dateElement );
-	}else{
-		 checkValidAgeDate( dateElement );
-	}
-}
-
 function  /*void*/ processValidateDateSuccess(xhr){
 
     //alert(xhr.responseText);
@@ -375,6 +367,9 @@ function  /*void*/ updatePatientAge( DOB )
 
 	var age = document.getElementById("age");
 	age.value = calculatedAge;
+
+    setValidIndicaterOnField( true, $("age").name);
+    pt_setFieldValid( $("age").name );
 }
 
 function /*void*/ handleAgeChange( age )
@@ -611,7 +606,7 @@ function  /*void*/ setPatientInfo(nationalID, ST_ID, subjectNumber, lastName, fi
 	} else {
 		var dobElement = $("dateOfBirthID");
 		dobElement.value = dob;
-		handleBirthDateChange(dobElement, false);
+        checkValidAgeDate(dobElement);
 	}
 
 	document.getElementById("genderID").selectedIndex = gender == undefined ? 0 : gender;
@@ -812,7 +807,7 @@ function  processSubjectNumberSuccess(xhr){
         </td>
     </tr>
     <tr>
-        <td style="width:5%">&nbsp;
+        <td >&nbsp;
 
         </td>
         <%} %>
@@ -822,7 +817,9 @@ function  processSubjectNumberSuccess(xhr){
         </td>
         <td style="text-align:right;">
             <bean:message key="patient.subject.number"/>:
+            <% if(subjectNumberRequired){ %>
             <span class="requiredlabel">*</span>
+            <% } %>
         </td>
         <td>
             <nested:text name='<%=formName%>'
@@ -834,16 +831,16 @@ function  processSubjectNumberSuccess(xhr){
         </td>
     </tr>
     <tr>
-        <td style="width:5%">&nbsp;
+        <td >&nbsp;
 
         </td>
         <% } %>
         <% if( supportNationalID ){ %>
-        <td style="width:25%;text-align:right;">
+        <td style="text-align:right;">
             <%=StringUtil.getContextualMessageForKey("patient.NationalID") %>:
 
         </td>
-        <td style="width:25%">
+        <td >
             <nested:text name='<%=formName%>'
                          property="patientProperties.nationalId"
                          onchange="validateSubjectNumber(this, 'nationalId');updatePatientEditStatus();"
@@ -851,27 +848,27 @@ function  processSubjectNumberSuccess(xhr){
                          styleClass="text"
                          size="60"/>
         </td>
-        <td style="width:10%">&nbsp;
+        <td >&nbsp;
 
         </td>
-        <td style="width:15%">&nbsp;
+        <td >&nbsp;
 
         </td>
     </tr>
     <%} %>
     <tr class="spacerRow" ><td colspan="2">&nbsp;</td></tr>
 	<tr>
-		<td style="width:15%">
+		<td style="width: 220px">
 			<bean:message key="patient.name" />
 		</td>
-		<td style="width:10%;text-align:right;">
+		<td style="text-align:right;">
 			<bean:message key="patient.epiLastName" />
 			:
 			<% if( patientNamesRequired){ %>
 				<span class="requiredlabel">*</span>
 			<% } %>
 		</td>
-		<td style="width:20%">
+		<td >
 			<nested:text name='<%=formName%>'
 					  property="patientProperties.lastName"
 					  styleClass="text"
@@ -879,14 +876,14 @@ function  processSubjectNumberSuccess(xhr){
 				      onchange="updatePatientEditStatus();"
 				      styleId="lastNameID"/>
 		</td>
-		<td style="width:10%;text-align:right;">
+		<td style="text-align:right;">
 			<bean:message key="patient.epiFirstName" />
 			:
 			<% if( patientNamesRequired){ %>
 				<span class="requiredlabel">*</span>
 			<% } %>	
 		</td>
-		<td style="width:20%">
+		<td >
 			<nested:text name='<%=formName%>'
 					  property="patientProperties.firstName"
 					  styleClass="text"
@@ -1071,7 +1068,9 @@ function  processSubjectNumberSuccess(xhr){
 					  property="patientProperties.birthDateForDisplay"
 					  styleClass="text"
 					  size="20"
-					  onchange="handleBirthDateChange( this, true ); updatePatientEditStatus();"
+                      maxlength="10"
+                      onkeyup="addDateSlashes(this,event);"
+                      onblur="checkValidAgeDate( this ); updatePatientEditStatus();"
 					  styleId="dateOfBirthID" />
 			<div id="patientProperties.birthDateForDisplayMessage" class="blank" ></div>
 		</td>

@@ -15,10 +15,10 @@
 */
 package us.mn.state.health.lims.resultvalidation.bean;
 
+import us.mn.state.health.lims.common.util.IdValuePair;
+
 import java.sql.Timestamp;
 import java.util.List;
-
-import us.mn.state.health.lims.common.util.IdValuePair;
 
 public class AnalysisItem  {
 
@@ -75,6 +75,7 @@ public class AnalysisItem  {
 	private boolean showAcceptReject = true;
 	private List<IdValuePair> dictionaryResults;
 	private boolean isMultipleResultForSample = false;
+    private String multiSelectResultValues = "{}";
 	private boolean readOnly = false;
 	private boolean isReflexGroup = false;
 	private boolean isChildReflex = false;
@@ -82,7 +83,17 @@ public class AnalysisItem  {
 	private String pastNotes;
 	private String qualifiedDictionaryId;
 	private String qualifiedResultValue = "";
+    private String qualifiedResultId;
+    private boolean hasQualifiedResult = false;
+    private int significantDigits = 0;
+    private String rejectReasonId;                                                            
 
+	public String getRejectReasonId() {
+        return rejectReasonId;
+    }
+    public void setRejectReasonId(String rejectReasonId) {
+        this.rejectReasonId = rejectReasonId;
+    }
 
 	public AnalysisItem() {
 
@@ -473,7 +484,15 @@ public class AnalysisItem  {
 		return isMultipleResultForSample;
 	}
 
-	public void setReadOnly(boolean readOnly) {
+    public String getMultiSelectResultValues() {
+        return multiSelectResultValues;
+    }
+
+    public void setMultiSelectResultValues(String multiSelectResultValues) {
+        this.multiSelectResultValues = multiSelectResultValues;
+    }
+
+    public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
 
@@ -561,6 +580,27 @@ public class AnalysisItem  {
 		this.qualifiedResultValue = qualifiedResultValue;
 	}
 
+    public boolean isHasQualifiedResult(){
+        return hasQualifiedResult;
+    }
 
+    public void setHasQualifiedResult( boolean hasQualifiedResult ){
+        this.hasQualifiedResult = hasQualifiedResult;
+    }
 
+    public String getQualifiedResultId() {
+        return qualifiedResultId;
+    }
+
+    public void setQualifiedResultId(String qualifiedResultId) {
+        this.qualifiedResultId = qualifiedResultId;
+    }
+
+    public int getSignificantDigits(){
+        return significantDigits;
+    }
+
+    public void setSignificantDigits( int significantDigits ){
+        this.significantDigits = significantDigits;
+    }
 }

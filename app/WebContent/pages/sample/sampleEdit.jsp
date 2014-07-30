@@ -23,6 +23,7 @@
 <bean:define id="genericDomain" value='' />
 <bean:define id="accessionNumber" name="<%=formName %>" property="accessionNumber"/>
 <bean:define id="newAccessionNumber" name="<%=formName %>" property="newAccessionNumber"/>
+<bean:define id="cancelableResults"   name="<%=formName%>" property="ableToCancelResults" type="java.lang.Boolean" />
 
 <%!
 	String basePath = "";
@@ -99,6 +100,12 @@ function /*void*/ savePage(){
 		alert('<%= StringUtil.getMessageForKey("warning.sample.missing.test")%>');
 		return;
 	}
+
+
+    if( $jq(".testWithResult:checked").size() > 0 &&
+        !confirm("<%= StringUtil.getMessageForKey("test.modify.save.warning")%>") ) {
+            return;
+    }
 	window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	loadSamples();
 	
@@ -134,7 +141,7 @@ function checkEditedAccessionNumber(changeElement){
 		return;
 	}
 	
-	validateAccessionNumberOnServer(true, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
+	validateAccessionNumberOnServer(true, false, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
 }
 
 function processEditAccessionSuccess(xhr)
@@ -270,8 +277,7 @@ function makeDirty(){
 <logic:equal name="<%=formName%>" property="noSampleFound" value="false">
 <DIV  id="patientInfo" class='textcontent'>
 <bean:message key="sample.entry.patient"/>:&nbsp;
-<bean:write name="<%=formName%>" property="firstName"/>&nbsp;
-<bean:write name="<%=formName%>" property="lastName"/>&nbsp;
+<bean:write name="<%=formName%>" property="patientName"/>&nbsp;
 <bean:write name="<%=formName%>" property="dob"/>&nbsp;
 <bean:write name="<%=formName%>" property="gender"/>&nbsp;
 <bean:write name="<%=formName%>" property="nationalId"/>
@@ -311,13 +317,14 @@ function makeDirty(){
 	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.tests") %></h1>
 </logic:equal>
 <table style="width:60%">
-<caption><bean:message key="sample.edit.existing.tests"/></caption>
+<caption><div><bean:message key="sample.edit.existing.tests"/></div>
+    <span style="color: red"><small><small><%= cancelableResults ? StringUtil.getMessageForKey( "test.modify.static.warning" ) : "" %></small></small></span></caption>
 <tr>
 <th><%= StringUtil.getContextualMessageForKey("quick.entry.accession.number") %></th>
 <th><bean:message key="sample.entry.sample.type"/></th>
 <% if( useCollectionDate ){ %>
 <th >
-    <bean:message key="sample.collectionDate"/>
+    <bean:message key="sample.collectionDate"/>&nbsp;<bean:message key="sample.date.format"/>
 </th>
 <th >
     <bean:message key="sample.collectionTime"/>
@@ -327,6 +334,7 @@ function makeDirty(){
 	<th style="width:16px"><bean:message key="sample.edit.remove.sample" /></th>
 </logic:equal>
 <th><bean:message key="test.testName"/></th>
+<th><bean:message key="test.has.result"/></th>
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
 	<th style="width:16px"><bean:message key="sample.edit.remove.tests" /></th>
 </logic:equal>
@@ -386,10 +394,13 @@ function makeDirty(){
 		<td>
 			<bean:write name="existingTests" property="testName"/>
 		</td>
+            <td style="text-align: center">
+                <%= existingTests.isHasResults() ? "X" : ""%>
+            </td>
 		<logic:equal name='<%=formName%>' property="isEditable" value="true" >
 			<td>
 				<% if( existingTests.isCanCancel()){ %>
-				<html:checkbox name='existingTests' property='canceled' indexed='true' onchange="addRemoveRequest(this);" />
+                <input type="checkbox" name='<%="existingTests[" + index +"].canceled"%>' value="on" onchange="addRemoveRequest(this);" <%=existingTests.isHasResults() ? "class='testWithResult'" : ""%>>
 				<% }else{ %>
 				<html:checkbox name='existingTests' property='canceled' indexed='true' disabled="true" />
 				<% } %>

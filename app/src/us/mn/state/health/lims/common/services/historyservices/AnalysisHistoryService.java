@@ -16,19 +16,20 @@
  */
 package us.mn.state.health.lims.common.services.historyservices;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AnalysisHistoryService extends HistoryService {
 	private static String ANALYSIS_TABLE_ID;
@@ -53,7 +54,7 @@ public class AnalysisHistoryService extends HistoryService {
 			newValueMap = new HashMap<String, String>();
 			newValueMap.put(STATUS_ATTRIBUTE, StatusService.getInstance().getStatusNameFromId(analysis.getStatusId()));
 
-			identifier = analysis.getTest().getDescription() + " - " + analysis.getAnalysisType();
+			identifier = TestService.getLocalizedAugmentedTestName( analysis.getTest()) + " - " + analysis.getAnalysisType();
 		}else{
 			historyList = new ArrayList<History>();
 		}

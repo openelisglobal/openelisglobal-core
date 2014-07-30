@@ -17,24 +17,17 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.provider.query.workerObjects.PatientSearchLocalAndClinicWorker;
 import us.mn.state.health.lims.common.provider.query.workerObjects.PatientSearchLocalWorker;
 import us.mn.state.health.lims.common.provider.query.workerObjects.PatientSearchWorker;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.login.valueholder.UserSessionData;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -42,6 +35,12 @@ import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.math.BigDecimal;
 
 public class PatientSearchProvider extends BaseQueryProvider{
 
@@ -53,15 +52,8 @@ public class PatientSearchProvider extends BaseQueryProvider{
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
 		String STNumber = request.getParameter("STNumber");
-		String subjectNumber = request.getParameter("subjectNumber"); // N.B.
-																		// This
-																		// is a
-																		// bad
-																		// name,
-																		// it is
-																		// other
-																		// than
-																		// STnumber
+        // N.B. This is a bad name, it is other than STnumber
+		String subjectNumber = request.getParameter("subjectNumber");
 		String nationalID = request.getParameter("nationalID");
 		String labNumber = request.getParameter("labNumber");
 		String guid = request.getParameter("guid");
@@ -104,13 +96,13 @@ public class PatientSearchProvider extends BaseQueryProvider{
 				service.getFirstName(),
 				service.getLastName(),
 				service.getGender(),
-				DateUtil.convertStringDateToTruncatedTimestamp(service.getDOB()),
+				service.getDOB(),
 				service.getNationalId(),
 				patient.getExternalId(),
 				service.getSTNumber(),
 				service.getSubjectNumber(),
-				service.getGUID());
-
+				service.getGUID(),
+                ObservationHistoryService.getMostRecentValueForPatient( ObservationType.REFERRERS_PATIENT_ID, service.getPatientId() ));
 	}
 
 	private Patient getPatientForLabNumber(String labNumber){
@@ -124,18 +116,6 @@ public class PatientSearchProvider extends BaseQueryProvider{
 		}
 
 		return new Patient();
-	}
-
-	private String getSubjectNumber(Patient patient){
-		if(patient == null){
-			return null;
-		}
-
-		if(GenericValidator.isBlankOrNull(patient.getNationalId())){
-			return patient.getExternalId();
-		}else{
-			return patient.getNationalId();
-		}
 	}
 
 	private PatientSearchWorker getAppropriateWorker(HttpServletRequest request, boolean suppressExternalSearch){

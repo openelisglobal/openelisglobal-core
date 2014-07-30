@@ -16,16 +16,9 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
@@ -34,8 +27,13 @@ import us.mn.state.health.lims.common.util.HibernateProxy;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 
-public class CobasReader extends AnalyzerLineInserter {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+public class CobasReader extends AnalyzerLineInserter {
+    private static final String COBAS_INTEGRA400_NAME = "Cobas Integra";
 	private static String ASTL_ID;
 	private static String ALTL_ID;
 	private static String CRE_ID;
@@ -142,10 +140,10 @@ public class CobasReader extends AnalyzerLineInserter {
 		String[] fields = line.split(DELIMITER);
 
 		AnalyzerResults analyzerResults = new AnalyzerResults();
-		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.COBAS_INTEGRA400, fields[TEST]);
+		MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(COBAS_INTEGRA400_NAME, fields[TEST]);
 
 		if (mappedName == null) {
-			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerType.COBAS_INTEGRA400, fields[TEST]);
+			mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(COBAS_INTEGRA400_NAME, fields[TEST]);
 		}
 
 		analyzerResults.setAnalyzerId(mappedName.getAnalyzerId());

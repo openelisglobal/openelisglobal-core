@@ -17,8 +17,9 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 
 public class HT_LNSPFormFields implements IFormFieldsForImplementation {
@@ -31,9 +32,6 @@ public class HT_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.PatientType, Boolean.FALSE);
 		settings.put(Field.InsuranceNumber, Boolean.FALSE);		
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
-		settings.put(Field.OrgState, Boolean.FALSE);
-		settings.put(Field.ZipCode, Boolean.FALSE);
-		settings.put(Field.MLS, Boolean.FALSE);
 		settings.put(Field.InlineOrganizationTypes, Boolean.TRUE);
 		settings.put(Field.Occupation, Boolean.FALSE);
 		settings.put(Field.Commune, Boolean.TRUE);
@@ -42,10 +40,7 @@ public class HT_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.ResultsReferral, Boolean.TRUE);
 		settings.put(Field.ValueHozSpaceOnResults, Boolean.TRUE);
 		settings.put(Field.InitialSampleCondition, Boolean.TRUE);
-		settings.put(Field.OrganizationCLIA, Boolean.FALSE);
-		settings.put(Field.OrganizationParent, Boolean.FALSE);
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
-		settings.put(Field.OrganizationShortName, Boolean.TRUE);
 		settings.put(Field.OrganizationMultiUnit, Boolean.FALSE);
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
@@ -56,13 +51,13 @@ public class HT_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.SampleCondition, Boolean.FALSE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);
 		settings.put(Field.PatientNameRequired, Boolean.FALSE);
-		settings.put(Field.PatientAgeRequired_SampleEntry, Boolean.FALSE);
-		settings.put(Field.PatientGenderRequired_SampleEntry, Boolean.FALSE);
 		settings.put(Field.SampleEntryUseReceptionHour, Boolean.TRUE);
 		settings.put(Field.CollectionDate, Boolean.TRUE);
 		settings.put(Field.CollectionTime, Boolean.TRUE);
 		settings.put(Field.SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER, Boolean.TRUE);
 		settings.put(Field.SampleEntryRequestingSiteSampleId, Boolean.FALSE);
+        settings.put(Field.PatientIDRequired, Boolean.FALSE );
+        settings.put(Field.PatientIDRequired_SampleConfirmation, Boolean.FALSE );
 		return settings;
 	}
 

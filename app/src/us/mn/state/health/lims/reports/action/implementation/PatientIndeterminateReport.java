@@ -16,17 +16,13 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -39,6 +35,9 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class PatientIndeterminateReport extends RetroCIPatientReport {
 
@@ -100,7 +99,7 @@ public abstract class PatientIndeterminateReport extends RetroCIPatientReport {
 		ResultDAO resultDAO = new ResultDAOImpl();
 
 		for (Analysis analysis : analysisList) {
-			String testName = analysis.getTest().getTestName();
+			String testName = TestService.getLocalizedTestName( analysis.getTest());
 
 			List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 			String resultValue = null;

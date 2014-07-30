@@ -93,4 +93,10 @@
 			  and (r.value is null or r.value = '' or (r.result_type = 'D' and r.value = '0')));	  
 	</sql>
 </changeSet>
+    <changeSet id="5" author="paulsc">
+        <comment>Expand the sample referring_id column so it is the same width as the provider external_id column</comment>
+        <modifyColumn tableName="sample">
+            <column name="referring_id" type="varchar(50)"/>
+        </modifyColumn>
+</changeSet>
 </databaseChangeLog>

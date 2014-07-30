@@ -23,7 +23,7 @@ import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 //Note both Clinical and LNSP should extend common subclass
-public class IndicatorCDIHIVLNSP extends IndicatorHaitiHIVClinical implements IReportCreator, IReportParameterSetter {
+public class IndicatorCDIHIVLNSP extends IndicatorHIV implements IReportCreator, IReportParameterSetter {
 	private static String HIV_POSITIVE1_ID = "undefined";
 	private static String HIV_POSITIVE2_ID = "undefined";
 	private static String HIV_POSITIVE12_ID = "undefined";

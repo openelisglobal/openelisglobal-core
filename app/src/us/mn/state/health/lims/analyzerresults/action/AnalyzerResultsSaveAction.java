@@ -32,6 +32,7 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -48,7 +49,6 @@ import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.util.PatientUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.result.action.util.ResultUtil;
-import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -61,9 +61,6 @@ import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
-import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
-import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
-import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -99,13 +96,11 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	private TestDAO testDAO = new TestDAOImpl();
 	private TypeOfSampleTestDAO typeOfSampleTestDAO = new TypeOfSampleTestDAOImpl();
 	private TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
-	private SystemUser systemUser;
 
 	private String sysUserId = null;
 	private List<SampleGrouping> sampleGroupList;
 
 	private static final String RESULT_SUBJECT = "Analyzer Result Note";
-	private static final String DEFAULT_NOTE_TYPE = Note.EXTERNAL;
 	private static final String DBS_SAMPLE_TYPE_ID;
 
 	static {
@@ -572,7 +567,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 			if (GenericValidator.isBlankOrNull(resultItem.getNote())) {
 				noteList.add(null);
 			} else {
-				Note note = createResultNote(resultItem.getNote());
+				Note note =  new NoteService( analysis ).createSavableNote( NoteService.NoteType.INTERNAL, resultItem.getNote(), RESULT_SUBJECT, currentUserId );
 				noteList.add(note);
 			}
 		}
@@ -688,7 +683,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 			if (GenericValidator.isBlankOrNull(resultItem.getNote())) {
 				noteList.add(null);
 			} else {
-				Note note = createResultNote(resultItem.getNote());
+                Note note = new NoteService( analysis ).createSavableNote( NoteService.NoteType.INTERNAL, resultItem.getNote(), RESULT_SUBJECT, currentUserId );
 				noteList.add(note);
 			}
 		}
@@ -751,7 +746,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(resultItem.getTestId(), resultItem.getResult());
 			return testResult;
 		} else {
-			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(resultItem.getTestId());
+			List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( resultItem.getTestId() );
 			// we are assuming there is only one testResult for a numeric
 			// type result
 			if (!testResultList.isEmpty()) {
@@ -775,19 +770,6 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 			analysis.setRevision("0");
 		}
 
-	}
-
-	private Note createResultNote(String noteText) {
-		Note note = new Note();
-		note.setReferenceTableId(ResultsLoadUtility.getResultReferenceTableId());
-		note.setNoteType(DEFAULT_NOTE_TYPE);
-		note.setSubject(RESULT_SUBJECT);
-		note.setText(noteText);
-		note.setSysUserId(sysUserId);
-		note.setSystemUser(getSystemUser());
-		note.setSystemUserId(sysUserId);
-
-		return note;
 	}
 
 	private void removeHandledResultsFromAnalyzerResults(List<AnalyzerResults> deletableAnalyzerResults) {
@@ -892,17 +874,6 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 
 	protected String getPageSubtitleKey() {
 		return "banner.menu.results.analyzer";
-	}
-
-	private SystemUser getSystemUser() {
-		if (systemUser == null) {
-			SystemUser systemUser = new SystemUser();
-			systemUser.setId(sysUserId);
-			SystemUserDAO systemUserDAO = new SystemUserDAOImpl();
-			systemUserDAO.getData(systemUser);
-		}
-
-		return systemUser;
 	}
 
 	public class SampleGrouping {

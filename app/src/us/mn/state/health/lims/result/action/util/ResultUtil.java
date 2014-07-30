@@ -17,8 +17,6 @@
 package us.mn.state.health.lims.result.action.util;
 
 import org.apache.commons.validator.GenericValidator;
-import java.util.List;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -27,21 +25,20 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
 import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
+
+import java.util.List;
 
 public class ResultUtil {
 	private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private static final TestAnalyteDAO testAnalyteDAO = new TestAnalyteDAOImpl();
 	
 	public static String getStringValueOfResult( Result result){
-		if( hasDictionaryValues(result)){
+		if( ResultType.isDictionaryVariant( result.getResultType() )){
 			return dictionaryDAO.getDictionaryById(result.getValue()).getLocalizedName();
 		}else{
 			return result.getValue();
 		}
-	}
-	
-	public static boolean hasDictionaryValues( Result result){
-		return "D".equals(result.getResultType()) || "M".equals(result.getResultType()); 
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -72,13 +69,16 @@ public class ResultUtil {
 	}
 	
 	public static boolean isReferred(TestResultItem testResultItem) {
-		return testResultItem.isReferredOut();
+		return testResultItem.isShadowReferredOut();
 	}
 	
+    public static boolean isRejected(TestResultItem testResultItem) {
+        return testResultItem.isShadowRejected();
+    }
 	public static boolean areResults(TestResultItem item) {
-		return !(GenericValidator.isBlankOrNull(item.getResultValue()) || 
-				("D".equals(item.getResultType()) && "0".equals(item.getResultValue()))) || 
-				("M".equals(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
+		return !(GenericValidator.isBlankOrNull(item.getShadowResultValue()) ||
+				(ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getShadowResultValue()))) ||
+				(ResultType.isMultiSelectVariant(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 
 	public static boolean isForcedToAcceptance(TestResultItem item){

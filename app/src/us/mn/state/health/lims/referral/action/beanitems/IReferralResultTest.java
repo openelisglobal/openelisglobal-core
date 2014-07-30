@@ -22,6 +22,10 @@ public interface IReferralResultTest {
 
 	public abstract String getReferredTestId();
 
+    public abstract String getReferredTestIdShadow();
+
+    public abstract void setReferredTestIdShadow( String referredTestIdShadow );
+
 	public abstract String getReferredResult();
 
 	public abstract void setReferredResult(String referredResult);
@@ -46,4 +50,8 @@ public interface IReferralResultTest {
 
     public abstract String getReferralId();
     public abstract void setReferralId(String referralId);
+
+    public abstract String getMultiSelectResultValues();
+
+    public abstract void setMultiSelectResultValues( String multiSelectResultValues );
 }

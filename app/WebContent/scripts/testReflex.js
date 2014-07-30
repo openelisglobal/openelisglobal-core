@@ -66,10 +66,10 @@ function getSelectionRow(name, value, index, selected ){
 
 function modalSelectAll(selectBox){
     if( $jq(selectBox).prop('checked')){
-        $jq(selectBox).click(function(){ $jq('.selectionCheckbox').prop('checked', true); });
+        $jq('.selectionCheckbox').prop('checked', true);
         $jq("#modal_ok").removeAttr('disabled');
     } else{
-        $jq(selectBox).click(function(){ $jq('.selectionCheckbox').prop('checked', false); });
+        $jq('.selectionCheckbox').prop('checked', false);
         $jq("#modal_ok").attr('disabled','disabled');
     }
 }
@@ -161,5 +161,5 @@ function encodeJSONStringToHTML( json){
 }
 
 function encodeHTMLToJSONString( html ){
-    return html.length == 0 ? "{}" : html.replace( /'/g, "\"");
+    return html && html.length > 0 ? html.replace( /'/g, "\"") : "{}" ;
 }

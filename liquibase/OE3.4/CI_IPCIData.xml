@@ -151,4 +151,11 @@
             <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'Workplan:mycology' ) " />
         </insert>
     </changeSet>
+    <changeSet id="5" author="paulsc" context="CI_IPCI">
+        <comment>Change the Q test result type to D. is_quantifiable has been done already</comment>
+        <update tableName="test_result" >
+            <column name="tst_rslt_type" value="D" />
+            <where>tst_rslt_type = 'Q'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

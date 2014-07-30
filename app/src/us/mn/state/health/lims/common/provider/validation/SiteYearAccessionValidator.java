@@ -17,6 +17,8 @@
 package us.mn.state.health.lims.common.provider.validation;
 
 
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+
 public class SiteYearAccessionValidator extends BaseSiteYearAccessionValidator implements IAccessionNumberValidator {
 
 	public int getMaxAccessionLength() {
@@ -52,4 +54,9 @@ public class SiteYearAccessionValidator extends BaseSiteYearAccessionValidator i
 	public int getChangeableLength() {
 		return getMaxAccessionLength() - getInvarientLength();
 	}
+
+    public String getPrefix() {
+        return ConfigurationProperties.getInstance().getPropertyValue( ConfigurationProperties.Property.ACCESSION_NUMBER_PREFIX);
+    }
+
 }

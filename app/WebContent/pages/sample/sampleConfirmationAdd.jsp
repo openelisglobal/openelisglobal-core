@@ -345,7 +345,8 @@ function addNewRequesterSample( ){ // a new sample which came in with the reques
 	maxSampleElement.value = sampleIndex;
 
     fieldValidator.setFieldValidity(false, "requestedTests_" + sampleIndex);
-	setValidIndicaterOnField( true, "requestedTests_" + sampleIndex);
+    setValidIndicaterOnField( true, "requestedTests_" + sampleIndex);
+    setValidIndicaterOnField( true, "interviewTime_" + sampleIndex);
 	setValidIndicaterOnField( true, "collectionDate_" + sampleIndex);
 	
 	setSaveButton();
@@ -744,16 +745,6 @@ function savePage(){
 	var form = window.document.forms[0];
 	form.action = "SampleConfirmationUpdate.do";
 	form.submit();
-}
-
-function setValidIndicaterOnField( success, element){
-	//Note the method this is overriding uses the name of the element, which does not have to be unique, set the id == name
-	if( !element.id ){ //element is id
-		element = $(element);
-	}
-
-	element.style.borderColor = success ? "" : "red";
-	element.style.borderWidth = success ? "" : "2";
 }
 
 // Moving autocomplete to end - needs to be at bottom for IE to trigger properly

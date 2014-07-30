@@ -17,8 +17,9 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 
 public class CI_RegionalFormFields implements IFormFieldsForImplementation {
@@ -32,9 +33,6 @@ public class CI_RegionalFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.InsuranceNumber, Boolean.FALSE);
 		settings.put(Field.CollectionDate, Boolean.TRUE);
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
-		settings.put(Field.OrgState, Boolean.FALSE);
-		settings.put(Field.ZipCode, Boolean.FALSE);
-		settings.put(Field.MLS, Boolean.FALSE);
 		settings.put(Field.InlineOrganizationTypes, Boolean.TRUE);
 		settings.put(Field.Occupation, Boolean.FALSE);
 		settings.put(Field.Commune, Boolean.TRUE);
@@ -43,10 +41,7 @@ public class CI_RegionalFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.ResultsReferral, Boolean.TRUE);
 		settings.put(Field.ValueHozSpaceOnResults, Boolean.TRUE);
 		settings.put(Field.InitialSampleCondition, Boolean.TRUE);
-		settings.put(Field.OrganizationCLIA, Boolean.FALSE);
-		settings.put(Field.OrganizationParent, Boolean.FALSE);
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
-		settings.put(Field.OrganizationShortName, Boolean.TRUE);
 		settings.put(Field.OrganizationMultiUnit, Boolean.FALSE);
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
@@ -79,9 +74,11 @@ public class CI_RegionalFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.PatientEducation, Boolean.TRUE);
 		settings.put(Field.SampleEntryPatientClinical, Boolean.FALSE);
 		settings.put(Field.SampleEntryRequesterLastNameRequired, Boolean.TRUE);
-//		settings.put(Field.QAFullProviderInfo, Boolean.TRUE);
+		settings.put(Field.QA_REQUESTER_SAMPLE_ID, Boolean.FALSE);
 		settings.put(Field.QASubjectNumber, Boolean.TRUE);
 		settings.put(Field.QATimeWithDate, Boolean.TRUE);
+        settings.put(Field.PatientIDRequired, Boolean.FALSE);
+        settings.put(Field.PatientIDRequired_SampleConfirmation, Boolean.FALSE);
 
 		
 		return settings;

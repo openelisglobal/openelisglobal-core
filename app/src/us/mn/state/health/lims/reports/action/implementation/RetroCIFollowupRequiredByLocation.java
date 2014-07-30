@@ -17,18 +17,13 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.jfree.util.Log;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -43,7 +38,6 @@ import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.patient.valueholder.Patient;
-import us.mn.state.health.lims.qaevent.action.retroCI.NonConformityAction;
 import us.mn.state.health.lims.qaevent.worker.NonConformityUpdateWorker;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.FollowupRequiredData;
@@ -59,6 +53,10 @@ import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements IReportParameterSetter, IReportCreator {
 	
@@ -180,15 +178,12 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 	
 	private String getNonConformingNotes(Sample sample) {
 		StringBuilder allNotes = new StringBuilder();
-		List<Note> notes = noteDAO.getNoteByRefIAndRefTableAndSubject(sample.getId(), NonConformityAction.SAMPLE_TABLE_ID,
-				NonConformityUpdateWorker.NOTE_SUBJECT);
-		
-		if( !notes.isEmpty()){
-			allNotes.append(StringUtil.getMessageForKey("report.followup.general.comment"));
-			allNotes.append(": ");
-			allNotes.append(notes.get(0).getText());
-			allNotes.append("<br/>");
-		}
+
+        String notes = new NoteService( sample ).getNotesAsString( StringUtil.getMessageForKey("report.followup.general.comment") + ": ","<br/>" );
+        if( notes != null){
+            allNotes.append( notes );
+            allNotes.append( "<br/>" );
+        }
 
 		List<SampleQaEvent> qaEventList = sampleQaEventDAO.getSampleQaEventsBySample(sample);
 
@@ -201,17 +196,17 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 			}
 			allNotes.append(" : ");
 			
-			if( "0".equals(qa.getObservation(QAObservationType.SECTION))){
+			if( "0".equals(qa.getObservationValue( QAObservationType.SECTION ))){
 				allNotes.append(StringUtil.getMessageForKey("report.followup.no.section"));
 			}else{
-				allNotes.append(qa.getObservation(QAObservationType.SECTION));
+				allNotes.append(qa.getObservationForDisplay( QAObservationType.SECTION ));
 			}
 			allNotes.append(" : ");
 			
-			if( GenericValidator.isBlankOrNull(qa.getObservation(QAObservationType.AUTHORIZER))){
+			if( GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.AUTHORIZER ))){
 				allNotes.append(StringUtil.getMessageForKey("report.followup.no.authorizer"));
 			}else{
-				allNotes.append(qa.getObservation(QAObservationType.AUTHORIZER));
+				allNotes.append(qa.getObservationForDisplay( QAObservationType.AUTHORIZER ));
 			}
 			allNotes.append(" : ");
 			

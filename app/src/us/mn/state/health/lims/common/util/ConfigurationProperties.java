@@ -28,6 +28,17 @@ import java.util.Map;
  */
 public abstract class ConfigurationProperties {
 
+    public enum LOCALE{
+        ENGLISH("en_US"),
+        FRENCH("fr-FR");
+        private String locale;
+        private LOCALE(String locale){
+            this.locale = locale;
+        }
+        public String getRepresentation(){
+            return locale;
+        }
+    }
 	private static final Object lockObj = new Object();
 	private static ConfigurationProperties activeConcreteInstance= null;
 	protected Map<ConfigurationProperties.Property, String> propertiesValueMap = new HashMap<ConfigurationProperties.Property, String>();
@@ -65,6 +76,7 @@ public abstract class ConfigurationProperties {
         roleRequiredForModifyResults,//If true a separate role is needed to modify reports
         notesRequiredForModifyResults,//If true a note is required when a result is modified
         resultTechnicianName,        //If true the technicians name is needed for results
+        allowResultRejection,        //If true then a technician has the ability to reject an individual test and select a reason for rejection
         autoFillTechNameBox,         //If true a box will be provided to auto-fill technicians name for all results on page
         autoFillTechNameUser,        //If true the technicians name will be auto-filled with the name of the logged in user
         AUTOFILL_COLLECTION_DATE,    //If true the collection date will be auto-filled with current date
@@ -88,12 +100,13 @@ public abstract class ConfigurationProperties {
         SIGNATURES_ON_NONCONFORMITY_REPORTS,   //If true a space should be left for signatures on non-conformity reports
         NONCONFORMITY_RECEPTION_AS_UNIT, //If true then reception will be an option for where a non-conformity was identified
         NONCONFORMITY_SAMPLE_COLLECTION_AS_UNIT, //If true then sample collection will be an option for where a non-conformity was identified
-        PATIENT_REPORT_NO_ALERTS,    //If true there should not be an alert column on patient report
         ACCESSION_NUMBER_PREFIX,     //If SITEYEARNUM is the format then this is the prefix
         NOTE_EXTERNAL_ONLY_FOR_VALIDATION, //If true then only validation notes will be on patient report
         PHONE_FORMAT,                //Format of phone number
         VALIDATE_PHONE_FORMAT,       //If true then entered phone numbers will be validated against format
-        ALLOW_DUPLICATE_SUBJECT_NUMBERS //If true then duplicate subject numbers are allowed
+        ALLOW_DUPLICATE_SUBJECT_NUMBERS, //If true then duplicate subject numbers are allowed
+        VALIDATE_REJECTED_TESTS, //If true then if the technician rejects a test the next step is validation
+        TEST_NAME_AUGMENTED   //If true then in some places the test name will be suffixed with the sample type
     }
 
 	

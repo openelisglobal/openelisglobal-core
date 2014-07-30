@@ -17,19 +17,14 @@
  */
 package us.mn.state.health.lims.common.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author diane benz
@@ -176,7 +171,6 @@ public class StringUtil {
 				String post = phone.substring(9, 13);
 				returnPhone = area + "/" + pre + "-" + post;
 			} catch (Exception e) {
-				// bugzilla 2154
 				LogEvent.logError("StringUtil", "formatPhone()", e.toString());
 			}
 
@@ -252,7 +246,6 @@ public class StringUtil {
 			}
 			return "";
 		} catch (Exception e) {
-			// bugzilla 2154
 			LogEvent.logError("StringUtil", "trim()", e.toString());
 			throw new LIMSRuntimeException("Error trimming string ", e);
 		}
@@ -586,4 +579,14 @@ public class StringUtil {
 	public static String replaceTail(String value, String tail){
 		return value.substring(0, value.length() - tail.length() ) + tail;
 	}
+
+    public static String doubleWithSignificantDigits( double value, String significantDigits ){
+        String format = "%1$." + significantDigits + "f";
+        return String.format(format, value);
+    }
+
+    public static String doubleWithSignificantDigits( double value, int significantDigits ){
+        String format = "%1$." + significantDigits + "f";
+        return String.format(format, value);
+    }
 }

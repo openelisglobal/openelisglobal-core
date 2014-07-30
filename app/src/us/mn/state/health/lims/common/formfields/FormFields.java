@@ -40,12 +40,12 @@ public class FormFields {
 		MLS,                                    //Include indicator if organization is a sentinel lab
 		InlineOrganizationTypes,                //Should organization types be included when specifying organizations
 		SubjectNumber,                          //Include subject number with patient info
+        SubjectNumberRequired,                  //If using subject number is it required
 		ProviderInfo,                           //Include provider information on order form
 		NationalID,                             //Include national ID with patient info
 		Occupation,                             //Include occupation with patient info
 		Commune,                                //Is commune part of an address
 		MotherInitial,                          //Include mothers first initial with patient info
-		ResultsAccept,                          //No longer used
 		SearchSampleStatus,                     //Can patients be searched for by status
 		OrganizationAddressInfo,                //Include address info with organization info
 		OrganizationCLIA,                       //Include CLIA status with organization info
@@ -69,16 +69,13 @@ public class FormFields {
 		InitialSampleCondition,                 //Allow for collection of sample condition with sample entry
 		PatientRequired,                        // By default, a (minimal) patient to go with a sample is required.
 		PatientRequired_SampleConfirmation,     //Is patient required for sample confirmation
-		QAFullProviderInfo,                     //Include provider information on non-conformity
+        QA_FULL_PROVIDER_INFO,                     //Include provider information on non-conformity
+        QA_REQUESTER_SAMPLE_ID,                 //If provider info is used on non-conformity should it include provider sample id
 		QASubjectNumber,                        //Include subject number be on non-conformity
 		QATimeWithDate,                         //Include time in addition to date on non-conformity
 		PatientIDRequired,                      //Is patient ID required for patient
 		PatientIDRequired_SampleConfirmation,   //Is patient ID required for patient on sample conformation form
 		PatientNameRequired,                    //Is patient name required
-		PatientAgeRequired_SampleConfirmation,  //Is patient age required on sample conformation form
-		PatientGenderRequired_SampleConfirmation,//Is patient gender required on sample conformation form
-		PatientAgeRequired_SampleEntry,         //Is patient age required
-		PatientGenderRequired_SampleEntry,	     //Is patient gender required
 		SampleEntryUseReceptionHour,            //Include reception time on sample entry
 		SampleEntryUseRequestDate,              //Include request date on sample entry
 		SampleEntryNextVisitDate,               //Include next visit date on sample entry

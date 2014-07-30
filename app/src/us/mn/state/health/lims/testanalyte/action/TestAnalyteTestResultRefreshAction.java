@@ -15,20 +15,13 @@
 */
 package us.mn.state.health.lims.testanalyte.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.security.IAuthorizationActionConstants;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -51,6 +44,12 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -131,7 +130,7 @@ public class TestAnalyteTestResultRefreshAction extends
 		List testAnalytes = testAnalyteDAO.getAllTestAnalytesPerTest(test);
 
 		TestResultDAO testResultDAO = new TestResultDAOImpl();
-		List testResults = testResultDAO.getAllTestResultsPerTest(test);
+		List testResults = testResultDAO.getAllActiveTestResultsPerTest( test );
 
 		DictionaryDAO dictDAO = new DictionaryDAOImpl();
 
@@ -322,11 +321,7 @@ public class TestAnalyteTestResultRefreshAction extends
 			ActionForm form) {
 		BaseActionForm dynaForm = (BaseActionForm) form;
 		Test test = (Test) dynaForm.get("test");
-		String testName = "";
-		if (test.getTestName() != null) {
-			testName = test.getTestName();
-		}
-		return testName;
+        return TestService.getLocalizedTestName( test );
 	}
 
 	/*
@@ -353,11 +348,7 @@ public class TestAnalyteTestResultRefreshAction extends
 
 		BaseActionForm dynaForm = (BaseActionForm) form;
 		Test test = (Test) dynaForm.get("test");
-		String testName = "";
-		if (test.getTestName() != null) {
-			testName = test.getTestName();
-		}
-		return testName;
+        return TestService.getLocalizedTestName( test );
 	}
 
 }

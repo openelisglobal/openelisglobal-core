@@ -16,20 +16,18 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
-import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache.AnalyzerType;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.HibernateProxy;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class FacscaliburReader extends AnalyzerLineInserter {
@@ -161,10 +159,10 @@ public class FacscaliburReader extends AnalyzerLineInserter {
 
 		for (int i = 0; i < testNameIndex.length; i++) {
 			if (!GenericValidator.isBlankOrNull(testNameIndex[i])) {
-				MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerType.FACSCALIBUR, testNameIndex[i]);
+				MappedTestName mappedName = AnalyzerTestNameCache.instance().getMappedTest(AnalyzerTestNameCache.FACSCALIBUR, testNameIndex[i]);
 
 				if( mappedName == null){
-					mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerType.FACSCALIBUR, testNameIndex[i]);
+					mappedName = AnalyzerTestNameCache.instance().getEmptyMappedTestName(AnalyzerTestNameCache.FACSCALIBUR, testNameIndex[i]);
 				}
 
 				AnalyzerResults analyzerResults = new AnalyzerResults();

@@ -17,8 +17,9 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 public class CI_RETROFormFields implements IFormFieldsForImplementation {
 
@@ -32,23 +33,16 @@ public class CI_RETROFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.InsuranceNumber, Boolean.FALSE);
 		settings.put(Field.CollectionDate, Boolean.TRUE);
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
-		settings.put(Field.OrgState, Boolean.FALSE);
-		settings.put(Field.ZipCode, Boolean.FALSE);
-		settings.put(Field.MLS, Boolean.FALSE);
 		settings.put(Field.InlineOrganizationTypes, Boolean.TRUE);
-		settings.put(Field.SubjectNumber, Boolean.FALSE);
 		settings.put(Field.ProviderInfo, Boolean.FALSE);
 		settings.put(Field.NationalID,  Boolean.TRUE);
-		settings.put(Field.ResultsAccept,  Boolean.TRUE);
 		settings.put(Field.SearchSampleStatus,  Boolean.TRUE);
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
 		settings.put(Field.OrganizationAddressInfo, Boolean.FALSE);
-		settings.put(Field.OrganizationCLIA, Boolean.FALSE);
-		settings.put(Field.OrganizationParent, Boolean.FALSE);
 		settings.put(Field.DepersonalizedResults, Boolean.TRUE);
 		settings.put(Field.SEARCH_PATIENT_WITH_LAB_NO, Boolean.TRUE);
 		settings.put(Field.Project, Boolean.TRUE);
-		settings.put(Field.QAFullProviderInfo, Boolean.FALSE);
+		settings.put(Field.QA_FULL_PROVIDER_INFO, Boolean.FALSE);
 		settings.put(Field.QASubjectNumber, Boolean.FALSE);
 
 		return settings;

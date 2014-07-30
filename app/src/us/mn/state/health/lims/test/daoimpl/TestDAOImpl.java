@@ -17,19 +17,9 @@
  */
 package us.mn.state.health.lims.test.daoimpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -37,6 +27,7 @@ import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSDuplicateRecordException;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -53,13 +44,13 @@ import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
 import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
 /**
  * @author diane benz
  */
 public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
-
-	private static Map<String, String> ID_NAME_MAP = null;
-	private static Map<String, String> ID_DESCRIPTION_MAP = null;
 
 	public void deleteData(List tests) throws LIMSRuntimeException{
 		// add to audit trail
@@ -68,7 +59,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			for(int i = 0; i < tests.size(); i++){
 				Test data = (Test)tests.get(i);
 
-				Test oldData = (Test)readTest(data.getId());
+				Test oldData = readTest(data.getId());
 				Test newData = new Test();
 
 				String sysUserId = data.getSysUserId();
@@ -85,7 +76,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		try{
 			for(int i = 0; i < tests.size(); i++){
 				Test data = (Test)tests.get(i);
-				Test cloneData = (Test)readTest(data.getId());
+				Test cloneData = readTest(data.getId());
 
 				cloneData.setIsActive(IActionConstants.NO);
 				HibernateUtil.getSession().merge(cloneData);
@@ -99,21 +90,17 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			LogEvent.logError("TestDAOImpl", "deleteData()", e.toString());
 			throw new LIMSRuntimeException("Error in Test deleteData()", e);
 		}
-
-		clearIDMaps();
 	}
 
 	public boolean insertData(Test test) throws LIMSRuntimeException{
 
 		try{
-			// bugzilla 1417 throw Exception if active record already exists
 			if(test.getIsActive().equals(IActionConstants.YES) && duplicateTestExists(test)){
-				throw new LIMSDuplicateRecordException("Duplicate record exists for " + test.getTestName());
+				throw new LIMSDuplicateRecordException("Duplicate record exists for " + test.getDescription());
 			}
 			String id = (String)HibernateUtil.getSession().save(test);
 			test.setId(id);
 
-			// bugzilla 1824 inserts will be logged in history table
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = test.getSysUserId();
 			String tableName = "TEST";
@@ -127,7 +114,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			LogEvent.logError("TestDAOImpl", "insertData()", e.toString());
 			throw new LIMSRuntimeException("Error in Test insertData()", e);
 		}
-		clearIDMaps();
+
 		return true;
 	}
 
@@ -136,15 +123,14 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		// bugzilla 1417 throw Exception if active record already exists
 		try{
 			if(test.getIsActive().equals(IActionConstants.YES) && duplicateTestExists(test)){
-				throw new LIMSDuplicateRecordException("Duplicate record exists for " + test.getTestName());
+				throw new LIMSDuplicateRecordException("Duplicate record exists for " + TestService.getLocalizedTestName( test ));
 			}
 		}catch(Exception e){
 			// bugzilla 2154
 			LogEvent.logError("TestDAOImpl", "updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in Test updateData()", e);
 		}
-		Test oldData = (Test)readTest(test.getId());
-		Test newData = test;
+		Test oldData = readTest(test.getId());
 
 		// add to audit trail
 		try{
@@ -152,7 +138,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			String sysUserId = test.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "TEST";
-			auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
+			auditDAO.saveHistory(test, oldData, sysUserId, event, tableName);
 		}catch(Exception e){
 			// bugzilla 2154
 			LogEvent.logError("TestDAOImpl", "AuditTrail updateData()", e.toString());
@@ -170,7 +156,6 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			LogEvent.logError("TestDAOImpl", "updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in Test updateData()", e);
 		}
-		clearIDMaps();
 	}
 
 	public void getData(Test test) throws LIMSRuntimeException{
@@ -267,7 +252,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	public List getAllTestsBySysUserId(int sysUserId, boolean onlyTestsFullySetup) throws LIMSRuntimeException{
 		List list = new Vector();
 		String sectionIdList = "";
-		String sql = "";
+		String sql;
 
 		try{
 			SystemUserSectionDAO systemUserSectionDao = new SystemUserSectionDAOImpl();
@@ -300,7 +285,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	public List getPageOfTests(int startingRecNo) throws LIMSRuntimeException{
-		List list = new Vector();
+		List list;
 		try{
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
@@ -325,7 +310,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 	// bugzilla 2371
 	public List getPageOfSearchedTests(int startingRecNo, String searchString) throws LIMSRuntimeException{
-		List list = new Vector();
+		List list;
 		String wildCard = "*";
 		String newSearchStr;
 		String sql;
@@ -376,7 +361,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
 
 			String sectionIdList = "";
-			String sql = "";
+			String sql;
 
 			SystemUserSectionDAO systemUserSectionDao = new SystemUserSectionDAOImpl();
 			List userTestSectionList = systemUserSectionDao.getAllSystemUserSectionsBySystemUserId(sysUserId);
@@ -470,7 +455,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	public Test readTest(String idString){
-		Test test = null;
+		Test test;
 		try{
 			test = (Test)HibernateUtil.getSession().get(Test.class, idString);
 			HibernateUtil.getSession().flush();
@@ -498,7 +483,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	// this is for autocomplete
 	// bugzilla 2291 added onlyTestsFullySetup
 	public List getTests(String filter, boolean onlyTestsFullySetup) throws LIMSRuntimeException{
-		List list = new Vector();
+		List list;
 		try{
 			String sql = "from Test t where upper(t.testName) like upper(:param) and t.isActive='Y' order by upper(t.testName)";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -518,12 +503,12 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	public Test getTestByName(Test test) throws LIMSRuntimeException{
-		return getTestByName(test.getTestName());
+		return getTestByName(test.getLocalizedTestName().getEnglish());
 	}
 
 	public Test getTestByName(String testName) throws LIMSRuntimeException{
 		try{
-			String sql = "from Test t where t.testName = :testName and t.isActive='Y'";
+			String sql = "from Test t where (t.localizedTestName.english = :testName or t.localizedTestName.french = :testName) and t.isActive='Y'";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setParameter("testName", testName);
 
@@ -583,7 +568,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	public Test getTestById(Test test) throws LIMSRuntimeException{
-		Test returnTest = null;
+		Test returnTest;
 		try{
 			returnTest = (Test)HibernateUtil.getSession().get(Test.class, test.getId());
 			HibernateUtil.getSession().flush();
@@ -740,7 +725,6 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 	// bugzilla 2371
 	public Integer getTotalSearchedTestCountBySysUserId(int sysUserId, String searchString) throws LIMSRuntimeException{
-		List list = new Vector();
 		String wildCard = "*";
 		String newSearchStr;
 		String sql;
@@ -756,7 +740,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 				SystemUserSection sus = (SystemUserSection)userTestSectionList.get(i);
 				sectionIdList += sus.getTestSection().getId() + ",";
 			}
-			System.out.println(sectionIdList);
+
 			if(!(sectionIdList.equals("")) && (sectionIdList.length() > 0)){
 				sectionIdList = sectionIdList.substring(0, sectionIdList.length() - 1);
 				int wCdPosition = searchString.indexOf(wildCard);
@@ -799,7 +783,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 	// bugzilla 2371
 	public Integer getAllSearchedTotalTestCount(HttpServletRequest request, String searchString) throws LIMSRuntimeException{
-		Integer count = null;
+		Integer count;
 		TestDAO testDAO = new TestDAOImpl();
 
 		try{
@@ -827,12 +811,12 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 	// bugzilla 1427
 	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException{
-		int currentId = (Integer.valueOf(id)).intValue();
+		int currentId = Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
 
-		List list = new Vector();
+		List list;
 		// bugzilla 1908
-		int rrn = 0;
+		int rrn;
 		try{
 			// bugzilla 1908 cannot use named query for postgres because of
 			// oracle ROWNUM
@@ -859,12 +843,12 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 	// bugzilla 1427
 	public List getPreviousRecord(String id, String table, Class clazz) throws LIMSRuntimeException{
-		int currentId = (Integer.valueOf(id)).intValue();
+		int currentId = Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
 
-		List list = new Vector();
+		List list;
 		// bugzilla 1908
-		int rrn = 0;
+		int rrn;
 		try{
 			// bugzilla 1908 cannot use named query for postgres because of
 			// oracle ROWNUM
@@ -899,9 +883,9 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			if(test.getIsActive().equalsIgnoreCase("Y")){
 				// not case sensitive hemolysis and Hemolysis are considered
 				// duplicates
-				String sql = "from Test t where ((trim(lower(t.testName)) = :param and t.isActive='Y' and t.id != :param2) or (trim(lower(t.description)) = :param3 and t.isActive='Y' and t.id != :param2))";
+				String sql = "from Test t where t.localizedTestName = :testNameId and t.isActive='Y' and t.id != :testId) or (trim(lower(t.description)) = :param3 and t.isActive='Y' and t.id != :param2))";
 				org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
-				query.setParameter("param", test.getTestName().toLowerCase().trim());
+				query.setInteger("testNameId", Integer.parseInt( test.getLocalizedTestName().getId()));
 
 				// initialize with 0 (for new records where no id has been
 				// generated yet
@@ -909,7 +893,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 				if(!StringUtil.isNullorNill(test.getId())){
 					testId = test.getId();
 				}
-				query.setInteger("param2", Integer.parseInt(testId));
+				query.setInteger("testId", Integer.parseInt(testId));
 				query.setParameter("param3", test.getDescription().toLowerCase().trim());
 
 				list = query.list();
@@ -918,11 +902,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 			}
 
-			if(list.size() > 0){
-				return true;
-			}else{
-				return false;
-			}
+            return list.size() > 0;
 
 		}catch(Exception e){
 			// bugzilla 2154
@@ -968,8 +948,8 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 		try{
 
-			List list = new ArrayList();
-			Test testWithHighestSortOrder = null;
+			List list;
+			Test testWithHighestSortOrder;
 
 			String sql = "from Test t where t.testSection = :param and t.sortOrder is not null order by t.sortOrder desc";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -982,7 +962,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			if(list.size() > 0){
 				testWithHighestSortOrder = (Test)list.get(0);
 				if(testWithHighestSortOrder != null && !StringUtil.isNullorNill(testWithHighestSortOrder.getSortOrder())){
-					result = new Integer((Integer.parseInt(testWithHighestSortOrder.getSortOrder()) + 1));
+					result = ( Integer.parseInt( testWithHighestSortOrder.getSortOrder() ) + 1 );
 				}
 			}
 
@@ -992,43 +972,6 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			throw new LIMSRuntimeException("Error in getNextAvailableSortOrderByTestSection()", e);
 		}
 		return result;
-	}
-
-	public String getNameForTestId(String id){
-		if(ID_NAME_MAP == null){
-			loadMaps();
-		}
-
-		return ID_NAME_MAP != null ? ID_NAME_MAP.get(id) : id;
-	}
-
-	public String getDescriptionForTestId(String id){
-		if(ID_DESCRIPTION_MAP == null){
-			loadMaps();
-		}
-
-		return ID_DESCRIPTION_MAP != null ? ID_DESCRIPTION_MAP.get(id) : id;
-	}
-
-	private void loadMaps(){
-		List allTests = getAllTests(false);
-
-		if(allTests != null){
-			ID_NAME_MAP = new HashMap<String, String>();
-			ID_DESCRIPTION_MAP = new HashMap<String, String>();
-
-			for(Object testObj : allTests){
-				Test test = (Test)testObj;
-
-				ID_NAME_MAP.put(test.getId(), test.getName());
-				ID_DESCRIPTION_MAP.put(test.getId(), test.getTestName());
-			}
-		}
-	}
-
-	private void clearIDMaps(){
-		ID_NAME_MAP = null;
-		ID_DESCRIPTION_MAP = null;
 	}
 
 	/**
@@ -1049,7 +992,6 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			// check.
 			String hql = "from Test t where t.isActive='Y' ORDER BY " + columnName;
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(hql);
-			hql = query.getQueryString();
 			entities = query.list();
 			closeSession();
 		}catch(Exception e){

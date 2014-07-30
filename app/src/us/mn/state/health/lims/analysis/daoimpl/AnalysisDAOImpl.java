@@ -128,21 +128,25 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 		return true;
 	}
 
-	public void updateData(Analysis analysis) throws LIMSRuntimeException {
-		Analysis oldData = (Analysis) readAnalysis(analysis.getId());
-		Analysis newData = analysis;
+    public void updateData( Analysis analysis){
+        updateData( analysis, false );
+    }
 
-		// add to audit trail
-		try {
-			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
-			String sysUserId = analysis.getSysUserId();
-			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
-			String tableName = "ANALYSIS";
-			auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
-		} catch (Exception e) {
-			LogEvent.logError("AnalysisDAOImpl", "AuditTrail updateData()", e.toString());
-			throw new LIMSRuntimeException("Error in Analysis AuditTrail updateData()", e);
-		}
+	public void updateData(Analysis analysis, boolean skipAuditTrail) throws LIMSRuntimeException {
+		Analysis oldData = readAnalysis(analysis.getId());
+
+        if( !skipAuditTrail){
+            try{
+                AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
+                String sysUserId = analysis.getSysUserId();
+                String event = IActionConstants.AUDIT_TRAIL_UPDATE;
+                String tableName = "ANALYSIS";
+                auditDAO.saveHistory( analysis, oldData, sysUserId, event, tableName );
+            }catch( Exception e ){
+                LogEvent.logError( "AnalysisDAOImpl", "AuditTrail updateData()", e.toString() );
+                throw new LIMSRuntimeException( "Error in Analysis AuditTrail updateData()", e );
+            }
+        }
 
 		try {
 			HibernateUtil.getSession().merge(analysis);
@@ -151,7 +155,6 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 			HibernateUtil.getSession().evict(analysis);
 			HibernateUtil.getSession().refresh(analysis);
 		} catch (Exception e) {
-
 			LogEvent.logError("AnalysisDAOImpl", "updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in Analysis updateData()", e);
 		}

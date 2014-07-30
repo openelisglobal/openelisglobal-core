@@ -15,20 +15,11 @@
 */
 package us.mn.state.health.lims.resultlimits.action;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseMenuAction;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
 import us.mn.state.health.lims.resultlimits.daoimpl.ResultLimitDAOImpl;
@@ -41,10 +32,13 @@ import us.mn.state.health.lims.typeoftestresult.dao.TypeOfTestResultDAO;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+
 
 public class ResultLimitsMenuAction extends BaseMenuAction {
 
-	private Map<String, String> testMap;
 	private Map<String, String> resultTypeMap;
 	private static TestDAO testDAO = new TestDAOImpl();
 
@@ -53,7 +47,7 @@ public class ResultLimitsMenuAction extends BaseMenuAction {
 			throws Exception {
 
 		request.setAttribute(ALLOW_EDITS_KEY, "false");
-		List resultLimitsList = new ArrayList();
+		List resultLimitsList;
 
 		String stringStartingRecNo = (String) request.getAttribute("startingRecNo");
 		int startingRecNo = Integer.parseInt(stringStartingRecNo);
@@ -79,7 +73,8 @@ public class ResultLimitsMenuAction extends BaseMenuAction {
 		ResultLimitsLink link = new ResultLimitsLink();
 		link.setReadWrite(false);
 		link.setResultLimit(resultLimit);
-		String testName = getTestMap().get(link.getTestId());
+        String testName = TestService.getLocalizedAugmentedTestName( link.getTestId() );
+
 		String resultName = getResultTypeMap().get(link.getResultTypeId());
 
 		if( !GenericValidator.isBlankOrNull(testName)){
@@ -119,22 +114,6 @@ public class ResultLimitsMenuAction extends BaseMenuAction {
 
 	protected String getEditDisabled() {
 		return "true";
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map<String, String> getTestMap() {
-		if( testMap == null){
-			testMap = new HashMap<String, String>();
-
-			TestDAO testDAO = new TestDAOImpl();
-			List<Test> testList = testDAO.getAllTests(false);
-
-			for( Test test: testList){
-				testMap.put(test.getId(), test.getDescription());
-			}
-		}
-
-		return testMap;
 	}
 
 	@SuppressWarnings("unchecked")

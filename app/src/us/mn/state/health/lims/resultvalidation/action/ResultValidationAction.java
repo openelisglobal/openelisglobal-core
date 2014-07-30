@@ -16,30 +16,26 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationPaging;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.resultvalidation.util.ResultsValidationUtility;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResultValidationAction extends BaseResultValidationAction {
 
-	private ResultsValidationUtility resultsValidationUtility;
-	private List<Integer> validationStatus = new ArrayList<Integer>();
-
-	@Override
+    @Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -57,15 +53,13 @@ public class ResultValidationAction extends BaseResultValidationAction {
 			// Initialize the form.
 			dynaForm.initialize(mapping);
 
-			List<AnalysisItem> resultList = new ArrayList<AnalysisItem>();
-			resultsValidationUtility = new ResultsValidationUtility();
+            ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
 			setRequestType(testSectionName);
-			setStatus(testSectionName);
 
 			if (!GenericValidator.isBlankOrNull(testSectionName)) {
 				String sectionName = Character.toUpperCase(testSectionName.charAt(0)) + testSectionName.substring(1);
 				sectionName = getDBSectionName(sectionName);
-				resultList = resultsValidationUtility.getResultValidationList(sectionName, testName, validationStatus);
+                List<AnalysisItem> resultList = resultsValidationUtility.getResultValidationList( sectionName, testName, getValidationStatus( testSectionName ) );
 				paging.setDatabaseResults(request, dynaForm, resultList);
 			}
 			
@@ -80,8 +74,8 @@ public class ResultValidationAction extends BaseResultValidationAction {
 		}
 	}
 
-	public void setStatus(String testSection) {
-		validationStatus = new ArrayList<Integer>();
+	public List<Integer> getValidationStatus(String testSection) {
+        List<Integer> validationStatus = new ArrayList<Integer>();
 
 		if ("serology".equals(testSection)) {
 			validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
@@ -91,7 +85,12 @@ public class ResultValidationAction extends BaseResultValidationAction {
 			// RetroCI
 			// validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.NonConforming)));
 		} else {
-			validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
+            validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
+            if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.VALIDATE_REJECTED_TESTS , "true")){
+                validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected)));
+            }
 		}
+
+        return validationStatus;
 	}
 }

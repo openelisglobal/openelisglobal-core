@@ -17,11 +17,10 @@
 */
 package us.mn.state.health.lims.common.provider.validation;
 
-import java.util.regex.Pattern;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.util.StringUtil;
+
+import java.util.regex.Pattern;
 
 public class HaitiPasswordValidation implements ILoginPasswordValidation {
 
@@ -35,8 +34,7 @@ public class HaitiPasswordValidation implements ILoginPasswordValidation {
 	
 	private static final Pattern NEGATION_Of_MUST_ONLY_CONTAIN = Pattern.compile("[^\\w*$#!]");
 	private static final Pattern SPECIAL_CHARS = Pattern.compile("[*$#!]+");
-	private static final String INSTRUCTION_KEY = "login.complexity.haiti";
-	
+
 	public boolean passwordValid(String password) {
 		//make sure it is long enough and
 		//make sure it only contains the characters we want and 
@@ -49,11 +47,6 @@ public class HaitiPasswordValidation implements ILoginPasswordValidation {
 	}
 
 	public String getInstructions() {
-		return StringUtil.getMessageForKey(getResourceKeyForInstructions());
+		return StringUtil.getMessageForKey("login.complexity.message");
 	}
-
-	public String getResourceKeyForInstructions() {
-		return INSTRUCTION_KEY;
-	}
-
 }

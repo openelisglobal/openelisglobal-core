@@ -17,12 +17,7 @@
         </many-to-one>
         <many-to-one name="test" class="us.mn.state.health.lims.test.valueholder.Test" fetch="select">
             <column name="TEST_ID" precision="10" scale="0" />
-        </many-to-one>        
-<!--
-        <property name="testId" type="java.lang.String">
-            <column name="TEST_ID" precision="10" scale="0" not-null="true" />
-        </property>
--->
+        </many-to-one>
         <property name="resultGroup" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
             <column name="RESULT_GROUP" precision="22" scale="0" />
         </property>
@@ -47,13 +42,8 @@
         <property name="contLevel" type="java.lang.String">
             <column name="CONT_LEVEL" length="30" />
         </property>
-<!--
-        <set name="results" inverse="true">
-            <key>
-                <column name="TEST_RESULT_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.result.valueholder.Result" />
-        </set>
--->
+        <property name="isQuantifiable"  type="java.lang.Boolean" column="is_quantifiable" />
+        <property name="isActive" type="java.lang.Boolean" column="is_active" />
+
     </class>
 </hibernate-mapping>

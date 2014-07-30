@@ -36,6 +36,12 @@
             <where>name = 'Genie III'</where>
         </update>
     </changeSet>
-
+    <changeSet id="8" author="paulsc" context="ci_regional">
+        <comment>Add signficant digits to test result</comment>
+        <update tableName="test_result" >
+            <column name="significant_digits" valueNumeric="0" />
+        </update>
+        <sqlFile path="OE3.4/testCatalogCI_Regional_labs/significantDigits.sql" />
+    </changeSet>
 </databaseChangeLog>
 

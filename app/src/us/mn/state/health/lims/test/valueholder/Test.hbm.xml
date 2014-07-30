@@ -11,18 +11,18 @@
             </generator>
         </id>
         <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field"/>
-
         <many-to-one name="testSection" class="us.mn.state.health.lims.test.valueholder.TestSection" fetch="select">
             <column name="TEST_SECTION_ID" precision="10" scale="0" />
         </many-to-one>
         <many-to-one name="label" class="us.mn.state.health.lims.label.valueholder.Label" fetch="select">
             <column name="LABEL_ID" precision="10" scale="0" />
         </many-to-one>
-<!--
-        <many-to-one name="testFormats" class="us.mn.state.health.lims.testformats.valueholder.TestFormats" fetch="select">
-            <column name="TEST_FORMAT_ID" precision="10" scale="0" />
+        <many-to-one name="localizedTestName" class="us.mn.state.health.lims.localization.valueholder.Localization" fetch="select">
+            <column name="name_localization_id" precision="10" scale="0" />
         </many-to-one>
--->
+        <many-to-one name="localizedReportingName" class="us.mn.state.health.lims.localization.valueholder.Localization" fetch="select">
+            <column name="reporting_name_localization_id" precision="10" scale="0" />
+        </many-to-one>
         <many-to-one name="unitOfMeasure" class="us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure" fetch="select">
             <column name="UOM_ID" precision="10" scale="0" />
         </many-to-one>
@@ -35,8 +35,8 @@
         <many-to-one name="testTrailer" class="us.mn.state.health.lims.testtrailer.valueholder.TestTrailer" fetch="select">
             <column name="TEST_TRAILER_ID" precision="10" scale="0" />
         </many-to-one>
-        <property name="localAbbrev" type="java.lang.String">
-            <column name="LOCAL_ABBREV" length="10" unique="true" />
+        <property name="localCode" type="java.lang.String">
+            <column name="LOCAL_CODE" length="10" unique="true" />
         </property>
         <property name="testName" type="java.lang.String">
             <column name="name" length="60" unique="false" />
@@ -83,14 +83,9 @@
         <property name="labelQuantity" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
             <column name="LABEL_QTY" precision="22" scale="0" />
         </property>
-        <!--bugzilla 1856-->
         <property name="sortOrder" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
             <column name="SORT_ORDER" precision="22" scale="0" />
         </property>
-        <property name="nameKey" type="java.lang.String">
-            <column name="display_key" length="60" not-null="false" />
-        </property>
-        
         <property name="orderable" type="java.lang.Boolean" column="orderable" />
     </class>
     <query name="test.getNext">

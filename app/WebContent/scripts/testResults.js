@@ -5,25 +5,34 @@
  * upperNormal -- the high end of the normal range
  * lowerAbnormal -- the low end of the range in which the test is considered valid
  * highAbnormal -- the high end of the range in which the test is considered valid
+ * significantDigits -- how many significant digits are allowed
  *
  *  N.B.  If the upper and lower ranges of the normal and abnormal settings are the same then those ranges will
  *  be ignored.
  */
 var outOfValidRangeMsg = null;
 
-function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, lowerAbnormal, upperAbnormal, specialCase ){
+function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, lowerAbnormal, upperAbnormal, significantDigits, specialCase ){
+    var isSpecialCase = specialCase == resultBox.value.toUpperCase();
+    var roundedValue, splitRoundedValue;
 
-	var regEx = new RegExp("^(-|\\+){0,1}\\d*\\.?\\d*$");
-	var isNumber = regEx.test(resultBox.value);
-	var isSpecialCase = specialCase == resultBox.value.toUpperCase(); 
+    if(resultBox.value.blank()){
+        resultBox.title = "";
+        resultBox.style.borderColor = "";
+        resultBox.style.background = "#ffffff";
+        $("valid_" + row).value = false;
+        return;
+    }
 
-	if(resultBox.value.blank()){
-		resultBox.title = "";
-		resultBox.style.borderColor = "";
-		resultBox.style.background = "#ffffff";
-		$("valid_" + row).value = false;
-		return;
-	}
+    if(isNaN(resultBox.value)){
+        resultBox.style.borderColor = "red";
+        $("valid_" + row).value = false;
+        return;
+    }
+
+    if( !isNaN(significantDigits)){
+        resultBox.value = round( resultBox.value, significantDigits);
+    }
 
 	if( isSpecialCase ){
 		resultBox.title = "";
@@ -31,12 +40,6 @@ function /*void*/ validateResults( resultBox, row, lowerNormal, upperNormal, low
 		resultBox.style.borderColor = "";
 		resultBox.style.background = "#ffffff";
 		$("valid_" + row).value = true;
-		return;
-	}
-	
-	if(!isNumber){
-		resultBox.style.borderColor = "red";
-		$("valid_" + row).value = false;
 		return;
 	}
 

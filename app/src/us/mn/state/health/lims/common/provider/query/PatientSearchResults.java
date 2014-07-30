@@ -18,9 +18,6 @@
 package us.mn.state.health.lims.common.provider.query;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import us.mn.state.health.lims.common.util.DateUtil;
 
 public class PatientSearchResults {
 
@@ -33,6 +30,7 @@ public class PatientSearchResults {
 	private String nationalId;
 	private String externalId;
 	private String stNumber;
+    private String referringSitePatientId;
 	private String subjectNumber;
 	private String mothersName;
 	private String dataSourceName;
@@ -40,18 +38,19 @@ public class PatientSearchResults {
 
 	public PatientSearchResults(){}
 
-	public PatientSearchResults( BigDecimal id, String first, String last, String gender, Timestamp dob, String nationalId, String externalId, String stNumber, String subjectNumber, String guid)
+	public PatientSearchResults( BigDecimal id, String first, String last, String gender, String dob, String nationalId, String externalId, String stNumber, String subjectNumber, String guid, String referringSitePatientId)
 	{
 		this.id = id.toPlainString();
 		firstName = first;
 		lastName = last;
 		this.gender = gender;
-		birthdate = dob == null ? null : DateUtil.convertTimestampToStringDate(dob);
+		birthdate = dob;
 		this.nationalId = nationalId;
 		this.stNumber = stNumber;
 		this.subjectNumber = subjectNumber;
 		this.GUID = guid;
 		this.externalId = externalId;
+        this.referringSitePatientId = referringSitePatientId;
 	}
 
 	public String getPatientID() {
@@ -165,5 +164,13 @@ public class PatientSearchResults {
 	public String getExternalId() {
 		return externalId;
 	}
+
+    public String getReferringSitePatientId(){
+        return referringSitePatientId;
+    }
+
+    public void setReferringSitePatientId( String referringSitePatientId ){
+        this.referringSitePatientId = referringSitePatientId;
+    }
 }
 

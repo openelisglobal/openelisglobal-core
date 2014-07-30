@@ -34,8 +34,10 @@ public class TestSegmentedExportBean{
 	private String testName = "";
 	private String result = "";
 	private String resultDate = "";
-	
-	private static final String header = "CODSITE,LNSPID,FIRSTNAME,LASTNAME,SEX,DOB,AGE,SPECIMENID,STATUT,SPECIMEN,RECEIPTDATE,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE";
+    private String department = "";
+
+    private static final String header = "CODSITE,LNSPID,FIRSTNAME,LASTNAME,SEX,DOB,AGE,SPECIMENID,STATUT,SPECIMEN,RECEIPTDATE,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE";
+    private static final String depersonalizedeader = "SPECIMEN,RECEIPTDATE,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE";
 
 	public String getAsCSVString(){
 		StringBuilder builder = new StringBuilder();
@@ -57,28 +59,35 @@ public class TestSegmentedExportBean{
 		builder.append(",");
 		builder.append(status);
 		builder.append(",");
-		builder.append(sampleType);
-		builder.append(",");
-		builder.append(receptionDate);
-		builder.append(",");
-		builder.append(referringSiteName);
-		builder.append(",");
-		builder.append(testBench);
-		builder.append(",");
-		builder.append(testBench);//department and category are the same
-		builder.append(",");
-		builder.append(testName);
-		builder.append(",");
-		builder.append(result);
-		builder.append(",");
-		builder.append(resultDate);
+		builder.append(getAsDepersonalizedCSVString());
 		return builder.toString();
 	}
-	
-	public static String getHeader(){
+
+    public String getAsDepersonalizedCSVString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append(sampleType);
+        builder.append(",");
+        builder.append(receptionDate);
+        builder.append(",");
+        builder.append(referringSiteName);
+        builder.append(",");
+        builder.append(department);
+        builder.append(",");
+        builder.append(testBench);
+        builder.append(",");
+        builder.append(testName.replace( ",", "." ));
+        builder.append(",");
+        builder.append(result);
+        builder.append(",");
+        builder.append(resultDate);
+        return builder.toString();
+    }
+    public static String getHeader(){
 		return header;
 	}
-
+    public static String getDepersonalizedHeader(){
+       return depersonalizedeader;
+    }
 	public void setSiteCode(String siteCode){
 		this.siteCode = siteCode == null ? "" : siteCode;
 	}
@@ -142,6 +151,8 @@ public class TestSegmentedExportBean{
 	public void setResultDate(String resultDate){
 		this.resultDate = resultDate == null ? "" : resultDate;
 	}
-	
-	
+
+    public void setDepartment( String department ){
+        this.department = department;
+    }
 }

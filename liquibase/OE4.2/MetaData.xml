@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ The contents of this file are subject to the Mozilla Public License
+  ~ Version 1.1 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://www.mozilla.org/MPL/
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations under
+  ~ the License.
+  ~
+  ~ The Original Code is OpenELIS code.
+  ~
+  ~ Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
+  -->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+<changeSet author="paulsc" id="1">
+    <comment>Change test section values from strings to keys to support localization</comment>
+    <sqlFile path="OE4.2/QAObservationUpdate.sql" />
+</changeSet>
+<changeSet id="2" author="paulsc">
+    <comment>remove spaces from test_section keys</comment>
+    <sql>
+        update clinlims.test_section set display_key = trim(display_key);
+    </sql>
+</changeSet>
+    <changeSet id="3" author="paulsc">
+        <comment>Adds setting to augment test name with sample type</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name" value="augmentTestNameWithType" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="If true then in certain places the test name will have the the test type" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'hiddenProperties' ) " />
+            <column name="value_type" value="boolean" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

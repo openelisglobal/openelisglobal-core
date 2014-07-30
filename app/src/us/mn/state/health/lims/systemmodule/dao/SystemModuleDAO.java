@@ -15,11 +15,11 @@
 */
 package us.mn.state.health.lims.systemmodule.dao;
 
-import java.util.List;
-
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.systemmodule.valueholder.SystemModule;
+
+import java.util.List;
 
 /**
  *  @author     Hung Nguyen (Hung.Nguyen@health.state.mn.us)
@@ -42,6 +42,7 @@ public interface SystemModuleDAO extends BaseDAO {
 
 	public List getPreviousSystemModuleRecord(String id) throws LIMSRuntimeException;
 	
-	public Integer getTotalSystemModuleCount() throws LIMSRuntimeException; 
+	public Integer getTotalSystemModuleCount() throws LIMSRuntimeException;
 
+    public SystemModule getSystemModuleByName( String name ) throws LIMSRuntimeException;
 }

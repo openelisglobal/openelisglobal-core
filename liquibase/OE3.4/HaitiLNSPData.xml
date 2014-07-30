@@ -51,4 +51,81 @@
         <comment>Move all of Sang Total tests and panels to Sang</comment>
         <sqlFile path="OE3.4/HaitiLNSPSangTotalToSang.sql" />
     </changeSet>
+    <changeSet id="8" author="paulsc" context="haitiLNSP">
+        <comment>Corrects spelling in dictionary</comment>
+        <update tableName="dictionary" >
+            <column name="dict_entry" value="Isospora belli" />
+            <where>dict_entry = 'isospora belli'</where>
+        </update>
+    </changeSet>
+    <changeSet id="9" author="paulsc" context="haitiLNSP">
+        <comment>Adds new result value to dictionary</comment>
+        <insert tableName="dictionary">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) " />
+            <column name="is_active" value="Y" />
+            <column name="dict_entry" value="Sarcocystis" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="dictionary_category_id" valueNumeric=" ( select id from clinlims.dictionary_category where description = 'Haiti Lab' ) " />
+        </insert>
+    </changeSet>
+    <changeSet id="10" author="paulsc" context="haitiLNSP">
+        <comment>Adds Sarcocystis and other to test result</comment>
+        <sql >
+            INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
+            VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'Ziehl Neelsen modifiee(Selles)' ) , 'M' ,  ( select max(id) from clinlims.dictionary where dict_entry ='Sarcocystis' )  , now() , 11062);
+            INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order, is_quantifiable)
+            VALUES ( nextval( 'test_result_seq' ) , ( select id from clinlims.test where description = 'Ziehl Neelsen modifiee(Selles)' ) , 'M' ,  ( select max(id) from clinlims.dictionary where dict_entry ='Autre' )  , now() , 11064, true);
+        </sql>
+    </changeSet>
+    <changeSet author="paulsc" id="11" context="haitiLNSP" >
+        <comment>Changes the result type of Malaria to cascading multiselect</comment>
+        <update tableName="test_result" >
+            <column name="tst_rslt_type" value="C" />
+            <where>test_id = (select id from clinlims.test where name = 'Malaria') </where>
+        </update>
+    </changeSet>
+    <changeSet author="jfurlong" id="1" context="haitiLNSP">
+        <comment>Makes allowResultRejection active</comment>
+        <update tableName="site_information" schemaName="">
+            <column name="value" value="true" />
+            <where>name = 'allowResultRejection'</where>
+        </update>
+    </changeSet>
+    <changeSet id="12" author="paulsc" context="haitiLNSP">
+        <comment>Change result type from multiselect to cascading multiselect for Ziehl Neelsen</comment>
+        <update tableName="test_result" >
+            <column name="tst_rslt_type" value="C" />
+            <where>test_id = (select id from clinlims.test where name='Ziehl Neelsen modifiee' )</where>
+        </update>
+        <sql>
+            update clinlims.result_limits set test_result_type_id= ( select id from clinlims.type_of_test_result where test_result_type = 'C'  )
+            where  test_id = (select id from clinlims.test where name = 'Ziehl Neelsen modifiee' );
+        </sql>
+    </changeSet>
+    <changeSet id="13" author="paulsc" context="haitiLNSP">
+        <comment>deactivate Ecouvillon Pharinge sample type</comment>
+        <update tableName="type_of_sample" >
+            <column name="is_active" valueBoolean="false" />
+            <where>description = 'Ecouvillon Pharinge'</where>
+        </update>
+    </changeSet>
+    <changeSet id="14" author="paulsc" context="haitiLNSP" >
+        <comment>Deactivating tests with a sample type of Free text</comment>
+        <sql>
+            update clinlims.test set is_active='N' where id in (select t.id from clinlims.test t
+            join clinlims.sampletype_test st on st.test_id = t.id
+            join clinlims.type_of_sample ts on ts.id = st.sample_type_id
+            where ts.description = 'Free text');
+        </sql>
+    </changeSet>
+    <changeSet id="15" author="paulsc" context="haitiLNSP">
+        <comment>Corrected spelling of Mycobacterium tuberculosis Drug Resistant test</comment>
+        <sql>
+            UPDATE clinlims.test
+            SET  description=replace(description,'Mycobacterium tuberculosis Drug Resistant','Mycobacterium tuberculosis résistant'),
+            reporting_description=replace(reporting_description,'Mycobacterium tuberculosis Drug Resistant','Mycobacterium tuberculosis résistant'),
+            name=replace(name,'Mycobacterium tuberculosis Drug Resistant','Mycobacterium tuberculosis résistant')
+            WHERE name='Mycobacterium tuberculosis Drug Resistant';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

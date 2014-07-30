@@ -18,27 +18,19 @@
 package us.mn.state.health.lims.workplan.action;
 
 
-import java.util.HashMap;
-import java.util.List;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.test.dao.TestDAO;
@@ -48,10 +40,18 @@ import us.mn.state.health.lims.workplan.reports.IWorkplanReport;
 import us.mn.state.health.lims.workplan.reports.TestSectionWorkplanReport;
 import us.mn.state.health.lims.workplan.reports.TestWorkplanReport;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+
 public class PrintWorkplanReportAction extends BaseAction {
 	
 	private final TestDAO testDAO = new TestDAOImpl();
 	private static us.mn.state.health.lims.workplan.reports.IWorkplanReport workplanReport;
+	private String reportPath;
 			
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
@@ -79,6 +79,8 @@ public class PrintWorkplanReportAction extends BaseAction {
 
 		//get workplan report based on testName
 		workplanReport = getWorkplanReport(workplanType, workplanName);
+		
+		workplanReport.setReportPath(getReportPath());
 				
 		//set jasper report parameters
 		HashMap<String, ?> parameterMap = workplanReport.getParameters();
@@ -153,7 +155,7 @@ public class PrintWorkplanReportAction extends BaseAction {
 	}
 
 	private String getTestTypeName(String id) {
-		return testDAO.getNameForTestId(id);
+		return TestService.getLocalizedTestName( id );
 	}
 	
 	public IWorkplanReport getWorkplanReport(String testType, String name) {
@@ -171,6 +173,13 @@ public class PrintWorkplanReportAction extends BaseAction {
     	return workplan;
     }
 	
+	public String getReportPath() {
+	    if (reportPath == null) {
+	        reportPath = getServlet().getServletContext().getRealPath("") + File.separator + "WEB-INF" + File.separator + "reports" + File.separator;
+	    }
+        return reportPath;
+    }
+
 	
 }
 	

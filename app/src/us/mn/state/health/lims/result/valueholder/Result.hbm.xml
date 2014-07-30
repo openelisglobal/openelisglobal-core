@@ -35,6 +35,8 @@
         </property>
         <property name="minNormal" type="java.lang.Double" column="min_normal" />
         <property name="maxNormal" type="java.lang.Double" column="max_normal" />
+        <property name="significantDigits" type="java.lang.Integer" column="significant_digits" />
+        <property name="grouping" type="java.lang.Integer" column="grouping" />
         <many-to-one name="parentResult" class="us.mn.state.health.lims.result.valueholder.Result" fetch="select">
             <column name="parent_id" precision="10" scale="0" />
         </many-to-one>

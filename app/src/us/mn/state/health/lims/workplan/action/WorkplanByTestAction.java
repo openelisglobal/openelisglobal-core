@@ -29,6 +29,7 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -51,7 +52,6 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 
 	String testType = "";
 	String testName = "";
-	String department;
 
 	static {
 		HAS_NFS_PANEL = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.CONDENSE_NFS_PANEL, "true");
@@ -74,7 +74,7 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 			setNFSTestIdList();
 		}
 
-		List<TestResultItem> workplanTests = new ArrayList<TestResultItem>();
+		List<TestResultItem> workplanTests;
 
 		testType = request.getParameter("selectedSearchID");
 
@@ -146,11 +146,12 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 	@SuppressWarnings("unchecked")
 	private List<TestResultItem> getWorkplanByTest(String testType) {
 
-		List<Analysis> testList = new ArrayList<Analysis>();
+		List<Analysis> testList;
 		List<TestResultItem> workplanTestList = new ArrayList<TestResultItem>();
-		String currentAccessionNumber = new String();
-		String subjectNumber = new String();
-		String nextVisit = new String();
+		String currentAccessionNumber = null;
+		String subjectNumber = null;
+		String patientName = null;
+		String nextVisit = null;
 		int sampleGroupingNumber = 0;
 
 		if (!(GenericValidator.isBlankOrNull(testType) || testType.equals("0"))) {
@@ -172,10 +173,12 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 					sampleGroupingNumber++;
 					currentAccessionNumber = testResultItem.getAccessionNumber();
 					subjectNumber = getSubjectNumber(analysis);
-					nextVisit = ObservationHistoryService.getValue(ObservationType.NEXT_VISIT_DATE, sample.getId());
+					patientName = getPatientName(analysis);
+					nextVisit = ObservationHistoryService.getValueForSample( ObservationType.NEXT_VISIT_DATE, sample.getId() );
 				}
 				testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
 				testResultItem.setPatientInfo(subjectNumber);
+				testResultItem.setPatientName(patientName);
 				testResultItem.setNextVisitDate(nextVisit);
 				
 				
@@ -190,12 +193,12 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 	@SuppressWarnings("unchecked")
 	private List<TestResultItem> getWorkplanForNFSTest() {
 
-		List<Analysis> testList = new ArrayList<Analysis>();
+		List<Analysis> testList;
 		List<TestResultItem> workplanTestList = new ArrayList<TestResultItem>();
-		String currentAccessionNumber = new String();
+		String currentAccessionNumber = null;
 		int sampleGroupingNumber = 0;
 
-		TestResultItem testResultItem = new TestResultItem();
+		TestResultItem testResultItem;
 
 		List<String> testIdList = new ArrayList<String>();
 
@@ -235,22 +238,15 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 
 		return workplanTestList;
 	}
-
+		
 	private String getTestName(String testId) {
-
-		Test test = new Test();
-		test.setId(testId);
-
-		test = testDAO.getTestById(test);
-
-		return test.getName();
+		return TestService.getLocalizedTestName(  testId );
 	}
 
 	class TestDescriptionComparator implements Comparator<Test> {
 
 		public int compare(Test p1, Test p2) {
-
-			return p1.getTestName().toUpperCase().compareTo(p2.getTestName().toUpperCase());
+			return TestService.getLocalizedTestName( p1 ).toUpperCase().compareTo(TestService.getLocalizedTestName( p2 ).toUpperCase());
 		}
 
 	}

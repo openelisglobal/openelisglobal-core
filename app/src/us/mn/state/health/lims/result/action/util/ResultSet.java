@@ -16,9 +16,7 @@
 */
 package us.mn.state.health.lims.result.action.util;
 
-import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.patient.valueholder.Patient;
-import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.result.valueholder.ResultInventory;
 import us.mn.state.health.lims.result.valueholder.ResultSignature;
@@ -28,31 +26,24 @@ import java.util.List;
 import java.util.Map;
 
 public class ResultSet {
-	public Result result;
-	public ResultSignature signature;
-	public ResultInventory testKit;
-	public Note note;
-	public Patient patient;
-	public Sample sample;
-	public Map<String,List<String>> triggersToSelectedReflexesMap;
-	public Referral newReferral;
-	public Referral existingReferral;
-	public boolean alwaysInsertSignature = false;
+	public final Result result;
+	public final ResultSignature signature;
+	public final ResultInventory testKit;
+	public final Patient patient;
+	public final Sample sample;
+	public final Map<String,List<String>> triggersToSelectedReflexesMap;
+	public final boolean alwaysInsertSignature;
+    public final boolean multipleResultsForAnalysis;
 
-
-	public ResultSet(Result result, ResultSignature signature, ResultInventory testKit, Note note, Patient patient, Sample sample,
-                     Map<String,List<String>> triggersToSelectedReflexesMap , Referral newReferral, Referral existingReferral) {
+	public ResultSet(Result result, ResultSignature signature, ResultInventory testKit, Patient patient, Sample sample,
+                     Map<String,List<String>> triggersToSelectedReflexesMap, boolean multipleResultsForAnalysis) {
 		this.result = result;
 		this.signature = signature;
 		this.testKit = testKit;
-		this.note = note;
 		this.patient = patient;
 		this.sample = sample;
 		this.triggersToSelectedReflexesMap = triggersToSelectedReflexesMap;
-		this.newReferral = newReferral;
-		this.existingReferral = existingReferral;
-		
-
+        this.multipleResultsForAnalysis = multipleResultsForAnalysis;
 		alwaysInsertSignature = signature != null && signature.getId() == null;
 	}
 }

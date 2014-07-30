@@ -26,16 +26,9 @@
 
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -43,6 +36,7 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMessages;
@@ -51,6 +45,11 @@ import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class  IPCIRealisationReport  extends Report {
 	
@@ -147,7 +146,7 @@ public class  IPCIRealisationReport  extends Report {
 		for (Test test : testList) {
 			TestBucket bucket = new TestBucket();
              			   						 
-			bucket.testName = test.getTestName();
+			bucket.testName = TestService.getLocalizedTestName( test);
 			bucket.testSection = test.getTestSection().getLocalizedName();
 			
 			testIdToBucketList.put(test.getId(), bucket);
@@ -190,7 +189,7 @@ public class  IPCIRealisationReport  extends Report {
 					testBucket = concatSection_TestToBucketMap.get(concatedName);
 					if (testBucket == null) {
 						testBucket = new TestBucket();
-						testBucket.testName = test.getReportingDescription();
+						testBucket.testName = TestService.getLocalizedReportingTestName(test);
 						testBucket.testSection = analysis.getTestSection().getLocalizedName();
 						concatSection_TestToBucketMap.put(concatedName, testBucket);
 					}

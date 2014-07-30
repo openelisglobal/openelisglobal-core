@@ -16,10 +16,11 @@
 */
 package us.mn.state.health.lims.referral.action.beanitems;
 
-import java.io.Serializable;
-import java.util.List;
-
 import us.mn.state.health.lims.common.util.IdValuePair;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReferralItem implements IReferralResultTest, Serializable {
 
@@ -34,12 +35,14 @@ public class ReferralItem implements IReferralResultTest, Serializable {
 	private String referrer;
 	private String referredInstituteId;
 	private String referredTestId;
+    //the shadow is to track if the test has been changed by the user
+    private String referredTestIdShadow;
 	private List<IdValuePair> testSelectionList;
 	private String referredResult = "";
 	private String referredDictionaryResult;
     private String referredMultiDictionaryResult = "";
 	private String referredResultType = "";
-	private List<IdValuePair> dictionaryResults;
+	private List<IdValuePair> dictionaryResults = new ArrayList<IdValuePair>(  );
 	private String referredSendDate;
 	private String referredReportDate;
 	private String pastNotes;
@@ -50,7 +53,8 @@ public class ReferralItem implements IReferralResultTest, Serializable {
 	private String referralResultId;
 	private boolean modified = false;
 	private List<ReferredTest> additionalTests;
-	private String casualResultId;
+	private String inLabResultId;
+    private String multiSelectResultValues;
 
 	public String getReferralId() {
 		return referralId;
@@ -105,7 +109,16 @@ public class ReferralItem implements IReferralResultTest, Serializable {
 	public void setReferredTestId(String referredTestId) {
 		this.referredTestId = referredTestId;
 	}
-	public List<IdValuePair> getTestSelectionList() {
+
+    public String getReferredTestIdShadow(){
+        return referredTestIdShadow;
+    }
+
+    public void setReferredTestIdShadow( String referredTestIdShadow ){
+        this.referredTestIdShadow = referredTestIdShadow;
+    }
+
+    public List<IdValuePair> getTestSelectionList() {
 		return testSelectionList;
 	}
 	public void setTestSelectionList(List<IdValuePair> testSelectionList) {
@@ -190,11 +203,11 @@ public class ReferralItem implements IReferralResultTest, Serializable {
 		this.referredDictionaryResult = referredDictionaryResult;
 	}
 
-	public String getCasualResultId() {
-		return casualResultId;
+	public String getInLabResultId() {
+		return inLabResultId;
 	}
-	public void setCasualResultId(String casualResultId) {
-		this.casualResultId = casualResultId;
+	public void setInLabResultId( String inLabResultId ) {
+		this.inLabResultId = inLabResultId;
 	}
     public void setReferralResults(String referralResults) {
         this.referralResults = referralResults;
@@ -211,4 +224,12 @@ public class ReferralItem implements IReferralResultTest, Serializable {
 	public String getPastNotes() {
 		return pastNotes;
 	}
+
+    public String getMultiSelectResultValues(){
+        return multiSelectResultValues;
+    }
+
+    public void setMultiSelectResultValues( String multiSelectResultValues ){
+        this.multiSelectResultValues = multiSelectResultValues;
+    }
 }

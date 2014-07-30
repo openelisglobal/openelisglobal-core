@@ -70,14 +70,13 @@
     function checkAccessionNumber(accessionNumber) {
         //check if empty
         if (!fieldIsEmptyById("labNo")) {
-            validateAccessionNumberOnServer(false, accessionNumber.id, accessionNumber.value, processAccessionSuccess, null);
+            validateAccessionNumberOnServer(false, false, accessionNumber.id, accessionNumber.value, processAccessionSuccess, null);
         }
         else {
-            setSampleFieldInvalid(accessionNumber.name);
-            setValidIndicaterOnField(false, accessionNumber.name);
+             selectFieldErrorDisplay(false, $("labNo"));
         }
 
-        if( window.setSave()){setSave();}
+        setCorrectSave();
     }
 
     function processAccessionSuccess(xhr) {
@@ -91,13 +90,20 @@
         }
         var labElement = formField.firstChild.nodeValue;
         selectFieldErrorDisplay(success, $(labElement));
-        setSampleFieldValidity(success, labElement);
 
         if (!success) {
             alert(message.firstChild.nodeValue);
         }
 
-        if( window.setSave()){setSave();}
+        setCorrectSave();
+    }
+
+    function setCorrectSave(){
+        if( window.setSave){
+            setSave();
+        }else if(window.setSaveButton){
+            setSaveButton();
+        }
     }
 
     function getNextAccessionNumber() {
@@ -121,11 +127,10 @@
             $("labNo").value = "";
         }
 
-        var targetName = $("labNo").name;
-        selectFieldErrorDisplay(success, $(targetName));
-        setValidIndicaterOnField(success, targetName);
+        selectFieldErrorDisplay(success, $("labNo"));
+        setValidIndicaterOnField(success, "labNo");
 
-        if( window.setSave()){setSave();}
+        setCorrectSave();
     }
 
 
@@ -164,11 +169,8 @@
         $jq("#orderModified").val("true");
         orderChanged = true;
         if( window.makeDirty ){ makeDirty(); }
-        if( window.setSave){
-            setSave()
-        }else if( window.setSaveButton){
-            setSaveButton();
-        }
+
+        setCorrectSave();
     }
 
 </script>
@@ -321,7 +323,7 @@
         <html:select styleId="requesterId"
                      name="<%=formName%>"
                      property="sampleOrderItems.referringSiteId"
-                     onchange="setOrderModified();siteListChanged(this);setSave();"
+                     onchange="setOrderModified();siteListChanged(this);setCorrectSave();"
                      onkeyup="capitalizeValue( this.value );"
                 >
             <option value=""></option>
@@ -344,7 +346,7 @@
         <html:text styleId="requesterCodeId"
                    name="<%=formName%>"
                    property="sampleOrderItems.referringSiteCode"
-                   onchange="setOrderModified();setSave();">
+                   onchange="setOrderModified();setCorrectSave();">
         </html:text>
     </td>
 </tr>
@@ -364,7 +366,7 @@
         <html:text name="<%=formName%>"
                    property="sampleOrderItems.providerLastName"
                    styleId="providerLastNameID"
-                   onchange="setOrderModified();setSave()"
+                   onchange="setOrderModified();setCorrectSave();"
                    size="30"/>
         <bean:message key="humansampleone.provider.firstName.short"/>:
         <html:text name="<%=formName%>"
@@ -561,7 +563,7 @@
         resultCallBack = function (textValue) {
             siteListChanged(textValue);
             setOrderModified();
-            if( window.setSave()){setSave();}
+            setCorrectSave();
         };
 
         displayOrderTypeDependencies();

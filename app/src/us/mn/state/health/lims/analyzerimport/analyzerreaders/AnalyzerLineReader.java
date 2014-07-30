@@ -16,6 +16,8 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
+import us.mn.state.health.lims.plugin.AnalyzerImporterPlugin;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,7 +43,11 @@ public class AnalyzerLineReader extends AnalyzerReader {
 	private List<String> lines;
 	private AnalyzerLineInserter inserter;
 	private String error;
-	
+    private static ArrayList<AnalyzerImporterPlugin> analyzerPlugins = new ArrayList<AnalyzerImporterPlugin>();
+
+    public static void registerAnalyzerPlugin( AnalyzerImporterPlugin plugin){
+        analyzerPlugins.add(plugin);
+    }
 	@Override
 	public boolean readStream(InputStreamReader reader) {
 		error = null;
@@ -78,6 +84,12 @@ public class AnalyzerLineReader extends AnalyzerReader {
 	}
 
 	private void setInserter() {
+        for( AnalyzerImporterPlugin plugin : analyzerPlugins){
+            if( plugin.isTargetAnalyzer(lines)){
+                inserter = plugin.getAnalyzerLineInserter();
+                return;
+            }
+        }
 		//This is going to be highly customized based on the characteristics of the file
 		//being sent
 

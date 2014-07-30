@@ -15,18 +15,6 @@
 */
 package us.mn.state.health.lims.reports.send.sample.action;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
@@ -36,7 +24,6 @@ import org.apache.struts.action.ActionMessages;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Marshaller;
 import org.xml.sax.InputSource;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -44,12 +31,13 @@ import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.security.IAuthorizationActionConstants;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.common.util.validator.ActionError;
-import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
@@ -67,18 +55,7 @@ import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
 import us.mn.state.health.lims.provider.dao.ProviderDAO;
 import us.mn.state.health.lims.provider.daoimpl.ProviderDAOImpl;
-import us.mn.state.health.lims.reports.send.sample.valueholder.CodeElementXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.CommentXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.FacilityXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.MessageXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.ObservationXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.PatientXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.ProviderXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.ResultXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.SampleXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.TestXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.TestingFacilityXmit;
-import us.mn.state.health.lims.reports.send.sample.valueholder.UHLXmit;
+import us.mn.state.health.lims.reports.send.sample.valueholder.*;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -114,6 +91,17 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeoftestresult.dao.TypeOfTestResultDAO;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author diane benz
@@ -424,8 +412,7 @@ public class SampleXMLByTestProcessAction extends BaseAction {
 									// do we need go to receiver_xref to get
 									// their test name? identifier, codesystem
 									// type,
-									testName.setIdentifier(a.getTest()
-											.getTestName());
+									testName.setIdentifier( TestService.getLocalizedTestName( a.getTest()) );
 									testName.setCodeSystemType("L");
 									testName
 											.setText("This is some kind of text");

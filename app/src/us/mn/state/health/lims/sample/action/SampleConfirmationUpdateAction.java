@@ -33,6 +33,7 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -43,7 +44,6 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.util.NoteUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -60,9 +60,6 @@ import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.requester.dao.RequesterTypeDAO;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.RequesterTypeDAOImpl;
@@ -100,15 +97,13 @@ import java.util.List;
  *
  */
 public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
-	private static String SAMPLE_ITEM_TABLE_ID = null;
 	private static String ORG_REQUESTER_TYPE_ID;
 	private static String PERSON_REQUESTER_TYPE_ID;
 	private Sample sample;
 	private SampleHuman sampleHuman;
 	private List<SampleItemSet> sampleItemSetList;
 	private boolean savePatient = false;
-	private ActionMessages patientErrors;
-	private String patientId;
+    private String patientId;
 	private SampleRequester personSampleRequester;
 	private SampleRequester orgSampleRequester;
 	private Person personRequester;
@@ -136,13 +131,6 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		if (oht != null) {
 			INITIAL_CONDITION_OBSERVATION_ID = oht.getId();
 		}
-	
-		ReferenceTablesDAO referenceTableDAO = new ReferenceTablesDAOImpl();
-		ReferenceTables referenceTable = new ReferenceTables();
-		referenceTable.setTableName("SAMPLE_ITEM");
-		referenceTable = referenceTableDAO.getReferenceTableByName(referenceTable);
-
-		SAMPLE_ITEM_TABLE_ID = referenceTable.getId();
 
 		RequesterTypeDAO requesterTypeDAO = new RequesterTypeDAOImpl();
 		ORG_REQUESTER_TYPE_ID = requesterTypeDAO.getRequesterTypeByName("organization").getId();
@@ -274,7 +262,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		savePatient = patientUpdate.getPatientUpdateStatus() != PatientManagementUpdateAction.PatientUpdateStatus.NO_ACTION;
 
 		if (savePatient) {
-			patientErrors = patientUpdate.preparePatientData(mapping, request, patientInfo);
+            ActionMessages patientErrors = patientUpdate.preparePatientData( mapping, request, patientInfo );
 		}
 	}
 
@@ -363,7 +351,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		String noteText = sampleItemElement.attributeValue("note");
 
 		if (!GenericValidator.isBlankOrNull(noteText)) {
-			return NoteUtil.createSavableNote(null, noteText, null, SAMPLE_ITEM_TABLE_ID, "Confirmation Note", currentUserId, NoteUtil.getDefaultNoteType(NoteUtil.NoteSource.OTHER));
+              return new NoteService( new SampleItem() ).createSavableNote( NoteService.NoteType.INTERNAL, noteText, null, currentUserId );
 		}
 
 		return null;

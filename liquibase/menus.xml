@@ -467,7 +467,7 @@
 				value="/ResultValidation.do?type=Parasitology&amp;test=" />
 			<column name="display_key" value="banner.menu.resultvalidation.parasitology" />
 			<column name="tool_tip_key" value="banner.menu.resultvalidation.parasitology" />
-		</insert>	
+		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -478,7 +478,7 @@
 				value="/ResultValidation.do?type=immunology&amp;test=" />
 			<column name="display_key" value="banner.menu.resultvalidation.immunology" />
 			<column name="tool_tip_key" value="banner.menu.resultvalidation.immunology" />
-		</insert>	
+		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -625,6 +625,45 @@
 			<column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
 			<column name="new_window" value="true" />
 		</insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+            <column name="presentation_order" valueNumeric="8" />
+            <column name="element_id" value="menu_reports_rejection" />
+            <column name="display_key" value="openreports.rejection.title" />
+            <column name="tool_tip_key" value="openreports.rejection.title" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_rejection' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_rejection_report_test" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=rejectionReportByTest" />
+            <column name="display_key" value="banner.menu.workplan.test" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_rejection' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_rejection_report_panel" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=rejectionReportByPanel" />
+            <column name="display_key" value="banner.menu.workplan.panel" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_rejection' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_rejection_report_bench" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=rejectionReportByTestSection" />
+            <column name="display_key" value="banner.menu.workplan.bench" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
+        </insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -757,14 +796,14 @@
 
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_nonconformity" />
-			<column name="action_url" value="/NonConformity.do" />
-			<column name="display_key" value="banner.menu.nonconformity" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="4" />
+            <column name="element_id" value="menu_nonconformity" />
+            <column name="action_url" value="/NonConformity.do" />
+            <column name="display_key" value="banner.menu.nonconformity" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="5" />
 			<column name="element_id" value="menu_workplan" />
 			<column name="display_key" value="banner.menu.workplan" />
@@ -1056,7 +1095,7 @@
 				value="/ResultValidation.do?type=Parasitology&amp;test=" />
 			<column name="display_key" value="banner.menu.resultvalidation.parasitology" />
 			<column name="tool_tip_key" value="banner.menu.resultvalidation.parasitology" />
-		</insert>	
+		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -1113,7 +1152,85 @@
 			<column name="display_key" value="openreports.aggregate.title" />
 			<column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+            <column name="presentation_order" valueNumeric="7" />
+            <column name="element_id" value="menu_reports_activity" />
+            <column name="display_key" value="openreports.activity.title" />
+            <column name="tool_tip_key" value="openreports.activity.title" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_activity_report_test" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTest" />
+            <column name="display_key" value="banner.menu.workplan.test" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_activity_report_panel" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByPanel" />
+            <column name="display_key" value="banner.menu.workplan.panel" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_activity_report_bench" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTestSection" />
+            <column name="display_key" value="banner.menu.workplan.bench" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+            <column name="presentation_order" valueNumeric="8" />
+            <column name="element_id" value="menu_reports_rejection" />
+            <column name="display_key" value="openreports.rejection.title" />
+            <column name="tool_tip_key" value="openreports.rejection.title" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_rejection' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_rejection_report_test" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=rejectionReportByTest" />
+            <column name="display_key" value="banner.menu.workplan.test" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_rejection' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_rejection_report_panel" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=rejectionReportByPanel" />
+            <column name="display_key" value="banner.menu.workplan.panel" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_rejection' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_rejection_report_bench" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=rejectionReportByTestSection" />
+            <column name="display_key" value="banner.menu.workplan.bench" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
@@ -1157,11 +1274,11 @@
 			<column name="display_key" value="banner.menu.report.aggregate.site.test.count" />
 			<column name="tool_tip_key" value="tooltip.menu.report.aggregate.site.test.count" />
 		</insert>
-			<insert schemaName="clinlims" tableName="menu">
+		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="5" />
+			<column name="presentation_order" valueNumeric="6" />
 			<column name="element_id" value="menu_reports_validation_backlog" />
 			<column name="action_url"
 				value="/ReportPrint.do?type=indicator&amp;report=validationBacklog" />
@@ -1169,38 +1286,49 @@
 			<column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
 			<column name="new_window" value="true" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_reports_nonconformity" />
-			<column name="display_key" value="reports.nonConformity.menu" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_reports_nonconformity_date" />
-			<column name="action_url"
-				value="/Report.do?type=patient&amp;report=haitiNonConformityByDate" />
-			<column name="display_key" value="reports.nonConformity.byDate.report" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.byDate.report" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_reports_nonconformity_section" />
-			<column name="action_url"
-				value="/Report.do?type=patient&amp;report=haitiNonConformityBySectionReason" />
-			<column name="display_key" value="reports.nonConformity.bySectionReason.report" />
-			<column name="tool_tip_key"
-				value="tooltip.reports.nonConformity.bySectionReason.report" />
-		</insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+            <column name="presentation_order" valueNumeric="5" />
+            <column name="element_id" value="menu_reports_epi_export" />
+            <column name="action_url"
+                    value="/Report.do?type=indicator&amp;report=epiSurveillanceExport" />
+            <column name="display_key" value="banner.menu.report.epi.surveillance.export" />
+            <column name="tool_tip_key" value="banner.menu.report.epi.surveillance.export" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_reports_nonconformity" />
+            <column name="display_key" value="reports.nonConformity.menu" />
+            <column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_reports_nonconformity_date" />
+            <column name="action_url"
+                    value="/Report.do?type=patient&amp;report=haitiNonConformityByDate" />
+            <column name="display_key" value="reports.nonConformity.byDate.report" />
+            <column name="tool_tip_key" value="tooltip.reports.nonConformity.byDate.report" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_reports_nonconformity_section" />
+            <column name="action_url"
+                    value="/Report.do?type=patient&amp;report=haitiNonConformityBySectionReason" />
+            <column name="display_key" value="reports.nonConformity.bySectionReason.report" />
+            <column name="tool_tip_key"
+                    value="tooltip.reports.nonConformity.bySectionReason.report" />
+        </insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -2227,17 +2355,6 @@
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
 			<column name="display_key" value="report.confirmation" />
-			<column name="tool_tip_key" value="tooltip.report.confirmation" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_reports_realisation" />
-			<column name="action_url"
-				value="/Report.do?type=indicator&amp;report=indicatorRealisation" />
-			<column name="display_key" value="report.realisation" />
 			<column name="tool_tip_key" value="tooltip.report.confirmation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">

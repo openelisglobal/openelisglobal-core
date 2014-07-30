@@ -4,7 +4,6 @@
                  us.mn.state.health.lims.common.util.SystemConfiguration,
                  us.mn.state.health.lims.common.util.ConfigurationProperties,
                  us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-                 us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
                  us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
                  us.mn.state.health.lims.common.formfields.FormFields,
                  us.mn.state.health.lims.common.util.Versioning,
@@ -12,6 +11,7 @@
                  us.mn.state.health.lims.common.util.IdValuePair,
                  us.mn.state.health.lims.common.services.PhoneNumberService,
                  us.mn.state.health.lims.sample.bean.SampleOrderItem" %>
+<%@ page import="us.mn.state.health.lims.sample.util.AccessionNumberUtil" %>
 
 
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
@@ -50,7 +50,7 @@
     useProviderInfo = FormFields.getInstance().useField(FormFields.Field.ProviderInfo);
     patientRequired = FormFields.getInstance().useField(FormFields.Field.PatientRequired);
     trackPayment = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.TRACK_PATIENT_PAYMENT, "true");
-    accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
+    accessionNumberValidator = AccessionNumberUtil.getAccessionNumberValidator();
     requesterLastNameRequired = FormFields.getInstance().useField(Field.SampleEntryRequesterLastNameRequired);
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ACCEPT_EXTERNAL_ORDERS, "true");
 %>
@@ -111,12 +111,7 @@ function setSampleFieldValid(field)
     var removeIndex = invalidSampleElements.indexOf( field );
     if( removeIndex != -1 )
     {
-        for( var i = removeIndex + 1; i < invalidSampleElements.length; i++ )
-        {
-            invalidSampleElements[i - 1] = invalidSampleElements[i];
-        }
-
-        invalidSampleElements.length--;
+        invalidSampleElements.splice( removeIndex,1);
     }
 }
 
@@ -314,7 +309,7 @@ function /*bool*/ requiredSampleEntryFieldsValid(){
 }
 
 function /*bool*/ sampleEntryTopValid(){
-    return invalidSampleElements.length == 0 && requiredSampleEntryFieldsValid();
+    return invalidSampleElements.length == 0 && requiredSampleEntryFieldsValid() && $jq(".error").length == 0;
 }
 
 function /*void*/ loadSamples(){

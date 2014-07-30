@@ -16,10 +16,10 @@
 */
 package us.mn.state.health.lims.referral.action.beanitems;
 
-import java.util.List;
-
 import us.mn.state.health.lims.common.util.IdValuePair;
-import us.mn.state.health.lims.referral.valueholder.ReferralResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ReferredTest implements IReferralResultTest {
@@ -27,14 +27,17 @@ public class ReferredTest implements IReferralResultTest {
     private String referralId;
 
     private String referredTestId;
+    //the shadow is to track if the test has been changed by the user
+    private String referredTestIdShadow;
 	private String referredResult = "";
 	private String referredDictionaryResult;
-	private List<IdValuePair> dictionaryResults;
+	private List<IdValuePair> dictionaryResults = new ArrayList<IdValuePair>(  );
 	private String referredResultType = "";
 	private String referredReportDate;
 	private String referralResultId;
 	private boolean remove = false;
     private String referredMultiDictionaryResult;
+    private String multiSelectResultValues = "{}";
 
     public String getReferralId() {
         return referralId;
@@ -48,7 +51,15 @@ public class ReferredTest implements IReferralResultTest {
 		this.referredTestId = referredTestId;
 	}
 
-	public String getReferredTestId() {
+    public String getReferredTestIdShadow(){
+        return referredTestIdShadow;
+    }
+
+    public void setReferredTestIdShadow( String referredTestIdShadow ){
+        this.referredTestIdShadow = referredTestIdShadow;
+    }
+
+    public String getReferredTestId() {
 		return referredTestId;
 	}
 
@@ -112,5 +123,13 @@ public class ReferredTest implements IReferralResultTest {
 
     public void setReferredMultiDictionaryResult(String referredMultiDictionaryResult) {
         this.referredMultiDictionaryResult = referredMultiDictionaryResult;
+    }
+
+    public String getMultiSelectResultValues(){
+        return multiSelectResultValues;
+    }
+
+    public void setMultiSelectResultValues( String multiSelectResultValues ){
+        this.multiSelectResultValues = multiSelectResultValues;
     }
 }

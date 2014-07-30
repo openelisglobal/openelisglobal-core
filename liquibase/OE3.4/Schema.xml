@@ -98,5 +98,65 @@
 <changeSet id="7" author="paulsc">
     <comment>Adds an id column to sample_requester and makes it the primary key</comment>
     <sqlFile path="OE3.4/SampleRequesterID.sql" />
-</changeSet>    
+</changeSet>  
+<changeSet id="8" author="paulsc">
+    <comment>Add a significant digit column to result</comment>
+    <addColumn tableName="result">
+        <column name="significant_digits" type="numeric" defaultValue="0"/>
+    </addColumn>
+    <sql>
+        COMMENT on COLUMN clinlims.result.significant_digits is 'Significant digits for results at the time the results were entered';
+    </sql>
+</changeSet>
+<changeSet id="9" author="paulsc">
+    <comment>Add is quantifiable column to test_result</comment>
+    <addColumn tableName="test_result">
+        <column name="is_quantifiable" type="boolean" defaultValueBoolean="false" />
+    </addColumn>
+    <sql>
+        COMMENT on COLUMN clinlims.test_result.is_quantifiable is 'True if the user should be able to quantify the result.  Is only meaningful for D and M types';
+    </sql>
+</changeSet>
+<changeSet id="10" author="paulsc">
+    <comment>backfill test_result table and result table for the change to a boolean for is_quantifiable</comment>
+    <update tableName="test_result" >
+        <column name="is_quantifiable" valueBoolean="true" />
+        <column name="tst_rslt_type" value="D" />
+        <where>tst_rslt_type = 'Q'</where>
+    </update>
+    <update tableName="result" >
+        <column name="result_type" value="D" />
+        <where>result_type = 'Q'</where>
+    </update>
+</changeSet>
+<changeSet id="11" author="paulsc">
+    <comment>Widen type_of_test_result description column</comment>
+    <sql>
+        alter table clinlims.type_of_test_result alter column description type varchar(60);
+    </sql>
+</changeSet>
+<changeSet author="paulsc" id="12" >
+    <comment>Adds a grouping column to result table</comment>
+    <addColumn tableName="result" >
+        <column name="grouping" type="numeric" defaultValue="0" />
+    </addColumn>
+    <sql>
+        COMMENT on COLUMN clinlims.result.grouping is 'When an analysis has more then one set of results this groups them';
+    </sql>
+</changeSet>
+<changeSet id="13" author="paulsc">
+    <comment>Adds a new column to analysis table to track updates</comment>
+    <addColumn tableName="analysis">
+        <column name="corrected" type="boolean" defaultValueBoolean="false" />
+    </addColumn>
+    <sql>
+        COMMENT ON COLUMN clinlims.analysis.corrected IS 'Signifies that the result has been updated since the last patient report was generated'
+    </sql>
+</changeSet>
+<changeSet id="14" author="paulsc">
+    <comment>the foreign key from the analyzer.parent_result_id to result_id is now a nulling delete</comment>
+    <dropForeignKeyConstraint baseTableName="analysis" constraintName="analysis_parent_result_fk" />
+    <addForeignKeyConstraint baseTableName="analysis" baseColumnNames="parent_result_id" constraintName="analysis_parent_result_fk" referencedTableName="result"
+                             referencedColumnNames="id" onDelete="SET NULL" />
+</changeSet>
 </databaseChangeLog>

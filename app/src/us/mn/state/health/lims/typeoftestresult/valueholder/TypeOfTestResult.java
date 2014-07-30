@@ -15,17 +15,38 @@
 */
 package us.mn.state.health.lims.typeoftestresult.valueholder;
 
+import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 public class TypeOfTestResult extends BaseObject {
+    public enum ResultType{
+        REMARK( "R"),
+        DICTIONARY( "D"),
+        TITER( "T"),
+        NUMERIC( "N" ),
+        ALPHA( "A"),
+        MULTISELECT( "M"),
+        CASCADING_MULTISELECT( "C");
 
-	private String id;
+        String DBValue;
+
+        private ResultType(String dbValue){
+            DBValue = dbValue;
+        }
+
+        public String getDBValue(){ return DBValue;}
+        public boolean matches( String type){ return DBValue.equals( type );}
+        public static boolean isDictionaryVariant( String type ){ return !GenericValidator.isBlankOrNull( type ) && "DMC".contains( type );}
+        public static boolean isMultiSelectVariant( String type ){ return !GenericValidator.isBlankOrNull( type ) && "MC".contains( type );}
+    }
+
+
+    private String id;
 
 	private String description;
 
 	private String testResultType;
-	
-	//bugzilla 1866
+
 	private String hl7Value;
 
 	public String getHl7Value() {
