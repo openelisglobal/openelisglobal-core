@@ -519,6 +519,19 @@ function /*string*/ getNote( sampleIndex ){
 	return ($("note_" + sampleIndex).value.replace(singleQuote, "\\'" ).replace(doubleQuote, '\\"'));
 }
 
+function /*void*/  addHourTwoPoint(field, event) {
+
+    var key = event.which ? event.which : event.keyCode;
+    if (key == 8) { // delete key? do nothing
+        return;
+    }
+    var number = field.value;
+
+    if (field.value.length == 2 ) {
+        field.value = number + ":";
+    }
+    
+}
 </script>
 <% if(useInitialSampleCondition){ %>
 <div id="sampleConditionPrototype" style="display: none" >
@@ -534,8 +547,132 @@ function /*string*/ getNote( sampleIndex ){
 
 <input type="hidden" id="maxSampleIndex" value="0" />
 <html:hidden name='<%=formName %>' property="requestAsXML" styleId="xmlWad" />
+<<<<<<< HEAD
 
 <tiles:insert attribute="sampleConfirmationOrder" />
+=======
+<table width="70%" border="0">
+	<tr>
+		<td>
+			<%=StringUtil.getContextualMessageForKey("quick.entry.accession.number")%>:
+			<span class="requiredlabel">*</span>
+		</td>
+		<td width="15%">
+			<app:text name="<%=formName%>" property="labno"
+				maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
+				onchange="checkAccessionNumber(this);makeDirty();" styleClass="text"
+				styleId="labNo" />
+		</td>
+		<td id="generate">
+			<bean:message key="sample.entry.scanner.instructions" />
+			<html:button property="generate" styleClass="textButton"
+				onclick="getNextAccessionNumber(); makeDirty();">
+				<bean:message key="sample.entry.scanner.generate" />
+			</html:button>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<bean:message key="quick.entry.received.date" />
+			:
+			<span class="requiredlabel">*</span>
+			<font size="1"><bean:message key="sample.date.format" />
+			</font>
+		</td>
+		<td colspan="2">
+			<app:text name="<%=formName%>" property="receivedDate"
+				onchange="checkValidDate(this);makeDirty();"
+				onkeyup="addDateSlashes(this,event); "
+				styleClass="text"
+				maxlength="10"
+				styleId="receivedDate" />
+				
+           <% if( FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour)){ %>
+               <bean:message key="sample.receptionTime" />:
+                   <html:text name="<%=formName %>" 
+                   onkeyup="filterTimeKeys(this, event); addHourTwoPoint(this,event);" 
+                   property="recievedTime"
+                   styleId="receivedTime" 
+                   maxlength="5"
+                   onblur="makeDirty(); updateFieldValidity(checkValidTimeEntry(this, true), this.id );"/>
+           
+           <% } %>
+				
+		</td>
+	</tr>
+</table>
+<hr />
+<h3>
+	<bean:message key="sample.entry.requester"/>
+</h3>
+<table>
+	<tr>
+		<td>
+			<bean:message key="organization.site" />
+		</td>
+		<td colspan="5">
+		<!-- N.B. this is replaced by auto repeate -->
+		<html:select styleId="orgRequesterId" 
+								     name="<%=formName%>"
+								     property="requestingOrganization"
+								     onchange="getRequestersForOrg();makeDirty();setSaveButton();"
+								     >
+							<option value=""></option>
+							<logic:iterate name="<%=formName %>" property="requestingOrganizationList" id="org" type="us.mn.state.health.lims.common.util.IdValuePair">
+							    <option value="<%=org.getId() %>" ><%= org.getValue() %></option>
+							</logic:iterate>
+		</html:select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<bean:message key="sample.entry.contact" />
+		</td>
+		<td colspan="5">
+			<html:select name='<%= formName %>'
+			             property="personRequesterId"
+			             styleId="personRequesterId"
+			             onchange="populateRequesterDetail(this); makeDirty();">
+				<option value="0"><bean:message key="sample.entry.requester.new" /></option>
+			</html:select>
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td>
+		<td>
+			<bean:message key="person.firstName" />
+		</td>
+		<td>
+			<bean:message key="person.lastName" />
+		</td>
+		<td>
+			<bean:message key="person.phone"/>
+		</td>
+		<td>
+			<bean:message key="person.fax"/>
+		</td>
+		<td>
+			<bean:message key="person.email"/>
+		</td>
+
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<html:text name='<%=formName%>' property="firstName" styleId="requesterFirstName" />
+		</td>
+		<td>
+			<html:text name='<%=formName%>' property="lastName"  styleId="requesterLastName" />
+		</td>
+		<td>
+			<html:text name='<%=formName%>' property="phone"  styleId="requesterPhone"  />
+		</td>
+		<td>
+			<html:text name='<%=formName%>' property="fax"  styleId="requesterFax" />
+		</td>
+		<td>
+			<html:text name='<%=formName%>' property="e-mail"  styleId="requesterEMail" />
+		</td>
+>>>>>>> master
 
 <hr/>
 
@@ -747,6 +884,24 @@ function savePage(){
 	form.submit();
 }
 
+<<<<<<< HEAD
+=======
+function setValidIndicaterOnField( success, element){
+	//Note the method this is overriding uses the name of the element, which does not have to be unique, set the id == name
+	if( !element.id ){ //element is id
+		element = $(element);
+	}
+
+	element.style.borderColor = success ? "" : "red";
+	element.style.borderWidth = success ? "" : "2";
+}
+
+ 
+
+ 
+
+
+>>>>>>> master
 // Moving autocomplete to end - needs to be at bottom for IE to trigger properly
 $jq(document).ready( function() {
         //fieldValidator declared in utilities.js
