@@ -364,7 +364,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 
 	@Override
 	protected String getNameForReportRequest() {
-		return StringUtil.getMessageForKey("openreports.hiv.aggregate");
+		return StringUtil.getContextualMessageForKey("openreports.hiv.aggregate");
 	}
 
 	@Override
