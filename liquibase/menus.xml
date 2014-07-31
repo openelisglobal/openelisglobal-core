@@ -2,18 +2,209 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <!--The common elements of the menu (except for RetroCI) are the first set, followed by individual settings for other sets -->
+    <changeSet id="7" author="paulsc" context="haiti,haitiLNSP,ciLNSP,CI_IPCI,ci_regional" runOnChange="true">
+        <comment>Menu Items common to all configurations except for RetroCI</comment>
+        <delete schemaName="clinlims" tableName="menu" />
+        <sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_home" />
+            <column name="action_url" value="/Dashboard.do" />
+            <column name="display_key" value="banner.menu.home" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.home" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_patient" />
+            <column name="display_key" value="banner.menu.patient" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.patient" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_patient' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_patient_add_or_edit" />
+            <column name="action_url" value="/PatientManagement.do" />
+            <column name="display_key" value="banner.menu.patient.addOrEdit" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.patient.addOrEdit" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="4" />
+            <column name="element_id" value="menu_nonconformity" />
+            <column name="action_url" value="/NonConformity.do" />
+            <column name="display_key" value="banner.menu.nonconformity" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="5" />
+            <column name="element_id" value="menu_workplan" />
+            <column name="display_key" value="banner.menu.workplan" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_workplan_test" />
+            <column name="action_url" value="/WorkPlanByTest.do?type=test" />
+            <column name="display_key" value="banner.menu.workplan.test" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_workplan_panel" />
+            <column name="action_url" value="/WorkPlanByPanel.do?type=panel" />
+            <column name="display_key" value="banner.menu.workplan.panel" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_workplan_bench" />
+            <column name="display_key" value="banner.menu.workplan.bench" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="6" />
+            <column name="element_id" value="menu_results" />
+            <column name="display_key" value="banner.menu.results" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.results" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_results_logbook" />
+            <column name="display_key" value="banner.menu.results.logbook" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_results_search" />
+            <column name="display_key" value="banner.menu.results.search" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.results.search" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_results_patient" />
+            <column name="action_url" value="/PatientResults.do" />
+            <column name="display_key" value="banner.menu.results.patient" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.results.patient" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_results_accession" />
+            <column name="action_url" value="/AccessionResults.do" />
+            <column name="display_key" value="banner.menu.results.accession" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_results_status" />
+            <column name="action_url" value="/StatusResults.do?blank=true" />
+            <column name="display_key" value="banner.menu.results.status" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.results.status" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="7" />
+            <column name="element_id" value="menu_resultvalidation" />
+            <column name="display_key" value="banner.menu.resultvalidation" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.resultvalidation" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="9" />
+            <column name="element_id" value="menu_reports" />
+            <column name="display_key" value="banner.menu.reports" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.reports" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_reports_aggregate" />
+            <column name="display_key" value="openreports.aggregate.title" />
+            <column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_reports_management" />
+            <column name="display_key" value="openreports.management.title" />
+            <column name="tool_tip_key" value="openreports.management.title" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+            <column name="presentation_order" valueNumeric="50" />
+            <column name="element_id" value="menu_reports_nonconformity" />
+            <column name="display_key" value="reports.nonConformity.menu" />
+            <column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="10" />
+            <column name="element_id" value="menu_administration" />
+            <column name="action_url" value="/MasterListsPage.do" />
+            <column name="display_key" value="banner.menu.administration" />
+            <column name="tool_tip_key" value="tooltip.banner.menu.administration" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+            <column name="presentation_order" valueNumeric="60" />
+            <column name="element_id" value="menu_reports_validation_backlog" />
+            <column name="action_url"
+                    value="/ReportPrint.do?type=indicator&amp;report=validationBacklog" />
+            <column name="display_key" value="banner.menu.report.validation.backlog" />
+            <column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
+            <column name="new_window" value="true" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+            <column name="presentation_order" valueNumeric="70" />
+            <column name="element_id" value="menu_reports_auditTrail" />
+            <column name="action_url" value="/AuditTrailReport.do" />
+            <column name="display_key" value="reports.auditTrail" />
+            <column name="tool_tip_key" value="reports.auditTrail" />
+        </insert>
+    </changeSet>
 	<changeSet author="marks" id="1" context="haiti" runOnChange="true">
 		<comment>Adds the menu items for Haiti</comment>
-		<delete schemaName="clinlims" tableName="menu" />
-		<sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_home" />
-			<column name="action_url" value="/Dashboard.do" />
-			<column name="display_key" value="banner.menu.home" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.home" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="2" />
@@ -40,68 +231,6 @@
 			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
 			<column name="display_key" value="banner.menu.sampleEdit" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.sampleEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_patient" />
-			<column name="display_key" value="banner.menu.patient" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_patient' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_patient_add_or_edit" />
-			<column name="action_url" value="/PatientManagement.do" />
-			<column name="display_key" value="banner.menu.patient.addOrEdit" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.patient.addOrEdit" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_nonconformity" />
-			<column name="action_url" value="/NonConformity.do" />
-			<column name="display_key" value="banner.menu.nonconformity" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_workplan" />
-			<column name="display_key" value="banner.menu.workplan" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_workplan_test" />
-			<column name="action_url" value="/WorkPlanByTest.do?type=test" />
-			<column name="display_key" value="banner.menu.workplan.test" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_workplan_panel" />
-			<column name="action_url" value="/WorkPlanByPanel.do?type=panel" />
-			<column name="display_key" value="banner.menu.workplan.panel" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_workplan_bench" />
-			<column name="display_key" value="banner.menu.workplan.bench" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -230,22 +359,6 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="6" />
-			<column name="element_id" value="menu_results" />
-			<column name="display_key" value="banner.menu.results" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.results" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_logbook" />
-			<column name="display_key" value="banner.menu.results.logbook" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
 			<column name="presentation_order" valueNumeric="10" />
@@ -367,52 +480,6 @@
 			<column name="action_url" value="/LogbookResults.do?type=HIV" />
 			<column name="display_key" value="banner.menu.results.logbook.vct" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.logbook.vct" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_search" />
-			<column name="display_key" value="banner.menu.results.search" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.search" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_patient" />
-			<column name="action_url" value="/PatientResults.do" />
-			<column name="display_key" value="banner.menu.results.patient" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/AccessionResults.do" />
-			<column name="display_key" value="banner.menu.results.accession" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_results_status" />
-			<column name="action_url" value="/StatusResults.do?blank=true" />
-			<column name="display_key" value="banner.menu.results.status" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.status" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="7" />
-			<column name="element_id" value="menu_resultvalidation" />
-			<column name="display_key" value="banner.menu.resultvalidation" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.resultvalidation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -557,24 +624,8 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="9" />
-			<column name="element_id" value="menu_reports" />
-			<column name="display_key" value="banner.menu.reports" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.reports" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_reports_status" />
-			<column name="display_key" value="openreports.statusreports.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.statusreports.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_status' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_status_patient" />
 			<column name="action_url"
@@ -585,17 +636,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_reports_aggregate" />
-			<column name="display_key" value="openreports.aggregate.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="1" />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_aggregate_hiv" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiClinicalHIV" />
@@ -606,30 +648,18 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="2" />
+			<column name="presentation_order" valueNumeric="10" />
 			<column name="element_id" value="menu_reports_aggregate_all" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiClinicalAllTests" />
 			<column name="display_key" value="openreports.all.tests.aggregate" />
 			<column name="tool_tip_key" value="tooltip.openreports.all.tests.aggregate" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_reports_validation_backlog" />
-			<column name="action_url"
-				value="/ReportPrint.do?type=indicator&amp;report=validationBacklog" />
-			<column name="display_key" value="banner.menu.report.validation.backlog" />
-			<column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
-			<column name="new_window" value="true" />
-		</insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-            <column name="presentation_order" valueNumeric="8" />
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+            <column name="presentation_order" valueNumeric="30" />
             <column name="element_id" value="menu_reports_rejection" />
             <column name="display_key" value="openreports.rejection.title" />
             <column name="tool_tip_key" value="openreports.rejection.title" />
@@ -667,15 +697,6 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_reports_nonconformity" />
-			<column name="display_key" value="reports.nonConformity.menu" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_nonconformity_date" />
@@ -697,24 +718,6 @@
 				value="tooltip.reports.nonConformity.bySectionReason.report" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_reports_auditTrail" />
-			<column name="action_url" value="/AuditTrailReport.do" />
-			<column name="display_key" value="reports.auditTrail" />
-			<column name="tool_tip_key" value="reports.auditTrail" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="10" />
-			<column name="element_id" value="menu_administration" />
-			<column name="action_url" value="/MasterListsPage.do" />
-			<column name="display_key" value="banner.menu.administration" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.administration" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' )  " />
 			<column name="presentation_order" valueNumeric="11" />
 			<column name="element_id" value="menu_help" />
@@ -728,16 +731,6 @@
 	<changeSet author="marks" id="2" context="haitiLNSP"
 		runOnChange="true">
 		<comment>Adds the menu items for Haiti LNSP</comment>
-		<delete schemaName="clinlims" tableName="menu" />
-		<sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_home" />
-			<column name="action_url" value="/Dashboard.do" />
-			<column name="display_key" value="banner.menu.home" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.home" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="2" />
@@ -774,70 +767,6 @@
 			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
 			<column name="display_key" value="banner.menu.sampleEdit" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.sampleEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_patient" />
-			<column name="display_key" value="banner.menu.patient" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_patient' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_patient_add_or_edit" />
-			<column name="action_url" value="/PatientManagement.do" />
-			<column name="display_key" value="banner.menu.patient.addOrEdit" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.patient.addOrEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="presentation_order" valueNumeric="4" />
-            <column name="element_id" value="menu_nonconformity" />
-            <column name="action_url" value="/NonConformity.do" />
-            <column name="display_key" value="banner.menu.nonconformity" />
-            <column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_workplan" />
-			<column name="display_key" value="banner.menu.workplan" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_workplan_test" />
-			<column name="action_url" value="/WorkPlanByTest.do?type=test" />
-			<column name="display_key" value="banner.menu.workplan.test" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_workplan_panel" />
-			<column name="action_url" value="/WorkPlanByPanel.do?type=panel" />
-			<column name="display_key" value="banner.menu.workplan.panel" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_workplan_bench" />
-			<column name="display_key" value="banner.menu.workplan.bench" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -903,24 +832,6 @@
 			<column name="tool_tip_key"
 				value="tooltip.banner.menu.results.logbook.molecularBio" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="6" />
-			<column name="element_id" value="menu_results" />
-			<column name="display_key" value="banner.menu.results" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.results" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_logbook" />
-			<column name="display_key" value="banner.menu.results.logbook" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
-		</insert>
-
-
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -990,57 +901,11 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_search" />
-			<column name="display_key" value="banner.menu.results.search" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.search" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_patient" />
-			<column name="action_url" value="/PatientResults.do" />
-			<column name="display_key" value="banner.menu.results.patient" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/AccessionResults.do" />
-			<column name="display_key" value="banner.menu.results.accession" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_results_status" />
-			<column name="action_url" value="/StatusResults.do?blank=true" />
-			<column name="display_key" value="banner.menu.results.status" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.status" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
 			<column name="presentation_order" valueNumeric="3" />
 			<column name="element_id" value="menu_results_referred" />
 			<column name="action_url" value="/ReferredOutTests.do" />
 			<column name="display_key" value="banner.menu.referredOut" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.referredOut" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="7" />
-			<column name="element_id" value="menu_resultvalidation" />
-			<column name="display_key" value="banner.menu.resultvalidation" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.resultvalidation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1115,27 +980,10 @@
 			<column name="display_key" value="banner.menu.inventory" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.inventory" />
 		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="9" />
-			<column name="element_id" value="menu_reports" />
-			<column name="display_key" value="banner.menu.reports" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.reports" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_reports_status" />
-			<column name="display_key" value="openreports.statusreports.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.statusreports.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_status' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_status_patient" />
 			<column name="action_url"
@@ -1143,20 +991,11 @@
 			<column name="display_key" value="openreports.patientTestStatus" />
 			<column name="tool_tip_key" value="tooltip.openreports.patientTestStatus" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_reports_aggregate" />
-			<column name="display_key" value="openreports.aggregate.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
-		</insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-            <column name="presentation_order" valueNumeric="7" />
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+            <column name="presentation_order" valueNumeric="10" />
             <column name="element_id" value="menu_reports_activity" />
             <column name="display_key" value="openreports.activity.title" />
             <column name="tool_tip_key" value="openreports.activity.title" />
@@ -1194,8 +1033,8 @@
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-            <column name="presentation_order" valueNumeric="8" />
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+            <column name="presentation_order" valueNumeric="30" />
             <column name="element_id" value="menu_reports_rejection" />
             <column name="display_key" value="openreports.rejection.title" />
             <column name="tool_tip_key" value="openreports.rejection.title" />
@@ -1234,7 +1073,7 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="1" />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_aggregate_hiv" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPHIV" />
@@ -1245,7 +1084,7 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="2" />
+			<column name="presentation_order" valueNumeric="10" />
 			<column name="element_id" value="menu_reports_aggregate_all" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPAllTests" />
@@ -1256,7 +1095,7 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="3" />
+			<column name="presentation_order" valueNumeric="50" />
 			<column name="element_id" value="menu_reports_confirmation" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
@@ -1267,44 +1106,23 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="4" />
+			<column name="presentation_order" valueNumeric="30" />
 			<column name="element_id" value="menu_reports_aggregate_site_tests" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPSiteTestCount" />
 			<column name="display_key" value="banner.menu.report.aggregate.site.test.count" />
 			<column name="tool_tip_key" value="tooltip.menu.report.aggregate.site.test.count" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="6" />
-			<column name="element_id" value="menu_reports_validation_backlog" />
-			<column name="action_url"
-				value="/ReportPrint.do?type=indicator&amp;report=validationBacklog" />
-			<column name="display_key" value="banner.menu.report.validation.backlog" />
-			<column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
-			<column name="new_window" value="true" />
-		</insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="parent_id"
                     valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-            <column name="presentation_order" valueNumeric="5" />
+            <column name="presentation_order" valueNumeric="60" />
             <column name="element_id" value="menu_reports_epi_export" />
             <column name="action_url"
                     value="/Report.do?type=indicator&amp;report=epiSurveillanceExport" />
             <column name="display_key" value="banner.menu.report.epi.surveillance.export" />
             <column name="tool_tip_key" value="banner.menu.report.epi.surveillance.export" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-            <column name="presentation_order" valueNumeric="3" />
-            <column name="element_id" value="menu_reports_nonconformity" />
-            <column name="display_key" value="reports.nonConformity.menu" />
-            <column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1332,8 +1150,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="4" />
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_referred" />
 			<column name="action_url" value="/Report.do?type=patient&amp;report=referredOut" />
 			<column name="display_key" value="reports.label.referred.out" />
@@ -1342,31 +1160,13 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="5" />
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+			<column name="presentation_order" valueNumeric="60" />
 			<column name="element_id" value="menu_reports_export" />
 			<column name="action_url"
 				value="/Report.do?type=patient&amp;report=HaitiLNSPExportReport" />
 			<column name="display_key" value="reports.export.byDate" />
 			<column name="tool_tip_key" value="tooltip.reports.export.byDate" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="6" />
-			<column name="element_id" value="menu_reports_auditTrail" />
-			<column name="action_url" value="/AuditTrailReport.do" />
-			<column name="display_key" value="reports.auditTrail" />
-			<column name="tool_tip_key" value="reports.auditTrail" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="10" />
-			<column name="element_id" value="menu_administration" />
-			<column name="action_url" value="/MasterListsPage.do" />
-			<column name="display_key" value="banner.menu.administration" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.administration" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1382,16 +1182,6 @@
 	<changeSet author="marks" id="3" context="ciLNSP"
 		runOnChange="true">
 		<comment>Adds the menu items for Cote d'Ivoire LNSP</comment>
-		<delete schemaName="clinlims" tableName="menu" />
-		<sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_home" />
-			<column name="action_url" value="/Dashboard.do" />
-			<column name="display_key" value="banner.menu.home" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.home" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="2" />
@@ -1428,69 +1218,6 @@
 			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
 			<column name="display_key" value="banner.menu.sampleEdit" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.sampleEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_patient" />
-			<column name="display_key" value="banner.menu.patient" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_patient' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_patient_add_or_edit" />
-			<column name="action_url" value="/PatientManagement.do" />
-			<column name="display_key" value="banner.menu.patient.addOrEdit" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.patient.addOrEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_nonconformity" />
-			<column name="action_url" value="/NonConformity.do" />
-			<column name="display_key" value="banner.menu.nonconformity" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_workplan" />
-			<column name="display_key" value="banner.menu.workplan" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_workplan_test" />
-			<column name="action_url" value="/WorkPlanByTest.do?type=test" />
-			<column name="display_key" value="banner.menu.workplan.test" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_workplan_panel" />
-			<column name="action_url" value="/WorkPlanByPanel.do?type=panel" />
-			<column name="display_key" value="banner.menu.workplan.panel" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_workplan_bench" />
-			<column name="display_key" value="banner.menu.workplan.bench" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1537,22 +1264,6 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="6" />
-			<column name="element_id" value="menu_results" />
-			<column name="display_key" value="banner.menu.results" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.results" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_logbook" />
-			<column name="display_key" value="banner.menu.results.logbook" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
 			<column name="presentation_order" valueNumeric="20" />
@@ -1595,57 +1306,11 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_search" />
-			<column name="display_key" value="banner.menu.results.search" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.search" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_patient" />
-			<column name="action_url" value="/PatientResults.do" />
-			<column name="display_key" value="banner.menu.results.patient" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/AccessionResults.do" />
-			<column name="display_key" value="banner.menu.results.accession" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_results_status" />
-			<column name="action_url" value="/StatusResults.do?blank=true" />
-			<column name="display_key" value="banner.menu.results.status" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.status" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
 			<column name="presentation_order" valueNumeric="3" />
 			<column name="element_id" value="menu_results_referred" />
 			<column name="action_url" value="/ReferredOutTests.do" />
 			<column name="display_key" value="banner.menu.referredOut" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.referredOut" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="7" />
-			<column name="element_id" value="menu_resultvalidation" />
-			<column name="display_key" value="banner.menu.resultvalidation" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.resultvalidation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1694,24 +1359,8 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="8" />
-			<column name="element_id" value="menu_reports" />
-			<column name="display_key" value="banner.menu.reports" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.reports" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_reports_status" />
-			<column name="display_key" value="openreports.statusreports.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.statusreports.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_status' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_status_patient" />
 			<column name="action_url"
@@ -1722,17 +1371,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_reports_aggregate" />
-			<column name="display_key" value="openreports.aggregate.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="1" />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_aggregate_hiv" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorCDILNSPHIV" />
@@ -1743,7 +1383,7 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="2" />
+			<column name="presentation_order" valueNumeric="10" />
 			<column name="element_id" value="menu_reports_aggregate_all" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPAllTests" />
@@ -1754,33 +1394,12 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="3" />
+			<column name="presentation_order" valueNumeric="50" />
 			<column name="element_id" value="menu_reports_confirmation" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
 			<column name="display_key" value="report.confirmation" />
 			<column name="tool_tip_key" value="tooltip.report.confirmation" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_reports_validation_backlog" />
-			<column name="action_url"
-				value="/ReportPrint.do?type=indicator&amp;report=validationBacklog" />
-			<column name="display_key" value="banner.menu.report.validation.backlog" />
-			<column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
-			<column name="new_window" value="true" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_reports_nonconformity" />
-			<column name="display_key" value="reports.nonConformity.menu" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1808,8 +1427,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="4" />
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_referred" />
 			<column name="action_url" value="/Report.do?type=patient&amp;report=referredOut" />
 			<column name="display_key" value="reports.label.referred.out" />
@@ -1817,25 +1436,7 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_reports_auditTrail" />
-			<column name="action_url" value="/AuditTrailReport.do" />
-			<column name="display_key" value="reports.auditTrail" />
-			<column name="tool_tip_key" value="reports.auditTrail" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="9" />
-			<column name="element_id" value="menu_administration" />
-			<column name="action_url" value="/MasterListsPage.do" />
-			<column name="display_key" value="banner.menu.administration" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.administration" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="10" />
+			<column name="presentation_order" valueNumeric="11" />
 			<column name="element_id" value="menu_help" />
 			<column name="action_url" value="/documentation/CILNSP_fr.pdf" />
 			<column name="display_key" value="banner.menu.help" />
@@ -1843,19 +1444,8 @@
 			<column name="new_window" value="true" />
 		</insert>
 	</changeSet>
-	<changeSet author="pauls" id="1" context="CI_IPCI"
-		runOnChange="true">
-		<comment>Adds the menu items for Cote d'Ivoire LNSP</comment>
-		<delete schemaName="clinlims" tableName="menu" />
-		<sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_home" />
-			<column name="action_url" value="/Dashboard.do" />
-			<column name="display_key" value="banner.menu.home" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.home" />
-		</insert>
+	<changeSet author="paulsc" id="1" context="CI_IPCI"	runOnChange="true">
+		<comment>Adds the menu items for Cote d'Ivoire IPCI</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="2" />
@@ -1892,69 +1482,6 @@
 			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
 			<column name="display_key" value="banner.menu.sampleEdit" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.sampleEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_patient" />
-			<column name="display_key" value="banner.menu.patient" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_patient' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_patient_add_or_edit" />
-			<column name="action_url" value="/PatientManagement.do" />
-			<column name="display_key" value="banner.menu.patient.addOrEdit" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.patient.addOrEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_nonconformity" />
-			<column name="action_url" value="/NonConformity.do" />
-			<column name="display_key" value="banner.menu.nonconformity" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_workplan" />
-			<column name="display_key" value="banner.menu.workplan" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_workplan_test" />
-			<column name="action_url" value="/WorkPlanByTest.do?type=test" />
-			<column name="display_key" value="banner.menu.workplan.test" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_workplan_panel" />
-			<column name="action_url" value="/WorkPlanByPanel.do?type=panel" />
-			<column name="display_key" value="banner.menu.workplan.panel" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_workplan_bench" />
-			<column name="display_key" value="banner.menu.workplan.bench" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2044,22 +1571,6 @@
         </insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="6" />
-			<column name="element_id" value="menu_results" />
-			<column name="display_key" value="banner.menu.results" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.results" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_logbook" />
-			<column name="display_key" value="banner.menu.results.logbook" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
 			<column name="presentation_order" valueNumeric="40" />
@@ -2142,57 +1653,11 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_search" />
-			<column name="display_key" value="banner.menu.results.search" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.search" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_patient" />
-			<column name="action_url" value="/PatientResults.do" />
-			<column name="display_key" value="banner.menu.results.patient" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/AccessionResults.do" />
-			<column name="display_key" value="banner.menu.results.accession" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_results_status" />
-			<column name="action_url" value="/StatusResults.do?blank=true" />
-			<column name="display_key" value="banner.menu.results.status" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.status" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
 			<column name="presentation_order" valueNumeric="3" />
 			<column name="element_id" value="menu_results_referred" />
 			<column name="action_url" value="/ReferredOutTests.do" />
 			<column name="display_key" value="banner.menu.referredOut" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.referredOut" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="7" />
-			<column name="element_id" value="menu_resultvalidation" />
-			<column name="display_key" value="banner.menu.resultvalidation" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.resultvalidation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2290,24 +1755,8 @@
         </insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="8" />
-			<column name="element_id" value="menu_reports" />
-			<column name="display_key" value="banner.menu.reports" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.reports" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_reports_status" />
-			<column name="display_key" value="openreports.statusreports.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.statusreports.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_status' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_status_patient" />
 			<column name="action_url"
@@ -2318,17 +1767,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_reports_aggregate" />
-			<column name="display_key" value="openreports.aggregate.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="1" />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_aggregate_hiv" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorCDILNSPHIV" />
@@ -2339,7 +1779,7 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="2" />
+			<column name="presentation_order" valueNumeric="10" />
 			<column name="element_id" value="menu_reports_aggregate_all" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPAllTests" />
@@ -2350,33 +1790,12 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="3" />
+			<column name="presentation_order" valueNumeric="50" />
 			<column name="element_id" value="menu_reports_confirmation" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
 			<column name="display_key" value="report.confirmation" />
 			<column name="tool_tip_key" value="tooltip.report.confirmation" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_reports_validation_backlog" />
-			<column name="action_url"
-				value="/ReportPrint.do?type=indicator&amp;report=validationBacklog" />
-			<column name="display_key" value="banner.menu.report.validation.backlog" />
-			<column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
-			<column name="new_window" value="true" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_reports_nonconformity" />
-			<column name="display_key" value="reports.nonConformity.menu" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2404,8 +1823,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="4" />
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_referred" />
 			<column name="action_url" value="/Report.do?type=patient&amp;report=referredOut" />
 			<column name="display_key" value="reports.label.referred.out" />
@@ -2413,25 +1832,7 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_reports_auditTrail" />
-			<column name="action_url" value="/AuditTrailReport.do" />
-			<column name="display_key" value="reports.auditTrail" />
-			<column name="tool_tip_key" value="reports.auditTrail" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="9" />
-			<column name="element_id" value="menu_administration" />
-			<column name="action_url" value="/MasterListsPage.do" />
-			<column name="display_key" value="banner.menu.administration" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.administration" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="10" />
+			<column name="presentation_order" valueNumeric="11" />
 			<column name="element_id" value="menu_help" />
 			<column name="action_url" value="/documentation/CI_IPCI_fr.pdf" />
 			<column name="display_key" value="banner.menu.help" />
@@ -2440,17 +1841,7 @@
 		</insert>
 	</changeSet>
 		<changeSet author="pauls" id="2" context="ci_regional"	runOnChange="true">
-		<comment>Adds the menu items for Cote d'Ivoire LNSP</comment>
-		<delete schemaName="clinlims" tableName="menu" />
-		<sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_home" />
-			<column name="action_url" value="/Dashboard.do" />
-			<column name="display_key" value="banner.menu.home" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.home" />
-		</insert>
+		<comment>Adds the menu items for Cote d'Ivoire Regional Labs</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="presentation_order" valueNumeric="2" />
@@ -2487,69 +1878,6 @@
 			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
 			<column name="display_key" value="banner.menu.sampleEdit" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.sampleEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_patient" />
-			<column name="display_key" value="banner.menu.patient" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_patient' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_patient_add_or_edit" />
-			<column name="action_url" value="/PatientManagement.do" />
-			<column name="display_key" value="banner.menu.patient.addOrEdit" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.patient.addOrEdit" />
-		</insert>
-
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="4" />
-			<column name="element_id" value="menu_nonconformity" />
-			<column name="action_url" value="/NonConformity.do" />
-			<column name="display_key" value="banner.menu.nonconformity" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.nonconformity" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_workplan" />
-			<column name="display_key" value="banner.menu.workplan" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_workplan_test" />
-			<column name="action_url" value="/WorkPlanByTest.do?type=test" />
-			<column name="display_key" value="banner.menu.workplan.test" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_workplan_panel" />
-			<column name="action_url" value="/WorkPlanByPanel.do?type=panel" />
-			<column name="display_key" value="banner.menu.workplan.panel" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_workplan' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_workplan_bench" />
-			<column name="display_key" value="banner.menu.workplan.bench" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2606,22 +1934,6 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="6" />
-			<column name="element_id" value="menu_results" />
-			<column name="display_key" value="banner.menu.results" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.results" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_logbook" />
-			<column name="display_key" value="banner.menu.results.logbook" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_logbook' ) " />
 			<column name="presentation_order" valueNumeric="40" />
@@ -2674,57 +1986,11 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_search" />
-			<column name="display_key" value="banner.menu.results.search" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.search" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_results_patient" />
-			<column name="action_url" value="/PatientResults.do" />
-			<column name="display_key" value="banner.menu.results.patient" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.patient" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_results_accession" />
-			<column name="action_url" value="/AccessionResults.do" />
-			<column name="display_key" value="banner.menu.results.accession" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results_search' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_results_status" />
-			<column name="action_url" value="/StatusResults.do?blank=true" />
-			<column name="display_key" value="banner.menu.results.status" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.status" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
 			<column name="presentation_order" valueNumeric="3" />
 			<column name="element_id" value="menu_results_referred" />
 			<column name="action_url" value="/ReferredOutTests.do" />
 			<column name="display_key" value="banner.menu.referredOut" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.referredOut" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="7" />
-			<column name="element_id" value="menu_resultvalidation" />
-			<column name="display_key" value="banner.menu.resultvalidation" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.resultvalidation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2783,24 +2049,8 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="8" />
-			<column name="element_id" value="menu_reports" />
-			<column name="display_key" value="banner.menu.reports" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.reports" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_reports_status" />
-			<column name="display_key" value="openreports.statusreports.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.statusreports.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_status' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_status_patient" />
 			<column name="action_url"
@@ -2811,17 +2061,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_reports_aggregate" />
-			<column name="display_key" value="openreports.aggregate.title" />
-			<column name="tool_tip_key" value="tooltip.openreports.aggregate.title" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="1" />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_aggregate_hiv" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorCDILNSPHIV" />
@@ -2832,7 +2073,7 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="2" />
+			<column name="presentation_order" valueNumeric="10" />
 			<column name="element_id" value="menu_reports_aggregate_all" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPAllTests" />
@@ -2843,33 +2084,12 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="3" />
+			<column name="presentation_order" valueNumeric="50" />
 			<column name="element_id" value="menu_reports_confirmation" />
 			<column name="action_url"
 				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
 			<column name="display_key" value="report.confirmation" />
 			<column name="tool_tip_key" value="tooltip.report.confirmation" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_reports_validation_backlog" />
-			<column name="action_url"
-				value="/ReportPrint.do?type=indicator&amp;report=validationBacklog" />
-			<column name="display_key" value="banner.menu.report.validation.backlog" />
-			<column name="tool_tip_key" value="banner.menu.report.validation.backlog" />
-			<column name="new_window" value="true" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_reports_nonconformity" />
-			<column name="display_key" value="reports.nonConformity.menu" />
-			<column name="tool_tip_key" value="tooltip.reports.nonConformity.menu" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2897,8 +2117,8 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="4" />
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+			<column name="presentation_order" valueNumeric="20" />
 			<column name="element_id" value="menu_reports_referred" />
 			<column name="action_url" value="/Report.do?type=patient&amp;report=referredOut" />
 			<column name="display_key" value="reports.label.referred.out" />
@@ -2906,25 +2126,7 @@
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
-			<column name="presentation_order" valueNumeric="5" />
-			<column name="element_id" value="menu_reports_auditTrail" />
-			<column name="action_url" value="/AuditTrailReport.do" />
-			<column name="display_key" value="reports.auditTrail" />
-			<column name="tool_tip_key" value="reports.auditTrail" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="9" />
-			<column name="element_id" value="menu_administration" />
-			<column name="action_url" value="/MasterListsPage.do" />
-			<column name="display_key" value="banner.menu.administration" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.administration" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="10" />
+			<column name="presentation_order" valueNumeric="11" />
 			<column name="element_id" value="menu_help" />
 			<column name="action_url" value="/documentation/CI_Regional_fr.pdf" />
 			<column name="display_key" value="banner.menu.help" />

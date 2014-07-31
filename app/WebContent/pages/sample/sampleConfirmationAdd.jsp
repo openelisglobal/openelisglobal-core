@@ -437,7 +437,11 @@ function /*string*/ addSample( sampleIndex ){
 	sampleXml += "requesterSampleId='" + $("requesterSampleId_" + sampleIndex).value + "' ";
 	sampleXml += "sampleType='" + ($("sampleType_" + sampleIndex).value) + "' ";
 	sampleXml += "collectionDate='" + ($("collectionDate_" + sampleIndex).value) + "' ";
+    <% if( FormFields.getInstance().useField(Field.CollectionTime)){ %>
 	sampleXml += "collectionTime='" + ($("interviewTime_" + sampleIndex).value) + "' ";
+    <% }else{ %>
+    sampleXml += "collectionTime='00:00' ";
+    <% } %>
 	sampleXml += "note ='" + getNote( sampleIndex ) + "' ";
 	if( useInitialSampleCondition ){
 		var initialConditions = $("initialCondition_" + sampleIndex);
