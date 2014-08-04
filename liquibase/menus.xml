@@ -17,6 +17,23 @@
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_sample" />
+            <column name="display_key" value="banner.menu.sample" />
+            <column name="tool_tip_key" value="banner.menu.sample" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_sample_add" />
+            <column name="action_url" value="/SamplePatientEntry.do" />
+            <column name="display_key" value="banner.menu.sampleAdd" />
+            <column name="tool_tip_key" value="banner.menu.sampleAdd" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="presentation_order" valueNumeric="3" />
             <column name="element_id" value="menu_patient" />
             <column name="display_key" value="banner.menu.patient" />
@@ -90,7 +107,7 @@
             <column name="presentation_order" valueNumeric="1" />
             <column name="element_id" value="menu_results_logbook" />
             <column name="display_key" value="banner.menu.results.logbook" />
-            <column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
+            <column name="tool_tip_key" value="banner.menu.results.logbook" />
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -99,7 +116,7 @@
             <column name="presentation_order" valueNumeric="2" />
             <column name="element_id" value="menu_results_search" />
             <column name="display_key" value="banner.menu.results.search" />
-            <column name="tool_tip_key" value="tooltip.banner.menu.results.search" />
+            <column name="tool_tip_key" value="banner.menu.results.search" />
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -109,7 +126,7 @@
             <column name="element_id" value="menu_results_patient" />
             <column name="action_url" value="/PatientResults.do" />
             <column name="display_key" value="banner.menu.results.patient" />
-            <column name="tool_tip_key" value="tooltip.banner.menu.results.patient" />
+            <column name="tool_tip_key" value="banner.menu.results.patient" />
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -119,7 +136,7 @@
             <column name="element_id" value="menu_results_accession" />
             <column name="action_url" value="/AccessionResults.do" />
             <column name="display_key" value="banner.menu.results.accession" />
-            <column name="tool_tip_key" value="tooltip.banner.menu.results.accession" />
+            <column name="tool_tip_key" value="banner.menu.results.accession" />
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -129,7 +146,7 @@
             <column name="element_id" value="menu_results_status" />
             <column name="action_url" value="/StatusResults.do?blank=true" />
             <column name="display_key" value="banner.menu.results.status" />
-            <column name="tool_tip_key" value="tooltip.banner.menu.results.status" />
+            <column name="tool_tip_key" value="banner.menu.results.status" />
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -205,23 +222,6 @@
     </changeSet>
 	<changeSet author="marks" id="1" context="haiti" runOnChange="true">
 		<comment>Adds the menu items for Haiti</comment>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_sample" />
-			<column name="display_key" value="banner.menu.sample" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.sample" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_sample_add" />
-			<column name="action_url" value="/SamplePatientEntry.do" />
-			<column name="display_key" value="banner.menu.sampleAdd" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.sampleAdd" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -733,23 +733,6 @@
 		<comment>Adds the menu items for Haiti LNSP</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_sample" />
-			<column name="display_key" value="banner.menu.sample" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.sample" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_sample_add" />
-			<column name="action_url" value="/SamplePatientEntry.do" />
-			<column name="display_key" value="banner.menu.sampleAdd" />
-			<column name="tool_tip_key" value="tooltip.bannner.menu.sampleAdd" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
 			<column name="presentation_order" valueNumeric="2" />
@@ -1184,23 +1167,6 @@
 		<comment>Adds the menu items for Cote d'Ivoire LNSP</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_sample" />
-			<column name="display_key" value="banner.menu.register" />
-			<column name="tool_tip_key" value="bannner.menu.register" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_sample_add" />
-			<column name="action_url" value="/SamplePatientEntry.do" />
-			<column name="display_key" value="banner.menu.register.create" />
-			<column name="tool_tip_key" value="bannner.menu.register.create" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
 			<column name="presentation_order" valueNumeric="3" />
@@ -1448,23 +1414,6 @@
 		<comment>Adds the menu items for Cote d'Ivoire IPCI</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_sample" />
-			<column name="display_key" value="banner.menu.register" />
-			<column name="tool_tip_key" value="bannner.menu.register" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_sample_add" />
-			<column name="action_url" value="/SamplePatientEntry.do" />
-			<column name="display_key" value="banner.menu.register.create" />
-			<column name="tool_tip_key" value="bannner.menu.register.create" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
 			<column name="presentation_order" valueNumeric="3" />
@@ -1657,7 +1606,7 @@
 			<column name="element_id" value="menu_results_referred" />
 			<column name="action_url" value="/ReferredOutTests.do" />
 			<column name="display_key" value="banner.menu.referredOut" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.referredOut" />
+			<column name="tool_tip_key" value="banner.menu.referredOut" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1844,30 +1793,13 @@
 		<comment>Adds the menu items for Cote d'Ivoire Regional Labs</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="2" />
-			<column name="element_id" value="menu_sample" />
-			<column name="display_key" value="banner.menu.register" />
-			<column name="tool_tip_key" value="bannner.menu.register" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_sample_add" />
-			<column name="action_url" value="/SamplePatientEntry.do" />
-			<column name="display_key" value="banner.menu.register.create" />
-			<column name="tool_tip_key" value="bannner.menu.register.create" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
 			<column name="presentation_order" valueNumeric="3" />
 			<column name="element_id" value="menu_sample_confirmation" />
 			<column name="action_url" value="/SampleConfirmationEntry.do" />
 			<column name="display_key" value="banner.menu.sample.confirmation.add" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.sample.confirmation.add" />
+			<column name="tool_tip_key" value="banner.menu.sample.confirmation.add" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1877,7 +1809,7 @@
 			<column name="element_id" value="menu_sample_edit" />
 			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
 			<column name="display_key" value="banner.menu.sampleEdit" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.sampleEdit" />
+			<column name="tool_tip_key" value="banner.menu.sampleEdit" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
