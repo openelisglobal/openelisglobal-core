@@ -460,7 +460,7 @@
 		<form-bean name="siteInformationForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="paramName" type="java.lang.String" initial="" />
 			<form-property name="description" type="java.lang.String" initial="" />
-			<form-property name="value" type="java.lang.String" initial="" />
+            <form-property name="value" type="java.lang.String" initial="" />
 			<form-property name="encrypted" type="boolean" initial="false" />
 			<form-property name="valueType" type="java.lang.String" initial="text" />
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
@@ -479,11 +479,14 @@
 			<form-property name="paramName" type="java.lang.String" initial="" />
 			<form-property name="description" type="java.lang.String" initial="" />
 			<form-property name="value" type="java.lang.String" initial="" />
+            <form-property name="englishValue" type="java.lang.String" initial="" />
+            <form-property name="frenchValue" type="java.lang.String" initial="" />
 			<form-property name="encrypted" type="boolean" initial="false" />
 			<form-property name="valueType" type="java.lang.String" initial="text" />
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="siteInfoDomainName" type="java.lang.String" initial="sampleEntryConfig"/>
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
 		</form-bean>
 
 

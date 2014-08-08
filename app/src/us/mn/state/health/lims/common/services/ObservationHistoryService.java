@@ -46,7 +46,8 @@ public class ObservationHistoryService{
 		PRIMARY_ORDER_TYPE("primaryOrderType"), 
 		SECONDARY_ORDER_TYPE("secondaryOrderType"), 
 		OTHER_SECONDARY_ORDER_TYPE(	"otherSecondaryOrderType"),
-		REFERRERS_PATIENT_ID("referrersPatientId");
+		REFERRERS_PATIENT_ID("referrersPatientId"),
+        BILLING_REFERENCE_NUMBER("billingRefNumber");
 		
 		private String dbName;
 

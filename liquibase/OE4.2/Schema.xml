@@ -79,6 +79,12 @@
         COMMENT ON COLUMN clinlims.test.name_localization_id IS 'reference to the localization record for the test name';
         COMMENT ON COLUMN clinlims.test.reporting_name_localization_id IS 'reference to the localization record for the reporting name';
     </sql>
+    <insert tableName="reference_tables">
+        <column name="id" valueNumeric=" nextval( 'reference_tables_seq' ) " />
+        <column name="name" value="LOCALIZATION" />
+        <column name="keep_history" value="Y" />
+        <column name="is_hl7_encoded" value="N" />
+    </insert>
 </changeSet>
 <changeSet id="6" author="paulsc">
     <comment>renames test local_abrev to local_code</comment>

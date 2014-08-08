@@ -38,4 +38,41 @@
             <column name="value_type" value="boolean" />
         </insert>
     </changeSet>
+    <changeSet id="4" author="paulsc">
+        <comment>Adds the configurable item of billing code</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="billingRefNumber" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Number used to track billing" />
+            <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'sampleEntryConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="value" value="false" />
+            <column name="instruction_key" value="instructions.sample.entry.billing.ref" />
+        </insert>
+        <insert tableName="localization">
+            <column name="id" valueNumeric=" nextval( 'localization_seq' ) " />
+            <column name="description" value="Billing reference label" />
+            <column name="english" value="URAP Number" />
+            <column name="french" value="N° URAP" />
+            <column name="lastupdated" valueDate=" now() " />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="billingRefNumberLocalization" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Term used to for billing reference field" />
+            <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'sampleEntryConfig' ) " />
+            <column name="value_type" value="text" />
+            <column name="value" valueNumeric=" currval( 'localization_seq' ) " />
+            <column name="tag" value="localization" />
+            <column name="instruction_key" value="instructions.sampleEntry.bill.ref.label" />
+        </insert>
+        <insert tableName="observation_history_type">
+            <column name="id" valueNumeric=" nextval( 'observation_history_type_seq' ) " />
+            <column name="type_name" value="billingRefNumber" />
+            <column name="description" value="Number used to track billing" />
+            <column name="lastupdated" valueDate=" now() " />
+        </insert>
+    </changeSet>
 </databaseChangeLog>

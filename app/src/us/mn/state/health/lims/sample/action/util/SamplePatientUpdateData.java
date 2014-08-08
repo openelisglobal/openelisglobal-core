@@ -30,6 +30,7 @@ import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.ExternalOrderStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.TableIdService;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -451,6 +452,9 @@ public class SamplePatientUpdateData{
         createOrderTypeObservation( sampleOrder.getInitialPeriodOrderType(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.SECONDARY_ORDER_TYPE ), ObservationHistory.ValueType.LITERAL );
         createObservation( sampleOrder.getOtherPeriodOrder(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.OTHER_SECONDARY_ORDER_TYPE ), ObservationHistory.ValueType.LITERAL );
         createObservation( sampleOrder.getReferringPatientNumber(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.REFERRERS_PATIENT_ID ), ObservationHistory.ValueType.LITERAL );
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.USE_BILLING_REFERENCE_NUMBER, "true" )){
+            createObservation( sampleOrder.getBillingReferenceNumber(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.BILLING_REFERENCE_NUMBER ), ObservationHistory.ValueType.LITERAL );
+        }
     }
 
 

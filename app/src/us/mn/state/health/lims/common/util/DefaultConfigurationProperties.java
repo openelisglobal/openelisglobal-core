@@ -104,6 +104,8 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault( Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "Allow duplicate subject number", "true" );
         setDBPropertyMappingAndDefault( Property.VALIDATE_REJECTED_TESTS, "validateTechnicalRejection", "false" );
         setDBPropertyMappingAndDefault( Property.TEST_NAME_AUGMENTED, "augmentTestNameWithType", "true" );
+        setDBPropertyMappingAndDefault( Property.USE_BILLING_REFERENCE_NUMBER, "billingRefNumber", "false" );
+        setDBPropertyMappingAndDefault( Property.BILLING_REFERENCE_NUMBER_LABEL, "billingRefNumberLocalization", "-1" );
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

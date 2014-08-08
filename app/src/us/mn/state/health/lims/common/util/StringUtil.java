@@ -539,13 +539,13 @@ public class StringUtil {
 		if( string.contains(toBeRemoved)){
 			String[] subStrings = string.trim().split(toBeRemoved);
 			
-			StringBuffer reconsituted = new StringBuffer();
+			StringBuffer reconstituted = new StringBuffer();
 			
 			for( String subString : subStrings){
-				reconsituted.append(subString);
+				reconstituted.append( subString );
 			}
 			
-			return reconsituted.toString();
+			return reconstituted.toString();
 		}else{
 			return string;
 		}
