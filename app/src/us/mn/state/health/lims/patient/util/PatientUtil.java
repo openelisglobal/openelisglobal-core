@@ -17,10 +17,6 @@
  */
 package us.mn.state.health.lims.patient.util;
 
-import java.util.List;
-
-import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
 import us.mn.state.health.lims.gender.valueholder.Gender;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
@@ -29,7 +25,6 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
 import us.mn.state.health.lims.patientidentity.daoimpl.PatientIdentityDAOImpl;
 import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
-import us.mn.state.health.lims.patientidentitytype.util.PatientIdentityTypeMap;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
@@ -38,6 +33,9 @@ import us.mn.state.health.lims.provider.daoimpl.ProviderDAOImpl;
 import us.mn.state.health.lims.provider.valueholder.Provider;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PatientUtil {
 
@@ -97,8 +95,12 @@ public class PatientUtil {
 	}
 
 	public static List<PatientIdentity> getIdentityListForPatient(Patient patient) {
-		PatientIdentityDAO identityDAO = new PatientIdentityDAOImpl();
-		return identityDAO.getPatientIdentitiesForPatient(patient.getId());
+        if( patient != null){
+            PatientIdentityDAO identityDAO = new PatientIdentityDAOImpl();
+            return identityDAO.getPatientIdentitiesForPatient( patient.getId() );
+        }else{
+            return new ArrayList<PatientIdentity>(  );
+        }
 	}
 
 	public static void invalidateUnknownPatients() {

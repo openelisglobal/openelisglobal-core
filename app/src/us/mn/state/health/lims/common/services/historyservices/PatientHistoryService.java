@@ -46,7 +46,9 @@ public class PatientHistoryService extends HistoryService {
 	}
 
 	public PatientHistoryService(Patient patient) {
-		setUpForPatient(patient);
+		if( patient != null){
+            setUpForPatient( patient );
+        }
 	}
 
 	@SuppressWarnings("unchecked")

@@ -10,6 +10,7 @@ import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, ObservationHistory> implements ObservationHistoryDAO {
@@ -35,10 +36,14 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
     }
 
     public List<ObservationHistory> getAll(Patient patient, Sample sample) {
-		ObservationHistory dh = new ObservationHistory();
-		dh.setPatientId(patient.getId());
-		dh.setSampleId(sample.getId());
-		return this.readByExample(dh);
+        if( patient != null && sample != null){
+            ObservationHistory dh = new ObservationHistory();
+            dh.setPatientId( patient.getId() );
+            dh.setSampleId( sample.getId() );
+            return this.readByExample( dh );
+        }
+
+        return new ArrayList<ObservationHistory>(  );
 	}
 
 	public List<ObservationHistory> getAll(Patient patient, Sample sample, String observationHistoryTypeId) {
