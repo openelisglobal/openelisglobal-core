@@ -106,7 +106,9 @@ public abstract class ConfigurationProperties {
         VALIDATE_PHONE_FORMAT,       //If true then entered phone numbers will be validated against format
         ALLOW_DUPLICATE_SUBJECT_NUMBERS, //If true then duplicate subject numbers are allowed
         VALIDATE_REJECTED_TESTS, //If true then if the technician rejects a test the next step is validation
-        TEST_NAME_AUGMENTED   //If true then in some places the test name will be suffixed with the sample type
+        TEST_NAME_AUGMENTED,   //If true then in some places the test name will be suffixed with the sample type
+        USE_BILLING_REFERENCE_NUMBER,       //If true then the user can enter billing codes for latter reporting
+        BILLING_REFERENCE_NUMBER_LABEL   //The label being used for the billing reference number
     }
 
 	

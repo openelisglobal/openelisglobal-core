@@ -57,6 +57,7 @@ public class SampleOrderItem implements Serializable{
     private Boolean modified = false;
     private String sampleId;
     private boolean readOnly = false;
+    private String billingReferenceNumber;
 
     public String getNewRequesterName(){
         return newRequesterName;
@@ -336,5 +337,13 @@ public class SampleOrderItem implements Serializable{
 
     public void setReadOnly( boolean readOnly ){
         this.readOnly = readOnly;
+    }
+
+    public String getBillingReferenceNumber(){
+        return billingReferenceNumber;
+    }
+
+    public void setBillingReferenceNumber( String billingReferenceNumber ){
+        this.billingReferenceNumber = billingReferenceNumber;
     }
 }
