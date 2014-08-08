@@ -328,6 +328,10 @@ public abstract class PatientReport extends Report{
     }
 
     private void findPatientInfo(){
+        if( patientService.getPerson() == null){
+            return;
+        }
+
         patientDept = "";
         patientCommune = "";
         if( ADDRESS_DEPT_ID != null ){
