@@ -90,4 +90,11 @@
     <comment>renames test local_abrev to local_code</comment>
     <renameColumn tableName="test" oldColumnName="local_abbrev" newColumnName="local_code" />
 </changeSet>
+ <changeSet author="kone" id="21">
+	<comment>Adds a new column to site_information table</comment>
+	<addColumn tableName="site_information" schemaName="clinlims">  
+		<column name="descriptionKey"  type="varchar(32)" />
+	</addColumn> 	
+</changeSet>
+
 </databaseChangeLog>
