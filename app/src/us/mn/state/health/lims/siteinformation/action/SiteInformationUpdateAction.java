@@ -20,14 +20,18 @@ package us.mn.state.health.lims.siteinformation.action;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
 import org.apache.struts.action.*;
+import org.hibernate.StaleObjectStateException;
+import org.hibernate.Transaction;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.services.PhoneNumberService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationSideEffects;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
+import us.mn.state.health.lims.localization.daoimpl.LocalizationDAOImpl;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDomainDAOImpl;
@@ -40,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 public class SiteInformationUpdateAction extends BaseAction {
 	private static final SiteInformationDomain SITE_IDENTITY_DOMAIN;
 	private static final SiteInformationDomain RESULT_CONFIG_DOMAIN;
+
 	private boolean isNew = false;
 	private String addKey = null;
 	private String editKey = null;
@@ -49,7 +54,8 @@ public class SiteInformationUpdateAction extends BaseAction {
 		SITE_IDENTITY_DOMAIN = new SiteInformationDomainDAOImpl().getByName("siteIdentity");
 		RESULT_CONFIG_DOMAIN = new SiteInformationDomainDAOImpl().getByName("resultConfiguration");
 	}
-	
+
+    @SuppressWarnings("unchecked")
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -60,15 +66,26 @@ public class SiteInformationUpdateAction extends BaseAction {
 		String id = request.getParameter(ID);
 		isNew = id == null || id.equals("0");
 
-		String forward = FWD_SUCCESS;
+		String forward;
 
 		BaseActionForm dynaForm = (BaseActionForm) form;
 
-		String start = (String) request.getParameter("startingRecNo");
-		String direction = (String) request.getParameter("direction");
+		String start = request.getParameter("startingRecNo");
+		String direction = request.getParameter("direction");
 
-		forward = validateAndUpdateSiteInformation(mapping, request, dynaForm, isNew);
+        String tag = dynaForm.getString( "tag" );
 
+        //N.B. The reason for this branch is that localization does not actually update site information, it updates the
+        //localization table
+        if("localization".equals( tag )){
+            String localizationId = dynaForm.getString( "value" );
+            forward = validateAndUpdateLocalization(request,
+                                                    localizationId,
+                                                    dynaForm.getString( "englishValue" ),
+                                                    dynaForm.getString( "frenchValue" ));
+        } else{
+            forward = validateAndUpdateSiteInformation( request, dynaForm, isNew );
+        }
 		//makes the changes take effect immediately
 		ConfigurationProperties.forceReload();
 		
@@ -76,14 +93,46 @@ public class SiteInformationUpdateAction extends BaseAction {
 
 	}
 
-	public String validateAndUpdateSiteInformation(ActionMapping mapping, HttpServletRequest request,
+    private String validateAndUpdateLocalization( HttpServletRequest request, String localizationId, String english, String french ){
+        LocalizationService localizationService = new LocalizationService(localizationId);
+        localizationService.setCurrentUserId( currentUserId );
+        boolean isNeeded = localizationService.updateLocalizationIfNeeded(english, french );
+
+        String forward = FWD_SUCCESS_INSERT;
+        if( isNeeded){
+
+            ActionMessages errors = new ActionMessages();
+            Transaction tx = HibernateUtil.getSession().beginTransaction();
+            try{
+                new LocalizationDAOImpl().updateData( localizationService.getLocalization() );
+                tx.commit();
+            }catch (LIMSRuntimeException lre) {
+                tx.rollback();
+                errors = new ActionMessages();
+                ActionError error = new ActionError("errors.UpdateException", null, null);
+                errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+                saveErrors(request, errors);
+                request.setAttribute(Globals.ERROR_KEY, errors);
+
+                forward = FWD_FAIL;
+
+            } finally {
+                HibernateUtil.closeSession();
+            }
+
+        }
+
+        return forward;
+    }
+
+    public String validateAndUpdateSiteInformation( HttpServletRequest request,
 			BaseActionForm dynaForm, boolean newSiteInformation) {
 
 		String name = dynaForm.getString("paramName");
         String value = dynaForm.getString( "value" );
 		ActionMessages errors = new ActionMessages();
 		if (GenericValidator.isBlankOrNull(name)) {
-			errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError("error.SiteInformation.phone.format"));
+            errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError( "error.SiteInformation.name.required" ) );
             request.setAttribute(Globals.ERROR_KEY, errors);
 			saveErrors(request, errors);
 
@@ -91,7 +140,7 @@ public class SiteInformationUpdateAction extends BaseAction {
         }
 
         if( "phone format".equals( name ) && !PhoneNumberService.validatePhoneFormat( value ) ){
-            errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError( "error.SiteInformation.name.required" ) );
+            errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError("error.SiteInformation.phone.format"));
             request.setAttribute(Globals.ERROR_KEY, errors);
             saveErrors( request, errors );
 
@@ -127,7 +176,7 @@ public class SiteInformationUpdateAction extends BaseAction {
 			addKey = "resultConfiguration.add.title";
 			editKey = "resultConfiguration.edit.tile";
 		}
-		org.hibernate.Transaction tx = HibernateUtil.getSession().beginTransaction();
+		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 		try {
 			
@@ -146,8 +195,8 @@ public class SiteInformationUpdateAction extends BaseAction {
 		} catch (LIMSRuntimeException lre) {
 			tx.rollback();
 			errors = new ActionMessages();
-			ActionError error = null;
-			if (lre.getException() instanceof org.hibernate.StaleObjectStateException) {
+			ActionError error;
+			if (lre.getException() instanceof StaleObjectStateException ) {
 
 				error = new ActionError("errors.OptimisticLockException", null, null);
 

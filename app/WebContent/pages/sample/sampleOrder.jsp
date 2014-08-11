@@ -10,6 +10,7 @@
                  us.mn.state.health.lims.common.util.StringUtil,
                  us.mn.state.health.lims.common.util.IdValuePair,
                  us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="us.mn.state.health.lims.common.services.LocalizationService" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -479,6 +480,21 @@
                 </option>
             </logic:iterate>
         </html:select>
+    </td>
+</tr>
+<% } %>
+<tr>
+<% if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.USE_BILLING_REFERENCE_NUMBER, "true" )){ %>
+    <td><label for="billingReferenceNumber">
+        <%= LocalizationService.getLocalizedValueById( ConfigurationProperties.getInstance().getPropertyValue( Property.BILLING_REFERENCE_NUMBER_LABEL ))%>
+    </label>
+    </td>
+    <td>
+        <html:text name='<%=formName %>'
+                    property="sampleOrderItems.billingReferenceNumber"
+                    styleClass="text"
+                    styleId="billingReferenceNumber"
+                    onchange="setOrderModified();makeDirty()" />
     </td>
 </tr>
 <% } %>

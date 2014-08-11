@@ -123,6 +123,7 @@ public class SampleOrderService{
             sampleOrder.setInitialPeriodOrderType( ObservationHistoryService.getValueForSample( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
             sampleOrder.setFollowupPeriodOrderType( ObservationHistoryService.getValueForSample( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
             sampleOrder.setOtherPeriodOrder( ObservationHistoryService.getValueForSample( ObservationType.OTHER_SECONDARY_ORDER_TYPE, sample.getId() ) );
+            sampleOrder.setBillingReferenceNumber( ObservationHistoryService.getValueForSample( ObservationType.BILLING_REFERENCE_NUMBER, sample.getId() ) );
 
             RequesterService requesterService = new RequesterService( sample.getId() );
             sampleOrder.setProviderFirstName( requesterService.getRequesterFirstName() );

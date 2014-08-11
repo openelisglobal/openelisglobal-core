@@ -66,7 +66,7 @@ public class PatientManagementBridge{
             info.setReadOnly( readOnly );
             info.setMothersInitial( patientService.getMothersInitial() );
             if(readOnly){
-                info.setAge( DateUtil.getCurrentAgeForDate( DateUtil.convertStringDateStringTimeToTimestamp( patientService.getDOB(), null ),
+                info.setAge( DateUtil.getCurrentAgeForDate( DateUtil.convertStringDateStringTimeToTimestamp( patientService.getBirthdayForDisplay(), null ),
                         DateUtil.convertStringDateStringTimeToTimestamp(DateUtil.getCurrentDateAsText(), null )));
             }
 

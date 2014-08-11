@@ -313,7 +313,7 @@ public class PatientService implements IPatientService {
 	 */
 	@Override
 	public String getDOB(){
-			return patient.getBirthDateForDisplay();
+			return patient != null ? patient.getBirthDateForDisplay() : "";
 	}
 	
 	/* (non-Javadoc)
