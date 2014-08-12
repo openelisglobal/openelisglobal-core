@@ -159,4 +159,13 @@
     <addForeignKeyConstraint baseTableName="analysis" baseColumnNames="parent_result_id" constraintName="analysis_parent_result_fk" referencedTableName="result"
                              referencedColumnNames="id" onDelete="SET NULL" />
 </changeSet>
+<changeSet id="1" author="jfurlong">
+    <comment>Adds a new column to dictionary to allow optional odering</comment>
+    <addColumn tableName="dictionary">
+        <column name="sort_order" type="numeric" defaultValue="0"/>
+    </addColumn>
+    <sql>
+        COMMENT ON COLUMN clinlims.dictionary.sort_order IS 'Sets the sort order for dictionary categories.  The sort_order is WITHIN a category.'
+    </sql>
+</changeSet>
 </databaseChangeLog>

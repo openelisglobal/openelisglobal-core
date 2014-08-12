@@ -27,6 +27,7 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.IPatientService;
 import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -40,7 +41,6 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -191,16 +191,34 @@ public class BaseWorkplanAction extends BaseAction {
 	
     protected String getPatientName( Analysis analysis){
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-            IPatientService patientService = new PatientService(analysis.getSampleItem().getSample());
+            Sample sample = analysis.getSampleItem().getSample();
+            IPatientService patientService = new PatientService(sample);
             String nationalId = patientService.getNationalId();
-            if (GenericValidator.isBlankOrNull(nationalId))
-                return patientService.getLastName().toUpperCase();
-            else
-                return patientService.getLastName().toUpperCase() + " / " + nationalId;
+            String lastName = (patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
+            
+            SampleOrderService orderService = new SampleOrderService( sample );
+            String siteId = ( orderService.getSampleOrderItem() == null ? "" : orderService.getSampleOrderItem().getReferringPatientNumber());
+            
+            String code = "";
+            
+            if (!GenericValidator.isBlankOrNull(nationalId) && GenericValidator.isBlankOrNull(siteId))
+                code = nationalId;
+            else if (GenericValidator.isBlankOrNull(nationalId) && !GenericValidator.isBlankOrNull(siteId))
+                code = siteId;
+            else if (!GenericValidator.isBlankOrNull(nationalId) && !GenericValidator.isBlankOrNull(siteId))
+                code = nationalId + " / " + siteId;
+            
+            if (GenericValidator.isBlankOrNull(code)) 
+                return lastName;
+            else if (GenericValidator.isBlankOrNull(lastName) && !GenericValidator.isBlankOrNull(code))
+                return code;
+            else 
+                return lastName + " / " + code;
+            
         } else 
             return ""; 
     }
-	
+    
 	protected String getTestSectionName() {
 		return typeNameGroup.getName();
 	}
