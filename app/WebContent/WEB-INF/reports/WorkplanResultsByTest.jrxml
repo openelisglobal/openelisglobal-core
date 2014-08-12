@@ -149,13 +149,7 @@
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{receivedDate}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement key="line-2" x="1" y="14" width="557" height="1"/>
-				<graphicElement fill="Solid">
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="222" y="0" width="91" height="13" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{printSubjectNo}]]></printWhenExpression>
 				</reportElement>
@@ -175,11 +169,17 @@
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}.substring($P{prefixLength})]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="222" y="0" width="189" height="13" backcolor="#FFFFFF"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="222" y="0" width="189" height="13" isPrintWhenDetailOverflows="true" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientName}]]></textFieldExpression>
 			</textField>
+			<frame>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="550" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+			</frame>
 		</band>
 	</detail>
 	<columnFooter>
