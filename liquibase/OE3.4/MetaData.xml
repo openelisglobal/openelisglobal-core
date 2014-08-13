@@ -377,4 +377,38 @@
             <where>name = 'Patient report with no alerts'</where>
         </delete>
     </changeSet>
+    <changeSet author="jfurlong" id="4">
+        <comment>Remove reject reason where display_key = 'dictionary.reject.result.already.available'</comment>
+        <sql>
+            delete from clinlims.dictionary where display_key = 'dictionary.reject.result.already.available';
+            update clinlims.dictionary set sort_order = (100 * id); 
+        </sql>
+        <insert tableName="dictionary" schemaName="clinlims">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) "/>
+            <column name="is_active" value="Y" />
+            <column name="dict_entry" value="The sample received is jaundiced. Please submit another sample." />
+            <column name="lastupdated" value="  now() " />
+            <column name="dictionary_category_id" valueNumeric=" (select id from clinlims.dictionary_category where name = 'resultRejectionReasons') " />
+            <column name="display_key" value="dictionary.reject.result.jaundiced" />
+            <column name="sort_order" valueNumeric=" (select (sort_order + 33) from clinlims.dictionary where display_key = 'dictionary.reject.result.hemolyzed') " />
+        </insert>
+        <insert tableName="dictionary" schemaName="clinlims">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) "/>
+            <column name="is_active" value="Y" />
+            <column name="dict_entry" value="The sample received is lipemic. Please submit another sample." />
+            <column name="lastupdated" value="  now() " />
+            <column name="dictionary_category_id" valueNumeric=" (select id from clinlims.dictionary_category where name = 'resultRejectionReasons') " />
+            <column name="display_key" value="dictionary.reject.result.lipemic" />
+            <column name="sort_order" valueNumeric=" (select (sort_order + 66) from clinlims.dictionary where display_key = 'dictionary.reject.result.hemolyzed') " />
+        </insert>    
+        <insert tableName="dictionary" schemaName="clinlims">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) "/>
+            <column name="is_active" value="Y" />
+            <column name="dict_entry" value="Other." />
+            <column name="lastupdated" value="  now() " />
+            <column name="dictionary_category_id" valueNumeric=" (select id from clinlims.dictionary_category where name = 'resultRejectionReasons') " />
+            <column name="display_key" value="dictionary.reject.result.other" />
+            <column name="sort_order" valueNumeric=" (currval( 'dictionary_seq' ) * 100) " />
+        </insert>    
+    </changeSet>
 </databaseChangeLog>

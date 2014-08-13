@@ -101,7 +101,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.PANELS, createPanelList());
         typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
         typeToListMap.put(ListType.ALL_TESTS, createTestList());
-        typeToListMap.put(ListType.REJECTION_REASONS,createFromDictionaryCategory("resultRejectionReasons"));
+        typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
         typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
 
@@ -128,7 +128,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
         typeToListMap.put(ListType.PANELS, createPanelList());
         dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
-        typeToListMap.put(ListType.REJECTION_REASONS,createFromDictionaryCategory("resultRejectionReasons"));
+        typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
         new TestService( (Test)null ).localeChanged( locale );
         typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
@@ -282,13 +282,6 @@ public class DisplayListService implements LocaleChangeListener {
 		for (Dictionary dictionary : dictionaries) {
 			dictionaryList.add(new IdValuePair(dictionary.getId(), dictionary.getLocalizedName()));
 		}
-
-		Collections.sort(dictionaryList, new Comparator<IdValuePair>() {
-			@Override
-			public int compare(IdValuePair o1, IdValuePair o2) {
-                return (int)(Long.parseLong(o1.getId()) - Long.parseLong(o2.getId()));
-			}
-		});
 
 		return dictionaryList;
 	}

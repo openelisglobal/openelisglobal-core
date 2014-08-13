@@ -202,7 +202,7 @@ public class YearNumAccessionValidator implements IAccessionNumberValidator {
 
     @Override
 	public int getInvarientLength() {
-		return YEAR_END + separatorLength;
+		return 0;
 	}
 
 	@Override

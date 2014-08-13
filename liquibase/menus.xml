@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <!--The common elements of the menu (except for RetroCI) are the first set, followed by individual settings for other sets -->
-    <changeSet id="7" author="paulsc" context="haiti,haitiLNSP,ciLNSP,CI_IPCI,ci_regional" runOnChange="true">
+    <changeSet id="7" author="paulsc" context="haiti,haitiLNSP,ciLNSP,CI_IPCI,ci_regional" runOnChange="true" runAlways="true">
         <comment>Menu Items common to all configurations except for RetroCI</comment>
         <delete schemaName="clinlims" tableName="menu" />
         <sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
@@ -219,8 +219,47 @@
             <column name="display_key" value="reports.auditTrail" />
             <column name="tool_tip_key" value="reports.auditTrail" />
         </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+            <column name="presentation_order" valueNumeric="10" />
+            <column name="element_id" value="menu_reports_activity" />
+            <column name="display_key" value="openreports.activity.title" />
+            <column name="tool_tip_key" value="openreports.activity.title" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_activity_report_test" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTest" />
+            <column name="display_key" value="banner.menu.workplan.test" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_activity_report_panel" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByPanel" />
+            <column name="display_key" value="banner.menu.workplan.panel" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_activity_report_bench" />
+            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTestSection" />
+            <column name="display_key" value="banner.menu.workplan.bench" />
+            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
+        </insert>
     </changeSet>
-	<changeSet author="marks" id="1" context="haiti" runOnChange="true">
+	<changeSet author="marks" id="1" context="haiti" runOnChange="true" runAlways="true">
 		<comment>Adds the menu items for Haiti</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -728,8 +767,7 @@
 		</insert>
 
 	</changeSet>
-	<changeSet author="marks" id="2" context="haitiLNSP"
-		runOnChange="true">
+	<changeSet author="marks" id="2" context="haitiLNSP" runOnChange="true" runAlways="true">
 		<comment>Adds the menu items for Haiti LNSP</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -978,45 +1016,6 @@
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="parent_id"
                     valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
-            <column name="presentation_order" valueNumeric="10" />
-            <column name="element_id" value="menu_reports_activity" />
-            <column name="display_key" value="openreports.activity.title" />
-            <column name="tool_tip_key" value="openreports.activity.title" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
-            <column name="presentation_order" valueNumeric="1" />
-            <column name="element_id" value="menu_activity_report_test" />
-            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTest" />
-            <column name="display_key" value="banner.menu.workplan.test" />
-            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.test" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
-            <column name="presentation_order" valueNumeric="2" />
-            <column name="element_id" value="menu_activity_report_panel" />
-            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByPanel" />
-            <column name="display_key" value="banner.menu.workplan.panel" />
-            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.panel" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_activity' ) " />
-            <column name="presentation_order" valueNumeric="3" />
-            <column name="element_id" value="menu_activity_report_bench" />
-            <column name="action_url" value="/Report.do?type=indicator&amp;report=activityReportByTestSection" />
-            <column name="display_key" value="banner.menu.workplan.bench" />
-            <column name="tool_tip_key" value="tooltip.bannner.menu.workplan.bench" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
             <column name="presentation_order" valueNumeric="30" />
             <column name="element_id" value="menu_reports_rejection" />
             <column name="display_key" value="openreports.rejection.title" />
@@ -1162,8 +1161,7 @@
 		</insert>
 	</changeSet>
 
-	<changeSet author="marks" id="3" context="ciLNSP"
-		runOnChange="true">
+	<changeSet author="marks" id="3" context="ciLNSP" runOnChange="true" runAlways="true">
 		<comment>Adds the menu items for Cote d'Ivoire LNSP</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1410,7 +1408,7 @@
 			<column name="new_window" value="true" />
 		</insert>
 	</changeSet>
-	<changeSet author="paulsc" id="1" context="CI_IPCI"	runOnChange="true">
+	<changeSet author="paulsc" id="1" context="CI_IPCI"	runOnChange="true" runAlways="true">
 		<comment>Adds the menu items for Cote d'Ivoire IPCI</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1789,7 +1787,7 @@
 			<column name="new_window" value="true" />
 		</insert>
 	</changeSet>
-		<changeSet author="pauls" id="2" context="ci_regional"	runOnChange="true">
+		<changeSet author="pauls" id="2" context="ci_regional"	runOnChange="true" runAlways="true">
 		<comment>Adds the menu items for Cote d'Ivoire Regional Labs</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />

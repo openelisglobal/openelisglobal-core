@@ -27,6 +27,7 @@
         <property name="nameKey" type="java.lang.String">
             <column name="display_key" length="60" not-null="false" />
         </property>
+        <property name="sortOrder" column="sort_order" type="java.lang.Integer" />
     </class>
     <query name="dictionary.getNext">
          from Dictionary d order by d.dictionaryCategory.categoryName, d.dictEntry

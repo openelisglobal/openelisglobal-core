@@ -121,7 +121,7 @@
 				<text><![CDATA[Tech ID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="411" y="7" width="97" height="16"/>
+				<reportElement x="450" y="7" width="58" height="16"/>
 				<box leftPadding="4"/>
 				<textElement verticalAlignment="Top"/>
 				<text><![CDATA[Résultats]]></text>
@@ -157,71 +157,60 @@
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
-			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="554" height="19" isPrintWhenDetailOverflows="true"/>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement key="textField-3" stretchType="RelativeToBandHeight" mode="Transparent" x="242" y="3" width="169" height="13" isPrintWhenDetailOverflows="true">
-						<printWhenExpression><![CDATA[$P{printSubjectNo}]]></printWhenExpression>
-					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}]]></textFieldExpression>
-				</textField>
-				<line>
-					<reportElement x="245" y="18" width="307" height="1" forecolor="#000000">
-						<printWhenExpression><![CDATA[$P{printSubjectNo}]]></printWhenExpression>
-					</reportElement>
-				</line>
-				<line>
-					<reportElement positionType="FixRelativeToBottom" x="174" y="18" width="378" height="1"/>
-					<graphicElement>
-						<pen lineWidth="1.0" lineColor="#000000"/>
-					</graphicElement>
-				</line>
-				<textField isBlankWhenNull="false">
-					<reportElement key="textField" isPrintRepeatedValues="false" x="174" y="3" width="71" height="13" printWhenGroupChanges="Accession"/>
-					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{patientInfo}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement key="textField-3" stretchType="RelativeToBandHeight" mode="Transparent" x="175" y="3" width="235" height="13" isPrintWhenDetailOverflows="true" backcolor="#FFFFFF">
-						<printWhenExpression><![CDATA[!$P{printSubjectNo}]]></printWhenExpression>
-					</reportElement>
-					<box>
-						<topPen lineWidth="0.0" lineStyle="Dashed"/>
-						<leftPen lineStyle="Dashed"/>
-						<bottomPen lineStyle="Dashed"/>
-						<rightPen lineStyle="Dashed"/>
-					</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}.replaceAll("&rarr;", "-->")]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement key="textField" isPrintRepeatedValues="false" mode="Transparent" x="95" y="3" width="80" height="13" backcolor="#FFFFFF"/>
-					<box leftPadding="0"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}.substring($P{prefixLength})]]></textFieldExpression>
-				</textField>
-				<textField isBlankWhenNull="true">
-					<reportElement key="textField" isPrintRepeatedValues="false" mode="Transparent" x="0" y="3" width="95" height="13" printWhenGroupChanges="Accession" forecolor="#000000" backcolor="#FFFFFF"/>
-					<box leftPadding="2"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10"/>
-					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{receivedDate}]]></textFieldExpression>
-				</textField>
-				<line>
-					<reportElement isPrintRepeatedValues="false" x="1" y="0" width="553" height="1" printWhenGroupChanges="Accession" forecolor="#999999"/>
-					<graphicElement>
-						<pen lineWidth="1.0" lineColor="#000000"/>
-					</graphicElement>
-				</line>
-			</frame>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField-3" mode="Transparent" x="175" y="3" width="275" height="13">
+					<printWhenExpression><![CDATA[!$P{printSubjectNo}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}.replaceAll("&rarr;", "-->")]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="245" y="18" width="307" height="1" forecolor="#000000"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" isPrintRepeatedValues="false" x="174" y="3" width="276" height="13" printWhenGroupChanges="Accession"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientInfo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" isPrintRepeatedValues="false" mode="Transparent" x="95" y="3" width="80" height="13" backcolor="#FFFFFF"/>
+				<box leftPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}.substring($P{prefixLength})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="textField" isPrintRepeatedValues="false" mode="Transparent" x="0" y="3" width="95" height="13" printWhenGroupChanges="Accession" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{receivedDate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField-3" mode="Transparent" x="242" y="3" width="208" height="13" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[$P{printSubjectNo}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="174" y="18" width="378" height="1"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement isPrintRepeatedValues="false" x="1" y="18" width="553" height="1" printWhenGroupChanges="Accession" forecolor="#999999"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</graphicElement>
+			</line>
 		</band>
 	</detail>
 	<columnFooter>
