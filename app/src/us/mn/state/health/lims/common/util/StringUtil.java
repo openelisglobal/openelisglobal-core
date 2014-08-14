@@ -591,4 +591,36 @@ public class StringUtil {
         String format = "%1$." + significantDigits + "f";
         return String.format(format, value);
     }
+    
+    /**
+     * Builds a delimited String from a list of values
+     *
+     * @param values A list of Strings to be concatenated
+     * @param delimiter
+     * @param dropBlanksAndNulls If true then keep blank and null Strings out of the list 
+     * @return String
+     */
+    public static String buildDelimitedStringFromList(List<String> values, String delimiter, boolean dropBlanksAndNulls) {
+        String delimitedString = "";
+        
+        if (values == null)
+            return "";
+        
+        Iterator<String> it = values.iterator();
+        int cnt = 0;
+        while (it.hasNext()) {
+            String s = (String) it.next();
+            if (!GenericValidator.isBlankOrNull(s))
+                if (cnt == 0) {
+                    delimitedString = s;
+                    cnt++;
+                } else { 
+                    delimitedString = delimitedString + delimiter + s;
+                    cnt++;
+                }
+       }
+        
+        return delimitedString;
+    }
+
 }
