@@ -306,4 +306,11 @@
 		<column name="lastupdated" valueDate=" now() " /> 		
 	</insert>
 </changeSet>
+<changeSet author="kone" id="21">
+	<comment>Adds a new column to site_information table</comment>
+	<addColumn tableName="site_information" schemaName="clinlims">  
+		<column name="description_key"  type="varchar(42)" />
+	</addColumn> 	
+</changeSet>
+
 </databaseChangeLog>
