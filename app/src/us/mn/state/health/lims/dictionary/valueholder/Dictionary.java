@@ -51,6 +51,16 @@ public class Dictionary extends BaseObject{
 
     //bugzilla 1802
 	private String dictEntryDisplayValue;
+	
+    private Integer sortOrder;
+    
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
+    }	
 
 	public String getLocalAbbreviation() {
 		return localAbbreviation;

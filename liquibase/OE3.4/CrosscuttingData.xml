@@ -7,10 +7,4 @@
             <where>name = 'phone format' </where>
 		</update>
 	</changeSet>
-    <changeSet author="jfurlong" id="1">
-        <comment>Changing entered_birth_date field data in patient from XX/XX/yyyy to xx/xx/yyyy </comment>
-        <sql>
-        update clinlims.patient set entered_birth_date = lower(entered_birth_date) where entered_birth_date like '%XX%';
-        </sql>
-    </changeSet>
 </databaseChangeLog>
