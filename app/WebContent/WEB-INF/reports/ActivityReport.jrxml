@@ -21,6 +21,9 @@
 	<parameter name="splitNameAndTest" class="java.lang.Boolean" isForPrompting="false">
 		<defaultValueExpression><![CDATA[false]]></defaultValueExpression>
 	</parameter>
+	<parameter name="underlineResults" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[Boolean.TRUE]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -174,17 +177,17 @@
 			<staticText>
 				<reportElement x="0" y="16" width="61" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[collection]]></text>
+				<text><![CDATA[prélèvement]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="182" y="0" width="163" height="16"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Noms/Code du patient]]></text>
+				<text><![CDATA[Noms/Codes du patient]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="344" y="15" width="79" height="16"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<text><![CDATA[Statu]]></text>
+				<text><![CDATA[Statut]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText" x="422" y="0" width="61" height="16"/>
@@ -235,10 +238,10 @@
 	<detail>
 		<band height="16" splitType="Stretch">
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="553" height="15" printWhenGroupChanges="accession" backcolor="#E0E0E0"/>
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="553" height="16" printWhenGroupChanges="accession" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
+					<bottomPen lineWidth="0.0"/>
 				</box>
 			</frame>
 			<textField isBlankWhenNull="true">
@@ -273,7 +276,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{accessionNumber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="182" y="0" width="163" height="13" backcolor="#FFFFFF"/>
+				<reportElement mode="Transparent" x="182" y="0" width="152" height="13" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientOrTestName} != null && !"".equals($F{patientOrTestName}) ? $F{patientOrTestName} : "Pas enregistré"]]></textFieldExpression>
 			</textField>
@@ -283,7 +286,9 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{resultValue}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="182" y="0" width="371" height="15" forecolor="#000000"/>
+				<reportElement stretchType="RelativeToTallestObject" x="182" y="0" width="371" height="16" forecolor="#000000">
+					<printWhenExpression><![CDATA[$P{underlineResults}.equals( Boolean.TRUE )]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<bottomPen lineWidth="1.0"/>
 				</box>
