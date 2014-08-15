@@ -2188,7 +2188,22 @@ ALTER TABLE sampletracking OWNER TO clinlims;
 		SELECT  r.id FROM result AS r, analyte AS a WHERE a.name = 'generated CD4 Count' AND a.id = r.analyte_id
 	)		
 	</sql>
-</changeSet>
+</changeSet>	
+<changeSet id="112" author="kone" >
+    <comment>Adds data in description_key </comment>
+    <sql>
+         UPDATE site_information SET description_key = (SELECT  REPLACE(name, ' ','.'))  ;
+
+    </sql>
+</changeSet>	
+<changeSet id="113" author="kone" >
+    <comment>Set data in description_key </comment>
+    <sql>
+         UPDATE site_information SET description_key = ( concat('siteInfo.',description_key))  ;
+    </sql>
+</changeSet>	
+
+ 
 
 <include file="CILNSPData.xml"/>
 <include file="OE2.7/Schema.xml"/>

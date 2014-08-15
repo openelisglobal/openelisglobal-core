@@ -25,5 +25,6 @@
           <many-to-one name="schedule" class="us.mn.state.health.lims.scheduler.valueholder.CronScheduler" fetch="select">
             <column name="schedule_id" precision="10" scale="0" />
           </many-to-one>
+           <property name="descriptionKey"  type="java.lang.String" column="description_key" not-null="true" />
  </class>
 </hibernate-mapping>
