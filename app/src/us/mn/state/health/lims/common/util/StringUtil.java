@@ -603,22 +603,24 @@ public class StringUtil {
     public static String buildDelimitedStringFromList(List<String> values, String delimiter, boolean dropBlanksAndNulls) {
         String delimitedString = "";
         
-        if (values == null)
+        if (values == null || values.isEmpty())
             return "";
         
-        Iterator<String> it = values.iterator();
         int cnt = 0;
-        while (it.hasNext()) {
-            String s = (String) it.next();
-            if (!GenericValidator.isBlankOrNull(s))
-                if (cnt == 0) {
-                    delimitedString = s;
-                    cnt++;
-                } else { 
-                    delimitedString = delimitedString + delimiter + s;
-                    cnt++;
-                }
-       }
+        for (String s : values) {
+            if (GenericValidator.isBlankOrNull(s) && dropBlanksAndNulls) {
+                continue;
+            } else if (GenericValidator.isBlankOrNull(s) && !dropBlanksAndNulls) {
+                s = "";
+            }
+            if (cnt == 0) {
+                delimitedString = s;
+                cnt++;
+            } else { 
+                delimitedString = delimitedString + delimiter + s;
+                cnt++;
+            }
+        }
         
         return delimitedString;
     }
