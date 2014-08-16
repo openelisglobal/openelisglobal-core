@@ -523,19 +523,7 @@ function /*string*/ getNote( sampleIndex ){
 	return ($("note_" + sampleIndex).value.replace(singleQuote, "\\'" ).replace(doubleQuote, '\\"'));
 }
 
-function /*void*/  addHourTwoPoint(field, event) {
-
-    var key = event.which ? event.which : event.keyCode;
-    if (key == 8) { // delete key? do nothing
-        return;
-    }
-    var number = field.value;
-
-    if (field.value.length == 2 ) {
-        field.value = number + ":";
-    }
-    
-}
+ 
 </script>
 <% if(useInitialSampleCondition){ %>
 <div id="sampleConditionPrototype" style="display: none" >
@@ -594,7 +582,7 @@ function /*void*/  addHourTwoPoint(field, event) {
            <% if( FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour)){ %>
                <bean:message key="sample.receptionTime" />:
                    <html:text name="<%=formName %>" 
-                   onkeyup="filterTimeKeys(this, event); addHourTwoPoint(this,event);" 
+                   onkeyup="filterTimeKeys(this, event); " 
                    property="recievedTime"
                    styleId="receivedTime" 
                    maxlength="5"
