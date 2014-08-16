@@ -876,8 +876,6 @@ function savePage(){
 	form.submit();
 }
 
-<<<<<<< HEAD
-=======
 function setValidIndicaterOnField( success, element){
 	//Note the method this is overriding uses the name of the element, which does not have to be unique, set the id == name
 	if( !element.id ){ //element is id
@@ -893,7 +891,7 @@ function setValidIndicaterOnField( success, element){
  
 
 
->>>>>>> master
+ 
 // Moving autocomplete to end - needs to be at bottom for IE to trigger properly
 $jq(document).ready( function() {
         //fieldValidator declared in utilities.js
