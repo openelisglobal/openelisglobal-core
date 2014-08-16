@@ -75,10 +75,14 @@
             <column name="lastupdated" valueDate=" now() " />
         </insert>
     </changeSet>
-<changeSet author="kone" id="21">
-	<comment>Adds a new column to site_information table</comment>
-	<addColumn tableName="site_information" schemaName="clinlims">  
-		<column name="description_key"  type="varchar(42)" />
-	</addColumn> 	
-</changeSet>
+    <changeSet id="5" author="kone" >
+    <comment>Adds data in description_key </comment>
+    <sql>
+         UPDATE site_information SET description_key = (SELECT  REPLACE(name, ' ','.'))  ;
+         UPDATE site_information SET description_key = ( concat('siteInfo.',description_key))  ;
+
+    </sql>
+</changeSet>	
+ 
+
 </databaseChangeLog>

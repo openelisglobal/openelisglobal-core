@@ -2189,19 +2189,7 @@ ALTER TABLE sampletracking OWNER TO clinlims;
 	)		
 	</sql>
 </changeSet>	
-<changeSet id="112" author="kone" >
-    <comment>Adds data in description_key </comment>
-    <sql>
-         UPDATE site_information SET description_key = (SELECT  REPLACE(name, ' ','.'))  ;
-
-    </sql>
-</changeSet>	
-<changeSet id="113" author="kone" >
-    <comment>Set data in description_key </comment>
-    <sql>
-         UPDATE site_information SET description_key = ( concat('siteInfo.',description_key))  ;
-    </sql>
-</changeSet>	
+	
 
  
 
