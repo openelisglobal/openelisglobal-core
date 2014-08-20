@@ -151,13 +151,15 @@ public class ResultService {
 		}
 
 		if (ResultType.DICTIONARY.matches(getTestType())) {
+		    
+		    if (!printable) {
+		        return result.getValue();
+		    }
 		    String reportResult = "";
 		    List<Result> resultList = resultDAO.getResultsByAnalysis( result.getAnalysis());
 	        if( !resultList.isEmpty()){
 	            if( resultList.size() == 1 ){
-	                Result result = resultList.get( 0 );
-	                reportResult = printable ? getDictEntry(  ) : result.getValue();
-
+	                reportResult = getDictEntry();
 	            }else{
 	                //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
                     List<Result> dictionaryResults = new ArrayList<Result>();
@@ -170,10 +172,8 @@ public class ResultService {
                         }
                     }
 
-                    Dictionary dictionary = new Dictionary();
                     for( Result sibResult : dictionaryResults ){
-                        dictionary.setId( sibResult.getValue() );
-                        dictionaryDAO.getData( dictionary );
+                        Dictionary dictionary = dictionaryDAO.getDictionaryById(sibResult.getValue());
                         reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
                         if( quantification != null && quantification.getParentResult().getId().equals( sibResult.getId() ) ){
                             reportResult += ": " + quantification.getValue();
