@@ -1563,6 +1563,5 @@
 		<action path="/AuditTrailReport" name="AuditTrailViewForm" type="us.mn.state.health.lims.audittrail.action.AuditTrailViewAction" >
 			<forward name="success" path="auditTrailViewDefinition" />
 		</action>
-        <action path="/TestManagementConfigMenu" />
 	</action-mappings>
 </struts-config>
