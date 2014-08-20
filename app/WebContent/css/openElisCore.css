@@ -459,7 +459,7 @@ div.dataTables_filter {
   display: inline-block;
   padding: 1px;
   margin: 2px;
-  border: 1px solid transparent;
+    border: 1px solid transparent;
   width: 65px;
 }
 .results-readonly.invalidHighlight {
@@ -467,6 +467,14 @@ div.dataTables_filter {
   border-width: 1px;
 }
 
+.confirmation{
+    border: 2px solid transparent;
+    color: #336699;
+}
+
+input.disabled-text-button {
+    color:#808080;
+}
 /***** To Be Sorted *****/
 th.leftVertical, td.leftVertical{
 	border-left-style:solid;
@@ -865,6 +873,9 @@ a.sortableheader:link, .sorthead {
   text-decoration: underline;
 }
 
+.error {
+    border-color:red ;
+}
 
 /* - - - - - - - - - - - - - - - - - - - - -
 

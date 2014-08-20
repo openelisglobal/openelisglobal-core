@@ -33,6 +33,7 @@ public class CI_RETROAdminFormFields implements IAdminFormFieldsForImplementatio
 		settings.put(Field.ResultInformationMenu, Boolean.TRUE);
 		settings.put(Field.SampleEntryMenu, Boolean.FALSE);
         settings.put( Field.PATIENT_ENTRY_CONFIGURATION, Boolean.FALSE );
+        settings.put( Field.TEST_MANAGEMENT, Boolean.FALSE);
 		return settings;
 	}
 
