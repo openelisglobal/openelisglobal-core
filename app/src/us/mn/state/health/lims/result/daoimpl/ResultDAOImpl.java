@@ -517,7 +517,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
     @Override
     @SuppressWarnings( "unchecked" )
     public List<Result> getResultsForPanelInDateRange( String panelId, Date lowDate, Date highDate ) throws LIMSRuntimeException{
-        String sql = "FROM Result r WHERE r.analysis.panel.id = :panelId AND r.lastupdated BETWEEN :lowDate AND :highDate";
+        String sql = "FROM Result r WHERE r.analysis.panel.id = :panelId AND r.lastupdated BETWEEN :lowDate AND :highDate order by r.id";
 
         try{
             Query query = HibernateUtil.getSession().createQuery(sql);
