@@ -26,4 +26,11 @@
             <where>name = 'augmentTestNameWithType'</where>
         </update>
     </changeSet>
+    <changeSet id="2" author="paulsc" context="CDIRetroCI">
+        <comment>Turns off the role of Test Management</comment>
+        <update tableName="system_role" >
+            <column name="active" valueBoolean="false" />
+            <where>name = 'Test Configuration'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

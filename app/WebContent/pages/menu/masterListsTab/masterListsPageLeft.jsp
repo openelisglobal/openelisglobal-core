@@ -2,8 +2,7 @@
 	contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.util.SystemConfiguration,
 	us.mn.state.health.lims.common.util.ConfigurationProperties,
-	us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.common.formfields.AdminFormFields,us.mn.state.health.lims.common.formfields.AdminFormFields.Field"%>
+	us.mn.state.health.lims.common.formfields.AdminFormFields,us.mn.state.health.lims.common.formfields.AdminFormFields.Field"%>
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
@@ -25,22 +24,6 @@
     	</html:link>
 	</li>
 <% } %>
-<%-- remove the following 09/12/2006 bugzilla 1399--%>
-<%--li>
-  <html:link action="/AnalysisMenu">
-    <bean:message key="analysis.browse.title" />
-  </html:link>
-</li>
-<li>
-  <html:link action="/ActionMenu">
-    <bean:message key="action.browse.title" />
-  </html:link>
-</li>
-<li>
-  <html:link action="/AnalyteMenu">
-    <bean:message key="analyte.browse.title" />
-  </html:link>
-</li --%>
 <% if(adminFields.useField(Field.AnalyzerTestNameMenu)){ %>
 <li>
   <html:link action="/AnalyzerTestNameMenu">
@@ -97,11 +80,6 @@
   </html:link>
 </li>
 <% } %>
-<%--li>
-    <html:link action="/MessageOrganizationMenu">
-    <bean:message key="messageorganization.browse.title" />
-  </html:link>
-</li --%>
 <% if(adminFields.useField(Field.MethodMenu)){ %>
 <li>
     <html:link action="/MethodMenu">
@@ -142,17 +120,6 @@
   </html:link>
 </li>
 <% } %>
-<%--li>
-    <html:link action="/PatientMenu">
-    <bean:message key="patient.browse.title" />
-  </html:link>
-</li--%>
-<%-- remove the following 09/12/2006 bugzilla 1399--%>
-<%--li>
-    <html:link action="/PersonMenu">
-    <bean:message key="person.browse.title" />
-  </html:link>
-</li--%>
 <% if(adminFields.useField(Field.ProgramMenu)){ %>
 <li>
   <html:link action="/ProgramMenu">
@@ -188,11 +155,6 @@
   </html:link>
 </li>
 <% } %>
-<%--li>
-  <html:link action="/ReferenceTablesMenu">
-    <bean:message key="referencetables.browse.title" />
-   </html:link>
- </li--%>
 <% if(adminFields.useField(Field.RegionMenu)){ %>
 <li>
   <html:link action="/RegionMenu">
@@ -207,11 +169,6 @@
   </html:link>
 </li>
 <% } %>
-<%--li>
-  <html:link action="/ResultMenu">
-    <bean:message key="result.browse.title" />
-  </html:link>
-</li--%>
 <% if(adminFields.useField(Field.RoleMenu)){ %>
 <li>
   <html:link action="/RoleMenu">
@@ -231,6 +188,13 @@
   <html:link action="/SampleEntryConfigMenu">
     <bean:message key="sample.entry.browse.title" />
   </html:link>
+</li>
+<% } %>
+<% if(adminFields.useField(Field.TEST_MANAGEMENT)){ %>
+<li>
+    <html:link action="/TestManagementConfigMenu">
+        <bean:message key="configuration.test.management" />
+    </html:link>
 </li>
 <% } %>
 <% if(adminFields.useField(Field.PATIENT_ENTRY_CONFIGURATION)){ %>
@@ -403,26 +367,6 @@
   </html:link>
 </li>
 <% } %>
-<%-- %>li>
-  <html:link action="/LoginUserMenu">
-    <bean:message key="login.browse.title" />
-  </html:link>
-</li>
-<li>
-  <html:link action="/SystemUserMenu">
-    <bean:message key="systemuser.browse.title" />
-  </html:link>
-</li>
-<li>
-  <html:link action="/UserRoleMenu">
-    <bean:message key="systemuserrole.browse.title" />
-  </html:link>
-</li>
-<li>
-  <html:link action="/SystemModuleMenu">
-    <bean:message key="systemmodule.browse.title" />
-  </html:link>
-</li--%>
 <% if(adminFields.useField(Field.SystemUserModuleMenu)){ %>
 <li>
   <html:link action="/SystemUserModuleMenu">

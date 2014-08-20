@@ -281,6 +281,13 @@
         <put name="body" value="/pages/siteinformation/siteInformation.jsp"/>
     </definition>
 
+    <definition name="testManagementConfigDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/test/testManagement.jsp"/>
+    </definition>
+
+    <definition name="testRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/test/testRename.jsp"/>
+    </definition>
 
 	<definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
     	<put name="body" value="/pages/userrole/userRoleMenu.jsp"/>
@@ -320,5 +327,5 @@
     	<put name="body" value="/pages/dataexchange/resultReportingConfiguration.jsp" />
     	<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>
-    
+
 </tiles-definitions>
