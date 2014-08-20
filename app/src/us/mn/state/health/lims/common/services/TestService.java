@@ -77,6 +77,10 @@ public class TestService implements LocaleChangeListener{
     @Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;
+        testNamesChanged();
+    }
+
+    public static void testNamesChanged( ){
         entityToMap.put( Entity.TEST_NAME, createTestIdToNameMap() );
         entityToMap.put(Entity.TEST_AUGMENTED_NAME, createTestIdToAugmentedNameMap());
         entityToMap.put(Entity.TEST_REPORTING_NAME, createTestIdToReportingNameMap());

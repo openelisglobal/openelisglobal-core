@@ -186,6 +186,16 @@ public class DisplayListService implements LocaleChangeListener {
 			typeToListMap.put(ListType.SAMPLE_PATIENT_REFERRING_CLINIC, createReferringClinicList());
 			break;
 		}
+        case ALL_TESTS:{
+            TestService.testNamesChanged();
+            typeToListMap.put(ListType.ALL_TESTS, createTestList());
+            break;
+        }
+        case ORDERABLE_TESTS:{
+            TestService.testNamesChanged();
+            typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
+            break;
+        }
 
 		}
 		return typeToListMap.get(listType);
@@ -262,6 +272,13 @@ public class DisplayListService implements LocaleChangeListener {
             tests.add( new IdValuePair( test.getId(), TestService.getLocalizedAugmentedTestName( test )) );
         }
 
+        Collections.sort( tests, new Comparator<IdValuePair>(){
+            @Override
+            public int compare( IdValuePair o1, IdValuePair o2 ){
+                return o1.getValue().compareTo( o2.getValue() );
+            }
+        } );
+
         return tests;
     }
 
@@ -271,6 +288,13 @@ public class DisplayListService implements LocaleChangeListener {
         List<Test> testList = new TestDAOImpl().getAllActiveTests(false);
         for(Test test : testList){
             tests.add( new IdValuePair( test.getId(), TestService.getLocalizedAugmentedTestName( test ) ) );
+
+            Collections.sort( tests, new Comparator<IdValuePair>(){
+                @Override
+                public int compare( IdValuePair o1, IdValuePair o2 ){
+                    return o1.getValue().compareTo( o2.getValue() );
+                }
+            } );
         }
 
         return tests;
