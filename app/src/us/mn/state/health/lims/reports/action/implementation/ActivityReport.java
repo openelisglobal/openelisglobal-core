@@ -23,6 +23,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.SampleService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -33,6 +34,7 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ActivityReport extends Report implements IReportCreator{
@@ -125,21 +127,20 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         item.setResultDate( DateUtil.convertTimestampToTwoYearStringDate( result.getLastupdated() ) );
         item.setCollectionDate( DateUtil.convertTimestampToTwoYearStringDate( result.getAnalysis().getSampleItem().getCollectionDate() ) );
 
+        List<String> values = new ArrayList<String>();
+        values.add(patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
+        values.add(patientService.getNationalId());
+        
+        SampleOrderService orderService = new SampleOrderService( sampleService.getSample());
+        values.add( orderService.getSampleOrderItem() == null ? "" : orderService.getSampleOrderItem().getReferringPatientNumber());
 
-        StringBuilder nameBuilder = new StringBuilder( patientService.getLastName().toUpperCase() );
-        if( !GenericValidator.isBlankOrNull( patientService.getNationalId() ) ){
-            if( nameBuilder.length() > 0 ){
-                nameBuilder.append( " / " );
-            }
-            nameBuilder.append( patientService.getNationalId() );
-        }
-
-
+        String name = StringUtil.buildDelimitedStringFromList(values, " / ", true);
+        
         if( useTestName ){
             item.setPatientOrTestName( resultService.getTestName() );
-            item.setNonPrintingPatient( nameBuilder.toString() );
+            item.setNonPrintingPatient( name );
         }else{
-            item.setPatientOrTestName( nameBuilder.toString() );
+            item.setPatientOrTestName( name );
         }
 
         return item;

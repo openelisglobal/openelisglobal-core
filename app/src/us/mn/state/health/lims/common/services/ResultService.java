@@ -16,6 +16,7 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.json.simple.JSONObject;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -37,6 +38,7 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -149,7 +151,38 @@ public class ResultService {
 		}
 
 		if (ResultType.DICTIONARY.matches(getTestType())) {
-			return printable ? getDictEntry(  ) : result.getValue();
+		    
+		    if (!printable) {
+		        return result.getValue();
+		    }
+		    String reportResult = "";
+		    List<Result> resultList = resultDAO.getResultsByAnalysis( result.getAnalysis());
+	        if( !resultList.isEmpty()){
+	            if( resultList.size() == 1 ){
+	                reportResult = getDictEntry();
+	            }else{
+	                //If dictionary result it can also have a quantified result
+                    List<Result> dictionaryResults = new ArrayList<Result>();
+                    Result quantification = null;
+                    for( Result sibResult : resultList ){
+                        if( ResultType.DICTIONARY.matches( sibResult.getResultType() ) ){
+                            dictionaryResults.add( sibResult );
+                        }else if( ResultType.ALPHA.matches( sibResult.getResultType() ) && sibResult.getParentResult() != null ){
+                            quantification = sibResult;
+                        }
+                    }
+
+                    for( Result sibResult : dictionaryResults ){
+                        Dictionary dictionary = dictionaryDAO.getDictionaryById(sibResult.getValue());
+                        reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+                        if( quantification != null && quantification.getParentResult().getId().equals( sibResult.getId() ) ){
+                            reportResult += separator + quantification.getValue();
+                        }
+                    }
+	            }   
+	        }
+
+			return StringEscapeUtils.escapeHtml(reportResult);
 		} else if (ResultType.isMultiSelectVariant(getTestType())) {
 			StringBuilder buffer = new StringBuilder();
 			boolean firstPass = true;
