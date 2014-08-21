@@ -176,7 +176,7 @@ public class ResultService {
                         Dictionary dictionary = dictionaryDAO.getDictionaryById(sibResult.getValue());
                         reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
                         if( quantification != null && quantification.getParentResult().getId().equals( sibResult.getId() ) ){
-                            reportResult += ": " + quantification.getValue();
+                            reportResult += separator + quantification.getValue();
                         }
                     }
 	            }   
