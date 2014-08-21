@@ -387,7 +387,7 @@ public class DictionaryDAOImpl extends BaseDAOImpl implements DictionaryDAO {
             if (orderByDictEntry) {
                 sql += " order by d.dictEntry asc";
             } else {
-                sql += " order by d.id asc";
+                sql += " order by d.sortOrder asc";
             }
             Query query = HibernateUtil.getSession().createQuery(sql);
             query.setParameter("param1", fieldValue);
