@@ -161,7 +161,7 @@ public class ResultService {
 	            if( resultList.size() == 1 ){
 	                reportResult = getDictEntry();
 	            }else{
-	                //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
+	                //If dictionary result it can also have a quantified result
                     List<Result> dictionaryResults = new ArrayList<Result>();
                     Result quantification = null;
                     for( Result sibResult : resultList ){
