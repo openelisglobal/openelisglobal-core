@@ -32,6 +32,7 @@ import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.dao.TestDAO;
@@ -189,32 +190,19 @@ public class BaseWorkplanAction extends BaseAction {
 		}
 	}
 	
-    protected String getPatientName( Analysis analysis){
+    protected String getPatientName(Analysis analysis){
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
             Sample sample = analysis.getSampleItem().getSample();
             IPatientService patientService = new PatientService(sample);
-            String nationalId = patientService.getNationalId();
-            String lastName = (patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
+            List<String> values = new ArrayList<String>();
+            values.add(patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
+            values.add(patientService.getNationalId());
             
             SampleOrderService orderService = new SampleOrderService( sample );
-            String siteId = ( orderService.getSampleOrderItem() == null ? "" : orderService.getSampleOrderItem().getReferringPatientNumber());
+            values.add( orderService.getSampleOrderItem() == null ? "" : orderService.getSampleOrderItem().getReferringPatientNumber());
             
-            String code = "";
-            
-            if (!GenericValidator.isBlankOrNull(nationalId) && GenericValidator.isBlankOrNull(siteId))
-                code = nationalId;
-            else if (GenericValidator.isBlankOrNull(nationalId) && !GenericValidator.isBlankOrNull(siteId))
-                code = siteId;
-            else if (!GenericValidator.isBlankOrNull(nationalId) && !GenericValidator.isBlankOrNull(siteId))
-                code = nationalId + " / " + siteId;
-            
-            if (GenericValidator.isBlankOrNull(code)) 
-                return lastName;
-            else if (GenericValidator.isBlankOrNull(lastName) && !GenericValidator.isBlankOrNull(code))
-                return code;
-            else 
-                return lastName + " / " + code;
-            
+            return StringUtil.buildDelimitedStringFromList(values, " / ", true);
+                        
         } else 
             return ""; 
     }
