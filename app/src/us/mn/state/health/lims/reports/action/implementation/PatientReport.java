@@ -45,16 +45,10 @@ import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.laborder.dao.LabOrderTypeDAO;
-import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
-import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
-import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
-import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -103,7 +97,6 @@ import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.Res
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -131,7 +124,6 @@ public abstract class PatientReport extends Report{
     protected AnalysisDAO analysisDAO = new AnalysisDAOImpl();
     protected NoteDAO noteDAO = new NoteDAOImpl();
     protected PersonAddressDAO addressDAO = new PersonAddressDAOImpl();
-    private LabOrderTypeDAO labOrderTypeDAO = new LabOrderTypeDAOImpl();
     private List<String> handledOrders;
     private List<Analysis> updatedAnalysis = new ArrayList<Analysis>(  );
 
@@ -160,8 +152,6 @@ public abstract class PatientReport extends Report{
     protected static String SUBJECT_NUMBER_IDENTITY_TYPE_ID = "0";
     protected static String HEALTH_REGION_IDENTITY_TYPE_ID = "0";
     protected static String HEALTH_DISTRICT_IDENTITY_TYPE_ID = "0";
-    protected static String LAB_TYPE_OBSERVATION_ID = "0";
-    protected static String LAB_SUBTYPE_OBSERVATION_ID = "0";
     protected static Long PERSON_REQUESTER_TYPE_ID;
     protected static Long ORGANIZATION_REQUESTER_TYPE_ID;
     protected static final NoteType[] FILTER = {NoteType.EXTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
@@ -203,13 +193,6 @@ public abstract class PatientReport extends Report{
                 ADDRESS_COMMUNE_ID = part.getId();
             }
         }
-
-        ObservationHistoryType ohType = new ObservationHistoryTypeDAOImpl().getByName( "primaryOrderType" );
-        LAB_TYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
-
-        ohType = new ObservationHistoryTypeDAOImpl().getByName( "secondaryOrderType" );
-        LAB_SUBTYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
-
     }
 
     abstract protected String getReportNameForParameterPage();
@@ -580,16 +563,6 @@ public abstract class PatientReport extends Report{
             }
     }
 
-    private boolean noResults( List<Result> resultList ){
-        if( resultList.isEmpty() || GenericValidator.isBlankOrNull( resultList.get( 0 ).getValue() )){
-            return true;
-        }
-
-        Result result = resultList.get( 0 );
-        return ( ResultType.MULTISELECT.getDBValue().equals( result.getResultType() ) || ResultType.DICTIONARY.getDBValue().equals( result.getResultType() ) ) && "0".equals( result.getValue() );
-
-    }
-
     private void setNormalRange( ClinicalPatientData data, Test test, Result result ){
         String uom = getUnitOfMeasure(  test );
         data.setTestRefRange( addIfNotEmpty( getRange( result ), appendUOMToRange() ? uom : null ) );
@@ -625,7 +598,7 @@ public abstract class PatientReport extends Report{
                     }
                 }
             }else if( ResultType.isDictionaryVariant( result.getResultType() )){
-                boolean isAbnormal = false;
+                boolean isAbnormal;
 
                 if( data == null){
                     isAbnormal = new ResultService( result ).isAbnormalDictionaryResult();
@@ -802,7 +775,7 @@ public abstract class PatientReport extends Report{
      *
      * @return  A single record
      */
-    protected ClinicalPatientData reportAnalysisResults(Timestamp lastReportTime, boolean hasParent){
+    protected ClinicalPatientData reportAnalysisResults( boolean hasParent){
         ClinicalPatientData data = new ClinicalPatientData();
         String testName = null;
         String sortOrder = "";
@@ -850,7 +823,7 @@ public abstract class PatientReport extends Report{
         }
 
         data.setAccessionNumber( currentSampleService.getAccessionNumber() + "-" + sortOrder );
-        data.setLabOrderType( createLabOrderType() );
+ //       data.setLabOrderType( createLabOrderType() );
 
         if( doAnalysis ){
             reportResultAndConclusion( data );
@@ -872,34 +845,6 @@ public abstract class PatientReport extends Report{
             testName = TestService.getLocalizedTestName(reportAnalysis.getTest());
         }
         return (indent ? "    " : "") + testName;
-    }
-
-    private String createLabOrderType(){
-        if( LAB_TYPE_OBSERVATION_ID == null ){
-            return "";
-        }
-
-        List<ObservationHistory> primaryOrderTypes = observationDAO.getAll( patientService.getPatient(), currentSampleService.getSample(), LAB_TYPE_OBSERVATION_ID );
-        if( primaryOrderTypes.isEmpty() ){
-            return "";
-        }
-
-        LabOrderType primaryLabOrderType = labOrderTypeDAO.getLabOrderTypeByType( primaryOrderTypes.get( 0 ).getValue() );
-        if( primaryLabOrderType == null ){
-            return "";
-        }
-
-        if( LAB_SUBTYPE_OBSERVATION_ID == null ){
-            return primaryLabOrderType.getLocalizedName();
-        }
-
-        List<ObservationHistory> subOrderTypes = observationDAO.getAll( patientService.getPatient(), currentSampleService.getSample(), LAB_SUBTYPE_OBSERVATION_ID );
-        if( subOrderTypes.isEmpty() ){
-            return primaryLabOrderType.getLocalizedName();
-        }else{
-            return primaryLabOrderType.getLocalizedName() + " : " + subOrderTypes.get( 0 ).getValue();
-        }
-
     }
 
     /**

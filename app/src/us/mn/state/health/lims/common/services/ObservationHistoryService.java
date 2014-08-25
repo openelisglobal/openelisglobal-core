@@ -42,12 +42,12 @@ public class ObservationHistoryService{
 		PAYMENT_STATUS("paymentStatus"), 
 		REQUEST_DATE("requestDate"), 
 		NEXT_VISIT_DATE("nextVisitDate"), 
-		REFERRING_SITE("referringSite"), 
-		PRIMARY_ORDER_TYPE("primaryOrderType"), 
-		SECONDARY_ORDER_TYPE("secondaryOrderType"), 
-		OTHER_SECONDARY_ORDER_TYPE(	"otherSecondaryOrderType"),
+		REFERRING_SITE("referringSite"),
 		REFERRERS_PATIENT_ID("referrersPatientId"),
-        BILLING_REFERENCE_NUMBER("billingRefNumber");
+        BILLING_REFERENCE_NUMBER("billingRefNumber"),
+        TEST_LOCATION_CODE("testLocationCode"),
+        TEST_LOCATION_CODE_OTHER("testLocationCodeOther"),
+        PROGRAM("program");
 		
 		private String dbName;
 

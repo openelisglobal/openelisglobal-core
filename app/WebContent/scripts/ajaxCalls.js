@@ -58,8 +58,8 @@ function getCodeForOrganization( organizationId, success, failure){
 }
 
 
-function getTestsForSampleType(sampleTypeId, labOrderTypeId, success, failure) {
-	var request = "&sampleType=" + sampleTypeId + "&labOrderType=" + labOrderTypeId;
+function getTestsForSampleType(sampleTypeId, success, failure) {
+	var request = "&sampleType=" + sampleTypeId;
 	if( !failure ){	failure = defaultFailure;}
 	
 	new Ajax.Request('ajaxQueryXML', // url

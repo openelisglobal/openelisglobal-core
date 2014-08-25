@@ -156,14 +156,13 @@
         }
     }
 
-    function labPeriodChanged(labOrderPeriodElement) {
-        if (labOrderPeriodElement.length - 1 == labOrderPeriodElement.selectedIndex) {
-            $("labOrderPeriodOtherId").show();
+    function testLocationCodeChanged(element) {
+        if (element.length - 1 == element.selectedIndex) {
+            $("testLocationCodeOtherId").show();
         } else {
-            $("labOrderPeriodOtherId").hide();
-            $("labOrderPeriodOtherId").value = "";
+            $("testLocationCodeOtherId").hide();
+            $("testLocationCodeOtherId").value = "";
         }
-
     }
 
     function setOrderModified(){
@@ -498,41 +497,28 @@
     </td>
 </tr>
 <% } %>
-<% if( FormFields.getInstance().useField( Field.SampleEntryLabOrderTypes ) ){%>
+<% if( FormFields.getInstance().useField( Field.TEST_LOCATION_CODE ) ){%>
 <tr>
     <td><bean:message key="sample.entry.sample.period"/>:</td>
     <td>
         <html:select name="<%=formName %>"
-                     property="sampleOrderItems.followupPeriodOrderType"
-                     onchange="setOrderModified(); labPeriodChanged( this )"
-                     styleId="followupLabOrderPeriodId"
-                     style="display:none">
+                     property="sampleOrderItems.testLocationCode"
+                     onchange="setOrderModified(); testLocationCodeChanged( this )"
+                     styleId="testLocationCodeId">
             <option value=''></option>
-            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.followupPeriodOrderTypes"
+            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.testLocationCodeList"
                            type="IdValuePair">
-                <option value='<%=optionValue.getId()%>' <%=optionValue.getValue().equals(sampleOrderItem.getFollowupPeriodOrderType() ) ? "selected='selected'" : ""%> >
-                    <bean:write name="optionValue" property="value"/>
-                </option>
-            </logic:iterate>
-        </html:select>
-        <html:select name="<%=formName %>"
-                     property="sampleOrderItems.initialPeriodOrderType"
-                     onchange="setOrderModified(); labPeriodChanged( this )"
-                     styleId="initialLabOrderPeriodId"
-                     style="display:none">
-            <option value=''></option>
-            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.initialPeriodOrderTypes"
-                           type="IdValuePair">
-                <option value='<%=optionValue.getId()%>' <%=optionValue.getValue().equals(sampleOrderItem.getInitialPeriodOrderType() ) ? "selected='selected'" : ""%> >
+                <option value='<%=optionValue.getId()%>' <%=optionValue.getId().equals(sampleOrderItem.getTestLocationCode() ) ? "selected='selected'" : ""%> >
                     <bean:write name="optionValue" property="value"/>
                 </option>
             </logic:iterate>
         </html:select>
         &nbsp;
         <html:text name='<%= formName %>'
-                   property="sampleOrderItems.otherPeriodOrder"
-                   styleId="labOrderPeriodOtherId"
-                   style="display:none"/>
+                   property="sampleOrderItems.otherLocationCode"
+                   styleId="testLocationCodeOtherId"
+                   style='display:none'
+                    />
     </td>
 </tr>
 <% } %>
@@ -548,24 +534,15 @@
 </div>
 
 <script type="text/javascript">
-    function displayOrderTypeDependencies() {
-        var orderSelection, selectOptions;
 
-        if (<%="HIV_firstVisit".equals(sampleOrderItem.getOrderType())%>){
-            orderSelection = $jq("#initialLabOrderPeriodId");
-        }else if(<%="HIV_followupVisit".equals(sampleOrderItem.getOrderType())%>){
-            orderSelection = $jq("#followupLabOrderPeriodId");
-        }
-
-        if( orderSelection){
-            if( $jq("#labOrderPeriodOtherId").val() ){
-                $jq("#labOrderPeriodOtherId").show();
-                selectOptions = orderSelection.find("option");
-                selectOptions[selectOptions.length - 1].selected = true;
+    <% if( FormFields.getInstance().useField( Field.TEST_LOCATION_CODE ) ){%>
+    function showTestLocationCode(){
+            if(( $jq("#testLocationCodeId option").length -1 ) == $jq("#testLocationCodeId option:selected").index() ){
+                $jq("#testLocationCodeOtherId").show();
             }
-            orderSelection.show();
-        }
-}
+    }
+    <% } %>
+
     $jq(document).ready(function () {
         var dropdown = $jq("select#requesterId");
         autoCompleteWidth = dropdown.width() + 66 + 'px';
@@ -581,8 +558,9 @@
             setOrderModified();
             setCorrectSave();
         };
-
-        displayOrderTypeDependencies();
+        if( showTestLocationCode){
+            showTestLocationCode();
+        }
     });
 
 </script>

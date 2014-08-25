@@ -50,4 +50,11 @@
             local_code='Test rapide HIV' where name = 'Test rapide HIV 1 + HIV 2';
         </sql>
     </changeSet>
+    <changeSet id="3" author="paulsc" context="ci_regional, CI_IPCI, ciLNSP ">
+        <comment>Turns off adding program in site configuration</comment>
+        <update tableName="site_information" >
+            <column name="value" value="true" />
+            <where>name = 'Program'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

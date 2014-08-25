@@ -22,8 +22,11 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
@@ -32,7 +35,6 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 public class PatientHaitiClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
@@ -73,10 +75,6 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	protected void createReportItems(){
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(currentSampleService.getId(), analysisStatusIds);
 
-        Timestamp lastReportTime = new ReportTrackingService().getTimeOfLastReport( currentSampleService.getSample(), ReportTrackingService.ReportType.PATIENT );
-        if( lastReportTime == null){
-            lastReportTime = new Timestamp( Long.MAX_VALUE );
-        }
 		currentConclusion = null;
 
 		for(Analysis analysis : analysisList){
@@ -84,7 +82,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
 				reportAnalysis = analysis;
-				ClinicalPatientData resultsData = reportAnalysisResults( lastReportTime, hasParentResult);
+				ClinicalPatientData resultsData = reportAnalysisResults(  hasParentResult);
 
 				if(reportAnalysis.isReferredOut()){
 					Referral referral = referralDao.getReferralByAnalysisId(reportAnalysis.getId());
@@ -185,7 +183,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			ClinicalPatientData reportItem = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ), false);
+			ClinicalPatientData reportItem = reportAnalysisResults( false);
 			reportItem.setTestSection(StringUtil.getMessageForKey("report.no.results"));
 			clinicalReportItems.add(reportItem);
 		}else{

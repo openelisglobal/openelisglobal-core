@@ -1,11 +1,7 @@
 package us.mn.state.health.lims.typeofsample.util;
 
-import org.apache.commons.validator.GenericValidator;
-import us.mn.state.health.lims.laborder.daoimpl.LabOrderItemDAOImpl;
-import us.mn.state.health.lims.laborder.valueholder.LabOrderItem;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
-import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -27,7 +23,6 @@ public class TypeOfSampleUtil {
 	private static Map<String, List<Test>> sampleIdTestMap = new HashMap<String, List<Test>>();
     private static Map<String, String> typeOfSampleIdToNameMap;
     private static Map<String, String> typeOfSampleWellKnownNameToIdMap;
-	private static Map<String, List<String>> labOrderTypeToTestMap = null;
 	private static Map<String, TypeOfSample> testIdToTypeOfSampleMap = null;
 	private static Map<String, List<TypeOfSample>> panelIdToTypeOfSampleMap = null;
 	//The purpose of this map is to make sure all the references refer to the same instances of the TypeOfSample objects
@@ -37,37 +32,21 @@ public class TypeOfSampleUtil {
 	static{
 		createTypeOfSampleIdentityMap();
 	}
-	
-	public static List<Test> getTestListBySampleTypeId(String sampleTypeId, String labOrderTypeId, boolean orderableOnly) {
 
-		List<Test> testList = sampleIdTestMap.get(sampleTypeId);
+    public static List<Test> getTestListBySampleTypeId(String sampleTypeId, boolean orderableOnly) {
 
-		if (testList == null) {
-			testList = createSampleIdTestMap(sampleTypeId);
-		}
+        List<Test> testList = sampleIdTestMap.get(sampleTypeId);
 
-		if( GenericValidator.isBlankOrNull(labOrderTypeId) || "none".equals(labOrderTypeId)){
-			if( orderableOnly){
-				return filterByOrderable( testList);
-			}else{
-				return testList;
-			}
-		}
-		
-		if( labOrderTypeToTestMap == null){
-			createLabOrderToTestMap();
-		}
+        if (testList == null) {
+            testList = createSampleIdTestMap(sampleTypeId);
+        }
 
-		List<Test> filteredList = new ArrayList<Test>();
-		List<String> labOrderTests = labOrderTypeToTestMap.get(labOrderTypeId);
-		
-		for( Test test : testList){
-			if( labOrderTests.contains(test.getId()) && (!orderableOnly || test.getOrderable() )){
-				filteredList.add(test);
-			}
-		}
-		return filteredList;
-	}
+        if( orderableOnly){
+            return filterByOrderable( testList);
+        }else{
+            return testList;
+        }
+    }
 
 	private static List<Test> filterByOrderable(List<Test> testList) {
 		List<Test> filteredList = new ArrayList<Test>();
@@ -103,26 +82,6 @@ public class TypeOfSampleUtil {
 			testIdToTypeOfSampleMap.put(testId, typeOfSample);
 		}
 	}
-
-	private static void createLabOrderToTestMap() {
-		labOrderTypeToTestMap = new HashMap<String, List<String>>();
-		String testTableId = new ReferenceTablesDAOImpl().getReferenceTableByName("TEST").getId();
-		
-		List<LabOrderItem> orderItems = new LabOrderItemDAOImpl().getLabOrderItemsByTableAndAction(testTableId, "DISPLAY");
-		
-		for( LabOrderItem item : orderItems){
-			List<String> tests = labOrderTypeToTestMap.get(item.getLabOrderTypeId());
-			
-			if( tests == null){
-				tests = new ArrayList<String>();
-				labOrderTypeToTestMap.put(item.getLabOrderTypeId(), tests);
-			}
-
-			tests.add(item.getRecordId());
-			
-		}
-	}
-
 
 	private static List<Test> createSampleIdTestMap(String sampleTypeId) {
 		List<Test> testList;
@@ -184,7 +143,7 @@ public class TypeOfSampleUtil {
         return typeOfSampleWellKnownNameToIdMap.get( name );
     }
 
-
+    @SuppressWarnings( "unchecked" )
     private static void createSampleNameIDMaps(){
         typeOfSampleIdToNameMap = new HashMap<String, String>();
         typeOfSampleWellKnownNameToIdMap = new HashMap<String, String>( );
