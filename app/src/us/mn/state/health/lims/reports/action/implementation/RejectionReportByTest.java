@@ -84,14 +84,13 @@ public class RejectionReportByTest extends RejectionReport implements IReportCre
         } );
     }
 
+    @Override
+    protected boolean isReportByTest(){
+        return true;
+    }
 
     @Override
     protected String getActivityLabel(){
         return "Test: " + testName;
-    }
-
-    @Override
-    protected boolean getSplitNameAndTest(){
-        return false;
     }
 }

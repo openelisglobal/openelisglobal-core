@@ -50,11 +50,6 @@ public class RejectionReportByTestSection extends RejectionReport implements IRe
     }
 
     @Override
-    protected boolean getSplitNameAndTest(){
-        return true;
-    }
-
-    @Override
     protected void buildReportContent( ReportSpecificationList panelSelection ){
 
         unitName = getNameForId( panelSelection );
