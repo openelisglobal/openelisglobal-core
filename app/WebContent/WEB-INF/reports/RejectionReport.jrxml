@@ -18,8 +18,8 @@
 	<parameter name="accessionPrefix" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="startDate" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="endDate" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="splitNameAndTest" class="java.lang.Boolean" isForPrompting="false">
-		<defaultValueExpression><![CDATA[false]]></defaultValueExpression>
+	<parameter name="isReportByTest" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[]]>
@@ -176,7 +176,9 @@
 				<text><![CDATA[Noms/Code du patient]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="182" y="16" width="162" height="14"/>
+				<reportElement x="182" y="16" width="162" height="14">
+					<printWhenExpression><![CDATA[!$P{isReportByTest}]]></printWhenExpression>
+				</reportElement>
 				<textElement/>
 				<text><![CDATA[Nom du test]]></text>
 			</staticText>
