@@ -182,6 +182,13 @@ public class ResultService {
 	            }   
 	        }
 
+            if( includeUOM && !GenericValidator.isBlankOrNull( reportResult )){
+                String uom = getUOM();
+                if( !GenericValidator.isBlankOrNull( uom )){
+                    reportResult += " " + uom;
+                }
+            }
+
 			return StringEscapeUtils.escapeHtml(reportResult);
 		} else if (ResultType.isMultiSelectVariant(getTestType())) {
 			StringBuilder buffer = new StringBuilder();
@@ -268,7 +275,7 @@ public class ResultService {
     }
 
 	public String getUOM() {
-		return test != null ? test.getUnitOfMeasure().getUnitOfMeasureName() : "";
+		return test != null && test.getUnitOfMeasure() != null ? test.getUnitOfMeasure().getUnitOfMeasureName() : "";
 	}
 
 	public double getlowNormalRange() {
