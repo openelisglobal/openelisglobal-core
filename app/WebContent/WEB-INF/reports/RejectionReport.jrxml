@@ -81,7 +81,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Rapport de reject]]></text>
+				<text><![CDATA[Rapport de Rejet]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField-2" x="1" y="67" width="554" height="22"/>
@@ -112,7 +112,7 @@
 	<columnHeader>
 		<band height="33" splitType="Stretch">
 			<staticText>
-				<reportElement x="61" y="15" width="61" height="15"/>
+				<reportElement x="71" y="15" width="51" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[réception]]></text>
 			</staticText>
@@ -133,7 +133,7 @@
 				<text><![CDATA[Tech ID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText" x="61" y="0" width="61" height="16"/>
+				<reportElement key="staticText" x="71" y="0" width="51" height="16"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -153,7 +153,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA["(" + $P{accessionPrefix} + ")"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="staticText" x="0" y="0" width="61" height="16"/>
+				<reportElement key="staticText" x="0" y="0" width="71" height="16"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -166,9 +166,9 @@
 				<text><![CDATA[Date de]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="16" width="61" height="15"/>
+				<reportElement x="0" y="16" width="71" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[collection]]></text>
+				<text><![CDATA[prélèvement]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="182" y="0" width="163" height="16"/>
@@ -185,12 +185,12 @@
 			<staticText>
 				<reportElement x="345" y="0" width="145" height="30"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Raison de reject]]></text>
+				<text><![CDATA[Raison de rejet]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="15" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="345" y="0" width="130" height="13" isPrintWhenDetailOverflows="true" backcolor="#FFFFFF"/>
 				<textElement markup="styled"/>
@@ -209,7 +209,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{technician}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField" isPrintRepeatedValues="false" mode="Transparent" x="61" y="0" width="61" height="13" printWhenGroupChanges="accession" backcolor="#FFFFFF"/>
+				<reportElement key="textField" isPrintRepeatedValues="false" mode="Transparent" x="71" y="0" width="51" height="13" printWhenGroupChanges="accession" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -246,7 +246,7 @@
 				</box>
 			</frame>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField" mode="Transparent" x="0" y="0" width="61" height="13" backcolor="#FFFFFF"/>
+				<reportElement key="textField" mode="Transparent" x="0" y="0" width="71" height="13" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
