@@ -51,8 +51,6 @@ public class SamplePatientEntryAction extends BaseSampleEntryAction {
 
 		dynaForm.initialize(mapping);
 
-		boolean needSampleInitialConditionList = FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition);
-
         SampleOrderService sampleOrderService = new SampleOrderService();
         PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
 		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
@@ -63,7 +61,7 @@ public class SamplePatientEntryAction extends BaseSampleEntryAction {
 
 		addProjectList( dynaForm );
 
-		if (needSampleInitialConditionList) {
+		if (FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition)) {
 			PropertyUtils.setProperty(dynaForm, "initialSampleConditionList", DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
 		}
 

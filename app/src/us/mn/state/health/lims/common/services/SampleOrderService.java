@@ -88,6 +88,11 @@ public class SampleOrderService{
         if( needTestLocationCode){
             orderItems.setTestLocationCodeList( DisplayListService.getList( DisplayListService.ListType.TEST_LOCATION_CODE) );
         }
+
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.ORDER_PROGRAM, "true" )){
+            orderItems.setProgramList( DisplayListService.getList( DisplayListService.ListType.PROGRAM ) );
+        }
+
         return orderItems;
     }
 
@@ -114,6 +119,7 @@ public class SampleOrderService{
             sampleOrder.setTestLocationCode( ObservationHistoryService.getRawValueForSample( ObservationType.TEST_LOCATION_CODE, sample.getId() ) );
             sampleOrder.setOtherLocationCode( ObservationHistoryService.getValueForSample( ObservationType.TEST_LOCATION_CODE_OTHER, sample.getId() ) );
             sampleOrder.setBillingReferenceNumber( ObservationHistoryService.getValueForSample( ObservationType.BILLING_REFERENCE_NUMBER, sample.getId() ) );
+            sampleOrder.setProgram( ObservationHistoryService.getRawValueForSample( ObservationType.PROGRAM, sample.getId() ) );
 
             RequesterService requesterService = new RequesterService( sample.getId() );
             sampleOrder.setProviderFirstName( requesterService.getRequesterFirstName() );
@@ -156,7 +162,6 @@ public class SampleOrderService{
         }
 
         String receivedDate = sampleOrder.getReceivedDateForDisplay();
-     //   boolean useReceiveDateForCollectionDate = !FormFields.getInstance().useField( FormFields.Field.CollectionDate );
 
         if( !GenericValidator.isBlankOrNull( sampleOrder.getReceivedTime() ) ){
             receivedDate += " " + sampleOrder.getReceivedTime();
@@ -222,6 +227,7 @@ public class SampleOrderService{
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.TEST_LOCATION_CODE_OTHER, sampleOrder.getOtherLocationCode(), ValueType.LITERAL  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.PAYMENT_STATUS, sampleOrder.getPaymentOptionSelection(), ValueType.DICTIONARY  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.REQUEST_DATE, sampleOrder.getRequestDate(), ValueType.LITERAL  );
+        createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.PROGRAM, sampleOrder.getProgram(), ValueType.DICTIONARY  );
 
         artifacts.setObservations( observations );
     }

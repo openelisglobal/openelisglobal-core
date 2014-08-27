@@ -56,6 +56,8 @@ public class SampleOrderItem implements Serializable{
     private String billingReferenceNumber;
     private String testLocationCode;
     private Collection testLocationCodeList;
+    private String program;
+    private Collection programList;
 
     public String getNewRequesterName(){
         return newRequesterName;
@@ -327,5 +329,21 @@ public class SampleOrderItem implements Serializable{
 
     public void setTestLocationCodeList( Collection testLocationCodeList ){
         this.testLocationCodeList = testLocationCodeList;
+    }
+
+    public String getProgram(){
+        return program;
+    }
+
+    public void setProgram( String program ){
+        this.program = program;
+    }
+
+    public Collection getProgramList(){
+        return programList;
+    }
+
+    public void setProgramList( Collection programList ){
+        this.programList = programList;
     }
 }

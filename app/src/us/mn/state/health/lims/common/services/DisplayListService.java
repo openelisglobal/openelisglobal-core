@@ -99,14 +99,13 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
         typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
         typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
-        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "program" )  );
+        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
 
     @Override
     public void localeChanged(String locale) {
-        System.out.println(locale);
         //refreshes those lists which are dependent on local
         typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
@@ -127,7 +126,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
         typeToListMap.put(ListType.ALL_TESTS, createTestList());
         typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
-        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "program" )  );
+        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
 
     }
 

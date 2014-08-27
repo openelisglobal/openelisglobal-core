@@ -351,6 +351,24 @@
     </td>
 </tr>
 <% } %>
+<% if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ORDER_PROGRAM, "true" )){ %>
+<tr class="spacerRow">
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td><bean:message key="label.program"/>:</td>
+    <td>
+        <html:select name="<%=formName %>" property="sampleOrderItems.program" onchange="setOrderModified();" >
+            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.programList"
+                           type="IdValuePair">
+                <option value='<%=optionValue.getId()%>' <%=optionValue.getId().equals(sampleOrderItem.getProgram() ) ? "selected='selected'" : ""%>>
+                    <bean:write name="optionValue" property="value"/>
+                </option>
+            </logic:iterate>
+        </html:select>
+    </td>
+</tr>
+<% } %>
 <tr class="spacerRow">
     <td>&nbsp;</td>
 </tr>

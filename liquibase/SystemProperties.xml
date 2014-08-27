@@ -121,7 +121,7 @@
             <column name="lastupdated" valueDate="  now() "/>
     </insert>
 </changeSet>
-<changeSet author="paulsc" id="4" runAlways="true">
+<changeSet author="paulsc" id="4" >
            <comment>assigns siteIdenity to whatever site_information is not covered by other domains</comment>
            <update schemaName="clinlims" tableName="site_information">
                    <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'siteIdentity') "/>
