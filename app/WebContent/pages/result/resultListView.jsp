@@ -766,8 +766,6 @@ function updateShadowResult(source, index){
 						                ( noteRequired && !"".equals(testResult.getResultValue())  ? "showNote( " + index + ");" : ""  ) + 
 						                ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" ) +
 						                  " updateShadowResult(this, " + index + ");"%>'/>
-						               
-				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal><logic:equal name="testResult" property="resultType" value="A">
 				<app:text name="testResult"
 						  indexed="true"
@@ -781,7 +779,6 @@ function updateShadowResult(source, index){
 						  			   ( testResult.isDisplayResultAsLog() ? " updateLogValue(this, " + index + ");" : "" ) +
 						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "") +
 						                " updateShadowResult(this, " + index + ");"%>'/>
-				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal><logic:equal name="testResult" property="resultType" value="R">
 				<!-- text results -->
 				<app:textarea name="testResult"
@@ -796,7 +793,6 @@ function updateShadowResult(source, index){
 						               ((noteRequired && !"".equals(testResult.getResultValue()) ) ? "showNote( " + index + ");" : "") +
 						                " updateShadowResult(this, " + index + ");"%>'
 						  />
-				<bean:write name="testResult" property="unitsOfMeasure"/>
 			</logic:equal>
 			<% if( "D".equals(testResult.getResultType())  ){ %>
 			<!-- dictionary results -->
@@ -895,6 +891,7 @@ function updateShadowResult(source, index){
 													out.print("--");} %>'
 									size='6' /> log
 					<% } %>
+            <bean:write name="testResult" property="unitsOfMeasure"/>
 		</td>
 		<% if( ableToRefer ){ %>
 		<td style="white-space: nowrap" class="ruled">
