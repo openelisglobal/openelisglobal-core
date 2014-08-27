@@ -16,40 +16,30 @@
 */
 package us.mn.state.health.lims.common.services.historyservices;
 
+import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
+import us.mn.state.health.lims.audittrail.valueholder.History;
+import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.SampleService;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.note.dao.NoteDAO;
+import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
+import us.mn.state.health.lims.note.valueholder.Note;
+import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
-import us.mn.state.health.lims.audittrail.valueholder.History;
-import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.note.dao.NoteDAO;
-import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
-import us.mn.state.health.lims.note.valueholder.Note;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.result.dao.ResultDAO;
-import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
-import us.mn.state.health.lims.result.valueholder.Result;
-import us.mn.state.health.lims.sample.valueholder.Sample;
-
 public class NoteHistoryService extends HistoryService {
 
-	private static String NOTE_TABLE_ID;
-	private static String RESULT_TABLE_ID;
-	
 	private static NoteDAO noteDAO = new NoteDAOImpl();
-	private static ResultDAO resultDAO = new ResultDAOImpl();
 	private Map<String, String> noteIdToIndicatorMap;	
-	
-	static {
-		ReferenceTablesDAO tableDAO = new ReferenceTablesDAOImpl();
 
-		NOTE_TABLE_ID = tableDAO.getReferenceTableByName("NOTE").getId();
-		RESULT_TABLE_ID = tableDAO.getReferenceTableByName("RESULT").getId();
-	}
-	
 	public NoteHistoryService(Sample sample) {
 		setUpForNotes( sample );
 	}
@@ -57,30 +47,74 @@ public class NoteHistoryService extends HistoryService {
 	@SuppressWarnings("unchecked")
 	private void setUpForNotes(Sample sample) {
 		noteIdToIndicatorMap = new HashMap<String, String>();
-		
-		List<Result> results = resultDAO.getResultsForSample(sample);
-		History searchHistory = new History();
-		searchHistory.setReferenceTable(NOTE_TABLE_ID);
-		historyList = new ArrayList<History>();
-		
-		Note searchNote = new Note();
-		searchNote.setReferenceTableId(RESULT_TABLE_ID);
-		for( Result result : results){
-			searchNote.setReferenceId(result.getId());
 
-			List<Note> notes = noteDAO.getAllNotesByRefIdRefTable(searchNote);
-			
-			for(Note note : notes){
-				searchHistory.setReferenceId(note.getId());
-				noteIdToIndicatorMap.put(note.getId(), result.getAnalysis().getTest().getTestName() );
-				historyList.addAll(auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory));
-			}	
-		}
-		
+		historyList = new ArrayList<History>();
+
+        addAnalysisNotes( sample );
+        addOrderNotes( sample );
+        addQANotes( sample );
 		newValueMap = new HashMap<String, String>();
 	}
 
-	@Override
+    private void addAnalysisNotes( Sample sample ){
+        History searchHistory = new History();
+        searchHistory.setReferenceTable( NoteService.TABLE_REFERENCE_ID);
+        List<Analysis> analysisList = new SampleService( sample).getAnalysis();
+        Note searchNote = new Note();
+        searchNote.setReferenceTableId( AnalysisService.TABLE_REFERENCE_ID );
+        for( Analysis analysis : analysisList){
+            searchNote.setReferenceId(analysis.getId());
+
+            List<Note> notes = noteDAO.getAllNotesByRefIdRefTable(searchNote);
+
+            for(Note note : notes){
+                searchHistory.setReferenceId(note.getId());
+                noteIdToIndicatorMap.put(note.getId(), analysis.getTest().getTestName() );
+                historyList.addAll(auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory));
+            }
+        }
+    }
+
+    private void addOrderNotes( Sample sample ){
+        History searchHistory = new History();
+        searchHistory.setReferenceTable( NoteService.TABLE_REFERENCE_ID);
+
+        Note searchNote = new Note();
+        searchNote.setReferenceTableId( SampleService.TABLE_REFERENCE_ID );
+        searchNote.setReferenceId( sample.getId() );
+
+        List<Note> notes = noteDAO.getAllNotesByRefIdRefTable(searchNote);
+
+        for(Note note : notes){
+            searchHistory.setReferenceId(note.getId());
+            noteIdToIndicatorMap.put(note.getId(), StringUtil.getMessageForKey( "auditTrail.order" ) );
+            historyList.addAll(auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory));
+        }
+    }
+
+    private void addQANotes( Sample sample ){
+        History searchHistory = new History();
+        searchHistory.setReferenceTable( NoteService.TABLE_REFERENCE_ID);
+
+        Note searchNote = new Note();
+        searchNote.setReferenceTableId( QAService.TABLE_REFERENCE_ID );
+
+        List<SampleQaEvent> qaEventList =  new SampleService( sample ).getSampleQAEventList();
+
+        for( SampleQaEvent qaEvent : qaEventList){
+            searchNote.setReferenceId(qaEvent.getId());
+            List<Note> notes = noteDAO.getAllNotesByRefIdRefTable(searchNote);
+
+            for(Note note : notes){
+                searchHistory.setReferenceId(note.getId());
+                noteIdToIndicatorMap.put(note.getId(), qaEvent.getQaEvent().getLocalizedName() );
+                historyList.addAll(auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory));
+            }
+        }
+    }
+
+
+    @Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		Note note = noteDAO.getData(history.getReferenceId());
 		identifier = noteIdToIndicatorMap.get(history.getReferenceId());
