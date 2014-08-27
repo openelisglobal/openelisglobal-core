@@ -86,7 +86,6 @@ public class FormFields {
 		SampleEntryProviderFax,                 //Include provider fax for sample entry
 		SampleEntryProviderEmail,               //Include provider email for sample entry
 		SampleEntryHealthFacilityAddress,       //Include referral address
-		SampleEntryLabOrderTypes,               //Are there different types of lab orders
 		SampleEntrySampleCollector,             //Include name of sample collector
 		SampleEntryRequesterLastNameRequired,   //Is the requester name required
 		SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER,//Include referral patient number
@@ -97,7 +96,8 @@ public class FormFields {
 		PatientMarriageStatus,                  //Include patient marriage status with patient info
 		PatientEducation,                       //Include patient education level with patient info
 		SampleEntryPatientClinical,             //Include patient clinical information on sample entry (request by CI but not currently implemented)
-		QA_DOCUMENT_NUMBER                      //Include document number on non-conformity
+		QA_DOCUMENT_NUMBER,                      //Include document number on non-conformity
+        TEST_LOCATION_CODE                      //Include test location code on order entry
 	}
 
 	private static FormFields instance = null;

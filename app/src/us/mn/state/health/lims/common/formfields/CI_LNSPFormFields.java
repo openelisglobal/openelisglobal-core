@@ -66,7 +66,6 @@ public class CI_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.SampleEntryProviderFax, Boolean.TRUE);
 		settings.put(Field.SampleEntryProviderEmail, Boolean.TRUE);
 		settings.put(Field.SampleEntryHealthFacilityAddress, Boolean.FALSE);
-		settings.put(Field.SampleEntryLabOrderTypes, Boolean.TRUE);
 		settings.put(Field.SampleEntrySampleCollector, Boolean.TRUE);
 		settings.put(Field.PatientPhone, Boolean.TRUE);
 		settings.put(Field.PatientHealthRegion, Boolean.TRUE);
@@ -80,6 +79,7 @@ public class CI_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.QATimeWithDate, Boolean.TRUE);
 		settings.put(Field.SEARCH_PATIENT_WITH_LAB_NO, Boolean.TRUE);
 		settings.put(Field.CollectionTime, Boolean.TRUE);
+        settings.put(Field.TEST_LOCATION_CODE,Boolean.TRUE);
 
 		
 		return settings;

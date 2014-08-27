@@ -61,21 +61,20 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 
 		String sampleType = request.getParameter("sampleType");
-		String labOrderType = request.getParameter("labOrderType");
         isVariableTypeOfSample =  VARIABLE_SAMPLE_TYPE_ID.equals( sampleType );
         StringBuilder xml = new StringBuilder();
 
-		String result = createSearchResultXML(sampleType, labOrderType, xml);
+		String result = createSearchResultXML(sampleType, xml);
 
 		ajaxServlet.sendData(xml.toString(), result, request, response);
 
 	}
 
-	private String createSearchResultXML(String sampleType, String labOrderType, StringBuilder xml){
+	private String createSearchResultXML(String sampleType, StringBuilder xml){
 
 		String success = VALID;
 
-		List<Test> tests = TypeOfSampleUtil.getTestListBySampleTypeId(sampleType, labOrderType, true);
+		List<Test> tests = TypeOfSampleUtil.getTestListBySampleTypeId(sampleType, true);
 
 		Collections.sort(tests, new Comparator<Test>(){
 			@Override

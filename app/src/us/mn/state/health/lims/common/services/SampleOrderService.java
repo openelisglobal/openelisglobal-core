@@ -21,9 +21,6 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.laborder.dao.LabOrderTypeDAO;
-import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
-import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
@@ -45,11 +42,10 @@ import static us.mn.state.health.lims.observationhistory.valueholder.Observation
  */
 public class SampleOrderService{
     private static final SampleDAO sampleDAO = new SampleDAOImpl();
-    private static final LabOrderTypeDAO labOrderTypeDAO = new LabOrderTypeDAOImpl();
     private static final OrganizationDAO orgDAO = new OrganizationDAOImpl();
     private boolean needRequesterList = FormFields.getInstance().useField( FormFields.Field.RequesterSiteList );
     private boolean needPaymentOptions = ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.TRACK_PATIENT_PAYMENT, "true" );
-    private boolean needFollowup = FormFields.getInstance().useField( FormFields.Field.SampleEntryLabOrderTypes );
+    private boolean needTestLocationCode = FormFields.getInstance().useField( FormFields.Field.TEST_LOCATION_CODE );
     private SampleOrderItem sampleOrder;
     private Sample sample;
     private boolean readOnly = false;
@@ -81,10 +77,6 @@ public class SampleOrderService{
         orderItems.setReceivedDateForDisplay( dateAsText );
         orderItems.setRequestDate( dateAsText );
 
-        orderItems.setOrderTypes( DisplayListService.getList( DisplayListService.ListType.SAMPLE_PATIENT_PRIMARY_ORDER_TYPE ) );
-        orderItems.setFollowupPeriodOrderTypes( DisplayListService.getList( DisplayListService.ListType.SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE ) );
-        orderItems.setInitialPeriodOrderTypes( DisplayListService.getList( DisplayListService.ListType.SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE ) );
-
         if( needRequesterList ){
             orderItems.setReferringSiteList( DisplayListService.getFreshList( DisplayListService.ListType.SAMPLE_PATIENT_REFERRING_CLINIC ) );
         }
@@ -93,9 +85,14 @@ public class SampleOrderService{
             orderItems.setPaymentOptions( DisplayListService.getList( DisplayListService.ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS ) );
         }
 
-        if( needFollowup){
-            orderItems.setFollowupPeriodOrderTypes( DisplayListService.getList(DisplayListService.ListType.SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE ) );
+        if( needTestLocationCode){
+            orderItems.setTestLocationCodeList( DisplayListService.getList( DisplayListService.ListType.TEST_LOCATION_CODE) );
         }
+
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.ORDER_PROGRAM, "true" )){
+            orderItems.setProgramList( DisplayListService.getList( DisplayListService.ListType.PROGRAM ) );
+        }
+
         return orderItems;
     }
 
@@ -119,11 +116,10 @@ public class SampleOrderService{
             sampleOrder.setReferringPatientNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, sample.getId() ) );
             sampleOrder.setNextVisitDate( ObservationHistoryService.getValueForSample( ObservationType.NEXT_VISIT_DATE, sample.getId() )  );
             sampleOrder.setPaymentOptionSelection( ObservationHistoryService.getRawValueForSample( ObservationType.PAYMENT_STATUS, sample.getId() ) );
-            sampleOrder.setOrderType( ObservationHistoryService.getValueForSample( ObservationType.PRIMARY_ORDER_TYPE, sample.getId() ) );
-            sampleOrder.setInitialPeriodOrderType( ObservationHistoryService.getValueForSample( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
-            sampleOrder.setFollowupPeriodOrderType( ObservationHistoryService.getValueForSample( ObservationType.SECONDARY_ORDER_TYPE, sample.getId() ) );
-            sampleOrder.setOtherPeriodOrder( ObservationHistoryService.getValueForSample( ObservationType.OTHER_SECONDARY_ORDER_TYPE, sample.getId() ) );
+            sampleOrder.setTestLocationCode( ObservationHistoryService.getRawValueForSample( ObservationType.TEST_LOCATION_CODE, sample.getId() ) );
+            sampleOrder.setOtherLocationCode( ObservationHistoryService.getValueForSample( ObservationType.TEST_LOCATION_CODE_OTHER, sample.getId() ) );
             sampleOrder.setBillingReferenceNumber( ObservationHistoryService.getValueForSample( ObservationType.BILLING_REFERENCE_NUMBER, sample.getId() ) );
+            sampleOrder.setProgram( ObservationHistoryService.getRawValueForSample( ObservationType.PROGRAM, sample.getId() ) );
 
             RequesterService requesterService = new RequesterService( sample.getId() );
             sampleOrder.setProviderFirstName( requesterService.getRequesterFirstName() );
@@ -166,7 +162,6 @@ public class SampleOrderService{
         }
 
         String receivedDate = sampleOrder.getReceivedDateForDisplay();
-     //   boolean useReceiveDateForCollectionDate = !FormFields.getInstance().useField( FormFields.Field.CollectionDate );
 
         if( !GenericValidator.isBlankOrNull( sampleOrder.getReceivedTime() ) ){
             receivedDate += " " + sampleOrder.getReceivedTime();
@@ -228,24 +223,13 @@ public class SampleOrderService{
 
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.REFERRERS_PATIENT_ID, sampleOrder.getReferringPatientNumber(), ValueType.LITERAL );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.NEXT_VISIT_DATE, sampleOrder.getNextVisitDate(), ValueType.LITERAL  );
-        createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.OTHER_SECONDARY_ORDER_TYPE, sampleOrder.getOtherPeriodOrder(), ValueType.LITERAL  );
+        createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.TEST_LOCATION_CODE, sampleOrder.getTestLocationCode(), ValueType.DICTIONARY  );
+        createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.TEST_LOCATION_CODE_OTHER, sampleOrder.getOtherLocationCode(), ValueType.LITERAL  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.PAYMENT_STATUS, sampleOrder.getPaymentOptionSelection(), ValueType.DICTIONARY  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.REQUEST_DATE, sampleOrder.getRequestDate(), ValueType.LITERAL  );
-        if( "HIV_firstVisit".equals( sampleOrder.getOrderType() )){
-            createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.SECONDARY_ORDER_TYPE, valueForLabOrderType( sampleOrder.getInitialPeriodOrderType() ), ValueType.LITERAL  );
-        }else if("HIV_followupVisit".equals( sampleOrder.getOrderType() )){
-            createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.SECONDARY_ORDER_TYPE, valueForLabOrderType(sampleOrder.getFollowupPeriodOrderType()), ValueType.LITERAL  );
-        }
+        createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.PROGRAM, sampleOrder.getProgram(), ValueType.DICTIONARY  );
 
         artifacts.setObservations( observations );
-    }
-
-    private String valueForLabOrderType( String labOrderType ){
-        if(GenericValidator.isBlankOrNull( labOrderType )){
-            return null;
-        }
-        LabOrderType type = labOrderTypeDAO.getLabOrderTypeById(labOrderType);
-        return type == null ? null : type.getType();
     }
 
     private void createOrUpdateObservation(  String currentUserId, List<ObservationHistory> observations,

@@ -1927,7 +1927,7 @@
 		<where>name in ('ResultTechnicianName', 'modify results note required', 'autoFillTechNameBox' )</where>
 	</update>
 </changeSet>
-<changeSet author="paulsc" id="23" context="haiti, haitiLNSP" runAlways="true">
+<changeSet author="paulsc" id="23" context="haiti, haitiLNSP" >
 	<comment>Removes duplicate entries in the sampletype_test table</comment>
 	<sql>
 	delete from clinlims.sampletype_test where id in (select st.id from clinlims.sampletype_test st

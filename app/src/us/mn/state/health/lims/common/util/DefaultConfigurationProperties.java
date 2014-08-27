@@ -106,6 +106,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault( Property.TEST_NAME_AUGMENTED, "augmentTestNameWithType", "true" );
         setDBPropertyMappingAndDefault( Property.USE_BILLING_REFERENCE_NUMBER, "billingRefNumber", "false" );
         setDBPropertyMappingAndDefault( Property.BILLING_REFERENCE_NUMBER_LABEL, "billingRefNumberLocalization", "-1" );
+        setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "false" );
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

@@ -23,8 +23,6 @@ import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
 import us.mn.state.health.lims.gender.valueholder.Gender;
-import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
-import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -53,10 +51,7 @@ public class DisplayListService implements LocaleChangeListener {
 		HOURS, 
 		MINS, 
 		SAMPLE_TYPE, 
-		INITIAL_SAMPLE_CONDITION, 
-		SAMPLE_PATIENT_PRIMARY_ORDER_TYPE, 
-		SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE, 
-		SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE, 
+		INITIAL_SAMPLE_CONDITION,
         SAMPLE_PATIENT_PAYMENT_OPTIONS,
 		PATIENT_HEALTH_REGIONS, 
 		PATIENT_MARITAL_STATUS, 
@@ -73,7 +68,9 @@ public class DisplayListService implements LocaleChangeListener {
         ALL_TESTS,
         REJECTION_REASONS,
         REFERRAL_REASONS,
-        REFERRAL_ORGANIZATIONS
+        REFERRAL_ORGANIZATIONS,
+        TEST_LOCATION_CODE,
+        PROGRAM
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
@@ -84,9 +81,6 @@ public class DisplayListService implements LocaleChangeListener {
 		typeToListMap.put(ListType.MINS, createMinList());
 		typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_PRIMARY_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimary"));
-		typeToListMap.put(ListType.SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_follow_up"));
-		typeToListMap.put(ListType.SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_initial"));
 		typeToListMap.put(ListType.PATIENT_HEALTH_REGIONS,createPatientHealthRegions());
 		typeToListMap.put(ListType.PATIENT_MARITAL_STATUS,createFromDictionaryCategory("Marital Status Demographic Information"));
 		typeToListMap.put(ListType.PATIENT_NATIONALITY,createFromDictionaryCategory("Nationality Demographic Information"));
@@ -104,19 +98,17 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
         typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
+        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
+        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
 
     @Override
     public void localeChanged(String locale) {
-        System.out.println(locale);
         //refreshes those lists which are dependent on local
         typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_PRIMARY_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimary"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_follow_up"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_initial"));
         typeToListMap.put(ListType.PATIENT_HEALTH_REGIONS,createPatientHealthRegions());
         typeToListMap.put(ListType.PATIENT_MARITAL_STATUS,createFromDictionaryCategory("Marital Status Demographic Information"));
         typeToListMap.put(ListType.PATIENT_NATIONALITY,createFromDictionaryCategory("Nationality Demographic Information"));
@@ -133,6 +125,9 @@ public class DisplayListService implements LocaleChangeListener {
         new TestService( (Test)null ).localeChanged( locale );
         typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
         typeToListMap.put(ListType.ALL_TESTS, createTestList());
+        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
+        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
+
     }
 
     public static List<IdValuePair> getList(ListType listType) {
@@ -328,17 +323,6 @@ public class DisplayListService implements LocaleChangeListener {
 
         return numberedList;
     }
-	private static List<IdValuePair> createSamplePatientOrderType(String context) {
-		List<IdValuePair> orderTypeList = new ArrayList<IdValuePair>();
-
-		List<LabOrderType> orderTypes = new LabOrderTypeDAOImpl().getLabOrderTypesByDomainAndContext("HUMAN", context);
-
-		for (LabOrderType orderType : orderTypes) {
-			orderTypeList.add(new IdValuePair(orderType.getId(), orderType.getLocalizedName()));
-		}
-
-		return orderTypeList;
-	}
 
 	private static List<IdValuePair> createSampleTypeList() {
 		TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();

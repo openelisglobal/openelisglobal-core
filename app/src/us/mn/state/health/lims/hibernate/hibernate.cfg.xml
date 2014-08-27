@@ -255,10 +255,6 @@
 	<mapping
 		resource="us/mn/state/health/lims/reports/valueholder/DocumentType.hbm.xml" />
 	<mapping
-		resource="us/mn/state/health/lims/laborder/valueholder/LabOrderItem.hbm.xml" />
-	<mapping
-		resource="us/mn/state/health/lims/laborder/valueholder/LabOrderType.hbm.xml" />
-	<mapping
 		resource="us/mn/state/health/lims/qaevent/valueholder/QaObservationType.hbm.xml" />
 	<mapping
 		resource="us/mn/state/health/lims/qaevent/valueholder/QaObservation.hbm.xml" />

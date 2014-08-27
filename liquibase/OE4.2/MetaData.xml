@@ -112,4 +112,91 @@
             <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'TestRenameEntry' ) " />
         </insert>
     </changeSet>
+    <changeSet id="6" author="paulsc">
+        <comment>Adds program configuration</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name" value="programs" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Management of assigning orders to lab programs" />
+            <column name="value" value="" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'hiddenProperties' ) " />
+            <column name="value_type" value="complex" />
+            <column name="tag" value="programConfiguration" />
+        </insert>
+    </changeSet>
+    <changeSet id="7" author="paulsc">
+        <comment>appends the comment for value type in site_information</comment>
+        <sql>
+            comment on column clinlims.site_information.value_type is $$The type of value which can be specified for the value. Currently either 'boolean','text','dictionary','logoUpload' or 'complex' $$;
+        </sql>
+    </changeSet>
+    <changeSet id="8" author="paulsc" >
+        <comment>Change from order type to program</comment>
+        <delete tableName="observation_history" >
+            <where>observation_history_type_id in ( select id from clinlims.observation_history_type where description in ('primaryOrderType','secondaryOrderType','otherSecondaryOrderType')) </where>
+        </delete>
+        <delete tableName="observation_history_type" >
+            <where> description in ('primaryOrderType','secondaryOrderType','otherSecondaryOrderType') </where>
+        </delete>
+        <insert tableName="observation_history_type">
+            <column name="id" valueNumeric=" nextval( 'observation_history_type_seq' ) " />
+            <column name="type_name" value="program" />
+            <column name="description" value="What program the order is in" />
+            <column name="lastupdated" valueDate=" now() " />
+        </insert>
+    </changeSet>
+    <changeSet id="9" author="paulsc">
+        <comment>Adds program settings to the dictionary</comment>
+        <insert tableName="dictionary_category">
+            <column name="id" valueNumeric=" nextval( 'dictionary_category_seq' ) " />
+            <column name="description" value="Programs for orders" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="name" value="programs" />
+            <column name="local_abbrev" value="programs" />
+        </insert>
+        <insert tableName="dictionary">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) " />
+            <column name="dict_entry" value="Routine Testing" />
+            <column name="local_abbrev" value="Routine" />
+            <column name="sort_order" valueNumeric="10" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="dictionary_category_id" valueNumeric=" currval( 'dictionary_category_seq' ) " />
+            <column name="is_active" value="Y" />
+            <column name="display_key" value="dictionary.program.routine" />
+        </insert>
+        <insert tableName="dictionary">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) " />
+            <column name="dict_entry" value="HIV Program - Initial Visit" />
+            <column name="local_abbrev" value="Initial Visit" />
+            <column name="sort_order" valueNumeric="20" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="dictionary_category_id" valueNumeric=" currval( 'dictionary_category_seq' ) " />
+            <column name="is_active" value="Y" />
+            <column name="display_key" value="dictionary.program.initial" />
+        </insert>
+        <insert tableName="dictionary">
+            <column name="id" valueNumeric=" nextval( 'dictionary_seq' ) " />
+            <column name="dict_entry" value="HIV Program Follow up" />
+            <column name="local_abbrev" value="Follow up" />
+            <column name="sort_order" valueNumeric="30" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="dictionary_category_id" valueNumeric=" currval( 'dictionary_category_seq' ) " />
+            <column name="is_active" value="Y" />
+            <column name="display_key" value="dictionary.program.followUp" />
+        </insert>
+    </changeSet>
+    <changeSet id="10" author="paulsc">
+        <comment>Adds program as configurable item</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="Program" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Is a program part of an order" />
+            <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'sampleEntryConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="value" value="false" />
+            <column name="instruction_key" value="instructions.sample.entry.program" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>

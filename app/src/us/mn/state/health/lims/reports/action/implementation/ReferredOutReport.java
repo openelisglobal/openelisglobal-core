@@ -176,7 +176,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 		for (int i = 0; i < referralResults.size(); i++) {
 			i = reportReferralResultValue(referralResults, i);
 			ReferralResult referralResult = referralResults.get(i);
-			ClinicalPatientData data = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ), false);
+			ClinicalPatientData data = reportAnalysisResults( false);
 			data.setReferralSentDate((referral != null && referral.getSentDate() != null) ? DateUtil.formatDateAsText(referral.getSentDate()) : "");
 			data.setReferralResult(reportReferralResultValue);
 			data.setReferralNote(note);

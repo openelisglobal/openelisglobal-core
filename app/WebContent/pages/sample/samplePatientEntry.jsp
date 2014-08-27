@@ -324,22 +324,6 @@ function hide(id){
     document.getElementById(id).style.visibility="hidden";
 }
 
-function orderTypeSelected( radioElement){
-    labOrderType = radioElement.value; //labOrderType is in sampleAdd.jsp
-    if( removeAllRows){
-        removeAllRows();
-    }
-    //this is bogus, we should go back to the server to load the dropdown
-    if( radioElement.value == 2){
-        $("followupLabOrderPeriodId").show();
-        $("initialLabOrderPeriodId").hide();
-    }else{
-        $("initialLabOrderPeriodId").show();
-        $("followupLabOrderPeriodId").hide();
-    }
-
-    $("sampleEntryPage").show();
-}
 
 function capitalizeValue( text){
     $("requesterId").value = text.toUpperCase();
@@ -605,22 +589,9 @@ function  processPhoneSuccess(xhr){
 </script>
 
 <!-- This define may not be needed, look at usages (not in any other jsp or js page-->
-<bean:define id="orderTypeList"  name='<%=formName%>' property="sampleOrderItems.orderTypes" type="java.util.Collection"/>
 <html:hidden property="currentDate" name="<%=formName%>" styleId="currentDate"/>
 <html:hidden property="sampleOrderItems.newRequesterName" name='<%=formName%>' styleId="newRequesterName" />
 
-
-<% if( FormFields.getInstance().useField(Field.SampleEntryLabOrderTypes)) {%>
-    <logic:iterate indexId="index" id="orderTypes"  type="IdValuePair" name='<%=formName%>' property="sampleOrderItems.orderTypes">
-        <input id='<%="orderType_" + index %>' 
-               type="radio" 
-               name="sampleOrderItems.orderType"
-               onclick='orderTypeSelected(this);'
-               value='<%=orderTypes.getId() %>' />
-        <label for='<%="orderType_" + index %>' ><%=orderTypes.getValue() %></label>
-    </logic:iterate>
-    <hr/>
-<% } %>
 
 <% if( acceptExternalOrders){ %>
 <%= StringUtil.getContextualMessageForKey( "referring.order.number" ) %>:
@@ -635,7 +606,7 @@ function  processPhoneSuccess(xhr){
 
 <% } %>
             
-<div id=sampleEntryPage <%= (orderTypeList == null || orderTypeList.size() == 0)? "" : "style='display:none'"  %>>
+<div id=sampleEntryPage >
 <input type="button" name="showHide" value='<%= acceptExternalOrders ? "+" : "-" %>' onclick="showHideSection(this, 'orderDisplay');" id="orderSectionId">
 <%= StringUtil.getContextualMessageForKey("sample.entry.order.label") %>
 <span class="requiredlabel">*</span>

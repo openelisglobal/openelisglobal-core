@@ -93,7 +93,6 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.SampleEntryProviderFax);
 		setFieldFalse(Field.SampleEntryProviderEmail);
 		setFieldFalse(Field.SampleEntryHealthFacilityAddress);
-		setFieldFalse(Field.SampleEntryLabOrderTypes);
 		setFieldFalse(Field.SampleEntrySampleCollector);
 		setFieldFalse(Field.PatientPhone);
 		setFieldFalse(Field.PatientHealthRegion);
@@ -108,6 +107,7 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.QATimeWithDate);
 		setFieldFalse(Field.SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER);
 		setFieldFalse(Field.NON_CONFORMITY_PROVIDER_ADDRESS);
+        setFieldFalse( Field.TEST_LOCATION_CODE );
 	}
 
 	@Override

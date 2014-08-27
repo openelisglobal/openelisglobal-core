@@ -65,7 +65,6 @@ public class CI_IPCIFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.SampleEntryProviderFax, Boolean.TRUE);
 		settings.put(Field.SampleEntryProviderEmail, Boolean.TRUE);
 		settings.put(Field.SampleEntryHealthFacilityAddress, Boolean.FALSE);
-		settings.put(Field.SampleEntryLabOrderTypes, Boolean.TRUE);
 		settings.put(Field.SampleEntrySampleCollector, Boolean.TRUE);
 		settings.put(Field.PatientPhone, Boolean.TRUE);
 		settings.put(Field.PatientHealthRegion, Boolean.TRUE);

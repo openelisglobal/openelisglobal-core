@@ -56,7 +56,6 @@ var currentTypeForTests = -1;
 var selectedTypeRowId = -1;
 var sampleChangeListeners = [];
 var sampleIdStart = 0;
-var labOrderType = "none"; //if set will be done by other tiles
 
 
 function /*void*/ addSampleChangedListener( listener ){
@@ -576,7 +575,7 @@ function sectionSelectionChanged( selectionElement ){
 
 function editSelectedTest( ){
 	if( currentCheckedType == -1 || currentTypeForTests != currentCheckedType  ){
-    	getTestsForSampleType(currentCheckedType, labOrderType, processGetTestSuccess, processGetTestFailure); //this is an asynchronous call and setSampleType will be called on the return of the call
+    	getTestsForSampleType(currentCheckedType, processGetTestSuccess, processGetTestFailure); //this is an asynchronous call and setSampleType will be called on the return of the call
     }else{
     	setSampleTests();
     }

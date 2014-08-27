@@ -24,6 +24,7 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.SampleAddService;
 import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
 import us.mn.state.health.lims.common.services.StatusService;
@@ -31,6 +32,7 @@ import us.mn.state.health.lims.common.services.StatusService.ExternalOrderStatus
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.TableIdService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -38,10 +40,8 @@ import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.dataexchange.order.dao.ElectronicOrderDAO;
 import us.mn.state.health.lims.dataexchange.order.daoimpl.ElectronicOrderDAOImpl;
 import us.mn.state.health.lims.dataexchange.order.valueholder.ElectronicOrder;
-import us.mn.state.health.lims.laborder.dao.LabOrderTypeDAO;
-import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
-import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
+import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory.ValueType;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -77,8 +77,7 @@ public class SamplePatientUpdateData{
     private ElectronicOrder electronicOrder = null;
 
     private boolean useReceiveDateForCollectionDate = !FormFields.getInstance().useField( Field.CollectionDate);
-    private String collectionDateFromRecieveDate = null;
-    private LabOrderTypeDAO labOrderTypeDAO = new LabOrderTypeDAOImpl();
+    private String collectionDateFromReceiveDate = null;
     private OrganizationDAO orgDAO = new OrganizationDAOImpl();
 
     private ElectronicOrderDAO electronicOrderDAO = new ElectronicOrderDAOImpl();
@@ -192,7 +191,7 @@ public class SamplePatientUpdateData{
 
     public void setCollectionDateFromRecieveDateIfNeeded( String collectionDateFromRecieveDate ){
         if( useReceiveDateForCollectionDate){
-            this.collectionDateFromRecieveDate = collectionDateFromRecieveDate;
+            this.collectionDateFromReceiveDate = collectionDateFromRecieveDate;
         }
     }
 
@@ -227,21 +226,6 @@ public class SamplePatientUpdateData{
             observation.setValue(observationData);
             observation.setValueType(valueType);
             observations.add(observation);
-        }
-    }
-
-    public void createOrderTypeObservation(String observationData, String observationType, ObservationHistory.ValueType valueType) {
-        if (!GenericValidator.isBlankOrNull(observationData) && !GenericValidator.isBlankOrNull(observationType)) {
-            LabOrderType labOrderType = labOrderTypeDAO.getLabOrderTypeById(observationData);
-            // should notify end user if null
-            if (labOrderType != null) {
-                ObservationHistory observation = new ObservationHistory();
-                observation.setObservationHistoryTypeId(observationType);
-                observation.setSysUserId(currentUserId);
-                observation.setValue(labOrderType.getType());
-                observation.setValueType(valueType);
-                observations.add(observation);
-            }
         }
     }
 
@@ -294,7 +278,7 @@ public class SamplePatientUpdateData{
         sample.setReferringId( sampleOrder.getRequesterSampleID() );
 
         if (useReceiveDateForCollectionDate) {
-            sample.setCollectionDateForDisplay(collectionDateFromRecieveDate);
+            sample.setCollectionDateForDisplay( collectionDateFromReceiveDate );
         }
 
         sample.setDomain( SystemConfiguration.getInstance().getHumanDomain());
@@ -442,18 +426,19 @@ public class SamplePatientUpdateData{
 
     private void addObservations( SampleOrderItem sampleOrder, boolean trackPayments ) {
         if (trackPayments) {
-            createObservation( sampleOrder.getPaymentOptionSelection(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.PAYMENT_STATUS ), ObservationHistory.ValueType.DICTIONARY );
+            createObservation( sampleOrder.getPaymentOptionSelection(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.PAYMENT_STATUS ), ValueType.DICTIONARY );
         }
 
-        createObservation( sampleOrder.getRequestDate(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.REQUEST_DATE ), ObservationHistory.ValueType.LITERAL );
-        createObservation( sampleOrder.getNextVisitDate(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.NEXT_VISIT_DATE ), ObservationHistory.ValueType.LITERAL );
-        createOrderTypeObservation( sampleOrder.getOrderType(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.PRIMARY_ORDER_TYPE ), ObservationHistory.ValueType.LITERAL );
-        createOrderTypeObservation( sampleOrder.getFollowupPeriodOrderType(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.SECONDARY_ORDER_TYPE ), ObservationHistory.ValueType.LITERAL );
-        createOrderTypeObservation( sampleOrder.getInitialPeriodOrderType(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.SECONDARY_ORDER_TYPE ), ObservationHistory.ValueType.LITERAL );
-        createObservation( sampleOrder.getOtherPeriodOrder(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.OTHER_SECONDARY_ORDER_TYPE ), ObservationHistory.ValueType.LITERAL );
-        createObservation( sampleOrder.getReferringPatientNumber(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.REFERRERS_PATIENT_ID ), ObservationHistory.ValueType.LITERAL );
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.USE_BILLING_REFERENCE_NUMBER, "true" )){
-            createObservation( sampleOrder.getBillingReferenceNumber(), ObservationHistoryService.getObservationTypeIdForType( ObservationHistoryService.ObservationType.BILLING_REFERENCE_NUMBER ), ObservationHistory.ValueType.LITERAL );
+        createObservation( sampleOrder.getRequestDate(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.REQUEST_DATE ), ValueType.LITERAL );
+        createObservation( sampleOrder.getNextVisitDate(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.NEXT_VISIT_DATE ), ValueType.LITERAL );
+        createObservation( sampleOrder.getTestLocationCode(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.TEST_LOCATION_CODE ), ValueType.DICTIONARY );
+        createObservation( sampleOrder.getOtherLocationCode(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.TEST_LOCATION_CODE_OTHER ), ValueType.LITERAL );
+        createObservation( sampleOrder.getReferringPatientNumber(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.REFERRERS_PATIENT_ID ), ValueType.LITERAL );
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.USE_BILLING_REFERENCE_NUMBER, "true" )){
+            createObservation( sampleOrder.getBillingReferenceNumber(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.BILLING_REFERENCE_NUMBER ), ValueType.LITERAL );
+        }
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ORDER_PROGRAM, "true" )){
+            createObservation( sampleOrder.getProgram(), ObservationHistoryService.getObservationTypeIdForType( ObservationType.PROGRAM ), ValueType.DICTIONARY );
         }
     }
 

@@ -23,7 +23,6 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.TestService;
@@ -41,7 +40,6 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.*;
 
 public class PatientCILNSPClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
@@ -82,16 +80,13 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	@Override
 	protected void createReportItems(){
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(currentSampleService.getId(), analysisStatusIds);
-        Timestamp lastReportTime = new ReportTrackingService().getTimeOfLastReport( currentSampleService.getSample(), ReportTrackingService.ReportType.PATIENT );
-        if( lastReportTime == null){
-            lastReportTime = new Timestamp( Long.MAX_VALUE );
-        }
+
 		currentConclusion = null;
 		for(Analysis analysis : analysisList){
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null){
 				reportAnalysis = analysis;
-				ClinicalPatientData resultsData = reportAnalysisResults(lastReportTime, false);
+				ClinicalPatientData resultsData = reportAnalysisResults( false);
 				reportItems.add(resultsData);
 
 				Referral referral = referralDao.getReferralByAnalysisId(reportAnalysis.getId());
@@ -193,7 +188,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			ClinicalPatientData reportItem = reportAnalysisResults( new Timestamp( Long.MAX_VALUE ), false);
+			ClinicalPatientData reportItem = reportAnalysisResults( false);
 			HaitiClinicalPatientDataColFormat colData = new HaitiClinicalPatientDataColFormat(reportItem);
 			colData.setSectionName(StringUtil.getMessageForKey("report.no.results"));
 			colData.setAge(createReadableAge(reportItem.getDob()));
@@ -337,7 +332,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		Date dobDate = DateUtil.convertStringDateToSqlDate(dob);
 		int months = DateUtil.getAgeInMonths(dobDate, DateUtil.getNowAsSqlDate());
 		if(months > 35){
-			return ((int)months / 12) + " A";
+			return (months / 12) + " A";
 		}else if(months > 0){
 			return months + " M";
 		}else{
