@@ -71,8 +71,8 @@
     </logic:notEqual>
 </logic:equal>
 <logic:equal name='<%=formName %>' property="valueType" value="boolean">
-    <html:radio name='<%=formName %>' property="value" value="true" styleClass="inputWidget">true</html:radio>
-    <html:radio name='<%=formName %>' property="value" value="false">false</html:radio>
+    <html:radio name='<%=formName %>' property="value" value="true" styleClass="inputWidget"><bean:message key="label.true" /></html:radio>
+    <html:radio name='<%=formName %>' property="value" value="false"><bean:message key="label.false" /></html:radio>
 </logic:equal>
 <logic:equal name='<%=formName %>' property="valueType" value="dictionary">
     <html:select name='<%=formName %>' property="value" styleClass="inputWidget">
