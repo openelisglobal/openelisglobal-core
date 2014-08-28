@@ -67,7 +67,7 @@ public abstract class RejectionReport extends Report implements IReportCreator{
     }
 
     protected boolean isReportByTest(){
-        return false;
+        return Boolean.FALSE;
     }
 
     protected abstract String getActivityLabel();
