@@ -269,7 +269,6 @@ public class TestService implements LocaleChangeListener{
     private static String buildReportingTestName( Test test ){
         Localization localization = test.getLocalizedReportingName();
 
-
         if( LANGUAGE_LOCALE.equals( ConfigurationProperties.LOCALE.FRENCH.getRepresentation() )){
             return localization.getFrench();
         }else{
