@@ -92,9 +92,4 @@ public class RejectionReportByPanel extends RejectionReport implements IReportCr
 
         injectPatientLineAndCopyToFinalList( rawResults );
     }
-
-    @Override
-    protected boolean isTestReport(){
-        return false;
-    }
 }
