@@ -38,4 +38,8 @@
     <sqlFile path="OE4.2/testCatalogHT_LNSP/addGuid2.sql" />
     <sqlFile path="OE4.2/testCatalogHT_LNSP/populateNames2.sql" />
 </changeSet>
+<changeSet id="6" author="paulsc" context="haitiLNSP">
+    <comment>Finish localization updates for new tests</comment>
+    <sqlFile path="OE4.2/testCatalogHT_LNSP/populateNames3.sql" />
+</changeSet>
 </databaseChangeLog>
