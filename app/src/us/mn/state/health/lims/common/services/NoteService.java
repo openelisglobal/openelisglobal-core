@@ -73,35 +73,32 @@ public class NoteService{
     private final String objectId;
     private final Object object;
 
-    private static final String ANALYSIS_TABLE_ID;
-    private static final String SAMPLE_TABLE_ID;
-    private static final String SAMPLE_QAEVENT_TABLE_ID;
     private static final String SAMPLE_ITEM_TABLE_ID;
+    public static final String TABLE_REFERENCE_ID;
 
     static{
         ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
-        ANALYSIS_TABLE_ID = refTableDAO.getReferenceTableByName( "ANALYSIS" ).getId();
-        SAMPLE_TABLE_ID = refTableDAO.getReferenceTableByName( "SAMPLE" ).getId();
-        SAMPLE_QAEVENT_TABLE_ID = refTableDAO.getReferenceTableByName( "SAMPLE_QAEVENT" ).getId();
+
+        TABLE_REFERENCE_ID = refTableDAO.getReferenceTableByName("NOTE").getId();
         SAMPLE_ITEM_TABLE_ID = refTableDAO.getReferenceTableByName( "SAMPLE_ITEM" ).getId();
     }
 
     public NoteService(Analysis analysis){
-        tableId = ANALYSIS_TABLE_ID;
+        tableId = AnalysisService.TABLE_REFERENCE_ID;
         objectId = analysis.getId();
         binding = BoundTo.ANALYSIS;
         object = analysis;
     }
 
     public NoteService(Sample sample){
-        tableId = SAMPLE_TABLE_ID;
+        tableId = SampleService.TABLE_REFERENCE_ID;
         objectId = sample.getId();
         binding = BoundTo.SAMPLE;
         object = sample;
     }
 
     public NoteService(SampleQaEvent sampleQaEvent){
-        tableId = SAMPLE_QAEVENT_TABLE_ID;
+        tableId = QAService.TABLE_REFERENCE_ID;
         objectId = sampleQaEvent.getId();
         binding = BoundTo.QA_EVENT;
         object = sampleQaEvent;
@@ -161,17 +158,17 @@ public class NoteService{
             notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sampleItem.getId(), SAMPLE_ITEM_TABLE_ID, filter) );
 
             sample = sampleItem.getSample();
-            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SAMPLE_TABLE_ID, filter ) );
+            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SampleService.TABLE_REFERENCE_ID, filter ) );
         }else if( binding == BoundTo.SAMPLE_ITEM ){
             sample = ((SampleItem)object).getSample();
-            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SAMPLE_TABLE_ID, filter ) );
+            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SampleService.TABLE_REFERENCE_ID, filter ) );
         }
 
 
         if( sample != null){
             List<SampleQaEvent> sampleQAList = sampleQADAO.getSampleQaEventsBySample(sample);
             for( SampleQaEvent event : sampleQAList){
-                notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( event.getId(), SAMPLE_QAEVENT_TABLE_ID, filter ) );
+                notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( event.getId(), QAService.TABLE_REFERENCE_ID, filter ) );
                 Note proxyNote = new Note();
                 proxyNote.setNoteType( Note.NON_CONFORMITY );
                 proxyNote.setText( event.getQaEvent().getLocalizedName() );
@@ -300,13 +297,13 @@ public class NoteService{
     public static String getReferenceTableIdForNoteBinding( BoundTo binding){
         switch( binding ){
             case ANALYSIS:{
-                return ANALYSIS_TABLE_ID;
+                return AnalysisService.TABLE_REFERENCE_ID;
             }
             case QA_EVENT:{
-                return SAMPLE_QAEVENT_TABLE_ID;
+                return QAService.TABLE_REFERENCE_ID;
             }
             case SAMPLE:{
-                return SAMPLE_TABLE_ID;
+                return SampleService.TABLE_REFERENCE_ID;
             }
             case SAMPLE_ITEM:{
                 return SAMPLE_ITEM_TABLE_ID;
@@ -318,7 +315,7 @@ public class NoteService{
     }
 
     public static List<Note> getTestNotesInDateRangeByType( Date lowDate, Date highDate, NoteType noteType ){
-        return noteDAO.getNotesInDateRangeAndType( lowDate, DateUtil.addDaysToSQLDate(highDate, 1), noteType.DBCode, ANALYSIS_TABLE_ID);
+        return noteDAO.getNotesInDateRangeAndType( lowDate, DateUtil.addDaysToSQLDate(highDate, 1), noteType.DBCode, AnalysisService.TABLE_REFERENCE_ID);
     }
     private String getNotePrefix( Note note, boolean excludeExternPrefix ) {
         if(SUPPORT_INTERNAL_EXTERNAL){

@@ -31,6 +31,7 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -194,7 +195,7 @@ public abstract class HistoryService {
 	}
 
 	protected String getViewableValue(String value, Result result) {
-		if ("D".equals(result.getResultType()) && !GenericValidator.isBlankOrNull(value) && org.apache.commons.lang.StringUtils.isNumeric(value)) {
+		if ( TypeOfTestResult.ResultType.isDictionaryVariant(result.getResultType()) && !GenericValidator.isBlankOrNull(value) && org.apache.commons.lang.StringUtils.isNumeric(value)) {
 			Dictionary dictionaryValue = dictDAO.getDictionaryById(value);
 			value = dictionaryValue != null ? dictionaryValue.getDictEntry() : StringUtil.getMessageForKey("result.undefined");
 		}

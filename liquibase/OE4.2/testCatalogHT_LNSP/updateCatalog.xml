@@ -33,4 +33,9 @@
     <sql>select nextval('localization_seq');</sql>
     <sqlFile path="OE4.2/testCatalogHT_LNSP/InactiveUpdate.sql" />
 </changeSet>
+<changeSet id="5" author="paulsc">
+    <comment>Finish guid and localization updates for new tests</comment>
+    <sqlFile path="OE4.2/testCatalogHT_LNSP/addGuid2.sql" />
+    <sqlFile path="OE4.2/testCatalogHT_LNSP/populateNames2.sql" />
+</changeSet>
 </databaseChangeLog>

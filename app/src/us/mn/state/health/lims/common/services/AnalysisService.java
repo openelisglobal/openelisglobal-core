@@ -23,6 +23,7 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -45,6 +46,11 @@ public class AnalysisService{
     private static final ResultDAO resultDAO = new ResultDAOImpl();
     private static final TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
     private final Analysis analysis;
+    public static final String TABLE_REFERENCE_ID;
+
+    static{
+        TABLE_REFERENCE_ID = new ReferenceTablesDAOImpl().getReferenceTableByName("ANALYSIS").getId();
+    }
 
     public AnalysisService(Analysis analysis){
         this.analysis = analysis;

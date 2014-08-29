@@ -137,18 +137,26 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		TestSegmentedExportBean ts = new TestSegmentedExportBean();
 
 		ts.setAccessionNumber(order.getAccessionNumber());
-		ts.setReceptionDate(order.getEnteredDateForDisplay());
-		ts.setAge(createReadableAge(patientService.getDOB()));
-		ts.setDOB(patientService.getDOB());
-		ts.setFirstName(patientService.getFirstName());
-		ts.setLastName(patientService.getLastName());
-		ts.setGender(patientService.getGender());
-		ts.setNationalId(patientService.getNationalId());
-		ts.setStatus(StatusService.getInstance().getStatusName(StatusService.getInstance().getAnalysisStatusForID(analysis.getStatusId())));
-		ts.setSampleType(sampleItem.getTypeOfSample().getLocalizedName());
-		ts.setTestBench(analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName());
-		ts.setTestName( TestService.getLocalizedTestName( analysis.getTest()) );
-        ts.setDepartment( StringUtil.blankIfNull(patientService.getAddressComponents().get(PatientService.ADDRESS_DEPT) ) );
+		ts.setReceptionDate(order.getReceivedDateForDisplay());
+		ts.setReceptionTime(order.getReceivedTimeForDisplay());
+		ts.setCollectionDate( order.getCollectionDateForDisplay() );
+		ts.setCollectionTime( order.getCollectionTimeForDisplay() );
+		ts.setAge( createReadableAge( patientService.getDOB() ) );
+		ts.setDOB( patientService.getDOB() );
+		ts.setFirstName( patientService.getFirstName() );
+		ts.setLastName( patientService.getLastName() );
+		ts.setGender( patientService.getGender() );
+		ts.setNationalId( patientService.getNationalId() );
+		ts.setStatus( StatusService.getInstance().getStatusName( StatusService.getInstance().getAnalysisStatusForID( analysis.getStatusId() ) ) );
+		ts.setSampleType( sampleItem.getTypeOfSample().getLocalizedName() );
+		ts.setTestBench( analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName() );
+		ts.setTestName( TestService.getLocalizedTestName( analysis.getTest() ) );
+        ts.setDepartment( StringUtil.blankIfNull( patientService.getAddressComponents().get( PatientService.ADDRESS_DEPT ) ) );
+        String notes = new NoteService( analysis ).getNotesAsString( false, false, "|", false );
+        if( notes != null){
+            ts.setNotes(notes);
+        }
+
 
 		if(requesterOrganization != null){
 			ts.setSiteCode(requesterOrganization.getShortName());

@@ -31,6 +31,10 @@ import java.util.List;
 public class ActivityReportByTest extends ActivityReport implements IReportCreator, IReportParameterSetter {
     private String testName = "";
 
+    @Override
+    protected boolean isReportByTest(){
+        return true;
+    }
 
     @Override
     public void setRequestParameters( BaseActionForm dynaForm ){
@@ -68,10 +72,5 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
     @Override
     protected String getActivityLabel(){
         return "Test: " + testName;
-    }
-
-    @Override
-    protected boolean getSplitNameAndTest(){
-        return false;
     }
 }

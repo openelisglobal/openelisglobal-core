@@ -50,11 +50,6 @@ public class RejectionReportByPanel extends RejectionReport implements IReportCr
     }
 
     @Override
-    protected boolean getSplitNameAndTest(){
-        return true;
-    }
-
-    @Override
     protected void buildReportContent( ReportSpecificationList panelSelection ){
 
         panelName = getNameForId( panelSelection );
@@ -96,10 +91,5 @@ public class RejectionReportByPanel extends RejectionReport implements IReportCr
         }
 
         injectPatientLineAndCopyToFinalList( rawResults );
-    }
-
-    @Override
-    protected boolean isTestReport(){
-        return false;
     }
 }

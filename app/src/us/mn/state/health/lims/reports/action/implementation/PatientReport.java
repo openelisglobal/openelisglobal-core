@@ -97,6 +97,7 @@ import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.Res
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -819,7 +820,7 @@ public abstract class PatientReport extends Report{
             sortOrder = reportAnalysis.getSampleItem().getSortOrder();
             data.setOrderFinishDate( completionDate );
             data.setOrderDate( DateUtil.convertSqlDateToStringDate( currentSampleService.getOrderedDate() ) );
-            data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndTime( reportAnalysis.getSampleItem().getCollectionDate() ) );
+            data.setOrderDate( DateUtil.convertTimestampToStringDateAndTime( new Timestamp( currentSampleService.getOrderedDate().getTime() )) );
         }
 
         data.setAccessionNumber( currentSampleService.getAccessionNumber() + "-" + sortOrder );
