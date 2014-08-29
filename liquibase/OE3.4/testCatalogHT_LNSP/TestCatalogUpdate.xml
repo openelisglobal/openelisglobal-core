@@ -23,6 +23,13 @@
         <comment>Updates to the test catalog</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates2.sql" />
     </changeSet>
-
+    <changeSet id="1" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog (add Chikungunya and modify tests)</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates3.sql" />
+    </changeSet>
+    <changeSet id="2" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog (localization fixes for culture des Selles)</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates4.sql" />
+    </changeSet>
 </databaseChangeLog>
 

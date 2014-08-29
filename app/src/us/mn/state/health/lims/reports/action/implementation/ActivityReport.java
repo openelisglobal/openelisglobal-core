@@ -59,13 +59,15 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         reportParameters.put( "SUBREPORT_DIR", reportPath );
         reportParameters.put( "startDate", dateRange.getLowDateStr() );
         reportParameters.put( "endDate", dateRange.getHighDateStr() );
-        reportParameters.put( "splitNameAndTest", getSplitNameAndTest() );
+        reportParameters.put( "isReportByTest", isReportByTest() );
 
     }
 
-    protected abstract String getActivityLabel();
+    protected boolean isReportByTest(){
+        return false;
+    }
 
-    protected abstract boolean getSplitNameAndTest();
+    protected abstract String getActivityLabel();
 
     protected abstract void buildReportContent( ReportSpecificationList testSelection );
 

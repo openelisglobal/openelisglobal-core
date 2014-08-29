@@ -21,7 +21,11 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -137,7 +141,10 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		TestSegmentedExportBean ts = new TestSegmentedExportBean();
 
 		ts.setAccessionNumber(order.getAccessionNumber());
-		ts.setReceptionDate(order.getEnteredDateForDisplay());
+		ts.setReceptionDate(order.getReceivedDateForDisplay());
+		ts.setReceptionTime(order.getReceivedTimeForDisplay());
+		ts.setCollectionDate(order.getCollectionDateForDisplay());
+		ts.setCollectionTime(order.getCollectionTimeForDisplay());
 		ts.setAge(createReadableAge(patientService.getDOB()));
 		ts.setDOB(patientService.getDOB());
 		ts.setFirstName(patientService.getFirstName());
@@ -149,6 +156,11 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ts.setTestBench(analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName());
 		ts.setTestName( TestService.getLocalizedTestName( analysis.getTest()) );
         ts.setDepartment( StringUtil.blankIfNull(patientService.getAddressComponents().get(PatientService.ADDRESS_DEPT) ) );
+        String notes = new NoteService( analysis ).getNotesAsString( false, false, "|", false );
+        if( notes != null){
+            ts.setNotes(notes);
+        }
+
 
 		if(requesterOrganization != null){
 			ts.setSiteCode(requesterOrganization.getShortName());

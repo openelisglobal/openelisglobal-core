@@ -48,7 +48,7 @@ import java.util.List;
 
 
 public class QAService {
-	public static final String SAMPLE_QAEVENT_TABLE_ID;
+	public static final String TABLE_REFERENCE_ID;
 	public static final String NOTE_TYPE = "I";
 	public static final String NOTE_SUBJECT = "QaEvent Note";
 	private final QaObservationDAO observationDAO = new QaObservationDAOImpl();
@@ -103,7 +103,7 @@ public class QAService {
 
 		referenceTable.setTableName("SAMPLE_QAEVENT");
 		referenceTable = rtDAO.getReferenceTableByName(referenceTable);
-		SAMPLE_QAEVENT_TABLE_ID = referenceTable.getId();
+		TABLE_REFERENCE_ID = referenceTable.getId();
 
 	}
 

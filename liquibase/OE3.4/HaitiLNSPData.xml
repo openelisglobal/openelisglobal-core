@@ -128,4 +128,10 @@
             WHERE name='Mycobacterium tuberculosis Drug Resistant';
         </sql>
     </changeSet>
+    <changeSet id="16" author="paulsc" context="haitiLNSP">
+        <comment>Remove the UOM from the dictionary result for viral load</comment>
+        <sql>
+            update clinlims.dictionary set dict_entry= replace(dict_entry, ' copies/ml', '') where dict_entry like 'Indetectable%';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

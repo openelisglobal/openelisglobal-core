@@ -48,11 +48,6 @@ public class ActivityReportByPanel extends ActivityReport implements IReportCrea
     }
 
     @Override
-    protected boolean getSplitNameAndTest(){
-        return true;
-    }
-
-    @Override
     protected void buildReportContent( ReportSpecificationList panelSelection ){
         panelName = panelSelection.getSelectionAsName();
         createReportParameters();

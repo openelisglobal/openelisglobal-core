@@ -48,11 +48,6 @@ public class ActivityReportByTestSection extends ActivityReport implements IRepo
     }
 
     @Override
-    protected boolean getSplitNameAndTest(){
-        return true;
-    }
-
-    @Override
     protected void buildReportContent( ReportSpecificationList unitSelection ){
         unitName = unitSelection.getSelectionAsName();
         createReportParameters();
