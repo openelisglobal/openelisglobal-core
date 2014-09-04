@@ -23,6 +23,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.dao.ResultSignatureDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -51,6 +52,11 @@ public class ResultService {
 	private Result result;
 	private Test test;
 	private List<ResultLimit> resultLimit;
+    public static final String TABLE_REFERENCE_ID;
+
+    static{
+        TABLE_REFERENCE_ID = new ReferenceTablesDAOImpl().getReferenceTableByName("RESULT").getId();
+    }
 
 	public ResultService(Result result) {
 		this.result = result;

@@ -19,6 +19,7 @@ import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -44,6 +45,5 @@ public interface AuditTrailDAO extends BaseDAO {
 	
 	public String retrieveBlobData(String id) throws LIMSRuntimeException;
 
-	public List<History> getHistoryByRefTableId(History searchHistory) throws LIMSRuntimeException;
-
+    public List<History> getHistoryByRefTableIdAndDateRange( String referenceTableId, Date start, Date end) throws LIMSRuntimeException;
 }

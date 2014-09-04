@@ -16,6 +16,8 @@
 
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
+import java.sql.Timestamp;
+
 /**
  */
 public class ActivityReportBean{
@@ -27,7 +29,10 @@ public class ActivityReportBean{
     private String patientOrTestName;
     private String technician;
     private String resultValue;
+    private String resultStatus;
     private String nonPrintingPatient;
+    private Timestamp activityTime;
+
 
     public String getAccessionNumber(){
         return accessionNumber;
@@ -85,11 +90,27 @@ public class ActivityReportBean{
         this.resultValue = resultValue;
     }
 
+    public String getResultStatus(){
+        return resultStatus;
+    }
+
+    public void setResultStatus( String resultStatus ){
+        this.resultStatus = resultStatus;
+    }
+
     public String getNonPrintingPatient(){
         return nonPrintingPatient;
     }
 
     public void setNonPrintingPatient( String nonPrintingPatient ){
         this.nonPrintingPatient = nonPrintingPatient;
+    }
+
+    public Timestamp getActivityTime(){
+        return activityTime;
+    }
+
+    public void setActivityTime( Timestamp activityTime ){
+        this.activityTime = activityTime;
     }
 }

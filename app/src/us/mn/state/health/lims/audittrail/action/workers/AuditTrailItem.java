@@ -33,6 +33,7 @@ public class AuditTrailItem implements Serializable{
 	private String oldValue = "";
 	private String identifier = "";
 	private String className = "";
+    private String referencedId;
 	
 	public Timestamp getTimeStamp() {
 		return timeStamp;
@@ -106,4 +107,11 @@ public class AuditTrailItem implements Serializable{
 		return newValue == null ? true : !newValue.equals(oldValue);
 	}
 
+    public String getReferencedId(){
+        return referencedId;
+    }
+
+    public void setReferencedId( String referencedId ){
+        this.referencedId = referencedId;
+    }
 }
