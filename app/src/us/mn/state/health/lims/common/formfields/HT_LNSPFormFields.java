@@ -34,8 +34,7 @@ public class HT_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
 		settings.put(Field.InlineOrganizationTypes, Boolean.TRUE);
 		settings.put(Field.Occupation, Boolean.FALSE);
-		settings.put(Field.Commune, Boolean.TRUE);
-		settings.put(Field.AddressDepartment, Boolean.TRUE);
+		settings.put(Field.ADDRESS_DEPARTMENT, Boolean.TRUE);
 		settings.put(Field.MotherInitial, Boolean.TRUE);
 		settings.put(Field.ResultsReferral, Boolean.TRUE);
 		settings.put(Field.ValueHozSpaceOnResults, Boolean.TRUE);
@@ -44,9 +43,7 @@ public class HT_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.OrganizationMultiUnit, Boolean.FALSE);
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
-		settings.put(Field.AddressCity, Boolean.FALSE);
-		settings.put(Field.AddressCommune, Boolean.TRUE);
-		settings.put(Field.AddressVillage, Boolean.TRUE);
+		settings.put(Field.ADDRESS_CITY, Boolean.FALSE);
 		settings.put(Field.PatientRequired, Boolean.TRUE);
 		settings.put(Field.SampleCondition, Boolean.FALSE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);

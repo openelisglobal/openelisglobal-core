@@ -1,11 +1,9 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="java.util.Date,
-	us.mn.state.health.lims.common.action.IActionConstants,
+	import="us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.formfields.FormFields,
 	us.mn.state.health.lims.common.formfields.FormFields.Field,
-	us.mn.state.health.lims.organization.valueholder.OrganizationType,
-	us.mn.state.health.lims.common.util.StringUtil;" %>
+	us.mn.state.health.lims.common.util.StringUtil" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -60,10 +58,10 @@ useParent = FormFields.getInstance().useField(Field.OrganizationParent);
 useShortName = FormFields.getInstance().useField(Field.OrganizationShortName);
 useMultiUnit = FormFields.getInstance().useField(Field.OrganizationMultiUnit);
 showId = FormFields.getInstance().useField(Field.OrganizationOrgId);
-showCity = FormFields.getInstance().useField(Field.AddressCity);
-showDepartment = FormFields.getInstance().useField(Field.AddressDepartment);
-showCommune= FormFields.getInstance().useField(Field.AddressCommune);
-showVillage = FormFields.getInstance().useField(Field.AddressVillage);
+showCity = FormFields.getInstance().useField(Field.ADDRESS_CITY );
+showDepartment = FormFields.getInstance().useField(Field.ADDRESS_DEPARTMENT );
+showCommune= FormFields.getInstance().useField(Field.ADDRESS_COMMUNE );
+showVillage = FormFields.getInstance().useField(Field.ADDRESS_VILLAGE );
 
 %>
 

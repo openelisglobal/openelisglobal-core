@@ -44,7 +44,6 @@ public class FormFields {
 		ProviderInfo,                           //Include provider information on order form
 		NationalID,                             //Include national ID with patient info
 		Occupation,                             //Include occupation with patient info
-		Commune,                                //Is commune part of an address
 		MotherInitial,                          //Include mothers first initial with patient info
 		SearchSampleStatus,                     //Can patients be searched for by status
 		OrganizationAddressInfo,                //Include address info with organization info
@@ -58,10 +57,10 @@ public class FormFields {
 		NON_CONFORMITY_SITE_LIST,               // site (patient entry or nonconforming) is defined by a list of sites.
 		NON_CONFORMITY_SITE_LIST_USER_ADDABLE,  //Should the user be able to add to the site list
 		NON_CONFORMITY_PROVIDER_ADDRESS,        //Should the providers address be collected on non-conformity page
-		AddressCity,                            //Is a city part of an address
-		AddressDepartment,                      //Is department part of an address
-		AddressCommune,                         //Is a commune part of an address
-		AddressVillage,                         //Is a village part of an address
+        ADDRESS_CITY,                            //Is a city part of an address
+        ADDRESS_DEPARTMENT,                      //Is department part of an address
+        ADDRESS_COMMUNE,                         //Is a commune part of an address
+        ADDRESS_VILLAGE,                         //Is a village part of an address
 		DepersonalizedResults,                  //Should results entry have personal identifiers
 		SEARCH_PATIENT_WITH_LAB_NO,             //Should lab number be part of patient search
 		ResultsReferral,                        //Can results be referred out

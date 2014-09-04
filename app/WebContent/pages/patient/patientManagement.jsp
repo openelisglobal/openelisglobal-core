@@ -56,9 +56,9 @@
     subjectNumberRequired = FormFields.getInstance().useField( Field.SubjectNumberRequired );
 	supportNationalID = FormFields.getInstance().useField(Field.NationalID);
 	supportOccupation = FormFields.getInstance().useField(Field.Occupation);
-	supportCommune = FormFields.getInstance().useField(Field.Commune);
+	supportCommune = FormFields.getInstance().useField(Field.ADDRESS_COMMUNE);
 	supportMothersInitial = FormFields.getInstance().useField(Field.MotherInitial);
-	supportAddressDepartment = FormFields.getInstance().useField(Field.AddressDepartment );
+	supportAddressDepartment = FormFields.getInstance().useField(Field.ADDRESS_DEPARTMENT );
 	
 	if("SampleConfirmationEntryForm".equals( formName )){
 		patientIDRequired = FormFields.getInstance().useField(Field.PatientIDRequired_SampleConfirmation);
@@ -93,7 +93,7 @@ var subjectNumberRequired = <%= subjectNumberRequired %>;
 var supportNationalID = <%= supportNationalID %>;
 var supportMothersInitial = <%= supportMothersInitial %>;
 var supportCommune = <%= supportCommune %>;
-var supportCity = <%= FormFields.getInstance().useField(Field.AddressVillage) %>;
+var supportCity = <%= FormFields.getInstance().useField(Field.ADDRESS_VILLAGE) %>;
 var supportOccupation = <%= supportOccupation %>;
 var supportAddressDepartment = <%= supportAddressDepartment %>;
 var patientRequired = <%= patientRequired %>;
@@ -957,7 +957,23 @@ function  processSubjectNumberSuccess(xhr){
 					  size="70" />
 		</td>
 	</tr>
-	<% if( FormFields.getInstance().useField(Field.AddressVillage)) { %>
+    <% if( supportCommune){ %>
+    <tr>
+        <td></td>
+        <td style="text-align:right;">
+            <bean:message  key="person.commune" />:
+        </td>
+        <td>
+            <nested:text name='<%=formName%>'
+                         property="patientProperties.commune"
+                         onchange="updatePatientEditStatus();"
+                         styleId="communeID"
+                         styleClass="text"
+                         size="30" />
+        </td>
+    </tr>
+    <% } %>
+	<% if( FormFields.getInstance().useField(Field.ADDRESS_VILLAGE )) { %>
 	<tr>
 		<td></td>
 		<td style="text-align:right;">
@@ -968,22 +984,6 @@ function  processSubjectNumberSuccess(xhr){
 					  property="patientProperties.city"
 					  onchange="updatePatientEditStatus();"
 					  styleId="cityID"
-					  styleClass="text"
-					  size="30" />
-		</td>
-	</tr>
-	<% } %>
-	<% if( supportCommune){ %>
-	<tr>
-		<td></td>
-		<td style="text-align:right;">
-			<bean:message  key="person.commune" />:
-		</td>
-		<td>
-			<nested:text name='<%=formName%>'
-					  property="patientProperties.commune"
-					  onchange="updatePatientEditStatus();"
-					  styleId="communeID"
 					  styleClass="text"
 					  size="30" />
 		</td>

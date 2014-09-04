@@ -44,8 +44,12 @@ public class CI_RETROFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.Project, Boolean.TRUE);
 		settings.put(Field.QA_FULL_PROVIDER_INFO, Boolean.FALSE);
 		settings.put(Field.QASubjectNumber, Boolean.FALSE);
+        settings.put(Field.ADDRESS_COMMUNE, Boolean.FALSE);
+        settings.put(Field.ADDRESS_VILLAGE, Boolean.FALSE);
 
-		return settings;
+
+
+        return settings;
 	}
 
 }
