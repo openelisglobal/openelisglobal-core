@@ -17,18 +17,10 @@
  */
 package us.mn.state.health.lims.organization.action;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.address.dao.AddressPartDAO;
 import us.mn.state.health.lims.address.dao.OrganizationAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
@@ -54,6 +46,12 @@ import us.mn.state.health.lims.organization.daoimpl.OrganizationTypeDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.organization.valueholder.OrganizationType;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author diane benz
  *
@@ -69,9 +67,9 @@ public class OrganizationAction extends BaseAction {
 	private static boolean useParentOrganization = FormFields.getInstance().useField(Field.OrganizationParent);
 	private static boolean useOrganizationState = FormFields.getInstance().useField(Field.OrgState);
 	private static boolean useOrganizationTypeList = FormFields.getInstance().useField(Field.InlineOrganizationTypes);
-	private static boolean useDepartment = FormFields.getInstance().useField(Field.AddressDepartment);
-	private static boolean useCommune = FormFields.getInstance().useField(Field.AddressCommune);
-	private static boolean useVillage = FormFields.getInstance().useField(Field.AddressVillage);
+	private static boolean useDepartment = FormFields.getInstance().useField(Field.ADDRESS_DEPARTMENT );
+	private static boolean useCommune = FormFields.getInstance().useField(Field.ADDRESS_COMMUNE );
+	private static boolean useVillage = FormFields.getInstance().useField(Field.ADDRESS_VILLAGE );
 
 	private static String DEPARTMENT_ID;
 	private static String COMMUNE_ID;

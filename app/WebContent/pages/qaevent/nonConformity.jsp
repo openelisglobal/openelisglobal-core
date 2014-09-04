@@ -553,7 +553,7 @@ function  processPhoneSuccess(xhr){
 					</logic:notEqual>
 					</td>
 				</tr>
-			<% if( FormFields.getInstance().useField(Field.AddressVillage)) { %>
+			<% if( FormFields.getInstance().useField(Field.ADDRESS_VILLAGE )) { %>
 				<tr>
 					<td align="right">
 					    <%= StringUtil.getContextualMessageForKey("person.town") %>:
@@ -571,7 +571,7 @@ function  processPhoneSuccess(xhr){
 					</td>
 				</tr>
 			<% } %>
-			<% if( FormFields.getInstance().useField(Field.Commune)){ %>
+			<% if( FormFields.getInstance().useField(Field.ADDRESS_COMMUNE)){ %>
 			<tr>
 				<td align="right">
 					<bean:message  key="person.commune" />:
@@ -589,7 +589,7 @@ function  processPhoneSuccess(xhr){
 				</td>
 			</tr>
 			<% } %>
-			<% if( FormFields.getInstance().useField(Field.AddressDepartment )){ %>
+			<% if( FormFields.getInstance().useField(Field.ADDRESS_DEPARTMENT )){ %>
 			<tr>
 				<td align="right">
 					<bean:message  key="person.department" />:

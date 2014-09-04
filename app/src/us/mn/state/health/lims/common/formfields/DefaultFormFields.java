@@ -49,13 +49,15 @@ public class DefaultFormFields extends AFormFields {
 		setFieldTrue(Field.OrganizationShortName);
 		setFieldTrue(Field.OrganizationMultiUnit);
 		setFieldTrue(Field.OrganizationOrgId);
-		setFieldTrue(Field.AddressCity);
+		setFieldTrue(Field.ADDRESS_CITY );
 		setFieldTrue(Field.PatientRequired);
         setFieldTrue(Field.QA_FULL_PROVIDER_INFO );
         setFieldTrue(Field.QA_REQUESTER_SAMPLE_ID);
         setFieldTrue(Field.PatientIDRequired);
 		setFieldTrue(Field.PatientNameRequired);
 		setFieldTrue(Field.SampleEntryRequestingSiteSampleId);
+        setFieldTrue( Field.ADDRESS_COMMUNE );
+        setFieldTrue( Field.ADDRESS_VILLAGE );
 
         setFieldFalse(Field.OrgState);
         setFieldFalse(Field.ZipCode);
@@ -65,8 +67,7 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.InlineOrganizationTypes);
 		setFieldFalse(Field.SubjectNumber);
         setFieldFalse(Field.SubjectNumberRequired );
-		setFieldFalse(Field.Commune);
-		setFieldFalse(Field.AddressDepartment);
+		setFieldFalse(Field.ADDRESS_DEPARTMENT );
 		setFieldFalse(Field.MotherInitial);
 		setFieldFalse(Field.SearchSampleStatus);
 		setFieldFalse(Field.DepersonalizedResults);
@@ -74,8 +75,6 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.ResultsReferral);
 		setFieldFalse(Field.ValueHozSpaceOnResults);
 		setFieldFalse(Field.InitialSampleCondition);
-		setFieldFalse(Field.AddressCommune);
-		setFieldFalse(Field.AddressVillage);
         setFieldFalse(Field.OrganizationCLIA);
         setFieldFalse(Field.OrganizationParent);
 		setFieldFalse(Field.PatientRequired_SampleConfirmation);
