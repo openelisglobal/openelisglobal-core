@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
-                 us.mn.state.health.lims.common.util.Versioning,
-				 us.mn.state.health.lims.common.util.SystemConfiguration" %>
+                 us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -62,13 +62,11 @@ function /*boolean*/ handleEnterEvent(){
 			<td>
 				<html:select name="<%=formName%>" property="selectedSearchID" styleId="testName"
 						 onchange="makeDirty();" >
-					<app:optionsCollection name="<%=formName%>" property="searchTypes" label="description" value="id" />
+					<app:optionsCollection name="<%=formName%>" property="searchTypes" label="value" value="id" />
 				</html:select>
 	   		</td>
 	   		<td>
-	   			<html:button property="retrieveTestsButton" styleId="retrieveTestsID"  onclick="doShowTests();"  >
-					<bean:message key="label.button.runsearch"/>
-				</html:button>
+                <input id="retrieveTestsID" type="button" onclick="doShowTests();" value='<%=StringUtil.getMessageForKey("label.button.runsearch")%>' >
 			</td>
 		</tr>
 	</table>
