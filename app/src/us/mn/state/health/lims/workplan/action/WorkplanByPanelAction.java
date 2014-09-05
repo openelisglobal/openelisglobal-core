@@ -26,6 +26,7 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
@@ -35,7 +36,6 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
-import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
@@ -55,9 +55,6 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 	private final PanelDAO panelDAO = new PanelDAOImpl();
 	private final PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
 
-	private String reportPath;
-
-
 	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -70,7 +67,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 		setRequestType( "panel");
 		
 
-		List<TestResultItem> workplanTests = new ArrayList<TestResultItem>();
+		List<TestResultItem> workplanTests;
 
 		String panelID = request.getParameter("selectedSearchID");
 
@@ -91,15 +88,11 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 		}
 
 		PropertyUtils.setProperty(dynaForm, "workplanType", "panel");
-		PropertyUtils.setProperty(dynaForm, "searchTypes", getPanelDropdownList());
+		PropertyUtils.setProperty(dynaForm, "searchTypes", DisplayListService.getList( DisplayListService.ListType.PANELS ));
 		PropertyUtils.setProperty(dynaForm, "searchLabel", StringUtil.getMessageForKey("workplan.panel.types"));
 		PropertyUtils.setProperty(dynaForm, "searchAction", "WorkPlanByPanel.do");
 
 		return mapping.findForward(FWD_SUCCESS);
-	}
-
-	private List<Panel> getPanelDropdownList() {
-		return panelDAO.getAllActivePanels();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -140,7 +133,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 				
 			});
 			
-			String currentAccessionNumber = new String();
+			String currentAccessionNumber = null;
 			int sampleGroupingNumber = 0;
 			
 			int newIndex = 0;
@@ -149,7 +142,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 			
 			for (int i=0; newIndex < (workplanTestListOrigSize + newElementsAdded) ; i++) { 
 			    
-			    TestResultItem testResultItem = (TestResultItem) workplanTestList.get(newIndex);
+			    TestResultItem testResultItem = workplanTestList.get(newIndex);
 			    
 				if (!testResultItem.getAccessionNumber().equals(currentAccessionNumber)) {
 					sampleGroupingNumber++;

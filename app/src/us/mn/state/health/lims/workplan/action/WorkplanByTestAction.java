@@ -26,16 +26,17 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-import us.mn.state.health.lims.test.valueholder.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +49,6 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 
 	private final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static boolean HAS_NFS_PANEL = false;
-	private List<Test> testList;
 
 	String testType = "";
 	String testName = "";
@@ -101,9 +101,9 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 			PropertyUtils.setProperty(dynaForm, "workplanTests", new ArrayList<TestResultItem>());
 		}
 
-		setUpTestDropdownList();
 
-		PropertyUtils.setProperty(dynaForm, "searchTypes", testList);
+
+		PropertyUtils.setProperty(dynaForm, "searchTypes", getTestDropdownList());
 		PropertyUtils.setProperty(dynaForm, "workplanType", request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "searchLabel", StringUtil.getMessageForKey("workplan.test.types"));
 		PropertyUtils.setProperty(dynaForm, "searchAction", "WorkPlanByTest.do");
@@ -111,37 +111,27 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 		return mapping.findForward(FWD_SUCCESS);
 	}
 
-	private void setUpTestDropdownList() {
-
-		List<Test> allTestsList = testDAO.getAllActiveOrderableTests();
-
-		testList = new ArrayList<Test>();
+	private List<IdValuePair> getTestDropdownList() {
+		List<IdValuePair> testList = DisplayListService.getList( DisplayListService.ListType.ALL_TESTS );
 
 		if( HAS_NFS_PANEL){
-			adjustNFSTests(allTestsList);
-		}else{
-			testList = allTestsList;
+			testList = adjustNFSTests(testList);
 		}
-		
-		Collections.sort(testList, new TestDescriptionComparator());
-
+		Collections.sort( testList, new valueComparator() );
+        return testList;
 	}
 
-	private void adjustNFSTests(List<Test> allTestsList) {
-		// add NFS to the list
-		Test nfstest = new Test();
-		nfstest.setTestName("NFS");
-		nfstest.setDescription("NFS");
-		nfstest.setId("NFS");
-		allTestsList.add(nfstest);
-
-		// remove NFS subtests
-		for (Test test : allTestsList) {
-			if (!nfsTestIdList.contains(test.getId())) {
-				testList.add(test);
+	private List<IdValuePair> adjustNFSTests(List<IdValuePair> allTestsList) {
+        List<IdValuePair> adjustedList = new ArrayList<IdValuePair>( allTestsList.size() );
+		for (IdValuePair idValuePair : allTestsList) {
+			if (!nfsTestIdList.contains( idValuePair.getId() )) {
+				adjustedList.add( idValuePair );
 			}
 		}
-	}
+        // add NFS to the list
+        adjustedList.add( new IdValuePair( "NFS", "NFS" ) );
+        return adjustedList;
+    }
 
 	@SuppressWarnings("unchecked")
 	private List<TestResultItem> getWorkplanByTest(String testType) {
@@ -243,10 +233,10 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 		return TestService.getLocalizedTestName(  testId );
 	}
 
-	class TestDescriptionComparator implements Comparator<Test> {
+	class valueComparator implements Comparator<IdValuePair> {
 
-		public int compare(Test p1, Test p2) {
-			return TestService.getLocalizedTestName( p1 ).toUpperCase().compareTo(TestService.getLocalizedTestName( p2 ).toUpperCase());
+		public int compare(IdValuePair p1, IdValuePair p2) {
+			return p1.getValue().toUpperCase().compareTo(p2.getValue().toUpperCase());
 		}
 
 	}

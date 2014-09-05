@@ -28,4 +28,8 @@
     <comment>update the local_code column to be a local code</comment>
    <sqlFile path="OE4.2/testCatalogCI_IPCI/localCode.sql" />
 </changeSet>
+<changeSet id="4" author="paulsc" context="CI_IPCI">
+    <comment>update the local_code column to be a local code</comment>
+    <sqlFile path="OE4.2/testCatalogCI_IPCI/HIVSpelling.sql" />
+</changeSet>
 </databaseChangeLog>
