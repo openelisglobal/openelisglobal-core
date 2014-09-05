@@ -199,4 +199,14 @@
             <column name="instruction_key" value="instructions.sample.entry.program" />
         </insert>
     </changeSet>
+    <changeSet id="5" author="kone" >
+    <comment>Adds data in description_key </comment>
+    <sql>
+         UPDATE site_information SET description_key = (SELECT  REPLACE(name, ' ','.'))  ;
+         UPDATE clinlims.site_information SET description_key = ('siteInfo.' || description_key)  ;
+
+    </sql>
+</changeSet>	
+ 
+
 </databaseChangeLog>

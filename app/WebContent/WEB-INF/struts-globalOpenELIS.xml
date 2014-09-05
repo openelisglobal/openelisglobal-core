@@ -468,6 +468,7 @@
 			<form-property name="dictionaryValues" type="java.util.Collection" />
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
             <form-property name="tag" type="java.lang.String" initial="" />
+            <form-property name="descriptionKey" type="java.lang.String" initial="" />
 		</form-bean>
 
 		<form-bean name="sampleEntryConfigMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
