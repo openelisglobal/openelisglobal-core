@@ -41,8 +41,8 @@
 	    		<bean:write name="site" property="name"/>
 	   		</td>
    	  	 	<td class="textcontent">
-	   	  		<bean:write name="site" property="description"/>
-	   		</td>
+	   	  	 <bean:message name="site" property="descriptionKey"/>
+	   	    </td>
 	   		<% if( site.getValueType().equals("logoUpload")){ %>
 	   		<td class="textcontent">
 	   		    <img src="./images/labLogo.jpg?ver=<%= Math.random() %>" 
