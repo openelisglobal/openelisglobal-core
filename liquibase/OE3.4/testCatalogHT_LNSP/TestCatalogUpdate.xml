@@ -31,5 +31,12 @@
         <comment>Updates to the test catalog (localization fixes for culture des Selles)</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates4.sql" />
     </changeSet>
+    <changeSet id="3" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog (de-activate tests)</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates5.sql" />
+    </changeSet>
+    <changeSet id="4" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog (add tests and panels)</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates6.sql" />
+    </changeSet>
 </databaseChangeLog>
-
