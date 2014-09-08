@@ -17,7 +17,7 @@
 package us.mn.state.health.lims.qaevent.worker;
 
 import org.apache.commons.validator.GenericValidator;
-import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
@@ -36,7 +36,6 @@ import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.services.TableIdService;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
@@ -115,8 +114,7 @@ public class NonConformityUpdateWorker {
 	private List<NoteSet> insertableNotes;
 	private List<Note> updateableNotes;
 	private List<Note> deleteableNotes;
-	private SystemUser systemUser;
-	private SampleProject sampleProject;
+    private SampleProject sampleProject;
 	private List<PersonAddress> addressPartList;
 	private PatientIdentity subjectNoPatientIdentity;
 	private PatientIdentity STNoPatientIdentity;
@@ -152,7 +150,7 @@ public class NonConformityUpdateWorker {
 	private Provider provider;
 	private Person providerPerson;
 	private boolean insertProvider = false;
-	private ActionErrors errors = null;
+	private ActionMessages errors = null;
 	private Organization newOrganization= null;
 	private boolean insertNewOrganizaiton = false;
 	private SampleRequester sampleRequester = null;
@@ -301,15 +299,15 @@ public class NonConformityUpdateWorker {
 		} catch (LIMSRuntimeException lre) {
 			tx.rollback();
 
-			ActionError error;
+			ActionMessage error;
 			if (lre.getException() instanceof StaleObjectStateException) {
-				error = new ActionError("errors.OptimisticLockException", null, null);
+				error = new ActionMessage("errors.OptimisticLockException", null, null);
 			} else {
 				lre.printStackTrace();
-				error = new ActionError("errors.UpdateException", null, null);
+				error = new ActionMessage("errors.UpdateException", null, null);
 			}
 
-			errors = new ActionErrors();
+			errors = new ActionMessages();
 			errors.add(ActionMessages.GLOBAL_MESSAGE, error);
 
 			return IActionConstants.FWD_FAIL;
@@ -321,15 +319,15 @@ public class NonConformityUpdateWorker {
 		return IActionConstants.FWD_SUCCESS;
 	}
 
-	public ActionErrors getErrors() {
+	public ActionMessages getErrors() {
 		return errors;
 	}
 
 	private void createSystemUser() {
-		systemUser = new SystemUser();
-		systemUser.setId(webData.getCurrentSysUserId());
+        SystemUser systemUser = new SystemUser();
+		systemUser.setId( webData.getCurrentSysUserId() );
 		SystemUserDAO systemUserDAO = new SystemUserDAOImpl();
-		systemUserDAO.getData(systemUser);
+		systemUserDAO.getData( systemUser );
 	}
 
 	private void clearMembers() {
@@ -494,10 +492,12 @@ public class NonConformityUpdateWorker {
 			}
 			providerDAO.insertData(provider);
 		}
-		
-		for( PersonAddress addressPart : addressPartList){
-			addressPart.setPersonId(providerPerson.getId());
-			personAddressDAO.insert(addressPart);
+
+        if( providerPerson != null){
+            for( PersonAddress addressPart : addressPartList){
+                addressPart.setPersonId( providerPerson.getId() );
+                personAddressDAO.insert( addressPart );
+            }
 		}
 	}
 
