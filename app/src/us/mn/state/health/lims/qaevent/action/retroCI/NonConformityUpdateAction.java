@@ -16,26 +16,21 @@
  */
 package us.mn.state.health.lims.qaevent.action.retroCI;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
+import org.apache.struts.action.ActionMessages;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.qaevent.worker.NonConformityUpdateData;
 import us.mn.state.health.lims.qaevent.worker.NonConformityUpdateWorker;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class NonConformityUpdateAction extends BaseAction {
-
-  
-//    private boolean useSiteList;
-
     /*
      * (non-Javadoc)
      * 
@@ -46,7 +41,7 @@ public class NonConformityUpdateAction extends BaseAction {
      * javax.servlet.http.HttpServletResponse)
      */
 
-    @SuppressWarnings("deprecation")
+
 	@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
                     HttpServletResponse response) throws Exception {
@@ -56,7 +51,7 @@ public class NonConformityUpdateAction extends BaseAction {
     	String result = worker.update();
     	
     	if( IActionConstants.FWD_FAIL.equals(result)){
-    		ActionErrors errors = worker.getErrors();
+    		ActionMessages errors = worker.getErrors();
 			saveErrors(request, errors);
 			request.setAttribute(Globals.ERROR_KEY, errors);
     	}

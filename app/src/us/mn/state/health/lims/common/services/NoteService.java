@@ -73,14 +73,14 @@ public class NoteService{
     private final String objectId;
     private final Object object;
 
-    private static final String SAMPLE_ITEM_TABLE_ID;
+    private static final String SAMPLE_ITEM_TABLE_REFERENCE_ID;
     public static final String TABLE_REFERENCE_ID;
 
     static{
         ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
 
         TABLE_REFERENCE_ID = refTableDAO.getReferenceTableByName("NOTE").getId();
-        SAMPLE_ITEM_TABLE_ID = refTableDAO.getReferenceTableByName( "SAMPLE_ITEM" ).getId();
+        SAMPLE_ITEM_TABLE_REFERENCE_ID = refTableDAO.getReferenceTableByName( "SAMPLE_ITEM" ).getId();
     }
 
     public NoteService(Analysis analysis){
@@ -105,7 +105,7 @@ public class NoteService{
     }
 
     public NoteService( SampleItem sampleItem){
-        tableId = SAMPLE_ITEM_TABLE_ID;
+        tableId = SAMPLE_ITEM_TABLE_REFERENCE_ID;
         objectId = sampleItem.getId();
         binding = BoundTo.SAMPLE_ITEM;
         object = sampleItem;
@@ -151,16 +151,18 @@ public class NoteService{
         ArrayList<String> filter = new ArrayList<String>( 1 );
         filter.add( NoteType.NON_CONFORMITY.getDBCode() );
         Sample sample = null;
+        SampleItem sampleItem = null;
 
         //get parent objects and the qa notes
         if( binding == BoundTo.ANALYSIS){
-            SampleItem sampleItem = ((Analysis)object).getSampleItem();
-            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sampleItem.getId(), SAMPLE_ITEM_TABLE_ID, filter) );
+            sampleItem = ((Analysis)object).getSampleItem();
+            notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sampleItem.getId(), SAMPLE_ITEM_TABLE_REFERENCE_ID, filter) );
 
             sample = sampleItem.getSample();
             notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SampleService.TABLE_REFERENCE_ID, filter ) );
         }else if( binding == BoundTo.SAMPLE_ITEM ){
-            sample = ((SampleItem)object).getSample();
+            sampleItem = (SampleItem)object;
+            sample = sampleItem.getSample();
             notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( sample.getId(), SampleService.TABLE_REFERENCE_ID, filter ) );
         }
 
@@ -168,12 +170,14 @@ public class NoteService{
         if( sample != null){
             List<SampleQaEvent> sampleQAList = sampleQADAO.getSampleQaEventsBySample(sample);
             for( SampleQaEvent event : sampleQAList){
-                notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( event.getId(), QAService.TABLE_REFERENCE_ID, filter ) );
-                Note proxyNote = new Note();
-                proxyNote.setNoteType( Note.NON_CONFORMITY );
-                proxyNote.setText( event.getQaEvent().getLocalizedName() );
-                proxyNote.setLastupdated( event.getLastupdated() );
-                notes.add( proxyNote );
+                if( sampleItem == null || event.getSampleItem() == null || ( sampleItem.getId().equals( event.getSampleItem().getId() ) ) ){
+                    notes.addAll( noteDAO.getNotesChronologicallyByRefIdAndRefTableAndType( event.getId(), QAService.TABLE_REFERENCE_ID, filter ) );
+                    Note proxyNote = new Note();
+                    proxyNote.setNoteType( Note.NON_CONFORMITY );
+                    proxyNote.setText( event.getQaEvent().getLocalizedName() );
+                    proxyNote.setLastupdated( event.getLastupdated() );
+                    notes.add( proxyNote );
+                }
             }
         }
 
@@ -262,13 +266,6 @@ public class NoteService{
         return DateUtil.convertTimestampToStringDateAndTime( note.getLastupdated() );
     }
 
-    /**
-     * @param type
-     * @param text
-     * @param subject
-     * @param currentUserId
-     * @return  Note
-     */
     public Note createSavableNote( NoteType type, String text, String subject, String currentUserId){
         if( GenericValidator.isBlankOrNull( text )){
             return null;
@@ -306,7 +303,7 @@ public class NoteService{
                 return SampleService.TABLE_REFERENCE_ID;
             }
             case SAMPLE_ITEM:{
-                return SAMPLE_ITEM_TABLE_ID;
+                return SAMPLE_ITEM_TABLE_REFERENCE_ID;
             }
             default:{
                 return null;
