@@ -39,4 +39,12 @@
         <comment>Updates to the test catalog (add tests and panels)</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates6.sql" />
     </changeSet>
+    <changeSet id="5" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog (add tests and panels)</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates7.sql" />
+    </changeSet>
+    <changeSet id="6" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog (deactivate sample_types)</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates8.sql" />
+    </changeSet>
 </databaseChangeLog>
