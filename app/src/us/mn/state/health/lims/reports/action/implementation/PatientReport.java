@@ -841,8 +841,7 @@ public abstract class PatientReport extends Report{
             data.setTestDate( DateUtil.convertSqlDateToStringDate( reportAnalysis.getCompletedDate() ) );
             sortOrder = reportAnalysis.getSampleItem().getSortOrder();
             data.setOrderFinishDate( completionDate );
-            data.setOrderDate( DateUtil.convertSqlDateToStringDate( currentSampleService.getOrderedDate() ) );
-            data.setOrderDate( DateUtil.convertTimestampToStringDateAndTime( new Timestamp( currentSampleService.getOrderedDate().getTime() )) );
+            data.setOrderDate( DateUtil.convertTimestampToStringDateAnd12HourTime( new Timestamp( currentSampleService.getOrderedDate().getTime() )) );
         }
 
         data.setAccessionNumber( currentSampleService.getAccessionNumber() + "-" + sortOrder );
