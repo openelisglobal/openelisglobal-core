@@ -117,7 +117,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
             if( sampleItem.getCollectionDate() == null){
                 buffer.append( StringUtil.getMessageForKey( "label.not.available" ) );
             }else{
-                buffer.append( DateUtil.convertTimestampToStringDateAndTime( sampleItem.getCollectionDate() ) );
+                buffer.append( DateUtil.convertTimestampToStringDateAnd12HourTime( sampleItem.getCollectionDate() ) );
             }
         }
 

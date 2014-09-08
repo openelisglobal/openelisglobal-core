@@ -18,7 +18,7 @@ function /*void*/ showSuccessMessage( show ){
 
 
 
-<div id="successMsg" style="text-align:center; color:#FF9999;  width : 100%;font-size:170%; visibility : hidden">
+<div id="successMsg" style="text-align:center; color:seagreen;  width : 100%;font-size:170%; visibility : hidden">
 				<bean:message key="save.success"/>
 </div>
 
