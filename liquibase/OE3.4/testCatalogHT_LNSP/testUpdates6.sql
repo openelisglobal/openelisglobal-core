@@ -185,7 +185,7 @@ INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdate
 --Culture(Ecouvillon Naso-Pharynge)
 
 INSERT INTO clinlims.test( id,  uom_id, description, reporting_description, is_active, is_reportable, lastupdated, test_section_id, local_abbrev, sort_order, name, loinc )
-VALUES ( nextval( 'clinlims.test_seq' ) , null , 'Culture(Ecouvillon Naso-Pharynge)' , 'c' , 'Y' , 'N' , now() , (select id from clinlims.test_section where name = 'Ecouvillon Naso-Pharynge' ) ,'Culture' ,(select sort_order + 3 from clinlims.test where description = 'Culture des Selles(Selles)') , 'Culture' , '');
+VALUES ( nextval( 'clinlims.test_seq' ) , null , 'Culture(Ecouvillon Naso-Pharynge)' , 'c' , 'Y' , 'N' , now() , (select id from clinlims.test_section where name = 'Bacteria' ) ,'Culture' ,(select sort_order + 3 from clinlims.test where description = 'Culture des Selles(Selles)') , 'Culture' , '');
 
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
   (nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Culture(Ecouvillon Naso-Pharynge)' )  ,    (select id from clinlims.type_of_sample where description = 'Ecouvillon Naso-Pharynge')  );
@@ -198,7 +198,7 @@ INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdate
 --PCR(Ecouvillon Naso-Pharynge)
 
 INSERT INTO clinlims.test( id,  uom_id, description, reporting_description, is_active, is_reportable, lastupdated, test_section_id, local_abbrev, sort_order, name, loinc )
-VALUES ( nextval( 'clinlims.test_seq' ) , null , 'PCR(Ecouvillon Naso-Pharynge)' , 'c' , 'Y' , 'N' , now() , (select id from clinlims.test_section where name = 'Ecouvillon Naso-Pharynge' ) ,'PCR' ,(select sort_order + 6 from clinlims.test where description = 'PCR des Selles(Selles)') , 'PCR' , '');
+VALUES ( nextval( 'clinlims.test_seq' ) , null , 'PCR(Ecouvillon Naso-Pharynge)' , 'c' , 'Y' , 'N' , now() , (select id from clinlims.test_section where name = 'Bacteria' ) ,'PCR' ,(select sort_order + 6 from clinlims.test where description = 'PCR des Selles(Selles)') , 'PCR' , '');
 
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
   (nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'PCR(Ecouvillon Naso-Pharynge)' )  ,    (select id from clinlims.type_of_sample where description = 'Ecouvillon Naso-Pharynge')  );
