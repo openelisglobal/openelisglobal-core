@@ -23,7 +23,7 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdated)
 	 VALUES ( nextval( 'clinlims.test_result_seq' ) , ( select id from clinlims.test where description = 'Score d''adherence(Plasma)' ) , 'R' , null , now());
 --
-----------------------------------------here 	
+
 -- Date de mise sous ARV(Plasma)	
 INSERT INTO clinlims.test( id,  uom_id, description, reporting_description, is_active, is_reportable, lastupdated, test_section_id, local_abbrev, sort_order, name, loinc )
 VALUES ( nextval( 'clinlims.test_seq' ) , null , 'Date de mise sous ARV(Plasma)' , 'c' , 'Y' , 'N' , now() , (select id from clinlims.test_section where name = 'Biologie Moleculaire' ) ,'Date de mise sous ARV' ,(select sort_order + 6 from clinlims.test where description = 'VIH-1 Charge Virale(Plasma)') , 'Date de mise sous ARV' , '');
