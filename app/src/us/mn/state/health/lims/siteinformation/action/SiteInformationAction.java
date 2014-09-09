@@ -74,7 +74,6 @@ public class SiteInformationAction extends BaseAction {
 
 
 			PropertyUtils.setProperty(dynaForm, "paramName", siteInformation.getName());
-			//PropertyUtils.setProperty(dynaForm, "description", getUserDescription(siteInformation));
 			PropertyUtils.setProperty(dynaForm, "description", siteInformation.getDescriptionKey());
 			PropertyUtils.setProperty(dynaForm, "value", siteInformation.getValue());
             setLocalizationValues( dynaForm, siteInformation);
