@@ -25,6 +25,7 @@ import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.SampleService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -142,9 +143,9 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 
 		ts.setAccessionNumber(order.getAccessionNumber());
 		ts.setReceptionDate(order.getReceivedDateForDisplay());
-		ts.setReceptionTime(order.getReceivedTimeForDisplay());
-		ts.setCollectionDate(order.getCollectionDateForDisplay());
-		ts.setCollectionTime(order.getCollectionTimeForDisplay());
+		ts.setReceptionTime(DateUtil.convertTimestampToString12HourTime( order.getReceivedTimestamp()));
+		ts.setCollectionDate(DateUtil.convertTimestampToStringDate(sampleItem.getCollectionDate()));		
+		ts.setCollectionTime(DateUtil.convertTimestampToString12HourTime( sampleItem.getCollectionDate()));
 		ts.setAge(createReadableAge(patientService.getDOB()));
 		ts.setDOB(patientService.getDOB());
 		ts.setFirstName(patientService.getFirstName());
