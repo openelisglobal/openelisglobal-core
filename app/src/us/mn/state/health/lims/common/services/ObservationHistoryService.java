@@ -90,7 +90,7 @@ public class ObservationHistoryService{
                 return observation.getValue();
             }else{
                 if(!GenericValidator.isBlankOrNull( observation.getValue() )){
-                    return dictionaryDAO.getDataForId(observation.getValue()).getDictEntry();
+                    return dictionaryDAO.getDataForId(observation.getValue()).getLocalizedName();
                 }
             }
         }

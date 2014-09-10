@@ -806,6 +806,7 @@ public abstract class PatientReport extends Report{
         data.setSubjectNumber( getLazyPatientIdentity( subjectNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID ) );
         data.setHealthRegion( getLazyPatientIdentity( healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID ) );
         data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID ) );
+        data.setLabOrderType( ObservationHistoryService.getValueForSample( ObservationType.PROGRAM, currentSampleService.getId() )  );
         //Not sure if it is a bug in escapeHtml but the wrong markup is generated
         testName = StringEscapeUtils.escapeHtml( testName ).replace( "&mu", "&micro" );
         data.setTestName(  testName  );
