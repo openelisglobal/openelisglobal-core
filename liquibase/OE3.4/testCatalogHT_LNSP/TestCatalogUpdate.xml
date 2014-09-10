@@ -47,4 +47,12 @@
         <comment>Updates to the test catalog (deactivate sample_types)</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates8.sql" />
     </changeSet>
+    <changeSet id="7" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog (deactivate sample_types)</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates9.sql" />
+    </changeSet>
+    <changeSet id="8" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates10.sql" />
+    </changeSet>
 </databaseChangeLog>
