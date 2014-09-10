@@ -59,5 +59,9 @@
         <comment>Updates to the test catalog</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/ExamenMicroscopiqueTest.sql" />
     </changeSet>
+    <changeSet id="6" author="paulsc" context="haitiLNSP">
+        <comment>Updates to the test catalog</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/AntigramToPositive.sql" />
+    </changeSet>
 
 </databaseChangeLog>
