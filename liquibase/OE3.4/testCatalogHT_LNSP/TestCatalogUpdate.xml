@@ -79,4 +79,8 @@
             update clinlims.test set reporting_description = name where reporting_description = 'c';
         </sql>
     </changeSet>
+    <changeSet id="9" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates11.sql" />
+    </changeSet>
 </databaseChangeLog>
