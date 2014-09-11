@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,
 			us.mn.state.health.lims.common.formfields.FormFields,
@@ -114,7 +115,7 @@ function populateRequestForSampleType( selector, sampleIndex){
 	}else{
 		selection = selector.options[selectIndex];
 		currentRequestSampleIndex = sampleIndex;
-		getTestsForSampleType(selection.value, "none", processGetTestSuccess );
+		getTestsForSampleType(selection.value, processGetTestSuccess );
 	}
 
 	setSaveButton();
