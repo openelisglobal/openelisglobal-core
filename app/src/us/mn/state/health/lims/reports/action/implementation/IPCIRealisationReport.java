@@ -185,7 +185,7 @@ public class  IPCIRealisationReport  extends Report {
 				TestBucket testBucket = null;
 				if (USER_TEST_SECTION_ID.equals(analysis.getTestSection().getId())) {
 					String concatedName = analysis.getTestSection().getLocalizedName()
-							+ analysis.getTest().getLocalizedName();
+							+ TestService.getLocalizedTestName( analysis.getTest() );
 					testBucket = concatSection_TestToBucketMap.get(concatedName);
 					if (testBucket == null) {
 						testBucket = new TestBucket();

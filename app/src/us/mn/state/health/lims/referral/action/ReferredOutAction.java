@@ -27,6 +27,7 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -41,15 +42,11 @@ import us.mn.state.health.lims.referral.daoimpl.ReferralDAOImpl;
 import us.mn.state.health.lims.referral.daoimpl.ReferralResultDAOImpl;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
-import us.mn.state.health.lims.result.dao.ResultDAO;
-import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
-import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
@@ -61,8 +58,6 @@ import java.util.*;
 public class ReferredOutAction extends BaseAction {
 
 	private static ReferralResultDAO referralResultDAO = new ReferralResultDAOImpl();
-	private static TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
-	private static ResultDAO resultDAO = new ResultDAOImpl();
 	private static DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private List<NonNumericTests> nonNumericTests;
 
@@ -173,7 +168,7 @@ public class ReferredOutAction extends BaseAction {
 		TypeOfSample typeOfSample = analysisService.getTypeOfSample();
 		referralItem.setSampleType(typeOfSample.getLocalizedName());
 
-		referralItem.setReferringTestName( analysisService.getAnalysis().getTest().getLocalizedName() );
+		referralItem.setReferringTestName( TestService.getLocalizedTestName( analysisService.getAnalysis().getTest() ));
 		List<Result> resultList = analysisService.getResults();
 		String resultString = "";
 
@@ -332,7 +327,7 @@ public class ReferredOutAction extends BaseAction {
 
 		for (Test test : testList) {
             if( test.getOrderable()){
-                valueList.add( new IdValuePair( test.getId(), test.getLocalizedName() ) );
+                valueList.add( new IdValuePair( test.getId(), TestService.getLocalizedTestName( test ) ) );
             }
 		}
 
