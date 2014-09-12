@@ -172,28 +172,28 @@ public class TestService implements LocaleChangeListener{
         return entityToMap.get(entiy);
     }
 
-    public static String getLocalizedTestName( Test test ){
+    public static String getUserLocalizedTestName( Test test ){
         if( test == null){
             return "";
         }
 
-        return getLocalizedTestName( test.getId() );
+        return getUserLocalizedTestName( test.getId() );
     }
 
-    public static String getLocalizedReportingTestName( String testId){
+    public static String getUserLocalizedReportingTestName( String testId ){
         String name = entityToMap.get(Entity.TEST_REPORTING_NAME).get( testId );
         return name == null ? "" : name;
     }
 
-    public static String getLocalizedReportingTestName( Test test ){
+    public static String getUserLocalizedReportingTestName( Test test ){
         if( test == null){
             return "";
         }
 
-        return getLocalizedTestName( test.getId() );
+        return getUserLocalizedReportingTestName( test.getId() );
     }
 
-    public static String getLocalizedTestName( String testId){
+    public static String getUserLocalizedTestName( String testId ){
         String name = entityToMap.get(Entity.TEST_NAME).get( testId );
         return name == null ? "" : name;
     }
@@ -203,12 +203,12 @@ public class TestService implements LocaleChangeListener{
      * @param test The test for which we want the name
      * @return The test name or the augmented test name
      */
-    public static String getLocalizedAugmentedTestName( Test test ){
+    public static String getLocalizedTestNameWithType( Test test ){
         if( test == null){
             return "";
         }
 
-        return getLocalizedAugmentedTestName( test.getId() );
+        return getLocalizedTestNameWithType( test.getId() );
     }
 
     /**
@@ -217,7 +217,7 @@ public class TestService implements LocaleChangeListener{
      * @param testId The test id of the test for which we want the name
      * @return The test name or the augmented test name
      */
-    public static String getLocalizedAugmentedTestName( String testId ){
+    public static String getLocalizedTestNameWithType( String testId ){
         String description = entityToMap.get(Entity.TEST_AUGMENTED_NAME ).get( testId );
         return description == null ? "" : description;
     }

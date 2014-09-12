@@ -97,12 +97,12 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 
 			TestBucket bucket = new TestBucket();
 
-			bucket.testName = TestService.getLocalizedTestName(test);
+			bucket.testName = TestService.getUserLocalizedTestName( test );
 			bucket.testSort = Integer.parseInt(test.getSortOrder());
 			bucket.testSection = test.getTestSection().getLocalizedName();
 			bucket.sectionSort = test.getTestSection().getSortOrderInt();
 			
-			testNameToBucketList.put( TestService.getLocalizedReportingTestName(test), bucket);
+			testNameToBucketList.put( TestService.getUserLocalizedReportingTestName( test ), bucket);
 			testBucketList.add(bucket);
 		}
 
@@ -207,18 +207,18 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
             //that entry will not be in the test to test section map
             if( USER_TEST_SECTION_ID.equals( analysis.getTest().getTestSection().getId() ) ){
                 String concatedName = analysis.getTestSection().getLocalizedName()
-                        + TestService.getLocalizedTestName( analysis.getTest() );
+                        + TestService.getUserLocalizedTestName( analysis.getTest() );
                 testBucket = concatSection_TestToBucketMap.get( concatedName );
                 if( testBucket == null ){
                     testBucket = new TestBucket();
-                    testBucket.testName = TestService.getLocalizedReportingTestName( test );
+                    testBucket.testName = TestService.getUserLocalizedReportingTestName( test );
                     testBucket.testSort = Integer.parseInt( test.getSortOrder() );
                     testBucket.testSection = analysis.getTestSection().getLocalizedName();
                     testBucket.sectionSort = analysis.getTestSection().getSortOrderInt();
                     concatSection_TestToBucketMap.put( concatedName, testBucket );
                 }
             }else{
-                testBucket = testNameToBucketList.get( TestService.getLocalizedReportingTestName(test));
+                testBucket = testNameToBucketList.get( TestService.getUserLocalizedReportingTestName( test ));
             }
 
             if( testBucket != null ){

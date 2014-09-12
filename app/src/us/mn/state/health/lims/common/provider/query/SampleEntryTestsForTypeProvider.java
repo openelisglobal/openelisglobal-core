@@ -80,7 +80,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 			@Override
 			public int compare(Test t1, Test t2){
 				if(GenericValidator.isBlankOrNull(t1.getSortOrder()) || GenericValidator.isBlankOrNull(t2.getSortOrder())){
-					return TestService.getLocalizedTestName( t1 ).compareTo(TestService.getLocalizedTestName( t2 ));
+					return TestService.getUserLocalizedTestName( t1 ).compareTo(TestService.getUserLocalizedTestName( t2 ));
 				}
 
 				try{
@@ -96,7 +96,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 					}
 
 				}catch(NumberFormatException e){
-                    return TestService.getLocalizedTestName( t1 ).compareTo(TestService.getLocalizedTestName( t2 ));
+                    return TestService.getUserLocalizedTestName( t1 ).compareTo(TestService.getUserLocalizedTestName( t2 ));
 				}
 
 			}
@@ -126,7 +126,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 
 	private void addTest(Test test, StringBuilder xml){
 		xml.append("<test>");
-		XMLUtil.appendKeyValue("name", StringEscapeUtils.escapeXml( TestService.getLocalizedTestName( test)), xml);
+		XMLUtil.appendKeyValue("name", StringEscapeUtils.escapeXml( TestService.getUserLocalizedTestName( test )), xml);
 		XMLUtil.appendKeyValue("id", test.getId(), xml);
 		XMLUtil.appendKeyValue("userBenchChoice", String.valueOf(USER_TEST_SECTION_ID.equals(test.getTestSection().getId())), xml);
         if( isVariableTypeOfSample){
@@ -195,7 +195,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 		Map<String, Integer> testNameOrderMap = new HashMap<String, Integer>();
 
 		for(int i = 0; i < tests.size(); i++){
-			testNameOrderMap.put(TestService.getLocalizedTestName( tests.get(i)), new Integer(i));
+			testNameOrderMap.put(TestService.getUserLocalizedTestName( tests.get( i ) ), new Integer(i));
 		}
 
 		PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
@@ -241,7 +241,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 		if(item.getTestId() != null){
 			Test test = testDAO.getTestById(item.getTestId());
 			if(test != null){
-				return TestService.getLocalizedTestName( test );
+				return TestService.getUserLocalizedTestName( test );
 			}
 		}else{
 			return item.getTestName();

@@ -83,7 +83,7 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 
 			}
 
-			String testName = TestService.getLocalizedTestName( analysis.getTest());
+			String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 
 			List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 			

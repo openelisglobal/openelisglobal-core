@@ -47,8 +47,8 @@ public class AssignableTest extends EnumValueItemImpl implements IActionConstant
     
     public AssignableTest(Test aTest) {
     	this.id = aTest.getId();
-    	this.assignableTestName = TestService.getLocalizedTestName( aTest );
-    	this.description = TestService.getLocalizedAugmentedTestName( aTest );
+    	this.assignableTestName = TestService.getUserLocalizedTestName( aTest );
+    	this.description = TestService.getLocalizedTestNameWithType( aTest );
     	this.displayValue = aTest.getTestDisplayValue();
     	this.type = ASSIGNABLE_TEST_TYPE_TEST;
     	this.tooltipText = "";

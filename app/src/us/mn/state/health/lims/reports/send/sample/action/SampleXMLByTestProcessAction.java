@@ -412,7 +412,7 @@ public class SampleXMLByTestProcessAction extends BaseAction {
 									// do we need go to receiver_xref to get
 									// their test name? identifier, codesystem
 									// type,
-									testName.setIdentifier( TestService.getLocalizedTestName( a.getTest()) );
+									testName.setIdentifier( TestService.getUserLocalizedTestName( a.getTest() ) );
 									testName.setCodeSystemType("L");
 									testName
 											.setText("This is some kind of text");

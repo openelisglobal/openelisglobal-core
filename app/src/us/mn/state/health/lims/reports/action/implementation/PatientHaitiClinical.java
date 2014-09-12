@@ -23,7 +23,6 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -38,7 +37,6 @@ import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 public class PatientHaitiClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
@@ -166,7 +164,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 					Test test = new Test();
 					test.setId(testId);
 					testDAO.getData(test);
-					data.setTestName( TestService.getLocalizedReportingTestName( test ) );
+					data.setTestName( TestService.getUserLocalizedReportingTestName( test ) );
 
 					String uom = getUnitOfMeasure( test);
 					if(reportReferralResultValue != null){

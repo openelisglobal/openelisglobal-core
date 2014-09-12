@@ -175,7 +175,7 @@ public class TestReflexCD4Provider extends BaseQueryProvider {
 
 		XMLUtil.appendKeyValue("conclusionText", testReflex.getActionScriptlet().getScriptletName(), xml);
 		XMLUtil.appendKeyValue("conclusionId", testReflex.getActionScriptletId(), xml);
-		XMLUtil.appendKeyValue("testText", TestService.getLocalizedTestName( testReflex.getAddedTest() ), xml);
+		XMLUtil.appendKeyValue("testText", TestService.getUserLocalizedTestName( testReflex.getAddedTest() ), xml);
 		XMLUtil.appendKeyValue("testId", testReflex.getAddedTestId(), xml);
 	}
 

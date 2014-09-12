@@ -72,7 +72,7 @@ public class TestAnalyteAction extends BaseAction {
 
 			// initialize testName
 			if (testAnalyte.getTest() != null) {
-				testAnalyte.setTestName( TestService.getLocalizedTestName(testAnalyte.getTest()));
+				testAnalyte.setTestName( TestService.getUserLocalizedTestName( testAnalyte.getTest() ));
 			}
 
 			// initialize analyteName

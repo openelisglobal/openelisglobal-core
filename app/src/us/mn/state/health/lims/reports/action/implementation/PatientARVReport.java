@@ -102,7 +102,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 		for(Analysis analysis : analysisList){
 			if(!analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled))){
-				String testName = TestService.getLocalizedTestName( analysis.getTest());
+				String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 
 				List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 				String resultValue = null;

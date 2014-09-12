@@ -125,7 +125,7 @@ function saveItToParentForm(form) {
       
     </td>
     <td>
-     <% out.println( TestService.getLocalizedTestName( originalTest )); %>
+     <% out.println( TestService.getUserLocalizedTestName( originalTest )); %>
     </td>
     <td>
      <% out.println(originalAnalyte.getAnalyteName()); %>

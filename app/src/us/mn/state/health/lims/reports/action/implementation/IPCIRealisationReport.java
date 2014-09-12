@@ -146,7 +146,7 @@ public class  IPCIRealisationReport  extends Report {
 		for (Test test : testList) {
 			TestBucket bucket = new TestBucket();
              			   						 
-			bucket.testName = TestService.getLocalizedTestName( test);
+			bucket.testName = TestService.getUserLocalizedTestName( test );
 			bucket.testSection = test.getTestSection().getLocalizedName();
 			
 			testIdToBucketList.put(test.getId(), bucket);
@@ -185,11 +185,11 @@ public class  IPCIRealisationReport  extends Report {
 				TestBucket testBucket = null;
 				if (USER_TEST_SECTION_ID.equals(analysis.getTestSection().getId())) {
 					String concatedName = analysis.getTestSection().getLocalizedName()
-							+ TestService.getLocalizedTestName( analysis.getTest() );
+							+ TestService.getUserLocalizedTestName( analysis.getTest() );
 					testBucket = concatSection_TestToBucketMap.get(concatedName);
 					if (testBucket == null) {
 						testBucket = new TestBucket();
-						testBucket.testName = TestService.getLocalizedReportingTestName(test);
+						testBucket.testName = TestService.getUserLocalizedReportingTestName( test );
 						testBucket.testSection = analysis.getTestSection().getLocalizedName();
 						concatSection_TestToBucketMap.put(concatedName, testBucket);
 					}

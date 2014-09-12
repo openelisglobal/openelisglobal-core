@@ -79,7 +79,7 @@ public class AnalysisAction extends BaseAction {
 
 			// initialize testName
 			if (analysis.getTest() != null) {
-				analysis.setTestName( TestService.getLocalizedTestName( analysis.getTest()));
+				analysis.setTestName( TestService.getUserLocalizedTestName( analysis.getTest() ));
 			}
 
 			isNew = false; // this is to set correct page title

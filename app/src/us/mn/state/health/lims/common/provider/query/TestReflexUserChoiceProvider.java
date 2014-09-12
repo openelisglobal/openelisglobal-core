@@ -155,7 +155,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
                 if (TestReflexUtil.isUserChoiceReflex( candidateReflex )) {
                     if (GenericValidator.isBlankOrNull( candidateReflex.getSiblingReflexId() )) {
                         selectableReflexes.add( candidateReflex );
-                        reflexTriggers.add( TestService.getLocalizedTestName( candidateReflex.getTest() ) + ":" + dictionaryResult.getDictEntry() );
+                        reflexTriggers.add( TestService.getUserLocalizedTestName( candidateReflex.getTest() ) + ":" + dictionaryResult.getDictEntry() );
           //              reflexTriggerIds.add( candidateReflex.getTest().getId() );
                     } else {
                         // find if the sibling reflex is satisfied
@@ -177,7 +177,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
                                         result.getValue() );
                                 if (testResult != null && testResult.getId().equals(sibTestReflex.getTestResultId())) {
                                     selectableReflexes.add(candidateReflex);
-                                    reflexTriggers.add( TestService.getLocalizedTestName( candidateReflex.getTest() ) + ":" + dictionaryResult.getDictEntry() );
+                                    reflexTriggers.add( TestService.getUserLocalizedTestName( candidateReflex.getTest() ) + ":" + dictionaryResult.getDictEntry() );
                        //             reflexTriggerIds.add( candidateReflex.getTest().getId() );
                                 }
                             }

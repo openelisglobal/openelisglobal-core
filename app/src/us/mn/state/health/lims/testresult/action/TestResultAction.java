@@ -72,7 +72,7 @@ public class TestResultAction extends BaseAction {
 
 			// initialize testName
 			if (testResult.getTest() != null) {
-				testResult.setTestName( TestService.getLocalizedTestName(testResult.getTest()));
+				testResult.setTestName( TestService.getUserLocalizedTestName( testResult.getTest() ));
 			}
 			
 			// initialize scriptletName

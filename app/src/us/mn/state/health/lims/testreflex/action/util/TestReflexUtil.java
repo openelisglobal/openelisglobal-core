@@ -128,7 +128,7 @@ public class TestReflexUtil {
 	}
 	
 	public static String makeReflexTestName(TestReflex testReflex) {
-		return TestService.getLocalizedTestName( testReflex.getAddedTest() );
+		return TestService.getUserLocalizedTestName( testReflex.getAddedTest() );
 	}
 
 	public static String makeReflexScriptName(TestReflex testReflex) {

@@ -206,7 +206,7 @@ public class InfluenzaSampleXMLBySampleProcessAction extends BaseAction {
 					Analysis analysis = (Analysis) analyses.get(i);
 					
 					//only process influenza type samples
-					if (!TestService.getLocalizedAugmentedTestName( analysis.getTest()).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getLocalizedTestName( analysis.getTest()).equals( HL7_INFLUENZA_TEST_NAME ) ) {
+					if (!TestService.getLocalizedTestNameWithType( analysis.getTest() ).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getUserLocalizedTestName( analysis.getTest() ).equals( HL7_INFLUENZA_TEST_NAME ) ) {
 						continue;
 					}
 					
@@ -287,7 +287,7 @@ public class InfluenzaSampleXMLBySampleProcessAction extends BaseAction {
 						Analysis analysis = (Analysis) analyses.get(i);
 						
 						//only process influenza type samples
-						if (!TestService.getLocalizedAugmentedTestName( analysis.getTest()).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getLocalizedTestName(analysis.getTest()).equals(HL7_INFLUENZA_TEST_NAME)) {
+						if (!TestService.getLocalizedTestNameWithType( analysis.getTest() ).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getUserLocalizedTestName( analysis.getTest() ).equals(HL7_INFLUENZA_TEST_NAME)) {
 							continue;
 						}
 						
@@ -379,7 +379,7 @@ public class InfluenzaSampleXMLBySampleProcessAction extends BaseAction {
 						Analysis analysis = (Analysis) analyses.get(i);
 						
 						//only process influenza type samples
-						if (!TestService.getLocalizedAugmentedTestName( analysis.getTest()).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getLocalizedTestName(analysis.getTest()).equals(HL7_INFLUENZA_TEST_NAME)) {
+						if (!TestService.getLocalizedTestNameWithType( analysis.getTest() ).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getUserLocalizedTestName( analysis.getTest() ).equals(HL7_INFLUENZA_TEST_NAME)) {
 							continue;
 						}
 						

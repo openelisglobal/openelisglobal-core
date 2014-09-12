@@ -185,7 +185,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 				Test test = new Test();
 				test.setId(testId);
 				testDAO.getData(test);
-				data.setReferralTestName( TestService.getLocalizedReportingTestName( test ) );
+				data.setReferralTestName( TestService.getUserLocalizedReportingTestName( test ) );
 				
 				String uom = getUnitOfMeasure( test);
 				if (reportReferralResultValue != null) {

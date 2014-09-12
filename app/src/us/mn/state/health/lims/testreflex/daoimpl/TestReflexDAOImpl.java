@@ -85,9 +85,9 @@ public class TestReflexDAOImpl extends BaseDAOImpl implements TestReflexDAO {
 		try {
 			// bugzilla 1482 throw Exception if record already exists
 			if (duplicateTestReflexExists(testReflex)) {
-				throw new LIMSDuplicateRecordException("Duplicate record exists for " + TestService.getLocalizedTestName( testReflex.getTest()) + BLANK
+				throw new LIMSDuplicateRecordException("Duplicate record exists for " + TestService.getUserLocalizedTestName( testReflex.getTest() ) + BLANK
 						+ testReflex.getTestAnalyte().getAnalyte().getAnalyteName() + BLANK + testReflex.getTestResult().getValue() + BLANK
-						+ TestService.getLocalizedTestName( testReflex.getAddedTest()));
+						+ TestService.getUserLocalizedTestName( testReflex.getAddedTest() ));
 			}
 
 			String id = (String) HibernateUtil.getSession().save(testReflex);
@@ -116,10 +116,10 @@ public class TestReflexDAOImpl extends BaseDAOImpl implements TestReflexDAO {
 			if (duplicateTestReflexExists(testReflex)) {
 				throw new LIMSDuplicateRecordException(
 						"Duplicate record exists for "
-						+ TestService.getLocalizedTestName( testReflex.getTest()) + BLANK
+						+ TestService.getUserLocalizedTestName( testReflex.getTest() ) + BLANK
 						+ testReflex.getTestAnalyte().getAnalyte().getAnalyteName() +BLANK
 						+ testReflex.getTestResult().getValue() + BLANK
-						+ TestService.getLocalizedTestName( testReflex.getAddedTest()));
+						+ TestService.getUserLocalizedTestName( testReflex.getAddedTest() ));
 			}
 		} catch (Exception e) {
 			// bugzilla 2154
