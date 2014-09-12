@@ -106,5 +106,11 @@
     <changeSet id="13" author="jfurlong" context="haitiLNSP">
         <comment>Updates to the test catalog</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates15.sql" />
-    </changeSet>    
+    </changeSet>  
+    <changeSet id="14" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog</comment>
+        <sql>
+        update clinlims.test set uom_id = (select id from clinlims.unit_of_measure where name like '10^3/_l') where name in ( 'Compte des Globules Blancs', 'Plaquettes');
+        </sql>
+    </changeSet>  
 </databaseChangeLog>
