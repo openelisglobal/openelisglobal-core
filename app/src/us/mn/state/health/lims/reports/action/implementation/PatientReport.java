@@ -565,7 +565,7 @@ public abstract class PatientReport extends Report{
     }
 
     private void setNormalRange( ClinicalPatientData data, Test test, Result result ){
-        String uom = getUnitOfMeasure(  test );
+        String uom = getUnitOfMeasure( test );
         data.setTestRefRange( addIfNotEmpty( getRange( result ), appendUOMToRange() ? uom : null ) );
         data.setUom( uom );
     }
@@ -786,6 +786,8 @@ public abstract class PatientReport extends Report{
 
         if( doAnalysis ){
             testName = getTestName(hasParent);
+            //Not sure if it is a bug in escapeHtml but the wrong markup is generated
+            testName = StringEscapeUtils.escapeHtml( testName ).replace( "&mu", "&micro" );
         }
 
         if( FormFields.getInstance().useField( Field.SampleEntryUseReceptionHour ) ){
@@ -807,8 +809,6 @@ public abstract class PatientReport extends Report{
         data.setHealthRegion( getLazyPatientIdentity( healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID ) );
         data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID ) );
         data.setLabOrderType( ObservationHistoryService.getValueForSample( ObservationType.PROGRAM, currentSampleService.getId() )  );
-        //Not sure if it is a bug in escapeHtml but the wrong markup is generated
-        testName = StringEscapeUtils.escapeHtml( testName ).replace( "&mu", "&micro" );
         data.setTestName(  testName  );
         data.setPatientSiteNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, currentSampleService.getId() ) );
 
