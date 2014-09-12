@@ -151,7 +151,7 @@ function onCancel(){
 function onPrint(){
 	if( formCorrect()){
 		var form = window.document.forms[0];
-		form.action = "ReportPrint.do?type=" + '<%= reportType %>' + "&report=" + '<%=reportRequest%>' ;
+		form.action = "ReportPrint.do?type=" + '<%= reportType %>' + "&report=" + '<%=reportRequest%>' + "&cacheBreaker=" + Math.random();
 		form.target = "_blank";
 		form.submit();
 		return false;

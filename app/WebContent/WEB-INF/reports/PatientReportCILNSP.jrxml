@@ -332,7 +332,7 @@
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{siteInfo}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="68" y="0" width="152" height="14"/>
 					<box leftPadding="4">
 						<pen lineWidth="0.5"/>
@@ -391,17 +391,17 @@
 		<band height="130" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[""]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName1">
-					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="siteLogo">
 					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName1">
+					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA["Patient Test Statut"]]></subreportParameterExpression>
