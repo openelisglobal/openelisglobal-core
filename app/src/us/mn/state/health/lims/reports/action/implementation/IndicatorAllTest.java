@@ -207,7 +207,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
             //that entry will not be in the test to test section map
             if( USER_TEST_SECTION_ID.equals( analysis.getTest().getTestSection().getId() ) ){
                 String concatedName = analysis.getTestSection().getLocalizedName()
-                        + analysis.getTest().getLocalizedName();
+                        + TestService.getLocalizedTestName( analysis.getTest() );
                 testBucket = concatSection_TestToBucketMap.get( concatedName );
                 if( testBucket == null ){
                     testBucket = new TestBucket();

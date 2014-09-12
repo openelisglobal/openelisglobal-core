@@ -23,6 +23,7 @@ import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
 import us.mn.state.health.lims.analyzerimport.dao.AnalyzerTestMappingDAO;
 import us.mn.state.health.lims.analyzerimport.daoimpl.AnalyzerTestMappingDAOImpl;
 import us.mn.state.health.lims.analyzerimport.valueholder.AnalyzerTestMapping;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -155,7 +156,7 @@ public class AnalyzerTestNameCache {
         MappedTestName mappedTest = new MappedTestName();
         mappedTest.setAnalyzerTestName(mapping.getAnalyzerTestName());
         mappedTest.setTestId(mapping.getTestId());
-        mappedTest.setOpenElisTestName(test.getLocalizedName());
+        mappedTest.setOpenElisTestName( TestService.getLocalizedTestName( test ));
         mappedTest.setAnalyzerId(mapping.getAnalyzerId());
 
         return mappedTest;
