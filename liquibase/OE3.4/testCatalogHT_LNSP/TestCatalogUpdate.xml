@@ -98,5 +98,9 @@
     <changeSet id="11" author="jfurlong" context="haitiLNSP">
         <comment>Updates to the test catalog</comment>
         <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates13.sql" />
+    </changeSet> 
+    <changeSet id="12" author="jfurlong" context="haitiLNSP">
+        <comment>Updates to the test catalog</comment>
+        <sqlFile path="OE3.4/testCatalogHT_LNSP/testUpdates14.sql" />
     </changeSet>    
 </databaseChangeLog>
