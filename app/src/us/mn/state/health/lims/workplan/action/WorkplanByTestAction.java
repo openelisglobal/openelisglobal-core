@@ -230,7 +230,7 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 	}
 		
 	private String getTestName(String testId) {
-		return TestService.getLocalizedTestName(  testId );
+		return TestService.getUserLocalizedTestName( testId );
 	}
 
 	class valueComparator implements Comparator<IdValuePair> {

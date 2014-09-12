@@ -156,7 +156,7 @@ public class AnalyzerTestNameCache {
         MappedTestName mappedTest = new MappedTestName();
         mappedTest.setAnalyzerTestName(mapping.getAnalyzerTestName());
         mappedTest.setTestId(mapping.getTestId());
-        mappedTest.setOpenElisTestName( TestService.getLocalizedTestName( test ));
+        mappedTest.setOpenElisTestName( TestService.getUserLocalizedTestName( test ));
         mappedTest.setAnalyzerId(mapping.getAnalyzerId());
 
         return mappedTest;

@@ -294,7 +294,7 @@ public class TestAnalyteTestResultAction extends BaseAction {
 			ActionForm form) {
 		BaseActionForm dynaForm = (BaseActionForm) form;
 		Test test = (Test) dynaForm.get("test");
-        return TestService.getLocalizedTestName( test );
+        return TestService.getUserLocalizedTestName( test );
 	}
 
 	protected String getPageSubtitleKey() {
@@ -310,7 +310,7 @@ public class TestAnalyteTestResultAction extends BaseAction {
 
 		BaseActionForm dynaForm = (BaseActionForm) form;
 		Test test = (Test) dynaForm.get("test");
-        return TestService.getLocalizedTestName( test );
+        return TestService.getUserLocalizedTestName( test );
 	}
 
 }

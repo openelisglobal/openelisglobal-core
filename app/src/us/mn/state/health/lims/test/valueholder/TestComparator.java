@@ -24,18 +24,18 @@ public class TestComparator implements Comparable<Test> {
 
 	// You can put the default sorting capability here
 	public int compareTo(Test t) {
-		return this.name.compareTo( TestService.getLocalizedTestName( t ));
+		return this.name.compareTo( TestService.getUserLocalizedTestName( t ));
 	}
 
 	public static final Comparator<Test> NAME_COMPARATOR = new Comparator<Test>() {
 		public int compare(Test a, Test b) {
-			return ((TestService.getLocalizedTestName(a).toLowerCase()).compareTo(TestService.getLocalizedTestName(b).toLowerCase()));
+			return ((TestService.getUserLocalizedTestName( a ).toLowerCase()).compareTo(TestService.getUserLocalizedTestName( b ).toLowerCase()));
 		}
 	};
 
 	public static final Comparator<Test> DESCRIPTION_COMPARATOR = new Comparator<Test>() {
 		public int compare(Test a, Test b) {
-			return ((TestService.getLocalizedAugmentedTestName( a).toLowerCase()).compareTo(TestService.getLocalizedAugmentedTestName( b ).toLowerCase()));
+			return ((TestService.getLocalizedTestNameWithType( a ).toLowerCase()).compareTo(TestService.getLocalizedTestNameWithType( b ).toLowerCase()));
 		}
 	};
 

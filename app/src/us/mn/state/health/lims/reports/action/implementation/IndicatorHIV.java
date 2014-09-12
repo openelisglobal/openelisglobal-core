@@ -173,7 +173,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 
 		for (Analysis analysis : analysisList) {
 
-			String testName = TestService.getLocalizedTestName( analysis.getTest());
+			String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 
 			TestBucket bucket = testBuckets.get(testName);
 

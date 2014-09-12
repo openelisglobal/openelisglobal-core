@@ -147,7 +147,7 @@ public abstract class RejectionReport extends Report implements IReportCreator{
 
 
         if( useTestName ){
-            item.setPatientOrTestName( TestService.getLocalizedTestName( analysisService.getTest() ) );
+            item.setPatientOrTestName( TestService.getUserLocalizedTestName( analysisService.getTest() ) );
             item.setNonPrintingPatient( nameBuilder.toString() );
         }else{
             item.setPatientOrTestName( nameBuilder.toString() );

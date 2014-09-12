@@ -63,7 +63,7 @@ public class TestResultMenuAction extends BaseMenuAction {
 			
 			java.util.Collections.sort(testResults, new Comparator<TestResult>(){
 				public int compare(TestResult a, TestResult b){
-					return TestService.getLocalizedTestName( a.getTest() ).compareTo(TestService.getLocalizedTestName( b.getTest() ));
+					return TestService.getUserLocalizedTestName( a.getTest() ).compareTo(TestService.getUserLocalizedTestName( b.getTest() ));
 				}
 			});
 		}

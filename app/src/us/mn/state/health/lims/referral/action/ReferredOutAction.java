@@ -168,7 +168,7 @@ public class ReferredOutAction extends BaseAction {
 		TypeOfSample typeOfSample = analysisService.getTypeOfSample();
 		referralItem.setSampleType(typeOfSample.getLocalizedName());
 
-		referralItem.setReferringTestName( TestService.getLocalizedTestName( analysisService.getAnalysis().getTest() ));
+		referralItem.setReferringTestName( TestService.getUserLocalizedTestName( analysisService.getAnalysis().getTest() ));
 		List<Result> resultList = analysisService.getResults();
 		String resultString = "";
 
@@ -327,7 +327,7 @@ public class ReferredOutAction extends BaseAction {
 
 		for (Test test : testList) {
             if( test.getOrderable()){
-                valueList.add( new IdValuePair( test.getId(), TestService.getLocalizedTestName( test ) ) );
+                valueList.add( new IdValuePair( test.getId(), TestService.getUserLocalizedTestName( test ) ) );
             }
 		}
 

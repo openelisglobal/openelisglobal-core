@@ -116,7 +116,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 						testResultItem.setPatientInfo(getSubjectNumber(analysis));
 						testResultItem.setNextVisitDate(ObservationHistoryService.getValueForSample( ObservationType.NEXT_VISIT_DATE, sample.getId() ));
 						testResultItem.setReceivedDate(getReceivedDateDisplay(sample));
-						testResultItem.setTestName( TestService.getLocalizedTestName( analysis.getTest()));
+						testResultItem.setTestName( TestService.getUserLocalizedTestName( analysis.getTest() ));
 						testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
 						if (addPatientName)
 						    testResultItem.setPatientName(getPatientName(analysis));

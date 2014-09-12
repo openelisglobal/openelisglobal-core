@@ -99,7 +99,7 @@ public abstract class PatientIndeterminateReport extends RetroCIPatientReport {
 		ResultDAO resultDAO = new ResultDAOImpl();
 
 		for (Analysis analysis : analysisList) {
-			String testName = TestService.getLocalizedTestName( analysis.getTest());
+			String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 
 			List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 			String resultValue = null;

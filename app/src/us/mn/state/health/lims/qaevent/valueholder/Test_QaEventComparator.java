@@ -30,7 +30,7 @@ public class Test_QaEventComparator implements Comparable {
    // You can put the default sorting capability here
    public int compareTo(Object obj) {
       Test_QaEvents q = (Test_QaEvents)obj;
-      return this.name.compareTo( TestService.getLocalizedAugmentedTestName( q.getAnalysis().getTest()) );
+      return this.name.compareTo( TestService.getLocalizedTestNameWithType( q.getAnalysis().getTest() ) );
    }
    
  
@@ -42,7 +42,7 @@ public class Test_QaEventComparator implements Comparable {
 	    	  Test_QaEvents q_a = (Test_QaEvents)a;
 	    	  Test_QaEvents q_b = (Test_QaEvents)b;
 	 
-	         return ((TestService.getLocalizedAugmentedTestName( q_a.getAnalysis().getTest()).toLowerCase()).compareTo(TestService.getLocalizedAugmentedTestName( q_b.getAnalysis().getTest()).toLowerCase()));
+	         return ((TestService.getLocalizedTestNameWithType( q_a.getAnalysis().getTest() ).toLowerCase()).compareTo(TestService.getLocalizedTestNameWithType( q_b.getAnalysis().getTest() ).toLowerCase()));
 
 	      }
 	   };

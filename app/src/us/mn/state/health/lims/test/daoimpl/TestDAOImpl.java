@@ -123,7 +123,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		// bugzilla 1417 throw Exception if active record already exists
 		try{
 			if(test.getIsActive().equals(IActionConstants.YES) && duplicateTestExists(test)){
-				throw new LIMSDuplicateRecordException("Duplicate record exists for " + TestService.getLocalizedTestName( test ));
+				throw new LIMSDuplicateRecordException("Duplicate record exists for " + TestService.getUserLocalizedTestName( test ));
 			}
 		}catch(Exception e){
 			// bugzilla 2154

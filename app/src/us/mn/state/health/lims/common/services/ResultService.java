@@ -69,11 +69,11 @@ public class ResultService {
 	}
 
 	public String getTestName() {
-		return TestService.getLocalizedTestName(test);
+		return TestService.getUserLocalizedTestName( test );
 	}
 
 	public String getTestDescription() {
-		return TestService.getLocalizedAugmentedTestName( test );
+		return TestService.getLocalizedTestNameWithType( test );
 	}
 
 	public String getSampleType() {

@@ -59,8 +59,8 @@ public class TypeOfSampleTestMenuAction extends BaseMenuAction {
 		
 		for( TypeOfSampleTest sampleTest : sampleTestList){
 			String sampleName = typeOfSampleDAO.getNameForTypeOfSampleId(sampleTest.getTypeOfSampleId());
-			String testName = TestService.getLocalizedTestName( sampleTest.getTestId());
-			String testDescription = TestService.getLocalizedAugmentedTestName( sampleTest.getTestId() );
+			String testName = TestService.getUserLocalizedTestName( sampleTest.getTestId() );
+			String testDescription = TestService.getLocalizedTestNameWithType( sampleTest.getTestId() );
 			
 			namedSampleTestList.add(new TypeOfSampleLink(sampleTest.getId(), sampleName, testName, testDescription));
 		}

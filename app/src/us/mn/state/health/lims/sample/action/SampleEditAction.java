@@ -230,7 +230,7 @@ public class SampleEditAction extends BaseAction {
 			SampleEditItem sampleEditItem = new SampleEditItem();
 
 			sampleEditItem.setTestId(analysis.getTest().getId());
-			sampleEditItem.setTestName(TestService.getLocalizedTestName(analysis.getTest()));
+			sampleEditItem.setTestName(TestService.getUserLocalizedTestName( analysis.getTest() ));
 			sampleEditItem.setSampleItemId(sampleItem.getId());
 
 			boolean canCancel = allowedToCancelAll ||
@@ -299,7 +299,7 @@ public class SampleEditAction extends BaseAction {
 			test.setId(typeOfSampleTest.getTestId());
 			testDAO.getData(test);
 			if ("Y".equals(test.getIsActive()) && test.getOrderable()) {
-				sampleEditItem.setTestName( TestService.getLocalizedTestName( test ) );
+				sampleEditItem.setTestName( TestService.getUserLocalizedTestName( test ) );
 				sampleEditItem.setSampleItemId(sampleItem.getId());
 				sampleEditItem.setSortOrder(test.getSortOrder());
 				typeOfTestSampleItemList.add(sampleEditItem);

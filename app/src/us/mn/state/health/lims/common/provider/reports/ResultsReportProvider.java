@@ -643,7 +643,7 @@ public class ResultsReportProvider extends BaseReportsProvider{
 
 				ResultsReportTest reportTest = new ResultsReportTest();
 				reportTest.setAnalysis(analysis);
-				String testName = TestService.getLocalizedTestName(analysis.getTest());
+				String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 				reportTest.setTestName(testName);
 				//bugzilla 1900
 				if (!resultsReportType.equals(RESULTS_REPORT_TYPE_PREVIEW)) {
@@ -660,7 +660,7 @@ public class ResultsReportProvider extends BaseReportsProvider{
 					}
 				}
                 reportTest.setTestMessage(testMessage);
-				reportTest.setTestDescription(TestService.getLocalizedAugmentedTestName(analysis.getTest()));
+				reportTest.setTestDescription(TestService.getLocalizedTestNameWithType( analysis.getTest() ));
 				reportTest.setTestId(analysis.getTest().getId());
 				reportTest.setAnalysisId(analysis.getId());
 
@@ -684,12 +684,12 @@ public class ResultsReportProvider extends BaseReportsProvider{
 			//this will be Testing Pending for other tests
 			reportTest.setAnalysisStatus(testingPendingMessage);
 
-			String testName = TestService.getLocalizedTestName(pendingAnalysis.getTest());
+			String testName = TestService.getUserLocalizedTestName( pendingAnalysis.getTest() );
 			reportTest.setTestName(testName);
 			reportTest.setTestMessage("");
 			reportTest.setTestId(pendingAnalysis.getTest().getId());
 			reportTest.setAnalysisId(pendingAnalysis.getId());
-			reportTest.setTestDescription(TestService.getLocalizedAugmentedTestName( pendingAnalysis.getTest()));
+			reportTest.setTestDescription(TestService.getLocalizedTestNameWithType( pendingAnalysis.getTest() ));
 			pendingReportTests.add(reportTest);
 
 		}
@@ -717,12 +717,12 @@ public class ResultsReportProvider extends BaseReportsProvider{
 					Analysis previousAnalysis = analysisDAO.getPreviousAnalysisForAmendedAnalysis(currentTest.getAnalysis());
 					ResultsReportTest reportTest = new ResultsReportTest();
 					reportTest.setAnalysis(previousAnalysis);
-					String testName = TestService.getLocalizedTestName( previousAnalysis.getTest());
+					String testName = TestService.getUserLocalizedTestName( previousAnalysis.getTest() );
 					reportTest.setTestName(testName);
 					reportTest.setPrintedDate(previousAnalysis.getPrintedDateForDisplay());
 					String testMessage = " " + originalMessage;
 					reportTest.setTestMessage(testMessage);
-					reportTest.setTestDescription(TestService.getLocalizedTestName(previousAnalysis.getTest()));
+					reportTest.setTestDescription(TestService.getUserLocalizedTestName( previousAnalysis.getTest() ));
 					reportTest.setTestId(previousAnalysis.getTest().getId());
 					reportTest.setAnalysisId(previousAnalysis.getId());
 					currentTests.add(reportTest);

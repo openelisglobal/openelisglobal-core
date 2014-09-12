@@ -262,7 +262,7 @@ public class InfluenzaSampleXMLBySampleHelper {
 			Analysis analysis = (Analysis) analyses.get(j);
 			
 			//only process influenza type samples else skip it
-			if (!TestService.getLocalizedAugmentedTestName( analysis.getTest()).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getLocalizedTestName( analysis.getTest()).equals( HL7_INFLUENZA_TEST_NAME ) ) {
+			if (!TestService.getLocalizedTestNameWithType( analysis.getTest() ).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getUserLocalizedTestName( analysis.getTest() ).equals( HL7_INFLUENZA_TEST_NAME ) ) {
 				continue;
 			}
 			
@@ -365,8 +365,8 @@ public class InfluenzaSampleXMLBySampleHelper {
 							testName.setCode(analyteTestCode);
 							testName.setDescription(analyteTestDescription);
 						} else {
-							testName.setCode(TestService.getLocalizedTestName(analysis.getTest()) );
-							testName.setDescription(TestService.getLocalizedAugmentedTestName( analysis.getTest()));
+							testName.setCode(TestService.getUserLocalizedTestName( analysis.getTest() ) );
+							testName.setDescription(TestService.getLocalizedTestNameWithType( analysis.getTest() ));
 						}
 						sampleTest.setName(testName);
 						
@@ -510,8 +510,8 @@ public class InfluenzaSampleXMLBySampleHelper {
 				testName.setCode(analyteTestCode);
 				testName.setDescription(analyteTestDescription);
 			} else {
-				testName.setCode(TestService.getLocalizedTestName(analysis.getTest()));
-				testName.setDescription(TestService.getLocalizedAugmentedTestName( analysis.getTest()));
+				testName.setCode(TestService.getUserLocalizedTestName( analysis.getTest() ));
+				testName.setDescription(TestService.getLocalizedTestNameWithType( analysis.getTest() ));
 			}
 			sampleTest.setName(testName);
 			

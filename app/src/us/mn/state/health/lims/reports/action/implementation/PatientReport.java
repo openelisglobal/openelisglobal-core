@@ -837,13 +837,13 @@ public abstract class PatientReport extends Report{
         String testName;
 
         if( useReportingDescription() ){
-            testName = TestService.getLocalizedReportingTestName(reportAnalysis.getTest() );
+            testName = TestService.getUserLocalizedReportingTestName( reportAnalysis.getTest() );
         }else{
-            testName = TestService.getLocalizedTestName(reportAnalysis.getTest());
+            testName = TestService.getUserLocalizedTestName( reportAnalysis.getTest() );
         }
 
         if( GenericValidator.isBlankOrNull( testName ) ){
-            testName = TestService.getLocalizedTestName(reportAnalysis.getTest());
+            testName = TestService.getUserLocalizedTestName( reportAnalysis.getTest() );
         }
         return (indent ? "    " : "") + testName;
     }

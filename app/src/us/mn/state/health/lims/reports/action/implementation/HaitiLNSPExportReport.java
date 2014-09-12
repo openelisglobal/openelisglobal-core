@@ -21,7 +21,7 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.*;import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -150,7 +150,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ts.setStatus(StatusService.getInstance().getStatusName(StatusService.getInstance().getAnalysisStatusForID(analysis.getStatusId())));
 		ts.setSampleType(sampleItem.getTypeOfSample().getLocalizedName());
 		ts.setTestBench(analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName());
-        ts.setTestName( TestService.getLocalizedTestName( analysis.getTest() ) );
+        ts.setTestName( TestService.getUserLocalizedTestName( analysis.getTest() ) );
         ts.setDepartment( StringUtil.blankIfNull(patientService.getAddressComponents().get(PatientService.ADDRESS_DEPT) ) );
         String notes = new NoteService( analysis ).getNotesAsString( false, false, "|", false );
         if( notes != null){

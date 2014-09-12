@@ -54,7 +54,7 @@ public class AnalysisHistoryService extends HistoryService {
 			newValueMap = new HashMap<String, String>();
 			newValueMap.put(STATUS_ATTRIBUTE, StatusService.getInstance().getStatusNameFromId(analysis.getStatusId()));
 
-			identifier = TestService.getLocalizedAugmentedTestName( analysis.getTest()) + " - " + analysis.getAnalysisType();
+			identifier = TestService.getLocalizedTestNameWithType( analysis.getTest() ) + " - " + analysis.getAnalysisType();
 		}else{
 			historyList = new ArrayList<History>();
 		}

@@ -136,7 +136,7 @@ public class ResultReportingCollator {
 		} else {
 			codedTest.setCode("34");
 		}
-		codedTest.setText(TestService.getLocalizedTestName(result.getAnalysis().getTest()));
+		codedTest.setText(TestService.getUserLocalizedTestName( result.getAnalysis().getTest() ));
 		codedTest.setCodeName("LOINC");
 		codedTest.setCodeSystem("2.16.840.1.113883.6.1");
 		testResult.setTest(codedTest);
