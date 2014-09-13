@@ -42,4 +42,8 @@
         where t.name like '%HIV%') and value = cast((select max(id) from clinlims.dictionary where dict_entry ilike 'Ind%termin%') as varchar );
     </sql>
 </changeSet>
+    <changeSet id="6" author="paulsc" context="CI_IPCI">
+        <comment>update the local_code column to be a local code</comment>
+        <sqlFile path="OE4.2/testCatalogCI_IPCI/adjustTypes.sql" />
+    </changeSet>
 </databaseChangeLog>
