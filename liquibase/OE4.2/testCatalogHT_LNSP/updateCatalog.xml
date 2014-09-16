@@ -33,15 +33,7 @@
     <sql>select nextval('localization_seq');</sql>
     <sqlFile path="OE4.2/testCatalogHT_LNSP/InactiveUpdate.sql" />
 </changeSet>
-<changeSet id="5" author="paulsc" context="haitiLNSP">
-    <comment>Finish guid and localization updates for new tests</comment>
-    <sqlFile path="OE4.2/testCatalogHT_LNSP/addGuid2.sql" />
-    <sqlFile path="OE4.2/testCatalogHT_LNSP/populateNames2.sql" />
-</changeSet>
-<changeSet id="6" author="paulsc" context="haitiLNSP">
-    <comment>Finish localization updates for new tests</comment>
-    <sqlFile path="OE4.2/testCatalogHT_LNSP/populateNames3.sql" />
-</changeSet>
+
 <changeSet author="paulsc" id="7" context="haitiLNSP">
     <comment>Adds new uom</comment>
     <insert tableName="unit_of_measure">
