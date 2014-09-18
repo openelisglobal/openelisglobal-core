@@ -212,7 +212,7 @@ public class BaseWorkplanAction extends BaseAction {
 	}
 
 	protected String getReceivedDateDisplay(Sample sample){
-		String receptionTime = useReceptionTime ? " " + sample.getReceivedTimeForDisplay() : "";
+		String receptionTime = useReceptionTime ? " " + sample.getReceivedTimeForDisplay( false ) : "";
 		return sample.getReceivedDateForDisplay() + receptionTime;
 	}
 	

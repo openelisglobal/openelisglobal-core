@@ -15,19 +15,18 @@
 */
 package us.mn.state.health.lims.sample.valueholder;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sample extends EnumValueItemImpl {
 
@@ -169,11 +168,9 @@ public class Sample extends EnumValueItemImpl {
 		this.receivedTimestamp = DateUtil.convertSqlDateToTimestamp(receivedDate);
 	}
 	
-	public String getReceivedTimeForDisplay() {
-	    if (GenericValidator.isBlankOrNull(receivedTimeForDisplay)) {
-	        return receivedTimestamp != null ? DateUtil.convertTimestampToStringTime(receivedTimestamp) : null;
-	    }
-        return receivedTimeForDisplay;
+	public String getReceivedTimeForDisplay(boolean use12Hour) {
+        //TODO - refactor this with setting that specifies 12 or 24 hour time
+        return receivedTimestamp != null ? use12Hour ? DateUtil.convertTimestampToString12HourTime( receivedTimestamp) : DateUtil.convertTimestampToStringTime(receivedTimestamp) : null;
 	}
 
 	public String getReferredCultureFlag() {

@@ -155,7 +155,7 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 				FollowupRequiredData item = new FollowupRequiredData();
 
 				item.setCollectiondate(sample.getCollectionDateForDisplay() + " " + sample.getCollectionTimeForDisplay());
-				item.setReceivedDate(sample.getReceivedDateForDisplay() + " " + sample.getReceivedTimeForDisplay());
+				item.setReceivedDate(sample.getReceivedDateForDisplay() + " " + sample.getReceivedTimeForDisplay( false ));
 				item.setLabNo(sample.getAccessionNumber());
 				item.setDoctor(getOptionalObservationHistory(sample, OBSERVATION_DOCTOR_ID));
 				item.setNonConformityNotes(getNonConformingNotes(sample));

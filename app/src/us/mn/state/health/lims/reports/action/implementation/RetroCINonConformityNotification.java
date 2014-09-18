@@ -213,7 +213,7 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 
 		String sampleAccessionNumber = sample.getAccessionNumber();
 		String receivedDate = sample.getReceivedDateForDisplay();
-		String receivedHour = sample.getReceivedTimeForDisplay();
+		String receivedHour = sample.getReceivedTimeForDisplay( false );
 		String doctor = ReportUtil.findDoctorForSample(sample);
 
 		String orgName = "";

@@ -23,11 +23,13 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
@@ -202,5 +204,21 @@ public class AnalysisService{
 
     public TypeOfSample getTypeOfSample(){
        return analysis == null ? null : typeOfSampleDAO.getTypeOfSampleById( analysis.getSampleItem().getTypeOfSampleId() );
+    }
+
+    public Panel getPanel(){
+        return analysis == null ? null : analysis.getPanel();
+    }
+
+    public TestSection getTestSection(){
+        return analysis == null ? null : analysis.getTestSection();
+    }
+
+    public boolean isReferredIn(){
+        if( analysis != null){
+            return StatusService.getInstance().matches( analysis.getStatusId(), StatusService.AnalysisStatus.ReferredIn );
+        }
+
+        return false;
     }
 }

@@ -71,7 +71,6 @@ public class CI_IPCIFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.PatientEducation, Boolean.TRUE);
 		settings.put(Field.SampleEntryPatientClinical, Boolean.FALSE);
 		settings.put(Field.SampleEntryRequesterLastNameRequired, Boolean.TRUE);
-//		settings.put(Field.QA_FULL_PROVIDER_INFO, Boolean.TRUE);
 		settings.put(Field.QASubjectNumber, Boolean.TRUE);
 		settings.put(Field.QATimeWithDate, Boolean.TRUE);
 
