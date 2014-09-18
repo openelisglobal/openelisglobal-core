@@ -22,12 +22,9 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
@@ -84,11 +81,11 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
             boolean hasParentResult = analysis.getParentResult() != null;
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
-				reportAnalysis = analysis;
-				ClinicalPatientData resultsData = reportAnalysisResults( hasParentResult);
+                currentAnalysisService = new AnalysisService( analysis );
+				ClinicalPatientData resultsData = buildClinicalPatientData( hasParentResult );
 
-				if(reportAnalysis.isReferredOut()){
-					Referral referral = referralDao.getReferralByAnalysisId(reportAnalysis.getId());
+				if(currentAnalysisService.getAnalysis().isReferredOut()){
+					Referral referral = referralDao.getReferralByAnalysisId( currentAnalysisService.getAnalysis().getId() );
 					if(referral != null){
 						addReferredTests(referral, resultsData);
 					}
@@ -127,7 +124,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
     private void addReferredTests(Referral referral, ClinicalPatientData parentData){
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", FILTER, true );
+        String note = new NoteService( currentAnalysisService.getAnalysis() ).getNotesAsString( false, true, "<br/>", FILTER, true );
 
 		if( !referralResults.isEmpty()){
 		
@@ -173,8 +170,8 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 					data.setTestRefRange(addIfNotEmpty(getRange(referralResult.getResult()), uom));
 					data.setTestSortOrder(GenericValidator.isBlankOrNull(test.getSortOrder()) ? Integer.MAX_VALUE : Integer.parseInt(test
 							.getSortOrder()));
-					data.setSectionSortOrder(reportAnalysis.getTestSection().getSortOrderInt());
-					data.setTestSection(reportAnalysis.getTestSection().getLocalizedName());
+					data.setSectionSortOrder( currentAnalysisService.getTestSection().getSortOrderInt());
+					data.setTestSection( currentAnalysisService.getTestSection().getLocalizedName() );
 				}
 
 				if(GenericValidator.isBlankOrNull(reportReferralResultValue)){
@@ -212,7 +209,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			ClinicalPatientData reportItem = reportAnalysisResults( false);
+			ClinicalPatientData reportItem = buildClinicalPatientData( false );
 			reportItem.setTestSection(StringUtil.getMessageForKey("report.no.results"));
 			clinicalReportItems.add(reportItem);
 		}else{
@@ -355,5 +352,10 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	protected boolean useReportingDescription(){
 		return true;
 	}
+
+    @Override
+    protected String getHeaderName(){
+        return "HaitiHeader.jasper";
+    }
 
 }

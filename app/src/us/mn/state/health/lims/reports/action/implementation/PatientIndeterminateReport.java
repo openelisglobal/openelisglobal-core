@@ -79,7 +79,7 @@ public abstract class PatientIndeterminateReport extends RetroCIPatientReport {
 		data.setAge(DateUtil.getCurrentAgeForDate(reportPatient.getBirthDate(), reportSample.getCollectionDate()));
 		data.setGender(reportPatient.getGender());
 		data.setCollectiondate(reportSample.getCollectionDateForDisplay() + " " + reportSample.getCollectionTimeForDisplay());
-		data.setReceivedDate(reportSample.getReceivedDateForDisplay() + " " + reportSample.getReceivedTimeForDisplay());
+		data.setReceivedDate(reportSample.getReceivedDateForDisplay() + " " + reportSample.getReceivedTimeForDisplay( false ));
 
 		SampleOrganization sampleOrg = new SampleOrganization();
 		sampleOrg.setSampleId(reportSample.getId());

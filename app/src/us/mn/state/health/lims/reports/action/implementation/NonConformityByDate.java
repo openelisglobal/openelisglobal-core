@@ -137,7 +137,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
                 data.setSiteSubjectNumber(patient.getExternalId());
                 data.setStudy((project != null)?project.getLocalizedName():"");
                 data.setService(service);
-                data.setReceivedDate(sample.getReceivedDateForDisplay() + " " + sample.getReceivedTimeForDisplay());
+                data.setReceivedDate(sample.getReceivedDateForDisplay() + " " + sample.getReceivedTimeForDisplay( false ));
 
                 data.setNonConformityDate(DateUtil.convertTimestampToStringDate( qa.getLastupdated()));
                 data.setSection(qa.getObservationForDisplay( QAObservationType.SECTION ));

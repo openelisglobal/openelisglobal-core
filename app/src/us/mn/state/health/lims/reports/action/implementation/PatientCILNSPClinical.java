@@ -22,32 +22,26 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
-import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.HaitiClinicalPatientDataColFormat;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.test.valueholder.TestSection;
 
-import java.sql.Date;
 import java.util.*;
 
 public class PatientCILNSPClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
 
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static Set<Integer> analysisStatusIds;
-	private boolean isLNSP = false;
-	protected List<HaitiClinicalPatientDataColFormat> clinicalReportItems;
+	protected List<ClinicalPatientData> clinicalReportItems;
 
 	static{
 		analysisStatusIds = new HashSet<Integer>();
@@ -58,6 +52,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
+        analysisStatusIds.add(Integer.parseInt( StatusService.getInstance().getStatusID( AnalysisStatus.TechnicalRejected ) ) );
 
 	}
 	
@@ -70,42 +65,102 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
 	@Override
 	protected String reportFileName(){
-		if (configName.equals("CI IPCI")) {
-			return "PatientReportCIIPCI";
-		} else {
-			return "PatientReportCILNSP";
-		}
+			return "PatientReportCDI";
 	}
 
-	@Override
+    @Override
+    protected void createReportParameters(){
+        super.createReportParameters();
+        reportParameters.put( "billingNumberLabel", LocalizationService.getLocalizedValueById( ConfigurationProperties.getInstance().getPropertyValue( Property.BILLING_REFERENCE_NUMBER_LABEL ) ) );
+        reportParameters.put("footerName", getFooterName());
+    }
+
+    private Object getFooterName(){
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI IPCI" ) ||
+            ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI LNSP" ) ){
+            return "CILNSPFooter.jasper";
+        }else{
+            return "";
+        }
+    }
+
+    @Override
+    protected String getHeaderName(){
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName , "CI LNSP")){
+            return "CILNSPHeader.jasper";
+        }else{
+            return "CDIHeader.jasper";
+        }
+    }
+
+    @Override
 	protected void createReportItems(){
+        boolean isConfirmationSample = currentSampleService.isConfirmationSample();
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(currentSampleService.getId(), analysisStatusIds);
 
 		currentConclusion = null;
+        Set<SampleItem> sampleSet = new HashSet<SampleItem>(  );
 		for(Analysis analysis : analysisList){
+            sampleSet.add( analysis.getSampleItem() );
+            boolean hasParentResult = analysis.getParentResult() != null;
 			// case if there was a confirmation sample with no test specified
-			if(analysis.getTest() != null){
-				reportAnalysis = analysis;
-				ClinicalPatientData resultsData = reportAnalysisResults( false);
-				reportItems.add(resultsData);
+			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
+                currentAnalysisService = new AnalysisService( analysis );
+				ClinicalPatientData resultsData = buildClinicalPatientData( hasParentResult );
+                if( isConfirmationSample){
+                    String alerts = resultsData.getAlerts();
+                    if( !GenericValidator.isBlankOrNull( alerts ) ){
+                        alerts += ", C";
+                    }else{
+                        alerts = "C";
+                    }
 
-				Referral referral = referralDao.getReferralByAnalysisId(reportAnalysis.getId());
+                    resultsData.setAlerts(alerts);
+                }
+
+				if(currentAnalysisService.getAnalysis().isReferredOut()){
+				Referral referral = referralDao.getReferralByAnalysisId( currentAnalysisService.getAnalysis().getId());
 				if(referral != null){
-					addReferredTests(referral, resultsData, analysis.isReferredOut());
+						addReferredTests(referral, resultsData);
 				}
+				}else{
+                    reportItems.add( resultsData );
+                }
 			}
 		}
 	}
 
-	private void addReferredTests(Referral referral, ClinicalPatientData parentData, boolean parentStillReferred){
-		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", true );
+    @Override
+    protected void setEmptyResult( ClinicalPatientData data ){
+        data.setAnalysisStatus( StringUtil.getMessageForKey( "report.test.status.inProgress" )  );
+    }
 
+    protected void setReferredOutResult(ClinicalPatientData data){
+        data.setAlerts( "R" );
+        data.setAnalysisStatus( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+    }
+
+    private void addReferredTests(Referral referral, ClinicalPatientData parentData){
+		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
+        String note =  new NoteService( currentAnalysisService.getAnalysis() ).getNotesAsString( false, true, "<br/>", FILTER, true );
+
+		if( !referralResults.isEmpty()){
+			boolean referralTestAssigned = false;
+			for( ReferralResult referralResult : referralResults){
+				if( referralResult.getTestId() != null){
+					referralTestAssigned = true;
+				}
+			}
+			if( !referralTestAssigned){
+				reportItems.add(parentData);	
+			}
+		}else{
+			reportItems.add(parentData);	
+		}
 		for(int i = 0; i < referralResults.size(); i++){
-			if(referralResults.get(i).getResult() != null &&
-			// if referral has been canceled then don't show referred tests with
-			// no results
-					(parentStillReferred || !GenericValidator.isBlankOrNull(referralResults.get(i).getResult().getValue()))){
+			if( referralResults.get(i).getResult() == null ){
+				sampleCompleteMap.put(currentSampleService.getAccessionNumber(), Boolean.FALSE);
+			}else{
 
 				i = reportReferralResultValue(referralResults, i);
 				ReferralResult referralResult = referralResults.get(i);
@@ -114,9 +169,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 				copyParentData(data, parentData);
 
 				data.setResult(reportReferralResultValue);
-                if( note != null){
                     data.setNote(note);
-                }
 				String testId = referralResult.getTestId();
 				if(!GenericValidator.isBlankOrNull(testId)){
 					Test test = new Test();
@@ -131,22 +184,18 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 					data.setTestRefRange(addIfNotEmpty(getRange(referralResult.getResult()), uom));
 					data.setTestSortOrder(GenericValidator.isBlankOrNull(test.getSortOrder()) ? Integer.MAX_VALUE : Integer.parseInt(test
 							.getSortOrder()));
-					TestSection resultTestSection = getTestSection(referralResult);
-					if(resultTestSection != null){
-						data.setSectionSortOrder(resultTestSection.getSortOrderInt());
-						data.setTestSection(resultTestSection.getLocalizedName());
-					}
+					data.setSectionSortOrder(currentAnalysisService.getAnalysis().getTestSection().getSortOrderInt());
+					data.setTestSection(currentAnalysisService.getAnalysis().getTestSection().getLocalizedName());
 				}
 
 				if(GenericValidator.isBlankOrNull(reportReferralResultValue)){
 					sampleCompleteMap.put(currentSampleService.getAccessionNumber(), Boolean.FALSE);
-					data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress")
-							+ (augmentResultWithFlag() ? getResultFlag(referralResult.getResult(), "A") : ""));
+					data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress"));
 				}else{
-					data.setResult(reportReferralResultValue + (augmentResultWithFlag() ? getResultFlag(referralResult.getResult(), "A") : ""));
+					data.setResult( reportReferralResultValue );
 				}
 
-				data.setAlerts(getResultFlag(referralResult.getResult(), "A"));
+				data.setAlerts(getResultFlag(referralResult.getResult(), null));
 				data.setHasRangeAndUOM(referralResult.getResult() != null && "N".equals(referralResult.getResult().getResultType()));
 
 				reportItems.add(data);
@@ -154,25 +203,16 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		}
 	}
 
-	private TestSection getTestSection(ReferralResult referralResult){
-		if(referralResult.getResult().getAnalysis() != null){
-			return referralResult.getResult().getAnalysis().getTestSection();
-		}
 
-		Test test = testDAO.getTestById(referralResult.getTestId());
 
-		if(test != null){
-			return test.getTestSection();
-		}
 
-		return null;
-	}
 
 	private void copyParentData(ClinicalPatientData data, ClinicalPatientData parentData){
 		data.setContactInfo(parentData.getContactInfo());
-		data.setSiteInfo(parentData.getSiteInfo());
-		data.setReceivedDate(parentData.getReceivedDate());
-		data.setDob(parentData.getDob());
+		data.setSiteInfo( parentData.getSiteInfo() );
+		data.setReceivedDate( parentData.getReceivedDate() );
+		data.setDob( parentData.getDob() );
+		data.setAge( parentData.getAge() );
 		data.setGender(parentData.getGender());
 		data.setNationalId(parentData.getNationalId());
 		data.setPatientName(parentData.getPatientName());
@@ -188,159 +228,99 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
-			ClinicalPatientData reportItem = reportAnalysisResults( false);
-			HaitiClinicalPatientDataColFormat colData = new HaitiClinicalPatientDataColFormat(reportItem);
-			colData.setSectionName(StringUtil.getMessageForKey("report.no.results"));
-			colData.setAge(createReadableAge(reportItem.getDob()));
-			clinicalReportItems.add(colData);
+			ClinicalPatientData reportItem = buildClinicalPatientData( false );
+			reportItem.setTestSection( StringUtil.getMessageForKey( "report.no.results" ) );
+			clinicalReportItems.add(reportItem);
 		}else{
 			buildReport();
 		}
 
 	}
 
-	private void buildReport(){
-		Collections.sort(reportItems, new Comparator<ClinicalPatientData>(){
-			@Override
-			public int compare(ClinicalPatientData o1, ClinicalPatientData o2){
-				String o1AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(o1.getAccessionNumber());
-				String o2AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(o2.getAccessionNumber());
-				int accessionSort = o1AccessionNumber.compareTo(o2AccessionNumber);
+    private void buildReport(){
+        Collections.sort( reportItems, new Comparator<ClinicalPatientData>(){
+            @Override
+            public int compare( ClinicalPatientData o1, ClinicalPatientData o2 ){
+                String o1AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber( o1.getAccessionNumber() );
+                String o2AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber( o2.getAccessionNumber() );
+                int accessionSort = o1AccessionNumber.compareTo( o2AccessionNumber );
 
-				if(accessionSort != 0){
-					return accessionSort;
-				}
+                if( accessionSort != 0 ){
+                    return accessionSort;
+                }
 
-				int sectionSort = o1.getSectionSortOrder() - o2.getSectionSortOrder(); 
-				
-				if(sectionSort != 0){
-					return sectionSort;
-				}
+                int sampleTypeSort = o1.getSampleType().compareTo( o2.getSampleType() );
 
-				return o1.getTestSortOrder() - o2.getTestSortOrder();
-			}
-		});
+                if( sampleTypeSort != 0 ){
+                    return sampleTypeSort;
+                }
 
-		HaitiClinicalPatientDataColFormat colData = null;
-		String section = null;
-		String accessionNumber = null;
-		List<ClinicalPatientData> testSection = new ArrayList<ClinicalPatientData>();
-		for(ClinicalPatientData reportItem : reportItems){
-			//This handles the case where two orders in a row have a single identical section
-			String itemAccessionNumber = getRootAccessionNumber(reportItem);
-			if( !itemAccessionNumber.equals(accessionNumber)){
-				section = null;
-				accessionNumber = itemAccessionNumber;
-			}
-			
-			// if the current test section is the same as the previous, add it
-			// to the list of report Items within this test section
+                int sampleIdSort = o1.getSampleId().compareTo( o2.getSampleId() );
 
-			if(reportItem.getTestSection().equals(section)){
-				testSection.add(reportItem);
+                if( sampleIdSort != 0 ){
+                    return sampleIdSort;
+                }
 
-				// if the test section is different from the last, then print
-				// out the previous test section and start a new list for the
-				// new test section
-			}else{
-				buildTestSection(testSection, colData);
+                int sectionSort = o1.getSectionSortOrder() - o2.getSectionSortOrder();
 
-				// add first report item of the new test set into a new list for
-				// that section
-				section = reportItem.getTestSection();
-				testSection = new ArrayList<ClinicalPatientData>();
-				testSection.add(reportItem);
-			}
-		}
+                if( sectionSort != 0 ){
+                    return sectionSort;
+                }
 
-		// add last test section
-		if(!testSection.isEmpty()){
-			buildTestSection(testSection, colData);
-		}
-	}
+                if( o1.getParentResult() != null && o2.getParentResult() != null ){
+                    int parentSort = Integer.parseInt( o1.getParentResult().getId() ) -
+                            Integer.parseInt( o2.getParentResult().getId() );
+                    if( parentSort != 0 ){
+                        return parentSort;
+                    }
+                }
+                return o1.getTestSortOrder() - o2.getTestSortOrder();
+            }
+        } );
 
-	private String getRootAccessionNumber(ClinicalPatientData reportItem){
-		String itemAccessionNumber = reportItem.getAccessionNumber();
-		int separatorIndex = reportItem.getAccessionNumber().lastIndexOf("-");
-		if( separatorIndex > 0){
-			itemAccessionNumber = itemAccessionNumber.substring(0, separatorIndex);
-		}
-		return itemAccessionNumber;
-	}
+        ArrayList<ClinicalPatientData> augmentedList = new ArrayList<ClinicalPatientData>( reportItems.size() );
+        HashSet<String> parentResults = new HashSet<String>();
+        for( ClinicalPatientData data : reportItems ){
+            if( data.getParentResult() != null && !parentResults.contains( data.getParentResult().getId() ) ){
+                parentResults.add( data.getParentResult().getId() );
+                ClinicalPatientData marker = new ClinicalPatientData( data );
+                marker.setTestName( new ResultService( data.getParentResult() ).getSimpleResultValue() );
+                marker.setResult( null );
+                marker.setTestRefRange( null );
+                marker.setParentMarker( true );
+                augmentedList.add( marker );
+            }
 
-	private HaitiClinicalPatientDataColFormat buildCol(HaitiClinicalPatientDataColFormat colData, ClinicalPatientData patientData, int column){
+            augmentedList.add( data );
+        }
 
-		if(column == 1){
-			colData.setCol1testName(patientData.getTestName());
-			colData.setCol1result(patientData.getResult());
-			colData.setCol1range(patientData.getTestRefRange());
-			colData.setCol1noUOM(!patientData.isHasRangeAndUOM());
-			if(!GenericValidator.isBlankOrNull(patientData.getNote())){
-				colData.setCol1Note(patientData.getNote());
-				colData.turnOnNotes();
-			}
+        reportItems = augmentedList;
 
-			colData.setAge(createReadableAge(patientData.getDob()));
+        String currentPanelId = null;
+        for( ClinicalPatientData reportItem : reportItems ){
+            if( reportItem.getPanel() != null && !reportItem.getPanel().getId().equals( currentPanelId ) ){
+                currentPanelId = reportItem.getPanel().getId();
+                reportItem.setSeparator( true );
+            }else if( reportItem.getPanel() == null && currentPanelId != null ){
+                currentPanelId = null;
+                reportItem.setSeparator( true );
+            }
 
-			String accessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(patientData.getAccessionNumber());
-			colData.setCompleteFlag(StringUtil.getMessageForKey(sampleCompleteMap.get(accessionNumber) ? "report.status.complete"
-					: "report.status.partial"));
-		}else{
-			colData.setCol2testName(patientData.getTestName());
-			colData.setCol2result(patientData.getResult());
-			colData.setCol2range(patientData.getTestRefRange());
-			colData.setCol2noUOM(!patientData.isHasRangeAndUOM());
-			if(!GenericValidator.isBlankOrNull(patientData.getNote())){
-				colData.setCol2Note(patientData.getNote());
-				colData.turnOnNotes();
-			}
+            int dividerIndex = reportItem.getAccessionNumber().lastIndexOf( "-" );
+            reportItem.setAccessionNumber( reportItem.getAccessionNumber().substring( 0, dividerIndex ) );
+            reportItem.setCompleteFlag( StringUtil.getMessageForKey( sampleCompleteMap.get( reportItem.getAccessionNumber() ) ? "report.status.complete" : "report.status.partial" ) );
+            if( reportItem.isCorrectedResult() ){
+                if( reportItem.getNote() != null && reportItem.getNote().length() > 0 ){
+                    reportItem.setNote( "Résultat corrigé<br/>" + reportItem.getNote() );
+                }else{
+                    reportItem.setNote( "Résultat corrigé" );
+                }
 
-		}
+            }
 
-		return colData;
-	}
-
-	/*
-	 * private helper method, factors out work to complete the insertion of a
-	 * complete test section into the report
-	 */
-	private void buildTestSection(List<ClinicalPatientData> testSection, HaitiClinicalPatientDataColFormat colData){
-		// calculates half # of report Items, if an odd number adds 1 to account
-		// for truncated division
-		int half = (testSection.size() % 2 == 0) ? testSection.size() / 2 : testSection.size() / 2 + 1;
-		for(int i = 0; i < half; i++){
-			ClinicalPatientData col1 = testSection.get(i);
-			colData = new HaitiClinicalPatientDataColFormat(col1);
-
-			colData = buildCol(colData, col1, 1);
-			// protects us from running off the end of the list, incase there is
-			// an odd number of report items
-			if(i + half < testSection.size()){
-				ClinicalPatientData col2 = testSection.get(i + half);
-				colData = buildCol(colData, col2, 2);
-			}
-			clinicalReportItems.add(colData);
-		}
-	}
-
-	private String createReadableAge(String dob){
-		if(GenericValidator.isBlankOrNull(dob)){
-			return "";
-		}
-
-		dob = dob.replaceAll("xx", "01");
-		Date dobDate = DateUtil.convertStringDateToSqlDate(dob);
-		int months = DateUtil.getAgeInMonths(dobDate, DateUtil.getNowAsSqlDate());
-		if(months > 35){
-			return (months / 12) + " A";
-		}else if(months > 0){
-			return months + " M";
-		}else{
-			int days = DateUtil.getAgeInDays(dobDate, DateUtil.getNowAsSqlDate());
-			return days + " J";
-		}
-
-	}
+            reportItem.setCorrectedResult( sampleCorrectedMap.get( reportItem.getAccessionNumber().split( "_" )[ 0 ] ) != null );
+        }
+    }
 
 	@Override
 	protected String getReportNameForParameterPage(){
@@ -352,7 +332,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 			throw new IllegalStateException("initializeReport not called first");
 		}
 
-		return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(clinicalReportItems);
+		return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
 	}
 
 	@Override
@@ -363,13 +343,29 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	@Override
 	protected void initializeReportItems(){
 		super.initializeReportItems();
-		clinicalReportItems = new ArrayList<HaitiClinicalPatientDataColFormat>();
+		clinicalReportItems = new ArrayList<ClinicalPatientData>();
 	}
 
 	@Override
 	protected void setReferredResult(ClinicalPatientData data, Result result){
-		data.setResult(data.getResult() + (augmentResultWithFlag() ? getResultFlag(result, "R") : ""));
-		data.setAlerts(getResultFlag(result, "R"));
+		data.setResult(data.getResult() );
+		data.setAlerts(getResultFlag(result, null));
 	}
+    @Override
+    protected String getLeftImage(){
+            return "CDIlogo.jpg";
+    }
 
+	@Override
+	protected boolean appendUOMToRange(){
+		return false;
+	}
+	@Override
+	protected boolean augmentResultWithFlag(){
+		return false;
+	}
+	@Override
+	protected boolean useReportingDescription(){
+		return true;
+	}
 }

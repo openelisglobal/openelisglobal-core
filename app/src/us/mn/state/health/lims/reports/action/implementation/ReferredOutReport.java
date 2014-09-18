@@ -21,7 +21,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.SampleService;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -148,6 +148,11 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
     }
 
     @Override
+    protected String getHeaderName(){
+        return "HaitiHeader.jasper";
+    }
+
+    @Override
     protected void createReportItems() {
         List<Referral> referrals =  referralDao.getAllReferralsByOrganization(locationId,
         																	  dateRange.getLowDate(),
@@ -166,17 +171,17 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 	 * @param referral
 	 */
 	private void reportReferral(Referral referral) {
-		reportAnalysis = referral.getAnalysis();
+        currentAnalysisService = new AnalysisService( referral.getAnalysis() );
 		Sample sample = referralDao.getReferralById(referral.getId()).getAnalysis().getSampleItem().getSample();
 		currentSampleService = new SampleService(sample);
 		findPatientFromSample();
 
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", false );
+        String note =  currentAnalysisService.getNotesAsString( false, true, "<br/>", false  );
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
 		for (int i = 0; i < referralResults.size(); i++) {
 			i = reportReferralResultValue(referralResults, i);
 			ReferralResult referralResult = referralResults.get(i);
-			ClinicalPatientData data = reportAnalysisResults( false);
+			ClinicalPatientData data = buildClinicalPatientData( false );
 			data.setReferralSentDate((referral != null && referral.getSentDate() != null) ? DateUtil.formatDateAsText(referral.getSentDate()) : "");
 			data.setReferralResult(reportReferralResultValue);
 			data.setReferralNote(note);
@@ -193,8 +198,8 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 				}
 				data.setReferralRefRange(addIfNotEmpty(getRange(referralResult.getResult()), uom));
 				data.setTestSortOrder(GenericValidator.isBlankOrNull(test.getSortOrder()) ? Integer.MAX_VALUE : Integer.parseInt(test.getSortOrder()));
-				data.setSectionSortOrder(reportAnalysis.getTestSection().getSortOrderInt());
-				data.setTestSection(reportAnalysis.getTestSection().getLocalizedName());
+				data.setSectionSortOrder( currentAnalysisService.getTestSection().getSortOrderInt() );
+				data.setTestSection( currentAnalysisService.getTestSection().getLocalizedName() );
 			}
 			Timestamp referralReportDate = referralResult.getReferralReportDate();
 			data.setReferralResultReportDate((referralReportDate == null) ? null : DateUtil.formatDateAsText(referralReportDate));
