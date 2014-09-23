@@ -30,7 +30,7 @@ import java.util.List;
 public class CobasTaqmanReader extends AnalyzerLineInserter{
 
 	private static final String UNDER_THREASHOLD = "< LL";
-	private static final double THREASHOLD = 200.0;
+	private static final double THREASHOLD = 15.0;
 
 	@SuppressWarnings("unused")
 	private static final int PATIENT_NAME = 0;
@@ -119,7 +119,7 @@ public class CobasTaqmanReader extends AnalyzerLineInserter{
 
 	private String getAppropriateResults(String result){
 		result = result.replace("\"", "").trim();
-		if("Target Not Detected".equals(result)){
+		if("Target Not Detected".equalsIgnoreCase(result) || "Below range".equalsIgnoreCase( result )){
 			result = UNDER_THREASHOLD;
 		}else{
 
@@ -129,7 +129,7 @@ public class CobasTaqmanReader extends AnalyzerLineInserter{
 			try{
 				Double resultAsDouble = Double.parseDouble(splitResult[0]) * Math.pow(10, Double.parseDouble(splitResult[1]));
 
-				if(resultAsDouble < THREASHOLD){
+				if(resultAsDouble <= THREASHOLD){
 					result = UNDER_THREASHOLD;
 				}else{
 					result = String.valueOf((int)(Math.round(resultAsDouble))) + result.substring(result.indexOf("("));
