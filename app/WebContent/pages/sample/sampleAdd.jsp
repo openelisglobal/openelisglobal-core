@@ -814,7 +814,7 @@ function sampleTypeQualifierChanged(element){
 					value="0">
 					<app:optionsCollection name="<%=formName%>" property="sampleTypes" label="value" value="id" />
 				</html:select>
-                <input type="button" id="addSampleButton" onclick="addNewSamples()"  value="<%=StringUtil.getMessageForKey("sample.entry.addSample")%>"  disabled="disabled">
+                <input type="button" id="addSampleButton" onclick="addNewSamples()"  value="<%=StringUtil.getMessageForKey("sample.entry.addSample.button")%>"  disabled="disabled">
 			</td>
 		</tr>
 	</Table>
