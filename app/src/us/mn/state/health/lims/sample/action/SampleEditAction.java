@@ -70,6 +70,7 @@ public class SampleEditAction extends BaseAction {
     private static final SampleEditItemComparator testComparator = new SampleEditItemComparator();
     private static final Set<Integer> excludedAnalysisStatusList;
     private static final Set<Integer> ENTERED_STATUS_SAMPLE_LIST = new HashSet<Integer>();
+    private static final Collection<String> ABLE_TO_CANCEL_ROLE_NAMES = new ArrayList<String>(  );
 
 	private boolean isEditable = false;
 	private String maxAccessionNumber;
@@ -80,6 +81,9 @@ public class SampleEditAction extends BaseAction {
 		excludedAnalysisStatusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
 
 		ENTERED_STATUS_SAMPLE_LIST.add( Integer.parseInt( StatusService.getInstance().getStatusID( SampleStatus.Entered ) ) );
+        ABLE_TO_CANCEL_ROLE_NAMES.add( "Validator" );
+        ABLE_TO_CANCEL_ROLE_NAMES.add( "Validation");
+        ABLE_TO_CANCEL_ROLE_NAMES.add( "Biologist" );
 	}
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -93,7 +97,7 @@ public class SampleEditAction extends BaseAction {
 
 		String accessionNumber = request.getParameter("accessionNumber");
         boolean allowedToCancelResults = userModuleDAO.isUserAdmin(request) ||
-                new UserRoleDAOImpl().userInRole( currentUserId, "Validation" );
+                new UserRoleDAOImpl().userInRole( currentUserId, ABLE_TO_CANCEL_ROLE_NAMES );
 
 		if( GenericValidator.isBlankOrNull(accessionNumber)){
 			accessionNumber = getMostRecentAccessionNumberForPaitient( request.getParameter("patientID"));

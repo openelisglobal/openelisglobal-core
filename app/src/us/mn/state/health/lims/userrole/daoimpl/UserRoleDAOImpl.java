@@ -34,6 +34,7 @@ import us.mn.state.health.lims.userrole.valueholder.UserRole;
 import us.mn.state.health.lims.userrole.valueholder.UserRolePK;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 
 public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
@@ -235,4 +236,25 @@ public class UserRoleDAOImpl extends BaseDAOImpl implements UserRoleDAO {
 		
 		return inRole;
 	}
+
+    public boolean userInRole(String userId, Collection<String> roleNames)	throws LIMSRuntimeException {
+        boolean inRole;
+
+        try{
+            String sql = "select count(*) from system_user_role sur " +
+                    "join system_role as sr on sr.id = sur.role_id " +
+                    "where sur.system_user_id = :userId and sr.name in (:roleNames)";
+            Query query = HibernateUtil.getSession().createSQLQuery(sql);
+            query.setInteger("userId", Integer.parseInt(userId));
+            query.setParameterList("roleNames", roleNames);
+            int result = ((BigInteger)query.uniqueResult()).intValue();
+
+            inRole = result != 0;
+        }catch(HibernateException he){
+            LogEvent.logError("UserRoleDAOImpl","userInRole()",he.toString());
+            throw new LIMSRuntimeException("Error in UserRoleDAOImpl userInRole()", he);
+        }
+
+        return inRole;
+    }
 }
