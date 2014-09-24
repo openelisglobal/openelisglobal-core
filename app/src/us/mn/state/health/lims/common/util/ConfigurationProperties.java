@@ -109,7 +109,8 @@ public abstract class ConfigurationProperties {
         TEST_NAME_AUGMENTED,   //If true then in some places the test name will be suffixed with the sample type
         USE_BILLING_REFERENCE_NUMBER,       //If true then the user can enter billing codes for latter reporting
         BILLING_REFERENCE_NUMBER_LABEL,   //The label being used for the billing reference number
-        ORDER_PROGRAM   //Should program be part of an order
+        ORDER_PROGRAM,   //Should program be part of an order
+        BANNER_TEXT //Text on Banner
     }
 
 	

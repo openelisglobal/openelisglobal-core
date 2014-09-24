@@ -33,4 +33,12 @@
             <where>name = 'Test Configuration'</where>
         </update>
     </changeSet>
+    <changeSet author="paulsc" id="3" context="CDIRetroCI">
+        <comment>Set header text</comment>
+        <update tableName="localization" >
+            <column name="english" value="Cote d'Ivoire Laboratory Information System" />
+            <column name="french"  value="Système d'Information Électronique de Laboratoire - Côte d'Ivoire" />
+            <where>cast(id as varchar) = (select value from clinlims.site_information where name = 'bannerHeading') </where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

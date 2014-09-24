@@ -107,6 +107,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault( Property.USE_BILLING_REFERENCE_NUMBER, "billingRefNumber", "false" );
         setDBPropertyMappingAndDefault( Property.BILLING_REFERENCE_NUMBER_LABEL, "billingRefNumberLocalization", "-1" );
         setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "false" );
+        setDBPropertyMappingAndDefault( Property.BANNER_TEXT, "bannerHeading", "-1" );
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

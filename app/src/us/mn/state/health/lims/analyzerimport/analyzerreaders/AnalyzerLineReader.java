@@ -142,7 +142,6 @@ public class AnalyzerLineReader extends AnalyzerReader {
 			boolean success = inserter.insert(lines, systemUserId);
 			if( !success){
 				error = inserter.getError();
-				return false;
 			}
 			
 			return success;

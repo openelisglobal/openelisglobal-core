@@ -6,18 +6,6 @@
 
 <%@ page import="us.mn.state.health.lims.common.util.SystemConfiguration"%>
 
-<%!
-	
-	String bannerStyle = null;
-%>
-<%
-
-	bannerStyle = SystemConfiguration.getInstance().getBannerStyle();
-
-
-	if (bannerStyle != SystemConfiguration.DEFAULT_BANNER_STYLE) {
-%>
-
 
 <div  id="IEWarning" style="display:none;background-color:#b0c4de"  ><b>
 <bean:message  key="banner.menu.ie.warning"/><br/>
@@ -68,8 +56,3 @@ function initWarning(){
 initWarning();
 </script>
 
-
-<%
-}
-
-%>

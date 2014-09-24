@@ -2,12 +2,9 @@
 <%--bugzilla 1426 this version of formTemplate does not force focus on first input field , use this for forms that already handle their focus--%>
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="org.apache.struts.util.RequestUtils,org.apache.struts.action.*,org.apache.struts.Globals,java.util.Iterator,javax.servlet.jsp.JspException"
-	import="us.mn.state.health.lims.common.action.IActionConstants"
-	import="us.mn.state.health.lims.common.util.StringUtil"
-	import="us.mn.state.health.lims.common.util.resources.ResourceLocator"
-    import="us.mn.state.health.lims.common.util.Versioning"
- %>
+	import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.services.LocalizationService,us.mn.state.health.lims.common.util.ConfigurationProperties"
+        %>
+<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
@@ -114,7 +111,7 @@ function setAction(form, action, validate, parameters) {
 			<bean:write name="<%=IActionConstants.PAGE_TITLE_KEY%>" scope='request' />
 		</logic:notEmpty>
 		<logic:empty name="<%=IActionConstants.PAGE_TITLE_KEY%>">
-			<%=StringUtil.getContextualMessageForKey("title.default")%>
+			<%=LocalizationService.getLocalizedValueById( ConfigurationProperties.getInstance().getPropertyValue( ConfigurationProperties.Property.BANNER_TEXT ) )%>
 		</logic:empty>	
 	</title>
 	<tiles:insert attribute="banner"/>
