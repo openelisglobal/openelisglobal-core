@@ -207,6 +207,34 @@
 
     </sql>
 </changeSet>	
- 
-
+<changeSet id="11" author="paulsc">
+    <comment>make configuration name hidden</comment>
+    <update tableName="site_information" >
+        <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'hiddenProperties' ) " />
+        <column name="lastupdated" valueDate=" now() " />
+        <where>name = 'configuration name' </where>
+    </update>
+</changeSet>
+<changeSet id="12" author="paulsc">
+    <comment>Adding configuration item for title</comment>
+    <insert tableName="localization">
+        <column name="id" valueNumeric=" nextval( 'localization_seq' ) " />
+        <column name="description" value="Site information banner test" />
+        <column name="english" value="set" />
+        <column name="french" value="set" />
+        <column name="lastupdated" valueDate=" now() " />
+    </insert>
+    <insert tableName="site_information">
+        <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+        <column name="name" value="bannerHeading" />
+        <column name="lastupdated" valueDate=" now() " />
+        <column name="description" value="Text for banner" />
+        <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'siteIdentity' ) " />
+        <column name="value_type" value="text" />
+        <column name="value" valueNumeric=" currval( 'localization_seq' ) " />
+        <column name="tag" value="localization" />
+        <column name="instruction_key" value="instructions.bannerHeading" />
+        <column name="description_key" value="siteInfo.bannerHeading" />
+    </insert>
+</changeSet>
 </databaseChangeLog>
