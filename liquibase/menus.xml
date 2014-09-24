@@ -2390,7 +2390,7 @@
 			<column name="presentation_order" valueNumeric="3" />
 			<column name="element_id" value="menu_results_analyzer" />
 			<column name="display_key" value="banner.menu.results.analyzer" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.results.analyzer" />
+			<column name="tool_tip_key" value="banner.menu.results.analyzer" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2543,7 +2543,7 @@
 			<column name="action_url"
 				value="/ResultValidation.do?type=virology&amp;test=Viral Load" />
 			<column name="display_key" value="banner.menu.resultvalidation.viralload" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.resultvalidation.viralload" />
+			<column name="tool_tip_key" value="banner.menu.resultvalidation.viralload" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -2738,7 +2738,7 @@
 			<column name="presentation_order" valueNumeric="2" />
 			<column name="element_id" value="menu_reports_indicator" />
 			<column name="display_key" value="reports.label.indicator" />
-			<column name="tool_tip_key" value="tooltip.reports.label.indicator" />
+			<column name="tool_tip_key" value="reports.label.indicator" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
