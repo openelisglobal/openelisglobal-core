@@ -74,7 +74,7 @@ public class SiteInformationAction extends BaseAction {
 
 
 			PropertyUtils.setProperty(dynaForm, "paramName", siteInformation.getName());
-			PropertyUtils.setProperty(dynaForm, "description", siteInformation.getDescriptionKey());
+			PropertyUtils.setProperty(dynaForm, "description", getInstruction( siteInformation ) );
 			PropertyUtils.setProperty(dynaForm, "value", siteInformation.getValue());
             setLocalizationValues( dynaForm, siteInformation);
 			PropertyUtils.setProperty(dynaForm, "encrypted", siteInformation.isEncrypted());
@@ -107,6 +107,10 @@ public class SiteInformationAction extends BaseAction {
 		}
 		return mapping.findForward(forward);
 	}
+
+    private String getInstruction( SiteInformation siteInformation ){
+        return GenericValidator.isBlankOrNull( siteInformation.getInstructionKey()) ? siteInformation.getDescriptionKey() : siteInformation.getInstructionKey();
+    }
 
     private void setLocalizationValues( DynaActionForm dynaForm, SiteInformation siteInformation ) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException{
         if( "localization".equals( siteInformation.getTag() )){
