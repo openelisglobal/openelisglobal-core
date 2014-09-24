@@ -111,7 +111,7 @@ public class AnalyzerLineReader extends AnalyzerReader {
 			inserter = new CobasTaqmanReader();
 		}else if( lines.get(1) != null && lines.get(1).contains(FACSCANTO_INDICATOR)){
 			inserter = new FACSCantoReader();
-		}else if( lines.get(1) != null && lines.get(1).contains(COBAS_TAQMAN_DBS_INDICATOR)){
+		}else if( lines.get(1) != null && lines.get(1).toUpperCase().contains(COBAS_TAQMAN_DBS_INDICATOR)){
 		    inserter = new CobasTaqmanDBSReader();
 		}else{
 			//we're into squishy territory.  It could be be TAQMAN with no test on first row
