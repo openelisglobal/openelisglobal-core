@@ -40,7 +40,6 @@ public class SystemConfiguration {
 	private Properties properties = null;
 	private Map<String, Locale> localePropertyToLocaleMap = new HashMap<String, Locale>();
 
-	public static final String DEFAULT_BANNER_STYLE = "Minn";
 	private SystemConfiguration() {
 		InputStream propertyStream = null;
 
@@ -912,7 +911,6 @@ public class SystemConfiguration {
 		properties.setProperty("programcodes", programCodes);
 	}
 
-	//bugzilla 2531
 	public String getNewbornPatientRelation() {
 		String string = properties.getProperty("newborn.patient.relation");
 		if (string != null) {
@@ -920,10 +918,6 @@ public class SystemConfiguration {
 		}
 		return "M";
 	}
-
-    public String getBannerStyle(){
-    	return properties.getProperty("banner.style", "Minn");
-    }
 
     //we are letting the date locale differ from the default locale. Not a good thing
 	public Locale getDateLocale() {

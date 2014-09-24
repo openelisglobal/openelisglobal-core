@@ -31,5 +31,6 @@
     <include file="OE4.2/RetroCIData.xml" />
     <include file="OE4.2/CI_IPCIData.xml" />
     <include file="OE4.2/CI_LNSPData.xml" />
+    <include file="OE4.2/HaitiClinicalData.xml" />
     <include file="OE4.2/PostCatalogUpdate.xml" />
 </databaseChangeLog>

@@ -18,21 +18,15 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-	<!-- Data specific to haiti LNSP -->
+	<!-- Data specific to haiti Clinical -->
 	
-	<changeSet author="paulsc" id="1" context="haitiLNSP">
-		<comment>Add reporting description to culture des selles</comment>
-        <update tableName="test" >
-            <column name="reporting_description" value="Culture des Selles" />
-            <where>name = 'Culture des Selles' </where>
-        </update>
-	</changeSet>
-    <changeSet author="paulsc" id="2" context="haitiLNSP">
-        <comment>Set header text</comment>
+	<changeSet author="paulsc" id="1" context="haiti">
+		<comment>Set header text</comment>
         <update tableName="localization" >
-            <column name="english" value="LNSP-Haiti Laboratory Information System" />
-            <column name="french"  value="Système d'Information Électronique de Laboratoire - LNSP-Haïti" />
+            <column name="english" value="Haiti Laboratory Information System" />
+            <column name="french"  value="Système d'Information Électronique de Laboratoire - Haïti" />
             <where>cast(id as varchar) = (select value from clinlims.site_information where name = 'bannerHeading') </where>
         </update>
-    </changeSet>
+	</changeSet>
+
 </databaseChangeLog>

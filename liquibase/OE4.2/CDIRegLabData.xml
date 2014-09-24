@@ -35,4 +35,12 @@
             <where>name like 'Concentration Corpusculaire Moyenne%' </where>
         </update>
     </changeSet>
+    <changeSet author="paulsc" id="3" context="ci_regional">
+        <comment>Set header text</comment>
+        <update tableName="localization" >
+            <column name="english" value="Cote d'Ivoire Regional Laboratory Laboratory Information System" />
+            <column name="french"  value="Système d'Information Électronique de Laboratoire - Côte d'Ivoire Régional Lab" />
+            <where>cast(id as varchar) = (select value from clinlims.site_information where name = 'bannerHeading') </where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
