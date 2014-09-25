@@ -846,7 +846,7 @@ public class ResultsValidationUtility {
 		return testSection.getId();
 	}
 
-	public String getTestId(String testName) {
+	private String getTestId(String testName) {
 		Test test = new Test();
 		test.setTestName(testName);
 		test = testDAO.getTestByName(test);
