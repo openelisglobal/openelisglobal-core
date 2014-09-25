@@ -503,7 +503,30 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	public Test getTestByName(Test test) throws LIMSRuntimeException{
-		return getTestByName(test.getLocalizedTestName().getEnglish());
+        //if this method is called then the test parameter does not have the localization object so
+        // we want the one in the test table.
+        try{
+            String sql = "from Test t where t.testName = :testName and t.isActive='Y'";
+            org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setParameter("testName", test.getTestName());
+
+            @SuppressWarnings("unchecked")
+            List<Test> list = query.list();
+            HibernateUtil.getSession().flush();
+            HibernateUtil.getSession().clear();
+            Test t = null;
+
+            if(!list.isEmpty()){
+                t = list.get(0);
+            }
+
+            return t;
+
+        }catch(Exception e){
+            // bugzilla 2154
+            LogEvent.logError("TestDAOImpl", "getTestByName()", e.toString());
+            throw new LIMSRuntimeException("Error in Test getTestByName()", e);
+        }
 	}
 
 	public Test getTestByName(String testName) throws LIMSRuntimeException{
