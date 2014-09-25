@@ -42,4 +42,8 @@
         where t.name like '%HIV%') and value = cast((select max(id) from clinlims.dictionary where dict_entry ilike 'Ind%termin%') as varchar );
     </sql>
 </changeSet>
+<changeSet id="6" author="paulsc" context="ci_regional">
+    <comment>Updating missing dictionary values in test result</comment>
+    <sqlFile path="OE4.2/testCatalogCI_Regional_labs/missingTestResult.sql" />
+</changeSet>
 </databaseChangeLog>
