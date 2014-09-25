@@ -109,7 +109,12 @@ public class SiteInformationAction extends BaseAction {
 	}
 
     private String getInstruction( SiteInformation siteInformation ){
-        return GenericValidator.isBlankOrNull( siteInformation.getInstructionKey()) ? siteInformation.getDescriptionKey() : siteInformation.getInstructionKey();
+        String instruction = StringUtil.getMessageForKey( siteInformation.getInstructionKey() );
+        if( GenericValidator.isBlankOrNull( instruction ) ){
+            instruction = StringUtil.getMessageForKey( siteInformation.getDescriptionKey() );
+        }
+
+        return GenericValidator.isBlankOrNull( instruction ) ? siteInformation.getDescription() : instruction;
     }
 
     private void setLocalizationValues( DynaActionForm dynaForm, SiteInformation siteInformation ) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException{
@@ -127,16 +132,6 @@ public class SiteInformationAction extends BaseAction {
 			return new SampleDAOImpl().getTotalCount("Sample", Sample.class) == 0;
 		}
 		return Boolean.TRUE;
-	}
-
-	protected String getUserDescription(SiteInformation siteInformation) {
-		if( GenericValidator.isBlankOrNull(siteInformation.getInstructionKey() )){
-			return siteInformation.getDescription();	
-		}
-		
-		String instructions = StringUtil.getMessageForKey(siteInformation.getInstructionKey());
-		
-		return instructions != null ? instructions : siteInformation.getDescription();
 	}
 
 	protected String getPageTitleKey() {

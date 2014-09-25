@@ -46,7 +46,7 @@
 
 
 <bean:message key="generic.name"/>:&nbsp;<bean:write name="<%=formName %>" property="paramName"/><br/><br/>
-<bean:message name="<%=formName %>" property="description"/><br/><br/>
+<bean:write name="<%=formName %>" property="description"/><br/><br/>
 <bean:message key="generic.value"/>:&nbsp;
 
 
