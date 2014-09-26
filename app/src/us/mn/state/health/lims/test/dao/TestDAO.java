@@ -66,6 +66,8 @@ public interface TestDAO extends BaseDAO {
 	
 	public Test getTestByName(String testName) throws LIMSRuntimeException;
 
+    public Test getTestByUserLocalizedName(String testName) throws LIMSRuntimeException;
+
 	public List<Test> getActiveTestByName(String testName) throws LIMSRuntimeException;
 
 	public Test getTestById(Test test) throws LIMSRuntimeException;
