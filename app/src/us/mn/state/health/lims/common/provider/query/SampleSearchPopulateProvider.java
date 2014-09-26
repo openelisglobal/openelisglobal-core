@@ -88,7 +88,7 @@ public class SampleSearchPopulateProvider extends BaseQueryProvider {
           XMLUtil.appendKeyValue("labNo", sample.getAccessionNumber(), xml);
           XMLUtil.appendKeyValue("receivedDateForDisplay", sample.getReceivedDateForDisplay(), xml);
           XMLUtil.appendKeyValue("collectionDateForDisplay", sample.getCollectionDateForDisplay(), xml);
-          XMLUtil.appendKeyValue("receivedTimeForDisplay", sample.getReceivedTimeForDisplay( false ), xml);
+          XMLUtil.appendKeyValue("receivedTimeForDisplay", sample.getReceivedTimeForDisplay( ), xml);
           XMLUtil.appendKeyValue("collectionTimeForDisplay", sample.getCollectionTimeForDisplay(), xml);
           
 

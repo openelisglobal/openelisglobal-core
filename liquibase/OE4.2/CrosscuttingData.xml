@@ -57,4 +57,11 @@
             <where>name = 'Program'</where>
         </update>
     </changeSet>
+    <changeSet id="4" author="paulsc" context="haiti, haitiLNSP">
+        <comment>Sets the clock type to 12 hour</comment>
+        <update tableName="site_information" >
+            <column name="value" value="false" />
+            <where>name = '24 hour clock'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

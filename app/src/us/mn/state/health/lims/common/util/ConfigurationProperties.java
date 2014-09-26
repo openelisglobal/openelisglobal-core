@@ -110,7 +110,8 @@ public abstract class ConfigurationProperties {
         USE_BILLING_REFERENCE_NUMBER,       //If true then the user can enter billing codes for latter reporting
         BILLING_REFERENCE_NUMBER_LABEL,   //The label being used for the billing reference number
         ORDER_PROGRAM,   //Should program be part of an order
-        BANNER_TEXT //Text on Banner
+        BANNER_TEXT, //Text on Banner
+        CLOCK_24    //True for 24 hour clock, false for 12 hour clock
     }
 
 	

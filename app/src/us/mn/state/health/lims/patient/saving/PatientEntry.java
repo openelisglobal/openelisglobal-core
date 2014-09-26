@@ -61,7 +61,7 @@ public class PatientEntry extends Accessioner {
 
     @Override
     protected void populateSampleData() throws Exception {
-    	Timestamp receivedDate = DateUtil.convertStringDatePreserveStringTimeToTimestamp(sample.getReceivedDateForDisplay(), sample.getReceivedTimeForDisplay( false ),
+    	Timestamp receivedDate = DateUtil.convertStringDatePreserveStringTimeToTimestamp(sample.getReceivedDateForDisplay(), sample.getReceived24HourTimeForDisplay( ),
     																					 projectFormMapper.getReceivedDate(), projectFormMapper.getReceivedTime());
     	Timestamp collectionDate = DateUtil.convertStringDatePreserveStringTimeToTimestamp(sample.getCollectionDateForDisplay(), sample.getCollectionTimeForDisplay(),
     																					   projectFormMapper.getCollectionDate(), projectFormMapper.getCollectionTime());

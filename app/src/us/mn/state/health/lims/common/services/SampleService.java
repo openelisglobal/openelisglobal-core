@@ -143,10 +143,13 @@ public class SampleService {
     }
     public String getReceivedDateWithTwoYearDisplay(){ return DateUtil.convertTimestampToTwoYearStringDate( sample.getReceivedTimestamp() ); }
 
-    public String getReceivedTimeForDisplay(boolean use12Hour){
-        return sample.getReceivedTimeForDisplay(use12Hour);
+    public String getReceivedTimeForDisplay(){
+        return sample.getReceivedTimeForDisplay();
     }
 
+    public String getReceived24HourTimeForDisplay(){
+        return sample.getReceived24HourTimeForDisplay();
+    }
     public boolean isConfirmationSample(){
         return !analysisDAO.getAnalysesBySampleIdAndStatusId( sample.getId(), CONFIRMATION_STATUS_SET ).isEmpty();
     }
