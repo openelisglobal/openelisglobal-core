@@ -604,7 +604,15 @@ public class DateUtil {
 		return new Timestamp(new Date().getTime());
 	}
 
-	public static String convertTimestampToStringDateAndTime(Timestamp timestamp) {
+    public static String convertTimestampToStringDateAndConfiguredHourTime( Timestamp timestamp ) {
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.CLOCK_24, "true" )){
+            return convertTimestampToStringDateAndTime( timestamp );
+        }else{
+            return convertTimestampToStringDateAnd12HourTime( timestamp );
+        }
+    }
+
+    public static String convertTimestampToStringDateAndTime(Timestamp timestamp) {
 		if( timestamp == null){
 			return null;
 		}
@@ -617,11 +625,27 @@ public class DateUtil {
         }
         return new SimpleDateFormat( StringUtil.getMessageForKey("timestamp.format.formatKey.12")).format(timestamp);
     }
+
+    public static String convertTimestampToStringConfiguredHourTime(Timestamp timestamp) {
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.CLOCK_24, "true" )){
+            return convertTimestampToStringHourTime( timestamp );
+        }else{
+            return convertTimestampToString12HourTime( timestamp );
+        }
+    }
+
     public static String convertTimestampToString12HourTime(Timestamp timestamp) {
         if( timestamp == null){
             return null;
         }
         return new SimpleDateFormat( StringUtil.getMessageForKey("timestamp.format.formatKey.time.12")).format(timestamp);
+    }
+
+    public static String convertTimestampToStringHourTime(Timestamp timestamp) {
+        if( timestamp == null){
+            return null;
+        }
+        return new SimpleDateFormat( StringUtil.getMessageForKey("timestamp.format.formatKey.time")).format(timestamp);
     }
 	public static java.sql.Date convertTimestampToSqlDate( Timestamp timestamp){
 		return new java.sql.Date(timestamp.getTime());

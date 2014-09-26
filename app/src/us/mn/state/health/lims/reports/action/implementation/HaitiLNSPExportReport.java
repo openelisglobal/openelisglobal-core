@@ -138,9 +138,9 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 
 		ts.setAccessionNumber(order.getAccessionNumber());
 		ts.setReceptionDate(order.getReceivedDateForDisplay());
-		ts.setReceptionTime(DateUtil.convertTimestampToString12HourTime( order.getReceivedTimestamp() ));
+		ts.setReceptionTime(DateUtil.convertTimestampToStringConfiguredHourTime( order.getReceivedTimestamp() ));
 		ts.setCollectionDate(DateUtil.convertTimestampToStringDate( sampleItem.getCollectionDate() ));		
-		ts.setCollectionTime(DateUtil.convertTimestampToString12HourTime( sampleItem.getCollectionDate() ));
+		ts.setCollectionTime(DateUtil.convertTimestampToStringConfiguredHourTime( sampleItem.getCollectionDate() ));
 		ts.setAge(createReadableAge(patientService.getDOB()));
 		ts.setDOB(patientService.getDOB());
 		ts.setFirstName(patientService.getFirstName());

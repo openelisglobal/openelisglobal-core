@@ -763,7 +763,7 @@ public abstract class PatientReport extends Report{
         }
 
         if( FormFields.getInstance().useField( Field.SampleEntryUseReceptionHour ) ){
-            receivedDate += " " + currentSampleService.getReceivedTimeForDisplay( true );
+            receivedDate += " " + currentSampleService.getReceivedTimeForDisplay( );
         }
 
         data.setContactInfo( currentContactInfo );
@@ -795,7 +795,7 @@ public abstract class PatientReport extends Report{
             data.setOrderDate( DateUtil.convertTimestampToStringDate( currentSampleService.getOrderedDate() ) );
             data.setSampleId( currentSampleService.getAccessionNumber() + "-" + sortOrder );
             data.setSampleType( currentAnalysisService.getTypeOfSample().getLocalizedName()  );
-            data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAnd12HourTime( currentAnalysisService.getAnalysis().getSampleItem().getCollectionDate() ));
+            data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( currentAnalysisService.getAnalysis().getSampleItem().getCollectionDate() ));
         }
 
         data.setAccessionNumber( currentSampleService.getAccessionNumber() + "-" + sortOrder );

@@ -237,4 +237,18 @@
         <column name="description_key" value="siteInfo.bannerHeading" />
     </insert>
 </changeSet>
+<changeSet id="13" author="paulsc">
+    <comment>Adds a configuration item for using a 12 hour clock</comment>
+    <insert tableName="site_information">
+        <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+        <column name="name" value="24 hour clock" />
+        <column name="lastupdated" valueDate=" now() " />
+        <column name="description" value="12 vs. 24 hour clock" />
+        <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'siteIdentity' ) " />
+        <column name="value_type" value="boolean" />
+        <column name="value" value="true" />
+        <column name="instruction_key" value="instructions.clock" />
+        <column name="description_key" value="siteInfo.clock" />
+    </insert>
+</changeSet>
 </databaseChangeLog>

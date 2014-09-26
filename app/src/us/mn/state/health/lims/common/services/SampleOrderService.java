@@ -110,7 +110,7 @@ public class SampleOrderService{
             sampleOrder.setSampleId( sample.getId() );
             sampleOrder.setLabNo( sampleService.getAccessionNumber() );
             sampleOrder.setReceivedDateForDisplay( sampleService.getReceivedDateForDisplay() );
-            sampleOrder.setReceivedTime( sampleService.getReceivedTimeForDisplay( false ) );
+            sampleOrder.setReceivedTime( sampleService.getReceived24HourTimeForDisplay( ) );
 
             sampleOrder.setRequestDate( ObservationHistoryService.getValueForSample( ObservationType.REQUEST_DATE, sample.getId() ) );
             sampleOrder.setReferringPatientNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, sample.getId() ) );

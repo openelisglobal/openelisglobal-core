@@ -108,6 +108,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault( Property.BILLING_REFERENCE_NUMBER_LABEL, "billingRefNumberLocalization", "-1" );
         setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "false" );
         setDBPropertyMappingAndDefault( Property.BANNER_TEXT, "bannerHeading", "-1" );
+        setDBPropertyMappingAndDefault( Property.CLOCK_24, "24 hour clock", "true" );
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

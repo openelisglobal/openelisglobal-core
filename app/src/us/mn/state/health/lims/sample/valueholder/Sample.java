@@ -167,11 +167,19 @@ public class Sample extends EnumValueItemImpl {
 		this.receivedDateForDisplay = DateUtil.convertSqlDateToStringDate(receivedDate);
 		this.receivedTimestamp = DateUtil.convertSqlDateToTimestamp(receivedDate);
 	}
-	
-	public String getReceivedTimeForDisplay(boolean use12Hour) {
-        //TODO - refactor this with setting that specifies 12 or 24 hour time
-        return receivedTimestamp != null ? use12Hour ? DateUtil.convertTimestampToString12HourTime( receivedTimestamp) : DateUtil.convertTimestampToStringTime(receivedTimestamp) : null;
+
+    /**
+     * @deprecated Use DateUtil methods
+     * @return The received time in either 12 hour or 24 hour notation depending on configuration
+     */
+    @Deprecated
+	public String getReceivedTimeForDisplay( ) {
+        return receivedTimestamp != null ? DateUtil.convertTimestampToStringConfiguredHourTime( receivedTimestamp) : null;
 	}
+
+    public String getReceived24HourTimeForDisplay( ) {
+        return receivedTimestamp != null ? DateUtil.convertTimestampToStringHourTime( receivedTimestamp) : null;
+    }
 
 	public String getReferredCultureFlag() {
 		return referredCultureFlag;
@@ -375,7 +383,12 @@ public class Sample extends EnumValueItemImpl {
         this.receivedTimeForDisplay = DateUtil
                 .convertTimestampToStringTime(receivedTimestamp);
 	}
-	
+
+    /**
+     * @deprecated use DateUtil methods instead
+     * @param receivedTimeForDisplay -- the time for display
+     */
+    @Deprecated
     public void setReceivedTimeForDisplay(String receivedTimeForDisplay) {
         this.receivedTimeForDisplay = receivedTimeForDisplay;
     }
