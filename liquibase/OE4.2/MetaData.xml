@@ -251,4 +251,11 @@
         <column name="description_key" value="siteInfo.clock" />
     </insert>
 </changeSet>
+<changeSet id="14" author="paulsc">
+    <comment>Moves sort QA configuration item to non-conformity section</comment>
+    <update tableName="site_information" >
+        <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'non_conformityConfig' ) " />
+        <where>name = 'sortQaEvents' </where>
+    </update>
+</changeSet>
 </databaseChangeLog>
