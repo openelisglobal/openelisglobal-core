@@ -25,8 +25,6 @@ import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
-import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -61,7 +59,6 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 	private static final SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static final ResultDAO resultDAO = new ResultDAOImpl();
-	private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private static final SampleDAO sampleDAO = new SampleDAOImpl();
 	private static final SampleRequesterDAO sampleRequesterDAO = new SampleRequesterDAOImpl();
 	private static final OrganizationDAO organizationDAO = new OrganizationDAOImpl();
