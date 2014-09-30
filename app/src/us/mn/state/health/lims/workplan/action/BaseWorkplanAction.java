@@ -26,9 +26,11 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.IPatientService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -198,9 +200,8 @@ public class BaseWorkplanAction extends BaseAction {
             values.add(patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
             values.add(patientService.getNationalId());
             
-            SampleOrderService orderService = new SampleOrderService( sample );
-            values.add( orderService.getSampleOrderItem() == null ? "" : orderService.getSampleOrderItem().getReferringPatientNumber());
-            
+            String referringPatientId = ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, sample.getId() );
+            values.add( referringPatientId == null ? "" : referringPatientId);
             return StringUtil.buildDelimitedStringFromList(values, " / ", true);
                         
         } else 
