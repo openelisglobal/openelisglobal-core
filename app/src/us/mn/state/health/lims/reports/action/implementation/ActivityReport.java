@@ -21,10 +21,12 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.SampleService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -134,8 +136,8 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         values.add(patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
         values.add(patientService.getNationalId());
         
-        SampleOrderService orderService = new SampleOrderService( sampleService.getSample());
-        values.add( orderService.getSampleOrderItem() == null ? "" : orderService.getSampleOrderItem().getReferringPatientNumber());
+        String referringPatientId = ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, sampleService.getSample().getId() );
+        values.add( referringPatientId == null ? "" : referringPatientId);
 
         String name = StringUtil.buildDelimitedStringFromList(values, " / ", true);
         
