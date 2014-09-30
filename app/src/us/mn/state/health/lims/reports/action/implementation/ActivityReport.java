@@ -74,9 +74,11 @@ public abstract class ActivityReport extends Report implements IReportCreator{
     protected String getSiteLogo(){
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
             return "images" + File.separator + "HaitiLNSP.jpg";
+        }else if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti Clinical")){
+            return "images" + File.separator + "HaitiFlag.gif";
         }
 
-        return null;
+        return "images" + File.separator + "CDIlogo.jpg";
     }
 
     @Override
