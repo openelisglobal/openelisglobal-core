@@ -284,7 +284,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="344" y="0" width="79" height="13" isPrintWhenDetailOverflows="true"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{resultValue}]]></textFieldExpression>
 			</textField>
 			<frame>
