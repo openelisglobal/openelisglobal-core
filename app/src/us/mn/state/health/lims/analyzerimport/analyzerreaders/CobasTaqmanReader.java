@@ -30,7 +30,7 @@ import java.util.List;
 public class CobasTaqmanReader extends AnalyzerLineInserter{
 
 	private static final String UNDER_THREASHOLD = "< LL";
-	private static final double THREASHOLD = 15.0;
+	private static final double THREASHOLD = 20.0;
 
 	@SuppressWarnings("unused")
 	private static final int PATIENT_NAME = 0;
