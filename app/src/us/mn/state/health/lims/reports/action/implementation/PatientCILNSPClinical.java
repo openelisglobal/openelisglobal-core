@@ -32,7 +32,6 @@ import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
-import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 import java.util.*;
@@ -76,8 +75,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
     }
 
     private Object getFooterName(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI IPCI" ) ||
-            ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI LNSP" ) ){
+        if( configName.equals( "CI IPCI" ) ||  configName.equals( "CI LNSP" ) ){
             return "CILNSPFooter.jasper";
         }else{
             return "";
@@ -86,7 +84,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
     @Override
     protected String getHeaderName(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName , "CI LNSP")){
+        if( configName.equals( "CI LNSP")){
             return "CILNSPHeader.jasper";
         }else{
             return "CDIHeader.jasper";
@@ -99,9 +97,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(currentSampleService.getId(), analysisStatusIds);
 
 		currentConclusion = null;
-        Set<SampleItem> sampleSet = new HashSet<SampleItem>(  );
 		for(Analysis analysis : analysisList){
-            sampleSet.add( analysis.getSampleItem() );
             boolean hasParentResult = analysis.getParentResult() != null;
 			// case if there was a confirmation sample with no test specified
 			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
@@ -192,7 +188,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
 				if(GenericValidator.isBlankOrNull(reportReferralResultValue)){
 					sampleCompleteMap.put(currentSampleService.getAccessionNumber(), Boolean.FALSE);
-					data.setResult(StringUtil.getMessageForKey("report.test.status.inProgress"));
+					data.setAnalysisStatus(StringUtil.getMessageForKey("report.test.status.inProgress"));
 				}else{
 					data.setResult( reportReferralResultValue );
 				}
@@ -313,9 +309,9 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
             reportItem.setCompleteFlag( StringUtil.getMessageForKey( sampleCompleteMap.get( reportItem.getAccessionNumber() ) ? "report.status.complete" : "report.status.partial" ) );
             if( reportItem.isCorrectedResult() ){
                 if( reportItem.getNote() != null && reportItem.getNote().length() > 0 ){
-                    reportItem.setNote( "Résultat corrigé<br/>" + reportItem.getNote() );
+                    reportItem.setNote( StringUtil.getMessageForKey( "result.corrected" ) + "<br/>" + reportItem.getNote() );
                 }else{
-                    reportItem.setNote( "Résultat corrigé" );
+                    reportItem.setNote( StringUtil.getMessageForKey( "result.corrected" ) );
                 }
 
             }
