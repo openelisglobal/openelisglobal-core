@@ -228,7 +228,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		if(GenericValidator.isBlankOrNull(dob)){
 			return "";
 		}
-
+		dob = dob.replaceAll("XX", "01");
 		dob = dob.replaceAll("xx", "01");
 		Date dobDate = DateUtil.convertStringDateToSqlDate(dob);
 		int months = DateUtil.getAgeInMonths(dobDate, DateUtil.getNowAsSqlDate());
