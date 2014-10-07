@@ -63,9 +63,9 @@ Polio stool 2
 
 Syphilis RPR
 Syphilis TPHA
-Criptococcus rapid test
-Criptococcus rapid test
-Criptococcus rapid test
+Cryptococcus rapid test
+Cryptococcus rapid test
+Cryptococcus rapid test
 
 
 HIV DNA PCR
