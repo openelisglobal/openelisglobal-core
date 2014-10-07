@@ -158,4 +158,22 @@
             <where>tst_rslt_type = 'Q'</where>
         </update>
     </changeSet>
+    <changeSet id="6" author="paulsc" context="CI_IPCI">
+        <comment>Update the dictionary entries for the sample types</comment>
+        <sql>
+            update clinlims.dictionary set dict_entry = 'Cérosites' where dict_entry = 'Cerosites';
+            INSERT INTO clinlims."dictionary"( id, is_active, dict_entry, lastupdated, local_abbrev, dictionary_category_id, sort_order)
+            VALUES ( nextval( 'dictionary_seq'),
+            'Y',
+            'Cheveux',
+            now(),
+            'Cheveux',
+            (select dictionary_category_id from clinlims.dictionary where dict_entry = 'Ongles cheveux' ),
+            (select sort_order + 50 from clinlims.dictionary where dict_entry = 'Ongles cheveux' )
+            );
+            update clinlims.dictionary set dict_entry = 'Ongles' where dict_entry = 'Ongles cheveux';
+            update clinlims.dictionary set dict_entry = 'Prélèvement urétral' where dict_entry = 'Prelevement uretral';
+            update clinlims.dictionary set dict_entry= replace( dict_entry, 'Prelevement', 'Prélèvement') where dict_entry like 'Prelevement%';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
