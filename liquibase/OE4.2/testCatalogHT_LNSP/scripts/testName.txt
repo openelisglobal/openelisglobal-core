@@ -63,9 +63,9 @@ Polio Selles 2
 
 Syphilis RPR
 Syphilis TPHA
-Criptococcus test rapide
-Criptococcus test rapide
-Criptococcus test rapide
+Cryptococcus test rapide
+Cryptococcus test rapide
+Cryptococcus test rapide
 Chikungunya Test Rapide
 
 VIH-1 PCR 1 Qualitatif
