@@ -670,6 +670,10 @@ public class ResultsLoadUtility {
             testItem.setQualifiedResultValue( quantifiedResult.getValue() );
             testItem.setHasQualifiedResult( true );
         }
+
+        if( NUMERIC_RESULT_TYPE_ID.equals( testResults.get( 0 ).getTestResultType()  )){
+            testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
+        }
 		return testItem;
 	}
 
@@ -683,10 +687,6 @@ public class ResultsLoadUtility {
 			testItem.setValid(getIsValid(testItem.getResultValue(), resultLimit));
 			testItem.setNormal(getIsNormal(testItem.getResultValue(), resultLimit));
             testItem.setNormalRange( ResultLimitService.getDisplayReferenceRange( resultLimit, testResults.get( 0 ).getSignificantDigits(), " - " ));
-            if( NUMERIC_RESULT_TYPE_ID.equals( resultLimit.getResultTypeId() )){
-                testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
-            }
-
 		}
 	}
 

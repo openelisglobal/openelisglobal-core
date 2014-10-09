@@ -41,4 +41,11 @@
             <where>cast(id as varchar) = (select value from clinlims.site_information where name = 'bannerHeading') </where>
         </update>
     </changeSet>
+    <changeSet id="4" author="paulsc" context="CDIRetroCI">
+        <comment>Fix for significant digit bug</comment>
+        <update tableName="test_result" >
+            <column name="significant_digits" valueNumeric="-1" />
+            <where>tst_rslt_type = 'N'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
