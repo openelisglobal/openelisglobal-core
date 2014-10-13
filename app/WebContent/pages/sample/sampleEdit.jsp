@@ -24,6 +24,7 @@
 <bean:define id="accessionNumber" name="<%=formName %>" property="accessionNumber"/>
 <bean:define id="newAccessionNumber" name="<%=formName %>" property="newAccessionNumber"/>
 <bean:define id="cancelableResults"   name="<%=formName%>" property="ableToCancelResults" type="java.lang.Boolean" />
+<bean:define id="isEditable" name="<%=formName%>" property="isEditable" type="java.lang.Boolean" />
 
 <%!
 	String basePath = "";
@@ -59,6 +60,16 @@ var checkedCount = 0;
 var currentSampleType;
 var sampleIdStart = 0;
 var orderChanged = false;
+
+//This handles the case where sampleAdd.jsp tile is not used.  Will be overridden in sampleAdd.jsp
+function samplesHaveBeenAdded(){ return false;}
+
+$jq(document).ready( function() {
+    if( !<%=isEditable%>) {
+        $jq(":input").prop("readOnly", true);
+        $jq(".patientSearch").prop("readOnly", false);
+    }
+});
 
 $jq(function() {
    	var maxAccessionNumber = $("maxAccessionNumber").value;
@@ -288,7 +299,6 @@ function makeDirty(){
 <html:hidden name="<%=formName%>" property="newAccessionNumber" styleId="newAccessionNumber"/>
 <html:hidden name="<%=formName%>" property="isEditable"/>
 <html:hidden name="<%=formName%>" property="maxAccessionNumber" styleId="maxAccessionNumber"/>
-
 <logic:equal name='<%=formName%>' property="isEditable" value="true" >
 	<h1><%=StringUtil.getContextualMessageForKey("sample.edit.accessionNumber") %></h1>  
 	<div id="accessionEditDiv" class="TableMatch">
@@ -362,7 +372,7 @@ function makeDirty(){
                        size ='12'
                        onchange="checkValidEntryDate(this, 'past', true);"
                        styleId='<%= "collectionDate_" + index %>'
-                       styleClass='text'
+                       styleClass='text <%=isEditable? "" : " readOnly"%>'
                        indexed="true"/>
             <% } %>
         </td>
