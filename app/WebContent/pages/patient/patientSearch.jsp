@@ -69,7 +69,7 @@ function searchPatients()
 
 	newSearchInfo = false;
     $jq("#resultsDiv").hide();
-
+    $jq("#searchLabNumber").val('');
     if( criteria == 1){
         firstName =  value.trim();
     }else if(criteria == 2){
@@ -84,6 +84,7 @@ function searchPatients()
         nationalID = value.trim();
     }else if(criteria == 5){
         labNumber = value;
+        $jq("#searchLabNumber").val(value);
     }
 
 	patientSearch(lastName, firstName, STNumber, subjectNumber, nationalID, labNumber, "", false, processSearchSuccess);
@@ -299,6 +300,9 @@ function handleSelectedPatient(){
     $("searchResultsDiv").style.display = "none";
     var form = document.forms[0];
     form.action = '<%=formName%>'.sub('Form','') + ".do?accessionNumber=" + accessionNumber + "&patientID=" + patientSelectID;
+    if( !(typeof requestType === 'undefined') ){
+        form.action += "&type=" + requestType;
+    }
     form.submit();
 }
 
@@ -338,13 +342,15 @@ function setCaretPosition(ctrl, pos){
 }
 </script>
 
+<input type="hidden" id="searchLabNumber">
+
 <div id="PatientPage" class="colorFill patientSearch" style="display:inline;" >
 
 	<h2><bean:message key="sample.entry.search"/></h2>
     <logic:present property="warning" name="<%=formName%>" >
         <h3 class="important-text"><bean:message key="order.modify.search.warning" /></h3>
     </logic:present>
-    <select id="searchCriteria"  style="float:left" onchange="enableSearchButton()" tabindex="1">
+    <select id="searchCriteria"  style="float:left" onchange="enableSearchButton()" tabindex="1" class="patientSearch">
         <%
             for(IdValuePair pair : patientSearch.getSearchCriteria()){
                 out.print("<option value=\"" + pair.getId() +"\">" + pair.getValue() + "</option>");
@@ -355,7 +361,7 @@ function setCaretPosition(ctrl, pos){
     <input size="35"
            maxlength="120"
            id="searchValue"
-           class="text"
+           class="text patientSearch"
            value='<%=StringUtil.getMessageForKey("label.select.search.here")%>'
            type="text"
            onclick="cursorAtFront(this)"
@@ -365,6 +371,7 @@ function setCaretPosition(ctrl, pos){
 
     <input type="button"
            name="searchButton"
+           class="patientSearch"
            value="<%= StringUtil.getMessageForKey("label.patient.search")%>"
            id="searchButton"
            onclick="searchPatients()"
@@ -420,7 +427,6 @@ function setCaretPosition(ctrl, pos){
 			</tr>
 		</table>
 		<br/>
-
         <% if( patientSearch.getSelectedPatientActionButtonText() != null){ %>
             <input type="button"
                    value="<%= patientSearch.getSelectedPatientActionButtonText()%>"
