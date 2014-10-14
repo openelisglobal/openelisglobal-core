@@ -289,6 +289,7 @@ function sampleTypeSelected( element ){
 	var currentTypeIndex = element.selectedIndex;
 	if(currentTypeIndex != 0){
 		addNewSamples();
+		
 		element.options[0].selected = true;
 	}
 }
