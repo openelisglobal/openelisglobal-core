@@ -287,7 +287,11 @@ function convertSampleToXml( id ){
 
 function sampleTypeSelected( element ){
 	var currentTypeIndex = element.selectedIndex;
-	$("addSampleButton").disabled = currentTypeIndex == 0;
+	if(currentTypeIndex != 0){
+		addNewSamples();
+		
+		element.options[0].selected = true;
+	}
 }
 
 function sampleClicked( id ){
@@ -814,7 +818,7 @@ function sampleTypeQualifierChanged(element){
 					value="0">
 					<app:optionsCollection name="<%=formName%>" property="sampleTypes" label="value" value="id" />
 				</html:select>
-                <input type="button" id="addSampleButton" onclick="addNewSamples()"  value="<%=StringUtil.getMessageForKey("sample.entry.addSample.button")%>"  disabled="disabled">
+                 
 			</td>
 		</tr>
 	</Table>
