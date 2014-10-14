@@ -56,9 +56,6 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
 import us.mn.state.health.lims.patientidentity.daoimpl.PatientIdentityDAOImpl;
 import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
-import us.mn.state.health.lims.patientidentitytype.dao.PatientIdentityTypeDAO;
-import us.mn.state.health.lims.patientidentitytype.daoimpl.PatientIdentityTypeDAOImpl;
-import us.mn.state.health.lims.patientidentitytype.valueholder.PatientIdentityType;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
@@ -73,11 +70,6 @@ import us.mn.state.health.lims.referral.daoimpl.ReferralReasonDAOImpl;
 import us.mn.state.health.lims.referral.daoimpl.ReferralResultDAOImpl;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
-import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
-import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
-import us.mn.state.health.lims.requester.valueholder.SampleRequester;
-import us.mn.state.health.lims.result.dao.ResultDAO;
-import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
@@ -105,12 +97,10 @@ public abstract class PatientReport extends Report{
 
     protected SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
     protected DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-    private ResultDAO resultDAO = new ResultDAOImpl();
     protected SampleDAO sampleDAO = new SampleDAOImpl();
     protected PatientDAO patientDAO = new PatientDAOImpl();
     protected PersonDAO personDAO = new PersonDAOImpl();
     protected ProviderDAO providerDAO = new ProviderDAOImpl();
-    protected SampleRequesterDAO requesterDAO = new SampleRequesterDAOImpl();
     protected TestDAO testDAO = new TestDAOImpl();
     protected ReferralReasonDAO referralReasonDAO = new ReferralReasonDAOImpl();
     protected ReferralDAO referralDao = new ReferralDAOImpl();
@@ -143,30 +133,11 @@ public abstract class PatientReport extends Report{
     protected String completionDate;
     protected SampleService currentSampleService;
 
-    protected static String ST_NUMBER_IDENTITY_TYPE_ID = "0";
-    protected static String SUBJECT_NUMBER_IDENTITY_TYPE_ID = "0";
-    protected static String HEALTH_REGION_IDENTITY_TYPE_ID = "0";
-    protected static String HEALTH_DISTRICT_IDENTITY_TYPE_ID = "0";
     protected static final NoteType[] FILTER = {NoteType.EXTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
     protected Map<String, Boolean> sampleCompleteMap;
     protected Map<String, Boolean> sampleCorrectedMap;
 
     static{
-        PatientIdentityTypeDAO identityTypeDAO = new PatientIdentityTypeDAOImpl();
-        List<PatientIdentityType> typeList = identityTypeDAO.getAllPatientIdenityTypes();
-
-        for( PatientIdentityType identityType : typeList ){
-            if( "ST".equals( identityType.getIdentityType() ) ){
-                ST_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
-            }else if( "SUBJECT".equals( identityType.getIdentityType() ) ){
-                SUBJECT_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
-            }else if( "HEALTH REGION".equals( identityType.getIdentityType() ) ){
-                HEALTH_REGION_IDENTITY_TYPE_ID = identityType.getId();
-            }else if( "HEALTH DISTRICT".equals( identityType.getIdentityType() ) ){
-                HEALTH_DISTRICT_IDENTITY_TYPE_ID = identityType.getId();
-            }
-        }
-
         List<AddressPart> partList = new AddressPartDAOImpl().getAll();
         for( AddressPart part : partList ){
             if( "department".equals( part.getPartName() ) ){
@@ -318,7 +289,6 @@ public abstract class PatientReport extends Report{
     }
 
     private void findContactInfo(){
-        List<SampleRequester> requesters = requesterDAO.getRequestersForSampleId( currentSampleService.getId() );
         currentContactInfo = "";
         currentSiteInfo = "";
         currentProvider = null;
@@ -341,10 +311,10 @@ public abstract class PatientReport extends Report{
         patientList.addAll( patientDAO.getPatientsByNationalId( patientNumber ) );
 
         if( patientList.isEmpty() ){
-            List<PatientIdentity> identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, ST_NUMBER_IDENTITY_TYPE_ID );
+            List<PatientIdentity> identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, PatientService.PATIENT_ST_IDENTITY);
 
             if( identities.isEmpty() ){
-                identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID );
+                identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, PatientService.PATIENT_SUBJECT_IDENTITY );
             }
 
             if( !identities.isEmpty() ){
@@ -637,10 +607,10 @@ public abstract class PatientReport extends Report{
                 }
             }else{
                 //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
+                ResultService resultService = new ResultService( resultList.get( 0 ) );
 
-                String resultType = resultList.get( 0 ).getResultType();
-
-                if( ResultType.DICTIONARY.matches( resultType ) ){
+                if( ResultType.DICTIONARY.matches(  resultService.getTestType()) ){
+                    data.setAbnormalResult( resultService.isAbnormalDictionaryResult() );
                     List<Result> dictionaryResults = new ArrayList<Result>();
                     Result quantification = null;
                     for( Result sibResult : resultList ){
@@ -664,7 +634,7 @@ public abstract class PatientReport extends Report{
                             }
                         }
                     }
-                }else if( ResultType.isMultiSelectVariant( resultType ) ){
+                }else if( ResultType.isMultiSelectVariant( resultService.getTestType()) ){
                     Dictionary dictionary = new Dictionary();
                     StringBuilder multiResult = new StringBuilder();
 
@@ -776,10 +746,10 @@ public abstract class PatientReport extends Report{
         setPatientName( data );
         data.setDept( patientDept );
         data.setCommune( patientCommune );
-        data.setStNumber( getLazyPatientIdentity( STNumber, ST_NUMBER_IDENTITY_TYPE_ID ) );
-        data.setSubjectNumber( getLazyPatientIdentity( subjectNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID ) );
-        data.setHealthRegion( getLazyPatientIdentity( healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID ) );
-        data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID ) );
+        data.setStNumber( getLazyPatientIdentity( STNumber, PatientService.PATIENT_ST_IDENTITY ) );
+        data.setSubjectNumber( getLazyPatientIdentity( subjectNumber, PatientService.PATIENT_SUBJECT_IDENTITY ) );
+        data.setHealthRegion( getLazyPatientIdentity( healthRegion, PatientService.PATIENT_HEALTH_REGION_IDENTITY ) );
+        data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, PatientService.PATIENT_HEALTH_DISTRICT_IDENTITY ) );
         data.setLabOrderType( ObservationHistoryService.getValueForSample( ObservationType.PROGRAM, currentSampleService.getId() )  );
         data.setTestName(  testName  );
         data.setPatientSiteNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, currentSampleService.getId() ) );

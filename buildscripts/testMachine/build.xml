@@ -279,7 +279,7 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
 
         <javac debug="${debug}" debuglevel="${debuglevel}" destdir="${projectroot}/WebContent/WEB-INF/classes"
-               source="${source}" target="${target}">
+               source="${source}" target="${target}" encoding="utf-8">
 
             <src path="${projectroot}/src"/>
 
