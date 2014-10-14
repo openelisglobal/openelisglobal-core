@@ -53,22 +53,22 @@ public class PatientService implements IPatientService {
     public static final String ADDRESS_COUNTRY = "Country";
     public static final String ADDRESS_CITY = "City";
 
-	private static String PATIENT_GUID_IDENTITY;
-	private static String PATIENT_NATIONAL_IDENTITY;
-	private static String PATIENT_ST_IDENTITY;
-    private static String PATIENT_SUBJECT_IDENTITY;
-    private static String PATIENT_AKA_IDENTITY;
-    private static String PATIENT_MOTHER_IDENTITY;
-    private static String PATIENT_INSURANCE_IDENTITY;
-    private static String PATIENT_OCCUPATION_IDENTITY;
-    private static String PATIENT_ORG_SITE_IDENTITY;
-    private static String PATIENT_MOTHERS_INITIAL_IDENTITY;
-    private static String PATIENT_EDUCATION_IDENTITY;
-    private static String PATIENT_MARITAL_IDENTITY;
-    private static String PATIENT_HEALTH_DISTRICT_IDENTITY;
-    private static String PATIENT_HEALTH_REGION_IDENTITY;
-    private static String PATIENT_OB_NUMBER_IDENTITY;
-    private static String PATIENT_PC_NUMBER_IDENTITY;
+	public static String PATIENT_GUID_IDENTITY;
+	public static String PATIENT_NATIONAL_IDENTITY;
+	public static String PATIENT_ST_IDENTITY;
+    public static String PATIENT_SUBJECT_IDENTITY;
+    public static String PATIENT_AKA_IDENTITY;
+    public static String PATIENT_MOTHER_IDENTITY;
+    public static String PATIENT_INSURANCE_IDENTITY;
+    public static String PATIENT_OCCUPATION_IDENTITY;
+    public static String PATIENT_ORG_SITE_IDENTITY;
+    public static String PATIENT_MOTHERS_INITIAL_IDENTITY;
+    public static String PATIENT_EDUCATION_IDENTITY;
+    public static String PATIENT_MARITAL_IDENTITY;
+    public static String PATIENT_HEALTH_DISTRICT_IDENTITY;
+    public static String PATIENT_HEALTH_REGION_IDENTITY;
+    public static String PATIENT_OB_NUMBER_IDENTITY;
+    public static String PATIENT_PC_NUMBER_IDENTITY;
 
 
 
