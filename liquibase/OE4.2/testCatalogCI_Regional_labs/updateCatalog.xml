@@ -46,4 +46,8 @@
     <comment>Updating missing dictionary values in test result</comment>
     <sqlFile path="OE4.2/testCatalogCI_Regional_labs/missingTestResult.sql" />
 </changeSet>
+    <changeSet id="7" author="paulsc" context="ci_regional">
+        <comment>fix missing significant digit values</comment>
+        <sqlFile path="OE4.2/testCatalogCI_Regional_labs/significantDigitFix.sql" />
+    </changeSet>
 </databaseChangeLog>

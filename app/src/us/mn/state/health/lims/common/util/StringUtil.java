@@ -581,6 +581,10 @@ public class StringUtil {
 	}
 
     public static String doubleWithSignificantDigits( double value, String significantDigits ){
+        if( significantDigits.equals( "-1" )){
+            return String.valueOf( value );
+        }
+
         String format = "%1$." + significantDigits + "f";
         return String.format(format, value);
     }
