@@ -576,9 +576,10 @@
             setOrderModified();
             setCorrectSave();
         };
-        if( showTestLocationCode){
+
+        <% if( FormFields.getInstance().useField( Field.TEST_LOCATION_CODE ) ){%>
             showTestLocationCode();
-        }
+        <% } %>
     });
 
 </script>

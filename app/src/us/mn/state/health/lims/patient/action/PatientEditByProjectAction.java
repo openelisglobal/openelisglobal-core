@@ -18,17 +18,17 @@
 package us.mn.state.health.lims.patient.action;
 
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.struts.action.*;
-
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.patient.action.bean.PatientSearch;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -38,15 +38,12 @@ import us.mn.state.health.lims.common.util.DateUtil;
  */
 public class PatientEditByProjectAction extends BasePatientEntryByProject {
 
-	private String todayAsText;
 	
 	@Override
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		
-		todayAsText = DateUtil.formatDateAsText(new Date());
-		
+
 		String forward = "success";
 		
 		BaseActionForm dynaForm = (BaseActionForm) form;
@@ -59,10 +56,12 @@ public class PatientEditByProjectAction extends BasePatientEntryByProject {
 		updateRequestType(request);
 		
 		// Set current date and entered date to today's date		
-		PropertyUtils.setProperty(form, "currentDate", todayAsText);	// TODO Needed?
+		PropertyUtils.setProperty(form, "currentDate", DateUtil.getCurrentDateAsText());	// TODO Needed?
+        PatientSearch patientSearch = new PatientSearch();
+        patientSearch.setLoadFromServerWithPatient( false );
+        PropertyUtils.setProperty( form, "patientSearch", patientSearch );
 		
-		addAllPatientFormLists(dynaForm);
-		
+		addAllPatientFormLists( dynaForm );
 		return mapping.findForward(forward);
 	}
 	

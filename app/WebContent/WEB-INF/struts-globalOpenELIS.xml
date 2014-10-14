@@ -102,7 +102,7 @@
 			<form-property name="ProjectData" type="us.mn.state.health.lims.sample.form.ProjectData" />
 		</form-bean>
 
- 		<form-bean name="patientEditByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+ 		<form-bean name="PatientEditByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<!-- Drop downs -->
  			<form-property name="formLists" type="java.util.Map"/>
  			<form-property name="dictionaryLists" type="java.util.Map"/>
@@ -135,6 +135,7 @@
 			<!-- demographic observations -->
 			<form-property name="observations" type="us.mn.state.health.lims.patient.valueholder.ObservationData"/>
 			<form-property name="ProjectData" type="us.mn.state.health.lims.sample.form.ProjectData" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
 		</form-bean>
 
 		<form-bean name="sampleEntryByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -989,14 +990,14 @@
 			<forward name="fail" path="patientEntryByProjectDefinition" />
 		</action>
 
-		<action path="/PatientEditByProject" name="patientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEditByProjectAction"
+		<action path="/PatientEditByProject" name="PatientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEditByProjectAction"
 			validate="false"
 		>
 			<forward name="success" path="patientEditByProjectDefinition" />
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 
-		<action path="/PatientEditByProjectSave" name="patientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEntryByProjectUpdateAction"
+		<action path="/PatientEditByProjectSave" name="PatientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEntryByProjectUpdateAction"
 			validate="false"
 		>
 			<forward name="success" path="/PatientEditByProject.do?forward=success" />

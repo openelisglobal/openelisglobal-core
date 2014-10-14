@@ -232,13 +232,15 @@ function adjustFieldsForRequestType() {
 		for (i=0; i< elements.length; i++) {
 			setFieldReadOnly(elements[i], true);
 		}
-		setFieldReadOnly( document.forms[0].searchLastName, false);
-		setFieldReadOnly( document.forms[0].searchFirstName, false);
-		setFieldReadOnly( document.forms[0].searchNationalID, false);
+	//	setFieldReadOnly( document.forms[0].searchLastName, false);
+	//	setFieldReadOnly( document.forms[0].searchFirstName, false);
+	//	setFieldReadOnly( document.forms[0].searchNationalID, false);
 		setFieldReadOnly( document.forms[0].searchButton, false);
 		setFieldReadOnly( document.forms[0].cancelButtonId, false);
-		setFieldReadOnly( document.forms[0].searchLabNumber, false);
-		setFieldReadOnly( document.forms[0].saveButtonId, false );
+	//	setFieldReadOnly( document.forms[0].searchLabNumber, false);
+        setFieldReadOnly( document.forms[0].saveButtonId, false );
+        setFieldReadOnly( document.forms[0].searchValue, false );
+        setFieldReadOnly( document.forms[0].searchCriteria, false );
 		document.forms[0].saveButtonId.disabled = true;
 		break;
 	}
