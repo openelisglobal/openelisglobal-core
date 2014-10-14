@@ -479,11 +479,23 @@ INSERT INTO localization(  id, description, english, french, lastupdated)
 	VALUES ( nextval('localization_seq'), 'test report name', (select reporting_description from clinlims.test where guid = 'a1f4ac1d-8d6b-45ff-a7ce-59b304ca12d8' ), (select reporting_description from clinlims.test where guid = 'a1f4ac1d-8d6b-45ff-a7ce-59b304ca12d8' ), now());
 update clinlims.test set reporting_name_localization_id = lastval() where guid ='a1f4ac1d-8d6b-45ff-a7ce-59b304ca12d8';
 INSERT INTO localization(  id, description, english, french, lastupdated)
+VALUES ( nextval('localization_seq'), 'test name', (select name from clinlims.test where guid = '8b68a9d4-1c7f-4b77-bc29-a0f597283d03' ), (select name from clinlims.test where guid = '8b68a9d4-1c7f-4b77-bc29-a0f597283d03' ), now());
+update clinlims.test set name_localization_id = lastval() where guid ='8b68a9d4-1c7f-4b77-bc29-a0f597283d03';
+INSERT INTO localization(  id, description, english, french, lastupdated)
+VALUES ( nextval('localization_seq'), 'test report name', (select reporting_description from clinlims.test where guid = '8b68a9d4-1c7f-4b77-bc29-a0f597283d03' ), (select reporting_description from clinlims.test where guid = '8b68a9d4-1c7f-4b77-bc29-a0f597283d03' ), now());
+update clinlims.test set reporting_name_localization_id = lastval() where guid ='8b68a9d4-1c7f-4b77-bc29-a0f597283d03';
+INSERT INTO localization(  id, description, english, french, lastupdated)
 	VALUES ( nextval('localization_seq'), 'test name', (select name from clinlims.test where guid = '45210967-661b-4966-88c4-0a9f18621e76' ), (select name from clinlims.test where guid = '45210967-661b-4966-88c4-0a9f18621e76' ), now());
 update clinlims.test set name_localization_id = lastval() where guid ='45210967-661b-4966-88c4-0a9f18621e76';
 INSERT INTO localization(  id, description, english, french, lastupdated)
 	VALUES ( nextval('localization_seq'), 'test report name', (select reporting_description from clinlims.test where guid = '45210967-661b-4966-88c4-0a9f18621e76' ), (select reporting_description from clinlims.test where guid = '45210967-661b-4966-88c4-0a9f18621e76' ), now());
 update clinlims.test set reporting_name_localization_id = lastval() where guid ='45210967-661b-4966-88c4-0a9f18621e76';
+INSERT INTO localization(  id, description, english, french, lastupdated)
+VALUES ( nextval('localization_seq'), 'test name', (select name from clinlims.test where guid = '05348c58-c10e-4aef-9b46-edcc135791c5' ), (select name from clinlims.test where guid = '05348c58-c10e-4aef-9b46-edcc135791c5' ), now());
+update clinlims.test set name_localization_id = lastval() where guid ='05348c58-c10e-4aef-9b46-edcc135791c5';
+INSERT INTO localization(  id, description, english, french, lastupdated)
+VALUES ( nextval('localization_seq'), 'test report name', (select reporting_description from clinlims.test where guid = '05348c58-c10e-4aef-9b46-edcc135791c5' ), (select reporting_description from clinlims.test where guid = '05348c58-c10e-4aef-9b46-edcc135791c5' ), now());
+update clinlims.test set reporting_name_localization_id = lastval() where guid ='05348c58-c10e-4aef-9b46-edcc135791c5';
 INSERT INTO localization(  id, description, english, french, lastupdated)
 	VALUES ( nextval('localization_seq'), 'test name', 'HIV Viral Load', (select name from clinlims.test where guid = '1a82bb14-563b-4003-9c78-c9ab6b9b680e' ), now());
 update clinlims.test set name_localization_id = lastval() where guid ='1a82bb14-563b-4003-9c78-c9ab6b9b680e';
@@ -502,12 +514,12 @@ update clinlims.test set name_localization_id = lastval() where guid ='57317977-
 INSERT INTO localization(  id, description, english, french, lastupdated)
 	VALUES ( nextval('localization_seq'), 'test report name', 'Gastroenteric Pathogens', (select reporting_description from clinlims.test where guid = '57317977-61e0-4284-815d-deb71afe4401' ), now());
 update clinlims.test set reporting_name_localization_id = lastval() where guid ='57317977-61e0-4284-815d-deb71afe4401';
---INSERT INTO localization(  id, description, english, french, lastupdated)
---	VALUES ( nextval('localization_seq'), 'test name', 'Repiratory Virus', (select name from clinlims.test where guid = 'bd8bfebf-d92c-4cda-b68a-00d26bcbef44' ), now());
---update clinlims.test set name_localization_id = lastval() where guid ='bd8bfebf-d92c-4cda-b68a-00d26bcbef44';
---INSERT INTO localization(  id, description, english, french, lastupdated)
---	VALUES ( nextval('localization_seq'), 'test report name', 'Repiratory Virus', (select reporting_description from clinlims.test where guid = 'bd8bfebf-d92c-4cda-b68a-00d26bcbef44' ), now());
---update clinlims.test set reporting_name_localization_id = lastval() where guid ='bd8bfebf-d92c-4cda-b68a-00d26bcbef44';
+INSERT INTO localization(  id, description, english, french, lastupdated)
+	VALUES ( nextval('localization_seq'), 'test name', 'Repiratory Virus', (select name from clinlims.test where guid = 'bd8bfebf-d92c-4cda-b68a-00d26bcbef44' ), now());
+update clinlims.test set name_localization_id = lastval() where guid ='bd8bfebf-d92c-4cda-b68a-00d26bcbef44';
+INSERT INTO localization(  id, description, english, french, lastupdated)
+	VALUES ( nextval('localization_seq'), 'test report name', 'Repiratory Virus', (select reporting_description from clinlims.test where guid = 'bd8bfebf-d92c-4cda-b68a-00d26bcbef44' ), now());
+update clinlims.test set reporting_name_localization_id = lastval() where guid ='bd8bfebf-d92c-4cda-b68a-00d26bcbef44';
 INSERT INTO localization(  id, description, english, french, lastupdated)
 	VALUES ( nextval('localization_seq'), 'test name', 'Mycobacteium tuberculosis Drug Resistant', (select name from clinlims.test where guid = '205550ea-bfb4-48bf-8ecb-bdadd1b495bd' ), now());
 update clinlims.test set name_localization_id = lastval() where guid ='205550ea-bfb4-48bf-8ecb-bdadd1b495bd';

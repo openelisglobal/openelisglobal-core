@@ -78,7 +78,9 @@ update clinlims.test set local_code='HIV DNA PCR-sang Total' where guid = 'a01d4
 update clinlims.test set local_code='HIV DNA PCR-Sang Total' where guid = 'e6b78371-2749-4870-9af9-6ce75d70cb61';
 update clinlims.test set local_code='HIV Viral Load-Plasma' where guid = 'cdbbe306-c27f-44a9-af9f-393e974fa86a';
 update clinlims.test set local_code='Score d''adherence-Plasma' where guid = 'a1f4ac1d-8d6b-45ff-a7ce-59b304ca12d8';
+update clinlims.test set local_code='Score d''adherence-DBS' where guid = '8b68a9d4-1c7f-4b77-bc29-a0f597283d03';
 update clinlims.test set local_code='Date de mise sous ARV-Plasma' where guid = '45210967-661b-4966-88c4-0a9f18621e76';
+update clinlims.test set local_code='Date de mise sous ARV-DBS' where guid = '05348c58-c10e-4aef-9b46-edcc135791c5';
 update clinlims.test set local_code='HIV Viral Load-DBS' where guid = '1a82bb14-563b-4003-9c78-c9ab6b9b680e';
 update clinlims.test set local_code='Influenza A rt-PCR-Ecouvillon Naso-Pharynge' where guid = '5149a0a6-7e0e-4c76-9308-c335c3945a21';
 update clinlims.test set local_code='Gastroenteric Pathogens-selles' where guid = '57317977-61e0-4284-815d-deb71afe4401';
