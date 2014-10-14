@@ -149,9 +149,9 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 	private void assignResultsToAVRReportData(ARVReportData data, String testName, String resultValue){
 
-		if(testName.equals("Glycémie")){
+		if(testName.equals("GlycÃ©mie")){
 			data.setGlyc(resultValue);
-		}else if(testName.equals("Créatininémie")){
+		}else if(testName.equals("CrÃ©atininÃ©mie")){
 			data.setCreatininemie(resultValue);
 		}else if(testName.equals("Transaminases ALTL")){
 			data.setSgpt(resultValue);
