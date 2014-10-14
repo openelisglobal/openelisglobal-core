@@ -62,8 +62,8 @@ public class CobasReader extends AnalyzerLineInserter {
 		TestDAO testDAO = new TestDAOImpl();
 		ASTL_ID = testDAO.getActiveTestByName("Transaminases ASTL").get(0).getId();
 		ALTL_ID = testDAO.getActiveTestByName("Transaminases ALTL").get(0).getId();
-		CRE_ID = testDAO.getActiveTestByName("Créatininémie").get(0).getId();
-		GLU_ID = testDAO.getActiveTestByName("Glycémie").get(0).getId();
+		CRE_ID = testDAO.getActiveTestByName("CrÃ©atininÃ©mie").get(0).getId();
+		GLU_ID = testDAO.getActiveTestByName("GlycÃ©mie").get(0).getId();
 
 		testIdToPresentation = new HashMap<String, Integer>();
 		testIdToPresentation.put(ALTL_ID, 0);

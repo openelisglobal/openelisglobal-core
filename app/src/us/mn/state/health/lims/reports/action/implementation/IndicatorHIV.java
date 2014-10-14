@@ -103,7 +103,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 		if (dictionary != null) {
 			TEST_HIV_IND_ID = dictionary.getId();
 		}else{
-			dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("Indeterminé", "Haiti Lab");
+			dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("IndeterminÃ©", "Haiti Lab");
 			if (dictionary != null) {
 				TEST_HIV_IND_ID = dictionary.getId();
 			}	
@@ -114,7 +114,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 			CLINICAL_POSITIVE_ID = dictionary.getId();
 		}
 
-		dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("Négatif", "CLINICAL GENERAL");
+		dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("NÃ©gatif", "CLINICAL GENERAL");
 		if (dictionary != null) {
 			CLINICAL_NEGATIVE_ID = dictionary.getId();
 		}
@@ -128,8 +128,8 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 		HIV_TESTS.add("VIH Test - Oraquick");
 		HIV_TESTS.add("Test de VIH");
 		HIV_TESTS.add("Test rapide HIV 1 + HIV 2");
-		HIV_TESTS.add("Dénombrement des lymphocytes CD4 (mm3)");
-		HIV_TESTS.add("Dénombrement des lymphocytes  CD4 (%)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes CD4 (mm3)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes  CD4 (%)");
 		
 
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
@@ -194,8 +194,8 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 				testName.equals("CD4 en %") ||
 				testName.equals("CD4  Compte Abs") ||
 				testName.equals("CD4 Compte en %") ||
-				testName.equals("Dénombrement des lymphocytes CD4 (mm3)") ||
-				testName.equals("Dénombrement des lymphocytes  CD4 (%)") ){
+				testName.equals("DÃ©nombrement des lymphocytes CD4 (mm3)") ||
+				testName.equals("DÃ©nombrement des lymphocytes  CD4 (%)") ){
 				if( firstResult.getMinNormal() == firstResult.getMaxNormal() ){
 					continue;
 				}

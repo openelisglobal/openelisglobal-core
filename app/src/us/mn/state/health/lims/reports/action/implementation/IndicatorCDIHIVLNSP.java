@@ -30,8 +30,8 @@ public class IndicatorCDIHIVLNSP extends IndicatorHIV implements IReportCreator,
 	private static String HIV_INDETERMINATE_ID = "undefined";
 	
 	static{
-		HIV_TESTS.add("Dénombrement des lymphocytes CD4 (mm3)");
-		HIV_TESTS.add("Dénombrement des lymphocytes  CD4 (%)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes CD4 (mm3)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes  CD4 (%)");
 		HIV_TESTS.add("Test rapide HIV 1 + HIV 2");
 		
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();

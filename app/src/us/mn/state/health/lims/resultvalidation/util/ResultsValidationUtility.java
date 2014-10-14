@@ -151,7 +151,7 @@ public class ResultsValidationUtility {
 				// unique virology department format
 				if ((!GenericValidator.isBlankOrNull(testName) && testSectionName.equals("Virology"))) {
 					if (testName.equals("Genotyping")) {
-						testName = "Génotypage";
+						testName = "GÃ©notypage";
 					}
 
 					testList.addAll(getUnValidatedTestResultItemsByTest(testName, statusList));
