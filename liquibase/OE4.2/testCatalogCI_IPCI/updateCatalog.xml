@@ -46,4 +46,8 @@
         <comment>update the local_code column to be a local code</comment>
         <sqlFile path="OE4.2/testCatalogCI_IPCI/adjustTypes.sql" />
     </changeSet>
+    <changeSet id="7" author="paulsc" context="CI_IPCI">
+        <comment>update the local_code column to be a local code</comment>
+        <sqlFile path="OE4.2/testCatalogCI_IPCI/significantDigitFix.sql" />
+    </changeSet>
 </databaseChangeLog>
