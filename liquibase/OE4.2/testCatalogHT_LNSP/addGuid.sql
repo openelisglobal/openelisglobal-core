@@ -78,7 +78,9 @@ update clinlims.test set GUID='a01d467a-95ae-4b80-b585-d4d0e26d03fd' where descr
 update clinlims.test set GUID='e6b78371-2749-4870-9af9-6ce75d70cb61' where description = 'VIH-1 PCR 5 Qualitatif(Sang Total)';
 update clinlims.test set GUID='cdbbe306-c27f-44a9-af9f-393e974fa86a' where description = 'VIH-1 Charge Virale(Plasma)';
 update clinlims.test set GUID='a1f4ac1d-8d6b-45ff-a7ce-59b304ca12d8' where description = $$Score d'adherence(Plasma)$$;
+update clinlims.test set GUID='8b68a9d4-1c7f-4b77-bc29-a0f597283d03' where description = $$Score d'adherence(DBS)$$;
 update clinlims.test set GUID='45210967-661b-4966-88c4-0a9f18621e76' where description = 'Date de mise sous ARV(Plasma)';
+update clinlims.test set GUID='05348c58-c10e-4aef-9b46-edcc135791c5' where description = 'Date de mise sous ARV(DBS)';
 update clinlims.test set GUID='1a82bb14-563b-4003-9c78-c9ab6b9b680e' where description = 'VIH-1 Charge Virale(DBS)';
 --update clinlims.test set GUID='5149a0a6-7e0e-4c76-9308-c335c3945a21' where description = 'Recherche de Virus Respiratoire Influenza(Ecouvillon Naso-Pharynge)';
 update clinlims.test set GUID='57317977-61e0-4284-815d-deb71afe4401' where description = 'Germes Pathogènes Gastroenterogastriques(Selles)';

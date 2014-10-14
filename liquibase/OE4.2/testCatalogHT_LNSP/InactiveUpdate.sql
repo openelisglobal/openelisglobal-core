@@ -7,8 +7,6 @@ update clinlims.test set GUID='PSEUDO_GUID_61' where description = 'Rubeole(Sér
 update clinlims.test set GUID='PSEUDO_GUID_62' where description = 'Virus Respiratoire(Ecouvillon Naso-Pharynge)';
 update clinlims.test set GUID='PSEUDO_GUID_63' where description = 'Dengue(Plasma)';
 update clinlims.test set GUID='PSEUDO_GUID_64' where description = 'Dengue(Sérum)';
-update clinlims.test set GUID='PSEUDO_GUID_65' where description = 'Score d''adherence(DBS)';
-update clinlims.test set GUID='PSEUDO_GUID_66' where description = 'Date de mise sous ARV(DBS)';
 
 
 update clinlims.test set local_code='VIH-1 PCR Qualitatif-DBS' where guid = 'PSEUDO_GUID_56';
@@ -20,9 +18,6 @@ update clinlims.test set local_code='Rubeole-Sérum' where guid = 'PSEUDO_GUID_6
 update clinlims.test set local_code='Virus Respiratoire-Ecouvillon Naso-Pharynge' where guid = 'PSEUDO_GUID_62';
 update clinlims.test set local_code='Dengue-Plasma' where guid = 'PSEUDO_GUID_63';
 update clinlims.test set local_code='Dengue-Sérum' where guid = 'PSEUDO_GUID_64';
-update clinlims.test set local_code='Score d''adherence-DBS' where guid = 'PSEUDO_GUID_65';
-update clinlims.test set local_code='Date de mise sous ARV-DBS' where guid = 'PSEUDO_GUID_66';
-
 
 INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
 VALUES ( nextval('localization_seq'), 'test name', 'HIV-1 PCR Qualitative', (select name from clinlims.test where guid = 'PSEUDO_GUID_56' ), now());
@@ -47,7 +42,7 @@ update clinlims.test set reporting_name_localization_id = currval( 'localization
 
 INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
 VALUES ( nextval('localization_seq'), 'test name', 'Rubella', (select name from clinlims.test where guid = 'PSEUDO_GUID_59' ), now());
-update clinlims.test set name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_50';
+update clinlims.test set name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_59';
 INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
 VALUES ( nextval('localization_seq'), 'test report name','Rubella' , (select reporting_description from clinlims.test where guid = 'PSEUDO_GUID_59' ), now());
 update clinlims.test set reporting_name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_59';
@@ -86,18 +81,3 @@ update clinlims.test set name_localization_id = currval( 'localization_seq' ) wh
 INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
 VALUES ( nextval('localization_seq'), 'test report name','Dengue' , (select reporting_description from clinlims.test where guid = 'PSEUDO_GUID_64' ), now());
 update clinlims.test set reporting_name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_64';
-
-INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
-VALUES ( nextval('localization_seq'), 'test name', 'Score d''adherence', (select name from clinlims.test where guid = 'PSEUDO_GUID_65' ), now());
-update clinlims.test set name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_65';
-INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
-VALUES ( nextval('localization_seq'), 'test report name','Score d''adherence' , (select reporting_description from clinlims.test where guid = 'PSEUDO_GUID_65' ), now());
-update clinlims.test set reporting_name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_65';
-
-INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
-VALUES ( nextval('localization_seq'), 'test name', 'Date de mise sous ARV', (select name from clinlims.test where guid = 'PSEUDO_GUID_66' ), now());
-update clinlims.test set name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_66';
-INSERT INTO clinlims.localization(  id, description, english, french, lastupdated)
-VALUES ( nextval('localization_seq'), 'test report name','Date de mise sous ARV' , (select reporting_description from clinlims.test where guid = 'PSEUDO_GUID_66' ), now());
-update clinlims.test set reporting_name_localization_id = currval( 'localization_seq' ) where guid ='PSEUDO_GUID_66';
-

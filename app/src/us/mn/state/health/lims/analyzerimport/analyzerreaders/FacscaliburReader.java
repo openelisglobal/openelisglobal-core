@@ -60,9 +60,9 @@ public class FacscaliburReader extends AnalyzerLineInserter {
 	private static final int Abs_Cnt_Beads_Pellet = index++;
 	private static final int Control_Bead_Name = index++;
 	private static final int Control_Bead_Lot_ID = index++;
-	private static final int Control_Low_Beads_µL = index++;
-	private static final int Control_Medium_Beads_µL = index++;
-	private static final int Control_High_Beads_µL = index++;
+	private static final int Control_Low_Beads_ÂµL = index++;
+	private static final int Control_Medium_Beads_ÂµL = index++;
+	private static final int Control_High_Beads_ÂµL = index++;
 	private static final int Control_Low_SD = index++;
 	private static final int Control_Medium_SD = index++;
 	private static final int Control_High_SD = index++;
@@ -212,7 +212,7 @@ public class FacscaliburReader extends AnalyzerLineInserter {
 
 	//The analyzer is sending abbreviated months without the '.'
 	private String getCorrectedMonth(String month) {
-		if( month.endsWith(".") || month.equals("mars") || month.equals("mai") || month.equals("juin") || month.equals("août") ){
+		if( month.endsWith(".") || month.equals("mars") || month.equals("mai") || month.equals("juin") || month.equals("aoÃ»t") ){
 			return month;
 		}
 		
