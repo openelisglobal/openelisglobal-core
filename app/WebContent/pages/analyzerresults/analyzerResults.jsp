@@ -37,7 +37,10 @@
 
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 	searchTerm = request.getParameter("searchTerm");
-
+    currentAccessionNumber = "";
+    showAccessionNumber = false;
+    groupReadOnly = false;
+    itemReadOnly = false;
 %>
 <!-- N.B. testReflex.js is dependent on utilities.js so order is important  -->
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
