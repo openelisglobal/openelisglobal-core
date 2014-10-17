@@ -96,10 +96,11 @@ public class AnalyzerResultsAction extends BaseAction {
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
 
 		String page = request.getParameter("page");
-		setAnalyzerRequest(request.getParameter("type"));
+        String requestAnalyzerType = request.getParameter("type");
+		setAnalyzerRequest( requestAnalyzerType);
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
-		PropertyUtils.setProperty(dynaForm, "analyzerType", analyzer);
+		PropertyUtils.setProperty(dynaForm, "analyzerType", requestAnalyzerType);
 
 		AnalyzerResultsPaging paging = new AnalyzerResultsPaging();
 		if (GenericValidator.isBlankOrNull(page)) {
