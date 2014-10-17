@@ -270,14 +270,13 @@ function /*void*/ dirtySearchInfo(e){
 	}
 }
 
-function enableSearchButton(e){
+function enableSearchButton(eventCode){
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
     var searchButton = $jq("#searchButton");
     if( valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '<%=StringUtil.getMessageForKey("label.select.search.here")%>'){
         searchButton.removeAttr("disabled");
-        var code = e ? e.which : window.event.keyCode;
-        if( code == 13 ){
+        if( eventCode == 13 ){
             searchButton.click();
         }
     }else{
@@ -366,7 +365,7 @@ function setCaretPosition(ctrl, pos){
            type="text"
            onclick="cursorAtFront(this)"
            onkeydown='firstClick();'
-           onkeyup="messageRestore(this);enableSearchButton();"
+           onkeyup="messageRestore(this);enableSearchButton(event.which);"
             tabindex="2"/>
 
     <input type="button"
