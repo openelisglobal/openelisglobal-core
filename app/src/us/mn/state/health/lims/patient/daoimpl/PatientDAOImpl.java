@@ -15,14 +15,9 @@
 */
 package us.mn.state.health.lims.patient.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -35,6 +30,10 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.person.valueholder.Person;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author diane benz
@@ -278,13 +277,13 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-    protected Patient getPatientByStringProperty(String propertyName, String nationalId) {
+    protected Patient getPatientByStringProperty(String propertyName, String propertyValue) {
         List<Patient> patients;
 
         try {
             String sql = "From Patient p where p." + propertyName + " = :" + propertyName;
             Query query = HibernateUtil.getSession().createQuery(sql);
-            query.setString(propertyName, nationalId);
+            query.setString(propertyName, propertyValue);
             patients = query.list();
             HibernateUtil.getSession().flush();
             HibernateUtil.getSession().clear();
@@ -292,7 +291,7 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
             e.printStackTrace();
             throw new LIMSRuntimeException("Error in Patient getPatientByStringProperty(" + propertyName + "\", ) " , e);
         }
-        return patients.size() > 0 ? patients.get(0) : null;
+        return patients.isEmpty() ? null : patients.get(0);
 	}
 
     public Patient getPatientByNationalId(String nationalId) {
