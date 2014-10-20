@@ -580,20 +580,20 @@
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="130" printWhenGroupChanges="person"/>
-				<subreportParameter name="labName2">
-					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName2">
+					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="siteLogo">
-					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName1">
 					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="siteLogo">
+					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA["Résultats d'Analyses"]]></subreportParameterExpression>
@@ -794,29 +794,30 @@
 	<pageFooter>
 		<band height="27" splitType="Stretch">
 			<textField>
-				<reportElement x="429" y="4" width="80" height="20">
+				<reportElement x="403" y="4" width="96" height="20">
 					<printWhenExpression><![CDATA[$P{usePageNumbers}.equals("true")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" sur"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Group" evaluationGroup="Accession Number">
-				<reportElement x="509" y="4" width="40" height="20">
+				<reportElement x="499" y="4" width="50" height="20">
 					<printWhenExpression><![CDATA[$P{usePageNumbers}.equals("true")]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="6" y="4" width="83" height="20"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Date du rapport: ]]></text>
-			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="87" y="4" width="100" height="20"/>
+				<reportElement x="102" y="4" width="148" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="2" y="4" width="100" height="20"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Date du rapport: ]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
