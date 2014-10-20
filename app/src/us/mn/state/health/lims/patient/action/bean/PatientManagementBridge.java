@@ -24,6 +24,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -53,12 +54,13 @@ public class PatientManagementBridge{
 
         if( patient != null){
             PatientService patientService = new PatientService( patient );
+            Map<String, String> addressComponents = patientService.getAddressComponents();
             info.setFirstName( patientService.getFirstName() );
             info.setLastName( patientService.getLastName() );
-            info.setAddressDepartment( patientService.getAddressComponents().get( PatientService.ADDRESS_DEPT ) );
-            info.setCommune( patientService.getAddressComponents().get( PatientService.ADDRESS_COMMUNE ) );
-            info.setCity( patientService.getAddressComponents().get( PatientService.ADDRESS_CITY ) );
-            info.setStreetAddress( patientService.getAddressComponents().get( PatientService.ADDRESS_STREET ) );
+            info.setAddressDepartment( addressComponents.get( PatientService.ADDRESS_DEPT ) );
+            info.setCommune( addressComponents.get( PatientService.ADDRESS_COMMUNE ) );
+            info.setCity( addressComponents.get( PatientService.ADDRESS_CITY ) );
+            info.setStreetAddress( addressComponents.get( PatientService.ADDRESS_STREET ) );
             info.setGender( readOnly ? patientService.getLocalizedGender() : patientService.getGender() );
             info.setBirthDateForDisplay( patientService.getBirthdayForDisplay() );
             info.setNationalId( patientService.getNationalId() );
