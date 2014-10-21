@@ -68,7 +68,6 @@ sub sendOffsite{
     	}
 	}           
 }
-
 my $postgres_pwd  = 'clinlims';
 my $keepFileDays  = 30;
 my $siteId = 'IPCI';
@@ -84,13 +83,14 @@ my $cmd = 'pg_dump -h localhost  -U clinlims -f "' . $snapShotFileName . '" -n \
 my $zipCmd = 'gzip -f ' .  $snapShotFileName;
 my $backBaseDir          = cwd();
 my $baseFileName         = 'CI_IPCIOpenElis';
+my $mountedBackup        = "";
 my $dailyDir             = "$backBaseDir/daily";
 my $cumulativeDir        = "$backBaseDir/cumulative";
 my $queueDir             = "$backBaseDir/transmissionQueue";
 my $timeStamp            = getTimeStamp();
 my $todaysCummlativeFile = "$siteId$baseFileName$timeStamp.backup.gz";
 my $maxTimeSpan = 60 * 60 * 24 * $keepFileDays;
-my $mountedBackup = "";
+
 
 $ENV{'PGPASSWORD'} = "$postgres_pwd";
 
