@@ -90,6 +90,7 @@ my $queueDir             = "$backBaseDir/transmissionQueue";
 my $timeStamp            = getTimeStamp();
 my $todaysCummlativeFile = "$siteId$baseFileName$timeStamp.backup.gz";
 my $maxTimeSpan = 60 * 60 * 24 * $keepFileDays;
+my $mountedBackup = "";
 
 $ENV{'PGPASSWORD'} = "$postgres_pwd";
 
@@ -99,6 +100,9 @@ system("$zipCmd")  and warn "Error while running: $! \n";
 
 copy( $snapShotFileNameZipped, "$cumulativeDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
 copy( $snapShotFileNameZipped, "$queueDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
+if (-d $mountedBackup) {
+    copy( $snapShotFileNameZipped, "$mountedBackup/$todaysCummlativeFile" ) or die "File cannot be copied.";
+}
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 
