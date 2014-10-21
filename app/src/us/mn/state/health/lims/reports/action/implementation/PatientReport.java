@@ -753,6 +753,7 @@ public abstract class PatientReport extends Report{
         data.setLabOrderType( ObservationHistoryService.getValueForSample( ObservationType.PROGRAM, currentSampleService.getId() )  );
         data.setTestName(  testName  );
         data.setPatientSiteNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, currentSampleService.getId() ) );
+        data.setBillingNumber( ObservationHistoryService.getValueForSample( ObservationType.BILLING_REFERENCE_NUMBER, currentSampleService.getId() ) );
 
         if( doAnalysis ){
             data.setPanel( currentAnalysisService.getPanel());
