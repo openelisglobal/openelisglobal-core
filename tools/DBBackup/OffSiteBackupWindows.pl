@@ -83,6 +83,7 @@ my $cmd = 'bin\pg_dump.exe -h localhost -p 5432 -U clinlims --disable-triggers -
 
 my $backBaseDir          = cwd();
 my $baseFileName         = 'haitiOpenElisDB';
+my $mountedBackup        = "";
 my $dailyDir             = "$backBaseDir\\daily";
 my $cumulativeDir        = "$backBaseDir\\cumulative";
 my $queueDir             = "$backBaseDir\\transmissionQueue";
@@ -97,6 +98,9 @@ my $response = system("$postgres_base$cmd")  and warn "Error while running: $! \
 
 copy( $snapShotFileName, "$cumulativeDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
 copy( $snapShotFileName, "$queueDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
+if (-d $mountedBackup) {
+    copy( $snapShotFileName, "$mountedBackup/$todaysCummlativeFile" ) or die "File cannot be copied.";
+}
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 
