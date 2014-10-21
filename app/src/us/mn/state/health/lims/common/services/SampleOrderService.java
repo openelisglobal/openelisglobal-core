@@ -228,6 +228,7 @@ public class SampleOrderService{
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.PAYMENT_STATUS, sampleOrder.getPaymentOptionSelection(), ValueType.DICTIONARY  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.REQUEST_DATE, sampleOrder.getRequestDate(), ValueType.LITERAL  );
         createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.PROGRAM, sampleOrder.getProgram(), ValueType.DICTIONARY  );
+        createOrUpdateObservation(  currentUserId, observations, patientId, ObservationType.BILLING_REFERENCE_NUMBER, sampleOrder.getBillingReferenceNumber(), ValueType.LITERAL);
 
         artifacts.setObservations( observations );
     }
