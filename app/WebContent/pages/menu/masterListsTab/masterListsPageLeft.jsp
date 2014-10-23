@@ -66,13 +66,6 @@
   </html:link>
 </li>
 <% } %>
-<% if(adminFields.useField(Field.GenderMenu)){ %>
-<li>
-    <html:link action="/GenderMenu">
-    <bean:message key="gender.browse.title" />
-  </html:link>
-</li>
-<% } %>
 <% if(adminFields.useField(Field.LabelMenu)){ %>
 <li>
     <html:link action="/LabelMenu">

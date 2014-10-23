@@ -305,19 +305,7 @@
     <form-property name="menuList" type="java.util.List"/> 
     <form-property name="selectedIDs" type="java.lang.String[]"/> 
   </form-bean>
-  
-  <form-bean name="genderForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
-    <form-property name="id" type="java.lang.String" initial=""/> 
-    <form-property name="genderType" type="java.lang.String" initial=""/> 
-    <form-property name="description" type="java.lang.String" initial=""/> 
-    <form-property name="lastupdated" type="java.sql.Timestamp" initial=""/>
-  </form-bean>
-  <form-bean name="genderMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
-    <form-property name="menuList" type="java.util.List"/> 
-    <form-property name="selectedIDs" type="java.lang.String[]"/> 
-  </form-bean>
-  
- 
+
   
   <form-bean name="humanSampleOneForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
   	<!-- bugzilla 2131 -->
@@ -2578,51 +2566,6 @@
           <forward name="close" path="masterListsPageDefinition"/> 
        </action> 
 
-<!--GENDER-->       
-       <action path="/Gender" name="genderForm" type="us.mn.state.health.lims.gender.action.GenderAction" validate="false">
-          <forward name="success" path="genderDefinition"/> 
-          <forward name="fail" path="masterListsPageDefinition"/> 
-       </action>
-
-        <action path="/UpdateGender" name="genderForm" type="us.mn.state.health.lims.gender.action.GenderUpdateAction" validate="false">
-          <forward name="success" path="/GenderMenu.do" redirect="true"/> 
-          <forward name="insertSuccess" path="/Gender.do" redirect="true"/> 
-          <forward name="fail" path="genderDefinition"/> 
-       </action>
-       
-       <action path="/UpdateNextPreviousGender" name="genderForm" type="us.mn.state.health.lims.gender.action.GenderUpdateAction" validate="false">
-          <forward name="success" path="/NextPreviousGender.do"/> 
-          <forward name="fail" path="genderDefinition"/> 
-       </action>
-       
-       <action path="/NextPreviousGender" name="genderForm" type="us.mn.state.health.lims.gender.action.GenderNextPreviousAction" validate="false">
-          <forward name="success" path="/Gender.do" redirect="true"/> 
-          <forward name="fail" path="genderDefinition"/> 
-       </action>
-
-        <action path="/CancelGender" name="genderMenuForm" type="us.mn.state.health.lims.gender.action.GenderCancelAction" validate="false">
-          <forward name="success" path="/GenderMenu.do"/> 
-          <forward name="close" path="/GenderMenu.do"/>  
-          <forward name="fail" path="/Gender.do"/>
-       </action>
-
-        <action path="/DeleteGender" name="genderMenuForm" type="us.mn.state.health.lims.gender.action.GenderDeleteAction">
-          <forward name="success" path="/GenderMenu.do"/> 
-          <forward name="fail" path="/GenderMenu.do"/> 
-       </action>
-
-        <action path="/GenderMenu" name="genderMenuForm" type="us.mn.state.health.lims.gender.action.GenderMenuAction">
-          <forward name="success" path="masterListsPageDefinition"/> 
-          <forward name="fail" path="/MasterListsPage.do" redirect="true"/> 
-       </action>
-       
-       <action path="/CancelGenderMenu" name="genderMenuForm" type="us.mn.state.health.lims.gender.action.GenderMenuCancelAction" validate="false">
-          <forward name="success" path="masterListsPageDefinition"/> 
-          <forward name="fail" path="masterListsPageDefinition"/>
-          <forward name="close" path="masterListsPageDefinition"/> 
-       </action>   
-       
-         
 <!--HUMAN_SAMPLE_ONE-->
        <action path="/HumanSampleOne" name="humanSampleOneForm" type="us.mn.state.health.lims.sample.action.HumanSampleOneAction" validate="false">
           <forward name="success" path="humanSampleOneDefinition"/> 

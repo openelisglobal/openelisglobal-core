@@ -173,7 +173,6 @@
            <put name="rightCounty" value="countyMenuDefinition" />
            <put name="rightDictionary" value="dictionaryMenuDefinition" />
            <put name="rightDictionaryCategory" value="dictionaryCategoryMenuDefinition" />
-           <put name="rightGender" value="genderMenuDefinition" />
            <put name="rightLabel" value="labelMenuDefinition" />
            <put name="rightMessageOrganization" value="messageOrganizationMenuDefinition" />
            <put name="rightMethod" value="methodMenuDefinition" />
@@ -445,11 +444,7 @@
     <definition name="dictionaryCategoryMenuDefinition" extends="baseMenuSelectListDefinition">
        <put name="body" value="/pages/dictionarycategory/dictionaryCategoryMenu.jsp" />
     </definition>
-     
-    <definition name="genderMenuDefinition" extends="baseMenuSelectListDefinition">
-       <put name="body" value="/pages/gender/genderMenu.jsp" />
-    </definition>
-    
+
     <definition name="labelMenuDefinition" extends="baseMenuSelectListDefinition">
        <put name="body" value="/pages/label/labelMenu.jsp" />
     </definition>
@@ -674,10 +669,6 @@
     
     <definition name="dictionaryCategoryDefinition" extends="baseDefinition">
          <put name="body" value="/pages/dictionarycategory/dictionaryCategory.jsp" /> 
-    </definition>
-    
-    <definition name="genderDefinition" extends="baseDefinition">
-         <put name="body" value="/pages/gender/gender.jsp" /> 
     </definition>
     
     <definition name="labelDefinition" extends="baseDefinition">
