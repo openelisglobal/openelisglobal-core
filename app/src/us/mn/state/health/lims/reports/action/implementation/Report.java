@@ -33,6 +33,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
 
@@ -63,6 +64,7 @@ public abstract class Report implements IReportCreator {
 	}
 
 
+
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#getContentType()
      */
@@ -80,6 +82,29 @@ public abstract class Report implements IReportCreator {
         reportParameters.put("siteName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
         reportParameters.put("additionalSiteInfo", ConfigurationProperties.getInstance().getPropertyValue(Property.ADDITIONAL_SITE_INFO));
         reportParameters.put("usePageNumbers", ConfigurationProperties.getInstance().getPropertyValue(Property.USE_PAGE_NUMBERS_ON_REPORTS));
+        reportParameters.put("localization", createLocalizationMap());
+    }
+
+    protected Map<String, String> createLocalizationMap(){
+        HashMap<String,String> localizationMap = new HashMap<String, String>(  );
+        localizationMap.put( "requestOrderNumber", StringUtil.getMessageForKey( "report.requestOrderNumber" ) );
+        localizationMap.put( "confirmationOrderNumber", StringUtil.getMessageForKey( "report.confirmationOrderNumber" ) );
+        localizationMap.put( "sampleType", StringUtil.getMessageForKey( "report.sampleType" ) );
+        localizationMap.put( "reception", StringUtil.getMessageForKey( "report.reception" ) );
+        localizationMap.put( "initialResults", StringUtil.getMessageForKey( "report.initialResults" ) );
+        localizationMap.put( "confirmationResults", StringUtil.getMessageForKey( "report.confirmationResult" ) );
+        localizationMap.put( "requesterContact", StringUtil.getMessageForKey( "report.requesterContact" ) );
+        localizationMap.put( "telephoneAbv", StringUtil.getMessageForKey( "report.telephoneAbv" ) );
+        localizationMap.put( "completionDate", StringUtil.getMessageForKey( "report.completionDate" ) );
+        localizationMap.put( "site", StringUtil.getMessageForKey( "report.site" ) );
+        localizationMap.put( "fax", StringUtil.getMessageForKey( "report.fax" ) );
+        localizationMap.put( "email", StringUtil.getMessageForKey( "report.email" ) );
+        localizationMap.put( "test", StringUtil.getMessageForKey( "report.test" ) );
+        localizationMap.put( "result", StringUtil.getMessageForKey( "report.result" ) );
+        localizationMap.put( "note", StringUtil.getMessageForKey( "report.note" ) );
+        localizationMap.put( "pageNumberOf", StringUtil.getMessageForKey( "report.pageNumberOf" ) );
+
+        return localizationMap;
     }
 
 
