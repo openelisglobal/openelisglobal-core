@@ -36,7 +36,6 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.CountyMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.DictionaryMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.DictionaryCategoryMenu,  Boolean.FALSE);
-		defaultAttributes.put(Field.GenderMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.LabelMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.MethodMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.OrganizationMenu,  Boolean.FALSE);

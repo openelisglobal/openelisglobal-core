@@ -30,7 +30,6 @@ public class AdminFormFields {
 		CountyMenu,
 		DictionaryMenu,
 		DictionaryCategoryMenu,
-		GenderMenu,
 		LabelMenu,
 		MethodMenu,
 		OrganizationMenu,

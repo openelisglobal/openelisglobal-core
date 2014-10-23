@@ -33,50 +33,6 @@
         <property name="isEmployee" type="java.lang.String">
             <column name="IS_EMPLOYEE" length="1" not-null="true" />
         </property>
-<!--         
-        <set name="worksheetses" inverse="true">
-            <key>
-                <column name="SYS_USER_ID" precision="10" scale="0" not-null="true" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.worksheets.valueholder.Worksheets" />
-        </set>
-        <set name="analysisUserses" inverse="true">
-            <key>
-                <column name="SYSTEM_USER_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.analysisusers.valueholder.AnalysisUsers" />
-        </set>
-        <set name="systemUserModules" inverse="true">
-            <key>
-                <column name="SYSTEM_USER_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.systemusermodule.valueholder.SystemUserModule" />
-        </set>
-        <set name="systemUserSections" inverse="true">
-            <key>
-                <column name="SYSTEM_USER_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.systemusersection.valueholder.SystemUserSection" />
-        </set>
-        <set name="notes" inverse="true">
-            <key>
-                <column name="SYS_USER_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.note.valueholder.Note" />
-        </set>
-        <set name="qcs" inverse="true">
-            <key>
-                <column name="SYS_USER_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.qc.valueholder.Qc" />
-        </set>
-        <set name="orderses" inverse="true">
-            <key>
-                <column name="SYS_USER_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.orders.valueholder.Orders" />
-        </set>
--->        
     </class>
     <query name="systemuser.getNext">
          from SystemUser su order by su.lastName, su.firstName

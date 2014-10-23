@@ -15,20 +15,19 @@
 */
 package us.mn.state.health.lims.referencetables.action;
 
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 
@@ -46,11 +45,7 @@ public class ReferenceTablesAction extends BaseAction {
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		// The first job is to determine if we are coming to this action with an
-		// ID parameter in the request. If there is no parameter, we are
-		// creating a new Gender.
-		// If there is a parameter present, we should bring up an existing
-		// Gender to edit.
+
 
 		String id = request.getParameter(ID);
 
@@ -65,9 +60,8 @@ public class ReferenceTablesAction extends BaseAction {
 		dynaForm.initialize(mapping);
 
 		ReferenceTables referenceTables = new ReferenceTables();
-		//System.out.println("I am in ReferenceTablesAction and this is id " + id);
-		if ((id != null) && (!"0".equals(id))) { // this is an existing
-													// gender
+
+		if ((id != null) && (!"0".equals(id))) {
 
 			referenceTables.setId(id);
 			ReferenceTablesDAO referenceTablesDAO = new ReferenceTablesDAOImpl();
@@ -89,10 +83,8 @@ public class ReferenceTablesAction extends BaseAction {
 			// end of logic to enable next or previous button
 
 
-		} else { // this is a new gender
-
+		} else {
 			isNew = true; // this is to set correct page title
-
 		}
 
 		if (referenceTables.getId() != null && !referenceTables.getId().equals("0")) {
@@ -102,7 +94,6 @@ public class ReferenceTablesAction extends BaseAction {
 		// populate form from valueholder
 		PropertyUtils.copyProperties(form, referenceTables);
 
-		//System.out.println("I am in GenderAction this is forward " + forward);
 		return mapping.findForward(forward);
 	}
 
