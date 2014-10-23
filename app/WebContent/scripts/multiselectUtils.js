@@ -163,7 +163,7 @@ function createNewMultiSelect( index, minorIndex){
     remove.appendTo(newDiv);
 
     add.show();
-    remove.css('visibility', 'visible');
+    remove.show();
     select.show();
 
     divCount.val(nextDivCount);
