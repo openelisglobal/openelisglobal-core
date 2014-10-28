@@ -219,7 +219,7 @@
 <tr>
     <td><bean:message key="sample.entry.requestDate"/>:
         <span class="requiredlabel">*</span><span
-                style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%><bean:message key="sample.date.format"/></span></td>
+                style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span></td>
     <td><html:text name='<%=formName %>'
                    property="sampleOrderItems.requestDate"
                    styleId="requestDate"
@@ -234,7 +234,7 @@
         <%= StringUtil.getContextualMessageForKey( "quick.entry.received.date" ) %>
         :
         <span class="requiredlabel">*</span>
-        <span style="font-size: xx-small; "><bean:message key="sample.date.format"/>
+        <span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%>
         </span>
     </td>
     <td colspan="2">

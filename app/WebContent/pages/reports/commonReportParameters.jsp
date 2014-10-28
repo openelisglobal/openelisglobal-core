@@ -1,11 +1,12 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.common.util.StringUtil,
 	us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
-    us.mn.state.health.lims.common.util.Versioning,
-	us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator"
+	us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
+    us.mn.state.health.lims.common.util.DateUtil,
+	us.mn.state.health.lims.common.util.StringUtil"
 %>
+<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -216,11 +217,11 @@ function onPrint(){
   
   <div>
 	  <logic:equal name='<%=formName%>' property="useLowerDateRange" value="true">
-	  	<span style="padding-left: 10px"><bean:message key="report.date.start"/>&nbsp;<bean:message key="sample.date.format"/></span>
+	  	<span style="padding-left: 10px"><bean:message key="report.date.start"/>&nbsp;<%=DateUtil.getDateUserPrompt()%></span>
 		<html:text styleClass="input-medium" name='<%=formName%>' property="lowerDateRange" onkeyup="addDateSlashes(this, event);" maxlength="10"/>
 	  </logic:equal>
 	  <logic:equal name='<%=formName%>' property="useUpperDateRange" value="true">
-	  	<span style="padding-left: 10px"><bean:message key="report.date.end"/>&nbsp;<bean:message key="sample.date.format"/></span>
+	  	<span style="padding-left: 10px"><bean:message key="report.date.end"/>&nbsp;<%=DateUtil.getDateUserPrompt()%></span>
 	  	<html:text styleClass="input-medium" name='<%=formName%>' property="upperDateRange" maxlength="10" onkeyup="addDateSlashes(this, event);"/>
 	  </logic:equal>
   </div>

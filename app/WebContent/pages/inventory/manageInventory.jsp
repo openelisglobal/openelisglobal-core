@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
 				us.mn.state.health.lims.inventory.form.InventoryKitItem,
+				us.mn.state.health.lims.common.util.DateUtil,
 				us.mn.state.health.lims.common.util.IdValuePair,
-				java.util.List" %>
-<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
+				us.mn.state.health.lims.common.util.StringUtil" %>
+<%@ page import="java.util.List" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
@@ -239,10 +240,10 @@ function /*void*/ makeDirty(){
   			<bean:message key="inventory.testKit.type"/>
 		</th>
 		<th style="width:10%">
-			<bean:message key="inventory.testKit.receiveDate"/><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
+			<bean:message key="inventory.testKit.receiveDate"/><br><span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>
 		</th>
 		<th style="width:10%">
-			<bean:message key="inventory.testKit.expiration"/><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
+			<bean:message key="inventory.testKit.expiration"/><br><span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>
 		</th>
 		<th style="width:10%">
 			<bean:message key="inventory.testKit.lot"/>

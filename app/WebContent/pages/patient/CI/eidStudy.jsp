@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     import="us.mn.state.health.lims.common.action.IActionConstants,
-            us.mn.state.health.lims.common.util.SystemConfiguration,
-            us.mn.state.health.lims.common.formfields.FormFields,
+            us.mn.state.health.lims.common.util.DateUtil,
             us.mn.state.health.lims.common.util.StringUtil"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
@@ -66,7 +65,7 @@ eid = new EidProjectChecker();
     <tr>
         <td class="required" width="2%">*</td>
         <td width="28%">
-            <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<bean:message key="sample.date.format"/>
+            <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
         </td>
         <td width="70%">
         <app:text name="<%=formName%>"
@@ -96,7 +95,7 @@ eid = new EidProjectChecker();
     <tr>
         <td class="required">*</td>
         <td>
-            <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<bean:message key="sample.date.format"/>
+            <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
         </td>
         <td>
         <app:text name="<%=formName%>"
@@ -263,7 +262,7 @@ eid = new EidProjectChecker();
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="patient.birthDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
                 <app:text name="<%=formName%>"

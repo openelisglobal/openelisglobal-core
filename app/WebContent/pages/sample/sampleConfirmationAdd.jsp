@@ -5,12 +5,10 @@
 			us.mn.state.health.lims.common.formfields.FormFields.Field,
 			us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
 			us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-			us.mn.state.health.lims.sample.bean.SampleConfirmationItem,
-			us.mn.state.health.lims.sample.bean.SampleConfirmationTest,
-			us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample,
-			us.mn.state.health.lims.common.util.IdValuePair,
-            us.mn.state.health.lims.common.util.Versioning,
-			us.mn.state.health.lims.common.util.StringUtil"%>
+			us.mn.state.health.lims.common.util.DateUtil,
+			us.mn.state.health.lims.common.util.StringUtil,
+			us.mn.state.health.lims.common.util.Versioning,
+			us.mn.state.health.lims.common.util.IdValuePair"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -555,7 +553,7 @@ function /*string*/ getNote( sampleIndex ){
 				<input type="hidden" value="0" id="maxReferralTestIndex_0" />
 				<input type="text" id="requesterSampleId_0" onchange=" makeDirty();">
 			</td>
-			<td><bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>:</td>
+			<td><bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>:</td>
 			<td><input type="text"
 			           id="collectionDate_0"
 			           name="collectionDate_0"

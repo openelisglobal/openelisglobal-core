@@ -2,9 +2,9 @@
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
 				 us.mn.state.health.lims.common.formfields.FormFields,
 				 us.mn.state.health.lims.common.formfields.FormFields.Field,
-				 us.mn.state.health.lims.common.util.StringUtil" %>
+				 us.mn.state.health.lims.common.util.DateUtil" %>
 
-<%@ page import="java.util.Calendar"  %>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil"  %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -56,10 +56,10 @@ function /*void*/ dirtySearchInfo(e){
 	<table width="70%">
 	<tr >
 		<td >
-			<% if(useCollectionDate){ %>  <%= StringUtil.getContextualMessageForKey("sample.collectionDate")  %><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span> <% } %> <%-- <bean:message key="sample.collectionDate"/> <%} --%>
+			<% if(useCollectionDate){ %>  <%= StringUtil.getContextualMessageForKey("sample.collectionDate")  %><br><span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span> <% } %>
 		</td>
 		<td >
-			<bean:message key="sample.receivedDate"/><br><span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
+			<bean:message key="sample.receivedDate"/><br><span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>
 		</td>
 		<td >
 			<bean:message key="test.testName"/>
