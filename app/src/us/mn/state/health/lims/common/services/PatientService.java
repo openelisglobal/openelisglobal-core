@@ -81,77 +81,84 @@ public class PatientService implements IPatientService {
 	private PersonService personService;
 	
 	static{
-		PatientIdentityType patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("GUID");
+        PatientIdentityTypeDAOImpl identityTypeDAOImpl = new PatientIdentityTypeDAOImpl();
+
+		PatientIdentityType patientType = identityTypeDAOImpl.getNamedIdentityType("GUID");
 		if( patientType != null){
 			PATIENT_GUID_IDENTITY = patientType.getId();
 		}
-		
-		patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("NATIONAL");
+
+        patientType = identityTypeDAOImpl.getNamedIdentityType("SUBJECT");
+        if( patientType != null){
+            PATIENT_SUBJECT_IDENTITY = patientType.getId();
+        }
+
+		patientType = identityTypeDAOImpl.getNamedIdentityType("NATIONAL");
 		if( patientType != null){
 			PATIENT_NATIONAL_IDENTITY = patientType.getId();
 		}
 		
-		patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("ST");
+		patientType = identityTypeDAOImpl.getNamedIdentityType("ST");
 		if( patientType != null){
 			PATIENT_ST_IDENTITY = patientType.getId();
 		}
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("AKA");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("AKA");
         if( patientType != null){
             PATIENT_AKA_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("MOTHER");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("MOTHER");
         if( patientType != null){
             PATIENT_MOTHER_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("INSURANCE");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("INSURANCE");
         if( patientType != null){
             PATIENT_INSURANCE_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("OCCUPATION");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("OCCUPATION");
         if( patientType != null){
             PATIENT_OCCUPATION_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("ORG_SITE");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("ORG_SITE");
         if( patientType != null){
             PATIENT_ORG_SITE_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("MOTHERS_INITIAL");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("MOTHERS_INITIAL");
         if( patientType != null){
             PATIENT_MOTHERS_INITIAL_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("EDUCATION");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("EDUCATION");
         if( patientType != null){
             PATIENT_EDUCATION_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("MARITIAL");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("MARITIAL");
         if( patientType != null){
             PATIENT_MARITAL_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("HEALTH_DISTRICT");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("HEALTH_DISTRICT");
         if( patientType != null){
             PATIENT_HEALTH_DISTRICT_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("HEALTH_REGION");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("HEALTH_REGION");
         if( patientType != null){
             PATIENT_HEALTH_REGION_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("OB_NUMBER");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("OB_NUMBER");
         if( patientType != null){
             PATIENT_OB_NUMBER_IDENTITY = patientType.getId();
         }
 
-        patientType = new PatientIdentityTypeDAOImpl().getNamedIdentityType("PC_NUMBER");
+        patientType = identityTypeDAOImpl.getNamedIdentityType("PC_NUMBER");
         if( patientType != null){
             PATIENT_PC_NUMBER_IDENTITY = patientType.getId();
         }
