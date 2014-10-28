@@ -109,11 +109,12 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
             }
 
             buffer.append( sampleItem.getTypeOfSample().getLocalizedName() );
-            buffer.append( " " );
 
             if( sampleItem.getCollectionDate() == null){
+                buffer.append( ": " );
                 buffer.append( StringUtil.getMessageForKey( "label.not.available" ) );
             }else{
+                buffer.append( " " );
                 buffer.append( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( sampleItem.getCollectionDate() ) );
             }
         }
