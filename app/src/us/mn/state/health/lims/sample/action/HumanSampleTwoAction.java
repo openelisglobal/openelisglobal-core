@@ -15,21 +15,10 @@
 */
 package us.mn.state.health.lims.sample.action;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -43,6 +32,11 @@ import us.mn.state.health.lims.sourceofsample.daoimpl.SourceOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
+
 /**
  * @author diane benz
  * 
@@ -51,8 +45,6 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
  * comments go to Window>Preferences>Java>Code Generation.
  */
 public class HumanSampleTwoAction extends BaseAction {
-
-	private boolean isNew = false;
 
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
@@ -71,10 +63,7 @@ public class HumanSampleTwoAction extends BaseAction {
 		// this is a new sample
 		// default received date and entered date to today's date
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 
 		GenderDAO genderDAO = new GenderDAOImpl();
@@ -98,6 +87,7 @@ public class HumanSampleTwoAction extends BaseAction {
 			String status = SystemConfiguration.getInstance().getSampleStatusEntry1Complete(); //status = 2
 			String humanDomain = SystemConfiguration.getInstance().getHumanDomain(); 
 			UserTestSectionDAO userTestSectionDAO = new UserTestSectionDAOImpl();
+            Locale locale = (Locale) request.getSession().getAttribute("org.apache.struts.action.LOCALE");
 			List accessionNumberListTwo = userTestSectionDAO.getSamplePdfList(request, locale, status, humanDomain);
 			PropertyUtils.setProperty(form, "accessionNumberListTwo", accessionNumberListTwo);	
 		}		

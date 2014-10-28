@@ -15,11 +15,10 @@
 */
 package us.mn.state.health.lims.samplenewborn.valueholder;
 
-import java.sql.Timestamp;
-
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
+
+import java.sql.Timestamp;
 
 public class SampleNewborn extends BaseObject {
 
@@ -95,8 +94,7 @@ public class SampleNewborn extends BaseObject {
 	}
 	public void setDateFirstFeeding(Timestamp dateFirstFeeding) {
 		this.dateFirstFeeding = dateFirstFeeding;
-		String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-		this.dateFirstFeedingForDisplay = DateUtil.convertTimestampToStringDate(dateFirstFeeding, locale);
+		this.dateFirstFeedingForDisplay = DateUtil.convertTimestampToStringDate(dateFirstFeeding);
 	}
 	public String getDateFirstFeedingForDisplay() {
 		return this.dateFirstFeedingForDisplay;
@@ -166,8 +164,7 @@ public class SampleNewborn extends BaseObject {
 	}
 	public void setDateTransfution(Timestamp dateTransfution) {
 		this.dateTransfution = dateTransfution;
-		String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-		this.dateTransfutionForDisplay = DateUtil.convertTimestampToStringDate(dateTransfution, locale);
+		this.dateTransfutionForDisplay = DateUtil.convertTimestampToStringDate(dateTransfution);
 	}
 	public String getDateTransfutionForDisplay() {
 		return this.dateTransfutionForDisplay;

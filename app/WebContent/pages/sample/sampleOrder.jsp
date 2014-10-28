@@ -9,7 +9,8 @@
                  us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
                  us.mn.state.health.lims.common.util.StringUtil,
                  us.mn.state.health.lims.common.util.IdValuePair,
-                 us.mn.state.health.lims.common.util.Versioning" %>
+                 us.mn.state.health.lims.common.util.Versioning,
+                 us.mn.state.health.lims.common.util.DateUtil" %>
 <%@ page import="us.mn.state.health.lims.common.services.LocalizationService" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -218,7 +219,7 @@
 <tr>
     <td><bean:message key="sample.entry.requestDate"/>:
         <span class="requiredlabel">*</span><span
-                style="font-size: xx-small; "><bean:message key="sample.date.format"/></span></td>
+                style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span></td>
     <td><html:text name='<%=formName %>'
                    property="sampleOrderItems.requestDate"
                    styleId="requestDate"
@@ -233,7 +234,7 @@
         <%= StringUtil.getContextualMessageForKey( "quick.entry.received.date" ) %>
         :
         <span class="requiredlabel">*</span>
-        <span style="font-size: xx-small; "><bean:message key="sample.date.format"/>
+        <span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%>
         </span>
     </td>
     <td colspan="2">

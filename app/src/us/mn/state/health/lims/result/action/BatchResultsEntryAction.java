@@ -15,22 +15,11 @@
 */
 package us.mn.state.health.lims.result.action;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.login.dao.UserTestSectionDAO;
@@ -40,6 +29,10 @@ import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.valueholder.TestComparator;
 import us.mn.state.health.lims.test.valueholder.TestSectionComparator;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -86,10 +79,7 @@ public class BatchResultsEntryAction extends BaseAction {
 
 		// default received date and entered date to today's date
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 		String blank = "";
 
 		Result result = new Result();

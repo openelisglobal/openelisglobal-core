@@ -15,24 +15,12 @@
 */
 package us.mn.state.health.lims.sample.action;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -46,14 +34,7 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.provider.validation.CityStateZipComboValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.CityValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.HumanSampleSourceValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.HumanSampleTypeValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.OrganizationLocalAbbreviationValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.ProjectIdOrNameValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.StateValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.ZipValidationProvider;
+import us.mn.state.health.lims.common.provider.validation.*;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -100,6 +81,11 @@ import us.mn.state.health.lims.sourceofsample.daoimpl.SourceOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -204,9 +190,7 @@ public class HumanSampleTwoUpdateAction extends BaseAction {
 
 		// set current date for validation of dates
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		PersonDAO personDAO = new PersonDAOImpl();
 		PatientDAO patientDAO = new PatientDAOImpl();

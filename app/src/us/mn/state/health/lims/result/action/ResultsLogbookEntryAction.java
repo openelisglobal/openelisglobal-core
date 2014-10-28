@@ -56,7 +56,7 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 
-		currentDate = getCurrentDate(request);
+		currentDate = getCurrentDate();
 		PropertyUtils.setProperty(dynaForm, "currentDate", currentDate);
 		PropertyUtils.setProperty(dynaForm, "logbookType", request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "referralReasons", DisplayListService.getList( DisplayListService.ListType.REFERRAL_REASONS));
@@ -171,10 +171,9 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		return testSection == null ? null : testSection.getId();
 	}
 
-	private String getCurrentDate(HttpServletRequest request) {
+	private String getCurrentDate() {
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute("org.apache.struts.action.LOCALE");
-		return DateUtil.formatDateAsText(today, locale);
+		return DateUtil.formatDateAsText(today);
 
 	}
 

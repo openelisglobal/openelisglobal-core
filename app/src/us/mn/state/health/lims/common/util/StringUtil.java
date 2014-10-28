@@ -304,6 +304,22 @@ public class StringUtil {
 		return ResourceLocator.getInstance().getMessageResources().getMessage(new Locale(locale), messageKey);
 	}
 
+    public static String getMessageForKeyAndLocale(String messageKey, Locale locale) {
+        if (null == messageKey) {
+            return null;
+        }
+
+        return ResourceLocator.getInstance().getMessageResources().getMessage(locale, messageKey);
+    }
+
+    public static String getMessageForKeyAndLocale(String messageKey, String arg0, String arg1, Locale locale) {
+        if (null == messageKey) {
+            return null;
+        }
+
+        return ResourceLocator.getInstance().getMessageResources().getMessage(locale, messageKey, arg0, arg1);
+    }
+
 	public static String getMessageForKey(String messageKey, String arg) {
 		if (null == messageKey) {
 			return null;

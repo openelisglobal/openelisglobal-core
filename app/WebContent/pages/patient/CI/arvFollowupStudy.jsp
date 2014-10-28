@@ -3,7 +3,8 @@
 			us.mn.state.health.lims.common.util.SystemConfiguration,
 	        us.mn.state.health.lims.common.formfields.FormFields,
 	        us.mn.state.health.lims.common.util.StringUtil,
-	        org.apache.commons.httpclient.NameValuePair"%>
+	        org.apache.commons.httpclient.NameValuePair,
+	        us.mn.state.health.lims.common.util.DateUtil"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -142,7 +143,7 @@ farv = new ArvFollowupProjectChecker();
 	<tr>
 		<td class="required">*</td>
 		<td>
-			<bean:message key="sample.entry.project.receivedDate"/>&nbsp;<bean:message key="sample.date.format"/>
+			<bean:message key="sample.entry.project.receivedDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
 		</td>
 		<td>
 		<app:text name="<%=formName%>"
@@ -157,7 +158,7 @@ farv = new ArvFollowupProjectChecker();
 	<tr><!-- SUI 01 -->
 		<td class="required">*</td>
 		<td>
-			<bean:message key="patient.project.interviewDate" />&nbsp;<bean:message key="sample.date.format"/>
+			<bean:message key="patient.project.interviewDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
 		</td>
 		<td>
 			<app:text name="<%=formName%>" property="interviewDate"
@@ -276,7 +277,7 @@ farv = new ArvFollowupProjectChecker();
 	<tr> <!-- SUI 09 -->
 		<td class="required">*</td>
 		<td>
-			<bean:message key="patient.project.dateOfBirth" />&nbsp;<bean:message key="sample.date.format"/>
+			<bean:message key="patient.project.dateOfBirth" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
 		</td>
 		<td>
 			<app:text name="<%=formName%>" property="birthDateForDisplay"

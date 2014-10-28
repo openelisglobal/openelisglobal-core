@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
+                 us.mn.state.health.lims.common.util.DateUtil,
                  us.mn.state.health.lims.common.util.StringUtil,
                  java.util.List,
                  java.util.ArrayList,
@@ -232,11 +233,11 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
     <th><bean:message key="referral.reason"/><span class="requiredlabel">*</span></th>
     <th><bean:message key="referral.referer"/></th>
     <th><bean:message key="referral.institute"/><span class="requiredlabel">*</span></th>
-    <th><bean:message key="referral.sent.date"/></th>
+    <th><bean:message key="referral.sent.date"/><br/><%=DateUtil.getDateUserPrompt()%></th>
     <th><bean:message key="test.testName"/><span class="requiredlabel">*</span></th>
     <th width="5%"><bean:message key="label.button.cancel.referral"/></th>
     <th width="15%" class="leftVertical"><bean:message key="result.result"/></th>
-    <th><bean:message key="referral.report.date"/></th>
+    <th><bean:message key="referral.report.date"/><br/><%=DateUtil.getDateUserPrompt()%></th>
 </tr>
 
 <logic:iterate id="referralItems" name="<%=formName%>" property="referralItems" indexId="index" type="ReferralItem">

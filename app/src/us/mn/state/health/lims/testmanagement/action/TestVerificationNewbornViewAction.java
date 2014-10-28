@@ -15,22 +15,10 @@
 */
 package us.mn.state.health.lims.testmanagement.action;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -75,6 +63,11 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestComparator;
 import us.mn.state.health.lims.testmanagement.valueholder.TestManagementRoutingSwitchSessionHandler;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.*;
+
 public class TestVerificationNewbornViewAction extends BaseAction {
 
 	protected ActionForward performAction(ActionMapping mapping,
@@ -101,8 +94,7 @@ public class TestVerificationNewbornViewAction extends BaseAction {
 		testManagementNewbornForm.initialize(mapping);
 
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute("org.apache.struts.action.LOCALE");
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		Sample sample = new Sample();
 		SampleItem sampleItem = new SampleItem();

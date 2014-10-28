@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
-                 us.mn.state.health.lims.common.util.SystemConfiguration,
                  us.mn.state.health.lims.common.formfields.FormFields,
                  us.mn.state.health.lims.common.formfields.FormFields.Field,
+                 us.mn.state.health.lims.common.util.DateUtil,
                  us.mn.state.health.lims.common.util.StringUtil,
-                 us.mn.state.health.lims.common.util.Versioning,
-                 us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" %>
+                 us.mn.state.health.lims.common.util.SystemConfiguration,
+                 us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
@@ -1058,7 +1059,7 @@ function  processSubjectNumberSuccess(xhr){
 	<table>
 	<tr>
 		<td style="text-align:right;">
-			<bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>:
+			<bean:message key="patient.birthDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>:
 			<% if(patientAgeRequired){ %>
 				<span class="requiredlabel">*</span>
 			<% } %>

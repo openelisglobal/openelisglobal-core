@@ -15,12 +15,7 @@
 */
 package us.mn.state.health.lims.method.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -34,6 +29,10 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.method.dao.MethodDAO;
 import us.mn.state.health.lims.method.valueholder.Method;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author diane benz
@@ -160,19 +159,12 @@ public class MethodDAOImpl extends BaseDAOImpl implements MethodDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 			if (meth != null) {
-				// set the display dates for STARTED_DATE, COMPLETED_DATE
-				String locale = SystemConfiguration.getInstance()
-						.getDefaultLocale().toString();
 
 				if (meth.getActiveBeginDate() != null) {
-					meth.setActiveBeginDateForDisplay(DateUtil
-							.convertSqlDateToStringDate(meth
-									.getActiveBeginDate(), locale));
+					meth.setActiveBeginDateForDisplay(DateUtil.convertSqlDateToStringDate(meth.getActiveBeginDate()));
 				}
 				if (meth.getActiveEndDate() != null) {
-					meth.setActiveEndDateForDisplay(DateUtil
-							.convertSqlDateToStringDate(
-									meth.getActiveEndDate(), locale));
+					meth.setActiveEndDateForDisplay(DateUtil.convertSqlDateToStringDate(meth.getActiveEndDate()));
 				}
 				PropertyUtils.copyProperties(method, meth);
 

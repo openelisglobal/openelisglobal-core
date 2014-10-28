@@ -514,7 +514,7 @@ function updateShadowResult(source, index){
 
 		<th style="text-align: left">
 			<bean:message key="result.test.date"/><br/>
-			<bean:message key="sample.date.format"/>
+			<%=DateUtil.getDateUserPrompt()%>
 		</th>
 		<logic:equal  name="<%=formName%>" property="displayTestMethod" value="true">
 			<th style="width: 72px; padding-right: 10px; text-align: center">

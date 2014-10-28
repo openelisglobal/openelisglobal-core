@@ -15,20 +15,11 @@
 */
 package us.mn.state.health.lims.project.action;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.program.dao.ProgramDAO;
@@ -38,6 +29,12 @@ import us.mn.state.health.lims.project.daoimpl.ProjectDAOImpl;
 import us.mn.state.health.lims.project.valueholder.Project;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -109,10 +106,7 @@ public class ProjectAction extends BaseAction {
 		} else { // this is a new project
 			// default started date to today's date
 			Date today = Calendar.getInstance().getTime();
-			Locale locale = (Locale) request.getSession().getAttribute(
-					"org.apache.struts.action.LOCALE");
-
-			String dateAsText = DateUtil.formatDateAsText(today, locale);
+			String dateAsText = DateUtil.formatDateAsText(today);
 
 			project.setStartedDateForDisplay(dateAsText);
 

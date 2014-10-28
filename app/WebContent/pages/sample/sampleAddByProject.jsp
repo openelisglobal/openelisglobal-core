@@ -1,11 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
-            us.mn.state.health.lims.common.util.SystemConfiguration,
-            us.mn.state.health.lims.common.util.ConfigurationProperties,
-            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-            us.mn.state.health.lims.common.formfields.FormFields,
-            us.mn.state.health.lims.common.util.Versioning,
-            us.mn.state.health.lims.common.util.StringUtil,java.util.HashSet" %>
+            us.mn.state.health.lims.common.util.*,
+            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.login.dao.UserModuleDAO" %>
 
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"      prefix="html" %>
@@ -21,8 +17,8 @@
 <bean:define id="requestType" value='<%=(String)request.getSession().getAttribute("type")%>' />
 <bean:define id="genericDomain" value='' />
 
-<%@page import="us.mn.state.health.lims.login.dao.UserModuleDAO"%>
 <%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
+<%@page import="java.util.HashSet"%>
 <%!
     String basePath = "";
     UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
@@ -314,7 +310,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
             <app:text name="<%=formName%>"
@@ -344,7 +340,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
             <app:text name="<%=formName%>"
@@ -432,7 +428,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="patient.birthDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
                 <app:text name="<%=formName%>"
@@ -666,7 +662,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
             <app:text name="<%=formName%>"
@@ -696,7 +692,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
             <app:text name="<%=formName%>"
@@ -786,7 +782,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="patient.birthDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
                 <app:text name="<%=formName%>"
@@ -1001,7 +997,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required" width="2%">*</td>
             <td width="28%">
-                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td style="width: 70%;">
             <app:text name="<%=formName%>"
@@ -1031,7 +1027,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
             <app:text name="<%=formName%>"
@@ -1061,7 +1057,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="patient.birthDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
                 <app:text name="<%=formName%>"
@@ -1196,7 +1192,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required" width="2%">*</td>
             <td width="28%">
-                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td width="70%">
             <app:text name="<%=formName%>"
@@ -1226,7 +1222,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
             <app:text name="<%=formName%>"
@@ -1371,7 +1367,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="patient.birthDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
                 <app:text name="<%=formName%>"
@@ -1554,7 +1550,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required" width="2%">*</td>
             <td width="28%">
-                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.receivedDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td width="70%">
             <app:text name="<%=formName%>" property="receivedDateForDisplay"
@@ -1583,7 +1579,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="sample.entry.project.dateTaken"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
             <app:text name="<%=formName%>"
@@ -1636,7 +1632,7 @@ function /*void*/ setSaveButton() {
         <tr>
             <td class="required">*</td>
             <td>
-                <bean:message key="patient.birthDate" />&nbsp;<bean:message key="sample.date.format"/>
+                <bean:message key="patient.birthDate" />&nbsp;<%=DateUtil.getDateUserPrompt()%>
             </td>
             <td>
                 <app:text name="<%=formName%>"

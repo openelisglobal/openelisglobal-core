@@ -1,12 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
 			us.mn.state.health.lims.common.formfields.FormFields,
-			us.mn.state.health.lims.common.util.ConfigurationProperties,
-			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	        us.mn.state.health.lims.common.util.StringUtil,
-	        us.mn.state.health.lims.common.util.SystemConfiguration,
-            us.mn.state.health.lims.common.util.Versioning,
-            us.mn.state.health.lims.sample.bean.SampleEditItem,
+			us.mn.state.health.lims.common.util.*,
+            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
 	        us.mn.state.health.lims.sample.util.AccessionNumberUtil" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
@@ -334,7 +330,7 @@ function makeDirty(){
 <th><bean:message key="sample.entry.sample.type"/></th>
 <% if( useCollectionDate ){ %>
 <th >
-    <bean:message key="sample.collectionDate"/>&nbsp;<bean:message key="sample.date.format"/>
+    <bean:message key="sample.collectionDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
 </th>
 <th >
     <bean:message key="sample.collectionTime"/>

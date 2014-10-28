@@ -15,25 +15,22 @@
 */
 package us.mn.state.health.lims.method.action;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.method.dao.MethodDAO;
 import us.mn.state.health.lims.method.daoimpl.MethodDAOImpl;
 import us.mn.state.health.lims.method.valueholder.Method;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -96,10 +93,8 @@ public class MethodAction extends BaseAction {
 		} else { // this is a new method
 			// default started date to today's date
 			Date today = Calendar.getInstance().getTime();
-			Locale locale = (Locale) request.getSession().getAttribute(
-					"org.apache.struts.action.LOCALE");
 
-			String dateAsText = DateUtil.formatDateAsText(today, locale);
+			String dateAsText = DateUtil.formatDateAsText(today);
 
 			method.setActiveBeginDateForDisplay(dateAsText);
 

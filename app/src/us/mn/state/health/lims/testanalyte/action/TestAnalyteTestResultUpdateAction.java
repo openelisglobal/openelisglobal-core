@@ -271,7 +271,7 @@ public class TestAnalyteTestResultUpdateAction extends
 									&& !StringUtil
 											.isNullorNill((String) testResultLastupdatedList
 													.get(j))) {
-								trlastupdated = DateUtil.formatStringToTimestamp((String)testResultLastupdatedList.get(j), locale);
+								trlastupdated = DateUtil.formatStringToTimestamp((String)testResultLastupdatedList.get(j));
 							} else {
 								if (testResultLastupdatedList.get(j) instanceof java.sql.Timestamp) {
 									trlastupdated = (Timestamp) testResultLastupdatedList
@@ -387,10 +387,8 @@ public class TestAnalyteTestResultUpdateAction extends
 					if (testAnalyteLastupdatedList != null
 							&& testAnalyteLastupdatedList.get(i) != null) {
 						if (testAnalyteLastupdatedList.get(i) instanceof java.lang.String
-								&& !StringUtil
-										.isNullorNill((String) testAnalyteLastupdatedList
-												.get(i))) {
-							talastupdated = DateUtil.formatStringToTimestamp((String)testAnalyteLastupdatedList.get(i), locale);
+								&& !StringUtil.isNullorNill((String)testAnalyteLastupdatedList.get(i))) {
+							talastupdated = DateUtil.formatStringToTimestamp((String)testAnalyteLastupdatedList.get(i));
 						} else {
 							if (testAnalyteLastupdatedList.get(i) instanceof java.sql.Timestamp) {
 								talastupdated = (Timestamp) testAnalyteLastupdatedList

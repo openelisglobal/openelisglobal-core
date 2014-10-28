@@ -168,17 +168,12 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 	}
 
 	private void updateDisplayValues(Patient pat) {
-		// set the display dates for STARTED_DATE, COMPLETED_DATE
-		String locale = SystemConfiguration.getInstance()
-				.getDefaultLocale().toString();
-
 		if (pat.getBirthDate() != null && pat.getBirthDateForDisplay() == null)
-			pat.setBirthDateForDisplay(DateUtil.convertTimestampToStringDate(pat.getBirthDate(),locale));
+			pat.setBirthDateForDisplay(DateUtil.convertTimestampToStringDate(pat.getBirthDate()));
 		if (pat.getBirthTime() != null)
-			pat.setBirthTimeForDisplay(DateUtil.convertSqlDateToStringDate(pat.getBirthTime(),
-							locale));
+			pat.setBirthTimeForDisplay(DateUtil.convertSqlDateToStringDate(pat.getBirthTime()));
 		if (pat.getDeathDate() != null)
-			pat.setDeathDateForDisplay(DateUtil.convertSqlDateToStringDate(pat.getDeathDate(),	locale));
+			pat.setDeathDateForDisplay(DateUtil.convertSqlDateToStringDate(pat.getDeathDate()));
 	}
 
 	public List getAllPatients() throws LIMSRuntimeException {

@@ -15,20 +15,11 @@
 */
 package us.mn.state.health.lims.reports.action;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.audittrail.valueholder.History;
@@ -37,7 +28,6 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
@@ -45,6 +35,13 @@ import us.mn.state.health.lims.reports.valueholder.audittrail.HistoryXmlHelper;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 
 /**
@@ -105,9 +102,7 @@ public class AuditTrailSystemTestProcessAction extends BaseAction {
 		if (!StringUtil.isNullorNill(referenceTableId)) {
 			history.setReferenceTable(referenceTableId);
 		}
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-		.toString();
-		history.setTimestamp(DateUtil.convertStringDateToTruncatedTimestamp(dateModified, locale));
+		history.setTimestamp(DateUtil.convertStringDateToTruncatedTimestamp(dateModified));
 
 		@SuppressWarnings("unchecked")
 		List<History> historyRecords = auditTrailDAO.getHistoryBySystemUserAndDateAndRefTableId(history);
@@ -127,7 +122,7 @@ public class AuditTrailSystemTestProcessAction extends BaseAction {
         	systemUserDAO.getData(systemUser);
         	
         	historyXmlHelper.setUserName(systemUser.getNameForDisplay());
-        	historyXmlHelper.setDate(DateUtil.convertTimestampToStringDateAndTime(h.getTimestamp(), locale));
+        	historyXmlHelper.setDate(DateUtil.convertTimestampToStringDateAndTime(h.getTimestamp()));
         	if (!historyXmlHelper.getActivity().equals(IActionConstants.AUDIT_TRAIL_INSERT))
         	  historyXmlHelper.setChange(auditTrailDAO.retrieveBlobData(h.getId()));
         	historyRecordsForDisplay.add(historyXmlHelper);

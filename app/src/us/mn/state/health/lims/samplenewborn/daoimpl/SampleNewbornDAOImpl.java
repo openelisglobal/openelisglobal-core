@@ -15,10 +15,7 @@
 */
 package us.mn.state.health.lims.samplenewborn.daoimpl;
 
-import java.util.List;
-
 import org.apache.commons.beanutils.PropertyUtils;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -26,10 +23,11 @@ import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.samplenewborn.dao.SampleNewbornDAO;
 import us.mn.state.health.lims.samplenewborn.valueholder.SampleNewborn;
+
+import java.util.List;
 
 public class SampleNewbornDAOImpl extends BaseDAOImpl implements SampleNewbornDAO {
 
@@ -125,9 +123,8 @@ public class SampleNewbornDAOImpl extends BaseDAOImpl implements SampleNewbornDA
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 			if (sampNewborn != null) {
-				String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-				sampNewborn.setDateFirstFeedingForDisplay(DateUtil.convertTimestampToStringDate(sampNewborn.getDateFirstFeeding(), locale));
-				sampNewborn.setDateTransfutionForDisplay(DateUtil.convertTimestampToStringDate(sampNewborn.getDateTransfution(), locale));
+				sampNewborn.setDateFirstFeedingForDisplay(DateUtil.convertTimestampToStringDate(sampNewborn.getDateFirstFeeding()));
+				sampNewborn.setDateTransfutionForDisplay(DateUtil.convertTimestampToStringDate(sampNewborn.getDateTransfution()));
 				PropertyUtils.copyProperties(sampleNewborn, sampNewborn);
 			} else {
 				sampleNewborn.setId(null);

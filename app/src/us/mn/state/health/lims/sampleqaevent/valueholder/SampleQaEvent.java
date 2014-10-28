@@ -127,11 +127,7 @@ public class SampleQaEvent extends BaseObject {
 
 	public void setCompletedDate(Date completedDate) {
 		this.completedDate = completedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				completedDate, locale);
+		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(completedDate);
 	}
 
 	public String getCompletedDateForDisplay() {
