@@ -15,22 +15,9 @@
 */
 package us.mn.state.health.lims.testmanagement.action;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.ActionRedirect;
+import org.apache.struts.action.*;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.action.dao.ActionDAO;
 import us.mn.state.health.lims.action.daoimpl.ActionDAOImpl;
 import us.mn.state.health.lims.action.valueholder.Action;
@@ -75,6 +62,13 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * @author aiswarya raman
  * 
@@ -101,9 +95,7 @@ public class TestVerificationUpdateAction extends BaseAction {
 
 		// set current date for validation of dates
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 		try {
@@ -489,7 +481,8 @@ public class TestVerificationUpdateAction extends BaseAction {
 			    //bugzilla 2013 added duplicateCheck parameter
 				if (lre.getException() instanceof LIMSDuplicateRecordException) {
 					String messageKey = "analysis.analysis";
-					String msg = ResourceLocator.getInstance()
+                    Locale locale = (Locale) request.getSession().getAttribute(	"org.apache.struts.action.LOCALE");
+                    String msg = ResourceLocator.getInstance()
 							.getMessageResources().getMessage(locale,
 									messageKey);
 					error = new ActionError("errors.DuplicateRecord",

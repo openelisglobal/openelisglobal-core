@@ -517,7 +517,7 @@ Object.extend(Tooltip, customTooltip);
   	                            }
    	                          }
   	                          
-   	                          String dateAndTime = DateUtil.convertTimestampToStringDateAndTime(note.getLastupdated(), locale.toString());
+   	                          String dateAndTime = DateUtil.convertTimestampToStringDateAndTime(note.getLastupdated());
    	                          //bugzilla 2480
 			  	              String text = dateAndTime + " - " + note.getSystemUser().getNameForDisplay() + " - " + note.getText();
    

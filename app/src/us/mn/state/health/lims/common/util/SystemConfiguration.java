@@ -115,19 +115,21 @@ public class SystemConfiguration {
 	}
 
 	public Locale getDefaultLocale() {
-		String localeString = ConfigurationProperties.getInstance().getPropertyValue(Property.DEFAULT_LANG_LOCALE);
-
-		Locale locale = localePropertyToLocaleMap.get(localeString);
-		
-		if( locale == null){
-			if (localeString != null && localeString.length() == 5) {
-				locale = new Locale(localeString.substring(0, 2), localeString.substring(3));
-				localePropertyToLocaleMap.put(localeString, locale);
-			}
-		}
-		
-		return locale == null ? Locale.US : locale;
+        return getLocaleByLocalString( ConfigurationProperties.getInstance().getPropertyValue(Property.DEFAULT_LANG_LOCALE) );
 	}
+
+    public Locale getLocaleByLocalString( String localeString){
+        Locale locale = localePropertyToLocaleMap.get(localeString);
+
+        if( locale == null){
+            if (localeString != null && localeString.length() == 5) {
+                locale = new Locale(localeString.substring(0, 2), localeString.substring(3));
+                localePropertyToLocaleMap.put(localeString, locale);
+            }
+        }
+
+        return locale == null ? Locale.US : locale;
+    }
 
 	public void setDefaultLocale( String locale ){
 		ConfigurationProperties.getInstance().setPropertyValue(Property.DEFAULT_LANG_LOCALE, locale);

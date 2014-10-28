@@ -17,19 +17,10 @@
 */
 package us.mn.state.health.lims.sample.daoimpl;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -41,6 +32,9 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import java.sql.Date;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -114,7 +108,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	 * Insert the specified Sample, which has already been assigned an
 	 * accession number by the user from the input view.
 	 *
-	 * @param	Sample		The Sample to be inserted into the database.
+	 * @param	sample		The Sample to be inserted into the database.
 	 *
 	 * @return boolean True if the insert was successful.
 	 */
@@ -217,31 +211,18 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
             HibernateUtil.getSession().flush();
             HibernateUtil.getSession().clear();
 
-            Sample samp = new Sample();
-            String locale = SystemConfiguration.getInstance()
-                    .getDefaultLocale().toString();
+            Sample samp;
 
             // set the display dates for STARTED_DATE, COMPLETED_DATE
             for (int i = 0; i < samples.size(); i++) {
                 samp = (Sample) samples.get(i);
-                samp.setEnteredDateForDisplay(DateUtil
-                        .convertSqlDateToStringDate(samp.getEnteredDate(),
-                                locale));
-                samp.setReceivedDateForDisplay(DateUtil
-                        .convertSqlDateToStringDate(samp.getReceivedDate(),
-                                locale));
-                samp.setCollectionDateForDisplay(DateUtil
-                        .convertTimestampToStringDate(samp.getCollectionDate(),
-                                locale));
-                samp.setTransmissionDateForDisplay(DateUtil
-                        .convertSqlDateToStringDate(samp.getTransmissionDate(),
-                                locale));
-                samp.setReleasedDateForDisplay(DateUtil
-                        .convertSqlDateToStringDate(samp.getReleasedDate(),
-                                locale));
+                samp.setEnteredDateForDisplay(DateUtil.convertSqlDateToStringDate( samp.getEnteredDate() ));
+                samp.setReceivedDateForDisplay(DateUtil.convertSqlDateToStringDate( samp.getReceivedDate() ));
+                samp.setCollectionDateForDisplay(DateUtil.convertTimestampToStringDate( samp.getCollectionDate() ));
+                samp.setTransmissionDateForDisplay(DateUtil.convertSqlDateToStringDate( samp.getTransmissionDate() ));
+                samp.setReleasedDateForDisplay(DateUtil.convertSqlDateToStringDate( samp.getReleasedDate() ));
             }
         } catch (Exception e) {
-            //bugzilla 2154
             LogEvent.logError("SampleDAOImpl","getPageOfSamples()",e.toString());
             throw new LIMSRuntimeException("Error in Sample getPageOfSamples()", e);
         }
@@ -388,7 +369,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	/**
 	 * Get the Sample for the specified accession number.
 	 *
-	 * @param	String		The accession number of the Sample being sought.
+	 * @param	accessionNumber		The accession number of the Sample being sought.
 	 *
 	 * @return	Sample		The Sample for the specified accession number, or
 	 * 						null if the accession number does not exist.
@@ -525,12 +506,12 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	}
 
     /**
-     * @see us.mn.state.health.lims.sample.dao.SampleDAO#getSamplesReceivedWithin(java.lang.String, java.lang.String)
+     * @see us.mn.state.health.lims.sample.dao.SampleDAO#getSamplesReceivedInDateRange(String, String) (java.lang.String, java.lang.String)
      */
     @SuppressWarnings("unchecked")
     @Override
     public List<Sample> getSamplesReceivedInDateRange(String receivedDateStart, String receivedDateEnd) throws LIMSRuntimeException {
-        List<Sample> list = null;
+        List<Sample> list;
 
         Calendar start = getCalendarForDateString(receivedDateStart);
         if ( GenericValidator.isBlankOrNull(receivedDateEnd)) {

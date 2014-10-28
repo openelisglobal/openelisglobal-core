@@ -15,20 +15,11 @@
 */
 package us.mn.state.health.lims.qaevent.action;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.action.dao.ActionDAO;
 import us.mn.state.health.lims.action.daoimpl.ActionDAOImpl;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
@@ -62,6 +53,12 @@ import us.mn.state.health.lims.sampleqaeventaction.daoimpl.SampleQaEventActionDA
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -113,10 +110,7 @@ public class QaEventsEntryUpdateLineListingAction extends BaseAction {
 		systemUserDAO.getData(systemUser);
 
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		org.hibernate.Transaction tx = HibernateUtil.getSession()
 		.beginTransaction();

@@ -31,7 +31,6 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
@@ -1355,8 +1354,7 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
     		}
 
     		if (history.getTimestamp() != null) {
-			  String stringLocale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-    		  query.setParameter("param3", DateUtil.convertTimestampToStringDate(history.getTimestamp(), stringLocale));
+    		  query.setParameter("param3", DateUtil.convertTimestampToStringDate(history.getTimestamp()));
     		}
 
     		list = query.list();

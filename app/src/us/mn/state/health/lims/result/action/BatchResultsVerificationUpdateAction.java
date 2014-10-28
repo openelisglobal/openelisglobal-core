@@ -15,24 +15,12 @@
 */
 package us.mn.state.health.lims.result.action;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -56,6 +44,11 @@ import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.TestComparator;
 import us.mn.state.health.lims.test.valueholder.TestSectionComparator;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -142,10 +135,7 @@ public class BatchResultsVerificationUpdateAction extends BaseAction {
 			AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 			SampleDAO sampleDAO = new SampleDAOImpl();
 			Date today = Calendar.getInstance().getTime();
-			Locale locale = (Locale) request.getSession().getAttribute(
-					"org.apache.struts.action.LOCALE");
-
-			String dateAsText = DateUtil.formatDateAsText(today, locale);
+			String dateAsText = DateUtil.formatDateAsText(today);
 
 			boolean sampleReadyToBeReleased = false;
 

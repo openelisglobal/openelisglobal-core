@@ -110,15 +110,8 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setCollectionDate(Timestamp collectionDate) {
 		this.collectionDate = collectionDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.collectionDateForDisplay = DateUtil
-				.convertTimestampToStringDate(collectionDate, locale);
-
-		// also update String time
-		this.collectionTimeForDisplay = DateUtil
-				.convertTimestampToStringTime(collectionDate, locale);
+		this.collectionDateForDisplay = DateUtil.convertTimestampToStringDate(collectionDate);
+		this.collectionTimeForDisplay = DateUtil.convertTimestampToStringTime(collectionDate );
 	}
 
 	public String getDomain() {
@@ -136,11 +129,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setEnteredDate(Date enteredDate) {
 		this.enteredDate = enteredDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.enteredDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				enteredDate, locale);
+		this.enteredDateForDisplay = DateUtil.convertSqlDateToStringDate(enteredDate);
 	}
 
 	public String getNextItemSequence() {
@@ -195,11 +184,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setReleasedDate(Date releasedDate) {
 		this.releasedDate = releasedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.releasedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				releasedDate, locale);
+		this.releasedDateForDisplay = DateUtil.convertSqlDateToStringDate(releasedDate);
 	}
 
 	public String getRevision() {
@@ -256,11 +241,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setTransmissionDate(Date transmissionDate) {
 		this.transmissionDate = transmissionDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.transmissionDateForDisplay = DateUtil
-				.convertSqlDateToStringDate(transmissionDate, locale);
+		this.transmissionDateForDisplay = DateUtil.convertSqlDateToStringDate(transmissionDate);
 	}
 
 	public String getCollectionDateForDisplay() {
@@ -335,14 +316,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setCollectionTimeForDisplay(String collectionTimeForDisplay) {
 		this.collectionTimeForDisplay = collectionTimeForDisplay;
-
-		// also update the java.sql.Date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.collectionDate = DateUtil.convertStringTimeToTimestamp(
-				this.collectionDate, collectionTimeForDisplay, locale);
-		// System.out.println("I am in setColelctionTimeForDisplay and this is
-		// collecitonTime " + this.collectionDate);
+		this.collectionDate = DateUtil.convertStringTimeToTimestamp(this.collectionDate, collectionTimeForDisplay);
 	}
 
 	public String getCollectionTimeForDisplay() {

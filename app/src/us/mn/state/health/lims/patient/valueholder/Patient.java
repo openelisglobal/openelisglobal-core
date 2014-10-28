@@ -15,15 +15,14 @@
 */
 package us.mn.state.health.lims.patient.valueholder;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.person.valueholder.Person;
+
+import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Patient extends BaseObject {
 
@@ -119,8 +118,7 @@ public class Patient extends BaseObject {
 
 	public void setBirthTime(Date birthTime) {
 		this.birthTime = birthTime;
-		String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-		birthTimeForDisplay = DateUtil.convertSqlDateToStringDate( birthTime, locale );
+		birthTimeForDisplay = DateUtil.convertSqlDateToStringDate( birthTime );
 	}
 
 	public Date getDeathDate() {
@@ -129,8 +127,7 @@ public class Patient extends BaseObject {
 
 	public void setDeathDate(Date deathDate) {
 		this.deathDate = deathDate;
-		String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-		deathDateForDisplay = DateUtil.convertSqlDateToStringDate(	deathDate, locale);
+		deathDateForDisplay = DateUtil.convertSqlDateToStringDate(deathDate);
 	}
 
 	public String getEpiFirstName() {

@@ -141,11 +141,7 @@ public class Test extends EnumValueItemImpl {
 
 	public void setActiveBeginDate(Date activeBeginDate) {
 		this.activeBeginDate = activeBeginDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.activeBeginDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				activeBeginDate, locale);
+		this.activeBeginDateForDisplay = DateUtil.convertSqlDateToStringDate(activeBeginDate);
 	}
 
 	public String getActiveBeginDateForDisplay() {
@@ -167,11 +163,7 @@ public class Test extends EnumValueItemImpl {
 
 	public void setActiveEndDate(Date activeEndDate) {
 		this.activeEndDate = activeEndDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.activeEndDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				activeEndDate, locale);
+		this.activeEndDateForDisplay = DateUtil.convertSqlDateToStringDate(	activeEndDate);
 	}
 
 	public String getActiveEndDateForDisplay() {

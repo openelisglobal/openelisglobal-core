@@ -160,7 +160,7 @@ public class ResultsReportProvider extends BaseReportsProvider{
 		analysisDAO = new AnalysisDAOImpl();
 		sampleDAO = new SampleDAOImpl();
 		Date today = Calendar.getInstance().getTime();
-		dateAsText = DateUtil.formatDateAsText(today, locale);
+		dateAsText = DateUtil.formatDateAsText(today );
 
 		org.hibernate.Transaction tx = HibernateUtil.getSession()
 				.beginTransaction();

@@ -15,22 +15,10 @@
 */
 package us.mn.state.health.lims.testmanagement.action;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -69,6 +57,11 @@ import us.mn.state.health.lims.statusofsample.valueholder.StatusOfSample;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testmanagement.valueholder.TestManagementRoutingSwitchSessionHandler;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  * @author aiswarya raman
@@ -113,10 +106,7 @@ public class TestVerificationViewAction extends BaseAction {
 		testManagementForm.initialize(mapping);
 
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		Sample sample = new Sample();
 		SampleItem sampleItem = new SampleItem();

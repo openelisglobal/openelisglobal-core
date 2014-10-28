@@ -15,15 +15,10 @@
 */
 package us.mn.state.health.lims.project.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -37,6 +32,10 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.project.dao.ProjectDAO;
 import us.mn.state.health.lims.project.valueholder.Project;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author diane benz
@@ -164,19 +163,11 @@ public class ProjectDAOImpl extends BaseDAOImpl implements ProjectDAO {
 			HibernateUtil.getSession().clear();
 			
 			if (proj != null) {
-				// set the display dates for STARTED_DATE, COMPLETED_DATE
-				String locale = SystemConfiguration.getInstance()
-						.getDefaultLocale().toString();
 				if (proj.getStartedDate() != null) {
-
-					proj.setStartedDateForDisplay(DateUtil
-							.convertSqlDateToStringDate(proj.getStartedDate(),
-									locale));
+					proj.setStartedDateForDisplay(DateUtil.convertSqlDateToStringDate(proj.getStartedDate()));
 				}
 				if (proj.getCompletedDate() != null) {
-					proj.setCompletedDateForDisplay(DateUtil
-							.convertSqlDateToStringDate(
-									proj.getCompletedDate(), locale));
+					proj.setCompletedDateForDisplay(DateUtil.convertSqlDateToStringDate(proj.getCompletedDate()));
 				}
 				PropertyUtils.copyProperties(project, proj);
 			} else {
