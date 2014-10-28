@@ -64,7 +64,6 @@ public class SampleService {
     public static final String TABLE_REFERENCE_ID;
     private static Long PERSON_REQUESTER_TYPE_ID;
     private static Long ORGANIZATION_REQUESTER_TYPE_ID;
-    private ObservationHistoryService observationHistoryService;
 
     static{
         ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
@@ -123,9 +122,9 @@ public class SampleService {
         ObservationHistory observation =  ObservationHistoryService.getObservationForSample( ObservationHistoryService.ObservationType.REQUEST_DATE, sample.getId() );
 		if( observation != null && observation.getValue() != null){
             return DateUtil.convertStringDateToTruncatedTimestamp( observation.getValue() );
+        }else{ //If ordered date is not given then use received date
+            return sample.getReceivedTimestamp();
         }
-
-        return null;
 	}
 
     public String getAccessionNumber(){

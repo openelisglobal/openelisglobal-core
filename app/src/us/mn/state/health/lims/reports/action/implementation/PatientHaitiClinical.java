@@ -94,6 +94,8 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
                 }
 			}
 		}
+
+        setCollectionTime( sampleSet );
 	}
 
     private void setCollectionTime( Set<SampleItem> sampleSet ){

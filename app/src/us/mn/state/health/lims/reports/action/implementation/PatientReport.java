@@ -763,7 +763,7 @@ public abstract class PatientReport extends Report{
             data.setTestDate(  currentAnalysisService.getCompletedDateForDisplay());
             sortOrder = currentAnalysisService.getAnalysis().getSampleItem().getSortOrder();
             data.setOrderFinishDate( completionDate );
-            data.setOrderDate( DateUtil.convertTimestampToStringDate( currentSampleService.getOrderedDate() ) );
+            data.setOrderDate( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( currentSampleService.getOrderedDate() ) );
             data.setSampleId( currentSampleService.getAccessionNumber() + "-" + sortOrder );
             data.setSampleType( currentAnalysisService.getTypeOfSample().getLocalizedName()  );
             data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( currentAnalysisService.getAnalysis().getSampleItem().getCollectionDate() ));
