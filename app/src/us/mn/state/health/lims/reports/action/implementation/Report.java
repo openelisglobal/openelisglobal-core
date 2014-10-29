@@ -103,6 +103,8 @@ public abstract class Report implements IReportCreator {
         localizationMap.put( "result", StringUtil.getMessageForKey( "report.result" ) );
         localizationMap.put( "note", StringUtil.getMessageForKey( "report.note" ) );
         localizationMap.put( "pageNumberOf", StringUtil.getMessageForKey( "report.pageNumberOf" ) );
+        localizationMap.put( "labManager", StringUtil.getMessageForKey( "report.labManager" ));
+        localizationMap.put( "collectionDate", StringUtil.getMessageForKey( "report.collectionDate" ));
 
         return localizationMap;
     }
