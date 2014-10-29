@@ -15,7 +15,7 @@
     <property name="clinlimsPW" value=""/>
     <property name="installerDir" value="${basedir}/installers"/>
     <property name="installerTemplateDir" value="${basedir}/source/openelisglobal-core/installerTemplate" />
-    <property name="tomcatVersion" value="tomcat5.5" />
+    <property name="tomcatVersion" value="tomcat6" />
     <property file="./build.txt" />
 
 
@@ -222,7 +222,7 @@
     </target>
 
     <target name="applyUpdate" description="Does the actual update to database">
-        <echo message="Updating ${context}"/>
+        <echo message="Updating ${dbName}"/>
         <exec executable="java" dir="${db_root}">
 
             <arg line="-jar -Dfile.encoding=utf-8 ./lib/liquibase-1.9.5.jar --defaultsFile=./liquibase.properties  --contexts=${context} --password=${clinlimsPW} --url=jdbc:postgresql://localhost:5432/${dbName} update"/>
@@ -263,6 +263,11 @@
         <antcall target="applyUpdate">
             <param name="context" value="ci_regional"/>
             <param name="dbName" value="ci_reg_lab"/>
+        </antcall>
+
+        <antcall target="applyUpdate">
+            <param name="context" value="CI_IPCI"/>
+            <param name="dbName" value="kenya"/>
         </antcall>
     </target>
 
@@ -390,6 +395,12 @@
             <param name="context" value="LNSP_HaitiOpenElis"/>
             <param name="dbName" value="lnsphaiti"/>
             <param name="backupTemplate" value="HaitiBackup.pl" />
+        </antcall>
+
+        <antcall target="buildInstaller">
+            <param name="context" value="kenyaOpenElis"/>
+            <param name="dbName" value="kenya"/>
+            <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
         </antcall>
     </target>
 
