@@ -103,4 +103,10 @@
 		<column name="description_key"  type="varchar(42)"  />
 	</addColumn> 	
 </changeSet>
+<changeSet author="jfurlong" id="1">
+	<comment>Converts result_signature non_user_name to type text to allow for longer entreis</comment>
+	<sql>
+		alter table clinlims.result_signature alter column non_user_name type text;
+	</sql>
+</changeSet>
 </databaseChangeLog>
