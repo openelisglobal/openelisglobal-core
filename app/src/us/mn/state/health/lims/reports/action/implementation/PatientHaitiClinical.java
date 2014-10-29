@@ -76,6 +76,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 		currentConclusion = null;
         Set<SampleItem> sampleSet = new HashSet<SampleItem>(  );
+        List<ClinicalPatientData> currentSampleReportItems = new ArrayList<ClinicalPatientData>( analysisList.size() );
 		for(Analysis analysis : analysisList){
             sampleSet.add( analysis.getSampleItem() );
             boolean hasParentResult = analysis.getParentResult() != null;
@@ -87,18 +88,20 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 				if(currentAnalysisService.getAnalysis().isReferredOut()){
 					Referral referral = referralDao.getReferralByAnalysisId( currentAnalysisService.getAnalysis().getId() );
 					if(referral != null){
-						addReferredTests(referral, resultsData);
+						List<ClinicalPatientData> referredData = addReferredTests(referral, resultsData);
+                        currentSampleReportItems.addAll( referredData );
 					}
 				}else{
-                    reportItems.add(resultsData);
+                    currentSampleReportItems.add( resultsData );
                 }
 			}
 		}
 
-        setCollectionTime( sampleSet );
+        reportItems.addAll( currentSampleReportItems );
+        setCollectionTime( sampleSet, currentSampleReportItems );
 	}
 
-    private void setCollectionTime( Set<SampleItem> sampleSet ){
+    private void setCollectionTime( Set<SampleItem> sampleSet, List<ClinicalPatientData> currentSampleReportItems  ){
         StringBuffer buffer = new StringBuffer(  );
         boolean firstItem = true;
         for( SampleItem sampleItem : sampleSet){
@@ -120,13 +123,15 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
         }
 
         String collectionTimes = buffer.toString();
-        for( ClinicalPatientData clinicalPatientData: reportItems){
+        for( ClinicalPatientData clinicalPatientData: currentSampleReportItems){
             clinicalPatientData.setCollectionDateTime( collectionTimes );
         }
     }
 
-    private void addReferredTests(Referral referral, ClinicalPatientData parentData){
-		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
+    private List<ClinicalPatientData> addReferredTests(Referral referral, ClinicalPatientData parentData){
+
+        List<ClinicalPatientData> currentSampleReportItems = new ArrayList<ClinicalPatientData>(  );
+        List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
         String note = new NoteService( currentAnalysisService.getAnalysis() ).getNotesAsString( false, true, "<br/>", FILTER, true );
 
 		if( !referralResults.isEmpty()){
@@ -139,10 +144,10 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 			}
 			
 			if( !referralTestAssigned){
-				reportItems.add(parentData);	
+                currentSampleReportItems.add( parentData );
 			}
 		}else{
-			reportItems.add(parentData);	
+            currentSampleReportItems.add( parentData );
 		}
 		
 		
@@ -187,9 +192,11 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 				data.setAlerts(getResultFlag(referralResult.getResult(), null));
 				data.setHasRangeAndUOM(referralResult.getResult() != null && "N".equals(referralResult.getResult().getResultType()));
 
-				reportItems.add(data);
+                currentSampleReportItems.add( data );
 			}
 		}
+
+        return currentSampleReportItems;
 	}
 
 	private void copyParentData(ClinicalPatientData data, ClinicalPatientData parentData){
