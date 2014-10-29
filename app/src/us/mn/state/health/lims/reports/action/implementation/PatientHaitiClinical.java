@@ -102,7 +102,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	}
 
     private void setCollectionTime( Set<SampleItem> sampleSet, List<ClinicalPatientData> currentSampleReportItems  ){
-        StringBuffer buffer = new StringBuffer(  );
+        StringBuilder buffer = new StringBuilder(  );
         boolean firstItem = true;
         for( SampleItem sampleItem : sampleSet){
             if( firstItem){
