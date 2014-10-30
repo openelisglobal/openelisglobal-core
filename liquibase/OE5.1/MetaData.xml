@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ The contents of this file are subject to the Mozilla Public License
+  ~ Version 1.1 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://www.mozilla.org/MPL/
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations under
+  ~ the License.
+  ~
+  ~ The Original Code is OpenELIS code.
+  ~
+  ~ Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
+  -->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+<changeSet author="paulsc" id="1">
+    <comment>Add tag to site logo information and update the name</comment>
+    <update tableName="site_information" >
+        <column name="name" value="headerRightImage" />
+        <column name="lastupdated" valueDate=" now() " />
+        <column name="description" value="Image for the right side of report header" />
+        <column name="value" value="" />
+        <column name="instruction_key" value="siteInfo.instruction.labLogo.right" />
+        <column name="description_key" value="siteInfo.lab.logo.right" />
+        <where>name = 'lab logo'</where>
+    </update>
+    <insert schemaName="clinlims" tableName="site_information" >
+        <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+        <column name="name"  value="headerLeftImage" />
+        <column name="description" value="Image for the left side of report header" />
+        <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'printedReportsConfig' ) " />
+        <column name="lastupdated" valueDate=" now() " />
+        <column name="value_type" value="logoUpload" />
+        <column name="value" value="" />
+        <column name="instruction_key" value="siteInfo.instruction.labLogo.left" />
+        <column name="description_key" value="siteInfo.lab.logo.left" />
+    </insert>
+</changeSet>
+</databaseChangeLog>
