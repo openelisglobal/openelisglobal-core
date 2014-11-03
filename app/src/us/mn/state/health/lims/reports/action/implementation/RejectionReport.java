@@ -32,7 +32,6 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Rejecti
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,7 +55,6 @@ public abstract class RejectionReport extends Report implements IReportCreator{
         reportParameters.put( "accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
         reportParameters.put( "labNumberTitle", StringUtil.getContextualMessageForKey( "quick.entry.accession.number" ) );
         reportParameters.put( "labName", ConfigurationProperties.getInstance().getPropertyValue( Property.SiteName ) );
-        reportParameters.put( "siteLogo", getSiteLogo() );
         reportParameters.put( "SUBREPORT_DIR", reportPath );
         reportParameters.put( "startDate", dateRange.getLowDateStr() );
         reportParameters.put( "endDate", dateRange.getHighDateStr() );
@@ -70,14 +68,6 @@ public abstract class RejectionReport extends Report implements IReportCreator{
     protected abstract String getActivityLabel();
 
     protected abstract void buildReportContent( ReportSpecificationList testSelection );
-
-    protected String getSiteLogo(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-            return "images" + File.separator + "HaitiLNSP.jpg";
-        }
-
-        return null;
-    }
 
     @Override
     public void initializeReport( BaseActionForm dynaForm ){

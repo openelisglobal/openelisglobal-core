@@ -106,4 +106,22 @@
         </preConditions>
         <dropTable tableName="user_security" />
     </changeSet>
+    <changeSet id="16" author="paulsc">
+        <comment>Adds a table to hold images</comment>
+        <createSequence sequenceName="image_seq" incrementBy="1" startValue="1" />
+        <createTable tableName="image" schemaName="clinlims">
+            <column name="id" type="numeric" >
+                <constraints primaryKey="true" primaryKeyName="image_pk" />
+            </column>
+            <column name="description" type="text" />
+            <column name="image" type="blob" />
+            <column name="lastupdated" type="timestamp" />
+        </createTable>
+        <sql>
+            comment on table clinlims.image is 'Primary table for db based images';
+            comment on column clinlims.image.id is 'Primary key';
+            comment on column clinlims.image.description is 'Brief description of image';
+            comment on column clinlims.image.image is 'The image itself';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

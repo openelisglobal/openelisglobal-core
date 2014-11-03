@@ -334,11 +334,6 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	}
 
 	@Override
-	protected String getSiteLogo(){
-		return "labLogo.jpg";
-	}
-
-	@Override
 	protected void initializeReportItems(){
 		super.initializeReportItems();
 		clinicalReportItems = new ArrayList<ClinicalPatientData>();
@@ -349,10 +344,6 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		data.setResult(data.getResult() );
 		data.setAlerts(getResultFlag(result, null));
 	}
-    @Override
-    protected String getLeftImage(){
-            return "CDIlogo.jpg";
-    }
 
 	@Override
 	protected boolean appendUOMToRange(){

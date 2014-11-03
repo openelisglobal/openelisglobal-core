@@ -72,22 +72,11 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
 		reportParameters.put("status", nonConformity);
 		reportParameters.put("reportTitle", nonConformity);
 		reportParameters.put("reportPeriod", StringUtil.getContextualMessageForKey("banner.menu.nonconformity") + "  " + dateRange.toString());
-		reportParameters.put("leftImage", getLeftImage());
 	    reportParameters.put("supervisorSignature", ConfigurationProperties.getInstance().isPropertyValueEqual(Property.SIGNATURES_ON_NONCONFORMITY_REPORTS, "true"));
 		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
 			reportParameters.put("headerName", "CILNSPHeader.jasper");	
 		} else {
 			reportParameters.put("headerName", getHeaderName());
-		}
-	}
-
-	protected String getLeftImage(){
-		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI IPCI")){
-			return "IPCI_Logo.png";
-		}else if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI_REGIONAL")){
-			return "LNSPLogo.jpg";
-		}else{
-			return "HaitiFlag.gif";
 		}
 	}
 	

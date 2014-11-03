@@ -24,7 +24,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +53,6 @@ public class TestWorkplanReport implements IWorkplanReport {
 		parameterMap.put("subjectNoTitle", StringUtil.getContextualMessageForKey("patient.subject.number"));
 		parameterMap.put("nameOfPatient", getNameOfPatient());
 		parameterMap.put("labName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-		parameterMap.put("siteLogo", getSiteLogo());
         parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
         parameterMap.put("prefixLength", PREFIX_LENGTH );
 		parameterMap.put("SUBREPORT_DIR", reportPath);
@@ -62,13 +60,6 @@ public class TestWorkplanReport implements IWorkplanReport {
 		return parameterMap;	
 	
 	}
-	
-   protected String getSiteLogo(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-            return "images" + File.separator + "HaitiLNSP.jpg";   
-        } else 
-            return null;
-    }
 
    protected String getNameOfPatient(){
        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){

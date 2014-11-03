@@ -150,8 +150,6 @@ public abstract class PatientReport extends Report{
 
     abstract protected String getReportNameForParameterPage();
 
-    abstract protected String getSiteLogo();
-
     abstract protected void postSampleBuild();
 
     abstract protected void createReportItems();
@@ -389,28 +387,15 @@ public abstract class PatientReport extends Report{
     protected void createReportParameters(){
         super.createReportParameters();
         reportParameters.put( "siteId", ConfigurationProperties.getInstance().getPropertyValue( Property.SiteCode ) );
-        reportParameters.put( "siteLogo", useLogo ? getSiteLogo() : null );
         reportParameters.put("headerName", getHeaderName());
         if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "Haiti LNSP" ) ){
             reportParameters.put( "useSTNumber", Boolean.FALSE );
         }else{
             reportParameters.put( "useSTNumber", Boolean.TRUE );
         }
-
-        reportParameters.put( "leftImage", getLeftImage() );
     }
 
     protected abstract String getHeaderName();
-
-    protected String getLeftImage(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI IPCI" ) ){
-            return "IPCI_Logo.png";
-        }else if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI_REGIONAL" ) ){
-            return "LNSPLogo.jpg";
-        }else{
-            return "HaitiFlag.gif";
-        }
-    }
 
     protected String getPatientDOB(){
         if( patientDOB == null ){

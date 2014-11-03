@@ -20,7 +20,7 @@
 	</parameter>
 	<parameter name="labName" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="nameOfPatient" class="java.lang.String"/>
-	<parameter name="siteLogo" class="java.lang.String"/>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="nameOfTest" class="java.lang.String"/>
 	<parameter name="accessionPrefix" class="java.lang.String" isForPrompting="false"/>
@@ -77,7 +77,7 @@
 			</textField>
 			<image>
 				<reportElement x="1" y="0" width="55" height="46"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{siteLogo}]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

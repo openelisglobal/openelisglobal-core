@@ -15,22 +15,22 @@
 	<parameter name="labName1" class="java.lang.String"/>
 	<parameter name="labName2" class="java.lang.String"/>
 	<parameter name="reportTitle" class="java.lang.String"/>
-	<parameter name="siteLogo" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="completeFlag" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
 	</parameter>
 	<parameter name="orderFinishDate" class="java.lang.String">
 		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
 	</parameter>
-	<parameter name="leftImage" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["HaitiFlag.gif"]]></defaultValueExpression>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false">
+		<defaultValueExpression><![CDATA[$P{leftHeaderImage}]]></defaultValueExpression>
 	</parameter>
 	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
 	<variable name="hasLogo" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$P{siteLogo} != null && !"".equals($P{siteLogo})]]></variableExpression>
+		<variableExpression><![CDATA[$P{rightHeaderImage} != null]]></variableExpression>
 		<initialValueExpression><![CDATA[false]]></initialValueExpression>
 	</variable>
 	<background>
@@ -61,15 +61,15 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[($P{localization} == null ?  "Date d'achèvement" : $P{localization}.get("collectionDate") ) + ": " + $P{orderFinishDate}]]></textFieldExpression>
 			</textField>
-			<image>
+			<image isUsingCache="true">
 				<reportElement x="0" y="20" width="118" height="100"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "images/" + $P{leftImage}]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
-			<image>
+			<image isUsingCache="true">
 				<reportElement x="468" y="18" width="102" height="102">
-					<printWhenExpression><![CDATA[$V{hasLogo}]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{rightHeaderImage} != null]]></printWhenExpression>
 				</reportElement>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "images/" + $P{siteLogo}]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{rightHeaderImage}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="5" width="570" height="20">

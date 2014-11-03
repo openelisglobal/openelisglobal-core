@@ -31,9 +31,4 @@ public class IndicatorAllTestLNSP extends IndicatorAllTest implements IReportCre
 	protected String getLabNameLine2() {
 		return StringUtil.getContextualMessageForKey("report.labName.two");
 	}
-
-	@Override
-	protected String getSiteLogo() {
-		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
-	}
 }

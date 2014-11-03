@@ -11,6 +11,7 @@
 <bean:define id="formName" value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>'/>
 <bean:define id="currentValue" name="<%=formName %>" property="value"/>
 <bean:define id="valueEditable" name="<%=formName %>" property="editable" type="java.lang.Boolean"/>
+<bean:define id="siteInfoName" name="<%=formName%>" property="paramName" />
 
 <%!String allowEdits = "true";%>
 
@@ -50,10 +51,6 @@
 <bean:message key="generic.value"/>:&nbsp;
 
 
-<logic:equal name='<%=formName %>' property="valueType" value="bob" >
-
-</logic:equal>
-
 <logic:equal name='<%=formName %>' property="valueType" value="text">
     <logic:equal name="<%=formName%>" property="encrypted" value="true">
         <html:password name="<%=formName%>" property="value" size="60" maxlength="120"/>
@@ -86,13 +83,13 @@
     <html:textarea name="<%=formName%>" property="value" rows="2" style="width:50%"/>
 </logic:equal>
 <logic:equal name='<%=formName %>' property="valueType" value="logoUpload">
-    <input type="file" name="aFile" onchange="checklogLogoFile( this )" id="inputWidget"/>
+    <input type="file" name="aFile" onchange="checklogLogoFile( this )" id="inputWidget"/><br/>
+    <bean:message key="label.remove.image" /><input type="checkbox" id="removeImage" />
     <script type="text/javascript">
         $jq("form").attr("enctype", "multipart/form-data");
         $jq(":file").css("width", "600px");
         function setAction(form, action, validate, parameters) {
-
-            form.action = '<%= request.getContextPath() %>' + "/logoUpload";
+            form.action = '<%= request.getContextPath() %>' + "/logoUpload?logo=" + '<%=siteInfoName%>' + "&removeImage=" + $jq("#removeImage").is(":checked");
             form.validateDocument = new Object();
             form.validateDocument.value = validate;
 

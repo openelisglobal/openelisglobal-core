@@ -13,7 +13,6 @@
 		<defaultValueExpression><![CDATA["Lab No."]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
-	<parameter name="siteLogo" class="java.lang.String"/>
 	<parameter name="labName" class="java.lang.String"/>
 	<parameter name="accessionPrefix" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="startDate" class="java.lang.String" isForPrompting="false"/>
@@ -24,6 +23,7 @@
 	<parameter name="isReportByTest" class="java.lang.Boolean" isForPrompting="false">
 		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
 	</parameter>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -58,7 +58,7 @@
 			</textField>
 			<image>
 				<reportElement x="1" y="1" width="65" height="64"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{siteLogo}]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
 				<reportElement x="164" y="2" width="229" height="20"/>

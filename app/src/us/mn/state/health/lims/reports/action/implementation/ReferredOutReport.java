@@ -227,10 +227,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 
          return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
     }
-	@Override
-	protected String getSiteLogo() {
-		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
-	}
+
 	@Override
 	protected void postSampleBuild() {
 		// TODO Auto-generated method stub
