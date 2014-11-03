@@ -46,7 +46,7 @@ public class ReportImplementationFactory{
 			}else if(report.equals("indicatorSectionPerformance")){
 				return new ReportSpecificationParameters( Parameter.NO_SPECIFICATION, StringUtil.getMessageForKey("reports.label.indicator.performance"), null );
 			}else if(report.equals("patientHaitiClinical") || report.equals("patientHaitiLNSP") || report.equals("patientCILNSP")){
-				return new PatientHaitiClinical();
+				return new PatientClinicalReport();
 			}else if(report.equals("indicatorHaitiClinicalHIV")){
 				return new IndicatorHIV();
 			}else if(report.equals("indicatorHaitiLNSPHIV")){
@@ -139,9 +139,9 @@ public class ReportImplementationFactory{
 			}else if(report.equals("indicatorSectionPerformance")){
 				return new IndicatorSectionPerformanceReport();
 			}else if(report.equals("patientHaitiClinical")){
-				return new PatientHaitiClinical(!isLNSP);
+				return new PatientClinicalReport(!isLNSP);
 			}else if(report.equals("patientHaitiLNSP")){
-				return new PatientHaitiClinical(isLNSP);
+				return new PatientClinicalReport(isLNSP);
 			}else if(report.equals("patientCILNSP")){
 				return new PatientCILNSPClinical();
 			}else if(report.equals("indicatorHaitiClinicalHIV")){

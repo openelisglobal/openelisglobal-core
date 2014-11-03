@@ -141,7 +141,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 
 	@Override
 	protected String reportFileName() {
-		return "HaitiHIVSummary";
+		return "HIVSummary";
 	}
 
 	public JRDataSource getReportDataSource() throws IllegalStateException {

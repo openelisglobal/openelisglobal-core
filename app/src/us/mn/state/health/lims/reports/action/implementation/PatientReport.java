@@ -168,11 +168,6 @@ public abstract class PatientReport extends Report{
         return true;
     }
 
-    @Override
-    protected String errorReportFileName(){
-        return HAITI_ERROR_REPORT;
-    }
-
     public void setRequestParameters( BaseActionForm dynaForm ){
         try{
             PropertyUtils.setProperty( dynaForm, "reportName", getReportNameForParameterPage() );

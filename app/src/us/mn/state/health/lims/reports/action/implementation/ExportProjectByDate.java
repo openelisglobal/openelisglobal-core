@@ -42,11 +42,6 @@ public class ExportProjectByDate extends CSVSampleExportReport implements IRepor
 	protected final ProjectDAO projectDAO = new ProjectDAOImpl();
 	private String projectStr;
 	private Project project;
-
-	@Override
-	protected String errorReportFileName(){
-		return CI_ERROR_REPORT;
-	}
 	
 	@Override
 	protected String reportFileName(){

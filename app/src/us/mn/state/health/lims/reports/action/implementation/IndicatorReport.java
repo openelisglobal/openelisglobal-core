@@ -34,10 +34,6 @@ public abstract class IndicatorReport extends Report {
 	protected Date lowDate;
 	protected Date highDate;
 	
-	protected String errorReportFileName(){
-		return HAITI_ERROR_REPORT;
-	}
-	
 	public void setRequestParameters(BaseActionForm dynaForm) {
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE, getNameForReportRequest(), null ).setRequestParameters( dynaForm );
 	}
@@ -53,8 +49,10 @@ public abstract class IndicatorReport extends Report {
 		reportParameters.put("labName2", getLabNameLine2());
 		reportParameters.put("reportTitle", getNameForReport());
 		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
-			reportParameters.put("headerName", "CILNSPHeader.jasper");	
-		}	
+            reportParameters.put("headerName", "CILNSPHeader.jasper");
+        }else{
+            reportParameters.put("headerName", "GeneralHeader.jasper");
+        }
 	}
 	
 	protected void setDateRange(BaseActionForm dynaForm) {

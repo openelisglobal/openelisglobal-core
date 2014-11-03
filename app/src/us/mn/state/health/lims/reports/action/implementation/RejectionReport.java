@@ -151,11 +151,6 @@ public abstract class RejectionReport extends Report implements IReportCreator{
         return  "RejectionReport";
     }
 
-    @Override
-    protected String errorReportFileName(){
-        return "HaitiNoticeOfReportError";
-    }
-
     protected RejectionReportBean createIdentityRejectionBean( RejectionReportBean item, boolean blankCollectionDate ){
         RejectionReportBean filler = new RejectionReportBean();
 

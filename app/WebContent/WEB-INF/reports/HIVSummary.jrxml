@@ -19,7 +19,7 @@
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="headerName" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["HaitiHeader.jasper"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["GeneralHeader.jasper"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="usePageNumbers" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["true"]]></defaultValueExpression>

@@ -27,13 +27,8 @@ public class HaitiNonConformityByDate extends NonConformityByDate implements IRe
 	}
 
 	@Override
-	protected String errorReportFileName() {
-		return HAITI_ERROR_REPORT;
-	}
-
-	@Override
 	protected String getHeaderName() {
-		return "HaitiHeader.jasper";
+		return "GeneralHeader.jasper";
 	}
 
 	@Override

@@ -36,7 +36,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 
 import java.util.*;
 
-public class PatientHaitiClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
+public class PatientClinicalReport extends PatientReport implements IReportCreator, IReportParameterSetter{
 
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static Set<Integer> analysisStatusIds;
@@ -56,18 +56,18 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
 	}
 
-	public PatientHaitiClinical(){
+	public PatientClinicalReport(){
 		super();
 	}
 
-	public PatientHaitiClinical( boolean isLNSP ){
+	public PatientClinicalReport( boolean isLNSP ){
 		super();
 		this.isLNSP = isLNSP;
 	}
 
 	@Override
 	protected String reportFileName(){
-		return "PatientReportHaiti";
+		return "PatientClinicalReport";
 	}
 
 	@Override
@@ -360,7 +360,7 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 
     @Override
     protected String getHeaderName(){
-        return "HaitiHeader.jasper";
+        return "GeneralHeader.jasper";
     }
 
 }

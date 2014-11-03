@@ -171,11 +171,6 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		testExportList.add(ts);
 	}
 
-    @Override
-	protected String errorReportFileName(){
-		return HAITI_ERROR_REPORT;
-	}
-
 	@Override
 	protected String reportFileName(){
 		return "haitiLNSPExport";

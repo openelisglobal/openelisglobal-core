@@ -81,11 +81,7 @@ public class  IPCIRealisationReport  extends Report {
 		BIOLOGIST_REJECT_ID = StatusService.getInstance().getStatusID(AnalysisStatus.BiologistRejected);
 		USER_TEST_SECTION_ID = new TestSectionDAOImpl().getTestSectionByName("user").getId();
 	}
- 
-	@Override
-	protected String errorReportFileName() {
-		return HAITI_ERROR_REPORT;		 
-	}	
+
 	
 	@Override
 	public void initializeReport(BaseActionForm dynaForm) {
