@@ -779,7 +779,7 @@ function  processSubjectNumberSuccess(xhr){
 	<br/>
 	<div class="patientSearch">
 		<hr style="width:100%" />
-        <input type="button" value="Nouveau Patient" onclick="addPatient()">
+        <input type="button" value='<%= StringUtil.getMessageForKey("patient.new")%>' onclick="addPatient()">
 	</div>
     </logic:equal>
 	<div id="PatientDetail"   >
