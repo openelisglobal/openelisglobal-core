@@ -16,7 +16,8 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
 	us.mn.state.health.lims.common.util.StringUtil,
     us.mn.state.health.lims.common.util.Versioning,
-    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException" %>
+    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException,
+    us.mn.state.health.lims.common.util.DateUtil" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
