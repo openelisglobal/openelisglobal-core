@@ -47,8 +47,7 @@ public abstract class Report implements IReportCreator {
 
     public static ImageDAO imageDAO = new ImageDAOImpl();
     public static SiteInformationDAO siteInformationDAO = new SiteInformationDAOImpl();
-    public static final String CI_ERROR_REPORT = "NoticeOfReportError";
-    public static final String HAITI_ERROR_REPORT = "HaitiNoticeOfReportError";
+    public static final String ERROR_REPORT = "NoticeOfReportError";
     
 	protected static final String CSV = "csv";
 
@@ -204,7 +203,7 @@ public abstract class Report implements IReportCreator {
     }
 
     public String getReportFileName() {
-        return errorFound ? errorReportFileName() : reportFileName();
+        return errorFound ? ERROR_REPORT : reportFileName();
     }
 
     public class DateRange {
@@ -290,6 +289,5 @@ public abstract class Report implements IReportCreator {
     public List<String> getReportedOrders(){
     	return new ArrayList<String>();
     }
-    protected abstract String errorReportFileName();
     protected abstract String reportFileName();
 }

@@ -149,7 +149,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 
     @Override
     protected String getHeaderName(){
-        return "HaitiHeader.jasper";
+        return "GeneralHeader.jasper";
     }
 
     @Override

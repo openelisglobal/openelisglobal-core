@@ -30,11 +30,6 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Resourc
  * @since Mar 17, 2011
  */
 public class HaitiExportReport extends CSVSampleExportReport implements IReportParameterSetter {
-
-	@Override
-    protected String errorReportFileName(){
-		return HAITI_ERROR_REPORT;
-	}
 	
 	@Override
 	protected String reportFileName(){

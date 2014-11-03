@@ -276,11 +276,6 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 	}
 
 	@Override
-	protected String errorReportFileName() {
-		return CI_ERROR_REPORT;
-	}
-
-	@Override
 	protected String reportFileName() {
 		return "NonConformityNotification";
 	}

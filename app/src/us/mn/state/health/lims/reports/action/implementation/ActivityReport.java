@@ -145,11 +145,6 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         return  "ActivityReport";
     }
 
-    @Override
-    protected String errorReportFileName(){
-        return "HaitiNoticeOfReportError";
-    }
-
     protected ActivityReportBean createIdentityActivityBean( ActivityReportBean item, boolean blankCollectionDate ){
         ActivityReportBean filler = new ActivityReportBean();
 

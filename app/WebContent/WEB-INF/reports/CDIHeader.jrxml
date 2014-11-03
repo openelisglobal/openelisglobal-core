@@ -66,7 +66,7 @@
 				<reportElement x="468" y="18" width="102" height="102">
 					<printWhenExpression><![CDATA[$V{hasLogo}]]></printWhenExpression>
 				</reportElement>
-				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{rightHeaderImage}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
 				<reportElement x="58" y="5" width="450" height="20">

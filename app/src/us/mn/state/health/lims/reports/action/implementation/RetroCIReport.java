@@ -17,8 +17,6 @@
 package us.mn.state.health.lims.reports.action.implementation;
 
 
-import java.util.List;
-
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
@@ -31,6 +29,8 @@ import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHis
 import us.mn.state.health.lims.project.dao.ProjectDAO;
 import us.mn.state.health.lims.project.daoimpl.ProjectDAOImpl;
 import us.mn.state.health.lims.project.valueholder.Project;
+
+import java.util.List;
 
 public abstract class RetroCIReport extends Report implements IReportCreator {
 
@@ -101,10 +101,6 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 		}
 	}
 
-	@Override
-    protected String errorReportFileName(){
-    	return CI_ERROR_REPORT;
-    }
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#initializeReport(us.mn.state.health.lims.common.action.BaseActionForm)
      */
