@@ -17,6 +17,7 @@
 		<defaultValueExpression><![CDATA["C:\\Tomcat 5.5\\webapps\\openElisGlobal\\WEB-INF\\reports\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="directorName" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<field name="accessionNumber" class="java.lang.String"/>
 	<field name="subjectNumber" class="java.lang.String"/>
 	<field name="siteSubjectNumber" class="java.lang.String"/>
@@ -228,7 +229,7 @@
 			</line>
 			<image>
 				<reportElement x="10" y="10" width="105" height="55"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "RetroCILogo.jpg"]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

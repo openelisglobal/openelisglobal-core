@@ -264,6 +264,9 @@
         resource="us/mn/state/health/lims/testdictionary/valueholder/TestDictionary.hbm.xml" />
     <mapping
         resource="us/mn/state/health/lims/localization/valueholder/Localization.hbm.xml" />
+    <mapping
+        resource="us/mn/state/health/lims/image/valueholder/Image.hbm.xml" />
+
 </session-factory>
 
 </hibernate-configuration>

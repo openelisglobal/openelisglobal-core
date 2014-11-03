@@ -368,11 +368,6 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 	}
 
 	@Override
-	protected String getSiteLogo() {
-		return "labLogo.jpg";
-	}
-
-	@Override
 	protected String getNameForReport() {
 		return StringUtil.getMessageForKey("openreports.hiv.aggregate");
 	}

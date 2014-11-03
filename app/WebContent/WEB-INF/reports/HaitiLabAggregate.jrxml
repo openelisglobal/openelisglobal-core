@@ -11,7 +11,6 @@
 	<parameter name="referralSiteName" class="java.lang.String"/>
 	<parameter name="labName1" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="labName2" class="java.lang.String"/>
-	<parameter name="siteLogo" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
@@ -22,7 +21,8 @@
 		<defaultValueExpression><![CDATA["true"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="directorName" class="java.lang.String"/>
-	<parameter name="leftImage" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<field name="testName" class="java.lang.String"/>
 	<field name="sectionName" class="java.lang.String"/>
 	<field name="notStarted" class="java.lang.Integer"/>
@@ -135,26 +135,26 @@
 			</staticText>
 			<subreport>
 				<reportElement x="0" y="0" width="572" height="136"/>
+				<subreportParameter name="labName2">
+					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName2">
-					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="labName1">
 					<subreportParameterExpression><![CDATA[$P{labName1}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="siteLogo">
-					<subreportParameterExpression><![CDATA[$P{siteLogo}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="rightHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="directorName">
 					<subreportParameterExpression><![CDATA[$P{directorName}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="leftImage">
-					<subreportParameterExpression><![CDATA[$P{leftImage}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{headerName}]]></subreportExpression>

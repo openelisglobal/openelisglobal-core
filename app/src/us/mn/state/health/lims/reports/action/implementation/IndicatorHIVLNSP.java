@@ -27,11 +27,6 @@ public class IndicatorHIVLNSP extends IndicatorHIV implements IReportCreator, IR
 	}
 	
 	@Override
-	protected String getSiteLogo(){
-		return "HaitiLNSP.jpg";
-	}
-
-	@Override
 	protected String getLabNameLine1() {
 		return StringUtil.getContextualMessageForKey("report.labName.one");
 	}

@@ -24,10 +24,15 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.image.dao.ImageDAO;
+import us.mn.state.health.lims.image.daoimpl.ImageDAOImpl;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMessages;
+import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
+import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
+import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -39,7 +44,9 @@ import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
 
 
 public abstract class Report implements IReportCreator {
-    
+
+    public static ImageDAO imageDAO = new ImageDAOImpl();
+    public static SiteInformationDAO siteInformationDAO = new SiteInformationDAOImpl();
     public static final String CI_ERROR_REPORT = "NoticeOfReportError";
     public static final String HAITI_ERROR_REPORT = "HaitiNoticeOfReportError";
     
@@ -49,7 +56,6 @@ public abstract class Report implements IReportCreator {
     protected boolean errorFound = false;
     protected List<ErrorMessages> errorMsgs = new ArrayList<ErrorMessages>();
     protected HashMap<String, Object> reportParameters = null;
-    protected boolean useLogo = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.useLogoInReport, "true");
     private String fullReportFilename;
     
 	protected void initializeReport() {
@@ -83,6 +89,13 @@ public abstract class Report implements IReportCreator {
         reportParameters.put("additionalSiteInfo", ConfigurationProperties.getInstance().getPropertyValue(Property.ADDITIONAL_SITE_INFO));
         reportParameters.put("usePageNumbers", ConfigurationProperties.getInstance().getPropertyValue(Property.USE_PAGE_NUMBERS_ON_REPORTS));
         reportParameters.put("localization", createLocalizationMap());
+        reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
+        reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
+    }
+
+    private Object getImage(String siteName){
+        SiteInformation siteInformation = siteInformationDAO.getSiteInformationByName( siteName );
+        return GenericValidator.isBlankOrNull( siteInformation.getValue() ) ? null: imageDAO.retrieveImageInputStream( siteInformation.getValue() );
     }
 
     protected Map<String, String> createLocalizationMap(){

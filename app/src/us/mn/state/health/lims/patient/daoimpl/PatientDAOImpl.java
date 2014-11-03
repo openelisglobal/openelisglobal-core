@@ -103,18 +103,15 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 
 	public void updateData(Patient patient) throws LIMSRuntimeException {
 
-		Patient oldData = (Patient)readPatient(patient.getId());
-		Patient newData = patient;
+		Patient oldData = readPatient(patient.getId());
 
-		//add to audit trail
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = patient.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "PATIENT";
-			auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
+			auditDAO.saveHistory(patient,oldData,sysUserId,event,tableName);
 		}  catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("PatientDAOImpl","AuditTrail updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in Patient AuditTrail updateData()", e);
 		}
@@ -126,7 +123,6 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 			HibernateUtil.getSession().evict(patient);
 			HibernateUtil.getSession().refresh(patient);
 		} catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("PatientDAOImpl","updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in Patient updateData()", e);
 		}

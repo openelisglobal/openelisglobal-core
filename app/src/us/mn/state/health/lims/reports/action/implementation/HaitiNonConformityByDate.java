@@ -37,17 +37,14 @@ public class HaitiNonConformityByDate extends NonConformityByDate implements IRe
 	}
 
 	@Override
-	protected void createReportParameters() throws IllegalStateException {
-		super.createReportParameters();
-		reportParameters.put("supportStudy", "false");
-		reportParameters.put("supportService", "false");
-		reportParameters.put("supportSiteSubject", "false");
+    protected void createReportParameters() throws IllegalStateException{
+        super.createReportParameters();
+        reportParameters.put( "supportStudy", "false" );
+        reportParameters.put( "supportService", "false" );
+        reportParameters.put( "supportSiteSubject", "false" );
+        reportParameters.put( "labName1", ConfigurationProperties.getInstance().getPropertyValue( Property.SiteName ) );
+        reportParameters.put( "labName2", "" );
 
-		String logoName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
-		reportParameters.put("siteLogo", useLogo ? logoName : null);
-			reportParameters.put("labName1", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-			reportParameters.put("labName2", "");
-		
-		
-	}
+
+    }
 }

@@ -71,7 +71,6 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameUser, "autoFillTechNameUser", "false");
 		setDBPropertyMappingAndDefault(Property.failedValidationMarker, "showValidationFailureIcon", "true");
 		setDBPropertyMappingAndDefault(Property.SiteName, "SiteName", "");
-		setDBPropertyMappingAndDefault(Property.useLogoInReport, "useLogoInReport", "true");
 		setDBPropertyMappingAndDefault(Property.PasswordRequirments , "passwordRequirements", "MINN");
 		setDBPropertyMappingAndDefault(Property.FormFieldSet , "setFieldForm", IActionConstants.FORM_FIELD_SET_HAITI);
 		setDBPropertyMappingAndDefault(Property.StringContext , "stringContext","");

@@ -13,7 +13,6 @@
 		<defaultValueExpression><![CDATA["Lab No."]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
-	<parameter name="siteLogo" class="java.lang.String"/>
 	<parameter name="labName" class="java.lang.String"/>
 	<parameter name="accessionPrefix" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="startDate" class="java.lang.String" isForPrompting="false"/>
@@ -21,6 +20,7 @@
 	<parameter name="isTestReport" class="java.lang.Boolean" isForPrompting="false">
 		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
 	</parameter>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -52,9 +52,9 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<image>
+			<image isUsingCache="true">
 				<reportElement x="1" y="1" width="48" height="45"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{siteLogo}]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
 				<reportElement x="164" y="2" width="229" height="20"/>
@@ -177,7 +177,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="182" y="16" width="162" height="14">
-					<printWhenExpression><![CDATA[!$P{isReportByTest}]]></printWhenExpression>
+					<printWhenExpression><![CDATA[!$P{isTestReport}]]></printWhenExpression>
 				</reportElement>
 				<textElement/>
 				<text><![CDATA[Nom du test]]></text>

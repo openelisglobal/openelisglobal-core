@@ -332,11 +332,6 @@ public class PatientHaitiClinical extends PatientReport implements IReportCreato
 	}
 
 	@Override
-	protected String getSiteLogo(){
-		return isLNSP ? "HaitiLNSP.jpg" : "labLogo.jpg";
-	}
-
-	@Override
 	protected void initializeReportItems(){
 		super.initializeReportItems();
 		clinicalReportItems = new ArrayList<ClinicalPatientData>();

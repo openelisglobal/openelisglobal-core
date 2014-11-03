@@ -17,6 +17,7 @@
 	<parameter name="contact" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
 	</parameter>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -39,9 +40,9 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
-			<image>
+			<image isUsingCache="true">
 				<reportElement mode="Transparent" x="1" y="0" width="60" height="55" backcolor="#FFFFFF"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "RetroCILogo.jpg"]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="440" y="127" width="109" height="18" backcolor="#FFFFFF">

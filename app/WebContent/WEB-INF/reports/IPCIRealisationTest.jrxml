@@ -10,8 +10,8 @@
 	</parameter>
 	<parameter name="directorName" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="reportTitle" class="java.lang.String"/>
-	<parameter name="siteLogo" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="siteName" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<field name="sectionName" class="java.lang.String"/>
 	<field name="testName" class="java.lang.String"/>
 	<field name="required" class="java.lang.Integer"/>
@@ -105,7 +105,7 @@
 			</textField>
 			<image>
 				<reportElement x="3" y="2" width="141" height="140"/>
-				<imageExpression class="java.lang.String"><![CDATA["/images/IPCI_Logo.png"]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement mode="Opaque" x="144" y="68" width="331" height="33" backcolor="#FFFFFF"/>

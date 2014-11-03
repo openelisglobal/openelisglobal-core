@@ -282,11 +282,6 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 	}
 
 	@Override
-	protected String getSiteLogo(){
-		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
-	}
-
-	@Override
 	protected String getNameForReport() {
 		return StringUtil.getContextualMessageForKey("report.confirmation.title");
 	}

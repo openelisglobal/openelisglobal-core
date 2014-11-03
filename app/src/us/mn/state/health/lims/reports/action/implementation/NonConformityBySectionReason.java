@@ -45,7 +45,6 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
         super.createReportParameters();
         String reportTitle = StringUtil.getMessageForKey("reports.nonConformity.bySectionReason.title") + " " + dateRange;
         reportParameters.put("reportTitle", reportTitle);
-        reportParameters.put("leftImage", getLeftImage());
         reportParameters.put("supervisorSignature", ConfigurationProperties.getInstance().isPropertyValueEqual(Property.SIGNATURES_ON_NONCONFORMITY_REPORTS, "true"));
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
 			reportParameters.put("headerName", "CILNSPHeader.jasper");	
@@ -53,17 +52,7 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
 			reportParameters.put("headerName", getHeaderName());
 		}
     }
-    
-	protected String getLeftImage(){
-		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI IPCI")){
-			return "IPCI_Logo.png";
-		}else if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI_REGIONAL")){
-			return "LNSPLogo.jpg";
-		}else{
-			return "HaitiFlag.gif";
-		}
-	}
-	
+
     protected abstract String getHeaderName();
     
     @Override

@@ -15,7 +15,7 @@
 	<parameter name="labName1" class="java.lang.String"/>
 	<parameter name="labName2" class="java.lang.String"/>
 	<parameter name="reportTitle" class="java.lang.String"/>
-	<parameter name="siteLogo" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -45,9 +45,9 @@
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
-			<image scaleImage="FillFrame">
+			<image scaleImage="FillFrame" isUsingCache="true">
 				<reportElement x="224" y="37" width="104" height="49"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "images/LNSPLogo.jpg"]]></imageExpression>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="317" y="3" width="234" height="26"/>

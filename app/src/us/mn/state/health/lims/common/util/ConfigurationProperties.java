@@ -82,7 +82,6 @@ public abstract class ConfigurationProperties {
         AUTOFILL_COLLECTION_DATE,    //If true the collection date will be auto-filled with current date
         failedValidationMarker,      //If true results that failed validation will have icon next to them
         resultsResendTime,           //How much time between trying to resend results that failed to reach their destination
-        useLogoInReport,             //If true a lab logo will be used on reports
         TRACK_PATIENT_PAYMENT,       //If true then patient payment status can be entered
         ALERT_FOR_INVALID_RESULTS,   //If true then technician will get an alert for results outside of the valid range
         DEFAULT_LANG_LOCALE,         //Default language locale

@@ -45,7 +45,11 @@
 	   	    </td>
 	   		<% if( site.getValueType().equals("logoUpload")){ %>
 	   		<td class="textcontent">
-	   		    <img src="./images/labLogo.jpg?ver=<%= Math.random() %>" 
+                <% if( site.getName().equals("headerLeftImage")){ %>
+                <img src="./images/leftLabLogo.jpg?ver=<%= Math.random() %>"
+                <%}else{%>
+                <img src="./images/rightLabLogo.jpg?ver=<%= Math.random() %>"
+                <%}%>
 	   		         height="42" 
 	   		         width="42"  />
 	   		</td>
