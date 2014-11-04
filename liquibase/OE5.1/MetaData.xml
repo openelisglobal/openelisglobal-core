@@ -45,4 +45,63 @@
             <where>name = 'useLogoInReport'</where>
         </delete>
     </changeSet>
+    <changeSet id="3" author="paulsc">
+        <comment>Backfills admin permission</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="PatientConfiguration"/>
+            <column name="description" value="Admin=&gt;patient config"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="ResultConfiguration"/>
+            <column name="description" value="Admin=&gt;Result config"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="PrintedReportsConfiguration"/>
+            <column name="description" value="Admin=&gt;printed reports config"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="NonConformityConfiguration"/>
+            <column name="description" value="Admin=&gt;non-conformity config"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Maintenance Admin' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'PatientConfiguration' ) " />
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Maintenance Admin' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'ResultConfiguration' ) " />
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Maintenance Admin' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'PrintedReportsConfiguration' ) " />
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Maintenance Admin' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'NonConformityConfiguration' ) " />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
