@@ -39,13 +39,13 @@
         <column name="description_key" value="siteInfo.lab.logo.left" />
     </insert>
 </changeSet>
-    <changeSet id="2" author="paulsc" context="CI_IPCI, ciLNSP, haiti, haitiLNSP, ci_regional">
+    <changeSet id="2" author="paulsc" >
         <comment>Removes the use logo entry from site information</comment>
         <delete tableName="site_information" >
             <where>name = 'useLogoInReport'</where>
         </delete>
     </changeSet>
-    <changeSet id="3" author="paulsc">
+    <changeSet id="3" author="paulsc" context="CI_IPCI, ciLNSP, haiti, haitiLNSP, ci_regional">
         <comment>Backfills admin permission</comment>
         <insert schemaName="clinlims" tableName="system_module">
             <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
