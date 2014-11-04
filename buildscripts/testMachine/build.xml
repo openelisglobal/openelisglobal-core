@@ -398,7 +398,7 @@
         </antcall>
 
         <antcall target="buildInstaller">
-            <param name="context" value="kenyaOpenElis"/>
+            <param name="context" value="KenyaOpenElis"/>
             <param name="dbName" value="kenya"/>
             <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
         </antcall>
