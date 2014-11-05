@@ -207,10 +207,12 @@ public class AuditTrailViewWorker {
 
 	private Collection<AuditTrailItem> addPatientHistory() {	
 		List<AuditTrailItem> items = new ArrayList<AuditTrailItem>();
+		HistoryService historyService;
 		Patient patient = PatientUtil.getPatientForSample(sample);
-		
-		HistoryService historyService = new PatientHistoryService(patient);
-		items.addAll(historyService.getAuditTrailItems());
+		if( patient != null) {
+			historyService = new PatientHistoryService(patient);
+			items.addAll(historyService.getAuditTrailItems());
+		}
 		
 //		historyService = new HistoryService(sample, HistoryType.PERSON);
 //		items.addAll(historyService.getAuditTrailItems());

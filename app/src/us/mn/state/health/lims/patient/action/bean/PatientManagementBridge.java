@@ -51,6 +51,7 @@ public class PatientManagementBridge{
 
     public PatientManagementInfo getPatientManagementInfoFor( Patient patient, boolean readOnly){
         PatientManagementInfo info = new PatientManagementInfo();
+        info.setReadOnly( readOnly );
 
         if( patient != null){
             PatientService patientService = new PatientService( patient );
@@ -65,13 +66,11 @@ public class PatientManagementBridge{
             info.setBirthDateForDisplay( patientService.getBirthdayForDisplay() );
             info.setNationalId( patientService.getNationalId() );
             info.setSTnumber( patientService.getSTNumber() );
-            info.setReadOnly( readOnly );
             info.setMothersInitial( patientService.getMothersInitial() );
             if(readOnly){
                 info.setAge( DateUtil.getCurrentAgeForDate( DateUtil.convertStringDateStringTimeToTimestamp( patientService.getBirthdayForDisplay(), null ),
                         DateUtil.convertStringDateStringTimeToTimestamp(DateUtil.getCurrentDateAsText(), null )));
             }
-
         }
 
         return info;

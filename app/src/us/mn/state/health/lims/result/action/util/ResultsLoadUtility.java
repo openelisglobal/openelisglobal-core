@@ -197,8 +197,11 @@ public class ResultsLoadUtility {
 	 * dob, gender, st, nationalId
 	 */
 	@Deprecated
-	public void addIdentifingPatientInfo(Patient patient, DynaActionForm dynaForm) throws IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
+	public void addIdentifingPatientInfo(Patient patient, DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+		if( patient == null){
+			return;
+		}
 
 		PatientIdentityTypeMap identityMap = PatientIdentityTypeMap.getInstance();
 		List<PatientIdentity> identityList = PatientUtil.getIdentityListForPatient(patient);
