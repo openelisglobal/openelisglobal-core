@@ -21,13 +21,19 @@ import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
+import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +43,14 @@ public class SampleService {
     private static final SampleDAO sampleDAO = new SampleDAOImpl();
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
     private static final SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
+    private static final SampleQaEventDAO sampleQaEventDAO  = new SampleQaEventDAOImpl();
     private static final Set<Integer> CONFIRMATION_STATUS_SET = new HashSet<Integer>(  );
+    public static final String TABLE_REFERENCE_ID;
+
+    static{
+        ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
+        TABLE_REFERENCE_ID = refTableDAO.getReferenceTableByName( "SAMPLE" ).getId();
+    }
 
 	private Sample sample;
 
@@ -115,5 +128,13 @@ public class SampleService {
 
     public Patient getPatient(){
         return sampleHumanDAO.getPatientForSample( sample );
+    }
+
+    public List<Analysis> getAnalysis(){
+        return sample == null ? new ArrayList<Analysis>(  ) : analysisDAO.getAnalysesBySampleId( sample.getId() );
+    }
+
+    public List<SampleQaEvent> getSampleQAEventList(){
+        return sample == null ? new ArrayList<SampleQaEvent>(  ) : sampleQaEventDAO.getSampleQaEventsBySample(sample);
     }
 }

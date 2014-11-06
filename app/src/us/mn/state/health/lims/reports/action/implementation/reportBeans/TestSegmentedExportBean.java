@@ -16,6 +16,9 @@
  */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.util.StringUtil;
+
 public class TestSegmentedExportBean{
 
 	private String siteCode = "";
@@ -35,9 +38,13 @@ public class TestSegmentedExportBean{
 	private String result = "";
 	private String resultDate = "";
     private String department = "";
+    private String collectionDate = "";
+    private String collectionTime = "";
+    private String receptionTime = "";
+    private String notes = "";
 
-    private static final String header = "CODSITE,LNSPID,FIRSTNAME,LASTNAME,SEX,DOB,AGE,SPECIMENID,STATUT,SPECIMEN,RECEIPTDATE,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE";
-    private static final String depersonalizedeader = "SPECIMEN,RECEIPTDATE,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE";
+    private static final String header = "CODSITE,LNSPID,FIRSTNAME,LASTNAME,SEX,DOB,AGE,SPECIMENID,STATUT,SPECIMEN,COLLECTDATE,COLLECTTIME,RECEIPTDATE,RECEIPTTIME,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE,NOTES";
+    private static final String depersonalizedeader = "SPECIMEN,COLLECTDATE,COLLECTTIME,RECEIPTDATE,RECEIPTTIME,SPECIMEN_PROVENANCE,DEPARTEMENT,CATEGORIE,TEST,RESULTAT,RESULTDATE,NOTES";
 
 	public String getAsCSVString(){
 		StringBuilder builder = new StringBuilder();
@@ -67,7 +74,13 @@ public class TestSegmentedExportBean{
         StringBuilder builder = new StringBuilder();
         builder.append(sampleType);
         builder.append(",");
+        builder.append(collectionDate);
+        builder.append(",");
+        builder.append(collectionTime);
+        builder.append(",");
         builder.append(receptionDate);
+        builder.append(",");
+        builder.append(receptionTime);
         builder.append(",");
         builder.append(referringSiteName);
         builder.append(",");
@@ -80,6 +93,9 @@ public class TestSegmentedExportBean{
         builder.append(result);
         builder.append(",");
         builder.append(resultDate);
+        builder.append(",");
+        builder.append( notes );
+
         return builder.toString();
     }
     public static String getHeader(){
@@ -88,6 +104,23 @@ public class TestSegmentedExportBean{
     public static String getDepersonalizedHeader(){
        return depersonalizedeader;
     }
+    
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+    
+    public void setCollectionDate(String collectionDate) {
+        this.collectionDate = collectionDate == null ? "" : collectionDate;
+    }
+
+    public void setCollectionTime(String collectionTime) {
+        this.collectionTime = collectionTime == null ? "" : collectionTime;
+    }
+
+    public void setReceptionTime(String receptionTime) {
+        this.receptionTime = receptionTime;
+    }
+    
 	public void setSiteCode(String siteCode){
 		this.siteCode = siteCode == null ? "" : siteCode;
 	}

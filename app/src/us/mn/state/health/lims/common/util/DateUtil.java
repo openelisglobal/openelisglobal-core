@@ -611,6 +611,18 @@ public class DateUtil {
 		return new SimpleDateFormat( StringUtil.getMessageForKey("timestamp.format.formatKey")).format(timestamp);
 	}
 
+    public static String convertTimestampToStringDateAnd12HourTime(Timestamp timestamp) {
+        if( timestamp == null){
+            return null;
+        }
+        return new SimpleDateFormat( StringUtil.getMessageForKey("timestamp.format.formatKey.12")).format(timestamp);
+    }
+    public static String convertTimestampToString12HourTime(Timestamp timestamp) {
+        if( timestamp == null){
+            return null;
+        }
+        return new SimpleDateFormat( StringUtil.getMessageForKey("timestamp.format.formatKey.time.12")).format(timestamp);
+    }
 	public static java.sql.Date convertTimestampToSqlDate( Timestamp timestamp){
 		return new java.sql.Date(timestamp.getTime());
 	}

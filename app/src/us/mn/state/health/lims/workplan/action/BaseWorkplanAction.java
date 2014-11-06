@@ -26,11 +26,15 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.IPatientService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.dao.TestDAO;
@@ -40,7 +44,6 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -189,18 +192,22 @@ public class BaseWorkplanAction extends BaseAction {
 		}
 	}
 	
-    protected String getPatientName( Analysis analysis){
+    protected String getPatientName(Analysis analysis){
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-            IPatientService patientService = new PatientService(analysis.getSampleItem().getSample());
-            String nationalId = patientService.getNationalId();
-            if (GenericValidator.isBlankOrNull(nationalId))
-                return patientService.getLastName().toUpperCase();
-            else
-                return patientService.getLastName().toUpperCase() + " / " + nationalId;
+            Sample sample = analysis.getSampleItem().getSample();
+            IPatientService patientService = new PatientService(sample);
+            List<String> values = new ArrayList<String>();
+            values.add(patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
+            values.add(patientService.getNationalId());
+            
+            String referringPatientId = ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, sample.getId() );
+            values.add( referringPatientId == null ? "" : referringPatientId);
+            return StringUtil.buildDelimitedStringFromList(values, " / ", true);
+                        
         } else 
             return ""; 
     }
-	
+    
 	protected String getTestSectionName() {
 		return typeNameGroup.getName();
 	}

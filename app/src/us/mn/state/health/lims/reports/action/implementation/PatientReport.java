@@ -798,7 +798,7 @@ public abstract class PatientReport extends Report{
      *
      * @return  A single record
      */
-    protected ClinicalPatientData reportAnalysisResults(Timestamp lastReportTime, boolean hasParent){
+    protected ClinicalPatientData reportAnalysisResults( boolean hasParent){
         ClinicalPatientData data = new ClinicalPatientData();
         String testName = null;
         String sortOrder = "";
@@ -841,8 +841,7 @@ public abstract class PatientReport extends Report{
             data.setTestDate( DateUtil.convertSqlDateToStringDate( reportAnalysis.getCompletedDate() ) );
             sortOrder = reportAnalysis.getSampleItem().getSortOrder();
             data.setOrderFinishDate( completionDate );
-            data.setOrderDate( DateUtil.convertSqlDateToStringDate( currentSampleService.getOrderedDate() ) );
-            data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndTime( reportAnalysis.getSampleItem().getCollectionDate() ) );
+            data.setOrderDate( DateUtil.convertTimestampToStringDateAnd12HourTime( new Timestamp( currentSampleService.getOrderedDate().getTime() )) );
         }
 
         data.setAccessionNumber( currentSampleService.getAccessionNumber() + "-" + sortOrder );

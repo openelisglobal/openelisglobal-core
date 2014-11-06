@@ -35,7 +35,6 @@ import java.util.List;
 public class RejectionReportByTest extends RejectionReport implements IReportCreator, IReportParameterSetter {
     private String testName = "";
 
-
     @Override
     public void setRequestParameters( BaseActionForm dynaForm ){
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
@@ -84,14 +83,13 @@ public class RejectionReportByTest extends RejectionReport implements IReportCre
         } );
     }
 
+    @Override
+    protected boolean isReportByTest(){
+        return Boolean.TRUE;
+    }
 
     @Override
     protected String getActivityLabel(){
         return "Test: " + testName;
-    }
-
-    @Override
-    protected boolean getSplitNameAndTest(){
-        return false;
     }
 }

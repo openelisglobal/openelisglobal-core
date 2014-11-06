@@ -31,6 +31,10 @@ import java.util.List;
 public class ActivityReportByTest extends ActivityReport implements IReportCreator, IReportParameterSetter {
     private String testName = "";
 
+    @Override
+    protected boolean isReportByTest(){
+        return true;
+    }
 
     @Override
     public void setRequestParameters( BaseActionForm dynaForm ){
@@ -46,7 +50,10 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
 
         testName = getNameForId( testSelection  );
         createReportParameters();
-
+        
+        // do not print the separator bar between name/Id and tests
+        reportParameters.put( "underlineResults", false );
+        
         List<Result> resultList = ResultService.getResultsInTimePeriodWithTest( dateRange.getLowDate(), dateRange.getHighDate(), testSelection.getSelection() );
         testsResults = new ArrayList<ActivityReportBean>( resultList.size() );
 
@@ -65,10 +72,5 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
     @Override
     protected String getActivityLabel(){
         return "Test: " + testName;
-    }
-
-    @Override
-    protected boolean getSplitNameAndTest(){
-        return false;
     }
 }
