@@ -180,7 +180,7 @@ public class ResultService {
 
                     for( Result sibResult : dictionaryResults ){
                         Dictionary dictionary = dictionaryDAO.getDictionaryById(sibResult.getValue());
-                        reportResult = dictionary.getId() != null ? dictionary.getLocalizedName() : "";
+                        reportResult = (dictionary != null && dictionary.getId() != null) ? dictionary.getLocalizedName() : "";
                         if( quantification != null && quantification.getParentResult().getId().equals( sibResult.getId() ) ){
                             reportResult += separator + quantification.getValue();
                         }
