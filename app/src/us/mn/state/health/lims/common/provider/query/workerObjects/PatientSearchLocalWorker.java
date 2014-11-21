@@ -59,8 +59,10 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
 		SearchResultsDAO search = new SearchResultsDAOImp();
         //N.B. results do not have the referrinngPatientId information but it is not displayed so for now it will be left as null
 		List<PatientSearchResults> results = search.getSearchResults(lastName, firstName, STNumber, subjectNumber, nationalID, nationalID, patientID, guid);
-        List<PatientSearchResults> observationResults = getObservationsByReferringPatientId(nationalID);
-        results.addAll( observationResults );
+        if( !GenericValidator.isBlankOrNull(nationalID)) {
+            List<PatientSearchResults> observationResults = getObservationsByReferringPatientId(nationalID);
+            results.addAll(observationResults);
+        }
 		sortPatients(results);
 
 		if (!results.isEmpty()) {
@@ -79,13 +81,13 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
 
     private List<PatientSearchResults> getObservationsByReferringPatientId( String referringId ){
         List<PatientSearchResults> resultList = new ArrayList<PatientSearchResults>(  );
-        List<ObservationHistory> observationList = ObservationHistoryService.getObservationsByTypeAndValue( ObservationType.REFERRERS_PATIENT_ID, referringId );
+        List<ObservationHistory> observationList = ObservationHistoryService.getObservationsByTypeAndValue(ObservationType.REFERRERS_PATIENT_ID, referringId);
 
-        if( observationList != null){
-            for( ObservationHistory observation : observationList ){
-                Patient patient = patientDAO.getData( observation.getPatientId() );
-                if( patient != null ){
-                    resultList.add( getSearchResultsForPatient( patient, referringId ) );
+        if (observationList != null) {
+            for (ObservationHistory observation : observationList) {
+                Patient patient = patientDAO.getData(observation.getPatientId());
+                if (patient != null) {
+                    resultList.add(getSearchResultsForPatient(patient, referringId));
                 }
 
             }
