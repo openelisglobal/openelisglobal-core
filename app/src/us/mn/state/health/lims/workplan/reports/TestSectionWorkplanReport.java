@@ -60,9 +60,17 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
 		parameterMap.put("nameOfTest", getNameOfTest());
 		parameterMap.put("nameOfPatient", getNameOfPatient());
 		parameterMap.put("labName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-        parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
-        parameterMap.put("prefixLength", PREFIX_LENGTH );
-        parameterMap.put("SUBREPORT_DIR", reportPath);
+                parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
+                parameterMap.put("prefixLength", PREFIX_LENGTH );
+                parameterMap.put("SUBREPORT_DIR", reportPath);
+                parameterMap.put("receptionDate", StringUtil.getMessageForKey("report.receptionDate"));
+                parameterMap.put("workPlan", StringUtil.getMessageForKey("report.workPlan"));
+                parameterMap.put("appointmentDate", StringUtil.getMessageForKey("report.appointmentDate"));
+                parameterMap.put("testName", StringUtil.getMessageForKey("report.testName"));
+                parameterMap.put("date", StringUtil.getMessageForKey("report.date"));
+                parameterMap.put("from", StringUtil.getMessageForKey("report.from"));
+                parameterMap.put("appointment", StringUtil.getMessageForKey("report.appointment"));
+                parameterMap.put("about", StringUtil.getMessageForKey("report.about"));
 
 		return parameterMap;	
 	

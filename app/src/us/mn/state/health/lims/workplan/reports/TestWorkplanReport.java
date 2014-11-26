@@ -53,10 +53,13 @@ public class TestWorkplanReport implements IWorkplanReport {
 		parameterMap.put("subjectNoTitle", StringUtil.getContextualMessageForKey("patient.subject.number"));
 		parameterMap.put("nameOfPatient", getNameOfPatient());
 		parameterMap.put("labName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-        parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
-        parameterMap.put("prefixLength", PREFIX_LENGTH );
+                parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
+                parameterMap.put("prefixLength", PREFIX_LENGTH );
 		parameterMap.put("SUBREPORT_DIR", reportPath);
-		
+                parameterMap.put("receptionDate", StringUtil.getMessageForKey("report.receptionDate"));
+                parameterMap.put("workPlan", StringUtil.getMessageForKey("report.workPlan"));
+                parameterMap.put("appointmentDate", StringUtil.getMessageForKey("report.appointmentDate"));
+                
 		return parameterMap;	
 	
 	}

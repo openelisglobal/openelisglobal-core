@@ -10,6 +10,7 @@
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="siteName" class="java.lang.String"/>
 	<parameter name="directorName" class="java.lang.String"/>
+        <parameter name="localization" class="java.util.Map" isForPrompting="false"/>
 	<field name="testSection" class="java.lang.String"/>
 	<field name="count" class="java.lang.String"/>
 	<background>
@@ -20,8 +21,8 @@
 	</title>
 	<pageHeader>
 		<band height="84" splitType="Stretch">
-			<staticText>
-				<reportElement key="staticText" x="1" y="30" width="554" height="22"/>
+			<textField>
+				<reportElement x="1" y="30" width="554" height="22"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -31,8 +32,8 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Validation Arriéré]]></text>
-			</staticText>
+                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("appointmentDate")]]></textFieldExpression>
+			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm">
 				<reportElement x="398" y="56" width="157" height="22"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -54,14 +55,14 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA["Responsable de Laboratoire: " + $P{directorName}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("labManager")+ " " + $P{directorName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="20" splitType="Stretch">
-			<staticText>
-				<reportElement key="staticText" mode="Opaque" x="1" y="0" width="176" height="18" backcolor="#CCCCCC"/>
+			<textField>
+				<reportElement mode="Opaque" x="1" y="0" width="176" height="18" backcolor="#CCCCCC"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -71,18 +72,18 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Section d'essai]]></text>
-			</staticText>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("testSection")]]></textFieldExpression>
+			</textField>
 			<line>
 				<reportElement key="line-1" x="1" y="19" width="557" height="1"/>
 			</line>
-			<staticText>
+			<textField>
 				<reportElement mode="Opaque" x="177" y="0" width="46" height="18" backcolor="#CCCCCC"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Total]]></text>
-			</staticText>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
