@@ -10,6 +10,7 @@
 	</parameter>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
+        <parameter name="localization" class="java.util.Map" isForPrompting="false"/>
 	<field name="msgLine1" class="java.lang.String"/>
 	<field name="msgLine2" class="java.lang.String"/>
 	<field name="msgLine3" class="java.lang.String"/>
@@ -49,13 +50,13 @@
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
-			<staticText>
+			<textField>
 				<reportElement x="0" y="0" width="572" height="61"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="20" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Il n’est pas possible à créer ce rapport à ce temps.]]></text>
-			</staticText>
+                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("noReportMessage")]]></textFieldExpression>
+                        </textField>
 		</band>
 	</columnHeader>
 	<detail>

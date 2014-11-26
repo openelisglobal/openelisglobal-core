@@ -44,7 +44,7 @@ public class ActivityReportByTestSection extends ActivityReport implements IRepo
 
     @Override
     protected String getActivityLabel(){
-        return "Unité: " + unitName;
+        return StringUtil.getMessageForKey( "report.unit" ) + ": " + unitName;
     }
 
     @Override
