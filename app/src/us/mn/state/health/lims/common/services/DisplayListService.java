@@ -49,8 +49,9 @@ public class DisplayListService implements LocaleChangeListener {
 
     public enum ListType {
 		HOURS, 
-		MINS, 
-		SAMPLE_TYPE, 
+		MINS,
+        SAMPLE_TYPE_ACTIVE,
+        SAMPLE_TYPE_INACTIVE,
 		INITIAL_SAMPLE_CONDITION,
         SAMPLE_PATIENT_PAYMENT_OPTIONS,
 		PATIENT_HEALTH_REGIONS, 
@@ -79,7 +80,8 @@ public class DisplayListService implements LocaleChangeListener {
 	static {
 		typeToListMap.put(ListType.HOURS, createHourList());
 		typeToListMap.put(ListType.MINS, createMinList());
-		typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
+        typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
+        typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
 		typeToListMap.put(ListType.PATIENT_HEALTH_REGIONS,createPatientHealthRegions());
 		typeToListMap.put(ListType.PATIENT_MARITAL_STATUS,createFromDictionaryCategory("Marital Status Demographic Information"));
@@ -107,7 +109,8 @@ public class DisplayListService implements LocaleChangeListener {
     @Override
     public void localeChanged(String locale) {
         //refreshes those lists which are dependent on local
-        typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
+        typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
+        typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
         typeToListMap.put(ListType.PATIENT_HEALTH_REGIONS,createPatientHealthRegions());
         typeToListMap.put(ListType.PATIENT_MARITAL_STATUS,createFromDictionaryCategory("Marital Status Demographic Information"));
@@ -174,27 +177,37 @@ public class DisplayListService implements LocaleChangeListener {
     }
 
     public static List<IdValuePair> getFreshList(ListType listType) {
-		// note this should be expanded but the only use case we have is for
-		// referring clinics
-		switch (listType) {
-		case SAMPLE_PATIENT_REFERRING_CLINIC: {
-			typeToListMap.put(ListType.SAMPLE_PATIENT_REFERRING_CLINIC, createReferringClinicList());
-			break;
-		}
-        case ALL_TESTS:{
-            TestService.testNamesChanged();
-            typeToListMap.put(ListType.ALL_TESTS, createTestList());
-            break;
-        }
-        case ORDERABLE_TESTS:{
-            TestService.testNamesChanged();
-            typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
-            break;
-        }
-
-		}
+		refreshList( listType);
 		return typeToListMap.get(listType);
 	}
+
+    public static void refreshList( ListType listType){
+
+        switch (listType) {
+            case SAMPLE_PATIENT_REFERRING_CLINIC: {
+                typeToListMap.put(ListType.SAMPLE_PATIENT_REFERRING_CLINIC, createReferringClinicList());
+                break;
+            }
+            case ALL_TESTS:{
+                TestService.testNamesChanged();
+                typeToListMap.put(ListType.ALL_TESTS, createTestList());
+                break;
+            }
+            case ORDERABLE_TESTS:{
+                TestService.testNamesChanged();
+                typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
+                break;
+            }
+            case SAMPLE_TYPE_ACTIVE:{
+                typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
+                break;
+            }
+            case SAMPLE_TYPE_INACTIVE:{
+                typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
+                break;
+            }
+        }
+    }
 
 	private static List<IdValuePair> createReferringClinicList() {
 		List<IdValuePair> requesterList = new ArrayList<IdValuePair>();
@@ -324,14 +337,14 @@ public class DisplayListService implements LocaleChangeListener {
         return numberedList;
     }
 
-	private static List<IdValuePair> createSampleTypeList() {
+	private static List<IdValuePair> createSampleTypeList(boolean inactiveTypes) {
 		TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
 		List<TypeOfSample> list = typeOfSampleDAO.getTypesForDomainBySortOrder(TypeOfSampleDAO.SampleDomain.HUMAN);
 
 		List<IdValuePair> filteredList = new ArrayList<IdValuePair>();
 
 		for (TypeOfSample type : list) {
-			if (type.isActive()) {
+			if ((!inactiveTypes && type.isActive()) || (inactiveTypes && !type.isActive()) ) {
 				filteredList.add(new IdValuePair(type.getId(), type.getLocalizedName()));
 			}
 		}

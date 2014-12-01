@@ -199,6 +199,9 @@ public class Test extends EnumValueItemImpl {
 		return isActive;
 	}
 
+	public boolean isActive(){
+		return "Y".equals(isActive);
+	}
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}

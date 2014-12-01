@@ -33,7 +33,7 @@
 
 
     </script>
-
+    <br>
     <input type="button" value='<%= StringUtil.getMessageForKey("banner.menu.administration") %>'
            onclick="submitAction('MasterListsPage.do');"
            class="textButton"/> &rarr; <%=StringUtil.getMessageForKey( "configuration.test.management" )%>
@@ -43,6 +43,10 @@
                    onclick="submitAction('TestRenameEntry.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.rename.explain")%></li>
+        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.activate") %>'
+                   onclick="submitAction('TestActivation.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.activate.explain")%></li>
     </ul>
 
 

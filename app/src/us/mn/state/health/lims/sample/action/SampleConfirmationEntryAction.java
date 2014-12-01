@@ -64,7 +64,7 @@ public class SampleConfirmationEntryAction extends BaseSampleEntryAction {
 		PropertyUtils.setProperty(dynaForm, "requestingOrganizationList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));
         PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
         PropertyUtils.setProperty(dynaForm, "patientSearch", new PatientSearch());
-        PropertyUtils.setProperty( dynaForm, "sampleTypes", DisplayListService.getList( ListType.SAMPLE_TYPE ) );
+        PropertyUtils.setProperty( dynaForm, "sampleTypes", DisplayListService.getList( ListType.SAMPLE_TYPE_ACTIVE) );
 			if (needSampleInitialConditionList) {
             PropertyUtils.setProperty(dynaForm,"initialSampleConditionList", DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
 		}

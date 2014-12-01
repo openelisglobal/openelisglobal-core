@@ -135,4 +135,28 @@
             <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'NonConformityConfiguration' ) " />
         </insert>
     </changeSet>
+    <changeSet author="paulsc" id="5" >
+        <comment>Sets permissions for activating and deactivating tests</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="TestActivation"/>
+            <column name="description" value="Admin=&gt;test mang=&gt;activate"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Test Management' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'TestActivation' ) " />
+        </insert>
+    </changeSet>
+    <changeSet author="paulsc" id="6" >
+        <comment>Adds display_key to all dictionary results</comment>
+        <sql>
+            update clinlims.dictionary set display_key = substr(replace(replace(replace(replace(('dictionary.result.' || dict_entry), ' ', '_'), 'Ã©', 'e'),'é','e' ),$$'$$,''),0,60)
+            where dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Haiti Lab') and dict_entry != '';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

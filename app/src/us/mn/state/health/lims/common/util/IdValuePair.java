@@ -1,6 +1,9 @@
 package us.mn.state.health.lims.common.util;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /*
  * Nothing special, just for when id's and values should be encapsulated. 
@@ -33,6 +36,17 @@ public class IdValuePair implements Serializable{
 
 	public String getValue() {
 		return value;
+	}
+
+	public static void sortByValue( List<IdValuePair> list){
+		if( !list.isEmpty()) {
+			Collections.sort(list, new Comparator<IdValuePair>() {
+				@Override
+				public int compare(IdValuePair o1, IdValuePair o2) {
+					return o1.getValue().compareTo(o2.getValue());
+				}
+			});
+		}
 	}
 }
 
