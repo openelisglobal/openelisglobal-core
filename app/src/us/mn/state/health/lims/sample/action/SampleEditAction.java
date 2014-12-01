@@ -119,7 +119,7 @@ public class SampleEditAction extends BaseAction {
 
 				List<SampleItem> sampleItemList = getSampleItems(sample);
 				setPatientInfo(dynaForm, sample);
-                List<SampleEditItem> currentTestList = getCurrentTestInfo( dynaForm, sampleItemList, accessionNumber, allowedToCancelResults );
+                List<SampleEditItem> currentTestList = getCurrentTestInfo( sampleItemList, accessionNumber, allowedToCancelResults );
                 PropertyUtils.setProperty(dynaForm, "existingTests", currentTestList);
 				setAddableTestInfo(dynaForm, sampleItemList, accessionNumber);
 				setAddableSampleTypes(dynaForm);
@@ -206,7 +206,7 @@ public class SampleEditAction extends BaseAction {
 		PropertyUtils.setProperty(dynaForm, "nationalId", patientService.getNationalId());
 	}
 
-	private List<SampleEditItem> getCurrentTestInfo( DynaActionForm dynaForm, List<SampleItem> sampleItemList, String accessionNumber, boolean allowedToCancelAll ) throws IllegalAccessException, InvocationTargetException,
+	private List<SampleEditItem> getCurrentTestInfo(  List<SampleItem> sampleItemList, String accessionNumber, boolean allowedToCancelAll ) throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
 		List<SampleEditItem> currentTestList = new ArrayList<SampleEditItem>();
 
@@ -280,7 +280,7 @@ public class SampleEditAction extends BaseAction {
 	}
 
 	private void setAddableSampleTypes(DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE));
+		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
 	}
 	
 	private void addPossibleTestsToList(SampleItem sampleItem, List<SampleEditItem> possibleTestList, String accessionNumber) {

@@ -33,6 +33,9 @@ public class TypeOfSampleUtil {
 		createTypeOfSampleIdentityMap();
 	}
 
+	public static void rebuildMaps(){
+		createTypeOfSampleIdentityMap();
+	}
     public static List<Test> getTestListBySampleTypeId(String sampleTypeId, boolean orderableOnly) {
 
         List<Test> testList = sampleIdTestMap.get(sampleTypeId);
@@ -48,6 +51,13 @@ public class TypeOfSampleUtil {
         }
     }
 
+	public static TypeOfSample getTypeOfSampleById( String id){
+		if( typeOfSampleIdtoTypeOfSampleMap == null){
+			createTestIdToTypeOfSampleMap();
+		}
+
+		return typeOfSampleIdtoTypeOfSampleMap.get(id);
+	}
 	private static List<Test> filterByOrderable(List<Test> testList) {
 		List<Test> filteredList = new ArrayList<Test>();
 		

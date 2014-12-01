@@ -35,6 +35,7 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,12 +47,13 @@ public class TestService implements LocaleChangeListener{
     public static final String HIV_TYPE = "HIV_TEST_KIT";
     public static final String SYPHILIS_TYPE = "SYPHILIS_TEST_KIT";
     private static final TestService INSTANCE = new TestService( new Test() );
-    public static final TypeOfSampleTestDAOImpl TYPE_OF_SAMPLE_TEST_DAO = new TypeOfSampleTestDAOImpl();
+    private static final TypeOfSampleTestDAOImpl TYPE_OF_SAMPLE_TEST_DAO = new TypeOfSampleTestDAOImpl();
     private static String VARIABLE_TYPE_OF_SAMPLE_ID;
     private static String LANGUAGE_LOCALE = ConfigurationProperties.getInstance().getPropertyValue( ConfigurationProperties.Property.DEFAULT_LANG_LOCALE);
     private static final TestResultDAO TEST_RESULT_DAO = new TestResultDAOImpl();
     private static final TestDAO TEST_DAO = new TestDAOImpl();
     private static final TypeOfSampleDAO TYPE_OF_SAMPLE_DAO = new TypeOfSampleDAOImpl();
+
     private final Test test;
 
     private static Map<Entity, Map<String, String>> entityToMap;
@@ -224,7 +226,7 @@ public class TestService implements LocaleChangeListener{
     private static Map<String, String> createTestIdToNameMap() {
         Map<String, String> testIdToNameMap = new HashMap<String, String>();
 
-        List<Test> tests = new TestDAOImpl().getAllActiveTests(false);
+        List<Test> tests = new TestDAOImpl().getAllTests(false);
 
         for (Test test : tests) {
             testIdToNameMap.put(test.getId(), buildTestName( test ).replace("\n", " "));
@@ -245,7 +247,7 @@ public class TestService implements LocaleChangeListener{
     private static Map<String, String> createTestIdToAugmentedNameMap() {
         Map<String, String> testIdToNameMap = new HashMap<String, String>();
 
-        List<Test> tests = new TestDAOImpl().getAllActiveTests(false);
+        List<Test> tests = new TestDAOImpl().getAllTests(false);
 
         for (Test test : tests) {
             testIdToNameMap.put(test.getId(), buildAugmentedTestName( test ).replace( "\n", " " ));
@@ -292,5 +294,16 @@ public class TestService implements LocaleChangeListener{
         }else{
             return localization.getEnglish()  + sampleName;
         }
+    }
+
+    public static List<Test> getTestsForSampleType(String sampleTypeId){
+        ArrayList<Test> tests = new ArrayList<Test>();
+
+        List<TypeOfSampleTest> typeOfSampleTests = TYPE_OF_SAMPLE_TEST_DAO.getTypeOfSampleTestsForSampleType( sampleTypeId);
+        for( TypeOfSampleTest typeOfSampleTest : typeOfSampleTests){
+            tests.add( new TestService(typeOfSampleTest.getTestId()).getTest());
+        }
+
+        return tests;
     }
 }

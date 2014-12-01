@@ -141,7 +141,7 @@ public class NonConformityAction extends BaseAction{
 			PropertyUtils.setProperty(dynaForm, "qaEventTypes", DisplayListService.getList(ListType.QA_EVENTS));
 			PropertyUtils.setProperty(dynaForm, "qaEvents", getSampleQaEventItems(sample));
 
-            PropertyUtils.setProperty( dynaForm, "typeOfSamples", DisplayListService.getList( ListType.SAMPLE_TYPE ) );
+            PropertyUtils.setProperty( dynaForm, "typeOfSamples", DisplayListService.getList( ListType.SAMPLE_TYPE_ACTIVE) );
 
 			PropertyUtils.setProperty(dynaForm, "readOnly", readOnly);
 			PropertyUtils.setProperty(dynaForm, "siteList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));

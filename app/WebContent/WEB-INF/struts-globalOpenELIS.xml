@@ -691,6 +691,12 @@
             <form-property name="testId" type="java.lang.String" initial="" />
         </form-bean>
 
+		<form-bean name="testActivationForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+			<form-property name="activeTestList" type="java.util.List" />
+			<form-property name="inactiveTestList" type="java.util.List" />
+			<form-property name="jsonChangeList" type="java.lang.String" initial="" />
+		</form-bean>
+
         <form-bean name="testManagementConfigForm" type="us.mn.state.health.lims.common.action.BaseActionForm" />
 	</form-beans>
 
@@ -721,6 +727,14 @@
         <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.test.action.TestRenameUpdate" >
             <forward name="success" path="/TestRenameEntry.do" />
         </action>
+
+		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationAction" >
+			<forward name="success" path="testActivationDefinition" />
+		</action>
+
+		<action path="/TestActivationUpdate" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationUpdate" >
+			<forward name="success" path="/TestActivation.do" />
+		</action>
 
 		<action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"

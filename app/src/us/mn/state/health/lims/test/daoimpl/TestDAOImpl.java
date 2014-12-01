@@ -120,19 +120,16 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 	public void updateData(Test test) throws LIMSRuntimeException{
 
-		// bugzilla 1417 throw Exception if active record already exists
 		try{
 			if(test.getIsActive().equals(IActionConstants.YES) && duplicateTestExists(test)){
 				throw new LIMSDuplicateRecordException("Duplicate record exists for " + TestService.getUserLocalizedTestName( test ));
 			}
 		}catch(Exception e){
-			// bugzilla 2154
 			LogEvent.logError("TestDAOImpl", "updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in Test updateData()", e);
 		}
 		Test oldData = readTest(test.getId());
 
-		// add to audit trail
 		try{
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = test.getSysUserId();
@@ -140,7 +137,6 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			String tableName = "TEST";
 			auditDAO.saveHistory(test, oldData, sysUserId, event, tableName);
 		}catch(Exception e){
-			// bugzilla 2154
 			LogEvent.logError("TestDAOImpl", "AuditTrail updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in Test AuditTrail updateData()", e);
 		}
@@ -895,17 +891,15 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return list;
 	}
 
-	// bugzilla 2459 added check for duplicate test.description
 	private boolean duplicateTestExists(Test test) throws LIMSRuntimeException{
 		try{
 
 			List list = new ArrayList();
 
-			// only check if the test to be inserted/updated is active
 			if(test.getIsActive().equalsIgnoreCase("Y")){
 				// not case sensitive hemolysis and Hemolysis are considered
 				// duplicates
-				String sql = "from Test t where t.localizedTestName = :testNameId and t.isActive='Y' and t.id != :testId) or (trim(lower(t.description)) = :param3 and t.isActive='Y' and t.id != :param2))";
+				String sql = "from Test t where (t.localizedTestName.id = :testNameId and t.isActive='Y' and t.id != :testId) or (trim(lower(t.description)) = :description and t.isActive='Y' and t.id != :testId)";
 				org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 				query.setInteger("testNameId", Integer.parseInt( test.getLocalizedTestName().getId()));
 
@@ -916,7 +910,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 					testId = test.getId();
 				}
 				query.setInteger("testId", Integer.parseInt(testId));
-				query.setParameter("param3", test.getDescription().toLowerCase().trim());
+				query.setParameter("description", test.getDescription().toLowerCase().trim());
 
 				list = query.list();
 				HibernateUtil.getSession().flush();
@@ -924,10 +918,9 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 			}
 
-            return list.size() > 0;
+            return !list.isEmpty();
 
 		}catch(Exception e){
-			// bugzilla 2154
 			LogEvent.logError("TestDAOImpl", "duplicateTestExists()", e.toString());
 			throw new LIMSRuntimeException("Error in duplicateTestExists()", e);
 		}
