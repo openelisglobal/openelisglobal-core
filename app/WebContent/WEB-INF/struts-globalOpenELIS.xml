@@ -263,6 +263,7 @@
 			<form-property name="resultList" type="java.util.List" />
 			<form-property name="testSection" type="java.lang.String" initial="" />
 			<form-property name="testName" type="java.lang.String" initial="" />
+			<form-property name="testSections" type="java.util.List"/>
 		</form-bean>
 
 		<form-bean name="WorkplanForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
