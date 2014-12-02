@@ -289,6 +289,10 @@
         <put name="body" value="/pages/test/testRename.jsp"/>
     </definition>
 
+    <definition name="testActivationDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/test/testActivation.jsp"/>
+    </definition>
+
 	<definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
     	<put name="body" value="/pages/userrole/userRoleMenu.jsp"/>
     </definition>

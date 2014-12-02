@@ -46,7 +46,7 @@ public class RejectionReportByTestSection extends RejectionReport implements IRe
 
     @Override
     protected String getActivityLabel(){
-        return "Unité: " + unitName;
+        return StringUtil.getMessageForKey( "report.unit" ) + ": "+ unitName;
     }
 
     @Override

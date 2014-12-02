@@ -55,7 +55,7 @@ public class SamplePatientEntryAction extends BaseSampleEntryAction {
         PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
 		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
         PropertyUtils.setProperty( dynaForm, "patientSearch", new PatientSearch() );
-		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE));
+		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
 		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
         PropertyUtils.setProperty( dynaForm, "currentDate", DateUtil.getCurrentDateAsText());
 

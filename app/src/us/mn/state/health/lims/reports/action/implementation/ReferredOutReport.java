@@ -140,7 +140,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
         super.createReportParameters();
         reportParameters.put("reportPeriod", StringUtil.getMessageForKey("reports.label.referral.title")
              + " " + lowDateStr + " - " + highDateStr);
-        reportParameters.put("reportTitle", reportLocation == null ? "" : "Renvoyé à: " + reportLocation.getOrganizationName());
+        reportParameters.put("reportTitle", reportLocation == null ? "" : StringUtil.getMessageForKey("report.test.status.referredOut") + ": " + reportLocation.getOrganizationName());
         reportParameters.put("referralSiteName", reportLocation == null ? "" : reportLocation.getOrganizationName());
     	reportParameters.put("directorName", ConfigurationProperties.getInstance().getPropertyValue(Property.labDirectorName));
 		reportParameters.put("labName1", StringUtil.getContextualMessageForKey("report.labName.one"));

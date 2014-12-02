@@ -30,6 +30,7 @@
 	</parameter>
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
+        <parameter name="localization" class="java.util.Map" isForPrompting="false"/>
 	<field name="category" class="java.lang.String"/>
 	<field name="categoryCount" class="java.lang.Integer"/>
 	<field name="group" class="java.lang.String"/>
@@ -57,7 +58,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="16" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA["Total "]]></textFieldExpression>
+                                        <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -101,7 +102,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA["Total pour " + ("0".equals($F{group})?"Non spécifié":$F{group})]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total") + " "+ $P{localization}.get("for") + " " + ("0".equals($F{group})?"Non spécifié":$F{group})]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -199,7 +200,7 @@
 					<printWhenExpression><![CDATA[$P{usePageNumbers}.equals("true")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" sur"]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" "+$P{localization}.get("about")]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="509" y="20" width="40" height="20">
@@ -208,13 +209,13 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<staticText>
+			<textField>
 				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="555" height="20" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$P{supervisorSignature}]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Bottom"/>
-				<text><![CDATA[Signature du Superviseur_______________________________________________Date________________________]]></text>
-			</staticText>
+                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("supervisorSign")]]></textFieldExpression>
+                        </textField>
 		</band>
 	</pageFooter>
 	<summary>
