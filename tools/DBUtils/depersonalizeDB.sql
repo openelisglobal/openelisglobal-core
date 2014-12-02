@@ -53,8 +53,8 @@ insert into clinlims.tmp values (1, floor(random()*1000));
 
 DROP INDEX clinlims.accnum_uk;
 
-update clinlims.sample set accession_number = substring( accession_number, 1, 4 )  
-|| 10000 + id + (select value from clinlims.tmp where id = 1 );
+update clinlims.sample set accession_number = substring( accession_number, 1, 4 )  || to_char(current_date, 'YY')
+|| 100000 + id + (select value from clinlims.tmp where id = 1 );
 
 CREATE UNIQUE INDEX accnum_uk
   ON clinlims.sample
