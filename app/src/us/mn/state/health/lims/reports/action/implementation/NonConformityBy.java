@@ -97,13 +97,12 @@ public abstract class NonConformityBy extends Report implements IReportCreator {
         String lowDateStr = dynaForm.getString("lowerDateRange");
         String highDateStr = dynaForm.getString("upperDateRange");
         dateRange = new DateRange(lowDateStr, highDateStr);
-
+        createReportParameters();
         errorFound = !validateSubmitParameters();
         if ( errorFound ) {
             return;
         }
-
-        createReportParameters();
+        
         createReportItems();
         if ( this.reportItems.size() == 0 ) {
             add1LineErrorMessage("report.error.message.noPrintableItems");

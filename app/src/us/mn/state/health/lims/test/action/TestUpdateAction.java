@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -177,7 +176,7 @@ public class TestUpdateAction extends BaseAction {
 				// INSERT
 				testDAO.insertData(test);
 			}
-			TypeOfSampleUtil.clearTestCache();
+			TypeOfSampleUtil.clearCache();
 			tx.commit();
 		} catch (LIMSRuntimeException lre) {
     		//bugzilla 2154

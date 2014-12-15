@@ -17,30 +17,6 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="79" splitType="Stretch">
-			<subreport>
-				<reportElement x="0" y="0" width="572" height="79"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="studyName">
-					<subreportParameterExpression><![CDATA[$P{studyName}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="rightHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="directorName">
-					<subreportParameterExpression><![CDATA[$P{directorName}]]></subreportParameterExpression>
-				</subreportParameter>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
-				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "GeneralHeader.jasper"]]></subreportExpression>
-			</subreport>
-		</band>
-	</title>
 	<pageHeader>
 		<band height="35" splitType="Stretch">
 			<line>
@@ -50,7 +26,7 @@
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="0" width="572" height="61"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="20" isBold="true"/>
