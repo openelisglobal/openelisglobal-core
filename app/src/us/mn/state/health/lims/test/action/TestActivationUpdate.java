@@ -86,6 +86,11 @@ public class TestActivationUpdate extends BaseAction {
             for(TypeOfSample typeOfSample : activateSampleTypes){
                 typeOfSampleDAO.updateData(typeOfSample);
             }
+
+            if( !deactivateSampleTypes.isEmpty() || !activateSampleTypes.isEmpty()){
+                TypeOfSampleUtil.clearCache();
+            }
+
             tx.commit();
         }catch( HibernateException e ){
             tx.rollback();
@@ -132,7 +137,7 @@ public class TestActivationUpdate extends BaseAction {
         List<TypeOfSample> sampleTypes = new ArrayList<TypeOfSample>();
 
         for( String id : sampleTypeIds){
-            TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleById( id );
+            TypeOfSample typeOfSample = TypeOfSampleUtil.getTransientTypeOfSampleById(id);
             typeOfSample.setActive( false );
             typeOfSample.setSysUserId(currentUserId);
             sampleTypes.add(typeOfSample);
@@ -145,7 +150,7 @@ public class TestActivationUpdate extends BaseAction {
         List<TypeOfSample> sampleTypes = new ArrayList<TypeOfSample>();
 
         for( ActivateSet set : sampleTypeSets){
-            TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleById( set.id );
+            TypeOfSample typeOfSample = TypeOfSampleUtil.getTransientTypeOfSampleById(set.id);
             typeOfSample.setActive( true );
             typeOfSample.setSortOrder(set.sortOrder * 10);
             typeOfSample.setSysUserId(currentUserId);

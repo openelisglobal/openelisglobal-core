@@ -121,33 +121,13 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 
 	public void updateData(TypeOfSample typeOfSample)
 			throws LIMSRuntimeException {
-		// bugzilla 1482 throw Exception if record already exists
-		try {
-			if (duplicateTypeOfSampleExists(typeOfSample)) {
-				throw new LIMSDuplicateRecordException(
-						"Duplicate record exists for "
-								+ typeOfSample.getDescription());
-			}
-		} catch (Exception e) {
-    		//bugzilla 2154
-			LogEvent.logError("TypeOfSampleDAOImpl","updateData()",e.toString());
-			throw new LIMSRuntimeException("Error in TypeOfSample updateData()",
-					e);
-		}
 
-		TypeOfSample oldData = (TypeOfSample) readTypeOfSample(typeOfSample
-				.getId());
-		TypeOfSample newData = typeOfSample;
+		TypeOfSample oldData = readTypeOfSample(typeOfSample.getId());
 
-		// add to audit trail
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
-			String sysUserId = typeOfSample.getSysUserId();
-			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
-			String tableName = "TYPE_OF_SAMPLE";
-			auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
+			auditDAO.saveHistory(typeOfSample, oldData, typeOfSample.getSysUserId(), IActionConstants.AUDIT_TRAIL_UPDATE, "TYPE_OF_SAMPLE");
 		} catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("TypeOfSampleDAOImpl","AuditTrail updateData()",e.toString());
 			throw new LIMSRuntimeException(
 					"Error in TypeOfSample AuditTrail updateData()", e);
@@ -160,7 +140,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 			HibernateUtil.getSession().evict(typeOfSample);
 			HibernateUtil.getSession().refresh(typeOfSample);
 		} catch (Exception e) {
-			//bugzilla 2154
+
 			LogEvent.logError("TypeOfSampleDAOImpl","updateData()",e.toString());
 			throw new LIMSRuntimeException(
 					"Error in TypeOfSample updateData()", e);

@@ -28,6 +28,7 @@ public class TypeOfSampleUtil {
 	//The purpose of this map is to make sure all the references refer to the same instances of the TypeOfSample objects
 	//Without this comparisons may fail
 	private static Map<String, TypeOfSample> typeOfSampleIdtoTypeOfSampleMap = null;
+	private static final TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
 
 	static{
 		createTypeOfSampleIdentityMap();
@@ -51,12 +52,8 @@ public class TypeOfSampleUtil {
         }
     }
 
-	public static TypeOfSample getTypeOfSampleById( String id){
-		if( typeOfSampleIdtoTypeOfSampleMap == null){
-			createTestIdToTypeOfSampleMap();
-		}
-
-		return typeOfSampleIdtoTypeOfSampleMap.get(id);
+	public static TypeOfSample getTransientTypeOfSampleById(String id){
+			return typeOfSampleDAO.getTypeOfSampleById(id);
 	}
 	private static List<Test> filterByOrderable(List<Test> testList) {
 		List<Test> filteredList = new ArrayList<Test>();
@@ -118,7 +115,7 @@ public class TypeOfSampleUtil {
 	/**
 	 * This class keeps lists of tests for each type of sample.  If the DB of tests changes, we need to invalidate such lists.
 	 */
-	public static void clearTestCache() {
+	public static void clearCache() {
 	    sampleIdTestMap.clear();
 	    createTypeOfSampleIdentityMap();
 	    typeOfSampleIdToNameMap = null;
