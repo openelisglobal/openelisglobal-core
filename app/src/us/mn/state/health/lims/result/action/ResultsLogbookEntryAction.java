@@ -25,6 +25,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
@@ -52,19 +53,35 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		String forward = FWD_SUCCESS;
 
 		String requestedPage = request.getParameter("page");
+		
+		String testSectionId = request.getParameter("tsid");
+		
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 
-		currentDate = getCurrentDate();
+		TestSection ts;		
+		
+		String currentDate = getCurrentDate();
 		PropertyUtils.setProperty(dynaForm, "currentDate", currentDate);
 		PropertyUtils.setProperty(dynaForm, "logbookType", request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "referralReasons", DisplayListService.getList( DisplayListService.ListType.REFERRAL_REASONS));
         PropertyUtils.setProperty( dynaForm, "rejectReasons", DisplayListService.getNumberedListWithLeadingBlank( DisplayListService.ListType.REJECTION_REASONS ) );
+        
+		// load testSections for drop down
+		TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
+		List<IdValuePair> testSections = testSectionDAO.getAllActiveTestSectionsIdMap();
+		PropertyUtils.setProperty(dynaForm, "testSections", testSections);	
+		
+		if (GenericValidator.isBlankOrNull(testSectionId) && !testSections.isEmpty()) {
+			testSectionId = testSections.get(0).getId();
+		}
+		ts = testSectionDAO.getTestSectionById(testSectionId);
+		PropertyUtils.setProperty(dynaForm, "tsid", testSectionId);
 
-		setLogbookRequest(request.getParameter("type"));
+		setRequestType(request.getParameter("type"));
 
-		String testSectionId = getTestSelectId();
+		//String testSectionId = getTestSelectId();
 		List<TestResultItem> tests;
 
 		ResultsPaging paging = new ResultsPaging();
@@ -96,7 +113,8 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		}
 
 		//this does not look right what happens after a new page!!!
-		if (resultsLoadUtility.inventoryNeeded() || logbookRequest == logbooks.HIV) {
+		boolean isHaitiClinical = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti Clinical");
+		if (resultsLoadUtility.inventoryNeeded() || (isHaitiClinical && ("VCT").equals(ts.getTestSectionName()))) { //logbookRequest == logbooks.HIV) {
 			inventoryList = inventoryUtility.getExistingActiveInventory();
 			PropertyUtils.setProperty(dynaForm, "displayTestKit", true);
 		} else {
@@ -105,70 +123,7 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 
 		PropertyUtils.setProperty(dynaForm, "inventoryItems", inventoryList);
 
-		setDisplayProperties(dynaForm);
-
 		return mapping.findForward(forward);
-	}
-
-	private void setDisplayProperties(DynaActionForm dynaForm) throws IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
-
-		switch (logbookRequest) {
-		case HEMATOLOGY: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		case CHEM: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		case BACTERIOLOGY: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		case PARASITOLOGY: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		case IMMUNO: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		case ECBU: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		case HIV: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		case MOLECULAR_BIOLOGY: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}case LIQUID_BIOLOGY: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}case ENDOCRINOLOGY: {
-			PropertyUtils.setProperty(dynaForm, "displayTestMethod", true);
-			break;
-		}
-		default: {
-			// no-op
-		}
-		}
-
-	}
-
-	private String getTestSelectId() {
-
-		TestSection testSection = new TestSection();
-		String logbookName = getNameForLogbookType(logbookRequest);
-		testSection.setTestSectionName(logbookName);
-
-		TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
-		testSection = testSectionDAO.getTestSectionByName(testSection);
-
-		return testSection == null ? null : testSection.getId();
 	}
 
 	private String getCurrentDate() {
