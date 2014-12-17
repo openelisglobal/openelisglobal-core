@@ -77,6 +77,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         String lowDateStr = dynaForm.getString( "lowerDateRange" );
         String highDateStr = dynaForm.getString( "upperDateRange" );
         dateRange = new DateRange( lowDateStr, highDateStr );
+       
         super.createReportParameters();
         errorFound = !validateSubmitParameters(selection);
         if ( errorFound ) {
