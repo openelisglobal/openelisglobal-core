@@ -50,7 +50,6 @@ public abstract class ActivityReport extends Report implements IReportCreator{
 
     @Override
     protected void createReportParameters() {
-        super.createReportParameters();
         reportParameters.put( "activityLabel", getActivityLabel() );
         reportParameters.put( "accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
         reportParameters.put( "labNumberTitle", StringUtil.getContextualMessageForKey( "quick.entry.accession.number" ) );
@@ -78,7 +77,8 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         String lowDateStr = dynaForm.getString( "lowerDateRange" );
         String highDateStr = dynaForm.getString( "upperDateRange" );
         dateRange = new DateRange( lowDateStr, highDateStr );
-
+       
+        super.createReportParameters();
         errorFound = !validateSubmitParameters(selection);
         if ( errorFound ) {
             return;
