@@ -19,4 +19,10 @@
     <include file="OE5.1/Schema.xml" />
     <include file="OE5.1/MetaData.xml" />
     <include file="OE5.1/LogoData.xml" />
-</databaseChangeLog>
+    <include file="OE5.1/HaitiLNSPData.xml"/>
+    <include file="OE5.1/CDIRegLabData.xml" />
+    <include file="OE5.1/CI_IPCIData.xml" />
+    <include file="OE5.1/CI_LNSPData.xml" />
+    <include file="OE5.1/RetroCIData.xml" />
+    <include file="OE5.1/HaitiClinicalData.xml" />
+ </databaseChangeLog>

@@ -1121,6 +1121,7 @@
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_results_logbook" />
+            <column name="action_url" value="/LogbookResults.do?type=" />
 			<column name="display_key" value="banner.menu.results.logbook" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.results.logbook" />
 		</insert>

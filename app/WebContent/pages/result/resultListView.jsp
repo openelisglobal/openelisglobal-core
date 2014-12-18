@@ -34,7 +34,7 @@
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage"  />
 
 <bean:define id="logbookType" name="<%=formName%>" property="logbookType" />
-
+<bean:define id="tsid" name="<%=formName%>" property="tsid" />
 
 <%!
 	List<String> hivKits;
@@ -318,6 +318,10 @@ function processTestReflexCD4Success(parameters)
 
 }
 
+function submitTestSectionSelect( element ) {
+	window.location.href = "LogbookResults.do" + "?tsid=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+}
+
 var showForceWarning = true;
 function forceTechApproval(checkbox, index ){
 	if( $jq(checkbox).attr('checked')){
@@ -358,6 +362,25 @@ function updateShadowResult(source, index){
 
 </script>
 
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+	<Table width="90%" border="0" cellspacing="0">
+		<% { %>
+	    <tr>
+			<th style="background-color: white;width:15%; text-align: left;">				
+				<select onchange="submitTestSectionSelect(this);"  >
+						<logic:iterate id="optionValue" name='<%=formName%>' property="testSections" type="IdValuePair" >
+							<option value='<%=optionValue.getId()%>'  <%if(optionValue.getId().equals(tsid)) out.print("selected"); %>  >
+								<bean:write name="optionValue" property="value"/>
+							</option>
+						</logic:iterate>
+						
+				</select>
+			</th>							
+		</tr>
+		<% }%>
+	</Table>
+</logic:equal>
+<br/>
 
 <!-- Modal popup-->
 <div id="reflexSelect" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -376,7 +399,7 @@ function updateShadowResult(source, index){
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
     </div>
 </div>
-
+<input type="hidden" name="tsid" value='<%= tsid %>' />
 <logic:notEmpty name="<%=formName%>" property="logbookType" >
 	<html:hidden name="<%=formName%>" property="logbookType" />
 </logic:notEmpty>

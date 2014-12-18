@@ -77,11 +77,10 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 			testSectionId = testSections.get(0).getId();
 		}
 		ts = testSectionDAO.getTestSectionById(testSectionId);
-		PropertyUtils.setProperty(dynaForm, "tsid", testSectionId);
+		PropertyUtils.setProperty(dynaForm, "tsid", testSectionId);		
 
-		setRequestType(request.getParameter("type"));
-
-		//String testSectionId = getTestSelectId();
+		setRequestType(ts.getLocalizedName());
+		
 		List<TestResultItem> tests;
 
 		ResultsPaging paging = new ResultsPaging();
