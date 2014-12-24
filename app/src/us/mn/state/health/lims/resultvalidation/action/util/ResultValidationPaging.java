@@ -58,7 +58,7 @@ public class ResultValidationPaging {
 		request.getSession().setAttribute(IActionConstants.SAVE_DISABLED, IActionConstants.FALSE);
 		List<AnalysisItem> clientAnalysis = (List<AnalysisItem>) dynaForm.get("resultList");
 		PagingBean bean = (PagingBean) dynaForm.get("paging");
-		String testSectionId = (request.getParameter("tsid"));
+		String testSectionId = (request.getParameter("testSectionId"));
 		
 		paging.updatePagedResults(request.getSession(), clientAnalysis, bean, pagingHelper);
 
@@ -67,7 +67,7 @@ public class ResultValidationPaging {
 		List<AnalysisItem> resultPage = paging.getPage(page, request.getSession());
 		if (resultPage != null) {
 			PropertyUtils.setProperty(dynaForm, "resultList", resultPage);
-			PropertyUtils.setProperty(dynaForm, "tsid", testSectionId);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);
 			PropertyUtils.setProperty(dynaForm, "paging", paging.getPagingBeanWithSearchMapping(page, request.getSession()));
 		}
 	}

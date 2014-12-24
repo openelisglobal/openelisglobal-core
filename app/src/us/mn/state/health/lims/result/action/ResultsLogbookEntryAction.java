@@ -24,10 +24,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.inventory.action.InventoryUtility;
 import us.mn.state.health.lims.inventory.form.InventoryKitItem;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
@@ -54,13 +56,13 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 
 		String requestedPage = request.getParameter("page");
 		
-		String testSectionId = request.getParameter("tsid");
+		String testSectionId = request.getParameter("testSectionId");
 		
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
 
 		DynaActionForm dynaForm = (DynaActionForm) form;
 
-		TestSection ts;		
+		TestSection ts = null;		
 		
 		String currentDate = getCurrentDate();
 		PropertyUtils.setProperty(dynaForm, "currentDate", currentDate);
@@ -70,16 +72,14 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
         
 		// load testSections for drop down
 		TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
-		List<IdValuePair> testSections = testSectionDAO.getAllActiveTestSectionsIdMap();
+		List<IdValuePair> testSections = DisplayListService.getList(ListType.TEST_SECTION);
 		PropertyUtils.setProperty(dynaForm, "testSections", testSections);	
 		
-		if (GenericValidator.isBlankOrNull(testSectionId) && !testSections.isEmpty()) {
-			testSectionId = testSections.get(0).getId();
+		if (!GenericValidator.isBlankOrNull(testSectionId)) {
+			ts = testSectionDAO.getTestSectionById(testSectionId);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);		
 		}
-		ts = testSectionDAO.getTestSectionById(testSectionId);
-		PropertyUtils.setProperty(dynaForm, "tsid", testSectionId);		
-
-		setRequestType(ts.getLocalizedName());
+		setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
 		
 		List<TestResultItem> tests;
 
@@ -91,7 +91,7 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 			
 			new StatusRules().setAllowableStatusForLoadingResults(resultsLoadUtility);
 			
-			if (testSectionId != null) {
+			if (!GenericValidator.isBlankOrNull(testSectionId)) {
 				tests = resultsLoadUtility.getUnfinishedTestResultItemsInTestSection(testSectionId);
 			} else {
 				tests = new ArrayList<TestResultItem>();

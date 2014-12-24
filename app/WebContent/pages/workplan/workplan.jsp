@@ -23,14 +23,12 @@
 <bean:define id="workplanType"	value='<%=(String) request.getParameter("type")%>' />
 <bean:define id="tests" name="<%=formName%>" property="workplanTests" />
 <bean:size id="testCount" name="tests" />
-<bean:define id="tsid" name="<%=formName%>" property="tsid" />
+
 
 <%!
 	boolean showAccessionNumber = false;
 	String currentAccessionNumber = "";
 	int rowColorIndex = 2;
-	//boolean showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");
-
 %>
 <%
 
@@ -61,7 +59,7 @@ function disableEnableTest(checkbox, index){
 }
 
 function submitTestSectionSelect( element ) {
-	window.location.href = "WorkPlanByTestSection.do" + "?tsid=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+	window.location.href = "WorkPlanByTestSection.do?testSectionId=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
 }
 
 function printWorkplan() {
@@ -73,24 +71,27 @@ function printWorkplan() {
 }
 
 </script>
-<Table width="90%" border="0" cellspacing="0">
-	<% { %>
-    <tr>
-		<th style="background-color: white;width:15%; text-align: left;">	
-		<br/>				
-			<select onchange="submitTestSectionSelect(this);"  >
-					<logic:iterate id="optionValue" name='<%=formName%>' property="testSections" type="IdValuePair" >
-						<option value='<%=optionValue.getId()%>'  <%if(optionValue.getId().equals(tsid)) out.print("selected"); %>  >
-							<bean:write name="optionValue" property="value"/>
-						</option>
-					</logic:iterate>
-					
-			</select>
-		</th>							
-	</tr>
-	<% }%>
-</Table>
-<input type="hidden" name="tsid" value='<%= tsid %>' />
+<% if( !workplanType.equals("test") && !workplanType.equals("panel") ){ %>
+
+<div id="PatientPage" class="colorFill" style="display:inline" >
+	<table width="40%">
+		<tr>
+			<td width="50%" align="right" >
+			
+				<bean:write name="<%=formName %>" property="searchLabel"/>
+			</td>
+			<td>
+			<html:select name='<%= formName %>' property="testSectionId" 
+				 onchange="submitTestSectionSelect(this);" >
+				<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+			</html:select>
+	   		</td>
+		</tr>
+	</table>
+	<br/>
+</div>
+<% }%>
+
 <br/>
 <logic:notEqual name="testCount" value="0">
 <bean:size name='<%= formName %>' property="workplanTests" id="size" />
@@ -208,6 +209,8 @@ function printWorkplan() {
 </Table>
 </logic:notEqual>
 <logic:equal name="testCount"  value="0">
+<% if( workplanType.equals("test") || workplanType.equals("panel") ){ %>
 	<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+<% } %>
 </logic:equal>
 

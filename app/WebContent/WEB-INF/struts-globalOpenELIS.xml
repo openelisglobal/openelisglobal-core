@@ -180,7 +180,7 @@
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
             <form-property name="testSections" type="java.util.List"/>
-			<form-property name="tsid" type="java.lang.String"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
 			<form-property name="displayTestSections" type="java.lang.Boolean" initial="true" />
 		</form-bean>
 
@@ -205,7 +205,7 @@
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
             <form-property name="rejectReasons" type="java.util.Collection" />
             <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
-            <form-property name="tsid" type="java.lang.String"/>
+            <form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="AccessionResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -228,7 +228,7 @@
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
             <form-property name="testSections" type="java.util.List"/>
-            <form-property name="tsid" type="java.lang.String"/>
+            <form-property name="testSectionId" type="java.lang.String"/>
             <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
 		</form-bean>
 
@@ -254,7 +254,7 @@
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
             <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
-            <form-property name="tsid" type="java.lang.String"/>
+            <form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="InventoryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -274,7 +274,7 @@
 			<form-property name="testSection" type="java.lang.String" initial="" />
 			<form-property name="testName" type="java.lang.String" initial="" />
 			<form-property name="testSections" type="java.util.List"/>
-			<form-property name="tsid" type="java.lang.String"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="WorkplanForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -292,7 +292,7 @@
 			<form-property name="workplanType" type="java.lang.String" initial="" />
 			<form-property name="searchAction" type="java.lang.String" initial="" />
 			<form-property name="testSections" type="java.util.List"/>
-			<form-property name="tsid" type="java.lang.String"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 		
 

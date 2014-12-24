@@ -26,6 +26,7 @@ import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationPaging;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.resultvalidation.util.ResultsValidationUtility;
@@ -47,13 +48,13 @@ public class ResultValidationAction extends BaseResultValidationAction {
 		BaseActionForm dynaForm = (BaseActionForm) form;
 
 		request.getSession().setAttribute(SAVE_DISABLED, "true");
-		String testSectionId = (request.getParameter("tsid"));
+		String testSectionId = (request.getParameter("testSectionId"));
 		String testName = (request.getParameter("test"));
 
 		ResultValidationPaging paging = new ResultValidationPaging();
 		String newPage = request.getParameter("page");
 
-		TestSection ts;
+		TestSection ts = null;
 
 		if (GenericValidator.isBlankOrNull(newPage)) {
 
@@ -65,18 +66,20 @@ public class ResultValidationAction extends BaseResultValidationAction {
 			List<IdValuePair> testSections = testSectionDAO.getAllActiveTestSectionsIdMap();
 			PropertyUtils.setProperty(dynaForm, "testSections", testSections);	
 			
-			if (GenericValidator.isBlankOrNull(testSectionId) && !testSections.isEmpty()) {
-				testSectionId = testSections.get(0).getId();
-			}
-			ts = testSectionDAO.getTestSectionById(testSectionId);
-			PropertyUtils.setProperty(dynaForm, "tsid", testSectionId);
-			
-			ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
-			setRequestType(ts.getLocalizedName());
 			if (!GenericValidator.isBlankOrNull(testSectionId)) {
-                List<AnalysisItem> resultList = resultsValidationUtility.getResultValidationList( testName, getValidationStatus(), testSectionId );
-				paging.setDatabaseResults(request, dynaForm, resultList);
+				ts = testSectionDAO.getTestSectionById(testSectionId);
+				PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);
 			}
+			List<AnalysisItem> resultList = null;
+			ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
+			setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
+			if (!GenericValidator.isBlankOrNull(testSectionId)) {
+               resultList = resultsValidationUtility.getResultValidationList( testName, getValidationStatus(), testSectionId );
+				
+			} else {
+				resultList = new ArrayList<AnalysisItem>();
+			}
+			paging.setDatabaseResults(request, dynaForm, resultList);
 			
 		} else {
 			paging.page(request, dynaForm, newPage);

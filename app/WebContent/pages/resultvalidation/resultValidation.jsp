@@ -24,7 +24,6 @@
 <bean:define id="testName"	value='<%=request.getParameter("test")%>' />
 <bean:define id="results" name="<%=formName%>" property="resultList" />
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage" type="List<IdValuePair>" /> 
-<bean:define id="tsid" name="<%=formName%>" property="tsid" />
 
 <bean:size id="resultCount" name="results" />
 
@@ -173,7 +172,7 @@ function savePage() {
 }
 
 function submitTestSectionSelect( element ) {
-	window.location.href = "ResultValidationSave.do" + "?tsid=" + element.value + "&test=&type=" + element.options[element.selectedIndex].text ;
+	window.location.href = "ResultValidationSave.do" + "?testSectionId=" + element.value + "&test=&type=" + element.options[element.selectedIndex].text ;
 }
 
 function toggleSelectAll( element ) {
@@ -292,31 +291,28 @@ function /*boolean*/ handleEnterEvent(){
 
 </script>
 
-<Table style="width:80%">
 	<% if( showTestSectionSelect ){ %>
-    <tr>
-		<th style="background-color: white;width:15%; text-align: left;">					
-			<select onchange="submitTestSectionSelect(this);"  >
-					<logic:iterate id="optionValue" name='<%=formName%>' property="testSections" type="IdValuePair" >
-						<option value='<%=optionValue.getId()%>'  <%if(optionValue.getId().equals(tsid)) out.print("selected"); %>  >
-							<bean:write name="optionValue" property="value"/>
-						</option>
-					</logic:iterate>
-					
-			</select>
-		</th>							
-	</tr>
+	<div id="PatientPage" class="colorFill" style="display:inline" >
+		<table width="40%">
+			<tr>
+				<td width="50%" align="right" >
+				
+					<%= StringUtil.getMessageForKey("workplan.unit.types") %>
+				</td>
+				<td>
+				<html:select name='<%= formName %>' property="testSectionId" 
+					 onchange="submitTestSectionSelect(this);" >
+					<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+				</html:select>
+		   		</td>
+			</tr>
+		</table>
+		<br/>
+	</div>
 	<% }%>
-    <tr>
-		<th style="background-color: white;width:15%;">					
-			&nbsp;
-		</th>							
-	</tr>
-</Table>
 
 <logic:notEqual name="resultCount" value="0">
 <div  style="width:80%" >
-	<input type="hidden" name="tsid" value='<%= tsid %>' />
 	<html:hidden styleId="currentPageID" name="<%=formName%>" property="paging.currentPage"/>
 	<bean:define id="total" name="<%=formName%>" property="paging.totalPages"/>
 	<bean:define id="currentPage" name="<%=formName%>" property="paging.currentPage"/>

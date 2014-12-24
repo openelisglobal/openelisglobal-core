@@ -26,7 +26,9 @@ import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -63,7 +65,7 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 
 		request.getSession().setAttribute(SAVE_DISABLED, "true");
 
-		String testSectionId = (request.getParameter("tsid"));
+		String testSectionId = (request.getParameter("testSectionId"));
 
 		// Initialize the form.
 		dynaForm.initialize(mapping);
@@ -71,16 +73,14 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		
 		// load testSections for drop down
 		TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
-		List<IdValuePair> testSections = testSectionDAO.getAllActiveTestSectionsIdMap();
+		List<IdValuePair> testSections = DisplayListService.getList(ListType.TEST_SECTION);
 		PropertyUtils.setProperty(dynaForm, "testSections", testSections);	
 		
-		if (GenericValidator.isBlankOrNull(testSectionId) && !testSections.isEmpty()) {
-			testSectionId = testSections.get(0).getId();
+		TestSection ts = null;
+		if (!GenericValidator.isBlankOrNull(testSectionId)) {
+			ts = testSectionDAO.getTestSectionById(testSectionId);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);
 		}
-		TestSection ts = testSectionDAO.getTestSectionById(testSectionId);
-		PropertyUtils.setProperty(dynaForm, "tsid", testSectionId);
-
-		//setRequestType(workplan);
 		
 		List<TestResultItem> workplanTests = new ArrayList<TestResultItem>();
 
@@ -90,10 +90,8 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		}
 
 		// workplan by department
-		setRequestType(ts.getLocalizedName());
+		setRequestType(ts == null ? " " : ts.getLocalizedName());
 		if (!GenericValidator.isBlankOrNull(testSectionId)) {
-		//if (!GenericValidator.isBlankOrNull(workplan)) {
-
 			// get tests based on test section
 			workplanTests = getWorkplanByTestSection(testSectionId);
 			PropertyUtils.setProperty(dynaForm, "workplanTests", workplanTests);
@@ -108,15 +106,10 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		if (isPatientNameAdded())
 		    addPatientNamesToList(workplanTests);
 		PropertyUtils.setProperty(dynaForm, "workplanType", workplan);
-		PropertyUtils.setProperty(dynaForm, "testName", ts.getTestSectionName());//getTestName(workplan));
-
+		PropertyUtils.setProperty(dynaForm, "searchLabel", StringUtil.getMessageForKey("workplan.unit.types"));
 		return mapping.findForward(FWD_SUCCESS);
 	}
-/*
-	private String getTestName(String type) {
-		return StringUtil.getContextualMessageForKey("test.section." + type);
-	}
-*/
+
 	@SuppressWarnings("unchecked")
 	private List<TestResultItem> getWorkplanByTestSection(String testSectionId) {
 
