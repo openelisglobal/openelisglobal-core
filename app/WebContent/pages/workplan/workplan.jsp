@@ -72,12 +72,12 @@ function printWorkplan() {
 
 </script>
 <% if( !workplanType.equals("test") && !workplanType.equals("panel") ){ %>
-
+<div id="searchDiv" class="colorFill"  >
 <div id="PatientPage" class="colorFill" style="display:inline" >
-	<table width="40%">
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
 		<tr>
 			<td width="50%" align="right" >
-			
 				<bean:write name="<%=formName %>" property="searchLabel"/>
 			</td>
 			<td>
@@ -89,6 +89,10 @@ function printWorkplan() {
 		</tr>
 	</table>
 	<br/>
+	<h1>
+		
+	</h1>
+</div>
 </div>
 <% }%>
 

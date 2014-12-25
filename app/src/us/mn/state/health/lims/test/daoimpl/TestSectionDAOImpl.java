@@ -513,18 +513,4 @@ public class TestSectionDAOImpl extends BaseDAOImpl implements TestSectionDAO {
 		return null;
 	}
 	
-	public List<IdValuePair> getAllActiveTestSectionsIdMap() {
-
-		List<IdValuePair> mappingList = new ArrayList<IdValuePair>();
-
-		
-		for (TestSection testSection : getAllActiveTestSections()) {
-			mappingList.add(new IdValuePair(testSection.getId(), testSection.getLocalizedName()));
-		}
-
-		
-		return mappingList;
-	}
-
-
 }

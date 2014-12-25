@@ -291,26 +291,30 @@ function /*boolean*/ handleEnterEvent(){
 
 </script>
 
-	<% if( showTestSectionSelect ){ %>
-	<div id="PatientPage" class="colorFill" style="display:inline" >
-		<table width="40%">
-			<tr>
-				<td width="50%" align="right" >
-				
-					<%= StringUtil.getMessageForKey("workplan.unit.types") %>
-				</td>
-				<td>
+<% if( showTestSectionSelect ){ %>
+<div id="searchDiv" class="colorFill"  >
+<div id="PatientPage" class="colorFill" style="display:inline" >
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr>
+			<td width="50%" align="right" >
+				<%= StringUtil.getMessageForKey("workplan.unit.types") %>
+			</td>
+			<td>			
 				<html:select name='<%= formName %>' property="testSectionId" 
 					 onchange="submitTestSectionSelect(this);" >
 					<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
 				</html:select>
-		   		</td>
-			</tr>
-		</table>
-		<br/>
-	</div>
+		   	</td>
+		</tr>
+	</table>
+	<br/>
+	<h1>
+		
+	</h1>
+</div>
+</div>
 	<% }%>
-
 <logic:notEqual name="resultCount" value="0">
 <div  style="width:80%" >
 	<html:hidden styleId="currentPageID" name="<%=formName%>" property="paging.currentPage"/>

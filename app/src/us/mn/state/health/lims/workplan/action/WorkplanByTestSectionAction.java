@@ -90,7 +90,7 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		}
 
 		// workplan by department
-		setRequestType(ts == null ? " " : ts.getLocalizedName());
+		setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
 		if (!GenericValidator.isBlankOrNull(testSectionId)) {
 			// get tests based on test section
 			workplanTests = getWorkplanByTestSection(testSectionId);

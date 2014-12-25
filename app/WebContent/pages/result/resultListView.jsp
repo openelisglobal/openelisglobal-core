@@ -362,11 +362,12 @@ function updateShadowResult(source, index){
 </script>
 
 <logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+<div id="searchDiv" class="colorFill"  >
 <div id="PatientPage" class="colorFill" style="display:inline" >
-	<table width="40%">
-		<tr>
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr bgcolor="white">
 			<td width="50%" align="right" >
-			
 				<%= StringUtil.getMessageForKey("workplan.unit.types") %>
 			</td>
 			<td>
@@ -378,9 +379,12 @@ function updateShadowResult(source, index){
 		</tr>
 	</table>
 	<br/>
+	<h1>
+		
+	</h1>
+</div>
 </div>
 </logic:equal>
-<br/>
 
 <!-- Modal popup-->
 <div id="reflexSelect" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
