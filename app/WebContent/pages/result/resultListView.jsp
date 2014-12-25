@@ -35,7 +35,6 @@
 
 <bean:define id="logbookType" name="<%=formName%>" property="logbookType" />
 
-
 <%!
 	List<String> hivKits;
 	List<String> syphilisKits;
@@ -318,6 +317,10 @@ function processTestReflexCD4Success(parameters)
 
 }
 
+function submitTestSectionSelect( element ) {
+	window.location.href = "LogbookResults.do?testSectionId=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+}
+
 var showForceWarning = true;
 function forceTechApproval(checkbox, index ){
 	if( $jq(checkbox).attr('checked')){
@@ -358,6 +361,30 @@ function updateShadowResult(source, index){
 
 </script>
 
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+<div id="searchDiv" class="colorFill"  >
+<div id="PatientPage" class="colorFill" style="display:inline" >
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr bgcolor="white">
+			<td width="50%" align="right" >
+				<%= StringUtil.getMessageForKey("workplan.unit.types") %>
+			</td>
+			<td>
+			<html:select name='<%= formName %>' property="testSectionId" 
+				 onchange="submitTestSectionSelect(this);" >
+				<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+			</html:select>
+	   		</td>
+		</tr>
+	</table>
+	<br/>
+	<h1>
+		
+	</h1>
+</div>
+</div>
+</logic:equal>
 
 <!-- Modal popup-->
 <div id="reflexSelect" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

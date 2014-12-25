@@ -9,7 +9,9 @@
 	us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType,
     java.text.DecimalFormat,
 	java.util.List,
-	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem" %>
+	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem,
+	us.mn.state.health.lims.common.util.ConfigurationProperties,
+	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -41,6 +43,8 @@
 	currentAccessionNumber="";
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 	searchTerm = request.getParameter("searchTerm");
+	boolean showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");
+	
 %>
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/math-extend.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -167,6 +171,10 @@ function savePage() {
 	form.submit();
 }
 
+function submitTestSectionSelect( element ) {
+	window.location.href = "ResultValidationSave.do" + "?testSectionId=" + element.value + "&test=&type=" + element.options[element.selectedIndex].text ;
+}
+
 function toggleSelectAll( element ) {
     var index, item, checkboxes,matchedCheckboxes;
 
@@ -283,6 +291,30 @@ function /*boolean*/ handleEnterEvent(){
 
 </script>
 
+<% if( showTestSectionSelect ){ %>
+<div id="searchDiv" class="colorFill"  >
+<div id="PatientPage" class="colorFill" style="display:inline" >
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr>
+			<td width="50%" align="right" >
+				<%= StringUtil.getMessageForKey("workplan.unit.types") %>
+			</td>
+			<td>			
+				<html:select name='<%= formName %>' property="testSectionId" 
+					 onchange="submitTestSectionSelect(this);" >
+					<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+				</html:select>
+		   	</td>
+		</tr>
+	</table>
+	<br/>
+	<h1>
+		
+	</h1>
+</div>
+</div>
+	<% }%>
 <logic:notEqual name="resultCount" value="0">
 <div  style="width:80%" >
 	<html:hidden styleId="currentPageID" name="<%=formName%>" property="paging.currentPage"/>

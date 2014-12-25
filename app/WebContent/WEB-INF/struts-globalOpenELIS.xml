@@ -179,6 +179,9 @@
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="testSections" type="java.util.List"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
+			<form-property name="displayTestSections" type="java.lang.Boolean" initial="true" />
 		</form-bean>
 
 		<form-bean name="PatientResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -201,6 +204,8 @@
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
+            <form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="AccessionResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -222,6 +227,9 @@
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="testSections" type="java.util.List"/>
+            <form-property name="testSectionId" type="java.lang.String"/>
+            <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
 		</form-bean>
 
 		<form-bean name="StatusResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -245,6 +253,8 @@
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
+            <form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="InventoryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -263,6 +273,8 @@
 			<form-property name="resultList" type="java.util.List" />
 			<form-property name="testSection" type="java.lang.String" initial="" />
 			<form-property name="testName" type="java.lang.String" initial="" />
+			<form-property name="testSections" type="java.util.List"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="WorkplanForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -279,7 +291,10 @@
 			<form-property name="resultList" type="java.util.ArrayList" />
 			<form-property name="workplanType" type="java.lang.String" initial="" />
 			<form-property name="searchAction" type="java.lang.String" initial="" />
+			<form-property name="testSections" type="java.util.List"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
+		
 
 		<form-bean name="DataImportForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
       		<form-property name="lastupdated" type="java.sql.Timestamp" />
@@ -898,8 +913,15 @@
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 
+		<action path="/ResultValidationRetroC" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ResultValidationRetroCAction">
+			<forward name="success" path="resultValidationDefinition" />
+			<forward name="elisaSuccess" path="elisaAlgorithmResultValidationDefinition" />
+			<forward name="fail" path="homePageDefinition" />
+		</action>
+
 		<action path="/ResultValidationSave" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ResultValidationSaveAction">
 			<forward name="success" path="/ResultValidation.do" />
+			<forward name="successRetroC" path="/ResultValidationRetroC.do" />
 			<forward name="fail" path="homePageDefinition" />
 			<forward name="error" path="resultValidationDefinition" />
 		</action>
