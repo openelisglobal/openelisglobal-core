@@ -22,7 +22,6 @@
 	<changeSet author="jfurlong" id="1" context="ci_regional">
 		<comment>Tidy up test_section table</comment>
         <sql>
-            delete from clinlims.test_section where is_active = 'N' and name !~ 'user';
             update clinlims.test_section set name = 'Biochemistry' where display_key = 'test.section.biochemistry';
             update clinlims.test_section set name = 'Hematology' where display_key = 'test.section.hematology';
             update clinlims.test_section set name = 'Serology-Immunology' where display_key = 'test.section.serology-immunology';
