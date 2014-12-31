@@ -1,0 +1,131 @@
+Glucose
+Ketones
+Blood
+Bilirubin
+Urobilinogen Phenlpyruvic Acid
+HGC
+Pus Cells (>5/hpf)
+S. haematobium
+T. vaginalis
+Yeast Cells
+Red blood cells
+Bacteria
+Spermatozoa
+Fasting blood sugar
+Random blood sugar
+OGTT
+Renal function tests
+Creatinine
+Urea
+Sodium
+Potassium
+Chloride
+Direct bilirubin
+Total bilirubin
+SGPT/ALAT
+SGOT/ASAT
+Serum Protein
+Albumin
+Alkaline Phodphate
+Gamma GT
+Amylase
+Total cholestrol
+Trigycerides
+HDL
+LDE
+PSA
+CSF Proteins
+CSF Glucose
+Proteins
+Glucose
+Acid phosphatase
+Bence jones protein
+Triiodothyronine(T3)
+Thyroid-stimulating Hormone(TSH)
+Falciparum
+Ovale
+Malariae
+Vivax
+Borrelia
+Trypanosomes
+T. vaginalis
+S. haematobium
+Yeast cells
+L. donovani
+Taenia spp.
+H. nana
+H. diminuta
+Hookworm
+Roundworms
+S. mansoni
+Trichuris trichiura
+Strongyloides stercoralis
+Isospora belli
+E hystolytica
+Giardia lamblia
+Cryptosporidium
+Cyclospora
+Onchocerca volvulus
+Leishmania
+Naisseria
+Klebsiella
+Staphyloccoci
+Streprococci
+Proteus
+Shigella
+Salmonella
+V. cholera
+E. coli
+C. neoformans
+Cardinella vaginalis
+Haemophilus
+Bordotella pertusis
+Psuedomonas
+Coliforms
+Faecal coliforms
+Enterococcus faecalis
+Total viable counts-22C
+Total viable counts-37C
+Clostridium
+Full blood count
+Manual WBCcounts
+Peripheral blood films
+Erythrocyte Sedimentation rate
+Sickling test
+Hb electrophoresis
+G6PD screening
+Bleeding time
+Clotting time
+Prothrombin test
+Partial prothrombin time
+Bone Marrow Aspirates
+Reticulocyte counts
+Haemoglobin
+CD4/CD8
+CD4%
+Peripheral Blood Films
+Tissue Impression
+Pap Smear
+Ascitic fluid
+CSF
+Pleural fluid
+Cervix
+Prostrate
+Breast
+Ovarian cyst
+Fibroids
+Lymph nodes
+Rapid Plasma Region
+TPHA
+ASO Test
+HIV Test
+Widal test
+Brucella test
+Rheumatoid Factor Tests
+Cryptococcal Antigen
+Helicobacter pylori test
+Hepatitis A Test
+Hepatitis B Test
+Hepatitis C Test
+Viral Load
+Formal Gel Test
