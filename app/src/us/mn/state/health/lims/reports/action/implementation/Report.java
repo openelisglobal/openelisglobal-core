@@ -24,6 +24,7 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.image.dao.ImageDAO;
 import us.mn.state.health.lims.image.daoimpl.ImageDAOImpl;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
@@ -90,6 +91,7 @@ public abstract class Report implements IReportCreator {
         reportParameters.put("localization", createLocalizationMap());
         reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
         reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
+        reportParameters.put("REPORT_LOCALE", SystemConfiguration.getInstance().getDefaultLocale());
     }
 
     private Object getImage(String siteName){
