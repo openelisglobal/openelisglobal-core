@@ -19,4 +19,5 @@
     <include file="OE5.1/Schema.xml" />
     <include file="OE5.1/MetaData.xml" />
     <include file="OE5.1/LogoData.xml" />
+    <include file="OE5.1/testCatalogKenya/TestCatalogUpdate.xml"/>
 </databaseChangeLog>

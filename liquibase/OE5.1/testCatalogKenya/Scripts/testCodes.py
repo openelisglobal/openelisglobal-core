@@ -66,12 +66,12 @@ for row in range(0, len(test_name)):
         if description.strip() not in handled_descriptions:
                 handled_descriptions.append( description.strip())
                 if write_billing_code:
-                    result.write("INSERT INTO test_code( test_id, code_type_id, value, lastupdated) \n\t")
+                    result.write("INSERT INTO clinlims.test_code( test_id, code_type_id, value, lastupdated) \n\t")
                     result.write("VALUES ( (select id from clinlims.test where description = " + description + " ), " )
                     result.write( "(select id from clinlims.test_code_type where schema_name = 'billingCode'), '"+  billing_code[row] + "', now() );\n")
 
                 if write_analyze_code:
-                    result.write("INSERT INTO test_code( test_id, code_type_id, value, lastupdated) \n\t")
+                    result.write("INSERT INTO clinlims.test_code( test_id, code_type_id, value, lastupdated) \n\t")
                     result.write("VALUES ( (select id from clinlims.test where description = " + description + " ), " )
                     result.write( "(select id from clinlims.test_code_type where schema_name = 'analyzeCode'), '" +  analyze_code[row] + "', now() );\n")
 

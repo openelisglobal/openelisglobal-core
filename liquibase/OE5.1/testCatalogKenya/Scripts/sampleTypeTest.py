@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-#existing_types = []
+existing_types = []
 
 def get_split_names( name ):
     split_name_list = name.split("/")
@@ -19,8 +19,8 @@ descriptions = []
 
 sample_type_file = open("input_files/sampleType.txt")
 name_file = open('input_files/testName.txt','r')
-#existing_types_file = open("input_files/currentSampleTypes.txt")
-results = open("output_files/sampleTypeTestResults.txt", 'w')
+existing_types_file = open("input_files/currentSampleTypes.txt")
+results = open("output_files/sampleTypeTestResults.sql", 'w')
 
 def esc_char(name):
     if "'" in name:
@@ -60,13 +60,14 @@ for line in name_file:
 name_file.close()
 
 
-#for line in existing_types_file:
-#    if len(line) > 0:
-#        existing_types.append(line.strip())
+for line in existing_types_file:
+    if len(line) > 0:
+        existing_types.append(line.strip())
 
-#existing_types_file.close()
+existing_types_file.close()
 for row in range(0, len(test_names)):
-    if len(test_names[row]) > 1:
+    if len(test_names[row]) > 1 and test_names[row] not in existing_types:
+		existing_types.append(test_names[row])
                 description = create_description(test_names[row], type[row] )
                 test_select = " (select id from clinlims.test where description = " + esc_char(description) + " ) "
                 sample_select = "  (select id from clinlims.type_of_sample where description = '" + clean_sample_type(type[row]) + "') "
@@ -77,4 +78,4 @@ for row in range(0, len(test_names)):
                     descriptions.append(description)
 
 
-print "Done check sampleTypeTestResults.txt for results"
+print "Done check sampleTypeTestResults.sql for results"
