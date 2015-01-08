@@ -34,7 +34,6 @@ import us.mn.state.health.lims.common.paging.PagingUtility;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 
-
 public class ResultValidationPaging {
 	public static final int VALIDATION_PAGING_SIZE = 240;
 	private PagingUtility<List<AnalysisItem>> paging = new PagingUtility<List<AnalysisItem>>();
@@ -47,20 +46,20 @@ public class ResultValidationPaging {
 
 		List<AnalysisItem> resultPage = paging.getPage(1, request.getSession());
 
-		if (resultPage != null) {
+		if (resultPage != null) {		
 			PropertyUtils.setProperty(dynaForm, "resultList", resultPage);
 			PropertyUtils.setProperty(dynaForm, "paging", paging.getPagingBeanWithSearchMapping(1, request.getSession()));
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void page(HttpServletRequest request, DynaActionForm dynaForm, String newPage) throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 
 		request.getSession().setAttribute(IActionConstants.SAVE_DISABLED, IActionConstants.FALSE);
 		List<AnalysisItem> clientAnalysis = (List<AnalysisItem>) dynaForm.get("resultList");
 		PagingBean bean = (PagingBean) dynaForm.get("paging");
-
+		String testSectionId = (request.getParameter("testSectionId"));
+		
 		paging.updatePagedResults(request.getSession(), clientAnalysis, bean, pagingHelper);
 
 		int page = Integer.parseInt(newPage);
@@ -68,11 +67,11 @@ public class ResultValidationPaging {
 		List<AnalysisItem> resultPage = paging.getPage(page, request.getSession());
 		if (resultPage != null) {
 			PropertyUtils.setProperty(dynaForm, "resultList", resultPage);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);
 			PropertyUtils.setProperty(dynaForm, "paging", paging.getPagingBeanWithSearchMapping(page, request.getSession()));
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void updatePagedResults(HttpServletRequest request, DynaActionForm dynaForm) {
 		List<AnalysisItem> clientAnalysis = (List<AnalysisItem>) dynaForm.get("resultList");
 		PagingBean bean = (PagingBean) dynaForm.get("paging");
