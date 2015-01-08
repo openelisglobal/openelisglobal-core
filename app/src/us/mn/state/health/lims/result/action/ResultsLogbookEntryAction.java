@@ -53,14 +53,14 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 			HttpServletResponse response) throws Exception {
 
 		String forward = FWD_SUCCESS;
-
+		
+		DynaActionForm dynaForm = (DynaActionForm) form;
+		
 		String requestedPage = request.getParameter("page");
 		
 		String testSectionId = request.getParameter("testSectionId");
 		
 		request.getSession().setAttribute(SAVE_DISABLED, TRUE);
-
-		DynaActionForm dynaForm = (DynaActionForm) form;
 
 		TestSection ts = null;		
 		
@@ -78,6 +78,8 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		if (!GenericValidator.isBlankOrNull(testSectionId)) {
 			ts = testSectionDAO.getTestSectionById(testSectionId);
 			PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);		
+		} else {
+			PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
 		}
 		setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
 		
@@ -110,16 +112,16 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		} else {
 			paging.page(request, dynaForm, requestedPage);
 		}
-
-		//this does not look right what happens after a new page!!!
-		boolean isHaitiClinical = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti Clinical");
-		if (resultsLoadUtility.inventoryNeeded() || (isHaitiClinical && ("VCT").equals(ts.getTestSectionName()))) { //logbookRequest == logbooks.HIV) {
-			inventoryList = inventoryUtility.getExistingActiveInventory();
-			PropertyUtils.setProperty(dynaForm, "displayTestKit", true);
-		} else {
-			PropertyUtils.setProperty(dynaForm, "displayTestKit", false);
+		if (ts != null) {
+			//this does not look right what happens after a new page!!!
+			boolean isHaitiClinical = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti Clinical");
+			if (resultsLoadUtility.inventoryNeeded() || (isHaitiClinical && ("VCT").equals(ts.getTestSectionName()))) { 
+				inventoryList = inventoryUtility.getExistingActiveInventory();
+				PropertyUtils.setProperty(dynaForm, "displayTestKit", true);
+			} else {
+				PropertyUtils.setProperty(dynaForm, "displayTestKit", false);
+			}
 		}
-
 		PropertyUtils.setProperty(dynaForm, "inventoryItems", inventoryList);
 
 		return mapping.findForward(forward);

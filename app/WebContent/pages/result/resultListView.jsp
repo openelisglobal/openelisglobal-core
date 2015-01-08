@@ -90,6 +90,7 @@
 	failedValidationMarks = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.failedValidationMarker, "true");
 	noteRequired =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.notesRequiredForModifyResults, "true");
 	autofillTechBox = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameBox, "true");
+
 %>
 
 <link rel="stylesheet" type="text/css" href="css/bootstrap_simple.css?ver=<%= Versioning.getBuildNumber() %>" />
@@ -420,7 +421,7 @@ function updateShadowResult(source, index){
 	</div>
 </logic:equal>
 
-        <logic:equal  name='<%=formName%>' property="singlePatient" value="true">
+<logic:equal  name='<%=formName%>' property="singlePatient" value="true">
 <% if(!depersonalize){ %>        
 <table style="width:100%" >
 	<tr>
@@ -1055,7 +1056,18 @@ function updateShadowResult(source, index){
 </logic:notEqual>
 
 </logic:notEqual>
-<logic:equal name="testCount"  value="0">
-<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+
+
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+	<logic:equal name="testCount"  value="0">
+		<logic:notEqual name="<%=formName %>" property="testSectionId" value="0">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+		</logic:notEqual>
+	</logic:equal>
 </logic:equal>
 
+<logic:notEqual  name="<%=formName %>" property="displayTestSections" value="true">
+	<logic:equal name="testCount"  value="0">
+	<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+	</logic:equal>
+</logic:notEqual>

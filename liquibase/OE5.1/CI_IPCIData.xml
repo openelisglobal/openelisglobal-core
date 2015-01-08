@@ -32,4 +32,10 @@
             update clinlims.test_section set name = 'Mycology' where display_key = 'test.section.mycology';
         </sql>
 	</changeSet>
+	<changeSet author="jfurlong" id="2" context="CI_IPCI">
+		<comment>Update for kenya mycology</comment>
+        <sql>
+            update clinlims.test_section set display_key = 'test.section.mycology' where display_key = 'test.section.mycologie';
+        </sql>
+	</changeSet>
 </databaseChangeLog>
