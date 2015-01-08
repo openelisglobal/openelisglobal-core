@@ -275,6 +275,7 @@
 			<form-property name="testName" type="java.lang.String" initial="" />
 			<form-property name="testSections" type="java.util.List"/>
 			<form-property name="testSectionId" type="java.lang.String"/>
+			<form-property name="displayTestSections" type="java.lang.Boolean" initial="true" />
 		</form-bean>
 
 		<form-bean name="WorkplanForm" type="us.mn.state.health.lims.common.action.BaseActionForm">

@@ -33,6 +33,7 @@
 	int rowColorIndex = 2;
 	IAccessionNumberValidator accessionNumberValidator;
 	String searchTerm = null;
+	boolean showTestSectionSelect = false;
 %>
 <%
 
@@ -43,7 +44,7 @@
 	currentAccessionNumber="";
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 	searchTerm = request.getParameter("searchTerm");
-	boolean showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");
+	showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");
 	
 %>
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -656,9 +657,21 @@ function /*boolean*/ handleEnterEvent(){
 
 
   	</logic:notEqual>
-  	<logic:equal name="resultCount"  value="0">
-		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+  	
+	<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+		<logic:equal name="resultCount"  value="0">
+			<logic:notEmpty name="<%=formName %>" property="testSectionId">
+			<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+			</logic:notEmpty>
+		</logic:equal>
 	</logic:equal>
+	
+	<logic:notEqual  name="<%=formName %>" property="displayTestSections" value="true">
+		<logic:equal name="resultCount"  value="0">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+		</logic:equal>
+	</logic:notEqual>
+	  	
 </Table>
 
    <logic:notEqual name="resultCount" value="0">

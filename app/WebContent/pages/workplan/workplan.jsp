@@ -27,6 +27,7 @@
 
 <%!
 	boolean showAccessionNumber = false;
+	boolean displayNoTest = false;
 	String currentAccessionNumber = "";
 	int rowColorIndex = 2;
 %>
@@ -212,9 +213,17 @@ function printWorkplan() {
 	</tr>
 </Table>
 </logic:notEqual>
-<logic:equal name="testCount"  value="0">
+
 <% if( workplanType.equals("test") || workplanType.equals("panel") ){ %>
-	<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+	<logic:equal name="testCount"  value="0">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+	</logic:equal>
+<% } else { %>
+	<logic:equal name="testCount"  value="0">
+		<logic:notEmpty name="<%=formName %>" property="testSectionId">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+		</logic:notEmpty>
+	</logic:equal>
 <% } %>
-</logic:equal>
+
 
