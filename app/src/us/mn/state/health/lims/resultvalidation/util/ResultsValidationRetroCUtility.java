@@ -151,7 +151,7 @@ public class ResultsValidationRetroCUtility {
 				// unique virology department format
 				if ((!GenericValidator.isBlankOrNull(testName) && testSectionName.equals("Virology"))) {
 					if (testName.equals("Genotyping")) {
-						testName = "G�notypage";//"Génotypage";
+						testName = "Génotypage";
 					}
 
 					testList.addAll(getUnValidatedTestResultItemsByTest(testName, statusList));
