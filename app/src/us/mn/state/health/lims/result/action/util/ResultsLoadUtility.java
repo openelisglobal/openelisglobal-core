@@ -118,7 +118,7 @@ public class ResultsLoadUtility {
 
 	private static String ANALYTE_CONCLUSION_ID;
 	private static String ANALYTE_CD4_CNT_CONCLUSION_ID;
-    private static String NUMERIC_RESULT_TYPE_ID;
+    private static final String NUMERIC_RESULT_TYPE = "N";
 	private static boolean depersonalize = FormFields.getInstance().useField(Field.DepersonalizedResults);
 	private boolean useTechSignature =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
 	private static boolean supportReferrals = FormFields.getInstance().useField(Field.ResultsReferral);
@@ -140,10 +140,6 @@ public class ResultsLoadUtility {
 		analyte.setAnalyteName("generated CD4 Count");
 		analyte = analyteDAO.getAnalyteByName(analyte, false);
 		ANALYTE_CD4_CNT_CONCLUSION_ID = analyte == null ? "" : analyte.getId();
-
-        TypeOfTestResult typeOfTestResult = new TypeOfTestResultDAOImpl().getTypeOfTestResultByType( "N" );
-        NUMERIC_RESULT_TYPE_ID = typeOfTestResult != null ? typeOfTestResult.getId() : "";
-
 	}
 
 	public ResultsLoadUtility(String currentUserId) {
@@ -674,7 +670,7 @@ public class ResultsLoadUtility {
             testItem.setHasQualifiedResult( true );
         }
 
-        if( NUMERIC_RESULT_TYPE_ID.equals( testResults.get( 0 ).getTestResultType()  )){
+        if( NUMERIC_RESULT_TYPE.equals( testResults.get( 0 ).getTestResultType()  )){
             testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
         }
 		return testItem;
