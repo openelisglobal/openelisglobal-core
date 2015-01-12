@@ -31,7 +31,7 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationItem;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
-import us.mn.state.health.lims.resultvalidation.util.ResultsValidationUtility;
+import us.mn.state.health.lims.resultvalidation.util.ResultsValidationRetroCUtility;
 import us.mn.state.health.lims.test.dao.TestSectionDAO;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.TestSection;
@@ -46,7 +46,7 @@ import java.util.List;
 public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 
 	private final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-	private ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
+	private ResultsValidationRetroCUtility resultsValidationUtility = new ResultsValidationRetroCUtility();
 	private List<Integer> notValidStatus = new ArrayList<Integer>();
 
 	String testType = "";
@@ -114,18 +114,6 @@ public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 		}
 
 		return workplanTestList;
-	}
-
-	private String getTestSectionId() {
-
-		TestSection testSection = new TestSection();
-		String testSectionName = getTestSectionName();
-		testSection.setTestSectionName(testSectionName);
-
-		TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
-		testSection = testSectionDAO.getTestSectionByName(testSection);
-
-		return testSection == null ? null : testSection.getId();
 	}
 
 

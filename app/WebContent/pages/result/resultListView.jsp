@@ -35,7 +35,6 @@
 
 <bean:define id="logbookType" name="<%=formName%>" property="logbookType" />
 
-
 <%!
 	List<String> hivKits;
 	List<String> syphilisKits;
@@ -91,6 +90,7 @@
 	failedValidationMarks = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.failedValidationMarker, "true");
 	noteRequired =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.notesRequiredForModifyResults, "true");
 	autofillTechBox = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameBox, "true");
+
 %>
 
 <link rel="stylesheet" type="text/css" href="css/bootstrap_simple.css?ver=<%= Versioning.getBuildNumber() %>" />
@@ -318,6 +318,10 @@ function processTestReflexCD4Success(parameters)
 
 }
 
+function submitTestSectionSelect( element ) {
+	window.location.href = "LogbookResults.do?testSectionId=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+}
+
 var showForceWarning = true;
 function forceTechApproval(checkbox, index ){
 	if( $jq(checkbox).attr('checked')){
@@ -358,6 +362,30 @@ function updateShadowResult(source, index){
 
 </script>
 
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+<div id="searchDiv" class="colorFill"  >
+<div id="PatientPage" class="colorFill" style="display:inline" >
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr bgcolor="white">
+			<td width="50%" align="right" >
+				<%= StringUtil.getMessageForKey("workplan.unit.types") %>
+			</td>
+			<td>
+			<html:select name='<%= formName %>' property="testSectionId" 
+				 onchange="submitTestSectionSelect(this);" >
+				<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+			</html:select>
+	   		</td>
+		</tr>
+	</table>
+	<br/>
+	<h1>
+		
+	</h1>
+</div>
+</div>
+</logic:equal>
 
 <!-- Modal popup-->
 <div id="reflexSelect" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -393,7 +421,7 @@ function updateShadowResult(source, index){
 	</div>
 </logic:equal>
 
-        <logic:equal  name='<%=formName%>' property="singlePatient" value="true">
+<logic:equal  name='<%=formName%>' property="singlePatient" value="true">
 <% if(!depersonalize){ %>        
 <table style="width:100%" >
 	<tr>
@@ -1028,7 +1056,18 @@ function updateShadowResult(source, index){
 </logic:notEqual>
 
 </logic:notEqual>
-<logic:equal name="testCount"  value="0">
-<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+
+
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+	<logic:equal name="testCount"  value="0">
+		<logic:notEqual name="<%=formName %>" property="testSectionId" value="0">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+		</logic:notEqual>
+	</logic:equal>
 </logic:equal>
 
+<logic:notEqual  name="<%=formName %>" property="displayTestSections" value="true">
+	<logic:equal name="testCount"  value="0">
+	<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+	</logic:equal>
+</logic:notEqual>

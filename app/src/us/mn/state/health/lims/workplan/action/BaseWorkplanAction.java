@@ -77,10 +77,7 @@ public class BaseWorkplanAction extends BaseAction {
         MALARIA
 	}
 
-	protected WorkplanType workplanType = WorkplanType.UNKNOWN;
-	private TypeNameGroup typeNameGroup;
-	private static Map<String, TypeNameGroup> workplanGroupMap = new HashMap<String, TypeNameGroup>();
-	
+	protected WorkplanType workplanType = WorkplanType.UNKNOWN;	
 	protected final TestDAO testDAO = new TestDAOImpl();
 
 	protected ResultsLoadUtility resultsLoadUtility = new ResultsLoadUtility();
@@ -88,33 +85,9 @@ public class BaseWorkplanAction extends BaseAction {
 	protected static List<Integer> statusList;
 	protected static boolean useReceptionTime = FormFields.getInstance().useField(Field.SampleEntryUseReceptionHour);
 	protected List<String> nfsTestIdList = new ArrayList<String>();
+	protected String testSectionId = "";
 
 	static{
-		workplanGroupMap.put("test", new TypeNameGroup(null, "workplan.test.title", WorkplanType.TEST));
-		workplanGroupMap.put("panel", new TypeNameGroup(null, "workplan.panel.title", WorkplanType.TEST));
-		workplanGroupMap.put("immunology", new TypeNameGroup("Immunology", "workplan.immunology.title", WorkplanType.IMMUNOLOGY));
-		workplanGroupMap.put("immuno", new TypeNameGroup("Immunology", "workplan.immunology.title", WorkplanType.IMMUNOLOGY));
-		workplanGroupMap.put("hematology", new TypeNameGroup("Hematology", "workplan.hematology.title", WorkplanType.HEMATOLOGY));
-		workplanGroupMap.put("biochemistry", new TypeNameGroup("Biochemistry", "workplan.biochemistry.title", WorkplanType.BIOCHEMISTRY));
-		workplanGroupMap.put("chem", new TypeNameGroup("Biochemistry", "workplan.biochemistry.title", WorkplanType.CHEM));
-		workplanGroupMap.put("serology", new TypeNameGroup("Serology", "workplan.serology.title", WorkplanType.SEROLOGY));
-		workplanGroupMap.put("serologie", new TypeNameGroup("Serologie", "workplan.serology.title", WorkplanType.SEROLOGY));
-		workplanGroupMap.put("virology", new TypeNameGroup("Virology", "workplan.virology.title", WorkplanType.VIROLOGY));
-		workplanGroupMap.put("virologie", new TypeNameGroup("Virologie", "workplan.virology.title", WorkplanType.VIROLOGY));
-		workplanGroupMap.put("bacteriology", new TypeNameGroup("Bacteria", "workplan.bacteriology.title", WorkplanType.BACTERIOLOGY));
-		workplanGroupMap.put("parasitology", new TypeNameGroup("Parasitology", "workplan.parasitology.title", WorkplanType.PARASITOLOGY));
-		workplanGroupMap.put("ECBU", new TypeNameGroup("ECBU", "workplan.ebcu.title", WorkplanType.ECBU));
-		workplanGroupMap.put("cytobacteriology", new TypeNameGroup("Cytobacteriologie", "workplan.cytobacteriology.title", WorkplanType.CYTOBACTERIOLOGY));
-		workplanGroupMap.put("molecularBio", new TypeNameGroup("Biologie Moleculaire", "workplan.molecularBio.title", WorkplanType.MOLECULAR_BIOLOGY));
-		workplanGroupMap.put("liquidBio", new TypeNameGroup("Liquides biologique", "workplan.liquidBio.title", WorkplanType.LIQUID_BIOLOGY));
-		workplanGroupMap.put("mycrobacteriology", new TypeNameGroup("Mycobacteriology", "workplan.mycrobacteriology.title", WorkplanType.MYCROBACTERIOLOGY));
-		workplanGroupMap.put("mycology", new TypeNameGroup("mycology", "workplan.mycology.title", WorkplanType.MYCOLOGY));
-		workplanGroupMap.put("endocrin", new TypeNameGroup("Endocrinologie", "workplan.endocrin.title", WorkplanType.ENDOCRINOLOGY));
-		workplanGroupMap.put("HIV", new TypeNameGroup("VCT", "workplan.vct.title", WorkplanType.HIV));
-		workplanGroupMap.put("hemato-immunology", new TypeNameGroup("Hemto-Immunology", "workplan.hemato.imunology.title", WorkplanType.HEMATO_IMMUNOLOGY));
-        workplanGroupMap.put("serology-immunology", new TypeNameGroup("Serology-Immunology", "workplan.serology.immunology.title", WorkplanType.SEROLOGY_IMMUNOLOGY));
-        workplanGroupMap.put("malaria", new TypeNameGroup("Malaria", "workplan.malaria.title", WorkplanType.MALARIA));
-		
 		
 		statusList = new ArrayList<Integer>();
 		statusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted)));
@@ -135,24 +108,27 @@ public class BaseWorkplanAction extends BaseAction {
 		return mapping.findForward(forward);
 	}
 
+	private String titleKey = "";
 	@Override
 	protected String getPageTitleKey() {
-		return typeNameGroup.getKey();
+		return titleKey;
 	}
 
 	@Override
 	protected String getPageSubtitleKey() {
-		return getPageTitleKey();
+		return titleKey;
 	}
-
-	protected void setRequestType(String workplan) {
-		if (!GenericValidator.isBlankOrNull(workplan)) {
-			typeNameGroup = workplanGroupMap.get(workplan);
-			workplanType = typeNameGroup.getWorkplanType();
+	
+	protected String getMessageForKey(String messageKey) throws Exception {
+		return StringUtil.getMessageForKey("workplan.page.title", messageKey);
+	}
+	
+	protected void setRequestType(String section) {
+		if(!GenericValidator.isBlankOrNull(section)){
+			titleKey = section;
 		}
-	}
-
-
+	}	
+	
 	protected void setNFSTestIdList() {
 		nfsTestIdList = new ArrayList<String>();
 		nfsTestIdList.add(getTestId("GB"));
@@ -208,14 +184,19 @@ public class BaseWorkplanAction extends BaseAction {
             return ""; 
     }
     
-	protected String getTestSectionName() {
-		return typeNameGroup.getName();
-	}
-
 	protected String getReceivedDateDisplay(Sample sample){
 		String receptionTime = useReceptionTime ? " " + sample.getReceivedTimeForDisplay( ) : "";
 		return sample.getReceivedDateForDisplay() + receptionTime;
 	}
+	
+	protected void setTestSectionId(String testSectionId) {
+		this.testSectionId = testSectionId;
+	}
+	
+	protected String getTestSectionId() {
+		return testSectionId;
+	}
+	
 	
 	static class TypeNameGroup{
 		private String name;

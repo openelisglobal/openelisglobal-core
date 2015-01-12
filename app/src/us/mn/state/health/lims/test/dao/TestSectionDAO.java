@@ -19,6 +19,7 @@ import java.util.List;
 
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
 /**
@@ -62,4 +63,5 @@ public interface TestSectionDAO extends BaseDAO {
 	public TestSection getTestSectionByName(String testSection) throws LIMSRuntimeException;
 
 	public TestSection getTestSectionById(String testSectionId) throws LIMSRuntimeException;
+	
 }

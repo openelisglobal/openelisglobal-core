@@ -24,8 +24,10 @@
 <bean:define id="tests" name="<%=formName%>" property="workplanTests" />
 <bean:size id="testCount" name="tests" />
 
+
 <%!
 	boolean showAccessionNumber = false;
+	boolean displayNoTest = false;
 	String currentAccessionNumber = "";
 	int rowColorIndex = 2;
 %>
@@ -57,6 +59,10 @@ function disableEnableTest(checkbox, index){
 	}
 }
 
+function submitTestSectionSelect( element ) {
+	window.location.href = "WorkPlanByTestSection.do?testSectionId=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+}
+
 function printWorkplan() {
 
 	var form = window.document.forms[0];
@@ -66,9 +72,34 @@ function printWorkplan() {
 }
 
 </script>
+<% if( !workplanType.equals("test") && !workplanType.equals("panel") ){ %>
+<div id="searchDiv" class="colorFill"  >
+<div id="PatientPage" class="colorFill" style="display:inline" >
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr>
+			<td width="50%" align="right" >
+				<bean:write name="<%=formName %>" property="searchLabel"/>
+			</td>
+			<td>
+			<html:select name='<%= formName %>' property="testSectionId" 
+				 onchange="submitTestSectionSelect(this);" >
+				<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+			</html:select>
+	   		</td>
+		</tr>
+	</table>
+	<br/>
+	<h1>
+		
+	</h1>
+</div>
+</div>
+<% }%>
+
+<br/>
 <logic:notEqual name="testCount" value="0">
 <bean:size name='<%= formName %>' property="workplanTests" id="size" />
-
 <html:button property="print" styleId="print"  onclick="printWorkplan();"  >
 	<bean:message key="workplan.print"/>
 </html:button>
@@ -182,7 +213,17 @@ function printWorkplan() {
 	</tr>
 </Table>
 </logic:notEqual>
-<logic:equal name="testCount"  value="0">
-	<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
-</logic:equal>
+
+<% if( workplanType.equals("test") || workplanType.equals("panel") ){ %>
+	<logic:equal name="testCount"  value="0">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+	</logic:equal>
+<% } else { %>
+	<logic:equal name="testCount"  value="0">
+		<logic:notEmpty name="<%=formName %>" property="testSectionId">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+		</logic:notEmpty>
+	</logic:equal>
+<% } %>
+
 
