@@ -6,7 +6,7 @@
 	<comment>Make the banner for Kenya and deactivate CI organizations</comment>
 	<sql> 
 		UPDATE clinlims.localization SET english = 'Kenya Laboratory Information System', 
-			french = 'Système d''Information Électronique de Laboratoire - Kenya' WHERE id = 2;
+			french = 'Système d''Information Électronique de Laboratoire - Kenya' WHERE id = (SELECT id FROM clinlims.localization WHERE english = 'Haiti Laboratory Information System');
 		UPDATE clinlims.organization SET is_active = 'N';
 	</sql>
 </changeSet>
