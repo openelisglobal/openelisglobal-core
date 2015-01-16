@@ -44,11 +44,6 @@ def abbr_state(name):
         return 'NE'
     return name
 
-def get_org_id(county):
-    county_name = county.strip()
-    if len(county_name) > 3:
-	return region_dict[county_name]
-    return 'NULL'
 #take care of names with apostrophes
 def esc_name(name):
     if "'" in name:
@@ -56,7 +51,7 @@ def esc_name(name):
     else:
         return name.strip()
 
-sql_insert = "INSERT INTO clinlims.organization( id, name, city, zip_code, street_address, state, org_id, lastupdated,  is_active) \n\t VALUES ("
+sql_insert = "INSERT INTO clinlims.organization( id, name, city, zip_code, street_address, state, lastupdated,  is_active) \n\t VALUES ("
 count = 10
 organization_results = open("output_files/organization.sql", 'w')
 for row in range(0, len(organization)):
@@ -65,7 +60,7 @@ for row in range(0, len(organization)):
         if org_field not in used and 'n/a' not in org_field:
             used.append(org_field)
             organization_results.write(sql_insert)
-            organization_results.write(org_field[0] + ", '" + esc_name(org_field[1]) + "', '" + esc_name(org_field[2][:30]) + "', '" + org_field[3][:10] + "' , '" + esc_name(org_field[4][:30]) + "', '" + abbr_state(org_field[5]) + "'," + get_org_id(org_field[6]) +", now(), 'Y');\n\t")
+            organization_results.write(org_field[0] + ", '" + esc_name(org_field[1]) + "', '" + esc_name(org_field[2][:30]) + "', '" + org_field[3][:10] + "' , '" + esc_name(org_field[4][:30]) + "', '" + abbr_state(org_field[5]) + "', now(), 'Y');\n\t")
 	    organization_results.write("INSERT INTO clinlims.organization_organization_type( org_id, org_type_id) \n\t\t VALUES ( "+ org_field[0] +", 5);\n")
 
 print "Done Look for the results in organization.sql"

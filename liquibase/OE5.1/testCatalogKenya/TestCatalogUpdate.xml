@@ -6,7 +6,7 @@
 	<comment>Make the banner for Kenya and deactivate CI organizations</comment>
 	<sql> 
 		UPDATE clinlims.localization SET english = 'Kenya Laboratory Information System', 
-			french = 'Système d''Information Électronique de Laboratoire - Kenya' WHERE id = (SELECT id FROM clinlims.localization WHERE english = 'Haiti Laboratory Information System');
+			french = 'Système d''Information Électronique de Laboratoire - Kenya' WHERE id = (SELECT id FROM clinlims.localization WHERE description = 'Site information banner test');
 		UPDATE clinlims.organization SET is_active = 'N';
 	</sql>
 </changeSet>
@@ -89,7 +89,7 @@
 <changeSet author="echiteri" id="17">
 	<comment>Adds needed dictionary values</comment>
 	<sqlFile path="OE5.1/testCatalogKenya/output_files/dictionaryResult.sql"/>
-	<comment>Point the dictionary category id from Haiti Lab to Kenya Lab</comment>
+	<comment>Point the dictionary category id from Kenya Lab</comment>
 	<sql> 
 		UPDATE clinlims.dictionary SET dictionary_category_id = (SELECT id FROM clinlims.dictionary_category WHERE description = 'Kenya Lab')  
 		WHERE display_key like 'dictionary.result%';
