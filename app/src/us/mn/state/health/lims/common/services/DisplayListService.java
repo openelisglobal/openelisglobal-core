@@ -62,6 +62,7 @@ public class DisplayListService implements LocaleChangeListener {
 		SAMPLE_PATIENT_REFERRING_CLINIC, 
 		QA_EVENTS,
 		TEST_SECTION,
+		TEST_SECTION_BY_NAME,
 		HAITI_DEPARTMENTS,
         PATIENT_SEARCH_CRITERIA,
         PANELS,
@@ -91,6 +92,7 @@ public class DisplayListService implements LocaleChangeListener {
 		typeToListMap.put(ListType.SAMPLE_PATIENT_REFERRING_CLINIC,	createReferringClinicList());
         typeToListMap.put(ListType.QA_EVENTS, createSortedQAEvents());
         typeToListMap.put(ListType.TEST_SECTION, createTestSectionList());
+        typeToListMap.put(ListType.TEST_SECTION_BY_NAME, createTestSectionByNameList());
 		typeToListMap.put(ListType.HAITI_DEPARTMENTS, createAddressDepartmentList());
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
@@ -119,6 +121,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.GENDERS, createGenderList());
         typeToListMap.put(ListType.QA_EVENTS, createSortedQAEvents());
         typeToListMap.put(ListType.TEST_SECTION, createTestSectionList());
+        typeToListMap.put(ListType.TEST_SECTION_BY_NAME, createTestSectionByNameList());
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
         typeToListMap.put(ListType.PANELS, createPanelList());
@@ -415,7 +418,19 @@ public class DisplayListService implements LocaleChangeListener {
 		
 		return testSectionsPairs;
 	}
+
 	
+	private static List<IdValuePair> createTestSectionByNameList() {
+		List<IdValuePair> testSectionsPairs = new ArrayList<IdValuePair>();
+		List<TestSection> testSections = new TestSectionDAOImpl().getAllActiveTestSections();
+		
+		for(TestSection section : testSections){
+			testSectionsPairs.add(new IdValuePair(section.getId(), section.getTestSectionName()));
+		}
+		
+		return testSectionsPairs;
+	}
+
 	private static List<IdValuePair> createAddressDepartmentList(){
 		List<IdValuePair> departmentPairs = new ArrayList<IdValuePair>();
 		List<Dictionary> departments = new DictionaryDAOImpl().getDictionaryEntrysByCategory("description", "haitiDepartment", true);

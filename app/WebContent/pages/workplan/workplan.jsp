@@ -23,6 +23,7 @@
 <bean:define id="workplanType"	value='<%=(String) request.getParameter("type")%>' />
 <bean:define id="tests" name="<%=formName%>" property="workplanTests" />
 <bean:size id="testCount" name="tests" />
+<bean:define id="testSectionsByName" name="<%=formName%>" property="testSectionsByName" />
 
 
 <%!
@@ -60,7 +61,14 @@ function disableEnableTest(checkbox, index){
 }
 
 function submitTestSectionSelect( element ) {
-	window.location.href = "WorkPlanByTestSection.do?testSectionId=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+	var testSectionNameIdHash = [];
+
+	<%
+		for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
+			out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+		}
+	%>
+		window.location.href = "WorkPlanByTestSection.do?testSectionId=" + element.value + "&type=" + testSectionNameIdHash[element.value] ;
 }
 
 function printWorkplan() {

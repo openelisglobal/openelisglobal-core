@@ -34,7 +34,7 @@
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage"  />
 
 <bean:define id="logbookType" name="<%=formName%>" property="logbookType" />
-
+<bean:define id="testSectionsByName" name="<%=formName%>" property="testSectionsByName" />
 <%!
 	List<String> hivKits;
 	List<String> syphilisKits;
@@ -319,7 +319,15 @@ function processTestReflexCD4Success(parameters)
 }
 
 function submitTestSectionSelect( element ) {
-	window.location.href = "LogbookResults.do?testSectionId=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+	
+	var testSectionNameIdHash = [];
+
+<%
+	for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
+		out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+	}
+%>
+	window.location.href = "LogbookResults.do?testSectionId=" + element.value + "&type=" + testSectionNameIdHash[element.value] ;
 }
 
 var showForceWarning = true;
