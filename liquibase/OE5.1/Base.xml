@@ -25,6 +25,5 @@
     <include file="OE5.1/CI_LNSPData.xml" />
     <include file="OE5.1/RetroCIData.xml" />
     <include file="OE5.1/HaitiClinicalData.xml" />
-    <include file="OE5.1/testCatalogKenya/TestCatalogUpdate.xml"/>
     <include file="OE5.1/TestSectionPermissionUpdate.xml" />    
  </databaseChangeLog>
