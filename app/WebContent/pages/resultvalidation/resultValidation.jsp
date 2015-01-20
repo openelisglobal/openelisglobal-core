@@ -24,7 +24,7 @@
 <bean:define id="testName"	value='<%=request.getParameter("test")%>' />
 <bean:define id="results" name="<%=formName%>" property="resultList" />
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage" type="List<IdValuePair>" /> 
-
+<bean:define id="testSectionsByName" name='<%=formName%>' property="testSectionsByName" />
 <bean:size id="resultCount" name="results" />
 
 <%!
@@ -173,7 +173,16 @@ function savePage() {
 }
 
 function submitTestSectionSelect( element ) {
-	window.location.href = "ResultValidationSave.do" + "?testSectionId=" + element.value + "&test=&type=" + element.options[element.selectedIndex].text ;
+	
+	var testSectionNameIdHash = [];
+
+	<%
+		for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
+			out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+		}
+	%>
+		window.location.href = "ResultValidationSave.do?testSectionId=" + element.value + "&test=&type=" + testSectionNameIdHash[element.value];
+	
 }
 
 function toggleSelectAll( element ) {

@@ -180,6 +180,7 @@
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
             <form-property name="testSections" type="java.util.List"/>
+            <form-property name="testSectionsByName" type="java.util.List"/>
 			<form-property name="testSectionId" type="java.lang.String"/>
 			<form-property name="displayTestSections" type="java.lang.Boolean" initial="true" />
 		</form-bean>
@@ -228,6 +229,7 @@
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
             <form-property name="testSections" type="java.util.List"/>
+            <form-property name="testSectionsByName" type="java.util.List"/>
             <form-property name="testSectionId" type="java.lang.String"/>
             <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
 		</form-bean>
@@ -274,6 +276,7 @@
 			<form-property name="testSection" type="java.lang.String" initial="" />
 			<form-property name="testName" type="java.lang.String" initial="" />
 			<form-property name="testSections" type="java.util.List"/>
+			<form-property name="testSectionsByName" type="java.util.List"/>
 			<form-property name="testSectionId" type="java.lang.String"/>
 			<form-property name="displayTestSections" type="java.lang.Boolean" initial="true" />
 		</form-bean>
@@ -293,6 +296,7 @@
 			<form-property name="workplanType" type="java.lang.String" initial="" />
 			<form-property name="searchAction" type="java.lang.String" initial="" />
 			<form-property name="testSections" type="java.util.List"/>
+			<form-property name="testSectionsByName" type="java.util.List"/>
 			<form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 		
