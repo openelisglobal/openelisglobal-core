@@ -67,7 +67,7 @@
 			update clinlims.system_module set name = 'ResultValidation:Biochemistry', description = 'ResultValidation=>Biochemistry' where name = 'ResultValidation:biochemistry';
 			update clinlims.system_module set name = 'Workplan:Biochemistry', description = 'Workplan=>Biochemistry' where name = 'Workplan:biochemistry';
 			update clinlims.system_module set name = 'LogbookResults:Hematology', description = 'LogbookResults=>Hematology' where name = 'LogbookResults:hematology';
-			update clinlims.system_module set name = 'ResultValidation:Hematology', description = 'ResultValidation=>Hematology' where name = ''ResultValidation:hematology;
+			update clinlims.system_module set name = 'ResultValidation:Hematology', description = 'ResultValidation=>Hematology' where name = 'ResultValidation:hematology';
 			update clinlims.system_module set name = 'Workplan:Hematology', description = 'Workplan=>Hematology' where name = 'Workplan:hematology';
 			update clinlims.system_module set name = 'LogbookResults:Serology-Immunology', description = 'LogbookResults=>Serology-Immunology' where name = 'LogbookResults:serolo-immunology';
 			update clinlims.system_module set name = 'ResultValidation:Serology-Immunology', description = 'ResultValidation=>Serology-Immunology' where name = 'ResultValidation:Serology-Immunology';
@@ -82,7 +82,7 @@
 			update clinlims.system_module set name = 'ResultValidation:Malaria', description = 'ResultValidation=>Malaria' where name = 'ResultValidation:malaria';
 			update clinlims.system_module set name = 'Workplan:Malaria', description = 'Workplan=>Malaria' where name = 'Workplan:malaria';
 			update clinlims.system_module set name = 'LogbookResults:Parasitology', description = 'LogbookResults=>Parasitology' where name = 'LogbookResults:parasitology';
-			update clinlims.system_module set name = 'ResultValidation:Parasitology', description = 'ResultValidation=>Parasitology' where name = '';
+			update clinlims.system_module set name = 'ResultValidation:Parasitology', description = 'ResultValidation=>Parasitology' where name = 'ResultValidation:parasitology';
 			update clinlims.system_module set name = 'Workplan:Parasitology', description = 'Workplan=>Parasitology' where name = 'Workplan:parasitology';
 			update clinlims.test_section set name = 'Mycology' where name = 'mycology';
 			update clinlims.system_module set name = 'LogbookResults:Mycology', description = 'LogbookResults=>Mycology' where name = 'ResultValidation:mycology';
