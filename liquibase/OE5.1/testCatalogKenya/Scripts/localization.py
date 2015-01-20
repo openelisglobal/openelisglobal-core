@@ -17,7 +17,6 @@ for line in test_local_file:
     if len(line) > 1:
         test_localization.append(line.strip())
 test_local_file.close()
-print test_localization
 def esc_name(name):
     if "'" in name:
         return name.replace("'", "''")

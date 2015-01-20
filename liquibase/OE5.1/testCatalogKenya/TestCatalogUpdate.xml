@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+<changeSet author="echiteri" id="1">
+	<comment>Make the banner for Kenya and deactivate CI organizations</comment>
+	<sql> 
+		UPDATE clinlims.localization SET english = 'Kenya Laboratory Information System', 
+			french = 'Système d''Information Électronique de Laboratoire - Kenya' WHERE id = (SELECT id FROM clinlims.localization WHERE description = 'Site information banner test');
+		UPDATE clinlims.organization SET is_active = 'N';
+	</sql>
+</changeSet>
+<changeSet author="echiteri" id="2">
+	<comment>Add counties and districts to the organizations</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/county_district.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="3">
+	<comment>Add Health facility list (names) to the organizations</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/organization.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="4">
+	<comment>Add lab sections</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/testSection.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="5">
+	<comment>adds in the new panels</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/panelResults.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="6">
+	<comment>add the new sample types</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/SampleType.sql"/>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/TypeOrder.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="7">
+	<comment>Associates new and existing sample types with new and existing panels</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/typePanelResults.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="8">
+	<comment>Deactivate selected sample types</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/inactivateSampleTypes.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="9">
+	<comment>Adds needed uom values</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/MassiveUOM.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="10">
+	<comment>Add localization for english and french per test</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/localization.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="11">
+	<comment>adds tests</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/test.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="12">
+	<comment>Add tests to panels</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/testPanel.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="13">
+	<comment>Add tests to sample types</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/sampleTypeTestResults.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="14">
+	<comment>Adds to test_result table</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/MassiveTestResults.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="15">
+	<comment>Adds result limits to test</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/resultLimit.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="16">
+	<comment>add new dictionary category</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/dictionaryCategory.sql"/>
+</changeSet>
+
+<changeSet author="echiteri" id="17">
+	<comment>Adds needed dictionary values</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/dictionaryResult.sql"/>
+	<comment>Point the dictionary category id from Kenya Lab</comment>
+	<sql> 
+		UPDATE clinlims.dictionary SET dictionary_category_id = (SELECT id FROM clinlims.dictionary_category WHERE description = 'Kenya Lab')  
+		WHERE display_key like 'dictionary.result%';
+	</sql>
+</changeSet>
+
+<changeSet author="echiteri" id="18">
+	<comment>Adds significant digits to test_results</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/significantDigits.sql"/>
+</changeSet>
+</databaseChangeLog>
