@@ -182,6 +182,39 @@
 			update clinlims.system_module set name = 'Workplan:Hematology', description = 'Workplan=>Hematology' where name = 'Workplan:hematology';
  		</sql>
 	</changeSet>
+	<!-- Data specific to kenya lab -->
+	<changeSet author="jfurlong" id="7" context="Kenya">
+		<comment>Update the permissions for test section specific actions(system_module table)</comment>
+		<sql>
+			insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'Workplan', 'Workplan=>Enter', 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			update clinlims.system_module set name = 'LogbookResults:Biochemistry', description = 'LogbookResults=>Biochemistry' where name = 'LogbookResults:biochemistry';
+			update clinlims.system_module set name = 'ResultValidation:Biochemistry', description = 'ResultValidation=>Biochemistry' where name = 'ResultValidation:biochemistry';
+			update clinlims.system_module set name = 'Workplan:Biochemistry', description = 'Workplan=>Biochemistry' where name = 'Workplan:biochemistry';
+			update clinlims.system_module set name = 'LogbookResults:Hematology', description = 'LogbookResults=>Hematology' where name = 'LogbookResults:hematology';
+			update clinlims.system_module set name = 'ResultValidation:Hematology', description = 'ResultValidation=>Hematology' where name = 'ResultValidation:hematology';
+			update clinlims.system_module set name = 'Workplan:Hematology', description = 'Workplan=>Hematology' where name = 'Workplan:hematology';
+			update clinlims.system_module set name = 'LogbookResults:Serology-Immunology', description = 'LogbookResults=>Serology-Immunology' where name = 'LogbookResults:serolo-immunology';
+			update clinlims.system_module set name = 'ResultValidation:Serology-Immunology', description = 'ResultValidation=>Serology-Immunology' where name = 'ResultValidation:Serology-Immunology';
+			update clinlims.system_module set name = 'Workplan:Serology-Immunology', description = 'Workplan=>Serology-Immunology' where name = 'Workplan:serology-immunology';
+			update clinlims.system_module set name = 'LogbookResults:Immunology', description = 'LogbookResults=>Immunology' where name = 'LogbookResults:immunology';
+			update clinlims.system_module set name = 'ResultValidation:Immunology', description = 'ResultValidation=>Immunology' where name = 'ResultValidation:immunology';
+			update clinlims.system_module set name = 'Workplan:Immunology', description = 'Workplan=>Immunology' where name = 'Workplan:immunology';
+			update clinlims.system_module set name = 'LogbookResults:Molecular Biology', description = 'LogbookResults=>Molecular Biology' where name = 'LogbookResults:molecularBio';
+			update clinlims.system_module set name = 'ResultValidation:Molecular Biology', description = 'ResultValidation=>Molecular Biology' where name = 'Workplan:molecularBio';
+			update clinlims.system_module set name = 'Workplan:Molecular Biology', description = 'Workplan=>Molecular Biology' where name = 'ResultValidation:molecularBio';
+			update clinlims.system_module set name = 'LogbookResults:Malaria', description = 'LogbookResults=>Malaria' where name = 'LogbookResults:malaria';
+			update clinlims.system_module set name = 'ResultValidation:Malaria', description = 'ResultValidation=>Malaria' where name = 'ResultValidation:malaria';
+			update clinlims.system_module set name = 'Workplan:Malaria', description = 'Workplan=>Malaria' where name = 'Workplan:malaria';
+			update clinlims.system_module set name = 'LogbookResults:Parasitology', description = 'LogbookResults=>Parasitology' where name = 'LogbookResults:parasitology';
+			update clinlims.system_module set name = 'ResultValidation:Parasitology', description = 'ResultValidation=>Parasitology' where name = 'ResultValidation:parasitology';
+			update clinlims.system_module set name = 'Workplan:Parasitology', description = 'Workplan=>Parasitology' where name = 'Workplan:parasitology';
+			update clinlims.test_section set name = 'Mycology' where name = 'mycology';
+			update clinlims.system_module set name = 'LogbookResults:Mycology', description = 'LogbookResults=>Mycology' where name = 'ResultValidation:mycology';
+			update clinlims.system_module set name = 'ResultValidation:Mycology', description = 'ResultValidation=>Mycology' where name = 'LogbookResults:mycology';
+			update clinlims.system_module set name = 'Workplan:Mycology', description = 'Workplan=>Mycology' where name = 'Workplan:mycology';
+		</sql>
+	</changeSet>	
 </databaseChangeLog>
 
 
