@@ -266,7 +266,7 @@
         </antcall>
 
         <antcall target="applyUpdate">
-            <param name="context" value="CI_IPCI"/>
+            <param name="context" value="Kenya"/>
             <param name="dbName" value="kenya"/>
         </antcall>
     </target>
