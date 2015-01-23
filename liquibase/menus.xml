@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <!--The common elements of the menu (except for RetroCI) are the first set, followed by individual settings for other sets -->
-    <changeSet id="7" author="paulsc" context="haiti,haitiLNSP,ciLNSP,CI_IPCI,ci_regional" runOnChange="true" runAlways="true">
+    <changeSet id="7" author="paulsc" context="haiti,haitiLNSP,ciLNSP,CI_IPCI,ci_regional,Kenya" runOnChange="true" runAlways="true">
         <comment>Menu Items common to all configurations except for RetroCI</comment>
         <delete schemaName="clinlims" tableName="menu" />
         <sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>
@@ -1630,4 +1630,123 @@
 			<column name="tool_tip_key" value="tooltip.banner.menu.administration" />
 		</insert>
 	</changeSet>
+	<changeSet author="jfurlong" id="1" context="Kenya"	runOnChange="true" runAlways="true">
+		<comment>Adds the menu items for Cote d'Ivoire IPCI</comment>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
+			<column name="presentation_order" valueNumeric="3" />
+			<column name="element_id" value="menu_sample_confirmation" />
+			<column name="action_url" value="/SampleConfirmationEntry.do" />
+			<column name="display_key" value="banner.menu.sample.confirmation.add" />
+			<column name="tool_tip_key" value="tooltip.banner.menu.sample.confirmation.add" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
+			<column name="presentation_order" valueNumeric="4" />
+			<column name="element_id" value="menu_sample_edit" />
+			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
+			<column name="display_key" value="banner.menu.sampleEdit" />
+			<column name="tool_tip_key" value="tooltip.banner.menu.sampleEdit" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_results' ) " />
+			<column name="presentation_order" valueNumeric="3" />
+			<column name="element_id" value="menu_results_referred" />
+			<column name="action_url" value="/ReferredOutTests.do" />
+			<column name="display_key" value="banner.menu.referredOut" />
+			<column name="tool_tip_key" value="banner.menu.referredOut" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports' ) " />
+			<column name="presentation_order" valueNumeric="1" />
+			<column name="element_id" value="menu_reports_status_patient" />
+			<column name="action_url"
+				value="/Report.do?type=patient&amp;report=patientCILNSP" />
+			<column name="display_key" value="openreports.patientTestStatus" />
+			<column name="tool_tip_key" value="tooltip.openreports.patientTestStatus" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+			<column name="presentation_order" valueNumeric="20" />
+			<column name="element_id" value="menu_reports_aggregate_hiv" />
+			<column name="action_url"
+				value="/Report.do?type=indicator&amp;report=indicatorCDILNSPHIV" />
+			<column name="display_key" value="openreports.hiv.aggregate" />
+			<column name="tool_tip_key" value="tooltip.openreports.hiv.aggregate" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+			<column name="presentation_order" valueNumeric="10" />
+			<column name="element_id" value="menu_reports_aggregate_all" />
+			<column name="action_url"
+				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPAllTests" />
+			<column name="display_key" value="openreports.all.tests.aggregate" />
+			<column name="tool_tip_key" value="tooltip.openreports.all.tests.aggregate" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
+			<column name="presentation_order" valueNumeric="50" />
+			<column name="element_id" value="menu_reports_confirmation" />
+			<column name="action_url"
+				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
+			<column name="display_key" value="report.confirmation" />
+			<column name="tool_tip_key" value="tooltip.report.confirmation" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
+			<column name="presentation_order" valueNumeric="1" />
+			<column name="element_id" value="menu_reports_nonconformity_date" />
+			<column name="action_url"
+				value="/Report.do?type=patient&amp;report=haitiNonConformityByDate" />
+			<column name="display_key" value="reports.nonConformity.byDate.report" />
+			<column name="tool_tip_key" value="tooltip.reports.nonConformity.byDate.report" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
+			<column name="presentation_order" valueNumeric="2" />
+			<column name="element_id" value="menu_reports_nonconformity_section" />
+			<column name="action_url"
+				value="/Report.do?type=patient&amp;report=haitiNonConformityBySectionReason" />
+			<column name="display_key" value="reports.nonConformity.bySectionReason.report" />
+			<column name="tool_tip_key"
+				value="tooltip.reports.nonConformity.bySectionReason.report" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="parent_id"
+				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_management' ) " />
+			<column name="presentation_order" valueNumeric="20" />
+			<column name="element_id" value="menu_reports_referred" />
+			<column name="action_url" value="/Report.do?type=patient&amp;report=referredOut" />
+			<column name="display_key" value="reports.label.referred.out" />
+			<column name="tool_tip_key" value="tooltip.reports.label.referred.out" />
+		</insert>
+		<insert schemaName="clinlims" tableName="menu">
+			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+			<column name="presentation_order" valueNumeric="11" />
+			<column name="element_id" value="menu_help" />
+			<column name="action_url" value="/documentation/CI_IPCI_fr.pdf" />
+			<column name="display_key" value="banner.menu.help" />
+			<column name="tool_tip_key" value="tooltip.banner.menu.help" />
+			<column name="new_window" value="true" />
+		</insert>
+	</changeSet>	
 </databaseChangeLog>
