@@ -38,4 +38,10 @@
             update clinlims.test_section set display_key = 'test.section.mycology' where display_key = 'test.section.mycologie';
         </sql>
 	</changeSet>
+	<changeSet author="jfurlong" id="3" context="Kenya">
+		<comment>Update for kenya phone format</comment>
+        <sql>
+            update clinlims.site_information set value = '+254-xxx-xxx-xxx' where name = 'phone format';
+        </sql>
+	</changeSet>
 </databaseChangeLog>
