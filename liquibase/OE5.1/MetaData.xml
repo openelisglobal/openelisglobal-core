@@ -159,4 +159,18 @@
             where dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Haiti Lab') and dict_entry != '';
         </sql>
     </changeSet>
+    <changeSet id="1" author="jfurlong">
+        <comment>Adds the configurable item of restricting free text entries for referring site in sample entry</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="restrictFreeTextRefSiteEntry" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Users cannot enter new referring sites through sample entry" />
+            <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'sampleEntryConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="value" value="false" />
+            <column name="instruction_key" value="instructions.sample.entry.limit.ref.site" />
+            <column name="description_key" value="siteInfo.restrictFreeTextRefSiteEntry" />
+        </insert>
+	</changeSet>
 </databaseChangeLog>

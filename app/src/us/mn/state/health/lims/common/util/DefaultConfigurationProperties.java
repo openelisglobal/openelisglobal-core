@@ -67,6 +67,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.notesRequiredForModifyResults, "modify results note required", "false" );
 		setDBPropertyMappingAndDefault(Property.resultTechnicianName, "ResultTechnicianName", "false");
 		setDBPropertyMappingAndDefault(Property.allowResultRejection, "allowResultRejection", "false");
+		setDBPropertyMappingAndDefault(Property.restrictFreeTextRefSiteEntry, "restrictFreeTextRefSiteEntry", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameBox, "autoFillTechNameBox", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameUser, "autoFillTechNameUser", "false");
 		setDBPropertyMappingAndDefault(Property.failedValidationMarker, "showValidationFailureIcon", "true");

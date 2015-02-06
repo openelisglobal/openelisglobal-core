@@ -33,6 +33,7 @@
     boolean trackPayment = false;
     boolean requesterLastNameRequired = false;
     boolean acceptExternalOrders = false;
+    boolean restrictNewReferringSiteEntries = false;
     IAccessionNumberValidator accessionNumberValidator;
 %>
 <%
@@ -50,6 +51,7 @@
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     requesterLastNameRequired = FormFields.getInstance().useField( Field.SampleEntryRequesterLastNameRequired );
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ACCEPT_EXTERNAL_ORDERS, "true" );
+    restrictNewReferringSiteEntries = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.restrictFreeTextRefSiteEntry, "true");
 
 %>
 
@@ -398,7 +400,11 @@
         autoCompId = 'siteId'; //needs to be set before the dropdown is created N.B. shouuld be passed in as arg
         var dropdown = $jq( "select#orgRequesterId" );
         autoCompleteWidth = dropdown.width() + 66 + 'px';
-        clearNonMatching = false;
+        <% if(restrictNewReferringSiteEntries) { %>
+			clearNonMatching = true;
+		<% } else {%>
+				clearNonMatching = false;
+		<% } %>
         capitialize = true;
         dropdown.combobox();
         invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIXME - add badmessage icon
