@@ -109,6 +109,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "false" );
         setDBPropertyMappingAndDefault( Property.BANNER_TEXT, "bannerHeading", "-1" );
         setDBPropertyMappingAndDefault( Property.CLOCK_24, "24 hour clock", "true" );
+        setDBPropertyMappingAndDefault( Property.PATIENT_NATIONALITY, "supportPatientNationality", "false");
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

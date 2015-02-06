@@ -91,7 +91,6 @@ public class FormFields {
 		PatientPhone,                           //Include patient phone with patient info
 		PatientHealthRegion,                    //Include patient health region with patient info
 		PatientHealthDistrict,                  //Include patient health district with patient info
-		PatientNationality,                     //Include patient nationality with patient info
 		PatientMarriageStatus,                  //Include patient marriage status with patient info
 		PatientEducation,                       //Include patient education level with patient info
 		SampleEntryPatientClinical,             //Include patient clinical information on sample entry (request by CI but not currently implemented)

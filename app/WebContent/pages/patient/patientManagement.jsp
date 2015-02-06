@@ -1,12 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
                  us.mn.state.health.lims.common.formfields.FormFields,
-                 us.mn.state.health.lims.common.formfields.FormFields.Field,
-                 us.mn.state.health.lims.common.util.DateUtil,
-                 us.mn.state.health.lims.common.util.StringUtil,
-                 us.mn.state.health.lims.common.util.SystemConfiguration,
-                 us.mn.state.health.lims.common.util.Versioning" %>
+                 us.mn.state.health.lims.common.formfields.FormFields.Field" %>
 <%@ page import="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" %>
+<%@ page import="us.mn.state.health.lims.common.util.*" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
@@ -103,7 +100,7 @@ var patientNamesRequired = <%= patientNamesRequired %>;
 var patientAgeRequired = <%= patientAgeRequired %>;
 var patientGenderRequired = <%= patientGenderRequired %>;
 var supportEducation = <%= FormFields.getInstance().useField(Field.PatientEducation) %>;
-var supportPatientNationality = <%= FormFields.getInstance().useField(Field.PatientNationality) %>;
+var supportPatientNationality = <%=  ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.PATIENT_NATIONALITY, "true") %>;
 var supportMaritialStatus = <%= FormFields.getInstance().useField(Field.PatientMarriageStatus) %>;
 var supportHealthRegion = <%= FormFields.getInstance().useField(Field.PatientHealthRegion) %>;
 var supportHealthDistrict = <%= FormFields.getInstance().useField(Field.PatientHealthDistrict) %>;
@@ -1182,7 +1179,7 @@ function  processSubjectNumberSuccess(xhr){
 				</td>	
 			</tr>	
 	<% } %>
-	<% if( FormFields.getInstance().useField(Field.PatientNationality)){ %>
+	<% if( ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.PATIENT_NATIONALITY, "true") ){ %>
 		<tr>
 			<td style="text-align:right;"><bean:message key="patient.nationality"/>: </td>
 				<td>

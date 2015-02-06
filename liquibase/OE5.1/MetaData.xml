@@ -159,6 +159,26 @@
             where dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Haiti Lab') and dict_entry != '';
         </sql>
     </changeSet>
+    <changeSet author="paulsc" id="7" >
+        <insert schemaName="clinlims" tableName="site_information" >
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) " />
+            <column name="name"  value="supportPatientNationality" />
+            <column name="description" value="Should the nationality of the patient be specified" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'patientEntryConfig' ) " />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="value_type" value="boolean" />
+            <column name="value" value="false" />
+            <column name="instruction_key" value="siteInfo.instruction.patient.nationality" />
+            <column name="description_key" value="siteInfo.patient.nationality" />
+        </insert>
+    </changeSet>
+    <changeSet author="paulsc" id="8" context="CI_IPCI, ciLNSP, ci_regional" >
+        <comment>Setting correct defaults for patient nationality</comment>
+        <update tableName="site_information" >
+            <column name="value" value="true" />
+            <where>name = 'supportPatientNationality' </where>
+        </update>
+    </changeSet>
     <changeSet id="1" author="jfurlong">
         <comment>Adds the configurable item of restricting free text entries for referring site in sample entry</comment>
         <insert tableName="site_information">
