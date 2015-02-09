@@ -100,6 +100,7 @@ public class TestActivationUpdate extends BaseAction {
 
         DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE);
         DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_INACTIVE);
+        TypeOfSampleUtil.clearCache();
 
         return mapping.findForward(FWD_SUCCESS);
     }
