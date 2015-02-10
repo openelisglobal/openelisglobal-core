@@ -193,7 +193,7 @@
             <column name="description_key" value="siteInfo.restrictFreeTextRefSiteEntry" />
         </insert>
 	</changeSet>
-    <changeSet author="paulsc" id="9" context="CI_IPCI-hide, ciLNSP-hide, ci_regional-hide, haiti-hide, haitiLNSP-hide" >
+    <changeSet author="paulsc" id="9" context="haiti-hide, haitiLNSP-hide" >
         <comment>removes un-referenced tests, sample types and panels</comment>
         <sqlFile path="OE5.1/orphanTestCleanup.sql"/>
     </changeSet>
