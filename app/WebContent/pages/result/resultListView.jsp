@@ -34,7 +34,18 @@
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage"  />
 
 <bean:define id="logbookType" name="<%=formName%>" property="logbookType" />
-<bean:define id="testSectionsByName" name="<%=formName%>" property="testSectionsByName" />
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+	<bean:define id="testSectionsByName" name="<%=formName%>" property="testSectionsByName" />
+	<script type="text/javascript" >
+		var testSectionNameIdHash = [];		
+		<% 
+			for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
+				out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+			}
+		%>
+	</script>
+</logic:equal>
+	
 <%!
 	List<String> hivKits;
 	List<String> syphilisKits;
@@ -131,7 +142,6 @@ var pagingSearch = {};
 		out.print( "pagingSearch[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
 	}
 %>
-
 
 $jq(document).ready( function() {
 			var searchTerm = '<%=searchTerm%>';
@@ -321,15 +331,7 @@ function processTestReflexCD4Success(parameters)
 }
 
 function submitTestSectionSelect( element ) {
-	
-	var testSectionNameIdHash = [];
-
-<%
-	for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
-		out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
-	}
-%>
-	window.location.href = "LogbookResults.do?testSectionId=" + element.value + "&type=" + testSectionNameIdHash[element.value] ;
+	window.location.href = "LogbookResults.do?testSectionId=" + element.value + "&type=" + testSectionNameIdHash[element.value] ;	
 }
 
 var showForceWarning = true;
