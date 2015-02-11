@@ -22,7 +22,7 @@
 
 <changeSet author="echiteri" id="4">
 	<comment>Add lab sections</comment>
-	<sqlFile path="OE5.1/testCatalogKenya/output_files/testSection.sql"/>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/updateTestSection.sql"/>
 </changeSet>
 
 <changeSet author="echiteri" id="5">
@@ -72,21 +72,16 @@
 </changeSet>
 
 <changeSet author="echiteri" id="14">
-	<comment>Adds to test_result table</comment>
-	<sqlFile path="OE5.1/testCatalogKenya/output_files/MassiveTestResults.sql"/>
-</changeSet>
-
-<changeSet author="echiteri" id="15">
 	<comment>Adds result limits to test</comment>
 	<sqlFile path="OE5.1/testCatalogKenya/output_files/resultLimit.sql"/>
 </changeSet>
 
-<changeSet author="echiteri" id="16">
+<changeSet author="echiteri" id="15">
 	<comment>add new dictionary category</comment>
 	<sqlFile path="OE5.1/testCatalogKenya/output_files/dictionaryCategory.sql"/>
 </changeSet>
 
-<changeSet author="echiteri" id="17">
+<changeSet author="echiteri" id="16">
 	<comment>Adds needed dictionary values</comment>
 	<sqlFile path="OE5.1/testCatalogKenya/output_files/dictionaryResult.sql"/>
 	<comment>Point the dictionary category id from Kenya Lab</comment>
@@ -95,6 +90,12 @@
 		WHERE display_key like 'dictionary.result%';
 	</sql>
 </changeSet>
+
+<changeSet author="echiteri" id="17">
+	<comment>Adds to test_result table</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/MassiveTestResults.sql"/>
+</changeSet>
+
 
 <changeSet author="echiteri" id="18">
 	<comment>Adds significant digits to test_results</comment>

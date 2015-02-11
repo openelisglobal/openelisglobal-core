@@ -25,12 +25,6 @@ INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Urine Microscopy') , now(), null,  (select id from clinlims.test where description = 'Spermatozoa(Urine)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Urine Microscopy') , now(), null,  (select id from clinlims.test where description = 'Fasting blood sugar(Urine/Blood)' and is_active = 'Y' ) ); 
-INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Urine Microscopy') , now(), null,  (select id from clinlims.test where description = 'Random blood sugar(Urine/Blood)' and is_active = 'Y' ) ); 
-INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Blood Chemistry') , now(), null,  (select id from clinlims.test where description = 'OGTT(Blood)' and is_active = 'Y' ) ); 
-INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Blood Chemistry') , now(), null,  (select id from clinlims.test where description = 'Renal function tests(Urine)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Blood Chemistry') , now(), null,  (select id from clinlims.test where description = 'Creatinine(Blood)' and is_active = 'Y' ) ); 
@@ -55,7 +49,7 @@ INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Liver function tests') , now(), null,  (select id from clinlims.test where description = 'Albumin(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Liver function tests') , now(), null,  (select id from clinlims.test where description = 'Alkaline Phodphate(Urine)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Liver function tests') , now(), null,  (select id from clinlims.test where description = 'Alkaline Phosphate(Urine)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Liver function tests') , now(), null,  (select id from clinlims.test where description = 'Gamma GT(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
@@ -69,7 +63,7 @@ INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Lipid profile') , now(), null,  (select id from clinlims.test where description = 'LDE(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Lipid profile') , now(), null,  (select id from clinlims.test where description = 'PSA(Blood)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Lipid profile') , now(), null,  (select id from clinlims.test where description = 'PSA- Total(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'CSF chemistry') , now(), null,  (select id from clinlims.test where description = 'CSF Proteins(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
@@ -77,7 +71,7 @@ INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Body fluids') , now(), null,  (select id from clinlims.test where description = 'Proteins(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Body fluids') , now(), null,  (select id from clinlims.test where description = 'Glucose(Blood)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Body fluids') , now(), null,  (select id from clinlims.test where description = 'Glucose-Fasting(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Body fluids') , now(), null,  (select id from clinlims.test where description = 'Acid phosphatase(Blood)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
@@ -141,20 +135,20 @@ INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
 	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Smears') , now(), null,  (select id from clinlims.test where description = 'Pap Smear(Smear)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'FLUID CYTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Ascitic fluid(Smear)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Fluid Cytology') , now(), null,  (select id from clinlims.test where description = 'Ascitic fluid(Smear)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'FLUID CYTOLOGY') , now(), null,  (select id from clinlims.test where description = 'CSF(Smear)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Fluid Cytology') , now(), null,  (select id from clinlims.test where description = 'CSF(Smear)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'FLUID CYTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Pleural fluid(Smear)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Fluid Cytology') , now(), null,  (select id from clinlims.test where description = 'Pleural fluid(Smear)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'TISSUE HISTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Cervix(Tissue)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Tissue Histology') , now(), null,  (select id from clinlims.test where description = 'Cervix(Tissue)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'TISSUE HISTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Prostrate(Tissue)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Tissue Histology') , now(), null,  (select id from clinlims.test where description = 'Prostrate(Tissue)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'TISSUE HISTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Breast(Tissue)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Tissue Histology') , now(), null,  (select id from clinlims.test where description = 'Breast(Tissue)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'TISSUE HISTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Ovarian cyst(Tissue)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Tissue Histology') , now(), null,  (select id from clinlims.test where description = 'Ovarian cyst(Tissue)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'TISSUE HISTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Fibroids(Tissue)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Tissue Histology') , now(), null,  (select id from clinlims.test where description = 'Fibroids(Tissue)' and is_active = 'Y' ) ); 
 INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)
-	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'TISSUE HISTOLOGY') , now(), null,  (select id from clinlims.test where description = 'Lymph nodes(Tissue)' and is_active = 'Y' ) ); 
+	VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = 'Tissue Histology') , now(), null,  (select id from clinlims.test where description = 'Lymph nodes(Tissue)' and is_active = 'Y' ) ); 
