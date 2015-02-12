@@ -27,6 +27,6 @@ INSERT INTO clinlims.panel( id, name, description, lastupdated, display_key, sor
 INSERT INTO clinlims.panel( id, name, description, lastupdated, display_key, sort_order) VALUES
 	(nextval( 'clinlims.panel_seq' ) , 'Smears' , 'Smears' , now() ,'panel.name.Smears' ,330);
 INSERT INTO clinlims.panel( id, name, description, lastupdated, display_key, sort_order) VALUES
-	(nextval( 'clinlims.panel_seq' ) , 'FLUID CYTOLOGY' , 'FLUID CYTOLOGY' , now() ,'panel.name.FLUID' ,340);
+	(nextval( 'clinlims.panel_seq' ) , 'Fluid Cytology' , 'Fluid Cytology' , now() ,'panel.name.Fluid' ,340);
 INSERT INTO clinlims.panel( id, name, description, lastupdated, display_key, sort_order) VALUES
-	(nextval( 'clinlims.panel_seq' ) , 'TISSUE HISTOLOGY' , 'TISSUE HISTOLOGY' , now() ,'panel.name.TISSUE' ,350);
+	(nextval( 'clinlims.panel_seq' ) , 'Tissue Histology' , 'Tissue Histology' , now() ,'panel.name.Tissue' ,350);
