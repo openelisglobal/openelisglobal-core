@@ -35,6 +35,7 @@
     boolean trackPayment = false;
     boolean requesterLastNameRequired = false;
     boolean acceptExternalOrders = false;
+    boolean restrictNewReferringSiteEntries = false;
     IAccessionNumberValidator accessionNumberValidator;
 %>
 <%
@@ -52,6 +53,7 @@
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     requesterLastNameRequired = FormFields.getInstance().useField( Field.SampleEntryRequesterLastNameRequired );
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ACCEPT_EXTERNAL_ORDERS, "true" );
+    restrictNewReferringSiteEntries = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.restrictFreeTextRefSiteEntry, "true");
 
 %>
 
@@ -134,7 +136,6 @@
 
         setCorrectSave();
     }
-
 
     function siteListChanged(textValue) {
         var siteList = $("requesterId");
@@ -326,6 +327,7 @@
                      property="sampleOrderItems.referringSiteId"
                      onchange="setOrderModified();siteListChanged(this);setCorrectSave();"
                      onkeyup="capitalizeValue( this.value );"
+                     
                 >
             <option value=""></option>
             <html:optionsCollection name="<%=formName%>" property="sampleOrderItems.referringSiteList" label="value"
@@ -565,11 +567,15 @@
     $jq(document).ready(function () {
         var dropdown = $jq("select#requesterId");
         autoCompleteWidth = dropdown.width() + 66 + 'px';
-        clearNonMatching = false;
+        <% if(restrictNewReferringSiteEntries) { %>
+       			clearNonMatching = true;
+        <% } else {%>
+        		clearNonMatching = false;
+        <% } %>
         capitialize = true;
         // Actually executes autocomplete
         dropdown.combobox();
-        // invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
+        invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
         maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
 
         resultCallBack = function (textValue) {

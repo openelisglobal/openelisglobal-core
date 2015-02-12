@@ -39,7 +39,7 @@ REPORT_IMAGE_PATH = "/WEB-INF/reports/images/"
 PREVIEW_IMAGE_PATH = "/images/"
 LAB_LOGO_NAME = "labLogo"
 #maps the application name to the liquibase context name
-APP_CONTEX_MAP = { 'CDI':'CDIRetroCI', 'LNSP_Haiti':'haitiLNSP', 'haiti':'haiti', 'CI_LNSP':'ciLNSP', 'CI_IPCI':'CI_IPCI', 'CDI_RegLab':'ci_regional'}
+APP_CONTEX_MAP = { 'CDI':'CDIRetroCI', 'LNSP_Haiti':'haitiLNSP', 'haiti':'haiti', 'CI_LNSP':'ciLNSP', 'CI_IPCI':'CI_IPCI', 'CDI_RegLab':'ci_regional', 'Kenya':'Kenya'}
 CLINLIMS_PWD = ''
 ADMIN_PWD = ''
 SITE_ID = ''

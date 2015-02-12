@@ -23,7 +23,17 @@
 <bean:define id="workplanType"	value='<%=(String) request.getParameter("type")%>' />
 <bean:define id="tests" name="<%=formName%>" property="workplanTests" />
 <bean:size id="testCount" name="tests" />
-
+<% if( !workplanType.equals("test") && !workplanType.equals("panel") ){ %>
+<bean:define id="testSectionsByName" name="<%=formName%>" property="testSectionsByName" />
+	<script type="text/javascript" >
+	var testSectionNameIdHash = [];
+	<%
+		for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
+			out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+		}
+	%>
+	</script>
+<% } %>
 
 <%!
 	boolean showAccessionNumber = false;
@@ -60,7 +70,8 @@ function disableEnableTest(checkbox, index){
 }
 
 function submitTestSectionSelect( element ) {
-	window.location.href = "WorkPlanByTestSection.do?testSectionId=" + element.value + "&type=" + element.options[element.selectedIndex].text ;
+
+	window.location.href = "WorkPlanByTestSection.do?testSectionId=" + element.value + "&type=" + testSectionNameIdHash[element.value] ;
 }
 
 function printWorkplan() {

@@ -96,7 +96,6 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.PatientPhone);
 		setFieldFalse(Field.PatientHealthRegion);
 		setFieldFalse(Field.PatientHealthDistrict);
-		setFieldFalse(Field.PatientNationality);
 		setFieldFalse(Field.PatientMarriageStatus);
 		setFieldFalse(Field.PatientEducation);
 		setFieldFalse(Field.SampleEntryPatientClinical);

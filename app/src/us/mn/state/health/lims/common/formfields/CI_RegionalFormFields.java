@@ -66,7 +66,6 @@ public class CI_RegionalFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.PatientHealthRegion, Boolean.TRUE);
 		settings.put(Field.PatientHealthDistrict, Boolean.TRUE);
 		settings.put(Field.PatientMarriageStatus, Boolean.TRUE);
-		settings.put(Field.PatientNationality, Boolean.TRUE);
 		settings.put(Field.PatientEducation, Boolean.TRUE);
 		settings.put(Field.SampleEntryPatientClinical, Boolean.FALSE);
 		settings.put(Field.SampleEntryRequesterLastNameRequired, Boolean.TRUE);
