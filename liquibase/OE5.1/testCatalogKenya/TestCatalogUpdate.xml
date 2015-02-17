@@ -121,10 +121,10 @@
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Amylase' , 'Amylase', now());
 	
-	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Glucose' and description = 'test name'), reporting_name_localization = (select id from clinlims.localization where english = 'Glucose' and description = 'test report name') where description =  'Glucose(Urine)';
-	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Creatinine' and description = 'test name'), reporting_name_localization = (select id from clinlims.localization where english = 'Creatinine' and description = 'test report name') where description =  'Creatinine(Blood)';
-	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Albumin' and description = 'test name'), reporting_name_localization = (select id from clinlims.localization where english = 'Albumin' and description = 'test report name') where description =  'Albumin(Blood)';
-	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Amylase' and description = 'test name'), reporting_name_localization = (select id from clinlims.localization where english = 'Amylase' and description = 'test report name') where description =  'Amylase(Blood)';
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Glucose' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Glucose' and description = 'test report name') where description =  'Glucose(Urine)';
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Creatinine' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Creatinine' and description = 'test report name') where description =  'Creatinine(Blood)';
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Albumin' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Albumin' and description = 'test report name') where description =  'Albumin(Blood)';
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Amylase' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Amylase' and description = 'test report name') where description =  'Amylase(Blood)';
 	
 	</sql>
 </changeSet>
