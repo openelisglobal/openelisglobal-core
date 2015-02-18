@@ -670,7 +670,7 @@ public class ResultsLoadUtility {
             testItem.setHasQualifiedResult( true );
         }
 
-        if( !testResults.isEmpty() && NUMERIC_RESULT_TYPE.equals( testResults.get( 0 ).getTestResultType()  )){
+        if( NUMERIC_RESULT_TYPE.equals( testResults.get( 0 ).getTestResultType()  )){
             testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
         }
 		return testItem;
