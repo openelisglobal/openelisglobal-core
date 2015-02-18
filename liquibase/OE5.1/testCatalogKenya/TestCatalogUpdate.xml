@@ -22,7 +22,7 @@
 
 <changeSet author="echiteri" context="Kenya" id="4">
 	<comment>Add lab sections</comment>
-	<sqlFile path="OE5.1/testCatalogKenya/output_files/updateTestSection.sql"/>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/testSection.sql"/>
 </changeSet>
 
 <changeSet author="echiteri" context="Kenya" id="5">
