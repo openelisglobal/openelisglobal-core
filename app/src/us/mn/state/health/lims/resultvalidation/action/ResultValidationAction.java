@@ -70,8 +70,9 @@ public class ResultValidationAction extends BaseResultValidationAction {
 			
 			if (!GenericValidator.isBlankOrNull(testSectionId)) {
 				ts = testSectionDAO.getTestSectionById(testSectionId);
-				PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);
 			}
+			PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
+			
 			List<AnalysisItem> resultList = null;
 			ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
 			setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
