@@ -22,7 +22,7 @@
 
 <changeSet author="echiteri" context="Kenya" id="4">
 	<comment>Add lab sections</comment>
-	<sqlFile path="OE5.1/testCatalogKenya/output_files/updateTestSection.sql"/>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/testSection.sql"/>
 </changeSet>
 
 <changeSet author="echiteri" context="Kenya" id="5">
@@ -101,4 +101,32 @@
 	<comment>Adds significant digits to test_results</comment>
 	<sqlFile path="OE5.1/testCatalogKenya/output_files/significantDigits.sql"/>
 </changeSet>
+<changeSet author="jfurlong" context="Kenya" id="1">
+	<comment>Fix 4 missing localization entries</comment>
+	<sql>
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Glucose' , 'Glucose', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Glucose' , 'Glucose', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Creatinine' , 'Creatinine', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Creatinine' , 'Creatinine', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Albumin' , 'Albumin', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Albumin' , 'Albumin', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Amylase' , 'Amylase', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Amylase' , 'Amylase', now());
+	
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Glucose' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Glucose' and description = 'test report name') where description =  'Glucose(Urine)';
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Creatinine' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Creatinine' and description = 'test report name') where description =  'Creatinine(Blood)';
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Albumin' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Albumin' and description = 'test report name') where description =  'Albumin(Blood)';
+	update clinlims.test set name_localization_id = (select id from clinlims.localization where english = 'Amylase' and description = 'test name'), reporting_name_localization_id = (select id from clinlims.localization where english = 'Amylase' and description = 'test report name') where description =  'Amylase(Blood)';
+	
+	</sql>
+</changeSet>
+
 </databaseChangeLog>
