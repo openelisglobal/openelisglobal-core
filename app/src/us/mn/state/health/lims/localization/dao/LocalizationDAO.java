@@ -25,4 +25,6 @@ public interface LocalizationDAO{
     public Localization getLocalizationById( String id) throws LIMSRuntimeException;
 
     public void updateData( Localization localization ) throws LIMSRuntimeException;
+
+    public void insert( Localization localization) throws LIMSRuntimeException;
 }

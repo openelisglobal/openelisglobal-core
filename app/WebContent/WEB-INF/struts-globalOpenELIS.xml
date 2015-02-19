@@ -717,7 +717,15 @@
 			<form-property name="jsonChangeList" type="java.lang.String" initial="" />
 		</form-bean>
 
-        <form-bean name="testManagementConfigForm" type="us.mn.state.health.lims.common.action.BaseActionForm" />
+        <form-bean name="testManagementConfigForm" type="org.apache.struts.validator.DynaValidatorForm" />
+        <form-bean name="testUnitManagementForm" type="org.apache.struts.validator.DynaValidatorForm" />
+
+        <form-bean name="testUnitCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="existingTestUnitList" type="java.util.List" />
+            <form-property name="inactiveTestUnitList" type="java.util.List" />
+            <form-property name="testUnitEnglishName" type="java.lang.String" />
+            <form-property name="testUnitFrenchName" type="java.lang.String" />
+        </form-bean>
 	</form-beans>
 
 
@@ -740,23 +748,36 @@
                 <forward name="success" path="testManagementConfigDefinition"  />
         </action>
 
-        <action path="/TestRenameEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.test.action.TestRenameAction" >
+        <action path="/TestRenameEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameAction" >
             <forward name="success" path="testRenameDefinition" />
         </action>
 
-        <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.test.action.TestRenameUpdate" >
+        <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameUpdate" >
             <forward name="success" path="/TestRenameEntry.do" />
         </action>
 
-		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationAction" >
+		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.testconfiguration.action.TestActivationAction" >
 			<forward name="success" path="testActivationDefinition" />
 		</action>
 
-		<action path="/TestActivationUpdate" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationUpdate" >
+		<action path="/TestActivationUpdate" name="testActivationForm" type="us.mn.state.health.lims.testconfiguration.action.TestActivationUpdate" >
 			<forward name="success" path="/TestActivation.do" />
 		</action>
 
-		<action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
+        <action path="/TestUnitManagement" name="testUnitManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+            <forward name="success" path="testUnitManagementDefinition"  />
+        </action>
+
+        <action path="/TestUnitCreate" name="testUnitCreateForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionCreateAction" >
+            <forward name="success" path="testUnitCreateDefinition" />
+        </action>
+
+        <action path="/TestUnitCreateUpdate" name="testUnitCreateForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionCreateUpdate" >
+            <forward name="success" path="/TestUnitCreate.do" />
+        </action>
+
+
+        <action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"
 		>
 			<forward name="success" path="samplePatientEntryDefinition" />

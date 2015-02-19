@@ -282,16 +282,25 @@
     </definition>
 
     <definition name="testManagementConfigDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testManagement.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testManagement.jsp"/>
     </definition>
 
     <definition name="testRenameDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testRename.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testRename.jsp"/>
     </definition>
 
     <definition name="testActivationDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testActivation.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testActivation.jsp"/>
     </definition>
+
+    <definition name="testUnitManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testUnitManagement.jsp" />
+    </definition>
+
+    <definition name="testUnitCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testUnitCreate.jsp" />
+    </definition>
+
 
 	<definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
     	<put name="body" value="/pages/userrole/userRoleMenu.jsp"/>

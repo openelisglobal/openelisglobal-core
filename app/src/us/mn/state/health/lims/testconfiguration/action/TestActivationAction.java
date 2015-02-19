@@ -14,7 +14,7 @@
  * Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
  */
 
-package us.mn.state.health.lims.test.action;
+package us.mn.state.health.lims.testconfiguration.action;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
