@@ -197,4 +197,12 @@
         <comment>removes un-referenced tests, sample types and panels</comment>
         <sqlFile path="OE5.1/orphanTestCleanup.sql"/>
     </changeSet>
+    <changeSet id="2" author="jfurlong" context="Kenya">
+        <comment>Updates site_information so that Kenya has its own context</comment>    
+		    <sql>
+			    update clinlims.site_information set value = 'KENYA' where name = 'configuration name';
+				update clinlims.site_information set value = 'KENYA' where name = 'setFieldForm';
+				update clinlims.site_information set value = 'KENYA' where name = 'stringContext';
+		    </sql>
+	</changeSet>
 </databaseChangeLog>

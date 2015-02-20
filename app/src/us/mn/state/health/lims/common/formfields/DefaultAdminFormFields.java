@@ -107,6 +107,8 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 			return new CI_IPCIAdminFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_CI_REGIONAL.equals(fieldSet)){
 			return new CI_RegionalAdminFormFields().getImplementationAttributes();
+		}else if(IActionConstants.FORM_FIELD_SET_KENYA.equals(fieldSet)){
+			return new KenyaAdminFormFields().getImplementationAttributes();
 		}
 
 		return null;
