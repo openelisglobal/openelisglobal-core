@@ -77,11 +77,13 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		PropertyUtils.setProperty(dynaForm, "testSectionsByName", DisplayListService.getList(ListType.TEST_SECTION_BY_NAME));
 		
 		TestSection ts = null;
+		
 		if (!GenericValidator.isBlankOrNull(testSectionId)) {
 			ts = testSectionDAO.getTestSectionById(testSectionId);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
 		}
 		
-		PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
+		
 		
 		List<TestResultItem> workplanTests = new ArrayList<TestResultItem>();
 

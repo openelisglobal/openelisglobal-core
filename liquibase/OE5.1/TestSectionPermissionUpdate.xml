@@ -214,6 +214,14 @@
 			update clinlims.system_module set name = 'ResultValidation:Mycology', description = 'ResultValidation=>Mycology' where name = 'LogbookResults:mycology';
 			update clinlims.system_module set name = 'Workplan:Mycology', description = 'Workplan=>Mycology' where name = 'Workplan:mycology';
 		</sql>
+	</changeSet>
+	<!-- Data specific to haiti lab -->
+	<changeSet author="jfurlong" id="8" context="haiti">
+		<comment>Update the permissions for test section specific actions(system_module table)</comment>
+		<sql>
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), (select id from clinlims.system_module where name = 'LogbookResults:Biochemistry'));
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), (select id from clinlims.system_module where name = 'Workplan:Bacteria'));	
+		</sql>
 	</changeSet>	
 </databaseChangeLog>
 
