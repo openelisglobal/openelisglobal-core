@@ -44,11 +44,11 @@
 
     <ul>
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.create") %>'
-                   onclick="submitAction('TestUnitCreate.do');"
+                   onclick="submitAction('TestSectionCreate.do');"
                    class="textButton"/><br>
             </li>
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.order") %>'
-                   onclick="submitAction('TestActivation.do');"
+                   onclick="submitAction('TestSectionOrder.do');"
                    class="textButton"/><br>
             </li>
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.assign") %>'

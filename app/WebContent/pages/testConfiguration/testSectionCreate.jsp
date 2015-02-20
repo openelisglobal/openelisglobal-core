@@ -61,44 +61,6 @@
         form.submit();
     }
 
-    function setForEditing(testId, name) {
-        $jq("#editDiv").show();
-        $jq("#testName").text(name);
-        $jq(".error").each(function (index, value) {
-            value.value = "";
-            $jq(value).removeClass("error");
-            $jq(value).removeClass("confirmation");
-        });
-        $jq("#testId").val(testId);
-        $jq(".test").each(function () {
-            var element = $jq(this);
-            element.prop("disabled", "disabled");
-            element.addClass("disabled-text-button");
-        });
-        getTestNames(testId, testNameSuccess);
-    }
-
-    function testNameSuccess(xhr) {
-        //alert(xhr.responseText);
-        var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
-        var message = xhr.responseXML.getElementsByTagName("message").item(0);
-        var response;
-
-
-        if (message.firstChild.nodeValue == "valid") {
-            response = JSON.parse(formField.firstChild.nodeValue);
-            $jq("#nameEnglish").text(response["name"]["english"]);
-            $jq("#nameFrench").text(response["name"]["french"]);
-            $jq("#reportNameEnglish").text(response["reportingName"]["english"]);
-            $jq("#reportNameFrench").text(response["reportingName"]["french"]);
-            $jq(".required").each(function () {
-                $jq(this).val("");
-            });
-        }
-
-        window.onbeforeunload = null;
-    }
-
     function confirmValues() {
         var hasError = false;
         $jq(".required").each(function () {
@@ -141,17 +103,6 @@
         $jq("#action").text('<%=StringUtil.getMessageForKey("label.button.edit")%>');
     }
 
-    function cancel() {
-        $jq("#editDiv").hide();
-        $jq("#testId").val("");
-        $jq(".test").each(function () {
-            var element = $jq(this);
-            element.removeProp("disabled");
-            element.removeClass("disabled-text-button");
-        });
-        window.onbeforeunload = null;
-    }
-
     function handleInput(element) {
         $jq(element).removeClass("error");
         makeDirty();
@@ -173,7 +124,7 @@
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
     <input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.manage") %>'
-           onclick="submitAction('TestUnitManagement.do');"
+           onclick="submitAction('TestSectionManagement.do');"
            class="textButton"/>&rarr;
 
 <%=StringUtil.getMessageForKey( "configuration.testUnit.create" )%>
@@ -205,7 +156,7 @@
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.save")%>'
                onclick="confirmValues();"/>
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>'
-               onclick='cancel()'/>
+               onclick="submitAction('TestSectionManagement.do');"/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.accept")%>'
