@@ -1072,9 +1072,9 @@ function updateShadowResult(source, index){
 
 <logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
 	<logic:equal name="testCount"  value="0">
-		<logic:notEqual name="<%=formName %>" property="testSectionId" value="0">
+		<logic:notEmpty name="<%=formName %>" property="testSectionId">
 		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
-		</logic:notEqual>
+		</logic:notEmpty>
 	</logic:equal>
 </logic:equal>
 

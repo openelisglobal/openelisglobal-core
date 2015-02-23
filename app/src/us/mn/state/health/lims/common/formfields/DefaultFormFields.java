@@ -137,8 +137,9 @@ public class DefaultFormFields extends AFormFields {
 			return new CI_IPCIFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_CI_REGIONAL.equals(fieldSet)){
 			return new CI_RegionalFormFields().getImplementationAttributes();
+		}else if(IActionConstants.FORM_FIELD_SET_KENYA.equals(fieldSet)){
+			return new KenyaFormFields().getImplementationAttributes();
 		}
-
 		return null;
 	}
 }
