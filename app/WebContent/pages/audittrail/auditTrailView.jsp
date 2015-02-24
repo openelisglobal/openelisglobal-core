@@ -121,10 +121,10 @@ function submit(){
 				
 				<div id="showOptions" class="show-table-options">
 					<button class="reset-sort btn btn-mini" disabled="disabled"><i class="icon-refresh"></i> Reset</button>
-					<label> Montrer :
+					<label> <bean:message key="audit.show" /> :
 				        <select id="filterByType">
 				        <!--  Options for filter are added via filterByType jquery function -->
-				            <option value="">Tous</option>
+				            <option value=""><bean:message key="audit.show.all"/></option>
 				        </select>
 				    </label>
 				</div>
@@ -137,6 +137,13 @@ function submit(){
 	</logic:notEmpty>
 	
 <logic:notEmpty name='<%= formName %>' property="log" >
+    <script type="text/javascript">
+        function getAuditSearchText(){  return '<bean:message key="audit.search.text" />';  }
+        function getAuditFilteredFrom(){  return '<bean:message key="audit.filtered.from" />';  }
+        function getAuditNoPrefix(){  return '<bean:message key="audit.no.prefix" />';  }
+        function getAuditEntriesDisplayed(){  return '<bean:message key="audit.entries.displayed" />';  }
+        function getAuditNoRecords(){  return '<bean:message key="audit.no.records" />';  }
+    </script>
 <script type="text/javascript" src="<%=basePath%>scripts/oe.datatables.functions.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 </logic:notEmpty>
 
