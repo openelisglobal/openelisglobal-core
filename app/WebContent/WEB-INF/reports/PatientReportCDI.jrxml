@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="255"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -614,11 +614,11 @@
 				<subreportParameter name="correctedReport">
 					<subreportParameterExpression><![CDATA[$P{correctedReport}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
@@ -801,17 +801,17 @@
 			<textField>
 				<reportElement x="63" y="0" width="489" height="19"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["B = " + $P{localization}.get("belowNormal") + "  E = " + $P{localization}.get("thanNormal") + "  * = " + $P{localization}.get("normal")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["B = " + $R{report.belowNormal} + "  E = " + $R{report.aboveNormal} + "  * = " + $R{report.normal}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="63" y="19" width="489" height="19"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["R = " + $P{localization}.get("extLabReference") + "  C = " + $P{localization}.get("confirmTest")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["R = " + $R{report.extLabReference} + "  C = " + $R{report.confirmTest}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="58" height="19"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("legend")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.legend}]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement x="0" y="39" width="550" height="77" isRemoveLineWhenBlank="true">
