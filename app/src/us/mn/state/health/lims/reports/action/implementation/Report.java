@@ -134,11 +134,6 @@ public abstract class Report implements IReportCreator {
         localizationMap.put("referenceValue", StringUtil.getMessageForKey( "report.referenceValue" ));
         localizationMap.put("unit", StringUtil.getMessageForKey( "report.unit" ));
         localizationMap.put("labInfomation", StringUtil.getMessageForKey( "report.labInfomation" ));
-        localizationMap.put("belowNormal", StringUtil.getMessageForKey( "report.belowNormal" ));
-        localizationMap.put("thanNormal", StringUtil.getMessageForKey( "report.thanNormal" ));
-        localizationMap.put("normal", StringUtil.getMessageForKey( "report.normal" ));
-        localizationMap.put("extLabReference", StringUtil.getMessageForKey( "report.extLabReference" ));
-        localizationMap.put("confirmTest", StringUtil.getMessageForKey( "report.confirmTest" ));
         localizationMap.put("serviceHead", StringUtil.getMessageForKey( "report.serviceHead" ));
         localizationMap.put("associateProfessor", StringUtil.getMessageForKey( "report.associateProfessor" ));
         localizationMap.put("assHeadOfBioclinicque", StringUtil.getMessageForKey( "report.assHeadOfBioclinicque" ));
@@ -151,7 +146,6 @@ public abstract class Report implements IReportCreator {
         localizationMap.put("correctedReport", StringUtil.getMessageForKey( "report.correctedReport" ));
         localizationMap.put("signValidation", StringUtil.getMessageForKey( "report.signValidation" ));
         localizationMap.put("date", StringUtil.getMessageForKey( "report.date" ));
-        localizationMap.put("legend", StringUtil.getMessageForKey( "report.legend" ));
         localizationMap.put("analysisReport", StringUtil.getMessageForKey( "report.analysisReport" ));
         localizationMap.put("results", StringUtil.getMessageForKey( "report.results" ));
         /* HIV summary*/
