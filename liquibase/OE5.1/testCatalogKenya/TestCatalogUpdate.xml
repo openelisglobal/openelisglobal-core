@@ -128,5 +128,9 @@
 	
 	</sql>
 </changeSet>
+    <changeSet author="paulsc" context="Kenya" id="1" >
+        <comment>The id's for organization were hard coded, this will update the organization_seq so it doesn't blow up</comment>
+        <sql>select setval('clinlims.organization_seq', (select cast((max(id) + 1) as bigint ) from clinlims.organization) );</sql>
+    </changeSet>
 
 </databaseChangeLog>
