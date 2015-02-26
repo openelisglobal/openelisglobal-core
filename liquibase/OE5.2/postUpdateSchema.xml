@@ -19,7 +19,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-    <changeSet id="1" author="paulsc">
+    <changeSet id="1" author="paulsc" >
         <comment>drops test_section display_key and makes name_localization_id non-null</comment>
         <dropColumn tableName="test_section" columnName="display_key"/>
         <addNotNullConstraint tableName="test_section" columnName="name_localization_id" />

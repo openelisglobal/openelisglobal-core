@@ -22,6 +22,30 @@
         <comment>localization for haiti clinical</comment>
         <sqlFile path="OE5.2/haitiClinicaltestSectionLocalization.sql" />
     </changeSet>
+    <changeSet id="2" author="paulsc" context="haitiLNSP">
+        <comment>localization for haiti clinical</comment>
+        <sqlFile path="OE5.2/haitiLNSPTestSectionLocalization.sql" />
+    </changeSet>
+    <changeSet id="3" author="paulsc" context="CDRetroCI">
+        <comment>localization for haiti clinical</comment>
+        <sqlFile path="OE5.2/retroCITestSectionLocalization.sql" />
+    </changeSet>
+    <changeSet id="4" author="paulsc" context="CI_IPCI">
+        <comment>localization for ci IPCI</comment>
+        <sqlFile path="OE5.2/ciIPCITestSectionLocalization.sql" />
+    </changeSet>
+    <changeSet id="5" author="paulsc" context="ciLNSP">
+        <comment>localization for ci LNSP</comment>
+        <sqlFile path="OE5.2/ciLNSPTestSectionLocalization.sql" />
+    </changeSet>
+    <changeSet id="6" author="paulsc" context="ci_regional">
+        <comment>localization for ci regional lab</comment>
+        <sqlFile path="OE5.2/ciRegionalTestSectionLocalization.sql" />
+    </changeSet>
+    <changeSet id="7" author="paulsc" context="Kenya">
+        <comment>localization for ci regional lab</comment>
+        <sqlFile path="OE5.2/kenyaTestSectionLocalization.sql" />
+    </changeSet>
 
 
 </databaseChangeLog>
