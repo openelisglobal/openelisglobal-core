@@ -147,7 +147,6 @@ public abstract class Report implements IReportCreator {
         localizationMap.put("signValidation", StringUtil.getMessageForKey( "report.signValidation" ));
         localizationMap.put("date", StringUtil.getMessageForKey( "report.date" ));
         localizationMap.put("analysisReport", StringUtil.getMessageForKey( "report.analysisReport" ));
-        localizationMap.put("results", StringUtil.getMessageForKey( "report.results" ));
         /* HIV summary*/
         localizationMap.put("total", StringUtil.getMessageForKey( "report.total" ));
         localizationMap.put("children", StringUtil.getMessageForKey( "report.children" ));
