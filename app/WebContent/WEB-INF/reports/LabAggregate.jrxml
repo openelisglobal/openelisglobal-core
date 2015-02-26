@@ -21,8 +21,8 @@
 		<defaultValueExpression><![CDATA["true"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="directorName" class="java.lang.String"/>
-        <parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
-        <parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
+	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
 	<field name="testName" class="java.lang.String"/>
 	<field name="sectionName" class="java.lang.String"/>
 	<field name="notStarted" class="java.lang.Integer"/>
@@ -77,7 +77,7 @@
 						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{sectionName}]]></textFieldExpression>
-                                </textField>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -87,8 +87,8 @@
 					<textElement verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
-                                </textField>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
+				</textField>
 				<textField>
 					<reportElement x="294" y="0" width="70" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -131,21 +131,24 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="24" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("globalLabReport")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("globalLabReport")]]></textFieldExpression>
+			</textField>
 			<subreport>
 				<reportElement x="0" y="0" width="572" height="136"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="labName1">
 					<subreportParameterExpression><![CDATA[$P{labName1}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="localization">
+					<subreportParameterExpression><![CDATA[$P{localization}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="rightHeaderImage">
 					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
@@ -191,37 +194,37 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("notStarted")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("notStarted")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="4" y="4" width="80" height="40"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("test")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("test")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="364" y="4" width="70" height="40"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("inProgress")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("inProgress")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="434" y="4" width="70" height="40"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("complete")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("complete")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="504" y="4" width="70" height="40"/>
 				<box rightPadding="4"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -287,8 +290,8 @@
 				<textElement markup="styled">
 					<font size="9"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("footNote")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("footNote")]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
@@ -301,8 +304,8 @@
 				<textElement verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("labTotal")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("labTotal")]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="294" y="2" width="70" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
