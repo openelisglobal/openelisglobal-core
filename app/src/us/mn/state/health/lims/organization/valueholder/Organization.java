@@ -222,7 +222,13 @@ public class Organization extends EnumValueItemImpl implements SimpleBaseEntity<
                         + shortName + "]";
     }
 
-    //these seem to be bogus and will cause a null pointer exception in session flush.  Use the Organization_organization_type link method
+    /**
+     *
+     * @param organizationTypes
+     *
+     * @deprecated this seem to be bogus and will cause a null pointer exception in session flush.  Use the Organization_organization_type link method
+     */
+    @Deprecated
     public void setOrganizationTypes(Set<OrganizationType> organizationTypes) {
         this.organizationTypes = organizationTypes;
     }

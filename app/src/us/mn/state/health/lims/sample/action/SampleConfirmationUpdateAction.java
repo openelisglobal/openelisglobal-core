@@ -34,6 +34,7 @@ import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
 import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.RequesterService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
@@ -52,7 +53,11 @@ import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryType
 import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.organization.dao.OrganizationContactDAO;
+import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationContactDAOImpl;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationOrganizationTypeDAOImpl;
+import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.organization.valueholder.OrganizationContact;
 import us.mn.state.health.lims.patient.action.IPatientUpdate;
 import us.mn.state.health.lims.patient.action.PatientManagementUpdateAction;
@@ -60,9 +65,7 @@ import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
-import us.mn.state.health.lims.requester.dao.RequesterTypeDAO;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
-import us.mn.state.health.lims.requester.daoimpl.RequesterTypeDAOImpl;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
 import us.mn.state.health.lims.result.dao.ResultDAO;
@@ -79,6 +82,7 @@ import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -97,16 +101,15 @@ import java.util.List;
  *
  */
 public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
-	private static String ORG_REQUESTER_TYPE_ID;
-	private static String PERSON_REQUESTER_TYPE_ID;
 	private Sample sample;
 	private SampleHuman sampleHuman;
 	private List<SampleItemSet> sampleItemSetList;
 	private boolean savePatient = false;
     private String patientId;
 	private SampleRequester personSampleRequester;
-	private SampleRequester orgSampleRequester;
+    private SampleRequester organizationSampleRequester;
 	private Person personRequester;
+    private Organization createdOrganization;
 	private OrganizationContact organizationContact;
 	private static boolean useInitialSampleCondition;
 
@@ -131,10 +134,6 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		if (oht != null) {
 			INITIAL_CONDITION_OBSERVATION_ID = oht.getId();
 		}
-
-		RequesterTypeDAO requesterTypeDAO = new RequesterTypeDAOImpl();
-		ORG_REQUESTER_TYPE_ID = requesterTypeDAO.getRequesterTypeByName("organization").getId();
-		PERSON_REQUESTER_TYPE_ID = requesterTypeDAO.getRequesterTypeByName("provider").getId();
 		
 		useInitialSampleCondition = FormFields.getInstance().useField(Field.InitialSampleCondition);
 	}
@@ -180,9 +179,21 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 			sampleHuman.setPatientId(patientId);
 			sampleHumanDAO.insertData(sampleHuman);
 
-			if (orgSampleRequester != null) {
-				orgSampleRequester.setSampleId(Long.parseLong( sample.getId()));
-				sampleRequesterDAO.insertData(orgSampleRequester);
+            if( createdOrganization != null){
+                new OrganizationDAOImpl().insertData(createdOrganization);
+                new OrganizationOrganizationTypeDAOImpl().linkOrganizationAndType(createdOrganization, RequesterService.REFERRAL_ORG_TYPE_ID );
+                //organizationSampleRequester will not be null if there is a new organization
+                organizationSampleRequester.setRequesterId(createdOrganization.getId());
+
+                if(organizationContact != null){
+                    //existing organization id set when organizationContact created
+                    organizationContact.setOrganizationId(createdOrganization.getId());
+                }
+            }
+
+			if (organizationSampleRequester != null) {
+                organizationSampleRequester.setSampleId(Long.parseLong( sample.getId()));
+				sampleRequesterDAO.insertData(organizationSampleRequester);
 			}
 
 			if (personRequester != null) {
@@ -432,43 +443,128 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 	}
 
 	private void createRequesters( SampleOrderItem sampleOrder ) {
-		String orgId =  sampleOrder.getReferringSiteId();
-		orgSampleRequester = null;
+        /*
+        The concerns here are about the organization and person requesters.  Both or neither may have
+        been specified and both or neither may be new.  If the person is not new then the information may
+        have been changed.
+         */
+
 		personSampleRequester = null;
+        organizationSampleRequester = null;
 		organizationContact = null;
+        createdOrganization = null;
 
-		if (!(GenericValidator.isBlankOrNull(orgId) || "0".equals(orgId))) {
-			orgSampleRequester = new SampleRequester();
-			orgSampleRequester.setRequesterId(orgId);
-			orgSampleRequester.setRequesterTypeId(ORG_REQUESTER_TYPE_ID);
-			orgSampleRequester.setSysUserId(currentUserId);
-		}
+        if( noRequesters(sampleOrder)){
+            return;
+        }
 
-		String personId = sampleOrder.getProviderId();
-		if (!(GenericValidator.isBlankOrNull(personId) || "0".equals(personId))) {
+        String orgId =  sampleOrder.getReferringSiteId();
+        String personId = sampleOrder.getProviderId();
+
+        boolean existingOrganization = !(GenericValidator.isBlankOrNull(orgId) || "0".equals(orgId));
+        boolean newOrganization = !GenericValidator.isBlankOrNull(sampleOrder.getNewRequesterName());
+        boolean existingRequester = !(GenericValidator.isBlankOrNull(personId) || "0".equals(personId));
+        boolean hasProviderInformation = !noProviderInformation(sampleOrder);
+        boolean newRequester = !existingRequester && hasProviderInformation;
+
+
+		if( newOrganization ){
+            createdOrganization = new Organization();
+            createdOrganization.setIsActive("Y");
+            createdOrganization.setMlsSentinelLabFlag("N");
+            createdOrganization.setOrganizationName(sampleOrder.getNewRequesterName());
+            createdOrganization.setCode(sampleOrder.getReferringSiteCode());
+            createdOrganization.setSysUserId(currentUserId);
+        }
+
+
+		if ( existingRequester) {
 			personRequester = personDAO.getPersonById(personId);
-		} else {
+		} else if( newRequester) {
 			personRequester = new Person();
-			if (!GenericValidator.isBlankOrNull(orgId)) {
-				organizationContact = new OrganizationContact();
-				organizationContact.setSysUserId(currentUserId);
-				organizationContact.setOrganizationId(orgId);
-			}
 		}
 
-		personSampleRequester = new SampleRequester();
-		personSampleRequester.setRequesterTypeId(PERSON_REQUESTER_TYPE_ID);
-		personSampleRequester.setSysUserId(currentUserId);
+        if( (existingRequester || newRequester) && personRequesterChanged(personRequester, sampleOrder) ){
+            personRequester.setFirstName(sampleOrder.getProviderFirstName());
+            personRequester.setLastName(sampleOrder.getProviderLastName());
+            personRequester.setWorkPhone(sampleOrder.getProviderWorkPhone());
+            personRequester.setFax(sampleOrder.getProviderFax());
+            personRequester.setEmail(sampleOrder.getProviderEmail());
+            personRequester.setSysUserId(currentUserId);
+        }
 
-		personRequester.setEmail(sampleOrder.getProviderEmail());
-		personRequester.setFax( sampleOrder.getProviderFax());
-		personRequester.setWorkPhone( sampleOrder.getProviderWorkPhone());
-		personRequester.setFirstName( sampleOrder.getProviderFirstName());
-		personRequester.setLastName( sampleOrder.getProviderLastName());
-		personRequester.setSysUserId(currentUserId);
+        //This checks if there is a requester and organization and that one of them is new
+        if( (newRequester || existingRequester ) &&
+                (newOrganization || existingOrganization ) &&
+                (newOrganization || newRequester) ){
+            organizationContact = new OrganizationContact();
+            organizationContact.setOrganizationId(orgId); //This may be overridden if new organization
+            organizationContact.setPerson(personRequester);
+            organizationContact.setSysUserId(currentUserId);
+        }
+
+        new RequesterService(null);
+        if( newRequester || existingRequester) {
+            personSampleRequester = new SampleRequester();
+            personSampleRequester.setRequesterTypeId(RequesterService.Requester.PERSON.getId());
+            if( !GenericValidator.isBlankOrNull(personId)) {
+                personSampleRequester.setRequesterId(personId); //This may be overridden if new provider
+            }
+            personSampleRequester.setSysUserId(currentUserId);
+        }
+
+        if( newOrganization || existingOrganization){
+
+            organizationSampleRequester = new SampleRequester();
+            organizationSampleRequester.setRequesterTypeId(RequesterService.Requester.ORGANIZATION.getId());
+            if( !GenericValidator.isBlankOrNull(orgId)) {
+                organizationSampleRequester.setRequesterId(orgId); //This may be overridden if new organization
+            }
+            organizationSampleRequester.setSysUserId(currentUserId);
+        }
 	}
 
-	private void persistInitialSampleConditions( SampleItemSet sampleItemSet) {
+    /**
+     * Checks if the requester information has changed from what is in the database
+     *
+     * @param personRequester
+     * @param sampleOrder
+     * @return true if it has changed, false otherwise
+     */
+    private boolean personRequesterChanged(Person personRequester, SampleOrderItem sampleOrder) {
+        return !(StringUtil.safeEquals(personRequester.getFirstName(), sampleOrder.getProviderFirstName())&&
+        StringUtil.safeEquals(personRequester.getLastName(),sampleOrder.getProviderLastName()) &&
+        StringUtil.safeEquals(personRequester.getWorkPhone(), sampleOrder.getProviderWorkPhone())&&
+        StringUtil.safeEquals(personRequester.getFax(), sampleOrder.getProviderFax())&&
+        StringUtil.safeEquals(personRequester.getEmail(), sampleOrder.getProviderEmail()));
+    }
+
+    /**
+     * checks to see if there are any requesters
+     *
+     * @param sampleOrder
+     * @return true if the are no requesters, false if there are
+     */
+    private boolean noRequesters(SampleOrderItem sampleOrder) {
+        /*
+        if the org id is 0 and there is not a new org and the requester id is 0 and there is no new information entered
+        then there is
+         */
+        return (GenericValidator.isBlankOrNull(sampleOrder.getReferringSiteId()) || "0".equals(sampleOrder.getReferringSiteId())) &&
+                GenericValidator.isBlankOrNull(sampleOrder.getNewRequesterName()) &&
+                (GenericValidator.isBlankOrNull(sampleOrder.getProviderId()) || "0".equals(sampleOrder.getProviderId())) &&
+                noProviderInformation(sampleOrder);
+    }
+
+    private boolean noProviderInformation(SampleOrderItem sampleOrder) {
+        return GenericValidator.isBlankOrNull(sampleOrder.getProviderFirstName() +
+                sampleOrder.getProviderLastName() +
+                sampleOrder.getProviderEmail() +
+                sampleOrder.getProviderFax() +
+                sampleOrder.getProviderWorkPhone());
+    }
+
+    private void persistInitialSampleConditions( SampleItemSet sampleItemSet) {
 			if (sampleItemSet.initialConditionList != null) {
 				for (ObservationHistory observation : sampleItemSet.initialConditionList) {
 					observation.setSampleId(sampleItemSet.sampleItem.getSample().getId());

@@ -66,7 +66,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		data.setReceptiondate(DateUtil.convertTimestampToStringDate(reportSample.getReceivedTimestamp()));
 
 		SampleOrganization sampleOrg = new SampleOrganization();
-		sampleOrg.setSampleId(reportSample.getId());
+		sampleOrg.setSample(reportSample);
 		orgDAO.getDataBySample(sampleOrg);
 		data.setOrgname(sampleOrg.getId() == null ? "" : sampleOrg.getOrganization().getOrganizationName());
 
