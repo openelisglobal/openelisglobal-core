@@ -45,7 +45,7 @@
             <where>name = 'useLogoInReport'</where>
         </delete>
     </changeSet>
-    <changeSet id="3" author="paulsc" context="CI_IPCI, haiti, haitiLNSP, ci_regional">
+    <changeSet id="3" author="paulsc" context="CI_IPCI, haiti, haitiLNSP, ci_regional, Kenya">
         <comment>Backfills admin permission</comment>
         <insert schemaName="clinlims" tableName="system_module">
             <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
