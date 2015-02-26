@@ -226,7 +226,7 @@ public class QaEventsEntryViewAction extends BaseAction {
 			if (!StringUtil.isNullorNill(sample.getId())) {
 				sampleHuman.setSampleId(sample.getId());
 				sampleHumanDAO.getDataBySample(sampleHuman);
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				sampleItem.setSample(sample);
 				sampleItemDAO.getDataBySample(sampleItem);

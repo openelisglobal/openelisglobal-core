@@ -6,6 +6,12 @@
 // http://docs.jquery.com/Using_jQuery_with_Other_Libraries
 jQuery.noConflict();
 
+var searchText = ((typeof getAuditSearchText !== 'undefined') ? getAuditSearchText() : "Filtrer les entrées") + ":";
+var filteredFrom = (typeof getAuditFilteredFrom !== 'undefined') ? getAuditFilteredFrom() : "filtrée à partir de";
+var noPrefix = ((typeof getAuditNoPrefix !== 'undefined') ? getAuditNoPrefix() : "Aucun") + " ";
+var entriesDisplayed = ((typeof getAuditEntriesDisplayed !== 'undefined') ? getAuditEntriesDisplayed() : "entrées appariement") + " ";
+var noMatchingRecordFound = ((typeof getAuditNoRecords !== 'undefined') ? getAuditNoRecords() : "Aucun enregistrement correspondant n'a été trouvé");
+
 // jQuery dataTable functions begin
 jQuery(document).ready(function ($) {
 	// Extends Datatables to allow filtering via filterByType dropdown.
@@ -68,11 +74,11 @@ jQuery(document).ready(function ($) {
         "bPaginate": false, // Turns off pagination
         // Localization settings. Currently hard-coded to French
         "oLanguage": {
-            "sSearch": "Filtrer les entrées:",
-            "sInfoFiltered": "(filtrée à partir de _MAX_)",
-            "sInfoEmpty": "Aucun ",
-            "sInfo": "_TOTAL_ entrées appariement",
-            "sZeroRecords": "Aucun enregistrement correspondant n'a été trouvé"
+            "sSearch": searchText,
+            "sInfoFiltered": "(" + filteredFrom + " _MAX_)",
+            "sInfoEmpty": noPrefix,
+            "sInfo": "_TOTAL_ " + entriesDisplayed,
+            "sZeroRecords": noMatchingRecordFound
         },
         // Hides 1st column used for sorting
         "aoColumnDefs": [

@@ -209,7 +209,7 @@ public class NewbornSampleFullViewAction extends BaseAction {
 		
 		SampleOrganization sampleOrganization = new SampleOrganization();
 		SampleOrganizationDAO sampleOrganizationDAO = new SampleOrganizationDAOImpl();
-		sampleOrganization.setSampleId(sample.getId());
+		sampleOrganization.setSample(sample);
 		sampleOrganizationDAO.getDataBySample(sampleOrganization);
 		if ( !StringUtil.isNullorNill(sampleOrganization.getId()) ) {
 			Organization o = sampleOrganization.getOrganization();

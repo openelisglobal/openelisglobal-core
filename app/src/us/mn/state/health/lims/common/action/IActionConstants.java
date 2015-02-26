@@ -275,6 +275,7 @@ public interface IActionConstants {
 	public static final String FORM_FIELD_SET_CDI = "CDI";
 	public static final String FORM_FIELD_SET_CI_IPCI = "CI_IPCI";
 	public static final String FORM_FIELD_SET_CI_REGIONAL = "CI_REGIONAL";
+	public static final String FORM_FIELD_SET_KENYA = "KENYA";
 
 	public static final String ACTION_REFINEMENT_SEPARATOR = ":";
 

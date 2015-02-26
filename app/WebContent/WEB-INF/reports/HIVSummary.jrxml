@@ -27,7 +27,7 @@
 	<parameter name="directorName" class="java.lang.String"/>
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
-        <parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
 	<field name="testName" class="java.lang.String"/>
 	<field name="positive" class="java.lang.Integer"/>
 	<field name="negative" class="java.lang.Integer"/>
@@ -127,20 +127,23 @@
 			</line>
 			<subreport>
 				<reportElement x="0" y="0" width="572" height="136"/>
-				<subreportParameter name="labName2">
-					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
+				<subreportParameter name="labName2">
+					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="labName1">
 					<subreportParameterExpression><![CDATA[$P{labName1}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="localization">
+					<subreportParameterExpression><![CDATA[$P{localization}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="rightHeaderImage">
 					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>

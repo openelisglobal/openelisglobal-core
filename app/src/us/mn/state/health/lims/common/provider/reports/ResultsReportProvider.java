@@ -299,7 +299,7 @@ public class ResultsReportProvider extends BaseReportsProvider{
 
 						sampleHuman.setSampleId(sample.getId());
 						sampleHumanDAO.getDataBySample(sampleHuman);
-						sampleOrganization.setSampleId(sample.getId());
+						sampleOrganization.setSample(sample);
 						sampleOrganizationDAO
 								.getDataBySample(sampleOrganization);
 						sampleItem.setSample(sample);

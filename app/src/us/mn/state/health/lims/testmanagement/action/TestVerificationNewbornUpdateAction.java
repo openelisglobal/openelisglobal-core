@@ -182,7 +182,7 @@ public class TestVerificationNewbornUpdateAction extends BaseAction {
 
 				// bugzilla 2028 need additional information for qa events
 				typeOfSample = sampleItem.getTypeOfSample();
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				String submitterNumber = null;
 				if (sampleOrganization != null && sampleOrganization.getOrganization() != null) {

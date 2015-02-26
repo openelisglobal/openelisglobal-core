@@ -37,15 +37,6 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Spermatozoa(Urine)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Urine') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Spermatozoa(Urine)' )  ,    (select id from clinlims.type_of_sample where description = 'Urine')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Fasting blood sugar(Urine/Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Urine/Blood') ;
-INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Fasting blood sugar(Urine/Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Urine/Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Random blood sugar(Urine/Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Urine/Blood') ;
-INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Random blood sugar(Urine/Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Urine/Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'OGTT(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
-INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'OGTT(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Renal function tests(Urine)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Urine') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Renal function tests(Urine)' )  ,    (select id from clinlims.type_of_sample where description = 'Urine')  );
@@ -82,9 +73,9 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Albumin(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Albumin(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Alkaline Phodphate(Urine)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Urine') ;
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Alkaline Phosphate(Urine)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Urine') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Alkaline Phodphate(Urine)' )  ,    (select id from clinlims.type_of_sample where description = 'Urine')  );
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Alkaline Phosphate(Urine)' )  ,    (select id from clinlims.type_of_sample where description = 'Urine')  );
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Gamma GT(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Gamma GT(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
@@ -103,9 +94,12 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'LDE(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'LDE(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'PSA(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'PSA- Total(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'PSA(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'PSA- Total(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'PSA-Free(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'PSA-Free(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'CSF Proteins(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'CSF Proteins(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
@@ -115,6 +109,15 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Proteins(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Proteins(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Glucose-Fasting(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Glucose-Fasting(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Glucose- Random(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Glucose- Random(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Glucose-2 HR PC(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Glucose-2 HR PC(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Acid phosphatase(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Acid phosphatase(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
@@ -292,15 +295,18 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Bone Marrow Aspirates(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Bone Marrow Aspirates(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Reticulocyte counts(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Reticulocyte counts %(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Reticulocyte counts(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Haemoglobin(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Reticulocyte counts %(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Haemoglobin- Male(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Haemoglobin(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'CD4/CD8(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Haemoglobin- Male(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Haemoglobin- Female(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'CD4/CD8(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Haemoglobin- Female(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'CD4:CD8(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'CD4:CD8(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'CD4%(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'CD4%(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
@@ -340,9 +346,9 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Lymph nodes(Tissue)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Tissue') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Lymph nodes(Tissue)' )  ,    (select id from clinlims.type_of_sample where description = 'Tissue')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Rapid Plasma Region(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Rapid Plasma Reagin(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Rapid Plasma Region(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Rapid Plasma Reagin(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'TPHA(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'TPHA(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );

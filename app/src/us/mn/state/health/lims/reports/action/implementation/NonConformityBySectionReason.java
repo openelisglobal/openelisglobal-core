@@ -43,8 +43,8 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
     @Override
     protected void createReportParameters() {
         super.createReportParameters();
-        String reportTitle = StringUtil.getMessageForKey("reports.nonConformity.bySectionReason.title") + " " + dateRange;
-        reportParameters.put("reportTitle", reportTitle);
+        reportParameters.put("reportTitle", StringUtil.getMessageForKey("reports.nonConformity.bySectionReason.title"));
+        reportParameters.put("reportPeriod", dateRange.toString());
         reportParameters.put("supervisorSignature", ConfigurationProperties.getInstance().isPropertyValueEqual(Property.SIGNATURES_ON_NONCONFORMITY_REPORTS, "true"));
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
 			reportParameters.put("headerName", "CILNSPHeader.jasper");	
@@ -68,18 +68,27 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
             item.setCategoryCount(0);
             reportItems.add(item);            
         }
-        cleanupReportItems();
+        makeReportItemsSortable();
         sortReportItems();  // by group and category
+        cleanupReportItems();
         totalReportItems();
     }
 
     /**
      * 
      */
-    private void cleanupReportItems() {
+    private void makeReportItemsSortable() {
         for (CountReportItem item : reportItems) {
             if (item.getGroup() == null) {
                 item.setGroup("0");
+            }
+        }
+    }
+
+    private void cleanupReportItems() {
+        for (CountReportItem item : reportItems) {
+            if (item.getGroup() == "0") {
+                item.setGroup(StringUtil.getMessageForKey("report.section.not.specified"));
             }
         }
     }

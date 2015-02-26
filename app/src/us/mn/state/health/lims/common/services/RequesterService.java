@@ -46,7 +46,7 @@ public class RequesterService{
     private PersonService personService;
     private Organization organization;
 
-    public enum Requester{
+    public static enum Requester{
         PERSON,
         ORGANIZATION;
 

@@ -3,8 +3,6 @@ INSERT INTO clinlims.type_of_sample( id, description, domain, lastupdated, local
 INSERT INTO clinlims.type_of_sample( id, description, domain, lastupdated, local_abbrev, display_key, is_active )
 	VALUES ( nextval( 'clinlims.type_of_sample_seq' ) , 'Swab/Urine','H', now() , 'Swab/Urine', 'sample.type.Swab/Urine', 'Y');
 INSERT INTO clinlims.type_of_sample( id, description, domain, lastupdated, local_abbrev, display_key, is_active )
-	VALUES ( nextval( 'clinlims.type_of_sample_seq' ) , 'Urine/Blood','H', now() , 'Urine/Bloo', 'sample.type.Urine/Blood', 'Y');
-INSERT INTO clinlims.type_of_sample( id, description, domain, lastupdated, local_abbrev, display_key, is_active )
 	VALUES ( nextval( 'clinlims.type_of_sample_seq' ) , 'Blood','H', now() , 'Blood', 'sample.type.Blood', 'Y');
 INSERT INTO clinlims.type_of_sample( id, description, domain, lastupdated, local_abbrev, display_key, is_active )
 	VALUES ( nextval( 'clinlims.type_of_sample_seq' ) , 'Smear','H', now() , 'Smear', 'sample.type.Smear', 'Y');

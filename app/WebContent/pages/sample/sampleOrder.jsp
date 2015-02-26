@@ -575,7 +575,7 @@
         capitialize = true;
         // Actually executes autocomplete
         dropdown.combobox();
-        // invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
+        invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
         maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
 
         resultCallBack = function (textValue) {

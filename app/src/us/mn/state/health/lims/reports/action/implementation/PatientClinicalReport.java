@@ -114,7 +114,7 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
             buffer.append( sampleItem.getTypeOfSample().getLocalizedName() );
 
             if( sampleItem.getCollectionDate() == null){
-                buffer.append( ": " );
+                buffer.append( " -- " );
                 buffer.append( StringUtil.getMessageForKey( "label.not.available" ) );
             }else{
                 buffer.append( " " );

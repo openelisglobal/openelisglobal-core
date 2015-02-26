@@ -522,6 +522,28 @@ public class StringUtil {
 		return left.compareTo(right);
 	}
 
+    /**
+     * Tests for equals without worrying about null.  If they are both null they are equal
+     *
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public static boolean safeEquals(String left, String right) {
+        if( left == right){
+            return true;
+        }
+
+        if (left == null) {
+            left = "";
+        }
+        if (right == null) {
+            right = "";
+        }
+        return left.equals(right);
+    }
+
 	public static String replaceAllChars(String text, char replacement) {
 		if (text == null) {
 			return null;

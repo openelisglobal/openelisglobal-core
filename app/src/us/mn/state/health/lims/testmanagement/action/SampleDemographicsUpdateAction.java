@@ -231,7 +231,7 @@ public class SampleDemographicsUpdateAction extends BaseAction {
 			if (!StringUtil.isNullorNill(sample.getId())) {
 				sampleHuman.setSampleId(sample.getId());
 				sampleHumanDAO.getDataBySample(sampleHuman);
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				// bugzilla 1773 need to store sample not sampleId for use in
 				// sorting
@@ -550,7 +550,6 @@ public class SampleDemographicsUpdateAction extends BaseAction {
 			sampleHuman.setPatientId(patient.getId());
 			sampleHuman.setProviderId(provider.getId());
 			sampleHumanDAO.updateData(sampleHuman);
-			sampleOrganization.setSampleId(sample.getId());
 			sampleOrganization.setSample(sample);
 			sampleOrganizationDAO.updateData(sampleOrganization);
 			// bugzilla 1773 need to store sample not sampleId for use in
@@ -580,7 +579,7 @@ public class SampleDemographicsUpdateAction extends BaseAction {
 			
 				// bugzilla 2028 need additional information for qa events
 				typeOfSamp = sampleItem.getTypeOfSample();
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				//bugzilla 2589
 				String submitterNumber = "";
