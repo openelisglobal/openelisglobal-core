@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="255"/>
+	<property name="ireport.y" value="63"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -614,11 +614,11 @@
 				<subreportParameter name="correctedReport">
 					<subreportParameterExpression><![CDATA[$P{correctedReport}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="leftHeaderImage">
 					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
@@ -653,7 +653,7 @@
 			<textField>
 				<reportElement x="-1" y="156" width="553" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("results")+ "---" + $F{completeFlag}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.results} + " " + $F{completeFlag}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
