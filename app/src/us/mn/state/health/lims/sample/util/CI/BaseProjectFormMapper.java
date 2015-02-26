@@ -241,12 +241,7 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
         addHistory(histories ,"currentDiseases", od.getCurrentDiseasesValue(), ValueType.LITERAL);
         return histories;
     }
-    /**
-     * @param histories
-     * @param string
-     * @param educationLevel
-     * @param dictionary
-     */
+
     protected void addHistory(List<ObservationHistory> histories, String ohNameKey, String value, ValueType type) {
         if (!GenericValidator.isBlankOrNull(value)) {
             histories.add(buildObservationHistory(ohNameKey, value, type));
@@ -305,7 +300,6 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
      * @param observationHistoryTypeName
      * @param answers
      * @param valueType
-     * @param answer in some field
      */
     protected List<ObservationHistory> buildObservationHistoryList(String observationHistoryTypeName, String controlField, List<String> answers, ValueType valueType) {
         List<ObservationHistory> histories = new ArrayList<ObservationHistory>();
@@ -325,8 +319,6 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
      * @param nameKey
      * @param value
      * @param valueType
-     * @param observationHistories
-     * @param observationHistoryTypeId
      */
     protected ObservationHistory buildObservationHistory(String nameKey, String value, ValueType valueType) {
         String ohTypeId = ObservationHistoryTypeMap.getInstance().getIDForType(nameKey);

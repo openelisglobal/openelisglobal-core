@@ -136,7 +136,7 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 		data.setGender(reportPatient.getGender());
 		data.setCollectiondate( DateUtil.convertTimestampToStringDateAndTime(reportSample.getCollectionDate()));
 		SampleOrganization sampleOrg = new SampleOrganization();
-		sampleOrg.setSampleId(reportSample.getId());
+		sampleOrg.setSample(reportSample);
 		orgDAO.getDataBySample(sampleOrg);
 		data.setServicename(sampleOrg.getId() == null ? "" : sampleOrg.getOrganization().getOrganizationName());
 		data.setAccession_number(reportSample.getAccessionNumber());

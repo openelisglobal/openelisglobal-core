@@ -82,7 +82,7 @@ public abstract class PatientIndeterminateReport extends RetroCIPatientReport {
 		data.setReceivedDate(reportSample.getReceivedDateForDisplay() + " " + reportSample.getReceivedTimeForDisplay( ));
 
 		SampleOrganization sampleOrg = new SampleOrganization();
-		sampleOrg.setSampleId(reportSample.getId());
+		sampleOrg.setSample(reportSample);
 		orgDAO.getDataBySample(sampleOrg);
 		data.setOrgname(sampleOrg.getId() == null ? "" : sampleOrg.getOrganization().getOrganizationName());
 

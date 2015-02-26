@@ -192,7 +192,7 @@ public class TestVerificationUpdateAction extends BaseAction {
 
 				// bugzilla 2028 need additional information for qa events
 				typeOfSample = sampleItem.getTypeOfSample();
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				//bugzilla 2589
 				String submitterNumber = "";

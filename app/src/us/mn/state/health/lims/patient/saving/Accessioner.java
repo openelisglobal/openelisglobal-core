@@ -732,7 +732,7 @@ public abstract class Accessioner {
 		SampleOrganization oldSampleOrg = null;
 		if (!isNewSample()) {
 			oldSampleOrg = new SampleOrganization();
-			oldSampleOrg.setSampleId(sample.getId());
+			oldSampleOrg.setSample(sample);
 			sampleOrganizationDAO.getDataBySample(oldSampleOrg);
 			if (oldSampleOrg.getOrganization() != null) { // there may not be an
 															// organiztion
