@@ -320,7 +320,7 @@ public class SampleXMLByTestProcessAction extends BaseAction {
 
 								sampleHuman.setSampleId(sample.getId());
 								sampleHumanDAO.getDataBySample(sampleHuman);
-								sampleOrganization.setSampleId(sample.getId());
+								sampleOrganization.setSample(sample);
 								sampleOrganizationDAO
 										.getDataBySample(sampleOrganization);
 								patient.setId(sampleHuman.getPatientId());

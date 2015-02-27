@@ -78,10 +78,11 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		
 		if (!GenericValidator.isBlankOrNull(testSectionId)) {
 			ts = testSectionDAO.getTestSectionById(testSectionId);
-			PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);		
-		} else {
 			PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
-		}
+		} 
+		
+		
+		
 		setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
 		
 		List<TestResultItem> tests;

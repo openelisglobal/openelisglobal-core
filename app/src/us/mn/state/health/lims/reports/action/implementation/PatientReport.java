@@ -842,12 +842,12 @@ public abstract class PatientReport extends Report{
         Date dobDate = DateUtil.convertStringDateToSqlDate( dob );
         int months = DateUtil.getAgeInMonths( dobDate, DateUtil.getNowAsSqlDate() );
         if( months > 35 ){
-            return ( months / 12 ) + " A";
+            return ( months / 12 ) + " " + StringUtil.getMessageForKey("abbreviation.year.single");
         }else if( months > 0 ){
-            return months + " M";
+            return months + " " + StringUtil.getMessageForKey("abbreviation.month.single");
         }else{
             int days = DateUtil.getAgeInDays( dobDate, DateUtil.getNowAsSqlDate() );
-            return days + " J";
+            return days + " " + StringUtil.getMessageForKey("abbreviation.day.single");
         }
 
     }

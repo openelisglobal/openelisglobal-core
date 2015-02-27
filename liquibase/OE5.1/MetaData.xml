@@ -45,7 +45,7 @@
             <where>name = 'useLogoInReport'</where>
         </delete>
     </changeSet>
-    <changeSet id="3" author="paulsc" context="CI_IPCI, haiti, haitiLNSP, ci_regional">
+    <changeSet id="3" author="paulsc" context="CI_IPCI, haiti, haitiLNSP, ci_regional, Kenya">
         <comment>Backfills admin permission</comment>
         <insert schemaName="clinlims" tableName="system_module">
             <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
@@ -197,4 +197,12 @@
         <comment>removes un-referenced tests, sample types and panels</comment>
         <sqlFile path="OE5.1/orphanTestCleanup.sql"/>
     </changeSet>
+    <changeSet id="2" author="jfurlong" context="Kenya">
+        <comment>Updates site_information so that Kenya has its own context</comment>    
+		    <sql>
+			    update clinlims.site_information set value = 'KENYA' where name = 'configuration name';
+				update clinlims.site_information set value = 'KENYA' where name = 'setFieldForm';
+				update clinlims.site_information set value = 'KENYA' where name = 'stringContext';
+		    </sql>
+	</changeSet>
 </databaseChangeLog>

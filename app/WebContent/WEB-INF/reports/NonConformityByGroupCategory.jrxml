@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.4019755979255695"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="63"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -30,7 +30,7 @@
 	</parameter>
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
-        <parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
 	<field name="category" class="java.lang.String"/>
 	<field name="categoryCount" class="java.lang.Integer"/>
 	<field name="group" class="java.lang.String"/>
@@ -58,7 +58,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="16" isBold="true"/>
 					</textElement>
-                                        <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total")]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -78,7 +78,7 @@
 					<textElement verticalAlignment="Middle">
 						<font size="14"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA["0".equals($F{group})?"Non spécifié":$F{group}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{group}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -102,7 +102,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total") + " "+ $P{localization}.get("for") + " " + ("0".equals($F{group})?"Non spécifié":$F{group})]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("total") + ": " + $F{group}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -141,16 +141,37 @@
 		<band height="113" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="FixRelativeToBottom" x="0" y="79" width="555" height="20"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="93" width="555" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportTitle}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportPeriod}]]></textFieldExpression>
 			</textField>
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="65"/>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="labName1">
+					<subreportParameterExpression><![CDATA[$P{labName1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="supervisorSignature">
+					<subreportParameterExpression><![CDATA[$P{supervisorSignature}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="localization">
+					<subreportParameterExpression><![CDATA[$P{localization}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="rightHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="headerName">
+					<subreportParameterExpression><![CDATA[$P{headerName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="BAR_CHART_RANGE">
+					<subreportParameterExpression><![CDATA[$P{BAR_CHART_RANGE}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
@@ -158,17 +179,20 @@
 				<subreportParameter name="leftHeaderImage">
 					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName1">
-					<subreportParameterExpression><![CDATA[$P{labName1}]]></subreportParameterExpression>
+				<subreportParameter name="usePageNumbers">
+					<subreportParameterExpression><![CDATA[$P{usePageNumbers}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="reportTitle">
-					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="rightHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
+				<subreportParameter name="referralSiteName">
+					<subreportParameterExpression><![CDATA[$P{referralSiteName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="directorName">
 					<subreportParameterExpression><![CDATA[$P{directorName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportPeriod">
+					<subreportParameterExpression><![CDATA[$P{reportPeriod}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="siteName">
+					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{headerName}]]></subreportExpression>
@@ -214,8 +238,8 @@
 					<printWhenExpression><![CDATA[$P{supervisorSignature}]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Bottom"/>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("supervisorSign")]]></textFieldExpression>
-                        </textField>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("supervisorSign")]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>

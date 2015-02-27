@@ -290,7 +290,6 @@ public class NewbornSampleFullUpdateAction extends BaseAction {
 			o = organizationDAO.getOrganizationByLocalAbbreviation(o, true);
 			SampleOrganization sampleOrganization = new SampleOrganization();
 			SampleOrganizationDAO sampleOrganizationDAO = new SampleOrganizationDAOImpl();
-			sampleOrganization.setSampleId(sample.getId());
 			sampleOrganizationDAO.getDataBySample(sampleOrganization);
 			sampleOrganization.setSample(sample);			
 			sampleOrganization.setOrganization(o);

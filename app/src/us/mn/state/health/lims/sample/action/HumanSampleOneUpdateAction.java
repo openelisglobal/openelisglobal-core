@@ -499,7 +499,7 @@ public class HumanSampleOneUpdateAction extends BaseAction {
 			sampleHuman.setPatientId(patient.getId());
 			sampleHuman.setProviderId(provider.getId());
 			sampleHumanDAO.insertData(sampleHuman);
-			sampleOrganization.setSampleId(sample.getId());
+			sampleOrganization.setSample(sample);
 			sampleOrganization.setSample(sample);
 			sampleOrganizationDAO.insertData(sampleOrganization);
     		//bugzilla 1773 need to store sample not sampleId for use in sorting

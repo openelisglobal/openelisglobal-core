@@ -27,11 +27,7 @@ public class SampleOrganization extends BaseObject {
 
 	private String id;
 
-	private String organizationId;
-
 	private ValueHolderInterface organization;
-
-	private String sampleId;
 
 	private ValueHolderInterface sample;
 
@@ -61,63 +57,20 @@ public class SampleOrganization extends BaseObject {
 		return sampleOrganizationType;
 	}
 
-	public void setOrganizationId(String organizationId) {
-		this.organizationId = organizationId;
-	}
 
-	public String getOrganizationId() {
-		return organizationId;
-	}
-
-	public void setSampleId(String sampleId) {
-		this.sampleId = sampleId;
-	}
-
-	public String getSampleId() {
-		return sampleId;
-	}
-
-
-	// SAMPLE
 	public Sample getSample() {
 		return (Sample) this.sample.getValue();
-	}
-
-	public void setSample(ValueHolderInterface sample) {
-		this.sample = sample;
 	}
 
 	public void setSample(Sample sample) {
 		this.sample.setValue(sample);
 	}
 
-	protected ValueHolderInterface getSampleHolder() {
-		return this.sample;
-	}
-
-	protected void setSampleHolder(ValueHolderInterface sample) {
-		this.sample = sample;
-	}
-
-	// ORGANIZATION
 	public Organization getOrganization() {
 		return (Organization) this.organization.getValue();
-	}
-
-	public void setOrganization(ValueHolderInterface organization) {
-		this.organization = organization;
 	}
 
 	public void setOrganization(Organization organization) {
 		this.organization.setValue(organization);
 	}
-
-	protected ValueHolderInterface getOrganizationHolder() {
-		return this.organization;
-	}
-
-	protected void setOrganizationHolder(ValueHolderInterface organization) {
-		this.organization = organization;
-	}
-
 }

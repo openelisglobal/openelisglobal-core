@@ -717,7 +717,20 @@
 			<form-property name="jsonChangeList" type="java.lang.String" initial="" />
 		</form-bean>
 
-        <form-bean name="testManagementConfigForm" type="us.mn.state.health.lims.common.action.BaseActionForm" />
+        <form-bean name="testManagementConfigForm" type="org.apache.struts.validator.DynaValidatorForm" />
+        <form-bean name="testSectionManagementForm" type="org.apache.struts.validator.DynaValidatorForm" />
+
+        <form-bean name="testSectionCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="existingTestUnitList" type="java.util.List" />
+            <form-property name="inactiveTestUnitList" type="java.util.List" />
+            <form-property name="testUnitEnglishName" type="java.lang.String" />
+            <form-property name="testUnitFrenchName" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="testSectionOrderForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="testSectionList" type="java.util.List" />
+            <form-property name="jsonChangeList" type="java.lang.String" initial="" />
+        </form-bean>
 	</form-beans>
 
 
@@ -740,23 +753,43 @@
                 <forward name="success" path="testManagementConfigDefinition"  />
         </action>
 
-        <action path="/TestRenameEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.test.action.TestRenameAction" >
+        <action path="/TestRenameEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameAction" >
             <forward name="success" path="testRenameDefinition" />
         </action>
 
-        <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.test.action.TestRenameUpdate" >
+        <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameUpdate" >
             <forward name="success" path="/TestRenameEntry.do" />
         </action>
 
-		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationAction" >
+		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.testconfiguration.action.TestActivationAction" >
 			<forward name="success" path="testActivationDefinition" />
 		</action>
 
-		<action path="/TestActivationUpdate" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationUpdate" >
+		<action path="/TestActivationUpdate" name="testActivationForm" type="us.mn.state.health.lims.testconfiguration.action.TestActivationUpdate" >
 			<forward name="success" path="/TestActivation.do" />
 		</action>
 
-		<action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
+        <action path="/TestSectionManagement" name="testSectionManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+            <forward name="success" path="testSectionManagementDefinition"  />
+        </action>
+
+        <action path="/TestSectionCreate" name="testSectionCreateForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionCreateAction" >
+            <forward name="success" path="testSectionCreateDefinition" />
+        </action>
+
+        <action path="/TestSectionCreateUpdate" name="testSectionCreateForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionCreateUpdate" >
+            <forward name="success" path="/TestSectionCreate.do" />
+        </action>
+
+        <action path="/TestSectionOrder" name="testSectionOrderForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionOrderAction" >
+            <forward name="success" path="testSectionOrderDefinition" />
+        </action>
+
+        <action path="/TestSectionOrderUpdate" name="testSectionOrderForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionOrderUpdate" >
+            <forward name="success" path="/TestSectionOrder.do" />
+        </action>
+
+        <action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"
 		>
 			<forward name="success" path="samplePatientEntryDefinition" />

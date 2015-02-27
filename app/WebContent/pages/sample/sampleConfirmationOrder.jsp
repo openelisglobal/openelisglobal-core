@@ -120,11 +120,12 @@
         setSaveButton();
     }
 
-    function getRequestersForOrg() {
+    function getRequestersForOrg( textValue ) {
         var orgEnteredValue = $("siteId").value,
                 orgSelectList = $("orgRequesterId").options,
                 orgKey = 0,
-                searchCount = 0;
+                searchCount = 0,
+                requesterList;
 
         for (searchCount; searchCount < orgSelectList.length; searchCount++) {
             if (orgSelectList[searchCount].text.toUpperCase() == orgEnteredValue) {
@@ -134,7 +135,8 @@
         }
 
         if (orgKey == 0) { //if no match with site list
-            var requesterList = $("personRequesterId");
+            $jq("#newRequesterName").val(textValue);
+            requesterList = $("personRequesterId");
             requesterList.options.length = 0;
             addOptionToSelect(requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>', "0");
         } else {
@@ -162,8 +164,23 @@
     }
 
     function addRequester(requesterList, requesterXml) {
+        var display = requesterXml.getAttribute("lastName") + ', ' + requesterXml.getAttribute("firstName");
+        if( display.length < 3){
+           display = requesterXml.getAttribute("email");
+            if( display.length < 3){
+                display = requesterXml.getAttribute("phone");
+                if( display.length < 3){
+                    display = requesterXml.getAttribute("fax");
+                    if(display < 3){
+                        return;
+                    }
+                }
+            }
+        }
+
+
         addOptionToSelect(requesterList,
-                requesterXml.getAttribute("lastName") + ', ' + requesterXml.getAttribute("firstName"),
+                display,
                 requesterXml.getAttribute("id"));
 
         requesterInfoHash[requesterXml.getAttribute("id")] = {'firstName': requesterXml.getAttribute("firstName"),
@@ -253,6 +270,7 @@
 </script>
 
 <html:hidden property="sampleOrderItems.modified" name='<%=formName%>' styleId="orderModified"  />
+<html:hidden property="sampleOrderItems.newRequesterName" name='<%=formName%>' styleId="newRequesterName" />
 
 <table style="width:70%" border="0">
     <logic:empty name="<%=formName%>" property="sampleOrderItems.labNo">
@@ -411,8 +429,8 @@
         maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
 
         //resultCallBack defined in customAutocomplete.js
-        resultCallBack = function( ) {
-            getRequestersForOrg( );
+        resultCallBack = function(textValue) {
+            getRequestersForOrg(textValue );
             makeDirty();
             setOrderModified();
         };

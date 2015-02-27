@@ -66,7 +66,7 @@ public class ResultsPaging {
 		List<TestResultItem> resultPage = paging.getPage(page, request.getSession());
 		if (resultPage != null) {
 			PropertyUtils.setProperty(dynaForm, "testResult", resultPage);
-			PropertyUtils.setProperty(dynaForm, "testSectionId", testSectionId);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
 			PropertyUtils.setProperty(dynaForm, "paging", paging.getPagingBeanWithSearchMapping(page, request.getSession()));
 		}
 		

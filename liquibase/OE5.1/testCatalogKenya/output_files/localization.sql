@@ -47,18 +47,6 @@ INSERT INTO clinlims.localization( id, description, english, french, lastupdated
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Spermatozoa' , 'Spermatozoa', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Fasting blood sugar' , 'Fasting blood sugar', now());
-	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Fasting blood sugar' , 'Fasting blood sugar', now());
-INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Random blood sugar' , 'Random blood sugar', now());
-	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Random blood sugar' , 'Random blood sugar', now());
-INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'OGTT' , 'OGTT', now());
-	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'OGTT' , 'OGTT', now());
-INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Renal function tests' , 'Renal function tests', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Renal function tests' , 'Renal function tests', now());
@@ -99,9 +87,9 @@ INSERT INTO clinlims.localization( id, description, english, french, lastupdated
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Serum Protein' , 'Serum Protein', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Alkaline Phodphate' , 'Alkaline Phodphate', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Alkaline Phosphate' , 'Alkaline Phosphate', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Alkaline Phodphate' , 'Alkaline Phodphate', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Alkaline Phosphate' , 'Alkaline Phosphate', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Gamma GT' , 'Gamma GT', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
@@ -123,9 +111,13 @@ INSERT INTO clinlims.localization( id, description, english, french, lastupdated
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'LDE' , 'LDE', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'PSA' , 'PSA', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'PSA- Total' , 'PSA- Total', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'PSA' , 'PSA', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'PSA- Total' , 'PSA- Total', now());
+INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'PSA-Free' , 'PSA-Free', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'PSA-Free' , 'PSA-Free', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'CSF Proteins' , 'CSF Proteins', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
@@ -138,6 +130,18 @@ INSERT INTO clinlims.localization( id, description, english, french, lastupdated
 	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Proteins' , 'Proteins', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Proteins' , 'Proteins', now());
+INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Glucose-Fasting' , 'Glucose-Fasting', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Glucose-Fasting' , 'Glucose-Fasting', now());
+INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Glucose- Random' , 'Glucose- Random', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Glucose- Random' , 'Glucose- Random', now());
+INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Glucose-2 HR PC' , 'Glucose-2 HR PC', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Glucose-2 HR PC' , 'Glucose-2 HR PC', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Acid phosphatase' , 'Acid phosphatase', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
@@ -375,17 +379,21 @@ INSERT INTO clinlims.localization( id, description, english, french, lastupdated
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Bone Marrow Aspirates' , 'Bone Marrow Aspirates', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Reticulocyte counts' , 'Reticulocyte counts', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Reticulocyte counts %' , 'Reticulocyte counts %', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Reticulocyte counts' , 'Reticulocyte counts', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Reticulocyte counts %' , 'Reticulocyte counts %', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Haemoglobin' , 'Haemoglobin', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Haemoglobin- Male' , 'Haemoglobin- Male', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Haemoglobin' , 'Haemoglobin', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Haemoglobin- Male' , 'Haemoglobin- Male', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'CD4/CD8' , 'CD4/CD8', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Haemoglobin- Female' , 'Haemoglobin- Female', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'CD4/CD8' , 'CD4/CD8', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Haemoglobin- Female' , 'Haemoglobin- Female', now());
+INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'CD4:CD8' , 'CD4:CD8', now());
+	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'CD4:CD8' , 'CD4:CD8', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'CD4%' , 'CD4%', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
@@ -439,9 +447,9 @@ INSERT INTO clinlims.localization( id, description, english, french, lastupdated
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Lymph nodes' , 'Lymph nodes', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Rapid Plasma Region' , 'Rapid Plasma Region', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'Rapid Plasma Reagin' , 'Rapid Plasma Reagin', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
-	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Rapid Plasma Region' , 'Rapid Plasma Region', now());
+	(nextval( 'clinlims.localization_seq' ) , 'test report name' , 'Rapid Plasma Reagin' , 'Rapid Plasma Reagin', now());
 INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES
 	(nextval( 'clinlims.localization_seq' ) , 'test name' , 'TPHA' , 'TPHA', now());
 	INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES

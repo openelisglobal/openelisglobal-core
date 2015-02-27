@@ -5,11 +5,9 @@ INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
 	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Swab/Urine' ) , (select id from clinlims.panel where name = 'Urine Microscopy' ) );
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
-	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Urine/Blood' ) , (select id from clinlims.panel where name = 'Urine Microscopy' ) );
+	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Urine' ) , (select id from clinlims.panel where name = 'Blood Chemistry' ) );
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
 	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Blood' ) , (select id from clinlims.panel where name = 'Blood Chemistry' ) );
-INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
-	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Urine' ) , (select id from clinlims.panel where name = 'Blood Chemistry' ) );
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
 	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Blood' ) , (select id from clinlims.panel where name = 'Liver function tests' ) );
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
@@ -37,6 +35,6 @@ INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
 	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Smear' ) , (select id from clinlims.panel where name = 'Smears' ) );
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
-	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Smear' ) , (select id from clinlims.panel where name = 'FLUID CYTOLOGY' ) );
+	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Smear' ) , (select id from clinlims.panel where name = 'Fluid Cytology' ) );
 INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES 
-	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Tissue' ) , (select id from clinlims.panel where name = 'TISSUE HISTOLOGY' ) );
+	(nextval( 'clinlims.sample_type_panel_seq') , (select id from clinlims.type_of_sample where description = 'Tissue' ) , (select id from clinlims.panel where name = 'Tissue Histology' ) );
