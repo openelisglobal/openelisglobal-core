@@ -21,6 +21,7 @@ import us.mn.state.health.lims.common.util.LocaleChangeListener;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.localization.valueholder.Localization;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
+import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
 import java.util.HashMap;
@@ -50,6 +51,13 @@ public class TestSectionService implements LocaleChangeListener{
         this.testSection = testSection;
     }
 
+    public TestSectionService(String testSectionId){
+        this.testSection = new TestSectionDAOImpl().getTestSectionById(testSectionId);
+    }
+
+    public TestSection getTestSection(){
+        return testSection;
+    }
     @Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;
@@ -105,4 +113,7 @@ public class TestSectionService implements LocaleChangeListener{
         }
     }
 
+    public static List<Test> getTestsInSection(String id) {
+        return TestService.getTestsInTestSectionById(id);
+    }
 }

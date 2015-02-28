@@ -305,6 +305,10 @@
         <put name="body" value="/pages/testConfiguration/testSectionOrder.jsp" />
     </definition>
 
+    <definition name="testSectionAssignDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionAssign.jsp" />
+    </definition>
+
 
     <definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
     	<put name="body" value="/pages/userrole/userRoleMenu.jsp"/>
