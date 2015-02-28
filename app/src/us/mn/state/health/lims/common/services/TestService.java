@@ -58,6 +58,10 @@ public class TestService implements LocaleChangeListener{
 
     private static Map<Entity, Map<String, String>> entityToMap;
 
+    public static List<Test> getTestsInTestSectionById(String testSectionId) {
+        return new TestDAOImpl().getTestsByTestSectionId(testSectionId);
+    }
+
     public enum Entity{
         TEST_NAME,
         TEST_AUGMENTED_NAME,
@@ -296,14 +300,4 @@ public class TestService implements LocaleChangeListener{
         }
     }
 
-    public static List<Test> getTestsForSampleType(String sampleTypeId){
-        ArrayList<Test> tests = new ArrayList<Test>();
-
-        List<TypeOfSampleTest> typeOfSampleTests = TYPE_OF_SAMPLE_TEST_DAO.getTypeOfSampleTestsForSampleType( sampleTypeId);
-        for( TypeOfSampleTest typeOfSampleTest : typeOfSampleTests){
-            tests.add( new TestService(typeOfSampleTest.getTestId()).getTest());
-        }
-
-        return tests;
-    }
 }

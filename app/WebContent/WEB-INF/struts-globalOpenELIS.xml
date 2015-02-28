@@ -731,6 +731,14 @@
             <form-property name="testSectionList" type="java.util.List" />
             <form-property name="jsonChangeList" type="java.lang.String" initial="" />
         </form-bean>
+
+        <form-bean name="testSectionTestAssignForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="testSectionList" type="java.util.List" />
+            <form-property name="sectionTestList" type="java.util.LinkedHashMap" />
+            <form-property name="testId" type="java.lang.String" initial="" />
+            <form-property name="testSectionId" type="java.lang.String" initial="" />
+            <form-property name="deactivateTestSectionId" type="java.lang.String" initial="" />
+        </form-bean>
 	</form-beans>
 
 
@@ -787,6 +795,14 @@
 
         <action path="/TestSectionOrderUpdate" name="testSectionOrderForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionOrderUpdate" >
             <forward name="success" path="/TestSectionOrder.do" />
+        </action>
+
+        <action path="/TestSectionTestAssign" name="testSectionTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionTestAssignAction" >
+            <forward name="success" path="testSectionAssignDefinition" />
+        </action>
+
+        <action path="/TestSectionTestAssignUpdate" name="testSectionTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionTestAssignUpdate" >
+            <forward name="success" path="/TestSectionTestAssign.do" />
         </action>
 
         <action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"

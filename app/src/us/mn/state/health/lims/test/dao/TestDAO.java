@@ -111,5 +111,7 @@ public interface TestDAO extends BaseDAO {
 
 	public Test getTestById(String testId) throws LIMSRuntimeException;
 
-	public Test getTestByDescription(String description) throws LIMSRuntimeException; 
+	public Test getTestByDescription(String description) throws LIMSRuntimeException;
+
+    public List<Test> getTestsByTestSectionId(String id) throws LIMSRuntimeException;
 }

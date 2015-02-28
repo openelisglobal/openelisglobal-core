@@ -52,7 +52,7 @@
                    class="textButton"/><br>
             </li>
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.assign") %>'
-                   onclick="submitAction('TestUnitManagement.do');"
+                   onclick="submitAction('TestSectionTestAssign.do');"
                    class="textButton"/><br>
             </li>
     </ul>

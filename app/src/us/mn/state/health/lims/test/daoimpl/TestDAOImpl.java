@@ -656,6 +656,23 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		}
 	}
 
+    public List<Test> getTestsByTestSectionId(String id) throws LIMSRuntimeException{
+        try{
+            String sql = "from Test t where t.testSection.id = :id";
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("id", Integer.parseInt(id));
+
+            List list = query.list();
+            closeSession();
+            return list;
+
+        }catch(Exception e){
+            handleException(e,"getTestsByTestSectionId");
+        }
+
+        return null;
+    }
+
 	// this is for selectdropdown
 	public List getTestsByMethod(String filter) throws LIMSRuntimeException{
 		try{
