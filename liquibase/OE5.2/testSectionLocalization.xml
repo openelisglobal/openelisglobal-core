@@ -26,7 +26,7 @@
         <comment>localization for haiti clinical</comment>
         <sqlFile path="OE5.2/haitiLNSPTestSectionLocalization.sql" />
     </changeSet>
-    <changeSet id="3" author="paulsc" context="CDRetroCI">
+    <changeSet id="3" author="paulsc" context="CDIRetroCI">
         <comment>localization for haiti clinical</comment>
         <sqlFile path="OE5.2/retroCITestSectionLocalization.sql" />
     </changeSet>
@@ -45,6 +45,14 @@
     <changeSet id="7" author="paulsc" context="Kenya">
         <comment>localization for ci regional lab</comment>
         <sqlFile path="OE5.2/kenyaTestSectionLocalization.sql" />
+    </changeSet>
+    <changeSet id="8" author="paulsc" context="Kenya" >
+        <comment>Updates test section localization to include user</comment>
+        <sql>
+            INSERT INTO localization(  id, description, english, french, lastupdated)
+            VALUES ( nextval('localization_seq'), 'test unit name', 'user', 'user', now());
+            UPDATE test_section set name_localization_id = currval('localization_seq') where name = 'user';
+        </sql>
     </changeSet>
 
 
