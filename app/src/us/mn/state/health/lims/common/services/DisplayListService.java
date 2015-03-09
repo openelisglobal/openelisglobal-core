@@ -209,6 +209,10 @@ public class DisplayListService implements LocaleChangeListener {
                 typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
                 break;
             }
+            case REFERRAL_ORGANIZATIONS:{
+                typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
+                break;
+            }
         }
     }
 

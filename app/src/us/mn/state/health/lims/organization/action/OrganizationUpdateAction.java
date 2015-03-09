@@ -39,6 +39,7 @@ import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.provider.validation.CityStateZipComboValidationProvider;
 import us.mn.state.health.lims.common.provider.validation.CityValidationProvider;
 import us.mn.state.health.lims.common.provider.validation.ZipValidationProvider;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -51,7 +52,6 @@ import us.mn.state.health.lims.organization.valueholder.Organization;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -122,7 +122,7 @@ public class OrganizationUpdateAction extends BaseAction {
 		ActionMessages errors = dynaForm.validate(mapping, request);
 
 		try {
-			errors = validateAll(request, errors, dynaForm);
+			errors = validateAll(errors, dynaForm);
 		} catch (Exception e) {
 			LogEvent.logError("OrganizationUpdateAction", "performAction()", e.toString());
 			ActionError error = new ActionError("errors.ValidationException", null, null);
@@ -134,15 +134,13 @@ public class OrganizationUpdateAction extends BaseAction {
 			return mapping.findForward(FWD_FAIL);
 		}
 
-		String start = (String) request.getParameter("startingRecNo");
-		String direction = (String) request.getParameter("direction");
+		String start = request.getParameter("startingRecNo");
+		String direction = request.getParameter("direction");
 
 		Organization organization = new Organization();
 		organization.setSysUserId(currentUserId);
 
-		List states = null;
-
-		states = getPossibleStates(dynaForm, states);
+		List states = getPossibleStates(dynaForm);
 
 		PropertyUtils.copyProperties(organization, dynaForm);
 
@@ -175,7 +173,7 @@ public class OrganizationUpdateAction extends BaseAction {
 			LogEvent.logError("OrganizationUpdateAction", "performAction()", lre.toString());
 			tx.rollback();
 			errors = new ActionMessages();
-			ActionError error = null;
+			ActionError error;
 			if (lre.getException() instanceof org.hibernate.StaleObjectStateException) {
 				// how can I get popup instead of struts error at the top of
 				// page?
@@ -225,10 +223,11 @@ public class OrganizationUpdateAction extends BaseAction {
 			request.setAttribute(ID, organization.getId());
 		}
 
-
 		if (isNew){
 			forward = FWD_SUCCESS_INSERT;
 		}
+
+        DisplayListService.refreshList(DisplayListService.ListType.REFERRAL_ORGANIZATIONS);
 
 		return getForward(mapping.findForward(forward), id, start, direction);
 
@@ -331,11 +330,10 @@ public class OrganizationUpdateAction extends BaseAction {
 
 	}
 
-	private List getPossibleStates(BaseActionForm dynaForm, List states) {
+	private List getPossibleStates(BaseActionForm dynaForm) {
+        List states = null;
 		if (useState) {
-			states = new ArrayList();
 
-			// bugzilla 1545
 			CityStateZipDAO cityStateZipDAO = new CityStateZipDAOImpl();
 
 			if (dynaForm.get("states") != null) {
@@ -363,8 +361,7 @@ public class OrganizationUpdateAction extends BaseAction {
 		}
 	}
 
-	// bugzilla 1765 made changes to validation for city state zip
-	protected ActionMessages validateAll(HttpServletRequest request, ActionMessages errors, BaseActionForm dynaForm) throws Exception {
+	protected ActionMessages validateAll( ActionMessages errors, BaseActionForm dynaForm) throws Exception {
 
 		// city validation against database (reusing ajax validation logic
 		CityValidationProvider cityValidator = new CityValidationProvider();
@@ -383,7 +380,7 @@ public class OrganizationUpdateAction extends BaseAction {
 		String messageKey2 = "person.zipCode";
 		String messageKey3 = "person.state";
 
-		String result = null;
+		String result;
 
 		// A valid city exists in the city_state_zip table so unless we are
 		// using zip and state then don't do the check
