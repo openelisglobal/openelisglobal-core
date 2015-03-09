@@ -5,6 +5,7 @@
 <%@ page import="us.mn.state.health.lims.common.util.IdValuePair" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="us.mn.state.health.lims.testconfiguration.action.TestSectionCreateAction" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -31,6 +32,8 @@
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
 <bean:define id="testList" name='<%=formName%>' property="existingTestUnitList" type="java.util.List"/>
 <bean:define id="inactiveTestList" name='<%=formName%>' property="inactiveTestUnitList" type="java.util.List"/>
+<bean:define id="englishSectionNames" name='<%=formName%>' property="existingEnglishNames" type="String"/>
+<bean:define id="frenchSectionNames" name='<%=formName%>' property="existingFrenchNames" type="String"/>
 
 <%!
     int testCount = 0;
@@ -84,6 +87,7 @@
             });
             $jq("#editButtons").hide();
             $jq("#confirmationButtons").show();
+            $jq("#confirmationMessage").show();
             $jq("#action").text('<%=StringUtil.getMessageForKey("label.confirmation")%>');
         }
     }
@@ -100,11 +104,27 @@
 
         $jq("#editButtons").show();
         $jq("#confirmationButtons").hide();
+        $jq("#confirmationMessage").hide();
         $jq("#action").text('<%=StringUtil.getMessageForKey("label.button.edit")%>');
     }
 
-    function handleInput(element) {
-        $jq(element).removeClass("error");
+    function handleInput(element, locale) {
+        var englishNames = '<%= englishSectionNames %>'.toLowerCase();
+        var frenchNames = '<%= frenchSectionNames %>'.toLowerCase();
+        var duplicate = false;
+        if( locale == 'english'){
+            duplicate = englishNames.indexOf( '<%=TestSectionCreateAction.NAME_SEPARATOR%>' + element.value.toLowerCase() + '<%=TestSectionCreateAction.NAME_SEPARATOR%>') != -1;
+        }else{
+            duplicate = frenchNames.indexOf( '<%=TestSectionCreateAction.NAME_SEPARATOR%>' + element.value.toLowerCase() + '<%=TestSectionCreateAction.NAME_SEPARATOR%>') != -1;
+        }
+
+        if(duplicate){
+            $jq(element).addClass("error");
+            alert("<bean:message key="configuration.testUnit.create.duplicate" />" );
+        }else{
+            $jq(element).removeClass("error");
+        }
+
         makeDirty();
     }
 
@@ -145,13 +165,16 @@
         <tr>
             <td><span class="requiredlabel">*</span><html:text property="testUnitEnglishName" name="<%=formName%>" size="40"
                                                                styleClass="required"
-                                                               onchange="handleInput(this);"/>
+                                                               onchange="handleInput(this, 'english');checkForDuplicates('english');"/>
             </td>
             <td><span class="requiredlabel">*</span><html:text property="testUnitFrenchName" name="<%=formName%>" size="40"
-                                                               styleClass="required" onchange="handleInput(this);"/>
+                                                               styleClass="required" onchange="handleInput(this, 'french');"/>
             </td>
         </tr>
     </table>
+    <div id="confirmationMessage" style="display:none">
+        <h4><bean:message key="configuration.testUnit.confirmation.explain" /></h4>
+    </div>
     <div style="text-align: center" id="editButtons">
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.save")%>'
                onclick="confirmValues();"/>

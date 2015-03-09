@@ -116,4 +116,8 @@ public class TestSectionService implements LocaleChangeListener{
     public static List<Test> getTestsInSection(String id) {
         return TestService.getTestsInTestSectionById(id);
     }
+
+    public static List<TestSection> getAllTestSections() {
+        return new TestSectionDAOImpl().getAllTestSections();
+    }
 }

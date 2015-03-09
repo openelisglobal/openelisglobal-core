@@ -91,6 +91,9 @@
         $jq("#deactivateTestSectionId").val(onlyOneTestInSection ? testSectionId : "");
         $jq("#warnDeactivteTestSection").text(currentTestSection);
         $jq(".edit-step").show();
+        $jq(".select-step").hide();
+        $jq(window).scrollTop(0);
+
     }
 
     function testSectionSelected( selection){
@@ -151,11 +154,13 @@
     <h1 id="action" class="edit-step" style="display: none"></h1>
     <h2><bean:message key="configuration.testUnit.assign"/> </h2>
 
-
+    <div class="select-step" >
+        <bean:message key="configuration.testUnit.assign.explain" />
+    </div>
     <div class="edit-step" style="display:none">
 
         Test: <span class="selectedTestName" ></span><br><br>
-        &nbsp;&nbsp;Assign to test section:&nbsp;
+        &nbsp;&nbsp;<bean:message key="configuration.testUnit.assign.new.unit" />:&nbsp;
     <select id="testSectionSelection" onchange="testSectionSelected(this);">
 
         <% for(int i = 0; i < testSectionList.size(); i++){
@@ -166,9 +171,9 @@
     </select>
 
     <div class="confirmation-step" style="display:none">
-        <br><span class="selectedTestName" ></span>&nbsp;will be moved from&nbsp;<span id="fromTestSection" ></span> to <span id="toTestSection" ></span>.
+        <br><span class="selectedTestName" ></span>&nbsp;<bean:message key="configuration.testUnit.confirmation.move.phrase" />&nbsp;<span id="fromTestSection" ></span> <bean:message key="word.to" /> <span id="toTestSection" ></span>.
         <div id="deatcitvateWarning" >
-            <span id="warnDeactivteTestSection"></span>&nbsp;has no more tests and will be deactivated;
+            <br/><span id="warnDeactivteTestSection"></span>&nbsp;<bean:message key="configuration.testUnit.assign.deactivate" />
         </div>
     </div>
 
@@ -176,7 +181,7 @@
         <input id="saveButton" type="button" value='<%=StringUtil.getMessageForKey("label.button.save")%>'
                onclick="confirmValues();" disabled="disabled"/>
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>'
-               onclick='submitAction("TestSectionTestAssign.do")'/>
+               onclick='window.onbeforeunload = null; submitAction("TestSectionTestAssign.do")'/>
     </div>
     <div style="text-align: center; display: none;" class="confirmation-step">
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.accept")%>'

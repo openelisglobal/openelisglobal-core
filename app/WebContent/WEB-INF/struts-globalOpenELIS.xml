@@ -723,6 +723,8 @@
         <form-bean name="testSectionCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
             <form-property name="existingTestUnitList" type="java.util.List" />
             <form-property name="inactiveTestUnitList" type="java.util.List" />
+            <form-property name="existingEnglishNames" type="java.lang.String" />
+            <form-property name="existingFrenchNames" type="java.lang.String" />
             <form-property name="testUnitEnglishName" type="java.lang.String" />
             <form-property name="testUnitFrenchName" type="java.lang.String" />
         </form-bean>

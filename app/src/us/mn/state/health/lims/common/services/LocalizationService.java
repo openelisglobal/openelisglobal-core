@@ -43,6 +43,13 @@ public class LocalizationService implements LocaleChangeListener{
         }
     }
 
+    public static String getLocalizationValueByLocal(ConfigurationProperties.LOCALE locale, Localization localization){
+        if( locale == ConfigurationProperties.LOCALE.FRENCH ){
+            return localization.getFrench();
+        }else{
+            return localization.getEnglish();
+        }
+    }
     @Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;

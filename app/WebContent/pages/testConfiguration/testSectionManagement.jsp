@@ -34,24 +34,24 @@
 
     </script>
     <br>
-    <input type="button" value='<%= StringUtil.getMessageForKey("banner.menu.administration") %>'
+    <input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
            onclick="submitAction('MasterListsPage.do');"
            class="textButton"/>&rarr;
-    <input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.management") %>'
+    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
     <%=StringUtil.getMessageForKey( "configuration.testUnit.manage" )%>
 
     <ul>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.create") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.testUnit.create") %>"
                    onclick="submitAction('TestSectionCreate.do');"
                    class="textButton"/><br>
             </li>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.order") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.testUnit.order") %>"
                    onclick="submitAction('TestSectionOrder.do');"
                    class="textButton"/><br>
             </li>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.assign") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.testUnit.assign") %>"
                    onclick="submitAction('TestSectionTestAssign.do');"
                    class="textButton"/><br>
             </li>

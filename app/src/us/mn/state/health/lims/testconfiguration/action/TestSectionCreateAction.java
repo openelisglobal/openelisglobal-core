@@ -23,10 +23,14 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.services.TestSectionService;
 import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.test.beanItems.TestActivationBean;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.test.valueholder.TestSection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,13 +40,28 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TestSectionCreateAction extends BaseAction {
+    public static final String NAME_SEPARATOR = "$";
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
         PropertyUtils.setProperty(form, "existingTestUnitList", DisplayListService.getList(DisplayListService.ListType.TEST_SECTION));
         PropertyUtils.setProperty(form, "inactiveTestUnitList", DisplayListService.getList(DisplayListService.ListType.TEST_SECTION_INACTIVE));
+        List<TestSection> testSections = TestSectionService.getAllTestSections();
+        PropertyUtils.setProperty(form, "existingEnglishNames", getExistingTestNames(testSections, ConfigurationProperties.LOCALE.ENGLISH));
+        PropertyUtils.setProperty(form, "existingFrenchNames", getExistingTestNames(testSections, ConfigurationProperties.LOCALE.FRENCH));
 
         return mapping.findForward(FWD_SUCCESS);
+    }
+
+    private String getExistingTestNames(List<TestSection> testSections, ConfigurationProperties.LOCALE locale) {
+        StringBuilder builder = new StringBuilder(NAME_SEPARATOR);
+
+        for( TestSection testSection : testSections){
+            builder.append(LocalizationService.getLocalizationValueByLocal(locale, testSection.getLocalization()));
+            builder.append(NAME_SEPARATOR);
+        }
+
+        return builder.toString();
     }
 
 

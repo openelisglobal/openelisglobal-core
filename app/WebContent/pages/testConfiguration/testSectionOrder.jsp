@@ -79,6 +79,7 @@
     function confirmValues() {
         $jq("#editButtons").hide();
         $jq("#confirmationButtons").show();
+        $jq("#editMessage").hide();
         $jq("#action").text('<%=StringUtil.getMessageForKey("label.confirmation")%>');
 
         $jq(".sortable").sortable("disable");
@@ -87,6 +88,7 @@
     function rejectConfirmation() {
         $jq("#editButtons").show();
         $jq("#confirmationButtons").hide();
+        $jq("#editMessage").show();
         $jq("#action").text('<%=StringUtil.getMessageForKey("label.button.edit")%>');
 
         $jq(".sortable").sortable("enable");
@@ -131,7 +133,11 @@
 
 <div id="editDiv" >
     <h1 id="action"><bean:message key="label.button.edit"/></h1>
-    <h2><bean:message key="configuration.testUnit.order"/> </h2>
+
+    <div id="editMessage" >
+        <h3><bean:message key="configuration.testUnit.order.explain"/> </h3>
+        <bean:message key="configuration.testUnit.order.explain.limits" /><br/><br/>
+    </div>
 
     <UL class="sortable" style="width:250px">
         <% for(int i = 0; i < testList.size(); i++){
