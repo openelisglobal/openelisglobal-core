@@ -15,7 +15,10 @@
 */
 package us.mn.state.health.lims.panel.valueholder;
 
+import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
+import us.mn.state.health.lims.common.valueholder.ValueHolder;
+import us.mn.state.health.lims.localization.valueholder.Localization;
 
 
 public class Panel extends EnumValueItemImpl {
@@ -26,6 +29,7 @@ public class Panel extends EnumValueItemImpl {
 	private String panelName;
 	private String description;
 	private int sortOrderInt;
+    private ValueHolder localization = new ValueHolder();
 	
 	public Panel() {
 		super();
@@ -57,7 +61,7 @@ public class Panel extends EnumValueItemImpl {
 
 	@Override
 	protected String getDefaultLocalizedName() {
-		return panelName;
+		return LocalizationService.getLocalizedValueById(getLocalization().getId());
 	}
 
 	public int getSortOrderInt() {
@@ -67,5 +71,12 @@ public class Panel extends EnumValueItemImpl {
 	public void setSortOrderInt(int sortOrderInt) {
 		this.sortOrderInt = sortOrderInt;
 	}
-	
+
+    public Localization getLocalization() {
+        return (Localization)localization.getValue();
+    }
+
+    public void setLocalization(Localization localization) {
+        this.localization.setValue(localization);
+    }
 }
