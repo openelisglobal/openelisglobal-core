@@ -741,6 +741,13 @@
             <form-property name="testSectionId" type="java.lang.String" initial="" />
             <form-property name="deactivateTestSectionId" type="java.lang.String" initial="" />
         </form-bean>
+
+        <form-bean name="panelRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="panelList" type="java.util.List" />
+            <form-property name="nameEnglish" type="java.lang.String" initial="" />
+            <form-property name="nameFrench" type="java.lang.String" initial="" />
+            <form-property name="panelId" type="java.lang.String" initial="" />
+        </form-bean>
 	</form-beans>
 
 
@@ -769,6 +776,14 @@
 
         <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameUpdate" >
             <forward name="success" path="/TestRenameEntry.do" />
+        </action>
+
+        <action path="/PanelRenameEntry" name="panelRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.PanelRenameAction" >
+            <forward name="success" path="panelRenameDefinition" />
+        </action>
+
+        <action path="/PanelRenameUpdate" name="panelRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.PanelRenameUpdate" >
+            <forward name="success" path="/PanelRenameEntry.do" />
         </action>
 
 		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.testconfiguration.action.TestActivationAction" >

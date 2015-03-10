@@ -38,11 +38,19 @@
            onclick="submitAction('MasterListsPage.do');"
            class="textButton"/> &rarr; <%=StringUtil.getMessageForKey( "configuration.test.management" )%>
 
+    <h3><bean:message key="configuration.test.management.spelling" /></h3>
     <ul>
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.rename") %>'
                    onclick="submitAction('TestRenameEntry.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.rename.explain")%></li>
+        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.panel.rename") %>'
+                   onclick="submitAction('PanelRenameEntry.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.panel.rename.explain")%></li>
+    </ul>
+    <h3><bean:message key="configuration.test.management.organization" /></h3>
+    <ul>
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.activate") %>'
                    onclick="submitAction('TestActivation.do');"
                    class="textButton"/><br>

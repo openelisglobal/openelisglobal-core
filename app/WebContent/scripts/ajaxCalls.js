@@ -29,6 +29,32 @@ function getTestNames( testId, success, failure){
         });
 }
 
+/**
+ * A generic way to get localized names for a given entity rather than a new call for each type.  Expand and document as needed
+ * @param entitiyId
+ * @param entityName may only be one of "panel"  The names can also be found in EntityNamesProvider
+ * @param success
+ * @param failure
+ */
+function getEntityNames( entitiyId,entityName ,success, failure){
+    var permited = ['panel'];
+
+    if( permited.indexOf(entityName) == -1){
+        alert( "\"" + entityName + "\" has not been implemented for getEntityNames");
+        return;
+    }
+    if( !failure ){	failure = defaultFailure;}
+
+    new Ajax.Request('ajaxQueryXML',
+        {
+            method : 'get',
+            parameters : "provider=EntityNamesProvider&entityId=" + entitiyId + "&entityName=" + entityName ,
+            //indicator: 'throbbing',
+            onSuccess : success,
+            onFailure : failure
+        });
+}
+
 function getDistrictsForRegion( regionId, selectedValue, success, failure){
 	if( !failure ){	failure = defaultFailure;}
 	

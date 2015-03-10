@@ -32,5 +32,17 @@
             name';
         </sql>
     </changeSet>
+    <changeSet id="2" author="paulsc">
+        <comment>Adds localization columns to panel</comment>
+        <addColumn tableName="panel">
+            <column name="name_localization_id" type="numeric(10,0)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="panel" baseColumnNames="name_localization_id"
+                                 constraintName="name_fk" referencedTableName="localization"
+                                 referencedColumnNames="id" deleteCascade="true"/>
+        <sql>
+            COMMENT ON COLUMN clinlims.panel.name_localization_id IS 'reference to the localization record for the panel name';
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
