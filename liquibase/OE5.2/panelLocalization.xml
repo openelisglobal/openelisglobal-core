@@ -26,6 +26,10 @@
         <comment>localization for haiti clinical</comment>
         <sqlFile path="OE5.2/haitiLNSPPanelLocalization.sql" />
     </changeSet>
+    <changeSet id="8" author="paulsc" context="haitiLNSP">
+        <comment>localization for haiti LNSP</comment>
+        <sqlFile path="OE5.2/htLNSPInactivePanelLocalization.sql" />
+    </changeSet>
     <changeSet id="3" author="paulsc" context="CDIRetroCI">
         <comment>localization for haiti clinical</comment>
         <sqlFile path="OE5.2/retroCIPanelLocalization.sql" />
