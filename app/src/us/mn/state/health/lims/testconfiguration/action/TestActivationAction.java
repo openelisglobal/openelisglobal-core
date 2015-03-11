@@ -57,7 +57,7 @@ public class TestActivationAction extends BaseAction {
         for( IdValuePair pair : sampleTypeList){
             TestActivationBean bean = new TestActivationBean();
 
-            List<Test> tests = TypeOfSampleUtil.getTestListBySampleTypeId(pair.getId(), false);
+            List<Test> tests = TypeOfSampleUtil.getAllTestsBySampleTypeId(pair.getId());
             List<IdValuePair> activeTests = new ArrayList<IdValuePair>();
             List<IdValuePair> inactiveTests = new ArrayList<IdValuePair>();
 
