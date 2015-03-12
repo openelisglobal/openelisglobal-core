@@ -711,11 +711,16 @@
             <form-property name="testId" type="java.lang.String" initial="" />
         </form-bean>
 
-		<form-bean name="testActivationForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+		<form-bean name="testActivationForm" type="org.apache.struts.validator.DynaValidatorForm">
 			<form-property name="activeTestList" type="java.util.List" />
 			<form-property name="inactiveTestList" type="java.util.List" />
 			<form-property name="jsonChangeList" type="java.lang.String" initial="" />
 		</form-bean>
+
+        <form-bean name="testOrderabilityForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="orderableTestList" type="java.util.List" />
+            <form-property name="jsonChangeList" type="java.lang.String" initial="" />
+        </form-bean>
 
         <form-bean name="testManagementConfigForm" type="org.apache.struts.validator.DynaValidatorForm" />
         <form-bean name="testSectionManagementForm" type="org.apache.struts.validator.DynaValidatorForm" />
@@ -793,6 +798,14 @@
 		<action path="/TestActivationUpdate" name="testActivationForm" type="us.mn.state.health.lims.testconfiguration.action.TestActivationUpdate" >
 			<forward name="success" path="/TestActivation.do" />
 		</action>
+
+        <action path="/TestOrderability" name="testOrderabilityForm" type="us.mn.state.health.lims.testconfiguration.action.TestOrderabilityAction" >
+            <forward name="success" path="testOrderabilityDefinition" />
+        </action>
+
+        <action path="/TestOrderabilityUpdate" name="testOrderabilityForm" type="us.mn.state.health.lims.testconfiguration.action.TestOrderabilityUpdate" >
+            <forward name="success" path="/TestOrderability.do" />
+        </action>
 
         <action path="/TestSectionManagement" name="testSectionManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
             <forward name="success" path="testSectionManagementDefinition"  />

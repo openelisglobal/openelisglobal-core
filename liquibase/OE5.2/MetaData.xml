@@ -33,4 +33,21 @@
             <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'PanelRenameEntry' ) " />
         </insert>
     </changeSet>
+    <changeSet author="paulsc" id="2" context="Kenya, haiti, haitiLNSP, CI_IPCI, ci_regional, ciLNSP"  >
+        <comment>Sets permissions for making tests orderable</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="TestOrderability"/>
+            <column name="description" value="Admin=&gt;test mang=&gt;Test Orderability"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Test Management' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'TestOrderability' ) " />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
