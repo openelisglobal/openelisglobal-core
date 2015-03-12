@@ -19,14 +19,14 @@ package us.mn.state.health.lims.testconfiguration.action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.validator.DynaValidatorForm;
+import org.hibernate.HibernateException;
+import org.hibernate.Transaction;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.common.action.BaseAction;
-import us.mn.state.health.lims.common.action.BaseActionForm;
-import org.hibernate.HibernateException;
-import org.hibernate.Transaction;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -49,7 +49,7 @@ public class TestActivationUpdate extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        String changeList = ((BaseActionForm) form).getString("jsonChangeList");
+        String changeList = ((DynaValidatorForm)form).getString("jsonChangeList");
 
         JSONParser parser=new JSONParser();
 

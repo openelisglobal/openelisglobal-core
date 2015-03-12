@@ -297,6 +297,10 @@
         <put name="body" value="/pages/testConfiguration/testActivation.jsp"/>
     </definition>
 
+    <definition name="testOrderabilityDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testOrderability.jsp"/>
+    </definition>
+
     <definition name="testSectionManagementDefinition" extends="baseMenuDefinition" >
         <put name="body" value="/pages/testConfiguration/testSectionManagement.jsp" />
     </definition>
