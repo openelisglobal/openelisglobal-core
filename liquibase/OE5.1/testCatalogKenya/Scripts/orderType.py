@@ -38,10 +38,10 @@ def create_description( test_name, sample_type):
 
     return esc_char(test_name + sample_type )
 
-test_file = open("input_files/testName.txt")
-sample_file = open("input_files/sampleType.txt")
-order_file = open("input_files/orderType.txt")
-result = open("output_files/orderTypeResult.sql",'w')
+test_file = open("testName.txt")
+sample_file = open("sampleType.txt")
+order_file = open("orderType.txt")
+result = open("output/orderTypeResult.sql",'w')
 
 for line in test_file:
     test_name.append(line.strip())
@@ -55,7 +55,7 @@ for line in order_file:
     order_kind.append(line.strip())
 order_file.close()
 
-if len(order_kind) == 0:
+if len( order_kind ) == 0:
     print 'No results for order type'
     exit()
 
