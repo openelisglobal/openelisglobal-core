@@ -17,8 +17,8 @@ def convert_to_existing_name( name ):
         return 'Bacteria'
     return name
 
-section_file = open( "input_files/testSections.txt")
-results = open("output_files/SectionOrder.sql", 'w')
+section_file = open( "testSections.txt")
+results = open("output/SectionOrder.sql", 'w')
 handled_sections = []
 
 order = 10

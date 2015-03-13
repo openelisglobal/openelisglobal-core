@@ -4,9 +4,9 @@
 type = []
 panel = []
 done_combos = []
-type_file = open('input_files/sampleType.txt','r')
-panel_file = open('input_files/panels.txt','r')
-type_panel_results = open("output_files/typePanelResults.txt", 'w')
+type_file = open('sampleType.txt','r')
+panel_file = open('panels.txt','r')
+type_panel_results = open("output/typePanelResults.txt", 'w')
 
 for line in type_file:
     if ',' in line:
@@ -23,7 +23,7 @@ panel_file.close()
 for row in range(0, len(type)):
     if len(panel[row]) > 1:
             if (type[row]+panel[row]) not in done_combos:
-                type_panel_results.write("INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES \n\t(nextval( 'clinlims.sample_type_panel_seq') , ")
+                type_panel_results.write("INSERT INTO clinlims.sampletype_panel (id, sample_type_id, panel_id ) VALUES \n\t(nextval( 'sample_type_panel_seq') , ")
                 type_panel_results.write("(select id from clinlims.type_of_sample where description = '" + type[row] + "' ) , ")
                 type_panel_results.write("(select id from clinlims.panel where name = '" + panel[row] + "' ) );\n")
                 done_combos.append(type[row]+panel[row])

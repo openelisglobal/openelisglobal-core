@@ -8,11 +8,11 @@ test_name = []
 sample_type = []
 handled_descriptions = ['']
 
-test_file = open("input_files/testName.txt")
-sample_file = open("input_files/sampleType.txt")
-analyze_file = open("input_files/analyzeCode.txt")
-billing_file = open("input_files/billingCode.txt")
-result = open("output_files/testCodeResult.sql",'w')
+test_file = open("testName.txt")
+sample_file = open("sampleType.txt")
+analyze_file = open("analyzeCode.txt")
+billing_file = open("billingCode.txt")
+result = open("output/testCodeResult.sql",'w')
 
 def esc_char(name):
     if "'" in name:
@@ -66,12 +66,12 @@ for row in range(0, len(test_name)):
         if description.strip() not in handled_descriptions:
                 handled_descriptions.append( description.strip())
                 if write_billing_code:
-                    result.write("INSERT INTO clinlims.test_code( test_id, code_type_id, value, lastupdated) \n\t")
+                    result.write("INSERT INTO test_code( test_id, code_type_id, value, lastupdated) \n\t")
                     result.write("VALUES ( (select id from clinlims.test where description = " + description + " ), " )
                     result.write( "(select id from clinlims.test_code_type where schema_name = 'billingCode'), '"+  billing_code[row] + "', now() );\n")
 
                 if write_analyze_code:
-                    result.write("INSERT INTO clinlims.test_code( test_id, code_type_id, value, lastupdated) \n\t")
+                    result.write("INSERT INTO test_code( test_id, code_type_id, value, lastupdated) \n\t")
                     result.write("VALUES ( (select id from clinlims.test where description = " + description + " ), " )
                     result.write( "(select id from clinlims.test_code_type where schema_name = 'analyzeCode'), '" +  analyze_code[row] + "', now() );\n")
 

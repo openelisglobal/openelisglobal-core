@@ -5,8 +5,8 @@ localization = []
 test_localization = []
 
 used = ['']
-local_file = open('input_files/testName.txt','r')
-test_local_file = open('input_files/testLocalization.txt','r')
+local_file = open('input_files\\testName.txt','r')
+test_local_file = open('input_files\\testLocalization.txt','r')
 
 for line in local_file:
     if len(line) > 1:
@@ -25,7 +25,7 @@ def esc_name(name):
 
 sql_insert = "INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES\n\t(nextval( 'clinlims.localization_seq' ) ,"
 
-local_results = open("output_files/localization.sql", 'w')
+local_results = open("output_files\\localization.sql", 'w')
 for row in range(0, len(localization)):
         local_name = localization[row]
         if local_name not in test_localization and 'n/a' not in local_name:
@@ -35,5 +35,5 @@ for row in range(0, len(localization)):
 	    local_results.write("INSERT INTO clinlims.localization( id, description, english, french, lastupdated) VALUES\n\t(nextval( 'clinlims.localization_seq' ) ,")
 	    local_results.write(" 'test report name' , '" + esc_name(local_name.strip()) + "' , '" + esc_name(local_name.strip()) + "', now());\n")
 
-print "Done Look for the results in localization.sql"
+print ("Done Look for the results in localization.sql")
 

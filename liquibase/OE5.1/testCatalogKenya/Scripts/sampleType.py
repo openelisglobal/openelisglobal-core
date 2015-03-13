@@ -5,19 +5,19 @@
 existing_types = []
 sample_types = []
 
-sample_type_file = open("input_files/sampleType.txt")
-existing_types_file = open("input_files/currentSampleTypes.txt")
-results = open("output_files/sampleTypeOutput.txt", 'w')
+sample_type_file = open("sampleType.txt")
+existing_types_file = open("currentSampleTypes.txt")
+results = open("output/sampleTypeOutput.txt", 'w')
 
 
 def write_massive_type_of_sample():
     results.write("\nPaste following in SampleType.sql\n\n")
 
-    sql_insert = "INSERT INTO clinlims.type_of_sample( id, description, domain, lastupdated, local_abbrev, display_key, is_active )\n\tVALUES ("
+    sql_insert = "INSERT INTO type_of_sample( id, description, domain, lastupdated, local_abbrev, display_key, is_active )\n\tVALUES ("
     for line in sample_types:
         if line not in existing_types and len(line) > 1:
             results.write(sql_insert)
-            results.write( " nextval( 'clinlims.type_of_sample_seq' ) , '" + line + "','H', now() , '" + line[:10] + "', 'sample.type." + line.split()[0] + "', 'Y');\n" );
+            results.write( " nextval( 'type_of_sample_seq' ) , '" + line + "','H', now() , '" + line[:10] + "', 'sample.type." + line.split()[0] + "', 'Y');\n" );
 
 def write_sample_type_order():
     results.write("\nPaste following in TypeOrder.sql\n\n")
@@ -28,7 +28,7 @@ def write_sample_type_order():
 
 def write_inactive_list():
     results.write('\nPaste following in inactivateSampleTypes.sql in the set inactive list\n\n')
-    results.write("update clinlims.type_of_sample set is_active=\'N\' where description in (")
+    results.write("update clinlims.type_of_sample set is_active=\'N\' where name in (")
     for line in existing_types:
         if line not in sample_types:
             results.write('\'' + line + '\', ')
