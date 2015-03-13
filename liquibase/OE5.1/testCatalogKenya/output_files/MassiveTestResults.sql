@@ -287,7 +287,7 @@ INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdate
 INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
 	 VALUES ( nextval( 'clinlims.test_result_seq' ) , ( select id from clinlims.test where description = 'Partial prothrombin time(Blood)' ) , 'N' , null , now() , 1440);
 INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
-	 VALUES ( nextval( 'clinlims.test_result_seq' ) , ( select id from clinlims.test where description = 'Bone Marrow Aspirates(Bone marrow)' ) , 'N' , null , now() , 1450);
+	 VALUES ( nextval( 'clinlims.test_result_seq' ) , ( select id from clinlims.test where description = 'Bone Marrow Aspirates(Bone Marrow)' ) , 'N' , null , now() , 1450);
 INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)
 	 VALUES ( nextval( 'clinlims.test_result_seq' ) , ( select id from clinlims.test where description = 'Erythrocyte Sedimentation rate (ESR)(Blood)' ) , 'Q' ,  ( select max(id) from clinlims.dictionary where dict_entry ='' )  , now() , 1460);
 INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)

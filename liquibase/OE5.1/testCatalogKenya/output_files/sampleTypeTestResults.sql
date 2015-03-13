@@ -244,9 +244,9 @@ INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Partial prothrombin time(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Partial prothrombin time(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
-DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Bone Marrow Aspirates(Bone marrow)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Bone marrow') ;
+DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Bone Marrow Aspirates(Bone Marrow)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Bone Marrow') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
-	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Bone Marrow Aspirates(Bone marrow)' )  ,    (select id from clinlims.type_of_sample where description = 'Bone marrow')  );
+	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Bone Marrow Aspirates(Bone Marrow)' )  ,    (select id from clinlims.type_of_sample where description = 'Bone Marrow')  );
 DELETE from clinlims.sampletype_test where test_id =  (select id from clinlims.test where description = 'Erythrocyte Sedimentation rate (ESR)(Blood)' )  and sample_type_id =  (select id from clinlims.type_of_sample where description = 'Blood') ;
 INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES 
 	(nextval( 'clinlims.sample_type_test_seq' ) , (select id from clinlims.test where description = 'Erythrocyte Sedimentation rate (ESR)(Blood)' )  ,    (select id from clinlims.type_of_sample where description = 'Blood')  );
