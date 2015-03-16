@@ -1,18 +1,24 @@
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Yeast Cells (>5/hpf)(Urine)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 0, 0, 'Infinity', now() );
+INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Red Blood Cells (>5/hpf)(Urine)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 3, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
-	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Leukocytes(Urine)' ), 
-			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', '-Infinity', 'Infinity', now() );
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Specific Gravity(Urine)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 1.003, 1.03, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'pH(Urine)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 5, 7, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
-	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Protein(Urine)' ), 
-			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', '-Infinity', 'Infinity', now() );
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Urobilinogen Phenlpyruvic Acid(Urine)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0.2, 1, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
-	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'S. haematobium(Genital Swab)' ), 
-			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', '-Infinity', 'Infinity', now() );
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Pus Cells (>5/hpf)(Urine)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 2, 0, 'Infinity', now() );
+INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'WBC Count(Blood)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 4, 11, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Neutrophil, Absolute(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 1.7, 7.7, '-Infinity', 'Infinity', now() );
@@ -86,8 +92,8 @@ INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'PDW(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 12, 18, '-Infinity', 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
-	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Hb electrophoresis(Blood)' ), 
-			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', '-Infinity', 'Infinity', now() );
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Bleeding Time(Blood)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 2, 9, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Thrombin Clotting Time(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 11, 18, 0, 'Infinity', now() );
@@ -98,8 +104,8 @@ INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Partial prothrombin time(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 25, 35, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
-	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Bone Marrow Aspirates(Bone Marrow)' ), 
-			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', '-Infinity', 'Infinity', now() );
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Erythrocyte Sedimentation rate (ESR)(Blood)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 20, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Reticulocyte counts %(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 1, 3, 0, 'Infinity', now() );
@@ -115,6 +121,9 @@ INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, 
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'CD4:CD8 ratio(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0.5, 2.7, 0, 'Infinity', now() );
+INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Direct bilirubin(Blood)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0.1, 0.3, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Total bilirubin(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0.1, 1.2, 0, 'Infinity', now() );
@@ -215,12 +224,11 @@ INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Thyroid-stimulating Hormone (TSH)(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0.37, 4.42, 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
-	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Hepatitis C Qualitative PCR(Blood)' ), 
-			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', '-Infinity', 'Infinity', now() );
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'HIV Viral Load(Blood)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 200000, 0, 200001, now() );
+INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
+	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Hepatitis C Viral Load(Blood)' ), 
+			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', 0, 'Infinity', now() );
 INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
 	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Hepatitis B Viral Load(Blood)' ), 
 			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', 0, 'Infinity', now() );
-INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) 
-	 VALUES ( nextval( 'clinlims.result_limits_seq' ) , ( select id from clinlims.test where description = 'Gene Xpert MTB/RIF(Respiratory specimen)' ), 
-			 (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' , NULL, 0, 'Infinity', '-Infinity', 'Infinity', now() );
-

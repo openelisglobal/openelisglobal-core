@@ -6,7 +6,6 @@ update clinlims.type_of_sample set sort_order=50 where description ILIKE 'Stool'
 update clinlims.type_of_sample set sort_order=60 where description ILIKE 'Skin';
 update clinlims.type_of_sample set sort_order=70 where description ILIKE 'Bone Marrow';
 update clinlims.type_of_sample set sort_order=80 where description ILIKE 'CSF';
-update clinlims.type_of_sample set sort_order=90 where description ILIKE 'Bone marrow';
 update clinlims.type_of_sample set sort_order=100 where description ILIKE 'Pus swab';
 update clinlims.type_of_sample set sort_order=110 where description ILIKE 'Vaginal swab';
 update clinlims.type_of_sample set sort_order=120 where description ILIKE 'Respiratory specimen';

@@ -1,6 +1,4 @@
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
-	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'UNITS' , 'UNITS' , now());
-INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'cells/HPF' , 'cells/HPF' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'mg/dL' , 'mg/dL' , now());
