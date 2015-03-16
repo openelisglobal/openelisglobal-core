@@ -108,6 +108,9 @@ public class TestService implements LocaleChangeListener{
         return (test != null && test.getMethod() != null) ? test.getMethod().getMethodName() : null;
     }
 
+    public boolean isActive(){
+        return test == null ? false : test.isActive();
+    }
     @SuppressWarnings("unchecked")
     public List<TestResult> getPossibleTestResults( ) {
         return TEST_RESULT_DAO.getAllActiveTestResultsPerTest( test );

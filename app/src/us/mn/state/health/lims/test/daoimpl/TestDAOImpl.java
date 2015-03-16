@@ -503,7 +503,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
     public Test getTestByName(String testName) throws LIMSRuntimeException{
         try{
-            String sql = "from Test t where t.testName = :testName and t.isActive='Y'";
+            String sql = "from Test t where t.testName = :testName";
             org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
             query.setParameter("testName", testName);
 
@@ -1068,4 +1068,20 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return null;
 	}
 
+    @Override
+    public Test getTestByGUID( String guid){
+        String sql = "From Test t where t.guid = :guid";
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setString("guid", guid);
+
+            Test test = (Test)query.uniqueResult();
+            closeSession();
+            return test;
+        }catch(HibernateException e){
+            handleException(e, "getTestByGUID");
+        }
+
+        return null;
+    }
 }

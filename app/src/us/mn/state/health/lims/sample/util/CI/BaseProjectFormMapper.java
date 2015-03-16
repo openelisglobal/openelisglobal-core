@@ -74,15 +74,13 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
 			initProjectData(dynaForm);
 	}
 
-	protected Test createTest(String testName){
-		Test test = new Test();
-		test.setTestName(testName);
-		TestDAO testDAO = new TestDAOImpl();
-		test = testDAO.getTestByName(test);
+	protected Test createTest(String testName, boolean orderableOnly){
+		Test test = new TestDAOImpl().getTestByName(testName);
 		if (test == null) {
 		    throw new LIMSRuntimeException("Unable to find test '" + testName +"'");
 		}
-		return test;
+
+		return (test.isActive() && (!orderableOnly || test.getOrderable())) ? test : null;
 	}
 
 

@@ -20,5 +20,6 @@
     <include file="OE5.2/MetaData.xml" />
     <include file="OE5.2/testSectionLocalization.xml" />
     <include file="OE5.2/panelLocalization.xml" />
+    <include file="OE5.2/CDIRetroCIData.xml" />
     <include file="OE5.2/postUpdateSchema.xml" />
  </databaseChangeLog>

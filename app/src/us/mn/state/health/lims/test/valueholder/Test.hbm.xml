@@ -87,6 +87,7 @@
             <column name="SORT_ORDER" precision="22" scale="0" />
         </property>
         <property name="orderable" type="java.lang.Boolean" column="orderable" />
+        <property name="guid" type="java.lang.String" column="guid" />
     </class>
     <query name="test.getNext">
          from Test t order by t.testSection.testSectionName, t.testName
