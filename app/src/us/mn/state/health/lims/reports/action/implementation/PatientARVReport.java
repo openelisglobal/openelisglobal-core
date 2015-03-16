@@ -210,7 +210,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 				}
 			}
 
-		}else if(testName.equals("Murex") || testName.equals("Intgral")){
+		}else if(testName.equals("Murex") || testName.equals("Intgral")){ //Serology must have one of these but not necessarily both
 			data.setShowSerologie(Boolean.TRUE);
 			if(GenericValidator.isBlankOrNull(data.getVih())){
 				data.setVih(invalidValue);
