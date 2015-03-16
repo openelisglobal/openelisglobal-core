@@ -90,4 +90,17 @@
 	<sqlFile path="OE5.1/testCatalogKenya/output_files/significantDigits.sql"/>
 </changeSet>
 
+<changeSet author="jfurlong" context="Kenya" id="1">
+	<comment>Adds needed dictionary values</comment>
+	<sqlFile path="OE5.1/testCatalogKenya/output_files/dictionaryResultsCont.sql"/>
+	<comment>Dictionary results</comment>
+</changeSet>
+
+<changeSet author="jfurlong" context="Kenya" id="2">
+	<comment>Fix significant digits</comment>
+	<sql>
+		update clinlims.test_result set significant_digits = 1 where test_id in (select id from clinlims.test where description in ('Lymphocyte, Absolute(Blood)','Monocyte, Absolute(Blood)','Eosinophil, Absolute(Blood)','Basophil, Absolute(Blood)','Neutrophil, Absolute(Blood)','RBC Count - Male(Blood)','RBC Count - Female(Blood)','Hemoglobin - Male(Blood)','Hemoglobin - Female(Blood)','Hematocrit - Male(Blood)','Hematocrit - Female(Blood)','RDW(Blood)','PCT(Blood)'));
+	</sql>
+</changeSet>
+
 </databaseChangeLog>

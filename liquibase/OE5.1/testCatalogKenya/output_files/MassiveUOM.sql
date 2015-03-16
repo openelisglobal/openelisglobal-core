@@ -1,17 +1,15 @@
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
-	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'UNITS' , 'UNITS' , now());
-INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'cells/HPF' , 'cells/HPF' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'mg/dL' , 'mg/dL' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'Copies/mL' , 'Copies/mL' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
-	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'x10^3/µL' , 'x10^3/µL' , now());
+	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'x10^3/ÂµL' , 'x10^3/ÂµL' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , '%' , '%' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
-	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'x10^6/µL' , 'x10^6/µL' , now());
+	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'x10^6/ÂµL' , 'x10^6/ÂµL' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'g/dL' , 'g/dL' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
@@ -39,6 +37,6 @@ INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated)
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'pg/mL' , 'pg/mL' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
-	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'µIU/mL' , 'µIU/mL' , now());
+	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'ÂµIU/mL' , 'ÂµIU/mL' , now());
 INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) 
 	VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , 'copies/ml' , 'copies/ml' , now());
