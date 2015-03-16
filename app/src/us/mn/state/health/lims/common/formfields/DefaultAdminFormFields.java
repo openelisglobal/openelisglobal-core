@@ -76,14 +76,12 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.SystemUserSectionMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.SystemUserModuleMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.UnifiedSystemUserMenu,  Boolean.FALSE);
-		defaultAttributes.put(Field.OpenReports, Boolean.FALSE);
 		defaultAttributes.put(Field.TestUsageAggregatation, Boolean.FALSE);
 		defaultAttributes.put(Field.RESULT_REPORTING_CONFIGURATION, Boolean.FALSE);
 		defaultAttributes.put(Field.PRINTED_REPORTS_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.WORKPLAN_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.NON_CONFORMITY_CONFIGURATION, Boolean.TRUE);
         defaultAttributes.put( Field.PATIENT_ENTRY_CONFIGURATION, Boolean.TRUE );
-        defaultAttributes.put( Field.TEST_MANAGEMENT, Boolean.TRUE);
 	}
 
 	@Override
