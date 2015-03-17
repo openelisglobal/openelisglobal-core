@@ -215,8 +215,8 @@ function /*void*/ requiredFieldUpdated( field){
 							<bean:message key="login.account.locked" />
 						</td>
 						<td>
-							<html:radio name="<%=formName %>"property="accountLocked" value="Y" onchange="makeDirty();">Y</html:radio>
-							<html:radio name="<%=formName %>"property="accountLocked" value="N" onchange="makeDirty();">N</html:radio>
+							<html:radio name="<%=formName %>" property="accountLocked" value="Y" onchange="makeDirty();">Y</html:radio>
+							<html:radio name="<%=formName %>" property="accountLocked" value="N" onchange="makeDirty();">N</html:radio>
 						</td>
 		</tr>
 		<tr>
@@ -224,8 +224,8 @@ function /*void*/ requiredFieldUpdated( field){
 							<bean:message key="login.account.disabled" />
 						</td>
 						<td>
-							<html:radio name="<%=formName %>"property="accountDisabled" value="Y" onchange="makeDirty();">Y</html:radio>
-							<html:radio name="<%=formName %>"property="accountDisabled" value="N" onchange="makeDirty();">N</html:radio>
+							<html:radio name="<%=formName %>" property="accountDisabled" value="Y" onchange="makeDirty();">Y</html:radio>
+							<html:radio name="<%=formName %>" property="accountDisabled" value="N" onchange="makeDirty();">N</html:radio>
 						</td>
 		</tr>
 		<tr>
@@ -233,8 +233,8 @@ function /*void*/ requiredFieldUpdated( field){
 							<bean:message key="systemuser.isActive" />
 						</td>
 						<td>
-							<html:radio name="<%=formName %>"property="accountActive" value="Y" onchange="makeDirty();">Y</html:radio>
-							<html:radio name="<%=formName %>"property="accountActive" value="N" onchange="makeDirty();">N</html:radio>
+							<html:radio name="<%=formName %>" property="accountActive" value="Y" onchange="makeDirty();">Y</html:radio>
+							<html:radio name="<%=formName %>" property="accountActive" value="N" onchange="makeDirty();">N</html:radio>
 						</td>
 		</tr><tr>
 			<td>&nbsp;</td>

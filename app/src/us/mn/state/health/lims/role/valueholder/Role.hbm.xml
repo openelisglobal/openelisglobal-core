@@ -16,7 +16,7 @@
 		  <property name="groupingParent"
 		            type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType"
 		            column="grouping_parent" />
-		  <property name="displayKey" type="java.lang.String" column="display_key" />
+		  <property name="nameKey" type="java.lang.String" column="display_key" />
 		  <property name="active" type="boolean" column="active" />
 		  <property name="editable" type="boolean" column="editable" />
  </class>

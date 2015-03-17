@@ -205,4 +205,48 @@
 				update clinlims.site_information set value = 'KENYA' where name = 'stringContext';
 		    </sql>
 	</changeSet>
+    <changeSet id="10" author="paulsc">
+        <comment>remove supervisor role, it is not used</comment>
+        <delete tableName="system_role_module" >
+            <where>system_role_id = (select id from clinlims.system_role where name = 'Supervisor')</where>
+        </delete>
+        <delete tableName="system_role" >
+            <where>name = 'Supervisor'</where>
+        </delete>
+    </changeSet>
+    <changeSet id="11" author="paulsc">
+        <comment>Set the display keys for system roles</comment>
+        <update tableName="system_role" >
+            <column name="name" value="Validator" />
+            <where>name = 'Validation'</where>
+        </update>
+        <update tableName="system_role" >
+            <column name="display_key" value="role.intake" />
+            <where>name = 'Intake'</where>
+        </update>
+        <update tableName="system_role" >
+            <column name="display_key" value="role.inventory" />
+            <where>name = 'Inventory mgr'</where>
+        </update>
+        <update tableName="system_role" >
+            <column name="display_key" value="role.maintenance" />
+            <where>name = 'Maintenance Admin'</where>
+        </update>
+        <update tableName="system_role" >
+            <column name="display_key" value="role.reports" />
+            <where>name = 'Reports'</where>
+        </update>
+        <update tableName="system_role" >
+            <column name="display_key" value="role.results" />
+            <where>name = 'Results entry'</where>
+        </update>
+        <update tableName="system_role" >
+            <column name="display_key" value="role.users" />
+            <where>name = 'User Admin'</where>
+        </update>
+        <update tableName="system_role" >
+            <column name="display_key" value="role.validator" />
+            <where>name = 'Validator'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
