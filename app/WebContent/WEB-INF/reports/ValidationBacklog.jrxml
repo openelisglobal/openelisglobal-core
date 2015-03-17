@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Workplan_Default" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Validation Backlog" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30" resourceBundle="MessageResources">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
@@ -10,7 +10,7 @@
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="siteName" class="java.lang.String"/>
 	<parameter name="directorName" class="java.lang.String"/>
-        <parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
 	<field name="testSection" class="java.lang.String"/>
 	<field name="count" class="java.lang.String"/>
 	<background>
@@ -32,7 +32,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
-                                <textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("appointmentDate")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.appointmentDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm">
 				<reportElement x="398" y="56" width="157" height="22"/>
@@ -55,7 +55,7 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("labManager")+ " " + $P{directorName}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.labManager}+ " " + $P{directorName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

@@ -8,10 +8,10 @@ sample_types = []
 low_valid = []
 descriptions = []
 
-name_file = open('input_files/testName.txt','r')
-sample_type_file = open("input_files/sampleType.txt",'r')
-low_valid_file = open("input_files/minValid.txt", 'r')
-results = open("output_files/significantDigits.sql", 'w')
+name_file = open('testName.txt','r')
+sample_type_file = open("sampleType.txt",'r')
+low_valid_file = open("lowValid.txt", 'r')
+results = open("../significantDigits.sql", 'w')
 
 
 def esc_char(name):

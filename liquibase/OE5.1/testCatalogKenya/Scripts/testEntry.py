@@ -11,17 +11,15 @@ old_sort = []
 uom = []
 loinc_codes = []
 sort_order = []
-guid_codes = []
 
-name_file = open('input_files/testName.txt','r')
-test_section_file = open("input_files/testSections.txt",'r')
-sample_type_file = open("input_files/sampleType.txt")
-uom_file = open("input_files/newUOM.txt", 'r')
-print_name_file = open("input_files/printName.txt")
-loinc_file = open("input_files/loincCodes.txt")
-results = open("output_files/test.sql", 'w')
-sort_order_file = open("input_files/testOrder.txt")
-guid_file = open ("input_files/guid.txt", 'r')
+name_file = open('testName.txt','r')
+test_section_file = open("testSections.txt",'r')
+sample_type_file = open("sampleType.txt")
+uom_file = open("newUOM.txt", 'r')
+print_name_file = open("printName.txt")
+loinc_file = open("loincCodes.txt")
+results = open("output/testResults.txt", 'w')
+sort_order_file = open("testOrder.txt")
 
 def convert_to_existing_name( name ):
 
@@ -93,23 +91,19 @@ for line in loinc_file:
     loinc_codes.append(line.strip())
 loinc_file.close()
 
-for line in guid_file:
-    guid_codes.append(line.strip())
-guid_file.close()
-
-base_sort_order = 1200
+base_sort_order = 600
 last_order_value = base_sort_order
 for line in sort_order_file:
     if len(line) > 0:
-        value = int(line.strip()) * 1
+        value = int(line.strip()) * 10
         sort_order.append( base_sort_order + value)
         last_order_value = base_sort_order + value
     else:
         last_order_value += 10
         sort_order.append( last_order_value )
 
-sql_head = "INSERT INTO clinlims.test( id,  uom_id, description, loinc, reporting_description, is_active, is_reportable, lastupdated, test_section_id, local_code, sort_order, name, orderable, guid, name_localization_id, reporting_name_localization_id)\n\t"
-#results.write("The following should go in Tests.sql Note\n")
+sql_head = "INSERT INTO test( id,  uom_id, description, reporting_description, is_active, is_reportable, lastupdated, test_section_id, local_abbrev, sort_order, name, loinc, orderable )\n\t"
+results.write("The following should go in Tests.sql Note\n")
 
 
 for row in range(0, len(test_names)):
@@ -121,15 +115,15 @@ for row in range(0, len(test_names)):
                     if '*' in test_names[row]:
                         orderable = 'false'
                     results.write( sql_head)
-                    results.write("VALUES ( nextval( 'clinlims.test_seq' ) ," )
+                    results.write("VALUES ( nextval( 'test_seq' ) ," )
                     if use_uom(uom[row]):
                         results.write(" ( select id from clinlims.unit_of_measure where name='" + uom[row] + "') , ")
                     else:
                         results.write(" null , ")
-                    results.write( description + " , " + esc_char(loinc_codes[row] ) + ",  " + esc_char(print_names[row].split()[0]) + " , 'Y' , 'N' , now() , ")
+                    results.write( description + " , " + esc_char(print_names[row]) + " , 'Y' , 'N' , now() , ")
                     results.write("(select id from clinlims.test_section where name = '" + convert_to_existing_name(test_sections[row]) + "' ) ,")
-                    results.write( esc_char( remove_test_name_markup(test_names[row])[:20]) + " ," + str(sort_order[row]) + " , " + esc_char(remove_test_name_markup(test_names[row])) + ",  " + orderable + ", " + esc_char(guid_codes[row] ) + ", (select id from clinlims.localization where english = '"+ remove_test_name_markup(test_names[row]) +"' and description = 'test name'), (select id from clinlims.localization where english = '"+ remove_test_name_markup(test_names[row]) +"' and description = 'test report name') );\n")
+                    results.write( esc_char( remove_test_name_markup(test_names[row])[:20]) + " ," + str(sort_order[row]) + " , " + esc_char(remove_test_name_markup(test_names[row])) + " , " + esc_char(loinc_codes[row] ) + ", " + orderable + ");\n")
 
 results.close()
 
-print "Done look for results in test.sql"
+print "Done look for results in testResults.txt"

@@ -17,10 +17,10 @@ type = []
 test_names = []
 descriptions = []
 
-sample_type_file = open("input_files/sampleType.txt")
-name_file = open('input_files/testName.txt','r')
-existing_types_file = open("input_files/currentSampleTypes.txt")
-results = open("output_files/sampleTypeTestResults.sql", 'w')
+sample_type_file = open("sampleType.txt")
+name_file = open('testName.txt','r')
+existing_types_file = open("currentSampleTypes.txt")
+results = open("output/sampleTypeTestResults.txt", 'w')
 
 def esc_char(name):
     if "'" in name:
@@ -66,16 +66,15 @@ for line in existing_types_file:
 
 existing_types_file.close()
 for row in range(0, len(test_names)):
-    if len(test_names[row]) > 1 and test_names[row] not in existing_types:
-		existing_types.append(test_names[row])
+    if len(test_names[row]) > 1:
                 description = create_description(test_names[row], type[row] )
-                test_select = " (select id from clinlims.test where description = " + esc_char(description) + " ) "
-                sample_select = "  (select id from clinlims.type_of_sample where description = '" + clean_sample_type(type[row]) + "') "
+                test_select = " (select id from test where description = " + esc_char(description) + " ) "
+                sample_select = "  (select id from type_of_sample where description = '" + clean_sample_type(type[row]) + "') "
                 if description not in descriptions:
                     results.write("DELETE from clinlims.sampletype_test where test_id = " + test_select + " and sample_type_id =" + sample_select + ";\n" )
                     results.write("INSERT INTO clinlims.sampletype_test (id, test_id , sample_type_id) VALUES \n")
-                    results.write("\t(nextval( 'clinlims.sample_type_test_seq' ) ," + test_select + " ,  " + sample_select + " );\n")
+                    results.write("\t(nextval( 'sample_type_test_seq' ) ," + test_select + " ,  " + sample_select + " );\n")
                     descriptions.append(description)
 
 
-print "Done check sampleTypeTestResults.sql for results"
+print "Done check sampleTypeTestResults.txt for results"
