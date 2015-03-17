@@ -31,15 +31,15 @@ dict_normal = []
 dict_normal_results =[]
 descriptions = []
 
-name_file = open('input_files/testName.txt','r')
-sample_type_file = open("input_files/sampleType.txt")
-result_type_file = open("input_files/resultType.txt", 'r')
-norm_min_file = open("input_files/minNormal.txt", 'r')
-norm_max_file = open("input_files/maxNormal.txt", 'r')
-valid_min_file = open("input_files/minValid.txt", 'r')
-valid_max_file = open("input_files/maxValid.txt", 'r')
-dict_normal_file = open("input_files/dictNormal.txt", 'r')
-result = open("output_files/resultLimitResults.txt", 'w')
+name_file = open('testName.txt','r')
+sample_type_file = open("sampleType.txt")
+result_type_file = open("resultType.txt", 'r')
+norm_min_file = open("minNormal.txt", 'r')
+norm_max_file = open("maxNormal.txt", 'r')
+valid_min_file = open("minValid.txt", 'r')
+valid_max_file = open("maxValid.txt", 'r')
+dict_normal_file = open("dictNormal.txt", 'r')
+result = open("output/resultLimitResults.txt", 'w')
 
 for line in name_file:
     test_names.append(line.strip())
@@ -72,10 +72,10 @@ for line in dict_normal_file:
     dict_normal.append( line.strip())
 dict_normal_file.close()
 
-insert_head = "INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) \n\t"
-insert_dict_head = "INSERT INTO clinlims.result_limits(  id, test_id, test_result_type_id, lastupdated, normal_dictionary_id) \n\t"
-next_val = " VALUES ( nextval( 'clinlims.result_limits_seq' ) "
-select_type_ages = " (select id from clinlims.type_of_test_result where test_result_type = 'N' ), 0, 'Infinity' "
+insert_head = "INSERT INTO result_limits(  id, test_id, test_result_type_id, min_age, max_age, gender, low_normal, high_normal, low_valid, high_valid, lastupdated) \n\t"
+insert_dict_head = "INSERT INTO result_limits(  id, test_id, test_result_type_id, lastupdated, normal_dictionary_id) \n\t"
+next_val = " VALUES ( nextval( 'result_limits_seq' ) "
+select_type_ages = " (select id from clinlims.type_of_test_result where test_result_type = 'N' ) , 0, 'Infinity' "
 select_dict_type = " (select id from clinlims.type_of_test_result where test_result_type = 'D' ) "
 
 result.write("Copy the following into ResultLimits.sql\n")
@@ -89,8 +89,8 @@ for row in range(0, len(test_names)):
                 for i in range(0, len(split_min_limit)):
                     descriptions.append(description)
                     result.write( insert_head )
-                    result.write( next_val + ", ( select id from clinlims.test where description = " + description + " ), \n\t\t\t" + select_type_ages + ", " )
-                    result.write( "NULL, " + split_min_limit[i] + ", " + split_max_limit[i] + ", " + valid_min[row] + ", " + valid_max[row] + ", now() );\n")
+                    result.write( next_val + ", ( select id from clinlims.test where description = " + description + " ) , \n\t\t\t" + select_type_ages + ", " )
+                    result.write( "'gender' ," + split_min_limit[i] + "," + split_max_limit[i] + "," + valid_min[row] + "," + valid_max[row] + ", now() );\n")
     elif result_type[row] == 'Select List' and len(dict_normal[row]) > 1:  #is this a new test with dictionary
            description = esc_char(test_names[row] + "(" + sample_types[row] + ")")
            if description not in descriptions:

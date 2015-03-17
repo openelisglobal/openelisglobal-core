@@ -69,14 +69,14 @@ type = []
 descriptions = []
 qualified_options = []
 
-name_file = open('input_files/testName.txt','r')
-sample_type_file = open("input_files/sampleType.txt")
-select_file = open("input_files/selectList.txt", 'r')
-result_type_file = open("input_files/resultType.txt", 'r')
-qualifier_file = open("input_files/QualifiedOptions.txt", 'r')
+name_file = open('testName.txt','r')
+sample_type_file = open("sampleType.txt")
+select_file = open("selectList.txt", 'r')
+result_type_file = open("resultType.txt", 'r')
+qualifier_file = open("QualifiedOptions.txt", 'r')
 
 
-results = open("output_files/MassiveTestResults.sql", 'w')
+results = open("output/MassiveTestResults.sql", 'w')
 
 for line in name_file:
     test_names.append(line.strip())
@@ -99,7 +99,7 @@ for line in qualifier_file:
 qualifier_file.close()
 
 
-nextVal = " VALUES ( nextval( 'clinlims.test_result_seq' ) "
+nextVal = " VALUES ( nextval( 'test_result_seq' ) "
 order = 10
 
 for row in range(0, len(test_names)):
@@ -115,12 +115,12 @@ for row in range(0, len(test_names)):
                 split_selections = get_comma_split_names( select[row])
                 for j in range(0, len(split_selections)):
                     dictionary_select = " ( select max(id) from clinlims.dictionary where dict_entry =" + esc_char(split_selections[j].strip()) + " ) "
-                    results.write("INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)\n\t")
+                    results.write("INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)\n\t")
                     results.write( nextVal + ", ( select id from clinlims.test where description = " + description + " ) , '")
                     results.write( resolve_result_type(result_type, split_selections[j], qualified_options[row] ) + "' , " + dictionary_select + " , now() , " + str(order) + ");\n")
                     order += 10
             else:
-                results.write("INSERT INTO clinlims.test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)\n\t")
+                results.write("INSERT INTO test_result( id, test_id, tst_rslt_type, value , lastupdated, sort_order)\n\t")
                 results.write( nextVal + ", ( select id from clinlims.test where description = " + description + " ) , '")
                 results.write( result_type + "' , null , now() , " + str(order) + ");\n")
                 order += 10
