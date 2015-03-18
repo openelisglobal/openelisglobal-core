@@ -152,9 +152,7 @@ public class BaseWorkplanAction extends BaseAction {
 	}
 
 	protected String getTestId(String testName) {
-		Test test = new Test();
-		test.setTestName(testName);
-		test = testDAO.getTestByName(test);
+		Test test = testDAO.getTestByName(testName);
 		return test.getId();
 
 	}

@@ -108,6 +108,8 @@ public class Test extends EnumValueItemImpl {
     private ValueHolder localizedTestName;
 
     private ValueHolder localizedReportingName;
+
+    private String guid;
 	
 	public String getSortOrder() {
 		return sortOrder;
@@ -510,5 +512,13 @@ public class Test extends EnumValueItemImpl {
 
     public void setLocalizedReportingName( Localization localizedReportingName ){
         this.localizedReportingName.setValue( localizedReportingName );
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 }

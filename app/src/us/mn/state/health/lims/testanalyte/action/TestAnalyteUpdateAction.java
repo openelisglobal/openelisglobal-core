@@ -117,12 +117,9 @@ public class TestAnalyteUpdateAction extends BaseAction {
 		org.hibernate.Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 		// set test object
-		Test test = new Test();
 		String testName = (String) dynaForm.get("testName");
-		test.setTestName(testName);
-
 		TestDAO testDAO = new TestDAOImpl();
-		test = testDAO.getTestByName(test);
+		Test test = testDAO.getTestByName(testName);
 
 		// set analyte object
 		Analyte analyte = new Analyte();

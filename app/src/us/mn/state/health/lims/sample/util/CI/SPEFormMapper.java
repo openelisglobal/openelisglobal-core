@@ -17,6 +17,7 @@
  */
 package us.mn.state.health.lims.sample.util.CI;
 
+import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.test.valueholder.Test;
 
@@ -41,57 +42,58 @@ public class SPEFormMapper extends ARVFormMapper implements IProjectFormMapper {
 	}
 
 	@Override
-	public List<Test> getDryTubeTests(BaseActionForm dynaForm) {
+	public List<Test> getDryTubeTests() {
 		List<Test> testList = new ArrayList<Test>();
 
 		if (projectData.getSerologyHIVTest()) {
-			testList.add(createTest("Murex"));
-			testList.add(createTest("Integral"));
+            CollectionUtils.addIgnoreNull(testList, createTest("Vironostika", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Murex", true));
+			CollectionUtils.addIgnoreNull(testList, createTest("Integral", true ));
+        }
+
+        if (projectData.getMurexTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Murex", true ));
+        }
+        if (projectData.getIntegralTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Integral", true ));
+		}
+        if (projectData.getVironostikaTest()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Vironostika", true ));
+        }
+        if (projectData.getGenieIITest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Genie II", true ));
+        }
+        if (projectData.getGenieII100Test()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Genie II 100", true ));
+        }
+        if (projectData.getGenieII10Test()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Genie II 10", true));
+        }
+        if (projectData.getWB1Test()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Western Blot 1", true));
+        }
+        if (projectData.getWB2Test()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Western Blot 2", true ));
+        }
+        if (projectData.getP24AgTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("p24 Ag", true ));
+        }
+        if (projectData.getCreatinineTest()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Créatininémie", true ));
+        }
+        if (projectData.getGlycemiaTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Glycémie", true ));
 		}
 
-		if (projectData.getMurexTest()) {
-			testList.add(createTest("Murex"));
-		}
-		if (projectData.getIntegralTest()) {
-			testList.add(createTest("Integral"));
-		}
-		if (projectData.getVironostikaTest()) {
-			testList.add(createTest("Vironostika"));
-		}
-		if (projectData.getGenieIITest()) {
-			testList.add(createTest("Genie II"));
-		}
-		if (projectData.getGenieII100Test()) {
-			testList.add(createTest("Genie II 100"));
-		}
-		if (projectData.getGenieII10Test()) {
-			testList.add(createTest("Genie II 10"));
-		}
-		if (projectData.getWB1Test()) {
-			testList.add(createTest("Western Blot 1"));
-		}
-		if (projectData.getWB2Test()) {
-			testList.add(createTest("Western Blot 2"));
-		}
-		if (projectData.getP24AgTest()) {
-			testList.add(createTest("p24 Ag"));
-		}
-		if (projectData.getCreatinineTest()) {
-			testList.add(createTest("Créatininémie"));
-		}
-		if (projectData.getGlycemiaTest()) {
-			testList.add(createTest("Glycémie"));
-		}
-
-		if (projectData.getTransaminaseTest()) {
-			testList.add(createTest("Transaminases ALTL"));
-			testList.add(createTest("Transaminases ASTL"));
+        if (projectData.getTransaminaseTest()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ALTL", true));
+            CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ASTL", true ));
 		} else {
 			if (projectData.getTransaminaseALTLTest()) {
-				testList.add(createTest("Transaminases ALTL"));
+                CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ALTL", true ));
 			}
 			if (projectData.getTransaminaseASTLTest()) {
-				testList.add(createTest("Transaminases ASTL"));
+                CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ASTL", true ));
 			}
 		}
 		return testList;
@@ -101,77 +103,77 @@ public class SPEFormMapper extends ARVFormMapper implements IProjectFormMapper {
 	public List<Test> getEDTATubeTests(BaseActionForm dynaForm) {
 		List<Test> testList = new ArrayList<Test>();
 
-		if (projectData.getNfsTest()) {
-			testList.add(createTest("GB"));
-			testList.add(createTest("Neut %"));
-			testList.add(createTest("Lymph %"));
-			testList.add(createTest("Mono %"));
-			testList.add(createTest("Eo %"));
-			testList.add(createTest("Baso %"));
-			testList.add(createTest("GR"));
-			testList.add(createTest("Hb"));
-			testList.add(createTest("HCT"));
-			testList.add(createTest("VGM"));
-			testList.add(createTest("TCMH"));
-			testList.add(createTest("CCMH"));
-			testList.add(createTest("PLQ"));
-		}
+        if (projectData.getNfsTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("GB", true));
+			CollectionUtils.addIgnoreNull(testList, createTest("Neut %", true));
+			CollectionUtils.addIgnoreNull(testList, createTest("Lymph %", true));
+			CollectionUtils.addIgnoreNull(testList, createTest("Mono %", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Eo %", true));
+			CollectionUtils.addIgnoreNull(testList, createTest("Baso %", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("GR", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Hb", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("HCT", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("VGM", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("TCMH", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("CCMH", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("PLQ", true));
+        }
 
-		if (projectData.getGbTest()) {
-			testList.add(createTest("GB"));
-		}
-		if (projectData.getNeutTest()) {
-			testList.add(createTest("Neut %"));
-		}
-		if (projectData.getLymphTest()) {
-			testList.add(createTest("Lymph %"));
-		}
-		if (projectData.getMonoTest()) {
-			testList.add(createTest("Mono %"));
-		}
-		if (projectData.getEoTest()) {
-			testList.add(createTest("Eo %"));
-		}
-		if (projectData.getBasoTest()) {
-			testList.add(createTest("Baso %"));
-		}
-		if (projectData.getGrTest()) {
-			testList.add(createTest("GR"));
-		}
-		if (projectData.getHbTest()) {
-			testList.add(createTest("Hb"));
-		}
-		if (projectData.getHctTest()) {
-			testList.add(createTest("HCT"));
-		}
-		if (projectData.getVgmTest()) {
-			testList.add(createTest("VGM"));
-		}
-		if (projectData.getTcmhTest()) {
-			testList.add(createTest("TCMH"));
-		}
-		if (projectData.getCcmhTest()) {
-			testList.add(createTest("CCMH"));
-		}
-		if (projectData.getPlqTest()) {
-			testList.add(createTest("PLQ"));
-		}
-		if (projectData.getCd4cd8Test()) {
-			testList.add(createTest("CD3 percentage count"));
-			testList.add(createTest("CD4 percentage count"));
-		}
-		if (projectData.getCd3CountTest()) {
-			testList.add(createTest("CD3 percentage count"));
-		}
-		if (projectData.getCd4CountTest()) {
-			testList.add(createTest("CD4 percentage count"));
-		}
+        if (projectData.getGbTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("GB", true));
+        }
+        if (projectData.getNeutTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Neut %", true ));
+        }
+        if (projectData.getLymphTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Lymph %", true));
+        }
+        if (projectData.getMonoTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Mono %", true));
+        }
+        if (projectData.getEoTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Eo %", true));
+        }
+        if (projectData.getBasoTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Baso %", true));
+        }
+        if (projectData.getGrTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("GR", true));
+        }
+        if (projectData.getHbTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("Hb", true));
+        }
+        if (projectData.getHctTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("HCT", true));
+        }
+        if (projectData.getVgmTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("VGM", true));
+        }
+        if (projectData.getTcmhTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("TCMH", true));
+        }
+        if (projectData.getCcmhTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("CCMH", true));
+        }
+        if (projectData.getPlqTest()) {
+			CollectionUtils.addIgnoreNull(testList, createTest("PLQ", true ));
+        }
+        if (projectData.getCd4cd8Test()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("CD3 percentage count", true));
+            CollectionUtils.addIgnoreNull(testList, createTest("CD4 percentage count", true ));
+        }
+        if (projectData.getCd3CountTest()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("CD3 percentage count", true ));
+        }
+        if (projectData.getCd4CountTest()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("CD4 percentage count", true ));
+        }
 
-		if (projectData.getViralLoadTest()) {
-			testList.add(createTest("Viral Load"));
-		}
-		if (projectData.getGenotypingTest()) {
-			testList.add(createTest("Génotypage"));
+        if (projectData.getViralLoadTest()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Viral Load", true ));
+        }
+        if (projectData.getGenotypingTest()) {
+            CollectionUtils.addIgnoreNull(testList, createTest("Génotypage", true ));
 		}
 
 		return testList;

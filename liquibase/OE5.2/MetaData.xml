@@ -33,7 +33,7 @@
             <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'PanelRenameEntry' ) " />
         </insert>
     </changeSet>
-    <changeSet author="paulsc" id="2" context="Kenya, haiti, haitiLNSP, CI_IPCI, ci_regional, ciLNSP"  >
+    <changeSet author="paulsc" id="2"   >
         <comment>Sets permissions for making tests orderable</comment>
         <insert schemaName="clinlims" tableName="system_module">
             <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>

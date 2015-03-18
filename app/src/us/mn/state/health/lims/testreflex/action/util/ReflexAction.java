@@ -67,7 +67,7 @@ public abstract class ReflexAction {
 	private void handleTestsAndScriptlets(TestReflex reflex) {
 		Test test = reflex.getAddedTest();
 		if (test != null) {
-			handleTestAction(test);
+			createReflexedAnalysis(test);
 		}
 
 		Scriptlet scriptlet = reflex.getActionScriptlet();
@@ -77,10 +77,10 @@ public abstract class ReflexAction {
 	}
 
 	private void handleTestAction(String testId) {
-		handleTestAction(new TestDAOImpl().getActiveTestById(Integer.parseInt(testId)));
+		createReflexedAnalysis(new TestDAOImpl().getActiveTestById(Integer.parseInt(testId)));
 	}
 	
-	protected void handleTestAction(Test test) {
+	protected void createReflexedAnalysis(Test test) {
 		if (test != null) {
 			Analysis currentAnalysis = result.getAnalysis();
 			ANALYSIS_DAO.getData(currentAnalysis);

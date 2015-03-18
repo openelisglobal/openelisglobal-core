@@ -29,11 +29,8 @@ public class Result extends EnumValueItemImpl {
 
 	private String id;
 	private ValueHolderInterface analysis;
-	private String analysisId;
 	private ValueHolderInterface analyte;
-	private String analyteId;
 	private ValueHolderInterface testResult;
-	private String testResultId;
 	private String sortOrder;
 	private String isReportable;
 	private String resultType;
@@ -52,46 +49,20 @@ public class Result extends EnumValueItemImpl {
 		parentResult = new ValueHolder();
 	}
 
-	// ANALYSIS
 	public Analysis getAnalysis() {
 		return (Analysis) this.analysis.getValue();
-	}
-
-	public void setAnalysis(ValueHolderInterface analysis) {
-		this.analysis = analysis;
 	}
 
 	public void setAnalysis(Analysis analysis) {
 		this.analysis.setValue(analysis);
 	}
 
-	protected ValueHolderInterface getAnalysisHolder() {
-		return this.analysis;
-	}
-
-	protected void setAnalysisHolder(ValueHolderInterface analysis) {
-		this.analysis = analysis;
-	}
-
-	// ANALYTE
 	public Analyte getAnalyte() {
 		return (Analyte) this.analyte.getValue();
 	}
 
-	public void setAnalyte(ValueHolderInterface analyte) {
-		this.analyte = analyte;
-	}
-
 	public void setAnalyte(Analyte analyte) {
 		this.analyte.setValue(analyte);
-	}
-
-	protected ValueHolderInterface getAnalyteHolder() {
-		return this.analyte;
-	}
-
-	protected void setAnalyteHolder(ValueHolderInterface analyte) {
-		this.analyte = analyte;
 	}
 
 	public String getIsReportable() {
@@ -118,26 +89,14 @@ public class Result extends EnumValueItemImpl {
 		this.sortOrder = sortOrder;
 	}
 
-	// TEST_RESULT
 	public TestResult getTestResult() {
 		return (TestResult) this.testResult.getValue();
-	}
-
-	public void setTestResult(ValueHolderInterface testResult) {
-		this.testResult = testResult;
 	}
 
 	public void setTestResult(TestResult testResult) {
 		this.testResult.setValue(testResult);
 	}
 
-	protected ValueHolderInterface getTestResultHolder() {
-		return this.testResult;
-	}
-
-	protected void setTestResultHolder(ValueHolderInterface testResult) {
-		this.testResult = testResult;
-	}
 
 	public String getValue() {
 		return value;
@@ -153,40 +112,6 @@ public class Result extends EnumValueItemImpl {
 
 	public String getId() {
 		return this.id;
-	}
-
-	public String getAnalysisId() {
-		return analysisId;
-	}
-
-	public void setAnalysisId(String analysisId) {
-		this.analysisId = analysisId;
-	}
-
-	public String getAnalyteId() {
-		if( analyteId == null){
-			if( getAnalyte() != null){
-				analyteId = getAnalyte().getId();
-			}
-		}
-		return analyteId;
-	}
-
-	public void setAnalyteId(String analyteId) {
-		this.analyteId = analyteId;
-	}
-
-	public String getTestResultId() {
-		if( testResultId == null){
-			if( getTestResult() != null){
-				testResultId = getTestResult().getId();
-			}
-		}
-		return testResultId;
-	}
-
-	public void setTestResultId(String testResultId) {
-		this.testResultId = testResultId;
 	}
 
 	public Double getMinNormal() {

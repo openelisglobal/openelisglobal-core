@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-panel_file = open('input_files/panels.txt','r')
-name_file = open('input_files/testName.txt','r')
-sample_type_file = open("input_files/sampleType.txt")
-test_panel_results = open("output_files/testPanel.sql", 'w')
+panel_file = open('panels.txt','r')
+name_file = open('testName.txt','r')
+sample_type_file = open("sampleType.txt")
+test_panel_results = open("output/testPanel.sql", 'w')
 panel = []
 type = []
 test_names = []
@@ -54,14 +54,14 @@ for line in name_file:
     test_names.append(line.strip())
 name_file.close()
 
-insert_header = "INSERT INTO clinlims.panel_item( id, panel_id, lastupdated , sort_order, test_id)\n\t"
+insert_header = "INSERT INTO panel_item( id, panel_id, lastupdated , sort_order, test_id)\n\t"
 
 for row in range(0, len(test_names)):
     if len(panel[row]) > 1:
             test_description = create_description(test_names[row],  type[row] )
             test_panel_results.write( insert_header)          
-            test_panel_results.write("VALUES ( nextval( 'clinlims.panel_item_seq' ) , (select id from clinlims.panel where name = '" + panel[row] + "')")
-            test_panel_results.write(" , now(), null,  (select id from clinlims.test where description = " + test_description + " and is_active = 'Y' ) ); \n")
+            test_panel_results.write("VALUES ( nextval( 'panel_item_seq' ) , (select id from panel where name = '" + panel[row] + "')")
+            test_panel_results.write(" , now(), null,  (select id from test where description = " + test_description + " and is_active = 'Y' ) ); \n")
 
                 
 test_panel_results.close()

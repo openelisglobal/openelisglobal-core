@@ -17,33 +17,30 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.validator.GenericValidator;
+import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
+import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
+import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.sample.form.ProjectData;
+import us.mn.state.health.lims.sample.util.CI.BaseProjectFormMapper.TypeOfSampleTests;
+import us.mn.state.health.lims.sample.util.CI.IProjectFormMapper;
+import us.mn.state.health.lims.sample.util.CI.ProjectFormMapperFactory;
+import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
+import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.validator.GenericValidator;
-
-import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
-import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
-import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException;
-import us.mn.state.health.lims.sample.form.ProjectData;
-import us.mn.state.health.lims.sample.util.CI.IProjectFormMapper;
-import us.mn.state.health.lims.sample.util.CI.ProjectFormMapperFactory;
-import us.mn.state.health.lims.sample.util.CI.BaseProjectFormMapper.TypeOfSampleTests;
-import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
-import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
-import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
-import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 /**
  * AJAX provider for answering questions about sampleitems and tests
@@ -54,7 +51,6 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 public class SampleItemTestProvider extends BaseQueryProvider {
 
 	/**
-	 * @throws LIMSInvalidConfigurationException
 	 * @see us.mn.state.health.lims.common.provider.query.BaseQueryProvider#processRequest(javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
@@ -63,27 +59,27 @@ public class SampleItemTestProvider extends BaseQueryProvider {
 		/**
 		 * The primary Key for a sample
 		 */
-		String sampleKey = (String) request.getParameter("sampleKey");
+		String sampleKey = request.getParameter("sampleKey");
 		/**
 		 * the particular project form we are trying to fill validate.
 		 */
-		String projectFormName = (String) request.getParameter("projectFormName");
+		String projectFormName = request.getParameter("projectFormName");
 
 		/**
 		 * the name (something derived from html form id) of the check box for
 		 * the relevant sample item type
 		 */
-		String sampleItemTypeTag = (String) request.getParameter("sampleItemTypeTag");
+		String sampleItemTypeTag = request.getParameter("sampleItemTypeTag");
 
 		/**
 		 * the name (something derived from html form id)
 		 */
-		String testTag = (String) request.getParameter("testTag");
+		String testTag = request.getParameter("testTag");
 
 		StringBuilder xml = new StringBuilder();
 		String result = VALID;
 
-		boolean isChecked = false;
+		boolean isChecked;
 		if (GenericValidator.isBlankOrNull(testTag)) {
 			isChecked = wasSampleTypeSelected(sampleKey, projectFormName, sampleItemTypeTag);
 		} else {
@@ -103,12 +99,6 @@ public class SampleItemTestProvider extends BaseQueryProvider {
 	 * Figure out if the given "test" (actually something of a test panel) Ask
 	 * the project form mapper
 	 *
-	 * @param sampleKey
-	 * @param projectFormName
-	 * @param sampleItemTypeTag
-	 * @param testTag
-	 * @return
-	 * @throws Exception
 	 */
 	private boolean wasTestSelected(String sampleKey, String projectFormName, String sampleItemType, String testTag)
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -133,7 +123,7 @@ public class SampleItemTestProvider extends BaseQueryProvider {
 	 *            particular study we are working on
 	 * @param projectData
 	 *            the data with two flags set.
-	 * @return
+	 * @return List of analysis
 	 */
 	// TODO PAHill - refactor - needs to be moved to some type of a utility
 	// class.
@@ -152,8 +142,8 @@ public class SampleItemTestProvider extends BaseQueryProvider {
 			testIds.add(Integer.valueOf(test.getId()));
 		}
 		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-		List<Analysis> analysis = analysisDAO.getAnalysisBySampleAndTestIds(sampleKey, testIds);
-		return analysis;
+		return analysisDAO.getAnalysisBySampleAndTestIds(sampleKey, testIds);
+
 	}
 
 	private boolean wasSampleTypeSelected(String sampleId, String projectFormName, String sampleItemType) {
@@ -170,10 +160,7 @@ public class SampleItemTestProvider extends BaseQueryProvider {
 		return false;
 	}
 
-	/**
-	 * @param sampleItemTypeTag
-	 * @return
-	 */
+
 	private String changeUIIdToDescription(String sampleTypeId) {
 		String description = sampleTypeId;
 		int i = sampleTypeId.indexOf("Tube");
@@ -182,9 +169,4 @@ public class SampleItemTestProvider extends BaseQueryProvider {
 		}
 		return description;
 	}
-
-
-
-	ProjectData projectData = new ProjectData();
-
 }

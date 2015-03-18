@@ -3,9 +3,9 @@
 
 old = []
 
-old_file = open("input_files/currentUOM.txt")
-new_file = open("input_files/newUOM.txt")
-result = open("output_files/MassiveUOM.sql",'w')
+old_file = open("currentUOM.txt")
+new_file = open("newUOM.txt")
+result = open("output/MassiveUOM.sql",'w')
 
 for line in old_file:
     old.append(line.strip())
@@ -18,8 +18,8 @@ for line in new_file:
         for value in values:
             if value.strip() not in old and 'n/a' not in value:
                 old.append(value.strip())
-                result.write("INSERT INTO clinlims.unit_of_measure( id, name , description, lastupdated) \n\t")
-                result.write("VALUES ( nextval( 'clinlims.unit_of_measure_seq' ) , '" + value.strip() + "' , '" + value.strip() + "' , now());\n")
+                result.write("INSERT INTO unit_of_measure( id, name , description, lastupdated) \n\t")
+                result.write("VALUES ( nextval( 'unit_of_measure_seq' ) , '" + value.strip() + "' , '" + value.strip() + "' , now());\n")
 
 result.close()
 

@@ -183,13 +183,11 @@
   </html:link>
 </li>
 <% } %>
-<% if(adminFields.useField(Field.TEST_MANAGEMENT)){ %>
 <li>
     <html:link action="/TestManagementConfigMenu">
         <bean:message key="configuration.test.management" />
     </html:link>
 </li>
-<% } %>
 <% if(adminFields.useField(Field.PATIENT_ENTRY_CONFIGURATION)){ %>
 <li>
     <html:link action="/PatientConfigurationMenu">
@@ -353,13 +351,6 @@
 </li>
 <% } %>
 <hr>
-<% if(adminFields.useField(Field.OpenReports)){ %>
-<li>
-  <html:link href="OpenReportsAdmin.do?action=limsloginadmin">
-    <bean:message key="openreports.admin.title" />
-  </html:link>
-</li>
-<% } %>
 <% if(adminFields.useField(Field.SystemUserModuleMenu)){ %>
 <li>
   <html:link action="/SystemUserModuleMenu">

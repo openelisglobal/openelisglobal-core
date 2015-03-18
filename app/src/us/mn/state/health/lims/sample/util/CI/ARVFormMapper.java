@@ -17,6 +17,7 @@
 */
 package us.mn.state.health.lims.sample.util.CI;
 
+import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.test.valueholder.Test;
 
@@ -36,23 +37,24 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		return this.projectCode;
 	}
 			
-	public List<Test> getDryTubeTests(BaseActionForm dynaForm){
+	public List<Test> getDryTubeTests(){
 		List<Test> testList = new ArrayList<Test>();
 				
 		if (projectData.getSerologyHIVTest()){
-			testList.add(createTest("Murex"));
-			testList.add(createTest("Integral"));
+            CollectionUtils.addIgnoreNull(testList, createTest("Vironostika", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Murex", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Integral", true ));
 		}	
 		if (projectData.getCreatinineTest()){
-			testList.add(createTest("Créatininémie"));
+			CollectionUtils.addIgnoreNull(testList, createTest("Créatininémie", true ));
 		}
 		if (projectData.getGlycemiaTest()){
-			testList.add(createTest("Glycémie"));
+			CollectionUtils.addIgnoreNull(testList, createTest("Glycémie", true ));
 		}
 		
 		if (projectData.getTransaminaseTest()){
-			testList.add(createTest("Transaminases ALTL")); 
-			testList.add(createTest("Transaminases ASTL")); 
+			CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ALTL", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ASTL", true ));
 		}
 		return testList;
 	}
@@ -61,29 +63,29 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		List<Test> testList = new ArrayList<Test>();
 				
 		if (projectData.getNfsTest()){
-			testList.add(createTest("GB"));
-			testList.add(createTest("Neut %"));
-			testList.add(createTest("Lymph %"));
-			testList.add(createTest("Mono %"));
-			testList.add(createTest("Eo %"));
-			testList.add(createTest("Baso %"));
-			testList.add(createTest("GR"));
-			testList.add(createTest("Hb"));
-			testList.add(createTest("HCT"));
-			testList.add(createTest("VGM"));
-			testList.add(createTest("TCMH"));
-			testList.add(createTest("CCMH"));
-			testList.add(createTest("PLQ"));
+			CollectionUtils.addIgnoreNull(testList, createTest("GB", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Neut %", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Lymph %", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Mono %", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Eo %", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Baso %", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("GR", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Hb", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("HCT", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("VGM", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("TCMH", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("CCMH", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("PLQ", true ));
 		}
 		if (projectData.getCd4cd8Test()){
-			testList.add(createTest("CD3 percentage count"));
-			testList.add(createTest("CD4 percentage count"));	
+			CollectionUtils.addIgnoreNull(testList, createTest("CD3 percentage count", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("CD4 percentage count", true ));
 		}
 		if (projectData.getViralLoadTest()){
-		    testList.add(createTest("Viral Load"));
+		    CollectionUtils.addIgnoreNull(testList, createTest("Viral Load", true ));
 		}		
 		if (projectData.getGenotypingTest()){
-		    testList.add(createTest("Génotypage"));
+		    CollectionUtils.addIgnoreNull(testList, createTest("Génotypage", true ));
 		}
 		
 		return testList;
@@ -91,36 +93,34 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		
 	public ArrayList<TypeOfSampleTests> getTypeOfSampleTests(){
 		ArrayList<TypeOfSampleTests> sItemTests = new ArrayList<TypeOfSampleTests>();
-		List<Test> testList = new ArrayList<Test>();
+		List<Test> testList;
 		
 		//Check for Dry Tube Tests
 	    if ( projectData.getDryTubeTaken() ) { 
-			testList = getDryTubeTests(dynaForm);	
+			testList = getDryTubeTests();
 			sItemTests.add( new TypeOfSampleTests(getTypeOfSample("Dry Tube"), testList));
 	    }
 		
 		//Check for EDTA Tubes Tests
-	    if ( projectData.getEdtaTubeTaken()) { 
-			testList = new ArrayList<Test>();
+	    if ( projectData.getEdtaTubeTaken()) {
 			testList = getEDTATubeTests(dynaForm);		
 			sItemTests.add( new TypeOfSampleTests(getTypeOfSample("EDTA Tube"), testList));
         }			
 		
 		if (projectData.getDbsTaken()) {
 		    if (projectData.getDnaPCR()) {
-                testList = new ArrayList<Test>();
-                testList = getDBSTests(dynaForm);
+                testList = getDBSTests();
                 sItemTests.add( new TypeOfSampleTests(getTypeOfSample("DBS"), testList));
             }
         }		
 		return sItemTests;
 	}	
 
-	   public List<Test> getDBSTests(BaseActionForm dynaForm){
+	   public List<Test> getDBSTests(){
 	        List<Test> testList = new ArrayList<Test>();
 
 	        if (projectData.getDnaPCR()){
-	            testList.add(createTest("DNA PCR"));
+	            CollectionUtils.addIgnoreNull(testList, createTest("DNA PCR", true ));
 	        }
 	        return testList;
 	    }

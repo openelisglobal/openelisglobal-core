@@ -117,13 +117,12 @@ public class ResultsValidationUtility {
 
 	protected final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 
-	public List<AnalysisItem> getResultValidationList(String testName, List<Integer> statusList, String testSectionId) {
+	public List<AnalysisItem> getResultValidationList( List<Integer> statusList, String testSectionId) {
 
-		List<ResultValidationItem> testList = new ArrayList<ResultValidationItem>();
 		List<AnalysisItem> resultList = new ArrayList<AnalysisItem>();
 
 		if (!GenericValidator.isBlankOrNull(testSectionId)) {
-			testList = getUnValidatedTestResultItemsInTestSection(testSectionId, statusList);
+            List<ResultValidationItem> testList = getUnValidatedTestResultItemsInTestSection(testSectionId, statusList);
 			resultList = testResultListToAnalysisItemList(testList);
 			sortByAccessionNumberAndOrder(resultList);
 			setGroupingNumbers(resultList);
@@ -132,7 +131,8 @@ public class ResultsValidationUtility {
 		return resultList;
 
 	}
-	
+
+    @SuppressWarnings("unchecked")
 	public final List<ResultValidationItem> getUnValidatedTestResultItemsInTestSection(String sectionId, List<Integer> statusList) {
 
 		List<Analysis> analysisList = analysisDAO.getAllAnalysisByTestSectionAndStatus(sectionId, statusList, false);
@@ -336,7 +336,7 @@ public class ResultsValidationUtility {
 
 		return true;
 	}
-
+    @SuppressWarnings("unchecked")
 	protected final List<TestResult> getPossibleResultsForTest(Test test) {
 		return testResultDAO.getAllActiveTestResultsPerTest( test );
 	}
@@ -689,10 +689,7 @@ public class ResultsValidationUtility {
 	}
 
 	protected final String getTestId(String testName) {
-		Test test = new Test();
-		test.setTestName(testName);
-		test = testDAO.getTestByName(test);
-
+		Test test = testDAO.getTestByName(testName);
 		return test.getId();
 	}
 
