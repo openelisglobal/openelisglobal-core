@@ -237,7 +237,6 @@ public class ResultSaveService {
 
     private void setNewResultValues(ResultSaveBean serviceBean, Result result){
         result.setAnalysis(analysis);
-        result.setAnalysisId(analysis.getId());
         result.setIsReportable(serviceBean.getReportable());
         result.setResultType(serviceBean.getResultType());
         result.setMinNormal(serviceBean.getLowerNormalRange());

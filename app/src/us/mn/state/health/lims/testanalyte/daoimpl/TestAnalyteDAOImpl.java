@@ -17,6 +17,7 @@
 */
 package us.mn.state.health.lims.testanalyte.daoimpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -257,7 +258,7 @@ public class TestAnalyteDAOImpl extends BaseDAOImpl implements TestAnalyteDAO {
 	}
 
 	public TestAnalyte getTestAnalyteById(TestAnalyte testAnalyte) throws LIMSRuntimeException {
-		TestAnalyte newTestAnalyte = null;
+		TestAnalyte newTestAnalyte;
 		try {
 			newTestAnalyte = (TestAnalyte)HibernateUtil.getSession().get(TestAnalyte.class, testAnalyte.getId());
 			HibernateUtil.getSession().flush();
@@ -273,12 +274,10 @@ public class TestAnalyteDAOImpl extends BaseDAOImpl implements TestAnalyteDAO {
 	}
 
 	public List getAllTestAnalytesPerTest(Test test) throws LIMSRuntimeException {
-	//bugzilla 2203 minor mods - does this fix the error?
-	//more likely that data fix in 2223 fixed it - can no longer reproduce
-		List list = new Vector();
+		List list;
 		
 		if ( test == null || StringUtil.isNullorNill(test.getId()) )
-			return list;
+			return new ArrayList();
 		
 
 		try {
@@ -290,7 +289,6 @@ public class TestAnalyteDAOImpl extends BaseDAOImpl implements TestAnalyteDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("TestAnalyteDAOImpl","getAllTestAnalytesPerTest()",e.toString());
 			throw new LIMSRuntimeException("Error in TestAnalyte getAllTestAnalytesPerTest()",e);
 		}

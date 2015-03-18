@@ -457,10 +457,8 @@ public class PanelItemDAOImpl extends BaseDAOImpl implements PanelItemDAO {
 				list = new Vector();
 				while(panelItemIterator.hasNext())	{		
 					PanelItem panelItem = (PanelItem) panelItemIterator.next();
-					String testName = (String)panelItem.getTestName();
-					Test test = new Test();
-					test.setTestName(testName);
-					test = testDAO.getTestByName(test);
+					String testName = panelItem.getTestName();
+					Test test = testDAO.getTestByName(testName);
 					if (test != null && !StringUtil.isNullorNill(test.getId()) && testDAO.isTestFullySetup(test)) {
 						list.add(panelItem);
 					}

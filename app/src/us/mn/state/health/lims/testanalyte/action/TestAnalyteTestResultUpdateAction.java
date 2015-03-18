@@ -350,8 +350,7 @@ public class TestAnalyteTestResultUpdateAction extends
 				} else {
 					testAnalyte.setResultGroup(null);
 				}
-				testAnalyte
-						.setAnalyteName((String) selectedAnalyteNames.get(i));
+
 				testAnalyte.setSortOrder(String.valueOf(i + 1));
 				// bug#1342 since we disabled select if test is locked don't
 				// update the value as

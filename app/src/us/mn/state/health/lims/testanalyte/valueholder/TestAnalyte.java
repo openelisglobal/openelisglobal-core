@@ -30,11 +30,7 @@ public class TestAnalyte extends EnumValueItemImpl {
 
 	private ValueHolderInterface test;
 
-	private String testName;
-
 	private ValueHolderInterface analyte;
-
-	private String analyteName;
 
 	// testing one-to-many
 	private List testResults;
@@ -44,8 +40,7 @@ public class TestAnalyte extends EnumValueItemImpl {
 	private String testAnalyteType;
 
 	private String sortOrder;
-	
-	//bugzilla 1870
+
 	private String isReportable;
 
 	public TestAnalyte() {
@@ -67,14 +62,6 @@ public class TestAnalyte extends EnumValueItemImpl {
 		this.test.setValue(test);
 	}
 
-	protected ValueHolderInterface getTestHolder() {
-		return this.test;
-	}
-
-	public String getTestName() {
-		return this.testName;
-	}
-
 	public Analyte getAnalyte() {
 		return (Analyte) this.analyte.getValue();
 	}
@@ -83,25 +70,10 @@ public class TestAnalyte extends EnumValueItemImpl {
 		this.analyte.setValue(analyte);
 	}
 
-	protected ValueHolderInterface getAnalyteHolder() {
-		return this.analyte;
-	}
-
-	public String getAnalyteName() {
-		return this.analyteName;
-	}
-
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	protected void setTestHolder(ValueHolderInterface test) {
-		this.test = test;
-	}
-
-	public void setTestName(String testName) {
-		this.testName = testName;
-	}
 
 	public String getTestAnalyteType() {
 		return testAnalyteType;
@@ -111,24 +83,12 @@ public class TestAnalyte extends EnumValueItemImpl {
 		this.testAnalyteType = testAnalyteType;
 	}
 
-	public void setTest(ValueHolderInterface test) {
-		this.test = test;
-	}
-
-	public void setAnalyte(ValueHolderInterface analyte) {
-		this.analyte = analyte;
-	}
-
 	public String getSortOrder() {
 		return sortOrder;
 	}
 
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
-	}
-
-	public void setAnalyteName(String analyteName) {
-		this.analyteName = analyteName;
 	}
 
 	public List getTestResults() {

@@ -43,11 +43,20 @@ public class ResultUtil {
 	
 	@SuppressWarnings("unchecked")
 	public static TestAnalyte getTestAnalyteForResult(Result result) {
+        /*
+        The logic behind this code is that there is a matching of some analytes to the number of times the test has been
+        run.  i.e. if there is a positive HIV test some labs will run it again as a reflex.  This code below is to make
+        sure that we don't have an endless loop, but it does not feel very robust.  This is due for a refactoring.
 
+         */
 		if (result.getTestResult() != null) {
 			List<TestAnalyte> testAnalyteList = testAnalyteDAO.getAllTestAnalytesPerTest(result.getTestResult().getTest());
 
-			if (testAnalyteList.size() > 0) {
+            if( testAnalyteList.size() == 1){
+                return testAnalyteList.get(0);
+            }
+
+			if (testAnalyteList.size() > 1) {
 				int distanceFromRoot = 0;
 
 				Analysis parentAnalysis = result.getAnalysis().getParentAnalysis();
