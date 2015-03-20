@@ -103,4 +103,67 @@
 	</sql>
 </changeSet>
 
+<changeSet author="jfurlong" context="Kenya" id="3">
+	<comment>Add Cascading multi-select type to Thick/Thin Malaria</comment>
+	<sql>
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', 'P. falciparum', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 200);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', 'P. vivax', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 300);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', 'P. malariae', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 400);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', 'P. ovale', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 500);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', 'Trophozoite', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 600);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', 'Gametocyte', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 700);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', 'Schizonte', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 800);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', '1+', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 900);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', '2+', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 1000);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', '3+', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 1100);
+		insert into clinlims.dictionary values ( nextval('clinlims.dictionary_seq'), 'Y', '4+', now(), '', (select id from clinlims.dictionary_category where description = 'Kenya Lab'), '', 1200);
+
+		delete from clinlims.test_result where test_id = (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)');
+
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'Negative' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 11070, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'P. falciparum' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 11080, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'P. vivax' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 11090, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'P. malariae' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 11100, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'P. ovale' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110110, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'Trophozoite' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110120, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'Gametocyte' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110130, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = 'Schizonte' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110140, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = '1+' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110150, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = '2+' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110160, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = '3+' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110170, 'f', 't');
+		insert into clinlims.test_result (id, test_id, tst_rslt_type, value, significant_digits, lastupdated, sort_order, is_quantifiable, is_active) 
+		values (nextval('clinlims.test_result_seq'), (select id from clinlims.test where description = 'Thick/Thin Smear for Malaria(Blood)'), 
+				'C', (select id from clinlims.dictionary where dict_entry = '4+' and dictionary_category_id = (select id from clinlims.dictionary_category where description = 'Kenya Lab')), 0, now(), 110180, 'f', 't');
+	</sql>
+</changeSet>
+
+<changeSet author="jfurlong" context="Kenya" id="4">
+	<comment>Fix significant digits</comment>
+	<sql>
+		update clinlims.test_result set significant_digits = 1 where test_id in (select id from clinlims.test where description in ('PSA - Total(Blood)', 'Thyroid-stimulating Hormone (TSH)(Blood)'));
+		update clinlims.test_result set is_quantifiable = 't' where test_id in (select id from clinlims.test where description in ('Occult blood(Stool)'));
+	</sql>
+</changeSet>
 </databaseChangeLog>
