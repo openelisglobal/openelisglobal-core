@@ -166,4 +166,10 @@
 		update clinlims.test_result set is_quantifiable = 't' where test_id in (select id from clinlims.test where description in ('Occult blood(Stool)'));
 	</sql>
 </changeSet>
+    <changeSet id="1" author="paulsc" context="Kenya">
+        <comment>fix more significant digits</comment>
+        <sql>
+            update clinlims.test_result set significant_digits = 3 where test_id = ( select id from clinlims.test where guid = 'fe27037f-9498-47ae-8cbb-81fc385c4d37');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
