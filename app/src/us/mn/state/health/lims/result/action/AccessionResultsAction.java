@@ -88,7 +88,6 @@ public class AccessionResultsAction extends BaseAction {
 			if (!GenericValidator.isBlankOrNull(accessionNumber)) {
 				ResultsLoadUtility resultsUtility = new ResultsLoadUtility(currentUserId);
 				//This is for Haiti_LNSP if it gets more complicated use the status set stuff
-				resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.ReferredIn);
 				resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.Canceled);
 
 				resultsUtility.setLockCurrentResults(modifyResultsRoleBased() && userNotInRole(request));
