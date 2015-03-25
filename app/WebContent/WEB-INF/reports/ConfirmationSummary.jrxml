@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Confirmation report" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Confirmation report" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="MessageResources" whenResourceMissingType="Empty">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
@@ -240,7 +240,7 @@
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 										<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="120" height="20" backcolor="#F5F5F5"/>
 										<textElement verticalAlignment="Middle"/>
-										<textFieldExpression class="java.lang.String"><![CDATA[$P{testResults}.get($V{REPORT_COUNT} - 1).equals("") ? "En cours" : $P{testResults}.get($V{REPORT_COUNT} - 1)]]></textFieldExpression>
+										<textFieldExpression class="java.lang.String"><![CDATA[$P{testResults}.get($V{REPORT_COUNT} - 1).equals("") ? $R{report.test.status.inProgress} : $P{testResults}.get($V{REPORT_COUNT} - 1)]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
@@ -285,6 +285,12 @@
 			</line>
 			<subreport>
 				<reportElement x="2" y="1" width="572" height="136"/>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -297,32 +303,26 @@
 				<subreportParameter name="labName1">
 					<subreportParameterExpression><![CDATA[$P{labName1}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="reportTitle">
-					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				<subreportParameter name="siteId">
+					<subreportParameterExpression><![CDATA[$P{siteId}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="localization">
 					<subreportParameterExpression><![CDATA[$P{localization}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="rightHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="headerName">
-					<subreportParameterExpression><![CDATA[$P{headerName}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="siteId">
-					<subreportParameterExpression><![CDATA[$P{siteId}]]></subreportParameterExpression>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="usePageNumbers">
 					<subreportParameterExpression><![CDATA[$P{usePageNumbers}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="rightHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="directorName">
 					<subreportParameterExpression><![CDATA[$P{directorName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="headerName">
+					<subreportParameterExpression><![CDATA[$P{headerName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{headerName}]]></subreportExpression>
