@@ -45,7 +45,7 @@ public class AnalysisHistoryService extends HistoryService {
 
 	@SuppressWarnings("unchecked")
 	private void setUpForAnalysis(Analysis analysis) {
-		if ( !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)) && analysis.getTest() != null) {
+		if (  analysis.getTest() != null) {
 			History searchHistory = new History();
 			searchHistory.setReferenceId(analysis.getId());
 			searchHistory.setReferenceTable(ANALYSIS_TABLE_ID);

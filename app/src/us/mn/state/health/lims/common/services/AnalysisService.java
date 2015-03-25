@@ -214,11 +214,4 @@ public class AnalysisService{
         return analysis == null ? null : analysis.getTestSection();
     }
 
-    public boolean isReferredIn(){
-        if( analysis != null){
-            return StatusService.getInstance().matches( analysis.getStatusId(), StatusService.AnalysisStatus.ReferredIn );
-        }
-
-        return false;
-    }
 }

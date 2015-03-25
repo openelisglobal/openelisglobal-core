@@ -53,7 +53,6 @@ import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryType
 import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.organization.dao.OrganizationContactDAO;
-import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationContactDAOImpl;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationOrganizationTypeDAOImpl;
@@ -65,12 +64,12 @@ import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
+import us.mn.state.health.lims.referral.dao.ReferringTestResultDAO;
+import us.mn.state.health.lims.referral.daoimpl.ReferringTestResultDAOImpl;
+import us.mn.state.health.lims.referral.valueholder.ReferringTestResult;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
-import us.mn.state.health.lims.result.dao.ResultDAO;
-import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
-import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
@@ -82,7 +81,6 @@ import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
-import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -101,23 +99,19 @@ import java.util.List;
  *
  */
 public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
-	private Sample sample;
-	private SampleHuman sampleHuman;
-	private List<SampleItemSet> sampleItemSetList;
-	private boolean savePatient = false;
-    private String patientId;
+
 	private SampleRequester personSampleRequester;
     private SampleRequester organizationSampleRequester;
 	private Person personRequester;
     private Organization createdOrganization;
 	private OrganizationContact organizationContact;
+    private boolean savePersonRequester = false;
 	private static boolean useInitialSampleCondition;
 
 	private static SampleDAO sampleDAO = new SampleDAOImpl();
 	private static SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
 	private static TestDAO testDAO = new TestDAOImpl();
 	private static SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
-	private static ResultDAO resultDAO = new ResultDAOImpl();
 	private static AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static NoteDAO noteDAO = new NoteDAOImpl();
 	private static SampleRequesterDAO sampleRequesterDAO = new SampleRequesterDAOImpl();
@@ -125,6 +119,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 	private static OrganizationContactDAO orgContactDAO = new OrganizationContactDAOImpl();
 	private static ObservationHistoryDAO ohDAO = new ObservationHistoryDAOImpl();
 	private static TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
+    private static ReferringTestResultDAO referringTestResultDAO = new ReferringTestResultDAOImpl();
 
 	private static String INITIAL_CONDITION_OBSERVATION_ID;
 
@@ -159,10 +154,13 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		
 		PatientManagementInfo patientInfo = (PatientManagementInfo ) dynaForm.get("patientProperties");
 		IPatientUpdate patientUpdate = new PatientManagementUpdateAction();
-		testAndInitializePatientForSaving(mapping, request, patientInfo, patientUpdate);
+		boolean savePatient = testAndInitializePatientForSaving(mapping, request, patientInfo, patientUpdate);
 
-		createSample(sampleOrder);
-		createSampleItemSets(dynaForm);
+        SampleHuman sampleHuman = new SampleHuman();
+        sampleHuman.setSysUserId(currentUserId);
+
+		Sample sample = createSample(sampleOrder);
+        List<SampleItemSet> sampleItemSetList = createSampleItemSets(sample, dynaForm);
 		createRequesters(sampleOrder);
 
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
@@ -172,7 +170,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 				patientUpdate.persistPatientData(patientInfo);
 			}
 
-			patientId = patientUpdate.getPatientId(dynaForm);
+			String patientId = patientUpdate.getPatientId(dynaForm);
 
 			sampleDAO.insertDataWithAccessionNumber(sample);
 			sampleHuman.setSampleId(sample.getId());
@@ -196,7 +194,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 				sampleRequesterDAO.insertData(organizationSampleRequester);
 			}
 
-			if (personRequester != null) {
+			if (savePersonRequester && personRequester != null) {
 				if (personRequester.getId() != null) {
 					personDAO.updateData(personRequester);
 				} else {
@@ -204,7 +202,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 				}
 			}
 
-			if (personSampleRequester != null) {
+			if (personSampleRequester != null && personRequester != null) {
 				personSampleRequester.setRequesterId(personRequester.getId());
 				personSampleRequester.setSampleId(Long.parseLong( sample.getId()));
 				sampleRequesterDAO.insertData(personSampleRequester);
@@ -227,13 +225,12 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 					analysisDAO.insertData(analysis, false);
 				}
 
-				for (ReferrerAnalysisSet analysisSet : sampleItemSet.referrerAnalysisSet) {
-					analysisDAO.insertData(analysisSet.analysis, false);
-					resultDAO.insertData(analysisSet.result);
-				}
-
+                for( ReferringTestResult referringTestResult : sampleItemSet.referringTestResultList){
+                    referringTestResult.setSampleItemId(sampleItemSet.sampleItem.getId());
+                    referringTestResultDAO.insertData(referringTestResult);
+                }
 				if (useInitialSampleCondition) {
-					persistInitialSampleConditions(sampleItemSet);
+					persistInitialSampleConditions(sampleItemSet, patientId);
 				}
 			}
 
@@ -266,18 +263,20 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 
 	}
 	
-	private void testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagementInfo patientInfo,
+	private boolean testAndInitializePatientForSaving(ActionMapping mapping, HttpServletRequest request, PatientManagementInfo patientInfo,
 			IPatientUpdate patientUpdate) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 		patientUpdate.setPatientUpdateStatus(patientInfo);
-		savePatient = patientUpdate.getPatientUpdateStatus() != PatientManagementUpdateAction.PatientUpdateStatus.NO_ACTION;
+		boolean savePatient = patientUpdate.getPatientUpdateStatus() != PatientManagementUpdateAction.PatientUpdateStatus.NO_ACTION;
 
 		if (savePatient) {
-            ActionMessages patientErrors = patientUpdate.preparePatientData( mapping, request, patientInfo );
+            patientUpdate.preparePatientData(mapping, request, patientInfo);
 		}
+
+        return savePatient;
 	}
 
-	private void createSample(SampleOrderItem sampleOrder) {
+	private Sample createSample( SampleOrderItem sampleOrder) {
 		
 		String receivedDate = sampleOrder.getReceivedDateForDisplay();
 		String receivedTime = sampleOrder.getReceivedTime();
@@ -285,7 +284,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		receivedDate += GenericValidator.isBlankOrNull(receivedTime) ? " 00:00" : ( " " + receivedTime); 
 
 		
-		sample = new Sample();
+		Sample sample = new Sample();
 		sample.setAccessionNumber(sampleOrder.getLabNo());
 		sample.setReceivedTimestamp(DateUtil.convertStringDateToTimestamp(receivedDate));
 		sample.setCollectionDate(sample.getReceivedTimestamp()); //note there really is no collection date but other code thinks there is
@@ -293,14 +292,13 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		sample.setDomain("H");
 		sample.setEnteredDate(DateUtil.getNowAsSqlDate());
 		sample.setStatusId(StatusService.getInstance().getStatusID(OrderStatus.Entered));
+        sample.setIsConfirmation(true);
 
-		sampleHuman = new SampleHuman();
-		sampleHuman.setSysUserId(currentUserId);
-
+        return sample;
 	}
 
-	private void createSampleItemSets(BaseActionForm dynaForm) throws DocumentException {
-		sampleItemSetList = new ArrayList<SampleItemSet>();
+	private List<SampleItemSet> createSampleItemSets(Sample sample, BaseActionForm dynaForm) throws DocumentException {
+        List<SampleItemSet> sampleItemSetList = new ArrayList<SampleItemSet>();
 		Document requestedTestsDOM = DocumentHelper.parseText(dynaForm.getString("requestAsXML"));
 
 		int sampleItemSortOrder = 0;
@@ -334,7 +332,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 
 			sampleItemSet.note = createNote(sampleItemElement);
 			sampleItemSet.requestedAnalysisList = createRequestedAnalysisSet(sampleItemElement, sampleItem);
-			sampleItemSet.referrerAnalysisSet = createReferrerAnalysisSets( sampleItemElement, sampleItem );
+			sampleItemSet.referringTestResultList = createReferringTestResultList(sampleItemElement, currentUserId);
 
 			List<ObservationHistory> initialConditionList = null;
 			if (useInitialSampleCondition) {
@@ -356,6 +354,8 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 			
 			sampleItemSetList.add(sampleItemSet);
 		}
+
+        return sampleItemSetList;
 	}
 
 	private Note createNote(Element sampleItemElement) {
@@ -368,49 +368,24 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 		return null;
 	}
 
-	private List<ReferrerAnalysisSet> createReferrerAnalysisSets( Element sampleItemElement, SampleItem sampleItem ) {
-		List<ReferrerAnalysisSet> referrerSetList = new ArrayList<ReferrerAnalysisSet>();
+	private List<ReferringTestResult> createReferringTestResultList(Element sampleItemElement, String currentUserId) {
+		List<ReferringTestResult> referringTestResultList = new ArrayList<ReferringTestResult>();
 
 		for (Object element : sampleItemElement.element("tests").elements("test")) {
 			Element testElement = (Element) element;
 
-			ReferrerAnalysisSet referrerSet = new ReferrerAnalysisSet();
+			String testName = testElement.attributeValue("name");
 
-			String testId = testElement.attributeValue("id");
-			String resultType = testElement.attributeValue("resultType");
-			String resultValue = testElement.attributeValue("value");
-
-			Analysis analysis = new Analysis();
-			Result result = new Result();
-
-			Test test = testDAO.getTestById(testId);
-			if ( test != null ) {
-				analysis.setTest(test);
-				analysis.setTestSection(test.getTestSection());
-				analysis.setIsReportable(test.getIsReportable());
-				result.setIsReportable(test.getIsReportable());
-			}
-
-			analysis.setAnalysisType("MANUAL");
-			analysis.setSysUserId(currentUserId);
-			analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn));
-
-			analysis.setSampleItem(sampleItem);
-			analysis.setRevision("0");
-			analysis.setStartedDate(DateUtil.getNowAsSqlDate());
-
-			result.setAnalysis(analysis);
-			result.setResultType(resultType);
-			result.setValue(resultValue);
-			result.setSysUserId(currentUserId);
-			result.setSortOrder("0");
-
-			referrerSet.analysis = analysis;
-			referrerSet.result = result;
-			referrerSetList.add(referrerSet);
+            if(!GenericValidator.isBlankOrNull(testName)) {
+                ReferringTestResult referringTestResult = new ReferringTestResult();
+                referringTestResult.setTestName(testName);
+                referringTestResult.setResultValue(testElement.attributeValue("value"));
+                referringTestResult.setSysUserId(currentUserId);
+                referringTestResultList.add(referringTestResult);
+            }
 		}
 
-		return referrerSetList;
+		return referringTestResultList;
 	}
 
 	private List<Analysis> createRequestedAnalysisSet(Element sampleItemElement, SampleItem sampleItem) {
@@ -484,6 +459,8 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 			personRequester = new Person();
 		}
 
+        savePersonRequester = false;
+
         if( (existingRequester || newRequester) && personRequesterChanged(personRequester, sampleOrder) ){
             personRequester.setFirstName(sampleOrder.getProviderFirstName());
             personRequester.setLastName(sampleOrder.getProviderLastName());
@@ -491,6 +468,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
             personRequester.setFax(sampleOrder.getProviderFax());
             personRequester.setEmail(sampleOrder.getProviderEmail());
             personRequester.setSysUserId(currentUserId);
+            savePersonRequester = true;
         }
 
         //This checks if there is a requester and organization and that one of them is new
@@ -527,8 +505,8 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
     /**
      * Checks if the requester information has changed from what is in the database
      *
-     * @param personRequester
-     * @param sampleOrder
+     * @param personRequester The existing requester
+     * @param sampleOrder The requester filled in by the user
      * @return true if it has changed, false otherwise
      */
     private boolean personRequesterChanged(Person personRequester, SampleOrderItem sampleOrder) {
@@ -542,7 +520,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
     /**
      * checks to see if there are any requesters
      *
-     * @param sampleOrder
+     * @param sampleOrder The sample order item
      * @return true if the are no requesters, false if there are
      */
     private boolean noRequesters(SampleOrderItem sampleOrder) {
@@ -564,7 +542,7 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
                 sampleOrder.getProviderWorkPhone());
     }
 
-    private void persistInitialSampleConditions( SampleItemSet sampleItemSet) {
+    private void persistInitialSampleConditions( SampleItemSet sampleItemSet, String patientId) {
 			if (sampleItemSet.initialConditionList != null) {
 				for (ObservationHistory observation : sampleItemSet.initialConditionList) {
 					observation.setSampleId(sampleItemSet.sampleItem.getSample().getId());
@@ -587,14 +565,10 @@ public class SampleConfirmationUpdateAction extends BaseSampleEntryAction {
 	class SampleItemSet {
 		public SampleItem sampleItem;
 		public Note note;
-		public List<ReferrerAnalysisSet> referrerAnalysisSet;
 		public List<Analysis> requestedAnalysisList;
 		public List<ObservationHistory> initialConditionList;
-
+        public List<ReferringTestResult> referringTestResultList;
 	}
 
-	class ReferrerAnalysisSet {
-		public Analysis analysis;
-		public Result result;
-	}
+
 }

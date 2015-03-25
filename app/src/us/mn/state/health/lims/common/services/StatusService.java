@@ -62,7 +62,6 @@ public class StatusService{
 		TechnicalRejected,
 		BiologistRejected,
 		NonConforming_depricated,
-		ReferredIn,
 		Finalized
 	}
 
@@ -427,8 +426,6 @@ public class StatusService{
 			analysisStatusToObjectMap.put(AnalysisStatus.Finalized, status);
 		}else if(name.equals("NonConforming")){
 			analysisStatusToObjectMap.put(AnalysisStatus.NonConforming_depricated, status);
-		}else if(name.equals("referred in")){
-			analysisStatusToObjectMap.put(AnalysisStatus.ReferredIn, status);
 		}
 	}
 
