@@ -281,7 +281,7 @@
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="182" y="0" width="152" height="13" backcolor="#FFFFFF"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientOrTestName} != null && !"".equals($F{patientOrTestName}) ? $F{patientOrTestName} : "Pas enregistré"]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{patientOrTestName} != null && !"".equals($F{patientOrTestName}) ? $F{patientOrTestName} : $R{report.patient.not.registered}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="344" y="0" width="79" height="13" isPrintWhenDetailOverflows="true"/>
