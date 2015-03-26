@@ -124,4 +124,48 @@
             comment on column clinlims.image.image is 'The image itself';
         </sql>
     </changeSet>
+    <changeSet id="17" author="paulsc">
+        <comment>Adds a table to track the test and results of confirmation samples</comment>
+        <createSequence sequenceName="referring_test_result_seq" incrementBy="1" startValue="1" />
+        <insert tableName="reference_tables">
+            <column name="id" valueNumeric=" nextval( 'reference_tables_seq' ) " />
+            <column name="name" value="REFERRING_TEST_RESULT" />
+            <column name="keep_history" value="Y" />
+            <column name="is_hl7_encoded" value="N" />
+            <column name="lastupdated" valueDate=" now() " />
+        </insert>
+        <createTable tableName="referring_test_result">
+            <column name="id" type="numeric" >
+                <constraints primaryKey="true" primaryKeyName="referring_test_result_pk" />
+            </column>
+            <column name="sample_item_id" type="numeric" >
+                <constraints nullable="false" />
+            </column>
+            <column name="test_name" type="text" />
+            <column name="result_value" type="text" />
+            <column name="lastupdated" type="timestamp" />
+        </createTable>
+        <addForeignKeyConstraint baseTableName="referring_test_result"
+                                 baseColumnNames="sample_item_id"
+                                 constraintName="referring_sample_item_fk"
+                                 referencedTableName="sample_item"
+                                 referencedColumnNames="id" deleteCascade="true" />
+        <createIndex tableName="referring_test_result" indexName="referring_sample_item_indx">
+            <column name="sample_item_id" />
+        </createIndex>
+        <sql>
+            comment on table clinlims.referring_test_result is 'Holds the test names and results of test done at referring lab.  Breaks reliance on test catalog';
+            comment on column clinlims.referring_test_result.sample_item_id  is 'Reference to the sample item on which the test was done';
+            comment on column clinlims.referring_test_result.test_name is 'The name of the test done at the referring lab';
+            comment on column clinlims.referring_test_result.result_value is 'The value of the result from the referring lab';
+        </sql>
+    </changeSet>
+    <changeSet id="18" author="paulsc">
+        <comment>Adds column to sample table to indicate that it is a confirmation sample</comment>
+        <addColumn tableName="sample">
+            <column name="is_confirmation" type="boolean" defaultValueBoolean="false" >
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

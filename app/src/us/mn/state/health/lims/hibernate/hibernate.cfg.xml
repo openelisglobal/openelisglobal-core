@@ -265,7 +265,9 @@
     <mapping
         resource="us/mn/state/health/lims/localization/valueholder/Localization.hbm.xml" />
     <mapping
-        resource="us/mn/state/health/lims/image/valueholder/Image.hbm.xml" />
+            resource="us/mn/state/health/lims/image/valueholder/Image.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/referral/valueholder/ReferringTestResult.hbm.xml" />
 
 </session-factory>
 

@@ -218,6 +218,60 @@
 		insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Virology super user'), (select id from clinlims.system_module where name = 'Workplan:Virology'));
 		</sql>
 	</changeSet>
+	<changeSet author="jfurlong" id="10" context="Kenya">
+		<comment>Update the permissions for test section specific actions(system_module/system_role_module table)</comment>
+		<sql>
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'Workplan:Microscopy' ,  'Workplan=>Microscopy' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'Workplan:Bacteriology' ,  'Workplan=>Bacteriology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'Workplan:Blood Bank' ,  'Workplan=>Blood Bank' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'Workplan:Histology / Cytology' ,  'Workplan=>Histology / Cytology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Microscopy' ,  'ResultValidation=>Microscopy' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Bacteriology' ,  'ResultValidation=>Bacteriology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Blood Bank' ,  'ResultValidation=>Blood Bank' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Histology / Cytology' ,  'ResultValidation=>Histology / Cytology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'LogbookResults:Microscopy' ,  'LogbookResults=>Microscopy' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'LogbookResults:Bacteriology' ,  'LogbookResults=>Bacteriology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'LogbookResults:Blood Bank' ,  'LogbookResults=>Blood Bank' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'LogbookResults:Histology / Cytology' ,  'LogbookResults=>Histology / Cytology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Microscopy' ,  'ResultValidation=>Microscopy' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Bacteriology' ,  'ResultValidation=>Bacteriology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Blood Bank' ,  'ResultValidation=>Blood Bank' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		insert into clinlims.system_module values (nextval('clinlims.system_module_seq'), 'ResultValidation:Histology / Cytology' ,  'ResultValidation=>Histology / Cytology' , 'Y', 'Y', 'Y', 'Y');
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Results entry'), currval('clinlims.system_module_seq')-1);
+			insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Validator'), currval('clinlims.system_module_seq')-2);
+		</sql>
+	</changeSet>
 </databaseChangeLog>
 
 

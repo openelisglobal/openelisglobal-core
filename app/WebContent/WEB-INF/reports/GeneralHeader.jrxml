@@ -132,11 +132,6 @@
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{completeFlag}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="118" y="7" width="100" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[""+$P{REPORT_LOCALE}]]></textFieldExpression>
-			</textField>
 		</band>
 	</detail>
 	<columnFooter>

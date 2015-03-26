@@ -82,7 +82,6 @@ public class PatientResultsAction extends BaseAction {
 					resultsUtility.addExcludedAnalysisStatus( AnalysisStatus.Canceled );
 				}else if (statusRules.equals(IActionConstants.STATUS_RULES_HAITI) ||
 						  statusRules.equals(IActionConstants.STATUS_RULES_HAITI_LNSP) ) {
-					resultsUtility.addExcludedAnalysisStatus( AnalysisStatus.ReferredIn );
 					resultsUtility.addExcludedAnalysisStatus( AnalysisStatus.Canceled );
 				}
 

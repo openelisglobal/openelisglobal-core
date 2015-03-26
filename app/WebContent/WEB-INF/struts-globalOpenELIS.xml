@@ -753,6 +753,16 @@
             <form-property name="nameFrench" type="java.lang.String" initial="" />
             <form-property name="panelId" type="java.lang.String" initial="" />
         </form-bean>
+        
+        <form-bean name="testAddForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="jsonWad" type="java.lang.String" initial="" />
+            <form-property name="sampleTypeList" type="java.util.List" />
+            <form-property name="panelList" type="java.util.List" />
+            <form-property name="uomList" type="java.util.List" />
+            <form-property name="resultTypeList" type="java.util.List" />
+            <form-property name="ageRangeList" type="java.util.List" />
+            <form-property name="labUnitList" type="java.util.List" />
+        </form-bean>
 	</form-beans>
 
 
@@ -834,6 +844,12 @@
         <action path="/TestSectionTestAssignUpdate" name="testSectionTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionTestAssignUpdate" >
             <forward name="success" path="/TestSectionTestAssign.do" />
         </action>
+
+        <action path="/TestAdd" name="testAddForm" type="us.mn.state.health.lims.testconfiguration.action.TestAddAction" >
+            <forward name="success" path="testAddDefinition" />
+        </action>
+
+
 
         <action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"
