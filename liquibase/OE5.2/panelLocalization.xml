@@ -50,4 +50,8 @@
         <comment>localization for ci regional lab</comment>
         <sqlFile path="OE5.2/kenyaPanelLocalization.sql" />
     </changeSet>
+    <changeSet id="9" author="paulsc" context="Kenya">
+        <comment>Additional panel localization</comment>
+        <sqlFile path="OE5.2/kenyaPanelLocalization2.sql" />
+    </changeSet>
 </databaseChangeLog>
