@@ -54,6 +54,9 @@
             UPDATE test_section set name_localization_id = currval('localization_seq') where name = 'user';
         </sql>
     </changeSet>
-
+    <changeSet id="9" author="paulsc" context="Kenya">
+        <comment>Update for additional test sections</comment>
+        <sqlFile path="OE5.2/kenyaTestSectionLocalization2.sql" />
+    </changeSet>
 
 </databaseChangeLog>
