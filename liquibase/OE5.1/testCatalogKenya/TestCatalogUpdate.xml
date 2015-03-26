@@ -172,4 +172,11 @@
             update clinlims.test_result set significant_digits = 3 where test_id = ( select id from clinlims.test where guid = 'fe27037f-9498-47ae-8cbb-81fc385c4d37');
         </sql>
     </changeSet>
+	<changeSet id="2" author="paulsc" context="Kenya">
+		<comment>Sets the upper limit of Hepititis B/C viral load.  Upper has to be different then lower to have checking work</comment>
+		<sql>
+		update clinlims.result_limits set high_normal = 0.0000001 where
+		test_id in ( select id from clinlims.test where guid in ('2453d459-bc8e-4019-9fbe-c9b18410079d', '87b2ee81-d620-4158-9ca7-595567dcabaf'));
+		</sql>
+	</changeSet>
 </databaseChangeLog>
