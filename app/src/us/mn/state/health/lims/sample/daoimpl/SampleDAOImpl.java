@@ -578,7 +578,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(String projectId, List<Integer> inclusiveStatusIdList, String minAccession,
 			String maxAccession) throws LIMSRuntimeException {
 
-		String sql = "select from Sample s where s.statusId in (:statusList) and " +
+		String sql = "from Sample s where s.statusId in (:statusList) and " +
 		             "s.accessionNumber >= :minAccess and s.accessionNumber <= :maxAccess and " +
 		             "s.id in (select sp.sample.id from SampleProject sp where sp.project.id = :projectId)";
 		try{
@@ -603,7 +603,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByAccessionRange(String minAccession,	String maxAccession) throws LIMSRuntimeException {
 
-		String sql = "select from Sample s where s.accessionNumber >= :minAccess and s.accessionNumber <= :maxAccess";
+		String sql = "from Sample s where s.accessionNumber >= :minAccess and s.accessionNumber <= :maxAccess";
 		try{
 			Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setString("minAccess", minAccession);
@@ -687,4 +687,23 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		}
 		return null;
 	}
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Sample> getConfirmationSamplesReceivedInDateRange(Date receivedDateStart, Date receivedDateEnd) throws LIMSRuntimeException {
+        String sql = "from Sample s where s.isConfirmation = true and s.receivedTimestamp BETWEEN :lowDate AND :highDate";
+        try{
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setDate("lowDate", receivedDateStart);
+            query.setDate("highDate", receivedDateEnd);
+
+            List<Sample> list = query.list();
+            closeSession();
+            return list;
+        }catch (HibernateException e){
+            handleException(e, "getResultsInDateRange");
+        }
+
+        return null;
+    }
 }

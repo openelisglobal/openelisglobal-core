@@ -249,4 +249,43 @@
             <where>name = 'Validator'</where>
         </update>
     </changeSet>
+    <changeSet id="12" author="paulsc">
+        <comment>This will move the data from the old format for tests done at referring sites to the new format</comment>
+        <sql>
+            update clinlims.sample set is_confirmation = true where id in
+            (select s.id from clinlims.sample s
+            join clinlims.sample_item si on si.samp_id = s.id
+            join clinlims.analysis a on a.sampitem_id = si.id
+            where a.status_id = (select id from clinlims.status_of_sample where name = 'referred in'));
+
+            insert into clinlims.referring_test_result (id,sample_item_id, result_value, test_name, lastupdated )
+            select nextval( 'referring_test_result_seq' ), si.id,
+            case WHEN r.result_type in ('D', 'M', 'C') then (case when r.value = 'null' or r.value = '0' then ''
+            else (select d.dict_entry from clinlims.dictionary d where d.id = cast(r.value as numeric))
+            end)
+            else r.value || ( case when t.uom_id is null then '' else ( select ' ' || name from clinlims.unit_of_measure where id = t.uom_id) end )
+            end as result,
+            case when a.test_id  is null then ''
+            else ( select name from clinlims.test where id = a.test_id )
+            end as name,
+            now()
+            from clinlims.analysis a
+            join clinlims.sample_item si on si.id = a.sampitem_id
+            join clinlims.result r on r.analysis_id = a.id
+            join clinlims.test t on t.id = a.test_id
+            where a.status_id = (select id from clinlims.status_of_sample where name = 'referred in');
+
+            delete from clinlims.referring_test_result where id in
+            (select id from clinlims.referring_test_result
+            where test_name = '' and result_value = '');
+
+            delete from clinlims.result where id in
+            (select r.id from clinlims.result r
+            join clinlims.analysis a on a.id = r.analysis_id
+            where a.status_id = (select id from clinlims.status_of_sample where name = 'referred in'));
+
+            delete from clinlims.analysis where status_id = (select id from clinlims.status_of_sample where name = 'referred in');
+            delete from clinlims.status_of_sample where name = 'referred in';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -65,8 +65,9 @@
             	  precision="10" />
         <property name="clinicalOrderId" 
                   type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType" 
-                  column="clinical_order_id" />    	  
-<!--
+                  column="clinical_order_id" />
+        <property name="isConfirmation" column="is_confirmation" type="java.lang.Boolean" />
+ <!--
         <set name="sampleOrganizations" inverse="true">
             <key>
                 <column name="SAMP_ID" precision="10" scale="0" />

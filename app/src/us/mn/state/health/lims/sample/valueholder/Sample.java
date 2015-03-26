@@ -59,6 +59,7 @@ public class Sample extends EnumValueItemImpl {
 	private ValueHolderInterface systemUser;
 	private String referringId;
 	private String clinicalOrderId;
+    private Boolean isConfirmation = false;
 
 	// testing one-to-many
 	//this is for HSE I  and II - ability to enter up to two projects
@@ -383,4 +384,11 @@ public class Sample extends EnumValueItemImpl {
 		this.clinicalOrderId = clinicalOrderId;
 	}
 
+    public Boolean getIsConfirmation() {
+        return isConfirmation;
+    }
+
+    public void setIsConfirmation(Boolean isConfirmation) {
+        this.isConfirmation = isConfirmation;
+    }
 }

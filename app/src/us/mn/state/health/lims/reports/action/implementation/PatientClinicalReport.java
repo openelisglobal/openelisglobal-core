@@ -49,7 +49,6 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.NonConforming_depricated)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted)));
-		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
 		analysisStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
         analysisStatusIds.add(Integer.parseInt( StatusService.getInstance().getStatusID( AnalysisStatus.TechnicalRejected ) ) );
@@ -80,8 +79,8 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 		for(Analysis analysis : analysisList){
             sampleSet.add( analysis.getSampleItem() );
             boolean hasParentResult = analysis.getParentResult() != null;
-			// case if there was a confirmation sample with no test specified
-			if(analysis.getTest() != null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn))){
+
+			if(analysis.getTest() != null ){
                 currentAnalysisService = new AnalysisService( analysis );
 				ClinicalPatientData resultsData = buildClinicalPatientData( hasParentResult );
 
