@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public abstract class BaseResultValidationRetroCAction extends BaseAction {
+public abstract class BaseResultValidationRetroCIAction extends BaseAction {
 
 	private static Map<String, String> validationGroupToTitleMap = new HashMap<String, String>();
 	private static Map<String, String> validationGroupToSection = new HashMap<String, String>();

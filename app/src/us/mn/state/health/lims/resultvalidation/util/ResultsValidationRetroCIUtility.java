@@ -65,7 +65,7 @@ import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.Res
 
 import java.util.*;
 
-public class ResultsValidationRetroCUtility {
+public class ResultsValidationRetroCIUtility {
 
 
 
@@ -376,7 +376,7 @@ public class ResultsValidationRetroCUtility {
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
 
 		if (valid == null) {
-			valid = getSampleRecordStatus( sample ) == StatusService.RecordStatus.ValidationRegistration;
+			valid = getSampleRecordStatus( sample ) != RecordStatus.NotRegistered;
 			accessionToValidMap.put(sample.getAccessionNumber(), valid);
 		}
 
