@@ -31,10 +31,7 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationItem;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
-import us.mn.state.health.lims.resultvalidation.util.ResultsValidationRetroCUtility;
-import us.mn.state.health.lims.test.dao.TestSectionDAO;
-import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
-import us.mn.state.health.lims.test.valueholder.TestSection;
+import us.mn.state.health.lims.resultvalidation.util.ResultsValidationRetroCIUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,11 +43,9 @@ import java.util.List;
 public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 
 	private final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
-	private ResultsValidationRetroCUtility resultsValidationUtility = new ResultsValidationRetroCUtility();
+	private ResultsValidationRetroCIUtility resultsValidationUtility = new ResultsValidationRetroCIUtility();
 	private List<Integer> notValidStatus = new ArrayList<Integer>();
 
-	String testType = "";
-	String department;
 
 	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -67,7 +62,7 @@ public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 
 		setNotValidStatus();
 
-		List<AnalysisItem> workplanTests = new ArrayList<AnalysisItem>();
+		List<AnalysisItem> workplanTests;
 
 		// workplan by department
 		if (!GenericValidator.isBlankOrNull(workplan)) {
@@ -96,8 +91,8 @@ public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 	@SuppressWarnings("unchecked")
 	private List<AnalysisItem> getWorkplanByTestSection(String testSection) {
 
-		List<Analysis> testList = new ArrayList<Analysis>();
-		List<ResultValidationItem> testItemList = new ArrayList<ResultValidationItem>();
+		List<Analysis> testList;
+		List<ResultValidationItem> testItemList;
 		List<AnalysisItem> workplanTestList = new ArrayList<AnalysisItem>();
 
 		if (!(GenericValidator.isBlankOrNull(testSection))) {
@@ -137,7 +132,7 @@ public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 						&& !GenericValidator.isBlankOrNull(analysisResultItem.getNextTest())) {
 					analysisItemList.add(analysisResultItem);
 				}
-				analysisResultItem = new AnalysisItem();
+
 				analysisResultItem = resultsValidationUtility.testResultItemToELISAAnalysisItem(validationItem);
 				String finalResult = resultsValidationUtility.checkIfFinalResult(validationItem.getAnalysis().getId());
 

@@ -24,13 +24,7 @@ import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.AnalysisService;
-import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.services.QAService;
-import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.StatusService;
-import us.mn.state.health.lims.common.services.TestIdentityService;
-import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
@@ -59,7 +53,6 @@ import us.mn.state.health.lims.test.dao.TestSectionDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
@@ -219,7 +212,7 @@ public class ResultsValidationUtility {
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
 
 		if (valid == null) {
-			valid = getSampleRecordStatus( sample ) == StatusService.RecordStatus.ValidationRegistration;
+			valid = getSampleRecordStatus( sample ) != RecordStatus.NotRegistered;
 			accessionToValidMap.put(sample.getAccessionNumber(), valid);
 		}
 
@@ -379,170 +372,8 @@ public class ResultsValidationUtility {
 		return testResultType;
 	}
 
-	public final List<AnalysisItem> testResultListToELISAAnalysisList(List<ResultValidationItem> testResultList, List<Integer> statusList) {
-		List<AnalysisItem> analysisItemList = new ArrayList<AnalysisItem>();
-		AnalysisItem analysisResultItem = new AnalysisItem();
-		String currentAccessionNumber = "";
-		String currentInvalidAccessionNumber = "";
-		boolean readyForValidation = true;
 
-		for (int i = 0; i < testResultList.size(); i++) {
 
-			ResultValidationItem tResultItem = testResultList.get(i);
-
-			// create new bean
-			if (!tResultItem.getAccessionNumber().equals(currentAccessionNumber)) {
-				if (tResultItem.getAccessionNumber().equals(currentInvalidAccessionNumber)) {
-					continue;
-				}
-				Sample sample = sampleDAO.getSampleByAccessionNumber(tResultItem.getAccessionNumber());
-				if (sampleReadyForValidation(sample)) {
-					if (!GenericValidator.isBlankOrNull(analysisResultItem.getFinalResult()) && readyForValidation) {
-						analysisItemList.add(analysisResultItem);
-					}
-					readyForValidation = true;
-
-					analysisResultItem = testResultItemToELISAAnalysisItem(tResultItem);
-
-					currentAccessionNumber = analysisResultItem.getAccessionNumber();
-					currentInvalidAccessionNumber = "";
-				} else { // record status not valid
-					currentInvalidAccessionNumber = tResultItem.getAccessionNumber();
-					continue;
-				}
-				// or just add test result to elisaAlgorithm bean
-			} else {
-				analysisResultItem.setResult(tResultItem.getResultValue());
-				analysisResultItem = addTestResultToELISAAnalysisItem(tResultItem, analysisResultItem);
-			}
-
-			if (!GenericValidator.isBlankOrNull(analysisResultItem.getStatusId())
-					&& !statusList.contains(Integer.parseInt(analysisResultItem.getStatusId()))) {
-				readyForValidation = false;
-			}
-
-			String finalResult = checkIfFinalResult(tResultItem.getAnalysis().getId());
-
-			if (!GenericValidator.isBlankOrNull(finalResult)) {
-				analysisResultItem.setFinalResult(finalResult);
-			}
-
-			// final time through
-			if (i == (testResultList.size() - 1) && readyForValidation
-					&& !GenericValidator.isBlankOrNull(analysisResultItem.getFinalResult())) {
-				analysisItemList.add(analysisResultItem);
-			}
-		}
-
-		return analysisItemList;
-	}
-
-	public final String checkIfFinalResult(String analysisId) {
-		String finalResult = null;
-		Analysis analysis = new Analysis();
-		analysis.setId(analysisId);
-
-		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
-		String conclusion = null;
-
-		if (resultList.size() > 1) {
-			for (Result result : resultList) {
-				if (result.getAnalyte() != null && result.getAnalyte().getId().equals(CONCLUSION_ID)) {
-					conclusion = result.getValue();
-				}
-			}
-
-		}
-
-		if (conclusion != null) {
-			Dictionary dictionary = new Dictionary();
-			dictionary.setId(conclusion);
-			dictionaryDAO.getData(dictionary);
-			finalResult = (dictionary.getDictEntry());
-		}
-
-		return finalResult;
-
-	}
-
-	public final AnalysisItem testResultItemToELISAAnalysisItem(ResultValidationItem testResultItem) {
-		AnalysisItem elisaResultItem = new AnalysisItem();
-
-		elisaResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
-		elisaResultItem.setTestName(testResultItem.getTestName());
-		elisaResultItem.setResult(testResultItem.getResultValue());
-		elisaResultItem.setSampleGroupingNumber(testResultItem.getSampleGroupingNumber());
-		elisaResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
-		elisaResultItem.setStatusId(testResultItem.getAnalysis().getStatusId());
-		elisaResultItem.setNote(testResultItem.getNote());
-		elisaResultItem.setNoteId(testResultItem.getNoteId());
-		elisaResultItem.setResultId(testResultItem.getResultId());
-		elisaResultItem.setNonconforming(testResultItem.isNonconforming() );
-
-		// elisaResultItem.setResult(testResultItem.getResult().getValue());
-
-		// set elisa test to result
-		elisaResultItem = setElisaTestResult(testResultItem.getTestName(), elisaResultItem);
-
-		return elisaResultItem;
-
-	}
-
-	public final AnalysisItem addTestResultToELISAAnalysisItem(ResultValidationItem testResultItem, AnalysisItem eItem) {
-
-		eItem.setAnalysisId(testResultItem.getAnalysis().getId());
-		eItem.setStatusId(testResultItem.getAnalysis().getStatusId());
-		if( testResultItem.isNonconforming()){
-			eItem.setNonconforming(true);
-		}
-		// set elisa test to result
-		eItem = setElisaTestResult(testResultItem.getTestName(), eItem);
-
-		return eItem;
-
-	}
-
-	public final AnalysisItem setElisaTestResult(String testName, AnalysisItem eItem) {
-		String result = eItem.getResult();
-		String analysisId = eItem.getAnalysisId();
-
-		if (testName.equals("Murex")) {
-			eItem.setMurexResult(result);
-			eItem.setMurexAnalysisId(analysisId);
-		} else if (testName.equals("Integral")) {
-			eItem.setIntegralResult(result);
-			eItem.setIntegralAnalysisId(analysisId);
-		} else if (testName.equals("Vironostika")) {
-			eItem.setVironostikaResult(result);
-			eItem.setVironostikaAnalysisId(analysisId);
-		} else if (testName.equals("Genie II")) {
-			eItem.setGenieIIResult(result);
-			eItem.setGenieIIAnalysisId(analysisId);
-		} else if (testName.equals("Genie II 10")) {
-			eItem.setGenieII10Result(result);
-			eItem.setGenieII10AnalysisId(analysisId);
-		} else if (testName.equals("Genie II 100")) {
-			eItem.setGenieII100Result(result);
-			eItem.setGenieII100AnalysisId(analysisId);
-		} else if (testName.equals("Western Blot 1")) {
-			eItem.setWesternBlot1Result(result);
-			eItem.setWesternBlot1AnalysisId(analysisId);
-		} else if (testName.equals("Western Blot 2")) {
-			eItem.setWesternBlot2Result(result);
-			eItem.setWesternBlot2AnalysisId(analysisId);
-		} else if (testName.equals("p24 Ag")) {
-			eItem.setP24AgResult(result);
-			eItem.setP24AgAnalysisId(analysisId);
-		} else if (testName.equals("Bioline")) {
-			eItem.setBiolineResult(result);
-			eItem.setBiolineAnalysisId(analysisId);
-		} else if (testName.equals("Innolia")) {
-			eItem.setInnoliaResult(result);
-			eItem.setInnoliaAnalysisId(analysisId);
-		}
-
-		return eItem;
-	}
 
 	public final List<AnalysisItem> testResultListToAnalysisItemList(List<ResultValidationItem> testResultList) {
 		List<AnalysisItem> analysisResultList = new ArrayList<AnalysisItem>();
@@ -680,13 +511,6 @@ public class ResultsValidationUtility {
 
 	}
 
-	public final String getTestSectionId(String testSectionName) {
-		TestSection testSection = new TestSection();
-		testSection.setTestSectionName(testSectionName);
-		testSection = testSectionDAO.getTestSectionByName(testSection);
-
-		return testSection.getId();
-	}
 
 	protected final String getTestId(String testName) {
 		Test test = testDAO.getTestByName(testName);
