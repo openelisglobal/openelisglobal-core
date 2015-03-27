@@ -20,11 +20,15 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.LocaleChangeListener;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.localization.valueholder.Localization;
+import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
+import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.beanItems.TestResultItem.ResultDisplayType;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
@@ -162,7 +166,7 @@ public class TestService implements LocaleChangeListener{
             return null;
         }
 
-        TypeOfSampleTest typeOfSampleTest = TYPE_OF_SAMPLE_TEST_DAO.getTypeOfSampleTestForTest( test.getId() );
+        TypeOfSampleTest typeOfSampleTest = TYPE_OF_SAMPLE_TEST_DAO.getTypeOfSampleTestForTest(test.getId());
 
         if( typeOfSampleTest == null){
             return null;
@@ -171,6 +175,25 @@ public class TestService implements LocaleChangeListener{
        String typeOfSampleId = typeOfSampleTest.getTypeOfSampleId();
 
         return TYPE_OF_SAMPLE_DAO.getTypeOfSampleById( typeOfSampleId );
+    }
+
+    public List<Panel> getPanels(){
+        List<Panel> panelList = new ArrayList<Panel>();
+        if( test != null){
+            List<PanelItem> panelItemList = new PanelItemDAOImpl().getPanelItemByTestId(test.getId());
+            for( PanelItem panelItem : panelItemList){
+                panelList.add(panelItem.getPanel());
+            }
+        }
+
+        return panelList;
+    }
+    public TestSection getTestSection(){
+        return test == null ? null : test.getTestSection();
+    }
+
+    public String getTestSectionName(){
+        return TestSectionService.getUserLocalizedTesSectionName(getTestSection());
     }
 
     public static List<Test> getAllActiveTests(){

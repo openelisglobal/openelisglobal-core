@@ -93,6 +93,12 @@ caption {
   font-size: 23px;
   color: #336699;
 }
+
+.catalog-label{
+  font-size: 13px;
+  font-style: italic;
+  color: #000000;
+}
 /***** End overrides of default browser styles *****/
 
 
