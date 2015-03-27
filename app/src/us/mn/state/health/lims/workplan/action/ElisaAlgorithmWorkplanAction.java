@@ -83,6 +83,7 @@ public class ElisaAlgorithmWorkplanAction extends BaseWorkplanAction {
 
 		PropertyUtils.setProperty(dynaForm, "workplanType", request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "testName", "Serology");
+		PropertyUtils.setProperty(dynaForm, "testSectionsByName" , new ArrayList<IdValuePair>());
 		
 		//this is needed because the jsp form is shared with the biologist validation
 		PagingBean pagingBean = new PagingBean();

@@ -23,7 +23,7 @@
 <bean:define id="testSection"	value='<%=request.getParameter("type")%>' />
 <bean:define id="testName"	value='<%=request.getParameter("test")%>' />
 <bean:define id="results" name="<%=formName%>" property="resultList" />
-<bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage" type="List<IdValuePair>" /> 
+<bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage" type="List<IdValuePair>" />
 <bean:define id="testSectionsByName" name='<%=formName%>' property="testSectionsByName" />
 <bean:size id="resultCount" name="results" />
 
@@ -325,6 +325,7 @@ function /*boolean*/ handleEnterEvent(){
 </div>
 </div>
 	<% }%>
+
 <logic:notEqual name="resultCount" value="0">
 <div  style="width:80%" >
 	<html:hidden styleId="currentPageID" name="<%=formName%>" property="paging.currentPage"/>
@@ -674,7 +675,7 @@ function /*boolean*/ handleEnterEvent(){
 			</logic:notEmpty>
 		</logic:equal>
 	</logic:equal>
-	
+
 	<logic:notEqual  name="<%=formName %>" property="displayTestSections" value="true">
 		<logic:equal name="resultCount"  value="0">
 		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
