@@ -16,6 +16,7 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -24,6 +25,7 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationPaging;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.resultvalidation.util.ResultsValidationRetroCUtility;
@@ -52,6 +54,8 @@ public class ResultValidationRetroCAction extends BaseResultValidationRetroCActi
 
 			// Initialize the form.
 			dynaForm.initialize(mapping);
+			PropertyUtils.setProperty(dynaForm, "testSectionsByName", new ArrayList<IdValuePair>()); //required on jsp page
+			PropertyUtils.setProperty(dynaForm, "displayTestSections", false);
 
             ResultsValidationRetroCUtility resultsValidationUtility = new ResultsValidationRetroCUtility();
 			setRequestType(testSectionName);
