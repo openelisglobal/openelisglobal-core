@@ -305,6 +305,10 @@
         <put name="body" value="/pages/testConfiguration/testAdd.jsp"/>
     </definition>
 
+    <definition name="testCatalogDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testCatalog.jsp"/>
+    </definition>
+
     <definition name="testSectionManagementDefinition" extends="baseMenuDefinition" >
         <put name="body" value="/pages/testConfiguration/testSectionManagement.jsp" />
     </definition>

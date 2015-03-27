@@ -763,6 +763,10 @@
             <form-property name="ageRangeList" type="java.util.List" />
             <form-property name="labUnitList" type="java.util.List" />
         </form-bean>
+
+		<form-bean name="testCatalogForm" type="org.apache.struts.validator.DynaValidatorForm" >
+			<form-property name="testList" type="java.util.List" />
+		</form-bean>
 	</form-beans>
 
 
@@ -849,9 +853,13 @@
             <forward name="success" path="testAddDefinition" />
         </action>
 
+		<action path="/TestCatalog" name="testCatalogForm" type="us.mn.state.health.lims.testconfiguration.action.TestCatalogAction" >
+			<forward name="success" path="testCatalogDefinition" />
+		</action>
 
 
-        <action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
+
+		<action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"
 		>
 			<forward name="success" path="samplePatientEntryDefinition" />
@@ -883,7 +891,7 @@
 			<forward name="fail" path="/SampleConfirmationEntry.do?forward=fail" />
 		</action>
 
-		<action path="/CancelSampleConfirmationEntry" forward="homePageDefinition"></action>
+		<action path="/CancelSampleConfirmationEntry" forward="homePageDefinition" />
 
 		<action path="/SampleEdit"
 				name="SampleEditForm"
@@ -1161,7 +1169,7 @@
 		<action path="/CancelPatientManagement" forward="homePageDefinition">
 		</action>
 
-		<action path="/MainMenu" forward="homePageDefinition"></action>
+		<action path="/MainMenu" forward="homePageDefinition" />
 
 		<action path="/ReferredOutTests" name="referredOutTestsForm" type="us.mn.state.health.lims.referral.action.ReferredOutAction">
 			<forward name="success" path="referredOutDefinition" />
@@ -1614,7 +1622,7 @@
 		</action>
 
 
-		<action path="/CancelUserRole" forward="/UserRoleMenu.do"></action>
+		<action path="/CancelUserRole" forward="/UserRoleMenu.do" />
 		
 
 		<action path="/UnifiedSystemUserMenu" name="unifiedSystemUserMenuForm" type="us.mn.state.health.lims.systemuser.action.UnifiedSystemUserMenuAction">

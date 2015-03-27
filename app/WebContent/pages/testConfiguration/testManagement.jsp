@@ -51,6 +51,10 @@
     </ul>
     <h3><bean:message key="configuration.test.management.organization" /></h3>
     <ul>
+        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.catalog") %>'
+                   onclick="submitAction('TestCatalog.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.catalog.explain")%></li>
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.add") %>'
                    onclick="submitAction('TestAdd.do');"
                    class="textButton"/><br>
