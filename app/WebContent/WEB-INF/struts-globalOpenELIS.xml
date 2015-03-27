@@ -1021,7 +1021,7 @@
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 
-		<action path="/ResultValidationRetroC" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ResultValidationRetroCAction">
+		<action path="/ResultValidationRetroC" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ResultValidationRetroCIAction">
 			<forward name="success" path="resultValidationDefinition" />
 			<forward name="elisaSuccess" path="elisaAlgorithmResultValidationDefinition" />
 			<forward name="fail" path="homePageDefinition" />
