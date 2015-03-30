@@ -766,6 +766,7 @@
 
 		<form-bean name="testCatalogForm" type="org.apache.struts.validator.DynaValidatorForm" >
 			<form-property name="testList" type="java.util.List" />
+			<form-property name="testSectionList" type="java.util.List" />
 		</form-bean>
 	</form-beans>
 

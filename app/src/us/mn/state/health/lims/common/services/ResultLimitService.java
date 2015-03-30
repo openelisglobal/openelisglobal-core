@@ -54,7 +54,7 @@ public class ResultLimitService{
         currPatientAge = INVALID_PATIENT_AGE;
 
         @SuppressWarnings( "unchecked" )
-        List<ResultLimit> resultLimits = resultLimitDAO.getAllResultLimitsForTest(test);
+        List<ResultLimit> resultLimits = getResultLimits(test);
 
         if (resultLimits.isEmpty()) {
             return null;
@@ -190,7 +190,12 @@ public class ResultLimitService{
     }
 
     public static String getDisplayNormalRange( double low, double high, String significantDigits, String separator){
-        if( (low == Double.MIN_VALUE && high == Double.MAX_VALUE) || low == high){
+
+        if( low == Float.NEGATIVE_INFINITY && high == Float.POSITIVE_INFINITY ){
+            return StringUtil.getMessageForKey("result.anyValue");
+        }
+
+        if( low == high){
             return "";
         }
 
@@ -215,5 +220,38 @@ public class ResultLimitService{
             }
         }
         return range;
+    }
+
+    /**
+     * Get the valid range for numeric result limits.  For other result types an empty string will be returned
+     * @param resultLimit The limit from which we will get the valid range
+     * @param significantDigits The numbe of significant digit to display
+     * @param separator -- how to separate the numbers
+     * @return The range
+     */
+    public static String getDisplayValidRange( ResultLimit resultLimit, String significantDigits, String separator){
+        String range = "";
+        if( resultLimit != null && !GenericValidator.isBlankOrNull( resultLimit.getResultTypeId() )){
+            if( NUMERIC_RESULT_TYPE_ID.equals( resultLimit.getResultTypeId() ) ){
+                range = getDisplayNormalRange( resultLimit.getLowValid(), resultLimit.getHighValid(), significantDigits, separator );
+            }
+        }
+        return range;
+    }
+
+    public static String getDisplayAgeRange( ResultLimit resultLimit, String separator){
+        if( resultLimit.getMinAge() == 0 && resultLimit.getMaxAge() == Float.POSITIVE_INFINITY ){
+            return StringUtil.getMessageForKey("age.anyAge");
+        }
+
+        if( resultLimit.getMaxAge() == Float.POSITIVE_INFINITY ){
+            return ">" + resultLimit.getMinAge();
+        }
+
+        return resultLimit.getMinAge() + separator + resultLimit.getMaxAge();
+    }
+    @SuppressWarnings("unchecked")
+    public static List<ResultLimit> getResultLimits(Test test){
+        return resultLimitDAO.getAllResultLimitsForTest(test);
     }
 }
