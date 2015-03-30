@@ -99,6 +99,10 @@ caption {
   font-style: italic;
   color: #000000;
 }
+
+.tab{
+  margin-left: 40px;
+}
 /***** End overrides of default browser styles *****/
 
 

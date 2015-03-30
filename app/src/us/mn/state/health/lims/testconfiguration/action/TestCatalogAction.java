@@ -17,17 +17,27 @@
 package us.mn.state.health.lims.testconfiguration.action;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
+import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
+import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean;
 import us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean;
+import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,10 +47,22 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TestCatalogAction extends BaseAction {
+    private DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+
+
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         DynaValidatorForm dynaForm = (DynaValidatorForm)form;
-        PropertyUtils.setProperty(dynaForm,"testList", createTestList());
+        List<TestCatalogBean> testList = createTestList();
+        PropertyUtils.setProperty(dynaForm, "testList", testList);
+
+        List<String> testSectionList = new ArrayList<String>();
+        for( TestCatalogBean catalogBean : testList){
+            if( !testSectionList.contains( catalogBean.getTestUnit())){
+                testSectionList.add(catalogBean.getTestUnit());
+            }
+        }
+        PropertyUtils.setProperty(dynaForm, "testSectionList", testSectionList);
 
 
 
@@ -53,19 +75,32 @@ public class TestCatalogAction extends BaseAction {
         List<Test> testList = new TestDAOImpl().getAllTests(false);
 
         for( Test test : testList){
+
             TestCatalogBean bean = new TestCatalogBean();
             TestService testService = new TestService(test);
+            String resultType = testService.getResultType();
             bean.setEnglishName(TestService.getUserLocalizedTestName(test));
             bean.setFrenchName(TestService.getUserLocalizedTestName(test));
             bean.setEnglishReportName(TestService.getUserLocalizedReportingTestName(test));
             bean.setFrenchReportName(TestService.getUserLocalizedReportingTestName(test));
 
             bean.setTestUnit(testService.getTestSectionName());
-            bean.setPanel(creatPanelList(testService));
-            bean.setResultType(testService.getResultType());
+            bean.setPanel(createPanelList(testService));
+            bean.setResultType(resultType);
             bean.setSampleType(testService.getTypeOfSample().getLocalizedName());
-            bean.setOrderable( test.getOrderable() ? "Orderable" : "Not orderable");
+            bean.setOrderable(test.getOrderable() ? "Orderable" : "Not orderable");
             bean.setActive(test.isActive() ? "Active" : "Not active");
+            bean.setUom(testService.getUOM(false));
+            if( TypeOfTestResult.ResultType.NUMERIC.matches(resultType)) {
+                bean.setSignificantDigits(testService.getPossibleTestResults().get(0).getSignificantDigits());
+                bean.setHasLimitValues(true);
+                bean.setResultLimits(getResultLimits(test, bean.getSignificantDigits()));
+            }
+            bean.setHasDictionaryValues(TypeOfTestResult.ResultType.isDictionaryVariant(bean.getResultType()));
+            if( bean.isHasDictionaryValues()){
+                bean.setDictionaryValues(createDictionaryValues(testService));
+                bean.setReferenceValue(createReferenceValueForDictionaryType(test));
+            }
             beanList.add(bean);
         }
 
@@ -79,7 +114,71 @@ public class TestCatalogAction extends BaseAction {
         return beanList;
     }
 
-    private String creatPanelList(TestService testService) {
+    private List<ResultLimitBean> getResultLimits(Test test, String significantDigits) {
+        List<ResultLimitBean> limitBeans = new ArrayList<ResultLimitBean>();
+
+        List<ResultLimit> resultLimitList = ResultLimitService.getResultLimits(test);
+
+        Collections.sort(resultLimitList, new Comparator<ResultLimit>() {
+            @Override
+            public int compare(ResultLimit o1, ResultLimit o2) {
+                return (int) (o1.getMinAge() - o2.getMinAge());
+            }
+        });
+
+        for( ResultLimit limit : resultLimitList){
+            ResultLimitBean bean = new ResultLimitBean();
+            bean.setNormalRange(ResultLimitService.getDisplayReferenceRange(limit, significantDigits, "-"));
+            bean.setValidRange(ResultLimitService.getDisplayValidRange(limit, significantDigits, "-"));
+            bean.setGender(limit.getGender());
+            bean.setAgeRange( ResultLimitService.getDisplayAgeRange(limit, "-"));
+            limitBeans.add(bean);
+        }
+        return limitBeans;
+    }
+
+    private String createReferenceValueForDictionaryType(Test test) {
+        List<ResultLimit> resultLimits = ResultLimitService.getResultLimits(test);
+
+        if( resultLimits.isEmpty() ){
+            return "n/a";
+        }
+
+        return ResultLimitService.getDisplayReferenceRange(resultLimits.get(0),null, null);
+
+    }
+
+    private List<String> createDictionaryValues(TestService testService) {
+        List<String> dictionaryList = new ArrayList<String>();
+        List<TestResult> testResultList = testService.getPossibleTestResults();
+        for( TestResult testResult : testResultList){
+            CollectionUtils.addIgnoreNull(dictionaryList, getDictionaryValue(testResult));
+        }
+
+        return dictionaryList;
+    }
+
+    private String getDictionaryValue(TestResult testResult) {
+
+        if (TypeOfTestResult.ResultType.isDictionaryVariant(testResult.getTestResultType())) {
+            Dictionary dictionary = dictionaryDAO.getDataForId(testResult.getValue());
+            String displayValue = dictionary.getLocalizedName();
+
+            if ("unknown".equals(displayValue)) {
+                displayValue = !GenericValidator.isBlankOrNull(dictionary.getDictEntry()) ?
+                        dictionary.getDictEntry() : dictionary.getLocalAbbreviation();
+            }
+
+            if (testResult.getIsQuantifiable()) {
+                displayValue += " Qualifiable";
+            }
+            return displayValue;
+        }
+
+        return null;
+    }
+
+    private String createPanelList(TestService testService) {
         StringBuilder builder = new StringBuilder();
 
         List<Panel> panelList = testService.getPanels();
@@ -92,7 +191,7 @@ public class TestCatalogAction extends BaseAction {
         if( panelString.isEmpty()){
             panelString = "None";
         }else{
-            panelString = panelString.substring(0, panelString.length() - 3 );
+            panelString = panelString.substring(0, panelString.length() - 2 );
         }
 
         return panelString;

@@ -16,6 +16,10 @@
 
 package us.mn.state.health.lims.testconfiguration.beans;
 
+import us.mn.state.health.lims.common.util.validator.GenericValidator;
+
+import java.util.List;
+
 public class TestCatalogBean {
     private String englishName;
     private String frenchName;
@@ -25,9 +29,16 @@ public class TestCatalogBean {
     private String sampleType;
     private String panel;
     private String resultType;
-    private String uom;
+    private String uom = "n/a";
+    private String significantDigits = "n/a";
     private String active;
     private String orderable;
+    private boolean hasDictionaryValues = false;
+    private List<String> dictionaryValues;
+    private String referenceValue;
+    private boolean hasLimitValues = false;
+    private List<ResultLimitBean> resultLimits;
+
 
     public String getEnglishName() {
         return englishName;
@@ -98,7 +109,7 @@ public class TestCatalogBean {
     }
 
     public void setUom(String uom) {
-        this.uom = uom;
+        this.uom = GenericValidator.isBlankOrNull(uom) ? "n/a" : uom;
     }
 
     public String getActive() {
@@ -115,5 +126,53 @@ public class TestCatalogBean {
 
     public void setOrderable(String orderable) {
         this.orderable = orderable;
+    }
+
+    public String getSignificantDigits() {
+        return significantDigits;
+    }
+
+    public void setSignificantDigits(String significantDigits) {
+        this.significantDigits = significantDigits;
+    }
+
+    public boolean isHasDictionaryValues() {
+        return hasDictionaryValues;
+    }
+
+    public void setHasDictionaryValues(boolean hasDictionaryValues) {
+        this.hasDictionaryValues = hasDictionaryValues;
+    }
+
+    public List<String> getDictionaryValues() {
+        return dictionaryValues;
+    }
+
+    public void setDictionaryValues(List<String> dictionaryValues) {
+        this.dictionaryValues = dictionaryValues;
+    }
+
+    public String getReferenceValue() {
+        return referenceValue;
+    }
+
+    public void setReferenceValue(String referenceValue) {
+        this.referenceValue = referenceValue;
+    }
+
+    public boolean isHasLimitValues() {
+        return hasLimitValues;
+    }
+
+    public void setHasLimitValues(boolean hasLimitValues) {
+        this.hasLimitValues = hasLimitValues;
+    }
+
+    public List<ResultLimitBean> getResultLimits() {
+        return resultLimits;
+    }
+
+    public void setResultLimits(List<ResultLimitBean> resultLimits) {
+        this.resultLimits = resultLimits;
     }
 }
