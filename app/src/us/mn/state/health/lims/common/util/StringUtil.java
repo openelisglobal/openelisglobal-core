@@ -619,7 +619,7 @@ public class StringUtil {
 	}
 
     public static String doubleWithSignificantDigits( double value, String significantDigits ){
-        if( significantDigits.equals( "-1" )){
+        if( GenericValidator.isBlankOrNull(significantDigits) || significantDigits.equals( "-1" )){
             return String.valueOf( value );
         }
 
