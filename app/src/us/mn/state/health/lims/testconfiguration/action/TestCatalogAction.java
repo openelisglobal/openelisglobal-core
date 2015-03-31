@@ -37,6 +37,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean;
 import us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,11 +84,12 @@ public class TestCatalogAction extends BaseAction {
             bean.setFrenchName(TestService.getUserLocalizedTestName(test));
             bean.setEnglishReportName(TestService.getUserLocalizedReportingTestName(test));
             bean.setFrenchReportName(TestService.getUserLocalizedReportingTestName(test));
-
+            bean.setTestSortOrder(Integer.parseInt(test.getSortOrder()));
             bean.setTestUnit(testService.getTestSectionName());
             bean.setPanel(createPanelList(testService));
             bean.setResultType(resultType);
-            bean.setSampleType(testService.getTypeOfSample().getLocalizedName());
+            TypeOfSample typeOfSample = testService.getTypeOfSample();
+            bean.setSampleType(typeOfSample != null ? typeOfSample.getLocalizedName() : "n/a");
             bean.setOrderable(test.getOrderable() ? "Orderable" : "Not orderable");
             bean.setActive(test.isActive() ? "Active" : "Not active");
             bean.setUom(testService.getUOM(false));
@@ -107,7 +109,23 @@ public class TestCatalogAction extends BaseAction {
         Collections.sort(beanList, new Comparator<TestCatalogBean>() {
             @Override
             public int compare(TestCatalogBean o1, TestCatalogBean o2) {
-                return o1.getTestUnit().compareTo(o2.getTestUnit());
+                //sort by test section, sample type, panel, sort order
+                int comparison = o1.getTestUnit().compareTo(o2.getTestUnit());
+                if (comparison != 0) {
+                    return comparison;
+                }
+
+                comparison = o1.getSampleType().compareTo(o2.getSampleType());
+                if (comparison != 0) {
+                    return comparison;
+                }
+
+                comparison = o1.getPanel().compareTo(o2.getPanel());
+                if (comparison != 0) {
+                    return comparison;
+                }
+
+                return o1.getTestSortOrder() - o2.getTestSortOrder();
             }
         });
 
