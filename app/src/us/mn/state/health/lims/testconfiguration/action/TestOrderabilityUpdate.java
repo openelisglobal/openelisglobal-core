@@ -32,6 +32,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,6 +73,7 @@ public class TestOrderabilityUpdate extends BaseAction {
             HibernateUtil.closeSession();
         }
 
+        TypeOfSampleUtil.clearCache();
         return mapping.findForward(FWD_SUCCESS);
     }
 
