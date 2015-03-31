@@ -56,7 +56,7 @@
 
     function sectionSelectionAll(checkbox) {
         var checked = checkbox.checked;
-        var element
+        var element;
 
         $jq(".testSection").each(function () {
             element = $jq(this);
@@ -85,15 +85,14 @@
     }
 </script>
 <form>
-<input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
-       onclick="submitAction('MasterListsPage.do');"
-       class="textButton"/> &rarr;
-<input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
-       onclick="submitAction('TestManagementConfigMenu.do');"
-       class="textButton"/>&rarr;
-Test Catalog
+    <input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
+           onclick="submitAction('MasterListsPage.do');"
+           class="textButton"/> &rarr;
+    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
+           onclick="submitAction('TestManagementConfigMenu.do');"
+           class="textButton"/>&rarr;
+    Test Catalog
 </form>
-</span>
 <h1>Test Catalog</h1>
 <input type="checkbox" onchange="guideSelection(this)">Show guide<br/><br/>
 
@@ -115,27 +114,29 @@ Test Catalog
   the type of sample after they have ordered the test it will be marked as user to indicate that the user will
   select the type</span><br/>
     <b>Result type</b><br/>
-  <span class="tab">The kind of result for this test
-  <UL>
-      <li>N - Numeric. Accepts only numeric results in a text box. Results can be evaluated as to being in a normal or a
-          valid range
-      </li>
-      <li>A - Alphanumeric. Accepts either numeric or text in a text box. It will not be evaluated for being normal or
-          valid
-      </li>
-      <li>R - Free text. Accepts up to 200 characters in a text area. It will not be evaluated for being normal or
-          valid
-      </li>
-      <li>D - Select list. User will be able to select from a dropdown list. The normal value will be specified as the
-          reference value
-      </li>
-      <li>M - Multi-select list. The user will be able to select one or more values from a dropdown list. No reference
-          value will be specified
-      </li>
-      <li>C - Cascading multi-select list. Similar to multi-select but the user will be able to select multiple groups
-          from the dropdown list.
-      </li>
-  </UL></span><br/>
+    <span class="tab">The kind of result for this test</span>
+    <UL>
+        <li>N - Numeric. Accepts only numeric results in a text box. Results can be evaluated as to being in a normal or
+            a
+            valid range
+        </li>
+        <li>A - Alphanumeric. Accepts either numeric or text in a text box. It will not be evaluated for being normal or
+            valid
+        </li>
+        <li>R - Free text. Accepts up to 200 characters in a text area. It will not be evaluated for being normal or
+            valid
+        </li>
+        <li>D - Select list. User will be able to select from a dropdown list. The normal value will be specified as the
+            reference value
+        </li>
+        <li>M - Multi-select list. The user will be able to select one or more values from a dropdown list. No reference
+            value will be specified
+        </li>
+        <li>C - Cascading multi-select list. Similar to multi-select but the user will be able to select multiple groups
+            from the dropdown list.
+        </li>
+    </UL>
+    <br/>
     <b>uom</b><br/>
     <span class="tab">Unit of measure for the test.  This usually only applies to numeric or alphanumeric result types</span><br/>
     <b>Significan digits</b><br/>
@@ -169,13 +170,13 @@ Test Catalog
 <input type="checkbox" class="testSection" value='<%=testSection.replace(" ", "_")%>'
        onchange="sectionSelection(this)"><%=testSection%><br/>
 <% } %>
+<br/>
 
-<div>
-    <% for (TestCatalogBean bean : testList) { %>
-    <hr/>
-    <% if (!currentTestUnitName.equals(bean.getTestUnit())) { %>
-</div>
+<% for (TestCatalogBean bean : testList) { %>
 <div id='<%=bean.getTestUnit().replace(" ", "_")%>' style="display: none">
+    <hr/>
+
+    <% if (!currentTestUnitName.equals(bean.getTestUnit())) { %>
     <h2><%=bean.getTestUnit()%>
     </h2>
     <hr/>
@@ -261,5 +262,6 @@ Test Catalog
         <% } %>
         <% } %>
     </table>
-    <%} %>
 </div>
+<%} %>
+
