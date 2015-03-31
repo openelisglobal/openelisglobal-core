@@ -142,7 +142,9 @@ Test Catalog
   <span class="tab">The number of significant digits for numeric results.  Entered results will be rounded or padded to the correct number of digits.
     The normal range will also be displayed with the correct number of significant digits</span><br/>
     <b>Select values</b><br/>
-    <span class="tab">Only specified for select, multi-select or cascading multi-select results.  These are the available selections shown to the user</span><br/>
+    <span class="tab">Only specified for select, multi-select or cascading multi-select results.
+        These are the available selections shown to the user.  If the selection is marked as "qualifiable" then when the user
+        selects that value they will be able to enter additional information in a text box.</span><br/>
     <b>Reference value</b><br/>
     <span class="tab">The value of a selection for a healthy person.  Only given for select list results</span><br/>
     <b>Result limits</b><br/>
@@ -186,35 +188,35 @@ Test Catalog
             <td colspan="2"><span class="catalog-label">Report Name</span></td>
         </tr>
         <tr>
-            <td width="25%"><span class="catalog-label">En.</span> <%=bean.getEnglishName()%>
+            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishName()%></>
             </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <%=bean.getFrenchName()%>
+            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchName()%></>
             </td>
-            <td width="25%"><span class="catalog-label">En.</span> <%=bean.getEnglishReportName()%>
+            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishReportName()%></>
             </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <%=bean.getFrenchReportName()%>
-            </td>
-        </tr>
-        <tr>
-            <td><%=bean.getActive()%>
-            </td>
-            <td><%=bean.getOrderable()%>
+            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchReportName()%></>
             </td>
         </tr>
         <tr>
-            <td><span class="catalog-label">Test Unit</span> <%=bean.getTestUnit()%>
+            <td><b><%=bean.getActive()%></>
             </td>
-            <td><span class="catalog-label">Sample Type</span> <%=bean.getSampleType()%>
-            </td>
-            <td><span class="catalog-label">Panel</span> <%=bean.getPanel()%>
-            </td>
-            <td><span class="catalog-label">Result Type</span> <%=bean.getResultType()%>
+            <td><b><%=bean.getOrderable()%></>
             </td>
         </tr>
         <tr>
-            <td><span class="catalog-label">uom</span> <%=bean.getUom()%>
+            <td><span class="catalog-label">Test Unit</span> <b><%=bean.getTestUnit()%></>
             </td>
-            <td><span class="catalog-label">Significant digits</span> <%= bean.getSignificantDigits() %>
+            <td><span class="catalog-label">Sample Type</span> <b><%=bean.getSampleType()%></>
+            </td>
+            <td><span class="catalog-label">Panel</span> <b><%=bean.getPanel()%></>
+            </td>
+            <td><span class="catalog-label">Result Type</span> <b><%=bean.getResultType()%></>
+            </td>
+        </tr>
+        <tr>
+            <td><span class="catalog-label">uom</span> <b><%=bean.getUom()%></>
+            </td>
+            <td><span class="catalog-label">Significant digits</span> <b><%= bean.getSignificantDigits() %></>
             </td>
         </tr>
         <% if (bean.isHasDictionaryValues()) {
@@ -223,11 +225,11 @@ Test Catalog
         %>
         <tr>
             <td><% if (top) { %><span class="catalog-label">Select values</span><% } %></td>
-            <td colspan="2"><%=value%>
+            <td colspan="2"><b><%=value%></>
             </td>
             <td colspan="2"><% if (top) {
                 top = false;%><span class="catalog-label">Reference value  </span>
-                <%=bean.getReferenceValue()%>
+                <b><%=bean.getReferenceValue()%></>
             </td>
             <% } %>
         </tr>
@@ -237,7 +239,7 @@ Test Catalog
         %>
         <% if (bean.isHasLimitValues()) { %>
         <tr>
-            <td colspan="5" align="center">Result Limits</td>
+            <td colspan="5" align="center"><span class="catalog-label">Result Limits</span></td>
         </tr>
         <tr>
             <td><span class="catalog-label">Sex</span></td>
@@ -247,13 +249,13 @@ Test Catalog
         </tr>
         <% for (ResultLimitBean limitBean : bean.getResultLimits()) {%>
         <tr>
-            <td><%=limitBean.getGender()%>
+            <td><b><%=limitBean.getGender()%></>
             </td>
-            <td><%=limitBean.getAgeRange()%>
+            <td><b><%=limitBean.getAgeRange()%></>
             </td>
-            <td><%=limitBean.getNormalRange()%>
+            <td><b><%=limitBean.getNormalRange()%></>
             </td>
-            <td><%=limitBean.getValidRange()%>
+            <td><b><%=limitBean.getValidRange()%></>
             </td>
         </tr>
         <% } %>

@@ -38,6 +38,7 @@ public class TestCatalogBean {
     private String referenceValue;
     private boolean hasLimitValues = false;
     private List<ResultLimitBean> resultLimits;
+    private int testSortOrder = Integer.MAX_VALUE;
 
 
     public String getEnglishName() {
@@ -174,5 +175,13 @@ public class TestCatalogBean {
 
     public void setResultLimits(List<ResultLimitBean> resultLimits) {
         this.resultLimits = resultLimits;
+    }
+
+    public int getTestSortOrder() {
+        return testSortOrder;
+    }
+
+    public void setTestSortOrder(int testSortOrder) {
+        this.testSortOrder = testSortOrder;
     }
 }
