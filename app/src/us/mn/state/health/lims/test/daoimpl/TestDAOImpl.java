@@ -916,9 +916,8 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			if(test.getIsActive().equalsIgnoreCase("Y")){
 				// not case sensitive hemolysis and Hemolysis are considered
 				// duplicates
-				String sql = "from Test t where (t.localizedTestName.id = :testNameId and t.isActive='Y' and t.id != :testId) or (trim(lower(t.description)) = :description and t.isActive='Y' and t.id != :testId)";
+				String sql = "from Test t where (trim(lower(t.description)) = :description and t.isActive='Y' and t.id != :testId)";
 				org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
-				query.setInteger("testNameId", Integer.parseInt( test.getLocalizedTestName().getId()));
 
 				// initialize with 0 (for new records where no id has been
 				// generated yet
