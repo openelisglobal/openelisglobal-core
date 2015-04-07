@@ -5,7 +5,6 @@
         %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants" %>
 <%@ page import="us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean" %>
-<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -60,11 +59,10 @@
 
         $jq(".testSection").each(function () {
             element = $jq(this);
+            element.prop('checked', checked);
             if (checked) {
-                element.prop('checked', true);
                 $jq("#" + element.val()).show();
             } else {
-                element.prop('checked', false);
                 $jq("#" + element.val()).hide();
             }
         })
@@ -113,6 +111,8 @@
   <span class="tab">The type of sample on which the the test can be done.  If the intake technician is able to select
   the type of sample after they have ordered the test it will be marked as user to indicate that the user will
   select the type</span><br/>
+    <b>Panel</b><br/>
+  <span class="tab">If this test is part of a test panel then the panel will be named here.</span><br/>
     <b>Result type</b><br/>
     <span class="tab">The kind of result for this test</span>
     <UL>
@@ -167,16 +167,18 @@
 <h4>Select test section to view catalog for that section</h4>
 <input type="checkbox" onchange="sectionSelectionAll(this)">All<br/><br/>
 <% for (String testSection : testSectionList) {%>
-<input type="checkbox" class="testSection" value='<%=testSection.replace(" ", "_")%>'
+<input type="checkbox" class="testSection" value='<%=testSection.replace(" ", "_").replace("/", "_")%>'
        onchange="sectionSelection(this)"><%=testSection%><br/>
 <% } %>
 <br/>
-
+<div>
 <% for (TestCatalogBean bean : testList) { %>
-<div id='<%=bean.getTestUnit().replace(" ", "_")%>' style="display: none">
-    <hr/>
-
+<hr/>
     <% if (!currentTestUnitName.equals(bean.getTestUnit())) { %>
+</div>
+<div id='<%=bean.getTestUnit().replace(" ", "_").replace("/", "_")%>' style="display: none">
+
+
     <h2><%=bean.getTestUnit()%>
     </h2>
     <hr/>
@@ -262,6 +264,6 @@
         <% } %>
         <% } %>
     </table>
-</div>
 <%} %>
+    </div>
 
