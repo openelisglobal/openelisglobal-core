@@ -80,10 +80,10 @@ public class TestCatalogAction extends BaseAction {
             TestCatalogBean bean = new TestCatalogBean();
             TestService testService = new TestService(test);
             String resultType = testService.getResultType();
-            bean.setEnglishName(TestService.getUserLocalizedTestName(test));
-            bean.setFrenchName(TestService.getUserLocalizedTestName(test));
-            bean.setEnglishReportName(TestService.getUserLocalizedReportingTestName(test));
-            bean.setFrenchReportName(TestService.getUserLocalizedReportingTestName(test));
+            bean.setEnglishName(test.getLocalizedTestName().getEnglish());
+            bean.setFrenchName(test.getLocalizedTestName().getFrench());
+            bean.setEnglishReportName(test.getLocalizedReportingName().getEnglish());
+            bean.setFrenchReportName(test.getLocalizedReportingName().getFrench());
             bean.setTestSortOrder(Integer.parseInt(test.getSortOrder()));
             bean.setTestUnit(testService.getTestSectionName());
             bean.setPanel(createPanelList(testService));
