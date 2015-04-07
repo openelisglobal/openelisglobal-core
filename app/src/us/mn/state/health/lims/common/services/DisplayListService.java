@@ -40,6 +40,10 @@ import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
+import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
+import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
 
 import java.util.*;
 
@@ -73,7 +77,10 @@ public class DisplayListService implements LocaleChangeListener {
         REFERRAL_REASONS,
         REFERRAL_ORGANIZATIONS,
         TEST_LOCATION_CODE,
-        PROGRAM
+        PROGRAM,
+        RESULT_TYPE_LOCALIZED,
+        RESULT_TYPE_RAW,
+        UNIT_OF_MEASURE
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
@@ -104,11 +111,15 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
         typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
-        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
-        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
+        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory("testLocationCode"));
+        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory("programs")  );
+        typeToListMap.put(ListType.RESULT_TYPE_LOCALIZED, createLocalizedResultTypeList());
+        typeToListMap.put(ListType.RESULT_TYPE_RAW, createRawResultTypeList());
+        typeToListMap.put(ListType.UNIT_OF_MEASURE, createUOMList());
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
+
 
     @Override
     public void localeChanged(String locale) {
@@ -131,12 +142,13 @@ public class DisplayListService implements LocaleChangeListener {
         dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
         typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
-        new TestService( (Test)null ).localeChanged( locale );
+        new TestService( (Test)null ).localeChanged(locale);
         typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
         typeToListMap.put(ListType.ALL_TESTS, createTestList());
-        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
+        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory("testLocationCode"));
         typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
-
+        typeToListMap.put(ListType.RESULT_TYPE_LOCALIZED, createLocalizedResultTypeList());
+        typeToListMap.put(ListType.UNIT_OF_MEASURE, createUOMList());
     }
 
     public static List<IdValuePair> getList(ListType listType) {
@@ -150,13 +162,13 @@ public class DisplayListService implements LocaleChangeListener {
         return list;
     }
 
-    public static List<IdValuePair> getNumberedList(ListType listType){
+    public static List<IdValuePair> getNumberedList(ListType listType) {
         return addNumberingToDisplayList( getList( listType ) );
     }
 
     public static List<IdValuePair> getNumberedListWithLeadingBlank(ListType listType){
         List<IdValuePair> list = new ArrayList<IdValuePair>(  );
-        list.add( new IdValuePair( "0", "" ) );
+        list.add( new IdValuePair("0", "" ) );
         list.addAll( getNumberedList( listType ) );
         return list ;
     }
@@ -170,6 +182,51 @@ public class DisplayListService implements LocaleChangeListener {
         }
 
         return list;
+    }
+
+    private static List<IdValuePair> createUOMList() {
+        List<IdValuePair> list = new ArrayList<IdValuePair>();
+        List<UnitOfMeasure> uomList = new UnitOfMeasureDAOImpl().getAllUnitOfMeasures();
+        for( UnitOfMeasure uom : uomList){
+            list.add(new IdValuePair(uom.getId(), uom.getLocalizedName()));
+        }
+
+        return list;
+    }
+
+    private static List<IdValuePair> createLocalizedResultTypeList() {
+        List<IdValuePair> typeList = new ArrayList<IdValuePair>();
+
+        List<TypeOfTestResult> typeOfTestResultList = new TypeOfTestResultDAOImpl().getAllTypeOfTestResults();
+        for(TypeOfTestResult typeOfTestResult : typeOfTestResultList){
+            String description = typeOfTestResult.getDescription();
+            if( "Dictionary".equals(description)){
+                typeList.add(new IdValuePair(typeOfTestResult.getId(), StringUtil.getMessageForKey("result.type.select")));
+            }else if( "Numeric".equals(description)){
+                typeList.add(new IdValuePair(typeOfTestResult.getId(), StringUtil.getMessageForKey("result.type.numeric")));
+            }else if( "Remark".equals(description)){
+                typeList.add(new IdValuePair(typeOfTestResult.getId(), StringUtil.getMessageForKey("result.type.freeText")));
+            }else if( "Alpha,no range check".equals(description)){
+                typeList.add(new IdValuePair(typeOfTestResult.getId(), StringUtil.getMessageForKey("result.type.alpha")));
+            }else if( "Multiselect".equals(description)){
+                typeList.add(new IdValuePair(typeOfTestResult.getId(), StringUtil.getMessageForKey("result.type.multiselect")));
+            }else if( "Cascading Multiselect".equals(description)){
+                typeList.add(new IdValuePair(typeOfTestResult.getId(), StringUtil.getMessageForKey("result.type.cascading")));
+            }
+        }
+
+        return typeList;
+    }
+
+    private static List<IdValuePair> createRawResultTypeList() {
+        List<IdValuePair> typeList = new ArrayList<IdValuePair>();
+
+        List<TypeOfTestResult> typeOfTestResultList = new TypeOfTestResultDAOImpl().getAllTypeOfTestResults();
+        for(TypeOfTestResult typeOfTestResult : typeOfTestResultList){
+                typeList.add(new IdValuePair(typeOfTestResult.getId(), typeOfTestResult.getDescription()));
+        }
+
+        return typeList;
     }
 
     private static List<IdValuePair> createDictionaryListForCategory( String category ){
@@ -195,12 +252,12 @@ public class DisplayListService implements LocaleChangeListener {
                 break;
             }
             case ALL_TESTS:{
-                TestService.testNamesChanged();
+                TestService.refreshTestNames();
                 typeToListMap.put(ListType.ALL_TESTS, createTestList());
                 break;
             }
             case ORDERABLE_TESTS:{
-                TestService.testNamesChanged();
+                TestService.refreshTestNames();
                 typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
                 break;
             }

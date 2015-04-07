@@ -77,9 +77,6 @@ import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
-import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -385,7 +382,7 @@ public class ResultsLoadUtility {
 
 				testKit = getInventoryForResult(result);
 
-				multiSelectionResult = ResultType.isMultiSelectVariant( result.getResultType());
+				multiSelectionResult = TypeOfTestResultService.ResultType.isMultiSelectVariant( result.getResultType());
 			}
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
@@ -702,7 +699,7 @@ public class ResultsLoadUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && !testResults.isEmpty() && ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
+		if (testResults != null && !testResults.isEmpty() && TypeOfTestResultService.ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Collections.sort(testResults, new Comparator<TestResult>() {
@@ -719,7 +716,7 @@ public class ResultsLoadUtility {
 			
 			String qualifiedDictionaryIds = "";
 			for (TestResult testResult : testResults) {
-				if ( ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
+				if ( TypeOfTestResultService.ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
 					dictionary = new Dictionary();
 					dictionary.setId(testResult.getValue());
 					dictionaryDAO.getData(dictionary);
@@ -789,7 +786,7 @@ public class ResultsLoadUtility {
 	private List<IdValuePair> getAnyDictionaryValues(Result result) {
 		List<IdValuePair> values = null;
 
-		if (result != null && ResultType.isDictionaryVariant( result.getResultType() )) {
+		if (result != null && TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Dictionary dictionaryValue = new Dictionary();

@@ -34,9 +34,6 @@ public class TypeOfSampleUtil {
 		createTypeOfSampleIdentityMap();
 	}
 
-	public static void rebuildMaps(){
-		createTypeOfSampleIdentityMap();
-	}
     public static List<Test> getActiveTestsBySampleTypeId(String sampleTypeId, boolean orderableOnly) {
 
         List<Test> testList = sampleIdTestMap.get(sampleTypeId);

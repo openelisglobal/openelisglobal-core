@@ -85,8 +85,7 @@ public class PanelItemDAOImpl extends BaseDAOImpl implements PanelItemDAO {
 	}
 
 	public boolean insertData(PanelItem panelItem) throws LIMSRuntimeException {
-		try {	
-			// bugzilla 1482 throw Exception if record already exists
+		try {
 			if (duplicatePanelItemExists(panelItem)) {
 				throw new LIMSDuplicateRecordException(
 						"Duplicate record exists for "
@@ -359,19 +358,18 @@ public class PanelItemDAOImpl extends BaseDAOImpl implements PanelItemDAO {
 
 		return list;
 	}
-	
-	// bugzilla 1482
+
 	private boolean duplicatePanelItemExists(PanelItem panelItem) throws LIMSRuntimeException {
 		try {
 			List list = new ArrayList();
 
 			// not case sensitive hemolysis and Hemolysis are considered
 			// duplicates
-			String sql = "from PanelItem t where trim(lower(t.panel.panelName)) = :param and trim(lower(t.testName)) = :param2 and t.id != :panelItemId";
+			String sql = "from PanelItem t where trim(lower(t.panel.panelName)) = :panelName and trim(lower(t.testName)) = :testName and t.id != :panelItemId";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(
 					sql);
-			query.setParameter("param", panelItem.getPanel().getPanelName().toLowerCase().trim());
-			query.setParameter("param2", panelItem.getTestName().toLowerCase().trim());
+			query.setParameter("panelName", panelItem.getPanel().getPanelName().toLowerCase().trim());
+			query.setParameter("testName", panelItem.getTest().getTestName().toLowerCase().trim());
 
 	
 			// initialize with 0 (for new records where no id has been generated

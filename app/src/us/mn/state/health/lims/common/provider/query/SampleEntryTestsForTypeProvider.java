@@ -105,6 +105,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
         if( isVariableTypeOfSample){
             xml.append( "<variableSampleType/>" );
         }
+		XMLUtil.appendKeyValue("sampleTypeId", sampleType, xml);
 		addTests(tests, xml);
 
 		List<TypeOfSamplePanel> panelList = getPanelList(sampleType);

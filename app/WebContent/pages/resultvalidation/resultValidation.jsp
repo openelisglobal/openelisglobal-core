@@ -6,12 +6,13 @@
 	us.mn.state.health.lims.common.util.IdValuePair,
 	us.mn.state.health.lims.common.util.StringUtil,
 	us.mn.state.health.lims.common.util.Versioning,
-	us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType,
+	us.mn.state.health.lims.common.services.TypeOfTestResultService.ResultType,
     java.text.DecimalFormat,
 	java.util.List,
 	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem,
 	us.mn.state.health.lims.common.util.ConfigurationProperties,
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
+<%@ page import="us.mn.state.health.lims.common.services.TypeOfTestResultService" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -466,7 +467,7 @@ function /*boolean*/ handleEnterEvent(){
 					<% } %>
 				</td>
 				<td>
-					<% if( ResultType.NUMERIC.matches(resultList.getResultType())){%>
+					<% if( TypeOfTestResultService.ResultType.NUMERIC.matches(resultList.getResultType())){%>
 						<% if( resultList.isReadOnly() ){%>
 							<div
 								class='results-readonly <%= (resultList.getIsHighlighted() ? "invalidHighlight " : " ") + (resultList.isReflexGroup() ? "reflexGroup_" + resultList.getSampleGroupingNumber()  : "")  +  
@@ -487,7 +488,7 @@ function /*boolean*/ handleEnterEvent(){
 								                (resultList.isReflexGroup() && !resultList.isChildReflex() ? "updateReflexChild(" + resultList.getSampleGroupingNumber()  +  " ); " : "")  %>'/>
 	    				<% } %>
 						<bean:write name="resultList" property="units"/>
-					<% }else if( ResultType.DICTIONARY.matches(resultList.getResultType())){ %>
+					<% }else if( TypeOfTestResultService.ResultType.DICTIONARY.matches(resultList.getResultType())){ %>
 						<select name="<%="resultList[" + index + "].result" %>" 
 						        id='<%="resultId_" + index%>' 
 						        onchange= '<%= "markUpdated(); makeDirty();" +
@@ -505,7 +506,7 @@ function /*boolean*/ handleEnterEvent(){
 			           			style = '<%= "display:" + (resultList.isHasQualifiedResult() ? "inline" : "none") %>'
 					   			<%= resultList.isReadOnly() ? "disabled='disabled'" : ""%> />
                     <bean:write name="resultList" property="units"/>
-					<% }else  if( ResultType.MULTISELECT.matches(resultList.getResultType())){%>
+					<% }else  if( TypeOfTestResultService.ResultType.MULTISELECT.matches(resultList.getResultType())){%>
                     <!-- multiple results -->
                     <select name="<%="resultList[" + index + "].multiSelectResultValues" %>"
                             id='<%="resultId_" + index + "_0"%>'
@@ -532,7 +533,7 @@ function /*boolean*/ handleEnterEvent(){
                            onchange='<%="markUpdated(" + index + ");" %>'
                             />
                     <bean:write name="resultList" property="units"/>
-                    <%}else  if( ResultType.CASCADING_MULTISELECT.matches(resultList.getResultType())){%>
+                    <%}else  if( TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.matches(resultList.getResultType())){%>
                     <!-- cascading multiple results -->
                     <div id='<%="cascadingMulti_" + index + "_0"%>' class='<%="cascadingMulti_" + index %>' >
                     <input type="hidden" id='<%="divCount_" + index %>' value="0" >
@@ -563,7 +564,7 @@ function /*boolean*/ handleEnterEvent(){
                             />
                     <bean:write name="resultList" property="units"/>
                      </div>
-                    <% }else if( ResultType.ALPHA.matches(resultList.getResultType())){%>
+                    <% }else if( TypeOfTestResultService.ResultType.ALPHA.matches(resultList.getResultType())){%>
                     <app:text name="resultList"
                               indexed="true"
                               property="result"
@@ -573,7 +574,7 @@ function /*boolean*/ handleEnterEvent(){
                               onchange='<%="markUpdated(); makeDirty(); updateLogValue(this, " + index + ");" %>'/>
                     <bean:write name="resultList" property="units"/>
 
-                    <%}else if( ResultType.REMARK.matches(resultList.getResultType())){ %>
+                    <%}else if( TypeOfTestResultService.ResultType.REMARK.matches(resultList.getResultType())){ %>
 						<app:textarea name="resultList"
 								  indexed="true"
 								  property="result"

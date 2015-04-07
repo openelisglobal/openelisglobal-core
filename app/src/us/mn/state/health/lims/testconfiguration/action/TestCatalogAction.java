@@ -27,6 +27,7 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
@@ -38,7 +39,6 @@ import us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean;
 import us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,12 +93,12 @@ public class TestCatalogAction extends BaseAction {
             bean.setOrderable(test.getOrderable() ? "Orderable" : "Not orderable");
             bean.setActive(test.isActive() ? "Active" : "Not active");
             bean.setUom(testService.getUOM(false));
-            if( TypeOfTestResult.ResultType.NUMERIC.matches(resultType)) {
+            if( TypeOfTestResultService.ResultType.NUMERIC.matches(resultType)) {
                 bean.setSignificantDigits(testService.getPossibleTestResults().get(0).getSignificantDigits());
                 bean.setHasLimitValues(true);
                 bean.setResultLimits(getResultLimits(test, bean.getSignificantDigits()));
             }
-            bean.setHasDictionaryValues(TypeOfTestResult.ResultType.isDictionaryVariant(bean.getResultType()));
+            bean.setHasDictionaryValues(TypeOfTestResultService.ResultType.isDictionaryVariant(bean.getResultType()));
             if( bean.isHasDictionaryValues()){
                 bean.setDictionaryValues(createDictionaryValues(testService));
                 bean.setReferenceValue(createReferenceValueForDictionaryType(test));
@@ -178,7 +178,7 @@ public class TestCatalogAction extends BaseAction {
 
     private String getDictionaryValue(TestResult testResult) {
 
-        if (TypeOfTestResult.ResultType.isDictionaryVariant(testResult.getTestResultType())) {
+        if (TypeOfTestResultService.ResultType.isDictionaryVariant(testResult.getTestResultType())) {
             Dictionary dictionary = dictionaryDAO.getDataForId(testResult.getValue());
             String displayValue = dictionary.getLocalizedName();
 
