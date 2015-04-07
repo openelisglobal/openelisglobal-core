@@ -10,6 +10,7 @@
             	<param name="sequence">panel_item_seq</param>
             </generator>
         </id>
+
         <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field"/>
 
         <many-to-one name="panel" class="us.mn.state.health.lims.panel.valueholder.Panel" fetch="select">
@@ -30,8 +31,7 @@
         <property name="methodName" type="java.lang.String">
             <column name="METHOD_NAME" length="20" />
         </property>
-        
-        <property name="testId" column="test_id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType" />
+
         
     </class>
     <query name="panelitem.getNext">
