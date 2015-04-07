@@ -17,7 +17,7 @@ package us.mn.state.health.lims.unitofmeasure.valueholder;
 
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 
-//bugzilla 1625
+
 public class UnitOfMeasure extends EnumValueItemImpl {
 
 	private String id;
@@ -32,7 +32,6 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 
 	public void setId(String id) {
 		this.id = id;
-		//bugzilla 1625
 		this.key = id;
 	}
 
@@ -42,7 +41,6 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 
 	public void setUnitOfMeasureName(String unitOfMeasureName) {
 		this.unitOfMeasureName = unitOfMeasureName;
-		//bugzilla 1625
 		this.name = unitOfMeasureName;
 	}
 
@@ -58,4 +56,8 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 		return description;
 	}
 
+	@Override
+	protected String getDefaultLocalizedName(){
+		return getUnitOfMeasureName();
+	}
 }

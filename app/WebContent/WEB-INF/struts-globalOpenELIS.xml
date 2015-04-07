@@ -854,6 +854,10 @@
             <forward name="success" path="testAddDefinition" />
         </action>
 
+		<action path="/TestAddUpdate" name="testAddForm" type="us.mn.state.health.lims.testconfiguration.action.TestAddUpdate" >
+			<forward name="success" path="testAddDefinition" />
+		</action>
+
 		<action path="/TestCatalog" name="testCatalogForm" type="us.mn.state.health.lims.testconfiguration.action.TestCatalogAction" >
 			<forward name="success" path="testCatalogDefinition" />
 		</action>

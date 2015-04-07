@@ -24,10 +24,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
-import us.mn.state.health.lims.common.services.AnalysisService;
-import us.mn.state.health.lims.common.services.DisplayListService;
-import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -49,7 +46,6 @@ import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -95,13 +91,13 @@ public class ReferredOutAction extends BaseAction {
 	private void fillInDictionaryValuesForReferralItems(List<ReferralItem> referralItems) {
 		for (ReferralItem referralItem : referralItems) {
 			String referredResultType = referralItem.getReferredResultType();
-            if ( ResultType.isDictionaryVariant( referredResultType )) {
+            if ( TypeOfTestResultService.ResultType.isDictionaryVariant( referredResultType )) {
 				referralItem.setDictionaryResults(getDictionaryValuesForTest(referralItem.getReferredTestId()));
 			}
 
 			if (referralItem.getAdditionalTests() != null) {
 				for (ReferredTest test : referralItem.getAdditionalTests()) {
-					if (ResultType.isDictionaryVariant( test.getReferredResultType() )) {
+					if (TypeOfTestResultService.ResultType.isDictionaryVariant( test.getReferredResultType() )) {
 						test.setDictionaryResults(getDictionaryValuesForTest(test.getReferredTestId()));
 					}
 				}
@@ -245,7 +241,7 @@ public class ReferredOutAction extends BaseAction {
 
 		String resultType = (result != null)?result.getResultType():"N";
 		referralItem.setReferredResultType(resultType);
-		if ( !ResultType.isMultiSelectVariant(resultType) ) {
+		if ( !TypeOfTestResultService.ResultType.isMultiSelectVariant(resultType) ) {
             if (result != null ) {
     			String resultValue = GenericValidator.isBlankOrNull(result.getValue()) ? "" : result.getValue();
     			referralItem.setReferredResult(resultValue);
@@ -282,12 +278,12 @@ public class ReferredOutAction extends BaseAction {
 
 	private String getAppropriateResultValue(List<Result> results) {
 	    Result result = results.get(0);
-		if (ResultType.DICTIONARY.matches(result.getResultType())) {
+		if (TypeOfTestResultService.ResultType.DICTIONARY.matches(result.getResultType())) {
 			Dictionary dictionary = dictionaryDAO.getDictionaryById(result.getValue());
 			if (dictionary != null) {
 				return dictionary.getLocalizedName();
 			}
-		} else if (ResultType.isMultiSelectVariant(result.getResultType())) {
+		} else if (TypeOfTestResultService.ResultType.isMultiSelectVariant(result.getResultType())) {
             Dictionary dictionary = new Dictionary();
             StringBuilder multiResult = new StringBuilder();
         
@@ -354,12 +350,12 @@ public class ReferredOutAction extends BaseAction {
 
 				nonNumericTests.testId = testId;
                 nonNumericTests.testType = testResultList.get(0).getTestResultType();
-				boolean isSelectList = ResultType.isDictionaryVariant( nonNumericTests.testType );
+				boolean isSelectList = TypeOfTestResultService.ResultType.isDictionaryVariant( nonNumericTests.testType );
 
 				if (isSelectList) {
 					List<IdValuePair> dictionaryValues = new ArrayList<IdValuePair>();
 					for (TestResult testResult : testResultList) {
-						if (ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
+						if (TypeOfTestResultService.ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
 							String resultName = dictionaryDAO.getDictionaryById(testResult.getValue()).getLocalizedName();
 							dictionaryValues.add(new IdValuePair(testResult.getValue(), resultName));
 						}

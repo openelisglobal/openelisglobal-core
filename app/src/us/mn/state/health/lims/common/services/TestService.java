@@ -37,7 +37,6 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,10 +86,10 @@ public class TestService implements LocaleChangeListener{
     @Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;
-        testNamesChanged();
+        refreshTestNames();
     }
 
-    public static void testNamesChanged( ){
+    public static void refreshTestNames(){
         entityToMap.put( Entity.TEST_NAME, createTestIdToNameMap() );
         entityToMap.put(Entity.TEST_AUGMENTED_NAME, createTestIdToAugmentedNameMap());
         entityToMap.put(Entity.TEST_REPORTING_NAME, createTestIdToReportingNameMap());
@@ -151,7 +150,7 @@ public class TestService implements LocaleChangeListener{
     }
 
     public String getResultType(){
-        String testResultType = TypeOfTestResult.ResultType.NUMERIC.getDBValue();
+        String testResultType = TypeOfTestResultService.ResultType.NUMERIC.getCharacterValue();
         List<TestResult> testResults = getPossibleTestResults();
 
         if (testResults != null && !testResults.isEmpty()) {

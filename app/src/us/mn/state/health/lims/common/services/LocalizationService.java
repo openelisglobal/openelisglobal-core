@@ -37,6 +37,23 @@ public class LocalizationService implements LocaleChangeListener{
         SystemConfiguration.getInstance().addLocalChangeListener( INSTANCE );
     }
 
+    public enum LocalizationType{
+        TEST_NAME("test name"),
+        REPORTING_TEST_NAME("test report name"),
+        BANNER_LABEL("Site information banner test"),
+        TEST_UNIT_NAME("test unit name"),
+        PANEL_NAME("panel name"),
+        BILL_REF_LABEL("Billing reference_label");
+
+        String dbLabel;
+
+        LocalizationType( String dbLabel){
+            this.dbLabel = dbLabel;
+        }
+
+        public String getDBDescription( ){ return dbLabel;}
+    }
+
     public LocalizationService( String id){
         if( !GenericValidator.isBlankOrNull( id )){
             localization = localizationDAO.getLocalizationById( id );
@@ -101,5 +118,13 @@ public class LocalizationService implements LocaleChangeListener{
         if( localization != null ){
             localization.setSysUserId( currentUserId );
         }
+    }
+
+    public static Localization createNewLocalization( String english, String french, LocalizationType type){
+        Localization localization = new Localization();
+        localization.setDescription(type.getDBDescription());
+        localization.setEnglish(english);
+        localization.setFrench(french);
+        return localization;
     }
 }

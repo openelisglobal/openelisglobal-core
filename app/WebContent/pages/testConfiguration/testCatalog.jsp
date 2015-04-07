@@ -171,6 +171,9 @@
        onchange="sectionSelection(this)"><%=testSection%><br/>
 <% } %>
 <br/>
+<%-- This div has to do with the divs in the loop.  The closing div is before the opening div because each change of test unit
+needs to be in a div.  This div matches the first time through and there is a closing div at the end of the html
+which closes it the last time through--%>
 <div>
 <% for (TestCatalogBean bean : testList) { %>
 <hr/>

@@ -61,8 +61,6 @@ public class Test extends EnumValueItemImpl {
 
 	private ValueHolderInterface scriptlet;
 
-	private String unitOfMeasureId;
-
 	private String testName;
 
 	private String description;
@@ -301,13 +299,6 @@ public class Test extends EnumValueItemImpl {
 		this.timeWarning = timeWarning;
 	}
 
-	public String getUnitOfMeasureId() {
-		return unitOfMeasureId;
-	}
-
-	public void setUnitOfMeasureId(String unitOfMeasureId) {
-		this.unitOfMeasureId = unitOfMeasureId;
-	}
 
     /**
      * @deprecated names are now in localization table
@@ -372,80 +363,42 @@ public class Test extends EnumValueItemImpl {
 		this.method.setValue(method);
 	}
 
-	protected void setMethodHolder(ValueHolderInterface method) {
-		this.method = method;
-	}
-
 	public Method getMethod() {
 		return (Method) this.method.getValue();
-	}
-
-	protected ValueHolderInterface getMethodHolder() {
-		return this.method;
 	}
 
 	public void setLabel(Label label) {
 		this.label.setValue(label);
 	}
 
-	protected void setLabelHolder(ValueHolderInterface label) {
-		this.label = label;
-	}
-
 	public Label getLabel() {
 		return (Label) this.label.getValue();
-	}
-
-	protected ValueHolderInterface getLabelHolder() {
-		return this.label;
 	}
 
 	public void setTestTrailer(TestTrailer testTrailer) {
 		this.testTrailer.setValue(testTrailer);
 	}
 
-	protected void setTestTrailerHolder(ValueHolderInterface testTrailer) {
-		this.testTrailer = testTrailer;
-	}
 
 	public TestTrailer getTestTrailer() {
 		return (TestTrailer) this.testTrailer.getValue();
-	}
-
-	protected ValueHolderInterface getTestTrailerHolder() {
-		return this.testTrailer;
 	}
 
 	public void setTestSection(TestSection testSection) {
 		this.testSection.setValue(testSection);
 	}
 
-	protected void setTestSectionHolder(ValueHolderInterface testSection) {
-		this.testSection = testSection;
-	}
 
 	public TestSection getTestSection() {
 		return (TestSection) this.testSection.getValue();
-	}
-
-	protected ValueHolderInterface getTestSectionHolder() {
-		return this.testSection;
 	}
 
 	public void setScriptlet(Scriptlet scriptlet) {
 		this.scriptlet.setValue(scriptlet);
 	}
 
-	protected void setScriptletHolder(ValueHolderInterface scriptlet) {
-		this.scriptlet = scriptlet;
-	}
-
 	public Scriptlet getScriptlet() {
 		return (Scriptlet) this.scriptlet.getValue();
-	}
-
-	protected ValueHolderInterface getScriptletHolder() {
-		return this.scriptlet;
 	}
 
 	public UnitOfMeasure getUnitOfMeasure() {
