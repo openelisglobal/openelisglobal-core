@@ -1032,6 +1032,11 @@
             <where>id = ( currval( 'test_reflex_seq' ) - 1 )</where>
         </update>
     </changeSet>
-
-
+    <changeSet id="1" author="jfurlong" context="CDIRetroCI">
+        <comment>Add permissions for hemotology super user and validator to access Result Validation > Immunology - Hematology</comment>
+        <sql>
+		insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Hematology Validation'), (select id from clinlims.system_module where name = 'ResultValidation:immunology'));
+		insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Hematology super user'), (select id from clinlims.system_module where name = 'ResultValidation:immunology'));
+        </sql>
+    </changeSet>
 </databaseChangeLog>

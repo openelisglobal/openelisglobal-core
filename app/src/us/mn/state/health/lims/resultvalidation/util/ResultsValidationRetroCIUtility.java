@@ -773,7 +773,9 @@ public class ResultsValidationRetroCIUtility {
 		analysisResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
 		analysisResultItem.setTestName(testName);
 		analysisResultItem.setUnits(testUnits);
-		analysisResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		if (!(testResultItem.getAnalysis() == null)) {
+			analysisResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		}
 		analysisResultItem.setPastNotes(testResultItem.getPastNotes());
 		analysisResultItem.setResultId(testResultItem.getResultId());
 		analysisResultItem.setResultType(testResultItem.getResultType());
@@ -782,7 +784,7 @@ public class ResultsValidationRetroCIUtility {
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
         if( result != null){
-            if( TypeOfTestResultService.ResultType.isMultiSelectVariant( testResultItem.getResultType() ) ){
+            if( TypeOfTestResultService.ResultType.isMultiSelectVariant( testResultItem.getResultType() ) && !(testResultItem.getAnalysis() == null) ){
                 analysisResultItem.setMultiSelectResultValues( new AnalysisService( testResultItem.getAnalysis() ).getJSONMultiSelectResults() );
             }else{
                 analysisResultItem.setResult( getFormattedResult( testResultItem ) );
@@ -798,8 +800,10 @@ public class ResultsValidationRetroCIUtility {
         }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
-		analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
-                StatusService.getInstance().matches( testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected ));
+		if (!(testResultItem.getAnalysis() == null)) {
+			analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
+					StatusService.getInstance().matches( testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected ));
+		}
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
