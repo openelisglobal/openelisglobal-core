@@ -54,10 +54,13 @@
 <bean:define id="uomList" name='<%=formName%>'  property="uomList" type="java.util.List<IdValuePair>" />
 <bean:define id="resultTypeList" name='<%=formName%>'  property="resultTypeList" type="java.util.List<IdValuePair>" />
 <bean:define id="testUnitList" name='<%=formName%>'  property="labUnitList" type="java.util.List<IdValuePair>" />
+<bean:define id="ageRangeList" name='<%=formName%>'  property="ageRangeList" type="java.util.List<IdValuePair>" />
 
 
     <script type="text/javascript">
         var step = "step1";
+        var currentNormalRangeIndex = 1;
+        var maxAgeInMonths = 0;
 
         if (!$jq) {
             var $jq = jQuery.noConflict();
@@ -81,19 +84,6 @@
             checkReadyForNextStep(e,data);
         }
 
-        function guideSelection(checkbox) {
-            if (checkbox.checked) {
-                $jq("#guide").show();
-            } else {
-                $jq("#guide").hide();
-            }
-        }
-
-        function copyFromTestName(){
-            $jq("#testReportNameEnglish").val($jq("#testNameEnglish").val());
-            $jq("#testReportNameFrench").val($jq("#testNameFrench").val());
-        }
-
         function createOrderBoxForSampleType(e, data){
             var sampleTypeName = $jq("#sampleTypeSelection option[value=" + data.value + "]").text();
             var divId = data.value;
@@ -105,6 +95,27 @@
             }
         }
 
+        function guideSelection(checkbox) {
+            if (checkbox.checked) {
+                $jq("#guide").show();
+            } else {
+                $jq("#guide").hide();
+            }
+        }
+
+        function genderMatersForRange( checkbox, index){
+            if( checkbox.checked){
+                $jq(".sexRange_" + index).show();
+            }else{
+                $jq(".sexRange_" + index).hide();
+            }
+        }
+
+        function copyFromTestName(){
+            $jq("#testReportNameEnglish").val($jq("#testNameEnglish").val());
+            $jq("#testReportNameFrench").val($jq("#testNameFrench").val());
+        }
+
         function testForSampleTypeSuccess(xhr){
             //alert(xhr.responseText);
             var response = xhr.responseXML.getElementsByTagName("formfield").item(0);
@@ -113,7 +124,7 @@
             var test, name, id, li, span;
             var ul = $jq(document.createElement("ul"));
             var length = tests.length;
-            ul.addClass("sortable");
+            ul.addClass("sortable sortable-tag");
 
             for( var i = 0; i < length; ++i){
                 test = tests[i];
@@ -140,7 +151,7 @@
             var span = $jq(document.createElement("span"));
 
             li.val(id);
-            li.addClass("ui-state-default_oe");
+            li.addClass("ui-state-default_oe ui-state-default_oe-tag");
             span.addClass("ui-icon ui-icon-arrowthick-2-n-s");
             li.append(span);
             li.append(name);
@@ -169,6 +180,7 @@
 
         function createNameSpan( sampleTypeName){
             var nameSpan = $jq(document.createElement("span"));
+            nameSpan.addClass("half-tab");
             nameSpan.append(sampleTypeName);
             return nameSpan;
         }
@@ -179,6 +191,212 @@
 
             return sortSpan;
         }
+
+        function makeSortListsReadOnly(){
+            if( $jq(".sortable li").length > 0) {
+                $jq(".sortable").removeClass("sortable");
+                $jq(".ui-state-default_oe").removeClass("ui-state-default_oe");
+            }
+        }
+
+        function upperAgeRangeChanged( index){
+            var copy, htmlCopy, monthYear, lowAge, lowAgeValue, highAgeValue, lowAgeModifier, newMonthValue;
+            var element = $jq("#upperAgeSetter_" + index);
+
+            element.removeClass("error");
+            if( element.val() != "Infinity" ) {
+                monthYear = $jq(".yearMonthSelect_" + index + ":checked").val();
+
+                if (index != 0){
+                    lowAge = $jq("#lowerAge_" + index).text();
+                    lowAgeModifier = lowAge.charAt(lowAge.length - 1);
+                    lowAgeValue = lowAge.substring(0, lowAge.length - 1);
+                    lowAgeValue =  lowAgeModifier == "Y" ? lowAgeValue *= 12 : +lowAgeValue;
+                    highAgeValue = +element.val();
+                    if( highAgeValue != element.val()){
+                        alert("Age must be either a number or 'Infinity'");
+                        element.addClass("error");
+                        return;
+                    }
+
+                    newMonthValue = monthYear == 'M' ? highAgeValue : 12*highAgeValue;
+
+                    if (newMonthValue <= lowAgeValue) {
+                        element.addClass("error");
+                        alert("Age ending value must be greater then age beginning value");
+                        return;
+                    }
+                }
+
+
+                $jq(element).hide();
+                $jq("#upperAge_" + index).text(element.val() + monthYear);
+                $jq(".yearMonthSelect_" + index).attr("disabled", "disabled");
+                $jq("#ageRangeSelect_" + index).attr("disabled", "disabled");
+                copy = $jq("#normalRangeTemplate table tbody").clone();
+                htmlCopy = copy.html().replace(/index/g, currentNormalRangeIndex);
+                $jq("#endRow").before(htmlCopy);
+                $jq(".sexRange_" + currentNormalRangeIndex).hide();
+                $jq("#lowerAge_" + currentNormalRangeIndex).text(element.val() + monthYear);
+                if( index != 0){
+                    $jq("#removeButton_" + index).hide();
+                }
+                currentNormalRangeIndex++;
+            }
+
+        }
+
+        function removeLimitRow( index ){
+            $jq(".row_" + index).remove();
+
+            for( var i = index - 1; index >= 0; i--){
+                if( $jq(".row_" + i)){
+                    $jq(".yearMonthSelect_" + i).removeAttr("disabled");
+                    $jq("#ageRangeSelect_" + i).removeAttr("disabled");
+                    $jq("#ageRangeSelect_" + i ).val(0);
+                    $jq("#upperAge_" + i).text("");
+                    $jq("#upperAgeSetter_" + i).show();
+                    if( i != 0){
+                        $jq("#removeButton_" + i).show();
+                    }
+                    break;
+                }
+            }
+        }
+
+        function ageRangeSelected( element, index){
+            var ageInMonths = $jq(element).find("option:selected").val();
+            var selectFound = false;
+            var optionValue;
+
+            if( ageInMonths != 0){
+                if( ageInMonths == "Infinity"){
+                    $jq("#upperAgeSetter_" + index).val(ageInMonths);
+                }else if( ageInMonths % 12 == 0){
+                    $jq("input:radio[name=time_" + index + "]").val(['Y']);
+                    $jq("#upperAgeSetter_" + index).val(ageInMonths/12);
+                }else {
+                    $jq("input:radio[name=time_" + index + "]").val(['M']);
+                    $jq("#upperAgeSetter_" + index).val(ageInMonths);
+                }
+                upperAgeRangeChanged( index);
+
+                $jq("#ageRangeSelect_" + (currentNormalRangeIndex - 1) + " option").each( function(){
+                    optionValue = $jq(this).val();
+                    if( !selectFound ){
+                       if(optionValue == ageInMonths ){
+                           selectFound = true;
+                       }
+                        if( optionValue != 0) {
+                            $jq(this).hide();
+                        }
+                    }
+                });
+            }
+        }
+
+        function normalRangeCheck( index, edge ){
+            var lowNormalValue, highNormalValue, lowValidValue, highValidValue;
+            var lowNormal = $jq( "#lowNormal_" + index);
+            var highNormal = $jq( "#highNormal_" + index);
+            var lowValid = $jq("#lowValid");
+            var highValid = $jq("#highValid");
+
+            lowNormal.removeClass("error");
+            lowNormalValue = +lowNormal.val();
+            if( lowNormalValue != "-Infinity" &&
+                    lowNormalValue != lowNormal.val() ){
+                lowNormal.addClass("error");
+                alert( "Low normal value must be a number or '-Infinity'");
+                return;
+            }
+
+            highNormal.removeClass("error");
+            highNormalValue = +highNormal.val();
+            if( highNormalValue != "Infinity" &&
+                    highNormalValue != highNormal.val() ){
+                highNormal.addClass("error");
+                alert( "High normal value must be a number or 'Infinity'");
+                return;
+            }
+
+            if( highNormalValue != "Infinity" && lowNormalValue != "-Infinity"){
+                if( highNormalValue <= lowNormalValue){
+                    highNormal.addClass("error");
+                    lowNormal.addClass("error");
+                    alert( "Low normal value must be less than high normal value");
+                    return;
+                }
+            }
+
+
+            lowValidValue = +lowValid.val();
+            if( lowValidValue != "-Infinity" &&
+                    lowValidValue != lowValid.val() ){
+                return;
+            }
+
+            highValidValue = +highValid.val();
+            if( highValidValue != "Infinity" &&
+                    highValidValue != highValid.val() ){
+                return;
+            }
+
+            if( lowValidValue == "-Infinity" && highValidValue == "Infinity" ){
+                return;
+            }
+
+            if( lowValidValue != "-Infinity" && lowNormalValue < lowValidValue ){
+                lowNormal.addClass("error");
+                alert( "Low normal range must be greater than or equal to the low valid range");
+                return;
+            }
+
+            if( highValidValue != "Infinity" && highNormalValue > highValidValue ){
+                highNormal.addClass("error");
+                alert( "high normal range must be less than or equal to the high valid range");
+                return;
+            }
+        }
+
+        function validRangeCheck( index ){
+            var highValidValue, lowValidValue;
+            var lowValid = $jq("#lowValid");
+            var highValid = $jq("#highValid");
+
+            lowValid.removeClass("error");
+            lowValidValue = +lowValid.val();
+            if( lowValidValue != "-Infinity" &&
+                    lowValidValue != lowValid.val() ){
+                lowValid.addClass("error");
+                alert( "Low valid range must be either a number or '-Infinity'");
+                return;
+            }
+
+            highValid.removeClass("error");
+            highValidValue = +highValid.val();
+            if( highValidValue != "Infinity" &&
+                    highValidValue != highValid.val() ){
+                highValid.addClass("error");
+                alert( "High valid range must be either a number or 'Infinity'");
+                return;
+            }
+
+            if( lowValidValue != "-Infinity" && highValidValue != "Infinity" &&
+                            lowValidValue >= highValidValue){
+                highValid.addClass("error");
+                lowValid.addClass("error");
+                alert("Low valid value must be less than the high valid value");
+                return;
+            }
+
+            $jq(".rowKey").each(function(){
+                //index is in the template
+                if( $jq(this).val() != "index") {
+                    normalRangeCheck($jq(this).val());
+                }
+            });
+        }
         function checkReadyForNextStep(){
             var ready = true;
             if( step == "step1"){
@@ -188,7 +406,8 @@
                 $jq("#step2Div .required").each(function(){
                     if(!$jq(this).val() || $jq(this).val() == 0 || $jq(this).val().length == 0 ){ ready = false; } });
             }
-            $jq( "#nextButton" ).prop( "disabled", !ready );
+         //   $jq( "#nextButton" ).prop( "disabled", !ready );
+            $jq( "#nextButton" ).prop( "disabled", false );
         }
 
         function nextStep(){
@@ -206,13 +425,17 @@
                       resultTypeId == '<%= TypeOfTestResultService.ResultType.REMARK.getId()%>' ){
                   $jq("#sampleTypeSelectionDiv").hide();
                   //The reason for the li is that the sample sortable UL is hardcoded as sortable, even if it has no contents
-                  if( $jq(".sortable li").length > 0) {
-                      $jq(".sortable").sortable("disable");
-                  }
+                  makeSortListsReadOnly();
                   $jq("#sortTitleDiv").text("Sample type and test sort order");
                   $jq(".confirmHide").hide();
                   $jq(".confirmShow").show();
                   createJSON();
+              }else if( resultTypeId == '<%= TypeOfTestResultService.ResultType.NUMERIC.getId() %>' ){
+                  step = "step3Numeric";
+                  makeSortListsReadOnly();
+                  $jq("#normalRangeDiv").show();
+                  $jq(".confirmHide").hide();  //change
+                  $jq("#sampleTypeSelectionDiv").hide();
               }
             }
         }
@@ -225,7 +448,7 @@
                 $jq("#step1Div").show();
                 $jq( "#nextButton" ).prop( "disabled", false );
                 $jq( ".sortingMainDiv").remove();
-                $jq('.asmListItemRemove').each(function(i) {
+                $jq('.asmListItemRemove').each(function() {
                     $jq(this).click();
                 });
             }
@@ -235,7 +458,9 @@
             if( step == 'step2'){
                 $jq("#sampleTypeSelectionDiv").show();
                 //The reason for the li is that the sample sortable UL is hardcoded as sortable, even if it has no contents
-                if( $jq(".sortable li").length > 0) {
+                if( $jq(".sortable-tag li").length > 0) {
+                    $jq(".sortable-tag").addClass("sortable");
+                    $jq(".ui-state-default_oe-tag").addClass("ui-state-default_oe");
                     $jq(".sortable").sortable("enable");
                 }
                 $jq("#sortTitleDiv").text('<%=StringUtil.getMessageForKey("label.test.display.order")%>');
@@ -379,127 +604,239 @@
     </div>
 
 
-    <div id="step1Div" >
-    <table width="80%">
-        <tr>
-            <td width="25%">
-            <table>
+        <div id="step1Div" >
+            <table width="80%">
                 <tr>
-                    <td colspan="2"><bean:message key="test.testName"/><span class="requiredlabel">*</span></td>
-                </tr>
-                <tr>
-                    <td width="25%" align="right"><bean:message key="label.english" /></td>
-                    <td width="75%"><input type="text" id="testNameEnglish" class="required" onchange="checkReadyForNextStep()"/></td>
-                </tr>
-                <tr>
-                    <td width="25%" align="right"><bean:message key="label.french" /></td>
-                    <td width="75%"><input type="text" id="testNameFrench" class="required" onchange="checkReadyForNextStep()"/></td>
-                </tr>
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                    <td colspan="2"><bean:message key="test.testName.reporting"/><span class="requiredlabel">*</span> </td>
-                </tr>
-                <tr><td></td>
-                    <td ><input type="button" onclick="copyFromTestName(); checkReadyForNextStep()" value='<%= StringUtil.getMessageForKey("test.add.copy.name")%>'> </td>
-                </tr>
-                <tr>
-                    <td width="25%" align="right"><bean:message key="label.english" /></td>
-                    <td width="75%"><input type="text" id="testReportNameEnglish" class="required" onchange="checkReadyForNextStep()"/></td>
-                </tr>
-                <tr>
-                    <td width="25%" align="right"><bean:message key="label.french" /></td>
-                    <td width="75%"><input type="text" id="testReportNameFrench" class="required" onchange="checkReadyForNextStep()"/></td>
+                    <td width="25%">
+                        <table>
+                            <tr>
+                                <td colspan="2"><bean:message key="test.testName"/><span class="requiredlabel">*</span></td>
+                            </tr>
+                            <tr>
+                                <td width="25%" align="right"><bean:message key="label.english" /></td>
+                                <td width="75%"><input type="text" id="testNameEnglish" class="required" onchange="checkReadyForNextStep()"/></td>
+                            </tr>
+                            <tr>
+                                <td width="25%" align="right"><bean:message key="label.french" /></td>
+                                <td width="75%"><input type="text" id="testNameFrench" class="required" onchange="checkReadyForNextStep()"/></td>
+                            </tr>
+                            <tr><td>&nbsp;</td></tr>
+                            <tr>
+                                <td colspan="2"><bean:message key="test.testName.reporting"/><span class="requiredlabel">*</span> </td>
+                            </tr>
+                            <tr><td></td>
+                                <td ><input type="button" onclick="copyFromTestName(); checkReadyForNextStep()" value='<%= StringUtil.getMessageForKey("test.add.copy.name")%>'> </td>
+                            </tr>
+                            <tr>
+                                <td width="25%" align="right"><bean:message key="label.english" /></td>
+                                <td width="75%"><input type="text" id="testReportNameEnglish" class="required" onchange="checkReadyForNextStep()"/></td>
+                            </tr>
+                            <tr>
+                                <td width="25%" align="right"><bean:message key="label.french" /></td>
+                                <td width="75%"><input type="text" id="testReportNameFrench" class="required" onchange="checkReadyForNextStep()"/></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top; padding: 4px">
+                        <bean:message key="test.testSectionName" /><span class="requiredlabel">*</span><br/>
+                        <select id="testUnitSelection" class="required" onchange="checkReadyForNextStep()" >
+                            <option value="0"></option>
+                            <% for(IdValuePair pair : testUnitList ){ %>
+                            <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td width="25%" style="vertical-align: top; padding: 4px">
+                        <bean:message key="typeofsample.panel.panel" /><br/>
+                        <select id="panelSelection" multiple="multiple" title="Multiple">
+                            <% for(IdValuePair pair : panelList ){ %>
+                            <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
+                            <% } %>
+                        </select><br/><br/><br/>
+                        <bean:message key="label.unitofmeasure" /><br/>
+                        <select id="uomSelection" >
+                            <option value='0' ></option>
+                            <% for(IdValuePair pair : uomList ){ %>
+                            <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td width="25%" style="vertical-align: top; padding: 4px">
+                        <bean:message key="result.resultType" /><span class="requiredlabel">*</span><br/>
+                        <select id="resultTypeSelection" class="required" onchange="checkReadyForNextStep()">
+                            <option value="0"></option>
+                            <% for(IdValuePair pair : resultTypeList ){ %>
+                            <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
+                            <% } %>
+                        </select><br/><br/><br/><br/><br/>
+                        <label for="orderable" ><bean:message key="test.isActive" /></label>
+                        <input type="checkbox" id="active" checked="checked" /><br/>
+                        <label for="orderable" ><bean:message key="label.orderable" /></label>
+                        <input type="checkbox" id="orderable" checked="checked" />
+
+                    </td>
                 </tr>
             </table>
-            </td>
-            <td width="25%" style="vertical-align: top; padding: 4px">
-                <bean:message key="test.testSectionName" /><span class="requiredlabel">*</span><br/>
-                <select id="testUnitSelection" class="required" onchange="checkReadyForNextStep()" >
-                    <option value="0"></option>
-                    <% for(IdValuePair pair : testUnitList ){ %>
-                    <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
-                    <% } %>
-                </select>
-            </td>
-            <td width="25%" style="vertical-align: top; padding: 4px">
-                <bean:message key="typeofsample.panel.panel" /><br/>
-                <select id="panelSelection" multiple="multiple" title="Multiple">
-                    <% for(IdValuePair pair : panelList ){ %>
-                    <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
-                    <% } %>
-                </select><br/><br/><br/>
-                <bean:message key="label.unitofmeasure" /><br/>
-                <select id="uomSelection" >
-                    <option value='0' ></option>
-                    <% for(IdValuePair pair : uomList ){ %>
-                    <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
-                    <% } %>
-                </select>
-            </td>
-            <td width="25%" style="vertical-align: top; padding: 4px">
-                <bean:message key="result.resultType" /><span class="requiredlabel">*</span><br/>
-                <select id="resultTypeSelection" class="required" onchange="checkReadyForNextStep()">
-                    <option value="0"></option>
-                    <% for(IdValuePair pair : resultTypeList ){ %>
-                    <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
-                    <% } %>
-                </select><br/><br/><br/><br/><br/>
-                <label for="orderable" ><bean:message key="test.isActive" /></label>
-                <input type="checkbox" id="active" checked="checked" /><br/>
-                <label for="orderable" ><bean:message key="label.orderable" /></label>
-                <input type="checkbox" id="orderable" checked="checked" />
-
-            </td>
-        </tr>
-    </table>
-   </div>
-
-        <div id="step1ReadOnly" class="step2" style="float:left;  width:20%; display: none;" >
-            <bean:message key="test.testName"/><br/>
-            <span class="tab" ><bean:message key="label.english" />: <span id="testNameEnglishRO"></span></span><br/>
-            <span class="tab" ><bean:message key="label.french" />: <span id="testNameFrenchRO"></span></span><br/>
-            <br/>
-            <bean:message key="test.testName.reporting"/><br/>
-            <span class="tab" ><bean:message key="label.english" />: <span id="testReportNameEnglishRO"></span></span><br/>
-            <span class="tab" ><bean:message key="label.french" />: <span id="testReportNameFrenchRO"></span></span><br/>
-            <br/>
-            <bean:message key="test.testSectionName" />
-            <div id="testSectionRO" class="tab"></div><br/>
-            <bean:message key="typeofsample.panel.panel" />
-            <div class="tab" id="panelRO" ><bean:message key="label.none"/></div><br/>
-            <bean:message key="label.unitofmeasure" />
-            <div class="tab" id="uomRO" ><bean:message key="label.none"/></div><br/>
-            <bean:message key="result.resultType" />
-            <div class="tab" id="resultTypeRO" ></div><br/>
-            <bean:message key="test.isActive" />
-            <div class="tab" id="activeRO" ></div><br/>
-            <bean:message key="label.orderable" />
-            <div class="tab" id="orderableRO" ></div><br/>
         </div>
-        <div id="step2Div" class="step2" style="float:right;  width:80%; display: none" >
-            <div id="sampleTypeSelectionDiv" style="float:left; width:20%;" >
-                <bean:message key="label.sampleType" />
-                <select id="sampleTypeSelection" class="required" multiple="multiple" title="Multiple">
-                    <% for(IdValuePair pair : sampleTypeList ){ %>
-                    <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
-                    <% } %>
-                </select><br/>
+        <div id="sampleTypeContainer" style="width: 100%; overflow: hidden">
+            <div id="step1ReadOnly" class="step2" style="float:left;  width:20%; display: none;">
+                <bean:message key="test.testName"/><br/>
+                <span class="tab"><bean:message key="label.english"/>: <span id="testNameEnglishRO"></span></span><br/>
+                <span class="tab"><bean:message key="label.french"/>: <span id="testNameFrenchRO"></span></span><br/>
+                <br/>
+                <bean:message key="test.testName.reporting"/><br/>
+                <span class="tab"><bean:message key="label.english"/>: <span id="testReportNameEnglishRO"></span></span><br/>
+                <span class="tab"><bean:message key="label.french"/>: <span
+                        id="testReportNameFrenchRO"></span></span><br/>
+                <br/>
+                <bean:message key="test.testSectionName"/>
+                <div id="testSectionRO" class="tab"></div>
+                <br/>
+                <bean:message key="typeofsample.panel.panel"/>
+                <div class="tab" id="panelRO"><bean:message key="label.none"/></div>
+                <br/>
+                <bean:message key="label.unitofmeasure"/>
+                <div class="tab" id="uomRO"><bean:message key="label.none"/></div>
+                <br/>
+                <bean:message key="result.resultType"/>
+                <div class="tab" id="resultTypeRO"></div>
+                <br/>
+                <bean:message key="test.isActive"/>
+                <div class="tab" id="activeRO"></div>
+                <br/>
+                <bean:message key="label.orderable"/>
+                <div class="tab" id="orderableRO"></div>
+                <br/>
             </div>
-            <div id="testDisplayOrderDiv" style="float:left; width:40%;" >
-                <div id="sortTitleDiv" align="center" ><bean:message key="label.test.display.order" /></div>
-                <div id="endOrderMarker" ></div>
+            <div id="step2Div" class="step2" style="float:right;  width:80%; display: none">
+                <div id="sampleTypeSelectionDiv" style="float:left; width:20%;">
+                    <bean:message key="label.sampleType"/>
+                    <select id="sampleTypeSelection" class="required" multiple="multiple" title="Multiple">
+                        <% for (IdValuePair pair : sampleTypeList) { %>
+                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
+                        </option>
+                        <% } %>
+                    </select><br/>
+                </div>
+                <div id="testDisplayOrderDiv" style="float:left; width:40%;">
+                    <div id="sortTitleDiv" align="center"><bean:message key="label.test.display.order"/></div>
+                    <div id="endOrderMarker"></div>
+                </div>
             </div>
         </div>
+        <div id="normalRangeTemplate" style="display:none;" >
+            <table>
+                <tr class="row_index">
+                    <td ><input type="hidden" class="rowKey" value="index" /><input type="checkbox" onchange="genderMatersForRange(this, 'index')"></td>
+                    <td >
+                        <span class="sexRange_index" style="display: none">
+                            Male
+                        </span>
+                    </td>
+                    <td><input class="yearMonthSelect_index" type="radio" name="time_index" value="Y" onchange="upperAgeRangeChanged( 'index' )" checked>Y
+                        <input class="yearMonthSelect_index" type="radio" name="time_index" value="M" onchange="upperAgeRangeChanged( 'index' )">M&nbsp;</td>
+                    <td id="lowerAge_index">0</td>
+                    <td><input type="text" id="upperAgeSetter_index" value="Infinity" size="10" onchange="upperAgeRangeChanged( 'index' )"><span id="upperAge_index" ></span></td>
+                    <td>
+                        <select id="ageRangeSelect_index" onchange="ageRangeSelected( this, 'index');" >
+                            <option value="0"></option>
+                            <% for (IdValuePair pair : ageRangeList) { %>
+                            <option value='<%=pair.getId()%>'><%=pair.getValue()%>
+                            </option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_index" class="lowNormal" onchange="normalRangeCheck('index', 'low');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_index" class="highNormal" onchange="normalRangeCheck('index', 'high');"></td>
+                    <td><input type="text" value="" size="12"></td>
+                    <td></td>
+                    <td></td>
+                    <td><input id="removeButton_index" type="button" class="textButton" onclick='removeLimitRow( index );' value="remove me"/></td>
+                </tr>
+                <tr class="sexRange_index row_index" >
+                    <td ></td>
+                    <td> Female </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><input type="text" value="-Infinity" size="10"></td>
+                    <td><input type="text" value="Infinity" size="10"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div id="normalRangeDiv" style="display:none;" >
+            <h3>Normal Range</h3>
+            <table>
+                <tr>
+                    <th></th>
+                    <th colspan="8">Normal Range</th>
+                    <th colspan="2">Valid Range</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>Sex dependent</td>
+                    <td><span class="sexRange" style="display: none">Sex</span></td>
+                    <td colspan="4" align="center">Age range</td>
+                    <td colspan="2" align="center">Range </td>
+                    <td align="center">Reporting range</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr class="row_0">
+                    <td ><input type="hidden" class="rowKey" value="0" /><input type="checkbox" onchange="genderMatersForRange(this, '0')"></td>
+                    <td >
+                        <span class="sexRange_0" style="display: none">
+                            Male
+                        </span>
+                    </td>
+                    <td><input class="yearMonthSelect_0" type="radio" name="time_0" value="Y" onchange="upperAgeRangeChanged('0')" checked>Y
+                        <input class="yearMonthSelect_0" type="radio" name="time_0" value="M" onchange="upperAgeRangeChanged('0')">M&nbsp;</td>
+                    <td id="lowerAge_0">0&nbsp;</td>
+                    <td><input type="text" id="upperAgeSetter_0" value="Infinity" size="10" onchange="upperAgeRangeChanged('0')"><span id="upperAge_0" ></span></td>
+                    <td>
+                        <select id="ageRangeSelect_0"  onchange="ageRangeSelected( this, '0');">
+                            <option value="0"></option>
+                            <% for (IdValuePair pair : ageRangeList) { %>
+                            <option value='<%=pair.getId()%>'><%=pair.getValue()%>
+                            </option>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_0" class="lowNormal" onchange="normalRangeCheck('0', 'low');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_0" class="highNormal" onchange="normalRangeCheck('0', 'high');"></td>
+                    <td><input type="text" value="" size="12"></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowValid" onchange="validRangeCheck('0');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highValid" onchange="validRangeCheck('0');"></td>
+                </tr>
+                <tr class="sexRange_0 row_0" style="display: none">
+                    <td ></td>
+                    <td> Female </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><input type="text" value="-Infinity" size="10"></td>
+                    <td><input type="text" value="Infinity" size="10"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="endRow"></tr>
+            </table>
+        </div>
+        <div id="normalRangeEndDiv" ></div>
 
-
-    <div class="selectShow confirmHide" style="margin-left:auto; margin-right:auto;width: 40%; ">
-        <input type="button"
-               value="<%= StringUtil.getMessageForKey("label.button.next") %>"
-               disabled="disabled"
-               onclick="nextStep();"
-               id="nextButton"/>
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.back")%>" onclick="navigateBack()" />
-    </div>
+        <div class="selectShow confirmHide" style="margin-left:auto; margin-right:auto;width: 40%; ">
+            <input type="button"
+                   value="<%= StringUtil.getMessageForKey("label.button.next") %>"
+                   disabled="disabled"
+                   onclick="nextStep();"
+                   id="nextButton"/>
+            <input type="button" value="<%=StringUtil.getMessageForKey("label.button.back")%>" onclick="navigateBack()" />
+        </div>
         <div class="selectShow confirmShow" style="margin-left:auto; margin-right:auto;width: 40%; display: none" >
             <input type="button"
                    value="<%= StringUtil.getMessageForKey("label.button.accept") %>"

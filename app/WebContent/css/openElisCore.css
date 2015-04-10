@@ -103,6 +103,11 @@ caption {
 .tab{
   margin-left: 40px;
 }
+
+.half-tab{
+  margin-left: 20px;
+}
+
 /***** End overrides of default browser styles *****/
 
 

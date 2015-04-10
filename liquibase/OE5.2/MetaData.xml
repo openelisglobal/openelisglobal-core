@@ -50,4 +50,73 @@
             <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'TestOrderability' ) " />
         </insert>
     </changeSet>
+    <changeSet id="3" author="paulsc">
+        <comment>Adds information about patient age classification to site information table</comment>
+        <insert tableName="site_information_domain">
+            <column name="id" valueNumeric=" nextval( 'site_information_domain_seq' ) " />
+            <column name="name" value="resultAgeRange" />
+            <column name="description" value="The maximum age range in months" />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="new born" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="max age of a new born" />
+            <column name="value" value="1" />
+            <column name="domain_id" valueNumeric=" currval( 'site_information_domain_seq' ) " />
+            <column name="value_type" value="text" />
+            <column name="instruction_key" value="instrution.result.age" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.result.age.newborn" />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="infant" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="max age of an infant" />
+            <column name="value" value="12" />
+            <column name="domain_id" valueNumeric=" currval( 'site_information_domain_seq' ) " />
+            <column name="value_type" value="text" />
+            <column name="instruction_key" value="instrution.result.age" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.result.age.infant" />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="young child" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="max age of a young child" />
+            <column name="value" value="60" />
+            <column name="domain_id" valueNumeric=" currval( 'site_information_domain_seq' ) " />
+            <column name="value_type" value="text" />
+            <column name="instruction_key" value="instrution.result.age" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.result.age.youngchild" />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="child" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="max age of a child" />
+            <column name="value" value="168" />
+            <column name="domain_id" valueNumeric=" currval( 'site_information_domain_seq' ) " />
+            <column name="value_type" value="text" />
+            <column name="instruction_key" value="instrution.result.age" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.result.age.child" />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="adult" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="max age of an adult" />
+            <column name="value" value="Infinity" />
+            <column name="domain_id" valueNumeric=" currval( 'site_information_domain_seq' ) " />
+            <column name="value_type" value="text" />
+            <column name="instruction_key" value="instrution.result.age" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.result.age.adult" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
+
