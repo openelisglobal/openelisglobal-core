@@ -17,28 +17,29 @@
  */
 package us.mn.state.health.lims.siteinformation.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.common.action.BaseAction;
+import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.localization.valueholder.Localization;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SiteInformationAction extends BaseAction {
 
@@ -73,11 +74,14 @@ public class SiteInformationAction extends BaseAction {
 
 
 			PropertyUtils.setProperty(dynaForm, "paramName", siteInformation.getName());
-			PropertyUtils.setProperty(dynaForm, "description", getUserDescription(siteInformation));
+			PropertyUtils.setProperty(dynaForm, "description", getInstruction( siteInformation ) );
 			PropertyUtils.setProperty(dynaForm, "value", siteInformation.getValue());
+            setLocalizationValues( dynaForm, siteInformation);
 			PropertyUtils.setProperty(dynaForm, "encrypted", siteInformation.isEncrypted());
-			PropertyUtils.setProperty(dynaForm, "valueType", siteInformation.getValueType());
-			PropertyUtils.setProperty(dynaForm, "editable", isEditable(siteInformation));
+            PropertyUtils.setProperty(dynaForm, "valueType", siteInformation.getValueType());
+            PropertyUtils.setProperty(dynaForm, "editable", isEditable(siteInformation));
+            PropertyUtils.setProperty(dynaForm, "tag", siteInformation.getTag());
+
 			if( "dictionary".equals(siteInformation.getValueType())){
 				List<String> dictionaryValues = new ArrayList<String>();
 				
@@ -104,21 +108,30 @@ public class SiteInformationAction extends BaseAction {
 		return mapping.findForward(forward);
 	}
 
-	private Boolean isEditable(SiteInformation siteInformation){
+    private String getInstruction( SiteInformation siteInformation ){
+        String instruction = StringUtil.getMessageForKey( siteInformation.getInstructionKey() );
+        if( GenericValidator.isBlankOrNull( instruction ) ){
+            instruction = StringUtil.getMessageForKey( siteInformation.getDescriptionKey() );
+        }
+
+        return GenericValidator.isBlankOrNull( instruction ) ? siteInformation.getDescription() : instruction;
+    }
+
+    private void setLocalizationValues( DynaActionForm dynaForm, SiteInformation siteInformation ) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException{
+        if( "localization".equals( siteInformation.getTag() )){
+            LocalizationService localizationService = new LocalizationService( siteInformation.getValue() );
+            Localization localization = localizationService.getLocalization();
+            PropertyUtils.setProperty(dynaForm, "englishValue", localization.getEnglish());
+            PropertyUtils.setProperty(dynaForm, "frenchValue", localization.getFrench());
+
+        }
+    }
+
+    private Boolean isEditable(SiteInformation siteInformation){
 		if(ACCESSION_NUMBER_PREFIX.endsWith(siteInformation.getName())){
 			return new SampleDAOImpl().getTotalCount("Sample", Sample.class) == 0;
 		}
 		return Boolean.TRUE;
-	}
-
-	protected String getUserDescription(SiteInformation siteInformation) {
-		if( GenericValidator.isBlankOrNull(siteInformation.getInstructionKey() )){
-			return siteInformation.getDescription();	
-		}
-		
-		String instructions = StringUtil.getMessageForKey(siteInformation.getInstructionKey());
-		
-		return instructions != null ? instructions : siteInformation.getDescription();
 	}
 
 	protected String getPageTitleKey() {

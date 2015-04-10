@@ -321,12 +321,12 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	}
 
 	protected void persistPatientRelatedInformation(PatientManagementInfo patientInfo) {
-		persistIndentityTypes(patientInfo);
+		persistIdentityTypes( patientInfo );
 		persistExtraPatientAddressInfo( patientInfo );
 		persistPatientType(patientInfo);
 	}
 
-	protected void persistIndentityTypes(PatientManagementInfo patientInfo) {
+	protected void persistIdentityTypes( PatientManagementInfo patientInfo ) {
 
 		persistIdentityType(patientInfo.getSTnumber(), "ST");
 		persistIdentityType(patientInfo.getMothersName(), "MOTHER");

@@ -3,10 +3,11 @@
                 us.mn.state.health.lims.common.formfields.FormFields.Field"%>
 
 <%@ page language="java" contentType="text/html; charset=utf-8"%>
-<%@ page import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.util.SystemConfiguration,us.mn.state.health.lims.common.util.ConfigurationProperties,us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,us.mn.state.health.lims.common.formfields.FormFields,us.mn.state.health.lims.common.util.StringUtil,us.mn.state.health.lims.common.util.Versioning,us.mn.state.health.lims.qaevent.action.retroCI.NonConformityItem"%>
-<%@ page import="us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator"%>
-<%@ page import="us.mn.state.health.lims.common.provider.validation.NonConformityRecordNumberValidationProvider" %>
-<%@ page import="us.mn.state.health.lims.common.services.PhoneNumberService, us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem" %>
+<%@ page import="us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,us.mn.state.health.lims.common.provider.validation.NonConformityRecordNumberValidationProvider,us.mn.state.health.lims.common.services.PhoneNumberService"%>
+<%@ page import="us.mn.state.health.lims.common.util.DateUtil" %>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil, us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem" %>
+
 
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
@@ -24,7 +25,6 @@
     IAccessionNumberValidator accessionNumberValidator;
     boolean useProject = FormFields.getInstance().useField(Field.Project);
     boolean useSiteList = FormFields.getInstance().useField(Field.NON_CONFORMITY_SITE_LIST);
-    boolean useFullProviderInfo = FormFields.getInstance().useField(Field.QAFullProviderInfo);
     boolean useSubjectNo = FormFields.getInstance().useField(Field.QASubjectNumber);
     boolean useNationalID = FormFields.getInstance().useField(Field.NationalID);
 %>
@@ -130,7 +130,7 @@ function tweekSampleTypeOptions() {
 	}
 	var fields = eventsTable.getElementsBySelector(".typeOfSample");
 	fields.each(function(field) {
-				field.options[0].text = "<bean:message key='nonConformant.allSampleTypesText'/>";
+				field.options[1].text = "<bean:message key='nonConformant.allSampleTypesText'/>";
 			});
 }
 
@@ -202,12 +202,11 @@ function areNewTypesOfSamples() {
 		return false; // we don't worry about sample types when there aren't any at all
 	}
 
-	var isNew = fields.detect(function(field) {
-		var ids = $("sampleItemsTypeOfSampleIds").value;
-		var val = field.value;
-		return (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1);
-	}) != null;
-	return isNew;
+    return fields.detect(function (field) {
+        var ids = $("sampleItemsTypeOfSampleIds").value;
+        var val = field.value;
+        return (val !== null && val !== "0" && ids.indexOf("," + val + ",") == -1);
+    }) != null;
 }
 
 function /*boolean*/ handleEnterEvent(){
@@ -271,7 +270,7 @@ function setSave(){
 			var jqRow = $jq(rowElement);
 			if(validToSave && jqRow.is(":visible")){
 				//if row is visible and the required field is blank make sure no other field has a value
-				if( !(jqRow.find(".qaEventEnable").is(":checked") ) && jqRow.find(".requiredField").val() == "0" ){
+				if( !(jqRow.find(".qaEventEnable").is(":checked") ) && requiredSelectionsNotDone( jqRow ) ){
 					jqRow.find(".qaEventElement").each( function(index, element){
 						var cellValue = $jq(element).val(); 
 						if( !(cellValue.length == 0 || cellValue == "0" )){
@@ -287,6 +286,19 @@ function setSave(){
 	if( saveButton){
 		saveButton.disabled = !validToSave;
 	}	
+}
+
+function requiredSelectionsNotDone( jqRow ){
+    var done = true;
+
+    jqRow.find(".requiredField").each( function(index, element){
+        if( element.value == 0 ){
+            done = false;
+            return;
+        }
+    });
+
+    return !done;
 }
 
 function validatePhoneNumber( phoneElement){
@@ -338,7 +350,7 @@ function  processPhoneSuccess(xhr){
 		<tr>
 			<td >
 				<%= StringUtil.getContextualMessageForKey("nonconformity.date") %>&nbsp;
-                <span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>
+                <span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>
 				:
 			</td>
 			<td>
@@ -484,7 +496,8 @@ function  processPhoneSuccess(xhr){
 					</tr>
 			</logic:notEqual>
 		<html:hidden name='<%=formName%>' styleId="doctorNew" property="doctorNew" />
-		<%  if (useFullProviderInfo) { %>				
+		<%  if (FormFields.getInstance().useField(Field.QA_FULL_PROVIDER_INFO )) { %>
+        <% if( FormFields.getInstance().useField( Field.QA_REQUESTER_SAMPLE_ID )) { %>
 					<tr>
 						<td><bean:message key="sample.clientReference" />:</td>
 						<td >
@@ -500,6 +513,7 @@ function  processPhoneSuccess(xhr){
 						</td>
 					<td colspan="2">&nbsp;</td>
 				</tr>
+        <% } %>
 				<tr>
 					<td><%= StringUtil.getContextualMessageForKey("nonconformity.provider.label") %></td>
 				</tr>
@@ -541,7 +555,7 @@ function  processPhoneSuccess(xhr){
 					</logic:notEqual>
 					</td>
 				</tr>
-			<% if( FormFields.getInstance().useField(Field.AddressVillage)) { %>
+			<% if( FormFields.getInstance().useField(Field.ADDRESS_VILLAGE )) { %>
 				<tr>
 					<td align="right">
 					    <%= StringUtil.getContextualMessageForKey("person.town") %>:
@@ -559,7 +573,7 @@ function  processPhoneSuccess(xhr){
 					</td>
 				</tr>
 			<% } %>
-			<% if( FormFields.getInstance().useField(Field.Commune)){ %>
+			<% if( FormFields.getInstance().useField(Field.ADDRESS_COMMUNE)){ %>
 			<tr>
 				<td align="right">
 					<bean:message  key="person.commune" />:
@@ -577,7 +591,7 @@ function  processPhoneSuccess(xhr){
 				</td>
 			</tr>
 			<% } %>
-			<% if( FormFields.getInstance().useField(Field.AddressDepartment )){ %>
+			<% if( FormFields.getInstance().useField(Field.ADDRESS_DEPARTMENT )){ %>
 			<tr>
 				<td align="right">
 					<bean:message  key="person.department" />:
@@ -651,7 +665,7 @@ function  processPhoneSuccess(xhr){
 				<bean:message key="label.refusal.reason" /><span class="requiredlabel">*</span>
 			</th>
 			<th style="width:16%">
-				<bean:message key="label.sampleType" />
+				<bean:message key="label.sampleType" /><span class="requiredlabel">*</span>
 			</th>
 			<th style="width:11%">
 				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %>
@@ -702,11 +716,12 @@ function  processPhoneSuccess(xhr){
 					</html:select>
 				</td>
 				<td>
-					<html:select styleId='<%="sampleType" + index%>' name="qaEvents"
-						styleClass="readOnly qaEventElement typeOfSample" disabled="false"
+                    <html:select styleId='<%="sampleType" + index%>' name="qaEvents"
+						styleClass="readOnly qaEventElement typeOfSample requiredField" disabled="false"
 						property="sampleType" onchange='makeDirty();' indexed="true"
 						style="width: 99%">
-						<option value="0"></option>
+                        <option value="0"></option>
+                        <option value="-1"  <%= (qaEvents.getSampleType() != null && qaEvents.getSampleType().equals("-1")) ? "selected='selected'" : ""%> ></option>
 						<html:optionsCollection name="<%=formName%>"
 							property="typeOfSamples" label="value" value="id" />
 					</html:select>
@@ -718,7 +733,7 @@ function  processPhoneSuccess(xhr){
 						onchange='makeDirty();'>
 						<option ></option>
 						<html:optionsCollection name="<%=formName%>" property="sections"
-							label="localizedName" value="localizedName" />
+							label="localizedName" value="nameKey" />
 					</html:select>
 				</td>
 				<td>

@@ -208,7 +208,7 @@ public class ResultsEntryViewAction extends ResultsEntryBaseAction {
 					if (!StringUtil.isNullorNill(sample.getId())) {
 						sampleHuman.setSampleId(sample.getId());
 						sampleHumanDAO.getDataBySample(sampleHuman);
-						sampleOrganization.setSampleId(sample.getId());
+						sampleOrganization.setSample(sample);
 						sampleOrganizationDAO
 								.getDataBySample(sampleOrganization);
 						// bugzilla 1773 need to store sample not sampleId for

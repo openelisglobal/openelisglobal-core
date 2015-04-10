@@ -49,7 +49,7 @@ public class ActivityReportByPanel extends ActivityReport implements IReportCrea
 
     @Override
     protected void buildReportContent( ReportSpecificationList panelSelection ){
-        panelName = getNameForId( panelSelection );
+        panelName = panelSelection.getSelectionAsName();
         createReportParameters();
 
         List<Result> resultList = ResultService.getResultsInTimePeriodInPanel( dateRange.getLowDate(), dateRange.getHighDate(), panelSelection.getSelection() );

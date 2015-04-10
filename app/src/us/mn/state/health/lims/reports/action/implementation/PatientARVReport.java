@@ -16,19 +16,15 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -41,6 +37,9 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class PatientARVReport extends RetroCIPatientReport{
 	private List<ARVReportData> reportItems;
@@ -67,7 +66,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		data.setReceptiondate(DateUtil.convertTimestampToStringDate(reportSample.getReceivedTimestamp()));
 
 		SampleOrganization sampleOrg = new SampleOrganization();
-		sampleOrg.setSampleId(reportSample.getId());
+		sampleOrg.setSample(reportSample);
 		orgDAO.getDataBySample(sampleOrg);
 		data.setOrgname(sampleOrg.getId() == null ? "" : sampleOrg.getOrganization().getOrganizationName());
 
@@ -103,7 +102,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 		for(Analysis analysis : analysisList){
 			if(!analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled))){
-				String testName = analysis.getTest().getTestName();
+				String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 
 				List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 				String resultValue = null;
@@ -150,9 +149,9 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 	private void assignResultsToAVRReportData(ARVReportData data, String testName, String resultValue){
 
-		if(testName.equals("Glycémie")){
+		if(testName.equals("GlycÃ©mie")){
 			data.setGlyc(resultValue);
-		}else if(testName.equals("Créatininémie")){
+		}else if(testName.equals("CrÃ©atininÃ©mie")){
 			data.setCreatininemie(resultValue);
 		}else if(testName.equals("Transaminases ALTL")){
 			data.setSgpt(resultValue);

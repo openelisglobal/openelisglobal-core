@@ -23,6 +23,7 @@ import org.json.simple.JSONObject;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
@@ -65,9 +66,9 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 		String rowIndex = request.getParameter("rowIndex");
 		String accessionNumber = request.getParameter("accessionNumber");
 
-        String jResult = "";
+        String jResult;
         JSONObject jsonResult =new JSONObject();
-        String jString = "";
+        String jString;
 		if (GenericValidator.isBlankOrNull(resultIds) || 
 				GenericValidator.isBlankOrNull(testIds) || 
 				GenericValidator.isBlankOrNull(rowIndex) ||
@@ -154,7 +155,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
                 if (TestReflexUtil.isUserChoiceReflex( candidateReflex )) {
                     if (GenericValidator.isBlankOrNull( candidateReflex.getSiblingReflexId() )) {
                         selectableReflexes.add( candidateReflex );
-                        reflexTriggers.add( candidateReflex.getTest().getLocalizedName() + ":" + dictionaryResult.getDictEntry() );
+                        reflexTriggers.add( TestService.getUserLocalizedTestName( candidateReflex.getTest() ) + ":" + dictionaryResult.getDictEntry() );
           //              reflexTriggerIds.add( candidateReflex.getTest().getId() );
                     } else {
                         // find if the sibling reflex is satisfied
@@ -176,7 +177,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
                                         result.getValue() );
                                 if (testResult != null && testResult.getId().equals(sibTestReflex.getTestResultId())) {
                                     selectableReflexes.add(candidateReflex);
-                                    reflexTriggers.add( candidateReflex.getTest().getLocalizedName() + ":" + dictionaryResult.getDictEntry() );
+                                    reflexTriggers.add( TestService.getUserLocalizedTestName( candidateReflex.getTest() ) + ":" + dictionaryResult.getDictEntry() );
                        //             reflexTriggerIds.add( candidateReflex.getTest().getId() );
                                 }
                             }

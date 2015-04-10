@@ -4,12 +4,11 @@
          import="us.mn.state.health.lims.common.formfields.FormFields.Field,
                  us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
                  us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-                 us.mn.state.health.lims.common.services.PhoneNumberService,
                  us.mn.state.health.lims.common.util.ConfigurationProperties,
-                 us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-                 us.mn.state.health.lims.common.util.StringUtil,
-                 us.mn.state.health.lims.common.util.IdValuePair,
-                 us.mn.state.health.lims.common.util.Versioning" %>
+                 us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
+<%@ page import="us.mn.state.health.lims.common.util.DateUtil" %>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
+<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -34,6 +33,7 @@
     boolean trackPayment = false;
     boolean requesterLastNameRequired = false;
     boolean acceptExternalOrders = false;
+    boolean restrictNewReferringSiteEntries = false;
     IAccessionNumberValidator accessionNumberValidator;
 %>
 <%
@@ -51,6 +51,7 @@
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     requesterLastNameRequired = FormFields.getInstance().useField( Field.SampleEntryRequesterLastNameRequired );
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ACCEPT_EXTERNAL_ORDERS, "true" );
+    restrictNewReferringSiteEntries = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.restrictFreeTextRefSiteEntry, "true");
 
 %>
 
@@ -119,11 +120,12 @@
         setSaveButton();
     }
 
-    function getRequestersForOrg() {
+    function getRequestersForOrg( textValue ) {
         var orgEnteredValue = $("siteId").value,
                 orgSelectList = $("orgRequesterId").options,
                 orgKey = 0,
-                searchCount = 0;
+                searchCount = 0,
+                requesterList;
 
         for (searchCount; searchCount < orgSelectList.length; searchCount++) {
             if (orgSelectList[searchCount].text.toUpperCase() == orgEnteredValue) {
@@ -133,7 +135,8 @@
         }
 
         if (orgKey == 0) { //if no match with site list
-            var requesterList = $("personRequesterId");
+            $jq("#newRequesterName").val(textValue);
+            requesterList = $("personRequesterId");
             requesterList.options.length = 0;
             addOptionToSelect(requesterList, '<%=StringUtil.getMessageForKey("sample.entry.requester.new")%>', "0");
         } else {
@@ -161,8 +164,23 @@
     }
 
     function addRequester(requesterList, requesterXml) {
+        var display = requesterXml.getAttribute("lastName") + ', ' + requesterXml.getAttribute("firstName");
+        if( display.length < 3){
+           display = requesterXml.getAttribute("email");
+            if( display.length < 3){
+                display = requesterXml.getAttribute("phone");
+                if( display.length < 3){
+                    display = requesterXml.getAttribute("fax");
+                    if(display < 3){
+                        return;
+                    }
+                }
+            }
+        }
+
+
         addOptionToSelect(requesterList,
-                requesterXml.getAttribute("lastName") + ', ' + requesterXml.getAttribute("firstName"),
+                display,
                 requesterXml.getAttribute("id"));
 
         requesterInfoHash[requesterXml.getAttribute("id")] = {'firstName': requesterXml.getAttribute("firstName"),
@@ -252,6 +270,7 @@
 </script>
 
 <html:hidden property="sampleOrderItems.modified" name='<%=formName%>' styleId="orderModified"  />
+<html:hidden property="sampleOrderItems.newRequesterName" name='<%=formName%>' styleId="newRequesterName" />
 
 <table style="width:70%" border="0">
     <logic:empty name="<%=formName%>" property="sampleOrderItems.labNo">
@@ -285,7 +304,7 @@
         <td>
             <bean:message key="quick.entry.received.date"/>:
             <span class="requiredlabel">*</span>
-			<span style="font-size: xx-small; "><bean:message key="sample.date.format"/>
+			<span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%>
 			</span>
         </td>
         <td colspan="2">
@@ -399,15 +418,19 @@
         autoCompId = 'siteId'; //needs to be set before the dropdown is created N.B. shouuld be passed in as arg
         var dropdown = $jq( "select#orgRequesterId" );
         autoCompleteWidth = dropdown.width() + 66 + 'px';
-        clearNonMatching = false;
+        <% if(restrictNewReferringSiteEntries) { %>
+			clearNonMatching = true;
+		<% } else {%>
+				clearNonMatching = false;
+		<% } %>
         capitialize = true;
         dropdown.combobox();
         invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIXME - add badmessage icon
         maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
 
         //resultCallBack defined in customAutocomplete.js
-        resultCallBack = function( ) {
-            getRequestersForOrg( );
+        resultCallBack = function(textValue) {
+            getRequestersForOrg(textValue );
             makeDirty();
             setOrderModified();
         };

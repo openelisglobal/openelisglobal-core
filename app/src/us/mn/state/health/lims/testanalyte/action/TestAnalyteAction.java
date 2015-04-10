@@ -15,21 +15,20 @@
 */
 package us.mn.state.health.lims.testanalyte.action;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-
 import us.mn.state.health.lims.common.action.BaseAction;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
 import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -73,7 +72,7 @@ public class TestAnalyteAction extends BaseAction {
 
 			// initialize testName
 			if (testAnalyte.getTest() != null) {
-				testAnalyte.setTestName(testAnalyte.getTest().getTestName());
+				testAnalyte.setTestName( TestService.getUserLocalizedTestName( testAnalyte.getTest() ));
 			}
 
 			// initialize analyteName

@@ -36,9 +36,6 @@ import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
-import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
-import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -57,7 +54,6 @@ import us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
-import us.mn.state.health.lims.sample.action.SamplePatientEntrySaveAction;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
@@ -90,15 +86,11 @@ public class NonConformityAction extends BaseAction{
 	private List<ObservationHistory> observationHistoryList;
 	private List<SampleQaEvent> sampleQAEventList;
 
-	public static String DOCTOR_OBSERVATION_TYPE_ID;
-	public static String SERVICE_OBSERVATION_TYPE_ID;
-
 	private static final String QA_NOTE_SUBJECT = "QaEvent Note";
 
 	private static SampleDAO sampleDAO = new SampleDAOImpl();
 	private static SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 	private static TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
-	private static ObservationHistoryTypeDAO ohtDAO = new ObservationHistoryTypeDAOImpl();
 	private static SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
 	private static PersonDAO personDAO = new PersonDAOImpl();
 	private static ProviderDAO providerDAO = new ProviderDAOImpl();
@@ -108,16 +100,6 @@ public class NonConformityAction extends BaseAction{
 	private boolean sampleFound;
 	private Sample sample;
 	private boolean useSiteList;
-
-	public static final String getOHTypeIdByName(String name){
-		ObservationHistoryType oht = ohtDAO.getByName(name);
-		return (oht == null) ? null : oht.getId();
-	}
-
-	static{
-		DOCTOR_OBSERVATION_TYPE_ID = getOHTypeIdByName("nameOfDoctor");
-		SERVICE_OBSERVATION_TYPE_ID = getOHTypeIdByName("service");
-	}
 
 	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -159,7 +141,7 @@ public class NonConformityAction extends BaseAction{
 			PropertyUtils.setProperty(dynaForm, "qaEventTypes", DisplayListService.getList(ListType.QA_EVENTS));
 			PropertyUtils.setProperty(dynaForm, "qaEvents", getSampleQaEventItems(sample));
 
-            PropertyUtils.setProperty( dynaForm, "typeOfSamples", DisplayListService.getList( ListType.SAMPLE_TYPE ) );
+            PropertyUtils.setProperty( dynaForm, "typeOfSamples", DisplayListService.getList( ListType.SAMPLE_TYPE_ACTIVE) );
 
 			PropertyUtils.setProperty(dynaForm, "readOnly", readOnly);
 			PropertyUtils.setProperty(dynaForm, "siteList", DisplayListService.getFreshList(ListType.SAMPLE_PATIENT_REFERRING_CLINIC));
@@ -256,7 +238,7 @@ public class NonConformityAction extends BaseAction{
 		if(sampleRequestors.size() == 0){
 			return null;
 		}
-		long typeID = SamplePatientEntrySaveAction.ORGANIZATION_REQUESTER_TYPE_ID;
+		long typeID = TableIdService.ORGANIZATION_REQUESTER_TYPE_ID;
 		for(SampleRequester sampleRequester : sampleRequestors){
 			if(sampleRequester.getRequesterTypeId() == typeID){
 				String orgId = String.valueOf(sampleRequester.getRequesterId());
@@ -325,10 +307,11 @@ public class NonConformityAction extends BaseAction{
 				item.setId(qa.getEventId());
 				item.setQaEvent(qa.getQAEvent().getId());
 				SampleItem sampleItem = qa.getSampleItem();
-				item.setSampleType((sampleItem == null) ? null : sampleItem.getTypeOfSampleId());
-				item.setSection(qa.getObservation(QAObservationType.SECTION));
-				item.setAuthorizer(qa.getObservation(QAObservationType.AUTHORIZER));
-				item.setRecordNumber(qa.getObservation(QAObservationType.DOC_NUMBER));
+                // -1 is the index for "all samples"
+				item.setSampleType((sampleItem == null) ? "-1" : sampleItem.getTypeOfSampleId());
+				item.setSection(qa.getObservationValue( QAObservationType.SECTION ));
+				item.setAuthorizer(qa.getObservationValue( QAObservationType.AUTHORIZER ));
+				item.setRecordNumber(qa.getObservationValue( QAObservationType.DOC_NUMBER ));
 				item.setRemove(false);
 				item.setNote(getNoteForSampleQaEvent(event));
 
@@ -416,7 +399,7 @@ public class NonConformityAction extends BaseAction{
 	
 	private ObservationHistory getRefererObservation(Sample sample){
 		for(ObservationHistory observation : observationHistoryList){
-			if(observation.getObservationHistoryTypeId().equals(DOCTOR_OBSERVATION_TYPE_ID)){
+			if(observation.getObservationHistoryTypeId().equals(TableIdService.DOCTOR_OBSERVATION_TYPE_ID)){
 				return observation;
 			}
 		}
@@ -426,7 +409,7 @@ public class NonConformityAction extends BaseAction{
 
 	private ObservationHistory getServiceObservation(Sample sample){
 		for(ObservationHistory observation : observationHistoryList){
-			if(observation.getObservationHistoryTypeId().equals(SERVICE_OBSERVATION_TYPE_ID)){
+			if(observation.getObservationHistoryTypeId().equals(TableIdService.SERVICE_OBSERVATION_TYPE_ID)){
 				return observation;
 			}
 		}

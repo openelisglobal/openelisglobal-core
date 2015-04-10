@@ -16,22 +16,21 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class SampleEntryPossibleResultsForTest extends BaseQueryProvider {
 
@@ -54,7 +53,7 @@ public class SampleEntryPossibleResultsForTest extends BaseQueryProvider {
 		String success = VALID;
 
 		TestResultDAO testResultDAO = new TestResultDAOImpl();
-		List<TestResult> testResultList = testResultDAO.getTestResultsByTest(testId);
+		List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( testId );
 
 		if (testResultList.isEmpty() || 
 			"N".equals(testResultList.get(0).getTestResultType()) || 

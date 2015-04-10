@@ -69,10 +69,6 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 		MONTH_LIST.add(new IdValuePair("10", StringUtil.getMessageForKey("month.november.abbrev")));
 		MONTH_LIST.add(new IdValuePair("11", StringUtil.getMessageForKey("month.december.abbrev")));
 	}
-
-	protected String errorReportFileName(){
-		return "HaitiNoticeOfReportError";
-	}
 	
 	protected String reportFileName(){
 		return "SiteTestCount";

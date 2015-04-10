@@ -48,7 +48,7 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
     @Override
     protected void buildReportContent( ReportSpecificationList testSelection ){
 
-        testName = getNameForId( testSelection  );
+        testName = testSelection.getSelectionAsName();
         createReportParameters();
         
         // do not print the separator bar between name/Id and tests

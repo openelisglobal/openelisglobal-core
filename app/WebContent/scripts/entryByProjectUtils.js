@@ -1012,7 +1012,7 @@ function BaseProjectChecker() {
 	this.setFieldsForEdit = function(canEditPatientIDs, canEditSampleIDs) {
 		this.setFieldReadOnly("labNoForDisplay", !canEditSampleIDs);
 		this.setFieldReadOnly("subjectNumber", !canEditPatientIDs);
-		this.setFieldReadOnly("siteSubjectNumber", !canEditPatientIDs);	    		
+		this.setFieldReadOnly("siteSubjectNumber", !canEditPatientIDs);
 	}
 	
 	this.setFieldReadOnly = function(fieldId, readOnly) {
@@ -1029,8 +1029,10 @@ function BaseProjectChecker() {
  * Disable the field and add to the class "readOnly" OR NOT disable (enable) the field and remove the class "readOnly", depending on the value of 2nd arg.
  */
 function setFieldReadOnly(field, readOnly ) {
-	field.disabled = (readOnly)? true: false;
-	field.className = (readOnly)? field.className + " readOnly ": field.className.replace(" readOnly ","");
+    if( field) {
+        field.disabled = (readOnly) ? true : false;
+        field.className = (readOnly) ? field.className + " readOnly " : field.className.replace(" readOnly ", "");
+    }
 }
 
 function compareTimeFields(isBlankAllowed, fieldPrefix) {

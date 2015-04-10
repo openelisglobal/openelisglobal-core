@@ -1,15 +1,14 @@
+
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,
 			us.mn.state.health.lims.common.formfields.FormFields,
 			us.mn.state.health.lims.common.formfields.FormFields.Field,
 			us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
 			us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-			us.mn.state.health.lims.sample.bean.SampleConfirmationItem,
-			us.mn.state.health.lims.sample.bean.SampleConfirmationTest,
-			us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample,
-			us.mn.state.health.lims.common.util.IdValuePair,
-            us.mn.state.health.lims.common.util.Versioning,
-			us.mn.state.health.lims.common.util.StringUtil"%>
+			us.mn.state.health.lims.common.util.DateUtil,
+			us.mn.state.health.lims.common.util.StringUtil,
+			us.mn.state.health.lims.common.util.Versioning,
+			us.mn.state.health.lims.common.util.IdValuePair"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -108,13 +107,12 @@ function populateRequestForSampleType( selector, sampleIndex){
 	fieldValidator.setFieldValidity( false, "requestedTests_" + sampleIndex );
 
 	if( selectIndex == 0 ){
-		var requestingTests = $$(".requestingTests_" + sampleIndex );
 		var requestedTestTable = $("requestedTests_" + sampleIndex  );
-		enableDisableAndClearRequestingTests(requestedTestTable, sampleIndex, requestingTests, true );
+		enableDisableAndClearRequestedTests(requestedTestTable, sampleIndex);
 	}else{
 		selection = selector.options[selectIndex];
 		currentRequestSampleIndex = sampleIndex;
-		getTestsForSampleType(selection.value, "none", processGetTestSuccess );
+		getTestsForSampleType(selection.value, processGetTestSuccess );
 	}
 
 	setSaveButton();
@@ -131,14 +129,13 @@ function processGetTestSuccess(xhr){
    	var requestingTests = $jq(".requestingTests_" + currentRequestSampleIndex );
    	var requestedTestTable = $("requestedTests_" + currentRequestSampleIndex  );
 
-	enableDisableAndClearRequestingTests(requestedTestTable, currentRequestSampleIndex, requestingTests, length == 0 );
+	enableDisableAndClearRequestedTests(requestedTestTable, currentRequestSampleIndex );
 
 
    	for( var i = 0; i < length; ++i){
    		test = tests[i];
 		var name = getValueFromXmlElement( test, "name" );
 		var id = getValueFromXmlElement( test, "id" );
-		insertIntoRequestingList(requestingTests, name, id );
 		insertIntoRequestedList(requestedTestTable, name, id, i, currentRequestSampleIndex);
    }
 
@@ -147,33 +144,15 @@ function processGetTestSuccess(xhr){
 	setSaveButton();
 }
 
-function enableDisableAndClearRequestingTests(requestedTestTable, sampleIndex, requestingTests, disable ){
-	var checkBoxRows = $$(".selectionRow_" + sampleIndex);
-
-	for( var i = 0; i < requestingTests.length; ++i){
-		requestingTests[i].disabled = disable;
-		removeOptions( requestingTests[i] );
-	}
+function enableDisableAndClearRequestedTests(requestedTestTable, sampleIndex  ){
+    var checkBoxRows = $$(".selectionRow_" + sampleIndex);
 
 	for( i = checkBoxRows.length - 1; i >= 0; --i){
 		 requestedTestTable.deleteRow(checkBoxRows[i].rowIndex);
 	}
-	
-	$jq(".referralTestResult_" + sampleIndex ).hide();
-	$jq(".referralTestResult_" + sampleIndex ).val( "" );
 }
 
-function removeOptions(selectbox){
-	for(var i=selectbox.options.length-1; i>0 ; --i){
-		selectbox.remove(i);
-	}
-}
 
-function insertIntoRequestingList(testSelections, name, id ){
-	for(var i = 0; i < testSelections.length; ++i ){
-		addOptionToSelect(testSelections[i],name,id );
-	}
-}
 
 function insertIntoRequestedList(requestedTestsTable, name, id, i, sampleIndex){
 	var newRow = requestedTestsTable.insertRow(  i);
@@ -184,61 +163,6 @@ function insertIntoRequestedList(requestedTestsTable, name, id, i, sampleIndex){
 	var selectionCell = newRow.insertCell(1);
 
 	selectionCell.innerHTML = getCheckBoxHtml(id, i, sampleIndex ) + getTestDisplayRowHtml( name, i );
-}
-
-function setPossibleResultsForTest( testSelection, compoundIndex ){
-	new Ajax.Request (  'ajaxQueryXML',
-            	         {
-                	         method: 'get',
-                    	     parameters: "provider=SampleEntryPossibleResultsForTest&testId=" + testSelection.value + "&index=" + compoundIndex,
-                          	 onSuccess:  processGetPossibleResultsSuccess,
-                          	 onFailure:  null
-                         	}
-                          );
-
-}
-
-function processGetPossibleResultsSuccess(xhr){
-   	//alert(xhr.responseText);
-
-  	var response = xhr.responseXML.getElementsByTagName("formfield").item(0);
-   	var resultTypeElement = response.getElementsByTagName("resultType")[0];
-	var indexElement = response.getElementsByTagName("callerIndex")[0];
-
-   	var resultType =  resultTypeElement.attributes.getNamedItem("value").value;
-   	var sourceIndex = indexElement.attributes.getNamedItem("value").value;
-
-   	if('N' == resultType){
-   		$("textResult_" + sourceIndex).style.display = "inline";
-   		$("dictionaryResult_" + sourceIndex).style.display = "none";
-   		$("freeTextResult_" + sourceIndex).style.display = "none";
-   	}else if('R' == resultType){
-   		$("textResult_" + sourceIndex).style.display = "none";
-   		$("dictionaryResult_" + sourceIndex).style.display = "none";
-   		$("freeTextResult_" + sourceIndex).style.display = "inline";
-   	}else{
-   	    var dictionarySelection = $("dictionaryResult_" + sourceIndex);
-   	    var dictionaryValues = response.getElementsByTagName("value");
-
-   	    removeOptions( dictionarySelection );
-
-   	    addOptionToSelect( dictionarySelection, "", "0" );
-   	    for(var i = 0; i < dictionaryValues.length; ++i ){
-   	    	addOptionToSelect( dictionarySelection, dictionaryValues[i].attributes.getNamedItem("name").value, dictionaryValues[i].attributes.getNamedItem("id").value );
-   	    }
-   	    addOptionToSelect( dictionarySelection, '<%= StringUtil.getMessageForKey("option.notListed")%>', "UseText" );
-
-   		dictionarySelection.style.display = "inline";
-   		$("textResult_" + sourceIndex).style.display = "none";
-   		$("freeTextResult_" + sourceIndex).style.display = "none";
-   	}
-}
-
-function addOptionToSelect( selectElement, text, value ){
-  	    var option = document.createElement("OPTION");
-		option.text = text;
-		option.value = value;
-		selectElement.options.add(option);
 }
 
 function checkDictionaryForUseText(dictionaryElement , sourceIndex){
@@ -323,10 +247,7 @@ function addNewRequesterSample( ){ // a new sample which came in with the reques
 	clone.find("#requestedTests_0 tbody").remove();
 	clone.find("#note_0").val("");
 	clone.find("#noteRow_0").hide();
-	clone.find("#dictionaryResult_0_0").hide();
-	clone.find("#textResult_0_0").hide();
-	clone.find("#freeTextResult_0_0").hide();
-	
+
 	clone.html(clone.html().replace(protoSampleIDPattern, "_" + sampleIndex));
 	clone.html(clone.html().replace(protoFunction, "this, '" + sampleIndex + "')"));
 	clone.html(clone.html().replace("selected", ""));
@@ -437,7 +358,11 @@ function /*string*/ addSample( sampleIndex ){
 	sampleXml += "requesterSampleId='" + $("requesterSampleId_" + sampleIndex).value + "' ";
 	sampleXml += "sampleType='" + ($("sampleType_" + sampleIndex).value) + "' ";
 	sampleXml += "collectionDate='" + ($("collectionDate_" + sampleIndex).value) + "' ";
+    <% if( FormFields.getInstance().useField(Field.CollectionTime)){ %>
 	sampleXml += "collectionTime='" + ($("interviewTime_" + sampleIndex).value) + "' ";
+    <% }else{ %>
+    sampleXml += "collectionTime='00:00' ";
+    <% } %>
 	sampleXml += "note ='" + getNote( sampleIndex ) + "' ";
 	if( useInitialSampleCondition ){
 		var initialConditions = $("initialCondition_" + sampleIndex);
@@ -473,28 +398,16 @@ function /*string*/ getTests( sampleIndex ){
 	return tests;
 }
 
-function /*string*/ getTest( sampleIndex, testIndex ){
+function getTest( sampleIndex, testIndex ){
 	var compoundIndex = sampleIndex + "_" + testIndex;
-	var requestedTest = $("requestedTests_" + compoundIndex);
+	var requesterTestPreformed = $jq("#requestedTests_" + compoundIndex);
 
-	if( requestedTest ){
-		var id = requestedTest.options[requestedTest.selectedIndex].value;
+	if( jQuery.trim(requesterTestPreformed.val()).length > 0 ){
+		var name = requesterTestPreformed.val();
 		var resultType;
-		var value;
+		var value = $jq("#textResult_" + compoundIndex).val();
 
-
-		if( $("textResult_" + compoundIndex).visible() ){
-			resultType = "A";
-			value = $jq("#textResult_" + compoundIndex).val();
-		}else if( $("freeTextResult_" + compoundIndex).visible() ){
-			resultType = "R";
-			value = $jq("#freeTextResult_" + compoundIndex).val();
-		}else{
-			resultType = "D";
-			value = $jq("#dictionaryResult_" + compoundIndex).val();
-		}
-
-		return "<test id='" +id + "' resultType='" + resultType + "' value='" + value +  "' />";
+		return "<test name='" + name + "' resultType='A' value='" + value +  "' />";
 	}
 
     return "";
@@ -550,7 +463,7 @@ function /*string*/ getNote( sampleIndex ){
 				<input type="hidden" value="0" id="maxReferralTestIndex_0" />
 				<input type="text" id="requesterSampleId_0" onchange=" makeDirty();">
 			</td>
-			<td><bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><bean:message key="sample.date.format"/></span>:</td>
+			<td><bean:message key="sample.collectionDate"/>&nbsp;<span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>:</td>
 			<td><input type="text"
 			           id="collectionDate_0"
 			           name="collectionDate_0"
@@ -620,28 +533,14 @@ function /*string*/ getNote( sampleIndex ){
 		</tr>
 		<tr id="referralTestId_0" >
 			<td ><bean:message key="sample.entry.test.confirmation.site.test" /></td>
-			<td>
-				<select name="requesterTests"
-							id="requestedTests_0_0"
-							class="requestingTests_0"
-							onchange="setPossibleResultsForTest(this, '0_0');"
-							 >
-					<option value="0" >&nbsp;</option>
-				</select>
-			</td>
+            <td><input type="text"
+                       id="requestedTests_0_0"
+                       class="requestingTests_0"
+                    >
+            </td>
 			<td><bean:message key="sample.entry.test.confirmation.site.result"/></td>
 			<td>
-				<select name="result"
-				        style="display: none"
-				        class="referralTestResult_0"
-				        id="dictionaryResult_0_0"
-		        		onchange="checkDictionaryForUseText(this, '0_0');"
-				        >
-				</select>
-
-				<input type="text" class="referralTestResult_0" name="result" style="display: none" id="textResult_0_0" />
-				
-				<textarea rows="2" class="referralTestResult_0" name=result style="display: none" id="freeTextResult_0_0" ></textarea>
+				<input type="text" class="referralTestResult_0" name="result"  id="textResult_0_0" />
 			</td>
 		</tr>
 		<tr id="addButtonRow">

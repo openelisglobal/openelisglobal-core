@@ -15,13 +15,6 @@
 */
 package us.mn.state.health.lims.reports.send.sample.valueholder.influenza;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -29,6 +22,7 @@ import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.citystatezip.dao.CityStateZipDAO;
 import us.mn.state.health.lims.citystatezip.daoimpl.CityStateZipDAOImpl;
 import us.mn.state.health.lims.citystatezip.valueholder.CityStateZip;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -75,6 +69,9 @@ import us.mn.state.health.lims.testtrailer.valueholder.TestTrailer;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -146,7 +143,7 @@ public class InfluenzaSampleXMLBySampleHelper {
 		
 		sampleHuman.setSampleId(sample.getId());
 		sampleHumanDAO.getDataBySample(sampleHuman);
-		sampleOrganization.setSampleId(sample.getId());
+		sampleOrganization.setSample(sample);
 		sampleOrganizationDAO.getDataBySample(sampleOrganization);
 		//bugzilla 1773 need to store sample not sampleId for use in sorting
 		sampleItem.setSample(sample);
@@ -203,7 +200,7 @@ public class InfluenzaSampleXMLBySampleHelper {
 		
 		sampleHuman.setSampleId(sampleXmit.getId());
 		sampleHumanDAO.getDataBySample(sampleHuman);
-		sampleOrganization.setSampleId(sampleXmit.getId());
+		sampleOrganization.setSample(sampleXmit);
 		sampleOrganizationDAO
 		.getDataBySample(sampleOrganization);
 		//bugzilla 1827 set id = external id AFTER getting data
@@ -265,7 +262,7 @@ public class InfluenzaSampleXMLBySampleHelper {
 			Analysis analysis = (Analysis) analyses.get(j);
 			
 			//only process influenza type samples else skip it
-			if (!analysis.getTest().getDescription().toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !analysis.getTest().getTestName().equals(HL7_INFLUENZA_TEST_NAME)) {
+			if (!TestService.getLocalizedTestNameWithType( analysis.getTest() ).toLowerCase().startsWith(HL7_INFLUENZA_TEST_DESCRIPTION) && !TestService.getUserLocalizedTestName( analysis.getTest() ).equals( HL7_INFLUENZA_TEST_NAME ) ) {
 				continue;
 			}
 			
@@ -368,9 +365,8 @@ public class InfluenzaSampleXMLBySampleHelper {
 							testName.setCode(analyteTestCode);
 							testName.setDescription(analyteTestDescription);
 						} else {
-							testName.setCode(analysis.getTest()
-									.getTestName());
-							testName.setDescription(analysis.getTest().getDescription());
+							testName.setCode(TestService.getUserLocalizedTestName( analysis.getTest() ) );
+							testName.setDescription(TestService.getLocalizedTestNameWithType( analysis.getTest() ));
 						}
 						sampleTest.setName(testName);
 						
@@ -514,9 +510,8 @@ public class InfluenzaSampleXMLBySampleHelper {
 				testName.setCode(analyteTestCode);
 				testName.setDescription(analyteTestDescription);
 			} else {
-				testName.setCode(analysis.getTest()
-						.getTestName());
-				testName.setDescription(analysis.getTest().getDescription());
+				testName.setCode(TestService.getUserLocalizedTestName( analysis.getTest() ));
+				testName.setDescription(TestService.getLocalizedTestNameWithType( analysis.getTest() ));
 			}
 			sampleTest.setName(testName);
 			

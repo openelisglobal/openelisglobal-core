@@ -15,19 +15,18 @@
 */
 package us.mn.state.health.lims.sample.valueholder;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sample extends EnumValueItemImpl {
 
@@ -60,6 +59,7 @@ public class Sample extends EnumValueItemImpl {
 	private ValueHolderInterface systemUser;
 	private String referringId;
 	private String clinicalOrderId;
+    private Boolean isConfirmation = false;
 
 	// testing one-to-many
 	//this is for HSE I  and II - ability to enter up to two projects
@@ -111,15 +111,8 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setCollectionDate(Timestamp collectionDate) {
 		this.collectionDate = collectionDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.collectionDateForDisplay = DateUtil
-				.convertTimestampToStringDate(collectionDate, locale);
-
-		// also update String time
-		this.collectionTimeForDisplay = DateUtil
-				.convertTimestampToStringTime(collectionDate, locale);
+		this.collectionDateForDisplay = DateUtil.convertTimestampToStringDate(collectionDate);
+		this.collectionTimeForDisplay = DateUtil.convertTimestampToStringTime(collectionDate );
 	}
 
 	public String getDomain() {
@@ -137,11 +130,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setEnteredDate(Date enteredDate) {
 		this.enteredDate = enteredDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.enteredDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				enteredDate, locale);
+		this.enteredDateForDisplay = DateUtil.convertSqlDateToStringDate(enteredDate);
 	}
 
 	public String getNextItemSequence() {
@@ -168,13 +157,19 @@ public class Sample extends EnumValueItemImpl {
 		this.receivedDateForDisplay = DateUtil.convertSqlDateToStringDate(receivedDate);
 		this.receivedTimestamp = DateUtil.convertSqlDateToTimestamp(receivedDate);
 	}
-	
-	public String getReceivedTimeForDisplay() {
-	    if (GenericValidator.isBlankOrNull(receivedTimeForDisplay)) {
-	        return receivedTimestamp != null ? DateUtil.convertTimestampToStringTime(receivedTimestamp) : null;
-	    }
-        return receivedTimeForDisplay;
+
+    /**
+     * @deprecated Use DateUtil methods
+     * @return The received time in either 12 hour or 24 hour notation depending on configuration
+     */
+    @Deprecated
+	public String getReceivedTimeForDisplay( ) {
+        return receivedTimestamp != null ? DateUtil.convertTimestampToStringConfiguredHourTime( receivedTimestamp) : null;
 	}
+
+    public String getReceived24HourTimeForDisplay( ) {
+        return receivedTimestamp != null ? DateUtil.convertTimestampToStringHourTime( receivedTimestamp) : null;
+    }
 
 	public String getReferredCultureFlag() {
 		return referredCultureFlag;
@@ -190,11 +185,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setReleasedDate(Date releasedDate) {
 		this.releasedDate = releasedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.releasedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				releasedDate, locale);
+		this.releasedDateForDisplay = DateUtil.convertSqlDateToStringDate(releasedDate);
 	}
 
 	public String getRevision() {
@@ -251,11 +242,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setTransmissionDate(Date transmissionDate) {
 		this.transmissionDate = transmissionDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.transmissionDateForDisplay = DateUtil
-				.convertSqlDateToStringDate(transmissionDate, locale);
+		this.transmissionDateForDisplay = DateUtil.convertSqlDateToStringDate(transmissionDate);
 	}
 
 	public String getCollectionDateForDisplay() {
@@ -330,14 +317,7 @@ public class Sample extends EnumValueItemImpl {
 
 	public void setCollectionTimeForDisplay(String collectionTimeForDisplay) {
 		this.collectionTimeForDisplay = collectionTimeForDisplay;
-
-		// also update the java.sql.Date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.collectionDate = DateUtil.convertStringTimeToTimestamp(
-				this.collectionDate, collectionTimeForDisplay, locale);
-		// System.out.println("I am in setColelctionTimeForDisplay and this is
-		// collecitonTime " + this.collectionDate);
+		this.collectionDate = DateUtil.convertStringTimeToTimestamp(this.collectionDate, collectionTimeForDisplay);
 	}
 
 	public String getCollectionTimeForDisplay() {
@@ -378,7 +358,12 @@ public class Sample extends EnumValueItemImpl {
         this.receivedTimeForDisplay = DateUtil
                 .convertTimestampToStringTime(receivedTimestamp);
 	}
-	
+
+    /**
+     * @deprecated use DateUtil methods instead
+     * @param receivedTimeForDisplay -- the time for display
+     */
+    @Deprecated
     public void setReceivedTimeForDisplay(String receivedTimeForDisplay) {
         this.receivedTimeForDisplay = receivedTimeForDisplay;
     }
@@ -399,4 +384,11 @@ public class Sample extends EnumValueItemImpl {
 		this.clinicalOrderId = clinicalOrderId;
 	}
 
+    public Boolean getIsConfirmation() {
+        return isConfirmation;
+    }
+
+    public void setIsConfirmation(Boolean isConfirmation) {
+        this.isConfirmation = isConfirmation;
+    }
 }

@@ -58,7 +58,7 @@ public class ResultsPaging {
 		request.getSession().setAttribute(IActionConstants.SAVE_DISABLED, IActionConstants.FALSE);
 		List<TestResultItem> clientTests = (List<TestResultItem>) dynaForm.get("testResult");
 		PagingBean bean = (PagingBean) dynaForm.get("paging");
-
+		String testSectionId = (request.getParameter("testSectionId"));
 		paging.updatePagedResults(request.getSession(), clientTests, bean, pagingHelper);
 
 		int page = Integer.parseInt(newPage);
@@ -66,6 +66,7 @@ public class ResultsPaging {
 		List<TestResultItem> resultPage = paging.getPage(page, request.getSession());
 		if (resultPage != null) {
 			PropertyUtils.setProperty(dynaForm, "testResult", resultPage);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
 			PropertyUtils.setProperty(dynaForm, "paging", paging.getPagingBeanWithSearchMapping(page, request.getSession()));
 		}
 		

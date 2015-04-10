@@ -194,11 +194,11 @@ public class ResultLimitService{
             return "";
         }
 
-        if( high == Double.MAX_VALUE){
+        if( high == Float.POSITIVE_INFINITY){
             return "> " + StringUtil.doubleWithSignificantDigits( low, significantDigits );
         }
 
-        if( low == Double.MIN_VALUE ){
+        if( low == Float.NEGATIVE_INFINITY ){
             return "< " + StringUtil.doubleWithSignificantDigits( high, significantDigits );
         }
 

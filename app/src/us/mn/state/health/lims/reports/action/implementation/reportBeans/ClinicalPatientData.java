@@ -72,6 +72,12 @@ public class ClinicalPatientData{
     private boolean correctedResult = false;
     private Result parentResult;
     private boolean parentMarker = false;
+    private String billingNumber;
+    private String sampleType;
+    private String sampleId;
+    private String analysisStatus;
+
+
 
     public ClinicalPatientData(){}
     public ClinicalPatientData( ClinicalPatientData data){
@@ -125,7 +131,10 @@ public class ClinicalPatientData{
         correctedResult = data.isCorrectedResult();
         parentResult = data.getParentResult();
         parentMarker = data.getParentMarker();
-
+        billingNumber = data.getBillingNumber();
+        sampleType = data.getSampleType();
+        sampleId = data.getSampleId();
+        analysisStatus = data.getAnalysisStatus();
     }
 
     public String getReferralRefRange() {
@@ -533,5 +542,37 @@ public class ClinicalPatientData{
 
     public void setParentMarker( boolean isParentMarker ){
         this.parentMarker = isParentMarker;
+    }
+
+    public String getBillingNumber(){
+        return billingNumber;
+    }
+
+    public void setBillingNumber( String billingNumber ){
+        this.billingNumber = billingNumber;
+    }
+
+    public String getSampleType(){
+        return sampleType;
+    }
+
+    public void setSampleType( String sampleType ){
+        this.sampleType = sampleType;
+    }
+
+    public String getSampleId(){
+        return sampleId;
+    }
+
+    public void setSampleId( String sampleId ){
+        this.sampleId = sampleId;
+    }
+
+    public String getAnalysisStatus(){
+        return analysisStatus;
+    }
+
+    public void setAnalysisStatus( String analysisStatus ){
+        this.analysisStatus = analysisStatus;
     }
 }

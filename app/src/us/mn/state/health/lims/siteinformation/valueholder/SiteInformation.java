@@ -37,6 +37,7 @@ public class SiteInformation extends BaseObject{
 	private String tag;
 	private ValueHolder schedule = new ValueHolder();
 	private String dictionaryCategoryId;
+	private String descriptionKey;
 
 	public int getGroup() {
 		return group;
@@ -112,6 +113,12 @@ public class SiteInformation extends BaseObject{
 	}
 	public void setDictionaryCategoryId(String dictionaryCategoryId) {
 		this.dictionaryCategoryId = dictionaryCategoryId;
+	}
+	public String getDescriptionKey() {
+		return descriptionKey;
+	}
+	public void setDescriptionKey(String descriptionKey) {
+		this.descriptionKey = descriptionKey;
 	}
 
 }

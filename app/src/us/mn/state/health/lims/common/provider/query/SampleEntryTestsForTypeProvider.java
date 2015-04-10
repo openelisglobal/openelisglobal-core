@@ -19,6 +19,7 @@ package us.mn.state.health.lims.common.provider.query;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.XMLUtil;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
@@ -60,27 +61,26 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 
 		String sampleType = request.getParameter("sampleType");
-		String labOrderType = request.getParameter("labOrderType");
         isVariableTypeOfSample =  VARIABLE_SAMPLE_TYPE_ID.equals( sampleType );
         StringBuilder xml = new StringBuilder();
 
-		String result = createSearchResultXML(sampleType, labOrderType, xml);
+		String result = createSearchResultXML(sampleType, xml);
 
 		ajaxServlet.sendData(xml.toString(), result, request, response);
 
 	}
 
-	private String createSearchResultXML(String sampleType, String labOrderType, StringBuilder xml){
+	private String createSearchResultXML(String sampleType, StringBuilder xml){
 
 		String success = VALID;
 
-		List<Test> tests = TypeOfSampleUtil.getTestListBySampleTypeId(sampleType, labOrderType, true);
+		List<Test> tests = TypeOfSampleUtil.getTestListBySampleTypeId(sampleType, true);
 
 		Collections.sort(tests, new Comparator<Test>(){
 			@Override
 			public int compare(Test t1, Test t2){
 				if(GenericValidator.isBlankOrNull(t1.getSortOrder()) || GenericValidator.isBlankOrNull(t2.getSortOrder())){
-					return t1.getTestName().compareTo(t2.getTestName());
+					return TestService.getUserLocalizedTestName( t1 ).compareTo(TestService.getUserLocalizedTestName( t2 ));
 				}
 
 				try{
@@ -96,7 +96,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 					}
 
 				}catch(NumberFormatException e){
-					return t1.getTestName().compareTo(t2.getTestName());
+                    return TestService.getUserLocalizedTestName( t1 ).compareTo(TestService.getUserLocalizedTestName( t2 ));
 				}
 
 			}
@@ -126,7 +126,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 
 	private void addTest(Test test, StringBuilder xml){
 		xml.append("<test>");
-		XMLUtil.appendKeyValue("name", StringEscapeUtils.escapeXml(test.getTestName()), xml);
+		XMLUtil.appendKeyValue("name", StringEscapeUtils.escapeXml( TestService.getUserLocalizedTestName( test )), xml);
 		XMLUtil.appendKeyValue("id", test.getId(), xml);
 		XMLUtil.appendKeyValue("userBenchChoice", String.valueOf(USER_TEST_SECTION_ID.equals(test.getTestSection().getId())), xml);
         if( isVariableTypeOfSample){
@@ -195,7 +195,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 		Map<String, Integer> testNameOrderMap = new HashMap<String, Integer>();
 
 		for(int i = 0; i < tests.size(); i++){
-			testNameOrderMap.put(tests.get(i).getTestName(), new Integer(i));
+			testNameOrderMap.put(TestService.getUserLocalizedTestName( tests.get( i ) ), new Integer(i));
 		}
 
 		PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
@@ -236,12 +236,12 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 	}
 
 	private String getDerivedNameFromPanel(PanelItem item){
-		//This cover the transition in the DBbetween the panel_item being linked by name
+		//This cover the transition in the DB between the panel_item being linked by name
 		// to being linked by id
 		if(item.getTestId() != null){
 			Test test = testDAO.getTestById(item.getTestId());
 			if(test != null){
-				return test.getTestName();
+				return TestService.getUserLocalizedTestName( test );
 			}
 		}else{
 			return item.getTestName();

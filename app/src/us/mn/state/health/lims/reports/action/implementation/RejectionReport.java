@@ -22,10 +22,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.AnalysisService;
-import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.SampleService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -35,7 +32,6 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Rejecti
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,7 +55,6 @@ public abstract class RejectionReport extends Report implements IReportCreator{
         reportParameters.put( "accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
         reportParameters.put( "labNumberTitle", StringUtil.getContextualMessageForKey( "quick.entry.accession.number" ) );
         reportParameters.put( "labName", ConfigurationProperties.getInstance().getPropertyValue( Property.SiteName ) );
-        reportParameters.put( "siteLogo", getSiteLogo() );
         reportParameters.put( "SUBREPORT_DIR", reportPath );
         reportParameters.put( "startDate", dateRange.getLowDateStr() );
         reportParameters.put( "endDate", dateRange.getHighDateStr() );
@@ -73,14 +68,6 @@ public abstract class RejectionReport extends Report implements IReportCreator{
     protected abstract String getActivityLabel();
 
     protected abstract void buildReportContent( ReportSpecificationList testSelection );
-
-    protected String getSiteLogo(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-            return "images" + File.separator + "HaitiLNSP.jpg";
-        }
-
-        return null;
-    }
 
     @Override
     public void initializeReport( BaseActionForm dynaForm ){
@@ -150,7 +137,7 @@ public abstract class RejectionReport extends Report implements IReportCreator{
 
 
         if( useTestName ){
-            item.setPatientOrTestName( analysisService.getTest().getLocalizedName() );
+            item.setPatientOrTestName( TestService.getUserLocalizedTestName( analysisService.getTest() ) );
             item.setNonPrintingPatient( nameBuilder.toString() );
         }else{
             item.setPatientOrTestName( nameBuilder.toString() );
@@ -162,11 +149,6 @@ public abstract class RejectionReport extends Report implements IReportCreator{
     @Override
     protected String reportFileName(){
         return  "RejectionReport";
-    }
-
-    @Override
-    protected String errorReportFileName(){
-        return "HaitiNoticeOfReportError";
     }
 
     protected RejectionReportBean createIdentityRejectionBean( RejectionReportBean item, boolean blankCollectionDate ){

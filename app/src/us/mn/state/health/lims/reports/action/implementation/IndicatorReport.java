@@ -34,10 +34,6 @@ public abstract class IndicatorReport extends Report {
 	protected Date lowDate;
 	protected Date highDate;
 	
-	protected String errorReportFileName(){
-		return HAITI_ERROR_REPORT;
-	}
-	
 	public void setRequestParameters(BaseActionForm dynaForm) {
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE, getNameForReportRequest(), null ).setRequestParameters( dynaForm );
 	}
@@ -52,21 +48,11 @@ public abstract class IndicatorReport extends Report {
 		reportParameters.put("labName1", getLabNameLine1());
 		reportParameters.put("labName2", getLabNameLine2());
 		reportParameters.put("reportTitle", getNameForReport());
-		reportParameters.put("siteLogo", useLogo ? getSiteLogo() : null);
-		reportParameters.put("leftImage", getLeftImage());
 		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
-			reportParameters.put("headerName", "CILNSPHeader.jasper");	
-		}	
-	}
-
-	protected String getLeftImage(){
-		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI IPCI")){
-			return "IPCI_Logo.png";
-		}else if(ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI_REGIONAL")){
-			return "LNSPLogo.jpg";
-		}else{
-			return "HaitiFlag.gif";
-		}
+            reportParameters.put("headerName", "CILNSPHeader.jasper");
+        }else{
+            reportParameters.put("headerName", "GeneralHeader.jasper");
+        }
 	}
 	
 	protected void setDateRange(BaseActionForm dynaForm) {
@@ -100,5 +86,5 @@ public abstract class IndicatorReport extends Report {
 	abstract protected String getNameForReport();
 	abstract protected String getLabNameLine1();
 	abstract protected String getLabNameLine2();
-	abstract protected String getSiteLogo();
+
 }

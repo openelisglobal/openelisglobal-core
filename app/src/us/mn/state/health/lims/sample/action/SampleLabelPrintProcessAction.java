@@ -15,17 +15,6 @@
 */
 package us.mn.state.health.lims.sample.action;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
@@ -34,7 +23,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSInvalidPrinterException;
@@ -49,6 +37,10 @@ import us.mn.state.health.lims.login.valueholder.UserSessionData;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -115,10 +107,7 @@ public class SampleLabelPrintProcessAction extends BaseAction {
 		SampleDAO sampleDAO = new SampleDAOImpl();
 		Sample sample = new Sample();
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-		"org.apache.struts.action.LOCALE");
-
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		sample.setReceivedDateForDisplay(dateAsText);
 		sample.setEnteredDateForDisplay(dateAsText);

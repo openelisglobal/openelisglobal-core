@@ -24,6 +24,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -50,26 +51,26 @@ public class PatientManagementBridge{
 
     public PatientManagementInfo getPatientManagementInfoFor( Patient patient, boolean readOnly){
         PatientManagementInfo info = new PatientManagementInfo();
+        info.setReadOnly( readOnly );
 
         if( patient != null){
             PatientService patientService = new PatientService( patient );
+            Map<String, String> addressComponents = patientService.getAddressComponents();
             info.setFirstName( patientService.getFirstName() );
             info.setLastName( patientService.getLastName() );
-            info.setAddressDepartment( patientService.getAddressComponents().get( PatientService.ADDRESS_DEPT ) );
-            info.setCommune( patientService.getAddressComponents().get( PatientService.ADDRESS_COMMUNE ) );
-            info.setCity( patientService.getAddressComponents().get( PatientService.ADDRESS_CITY ) );
-            info.setStreetAddress( patientService.getAddressComponents().get( PatientService.ADDRESS_STREET ) );
+            info.setAddressDepartment( addressComponents.get( PatientService.ADDRESS_DEPT ) );
+            info.setCommune( addressComponents.get( PatientService.ADDRESS_COMMUNE ) );
+            info.setCity( addressComponents.get( PatientService.ADDRESS_CITY ) );
+            info.setStreetAddress( addressComponents.get( PatientService.ADDRESS_STREET ) );
             info.setGender( readOnly ? patientService.getLocalizedGender() : patientService.getGender() );
             info.setBirthDateForDisplay( patientService.getBirthdayForDisplay() );
             info.setNationalId( patientService.getNationalId() );
             info.setSTnumber( patientService.getSTNumber() );
-            info.setReadOnly( readOnly );
             info.setMothersInitial( patientService.getMothersInitial() );
             if(readOnly){
                 info.setAge( DateUtil.getCurrentAgeForDate( DateUtil.convertStringDateStringTimeToTimestamp( patientService.getBirthdayForDisplay(), null ),
                         DateUtil.convertStringDateStringTimeToTimestamp(DateUtil.getCurrentDateAsText(), null )));
             }
-
         }
 
         return info;

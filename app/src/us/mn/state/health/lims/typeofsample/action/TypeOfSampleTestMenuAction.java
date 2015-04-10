@@ -15,17 +15,11 @@
 */
 package us.mn.state.health.lims.typeofsample.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseMenuAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
@@ -35,6 +29,11 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.formbean.TypeOfSampleLink;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TypeOfSampleTestMenuAction extends BaseMenuAction {
@@ -60,8 +59,8 @@ public class TypeOfSampleTestMenuAction extends BaseMenuAction {
 		
 		for( TypeOfSampleTest sampleTest : sampleTestList){
 			String sampleName = typeOfSampleDAO.getNameForTypeOfSampleId(sampleTest.getTypeOfSampleId());
-			String testName =  testDAO.getNameForTestId(sampleTest.getTestId());
-			String testDescription = testDAO.getDescriptionForTestId(sampleTest.getTestId());
+			String testName = TestService.getUserLocalizedTestName( sampleTest.getTestId() );
+			String testDescription = TestService.getLocalizedTestNameWithType( sampleTest.getTestId() );
 			
 			namedSampleTestList.add(new TypeOfSampleLink(sampleTest.getId(), sampleName, testName, testDescription));
 		}

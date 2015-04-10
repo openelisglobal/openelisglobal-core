@@ -40,12 +40,11 @@ public class FormFields {
 		MLS,                                    //Include indicator if organization is a sentinel lab
 		InlineOrganizationTypes,                //Should organization types be included when specifying organizations
 		SubjectNumber,                          //Include subject number with patient info
+        SubjectNumberRequired,                  //If using subject number is it required
 		ProviderInfo,                           //Include provider information on order form
 		NationalID,                             //Include national ID with patient info
 		Occupation,                             //Include occupation with patient info
-		Commune,                                //Is commune part of an address
 		MotherInitial,                          //Include mothers first initial with patient info
-		ResultsAccept,                          //No longer used
 		SearchSampleStatus,                     //Can patients be searched for by status
 		OrganizationAddressInfo,                //Include address info with organization info
 		OrganizationCLIA,                       //Include CLIA status with organization info
@@ -58,10 +57,10 @@ public class FormFields {
 		NON_CONFORMITY_SITE_LIST,               // site (patient entry or nonconforming) is defined by a list of sites.
 		NON_CONFORMITY_SITE_LIST_USER_ADDABLE,  //Should the user be able to add to the site list
 		NON_CONFORMITY_PROVIDER_ADDRESS,        //Should the providers address be collected on non-conformity page
-		AddressCity,                            //Is a city part of an address
-		AddressDepartment,                      //Is department part of an address
-		AddressCommune,                         //Is a commune part of an address
-		AddressVillage,                         //Is a village part of an address
+        ADDRESS_CITY,                            //Is a city part of an address
+        ADDRESS_DEPARTMENT,                      //Is department part of an address
+        ADDRESS_COMMUNE,                         //Is a commune part of an address
+        ADDRESS_VILLAGE,                         //Is a village part of an address
 		DepersonalizedResults,                  //Should results entry have personal identifiers
 		SEARCH_PATIENT_WITH_LAB_NO,             //Should lab number be part of patient search
 		ResultsReferral,                        //Can results be referred out
@@ -69,7 +68,8 @@ public class FormFields {
 		InitialSampleCondition,                 //Allow for collection of sample condition with sample entry
 		PatientRequired,                        // By default, a (minimal) patient to go with a sample is required.
 		PatientRequired_SampleConfirmation,     //Is patient required for sample confirmation
-		QAFullProviderInfo,                     //Include provider information on non-conformity
+        QA_FULL_PROVIDER_INFO,                     //Include provider information on non-conformity
+        QA_REQUESTER_SAMPLE_ID,                 //If provider info is used on non-conformity should it include provider sample id
 		QASubjectNumber,                        //Include subject number be on non-conformity
 		QATimeWithDate,                         //Include time in addition to date on non-conformity
 		PatientIDRequired,                      //Is patient ID required for patient
@@ -85,18 +85,17 @@ public class FormFields {
 		SampleEntryProviderFax,                 //Include provider fax for sample entry
 		SampleEntryProviderEmail,               //Include provider email for sample entry
 		SampleEntryHealthFacilityAddress,       //Include referral address
-		SampleEntryLabOrderTypes,               //Are there different types of lab orders
 		SampleEntrySampleCollector,             //Include name of sample collector
 		SampleEntryRequesterLastNameRequired,   //Is the requester name required
 		SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER,//Include referral patient number
 		PatientPhone,                           //Include patient phone with patient info
 		PatientHealthRegion,                    //Include patient health region with patient info
 		PatientHealthDistrict,                  //Include patient health district with patient info
-		PatientNationality,                     //Include patient nationality with patient info
 		PatientMarriageStatus,                  //Include patient marriage status with patient info
 		PatientEducation,                       //Include patient education level with patient info
 		SampleEntryPatientClinical,             //Include patient clinical information on sample entry (request by CI but not currently implemented)
-		QA_DOCUMENT_NUMBER                      //Include document number on non-conformity
+		QA_DOCUMENT_NUMBER,                      //Include document number on non-conformity
+        TEST_LOCATION_CODE                      //Include test location code on order entry
 	}
 
 	private static FormFields instance = null;

@@ -22,21 +22,18 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.SampleService;
-import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ActivityReportBean;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,12 +50,10 @@ public abstract class ActivityReport extends Report implements IReportCreator{
 
     @Override
     protected void createReportParameters() {
-        super.createReportParameters();
         reportParameters.put( "activityLabel", getActivityLabel() );
         reportParameters.put( "accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
         reportParameters.put( "labNumberTitle", StringUtil.getContextualMessageForKey( "quick.entry.accession.number" ) );
         reportParameters.put( "labName", ConfigurationProperties.getInstance().getPropertyValue( Property.SiteName ) );
-        reportParameters.put( "siteLogo", getSiteLogo() );
         reportParameters.put( "SUBREPORT_DIR", reportPath );
         reportParameters.put( "startDate", dateRange.getLowDateStr() );
         reportParameters.put( "endDate", dateRange.getHighDateStr() );
@@ -74,13 +69,6 @@ public abstract class ActivityReport extends Report implements IReportCreator{
 
     protected abstract void buildReportContent( ReportSpecificationList testSelection );
 
-    protected String getSiteLogo(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-            return "images" + File.separator + "HaitiLNSP.jpg";
-        }
-
-        return null;
-    }
 
     @Override
     public void initializeReport( BaseActionForm dynaForm ){
@@ -89,7 +77,8 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         String lowDateStr = dynaForm.getString( "lowerDateRange" );
         String highDateStr = dynaForm.getString( "upperDateRange" );
         dateRange = new DateRange( lowDateStr, highDateStr );
-
+       
+        super.createReportParameters();
         errorFound = !validateSubmitParameters(selection);
         if ( errorFound ) {
             return;
@@ -156,11 +145,6 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         return  "ActivityReport";
     }
 
-    @Override
-    protected String errorReportFileName(){
-        return "HaitiNoticeOfReportError";
-    }
-
     protected ActivityReportBean createIdentityActivityBean( ActivityReportBean item, boolean blankCollectionDate ){
         ActivityReportBean filler = new ActivityReportBean();
 
@@ -170,18 +154,5 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         filler.setPatientOrTestName( item.getNonPrintingPatient() );
 
         return filler;
-    }
-
-    protected String getNameForId( ReportSpecificationList list ){
-
-        String selection = list.getSelection();
-
-        for( IdValuePair pair : list.getList()){
-            if( selection.equals( pair.getId() )){
-                return pair.getValue();
-            }
-        }
-
-        return "";
     }
 }

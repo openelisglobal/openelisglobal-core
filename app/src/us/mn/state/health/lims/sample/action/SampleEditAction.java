@@ -70,16 +70,19 @@ public class SampleEditAction extends BaseAction {
     private static final SampleEditItemComparator testComparator = new SampleEditItemComparator();
     private static final Set<Integer> excludedAnalysisStatusList;
     private static final Set<Integer> ENTERED_STATUS_SAMPLE_LIST = new HashSet<Integer>();
+    private static final Collection<String> ABLE_TO_CANCEL_ROLE_NAMES = new ArrayList<String>(  );
 
 	private boolean isEditable = false;
 	private String maxAccessionNumber;
 
 	static {
 		excludedAnalysisStatusList = new HashSet<Integer>();
-		excludedAnalysisStatusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)));
 		excludedAnalysisStatusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
 
 		ENTERED_STATUS_SAMPLE_LIST.add( Integer.parseInt( StatusService.getInstance().getStatusID( SampleStatus.Entered ) ) );
+        ABLE_TO_CANCEL_ROLE_NAMES.add( "Validator" );
+        ABLE_TO_CANCEL_ROLE_NAMES.add( "Validation");
+        ABLE_TO_CANCEL_ROLE_NAMES.add( "Biologist" );
 	}
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -93,7 +96,7 @@ public class SampleEditAction extends BaseAction {
 
 		String accessionNumber = request.getParameter("accessionNumber");
         boolean allowedToCancelResults = userModuleDAO.isUserAdmin(request) ||
-                new UserRoleDAOImpl().userInRole( currentUserId, "Validation" );
+                new UserRoleDAOImpl().userInRole( currentUserId, ABLE_TO_CANCEL_ROLE_NAMES );
 
 		if( GenericValidator.isBlankOrNull(accessionNumber)){
 			accessionNumber = getMostRecentAccessionNumberForPaitient( request.getParameter("patientID"));
@@ -115,7 +118,7 @@ public class SampleEditAction extends BaseAction {
 
 				List<SampleItem> sampleItemList = getSampleItems(sample);
 				setPatientInfo(dynaForm, sample);
-                List<SampleEditItem> currentTestList = getCurrentTestInfo( dynaForm, sampleItemList, accessionNumber, allowedToCancelResults );
+                List<SampleEditItem> currentTestList = getCurrentTestInfo( sampleItemList, accessionNumber, allowedToCancelResults );
                 PropertyUtils.setProperty(dynaForm, "existingTests", currentTestList);
 				setAddableTestInfo(dynaForm, sampleItemList, accessionNumber);
 				setAddableSampleTypes(dynaForm);
@@ -202,7 +205,7 @@ public class SampleEditAction extends BaseAction {
 		PropertyUtils.setProperty(dynaForm, "nationalId", patientService.getNationalId());
 	}
 
-	private List<SampleEditItem> getCurrentTestInfo( DynaActionForm dynaForm, List<SampleItem> sampleItemList, String accessionNumber, boolean allowedToCancelAll ) throws IllegalAccessException, InvocationTargetException,
+	private List<SampleEditItem> getCurrentTestInfo(  List<SampleItem> sampleItemList, String accessionNumber, boolean allowedToCancelAll ) throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
 		List<SampleEditItem> currentTestList = new ArrayList<SampleEditItem>();
 
@@ -230,7 +233,7 @@ public class SampleEditAction extends BaseAction {
 			SampleEditItem sampleEditItem = new SampleEditItem();
 
 			sampleEditItem.setTestId(analysis.getTest().getId());
-			sampleEditItem.setTestName(analysis.getTest().getTestName());
+			sampleEditItem.setTestName(TestService.getUserLocalizedTestName( analysis.getTest() ));
 			sampleEditItem.setSampleItemId(sampleItem.getId());
 
 			boolean canCancel = allowedToCancelAll ||
@@ -276,7 +279,7 @@ public class SampleEditAction extends BaseAction {
 	}
 
 	private void setAddableSampleTypes(DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE));
+		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
 	}
 	
 	private void addPossibleTestsToList(SampleItem sampleItem, List<SampleEditItem> possibleTestList, String accessionNumber) {
@@ -299,7 +302,7 @@ public class SampleEditAction extends BaseAction {
 			test.setId(typeOfSampleTest.getTestId());
 			testDAO.getData(test);
 			if ("Y".equals(test.getIsActive()) && test.getOrderable()) {
-				sampleEditItem.setTestName(test.getLocalizedName());
+				sampleEditItem.setTestName( TestService.getUserLocalizedTestName( test ) );
 				sampleEditItem.setSampleItemId(sampleItem.getId());
 				sampleEditItem.setSortOrder(test.getSortOrder());
 				typeOfTestSampleItemList.add(sampleEditItem);

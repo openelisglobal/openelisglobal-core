@@ -17,10 +17,11 @@
 */
 package us.mn.state.health.lims.sample.util.CI;
 
-import java.util.*;
-
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.test.valueholder.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ARVFormMapper extends BaseProjectFormMapper implements IProjectFormMapper {
@@ -43,10 +44,10 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 			testList.add(createTest("Integral"));
 		}	
 		if (projectData.getCreatinineTest()){
-			testList.add(createTest("Créatininémie"));
+			testList.add(createTest("CrÃ©atininÃ©mie"));
 		}
 		if (projectData.getGlycemiaTest()){
-			testList.add(createTest("Glycémie"));
+			testList.add(createTest("GlycÃ©mie"));
 		}
 		
 		if (projectData.getTransaminaseTest()){
@@ -82,7 +83,7 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		    testList.add(createTest("Viral Load"));
 		}		
 		if (projectData.getGenotypingTest()){
-		    testList.add(createTest("Génotypage"));
+		    testList.add(createTest("GÃ©notypage"));
 		}
 		
 		return testList;

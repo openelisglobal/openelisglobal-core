@@ -16,6 +16,10 @@
 
 package us.mn.state.health.lims.common.services;
 
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.LocaleChangeListener;
+import us.mn.state.health.lims.common.util.SystemConfiguration;
+import us.mn.state.health.lims.localization.valueholder.Localization;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.beanItems.TestResultItem.ResultDisplayType;
 import us.mn.state.health.lims.test.dao.TestDAO;
@@ -24,26 +28,72 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  */
-public class TestService{
+public class TestService implements LocaleChangeListener{
 
     public static final String HIV_TYPE = "HIV_TEST_KIT";
     public static final String SYPHILIS_TYPE = "SYPHILIS_TEST_KIT";
-    private static final TestResultDAO testResultDAO = new TestResultDAOImpl();
-    private static final TestDAO testDAO = new TestDAOImpl();
+    private static final TestService INSTANCE = new TestService( new Test() );
+    private static final TypeOfSampleTestDAOImpl TYPE_OF_SAMPLE_TEST_DAO = new TypeOfSampleTestDAOImpl();
+    private static String VARIABLE_TYPE_OF_SAMPLE_ID;
+    private static String LANGUAGE_LOCALE = ConfigurationProperties.getInstance().getPropertyValue( ConfigurationProperties.Property.DEFAULT_LANG_LOCALE);
+    private static final TestResultDAO TEST_RESULT_DAO = new TestResultDAOImpl();
+    private static final TestDAO TEST_DAO = new TestDAOImpl();
+    private static final TypeOfSampleDAO TYPE_OF_SAMPLE_DAO = new TypeOfSampleDAOImpl();
+
     private final Test test;
+
+    private static Map<Entity, Map<String, String>> entityToMap;
+
+    public enum Entity{
+        TEST_NAME,
+        TEST_AUGMENTED_NAME,
+        TEST_REPORTING_NAME
+    }
+
+    static{
+        TypeOfSample variableTypeOfSample = new TypeOfSampleDAOImpl().getTypeOfSampleByLocalAbbrevAndDomain( "Variable", "H" );
+        VARIABLE_TYPE_OF_SAMPLE_ID = variableTypeOfSample == null ? "-1" : variableTypeOfSample.getId();
+
+        entityToMap = new HashMap<Entity, Map<String, String>>();
+        entityToMap.put( Entity.TEST_NAME, createTestIdToNameMap() );
+        entityToMap.put(Entity.TEST_AUGMENTED_NAME, createTestIdToAugmentedNameMap());
+        entityToMap.put(Entity.TEST_REPORTING_NAME, createTestIdToReportingNameMap());
+
+        SystemConfiguration.getInstance().addLocalChangeListener( INSTANCE );
+    }
+
+    @Override
+    public void localeChanged( String locale ){
+        LANGUAGE_LOCALE = locale;
+        testNamesChanged();
+    }
+
+    public static void testNamesChanged( ){
+        entityToMap.put( Entity.TEST_NAME, createTestIdToNameMap() );
+        entityToMap.put(Entity.TEST_AUGMENTED_NAME, createTestIdToAugmentedNameMap());
+        entityToMap.put(Entity.TEST_REPORTING_NAME, createTestIdToReportingNameMap());
+    }
 
     public TestService(Test test){
         this.test = test;
     }
 
     public TestService(String testId){
-        this.test = testDAO.getTestById( testId );
+        this.test = TEST_DAO.getTestById( testId );
     }
 
     public Test getTest(){
@@ -56,7 +106,7 @@ public class TestService{
 
     @SuppressWarnings("unchecked")
     public List<TestResult> getPossibleTestResults( ) {
-        return testResultDAO.getAllTestResultsPerTest(test);
+        return TEST_RESULT_DAO.getAllActiveTestResultsPerTest( test );
     }
 
     public String getUOM(boolean isCD4Conclusion){
@@ -70,7 +120,7 @@ public class TestService{
     }
 
     public boolean isReportable(){
-        return test == null ? false : "Y".equals(test.getIsReportable());
+        return test != null && "Y".equals( test.getIsReportable() );
     }
 
     public String getSortOrder(){
@@ -100,7 +150,160 @@ public class TestService{
         return testResultType;
     }
 
+    public TypeOfSample getTypeOfSample(){
+        if( test == null){
+            return null;
+        }
+
+        TypeOfSampleTest typeOfSampleTest = TYPE_OF_SAMPLE_TEST_DAO.getTypeOfSampleTestForTest( test.getId() );
+
+        if( typeOfSampleTest == null){
+            return null;
+        }
+
+       String typeOfSampleId = typeOfSampleTest.getTypeOfSampleId();
+
+        return TYPE_OF_SAMPLE_DAO.getTypeOfSampleById( typeOfSampleId );
+    }
+
     public static List<Test> getAllActiveTests(){
-        return testDAO.getAllActiveTests(false);
+        return TEST_DAO.getAllActiveTests(false);
+    }
+
+    public static Map<String, String> getMap( Entity entiy){
+        return entityToMap.get(entiy);
+    }
+
+    public static String getUserLocalizedTestName( Test test ){
+        if( test == null){
+            return "";
+        }
+
+        return getUserLocalizedTestName( test.getId() );
+    }
+
+    public static String getUserLocalizedReportingTestName( String testId ){
+        String name = entityToMap.get(Entity.TEST_REPORTING_NAME).get( testId );
+        return name == null ? "" : name;
+    }
+
+    public static String getUserLocalizedReportingTestName( Test test ){
+        if( test == null){
+            return "";
+        }
+
+        return getUserLocalizedReportingTestName( test.getId() );
+    }
+
+    public static String getUserLocalizedTestName( String testId ){
+        String name = entityToMap.get(Entity.TEST_NAME).get( testId );
+        return name == null ? "" : name;
+    }
+    /**
+     * Returns the test name augmented with the sample type IF  ConfigurationProperties.Property.TEST_NAME_AUGMENTED
+     * is true. If it is not true just the test name will be returned.  The test name will be correct for the current locale
+     * @param test The test for which we want the name
+     * @return The test name or the augmented test name
+     */
+    public static String getLocalizedTestNameWithType( Test test ){
+        if( test == null){
+            return "";
+        }
+
+        return getLocalizedTestNameWithType( test.getId() );
+    }
+
+    /**
+     * Returns the test name augmented with the sample type IF  ConfigurationProperties.Property.TEST_NAME_AUGMENTED
+     * is true. If it is not true just the test name will be returned.  The test name will be correct for the current locale
+     * @param testId The test id of the test for which we want the name
+     * @return The test name or the augmented test name
+     */
+    public static String getLocalizedTestNameWithType( String testId ){
+        String description = entityToMap.get(Entity.TEST_AUGMENTED_NAME ).get( testId );
+        return description == null ? "" : description;
+    }
+    private static Map<String, String> createTestIdToNameMap() {
+        Map<String, String> testIdToNameMap = new HashMap<String, String>();
+
+        List<Test> tests = new TestDAOImpl().getAllTests(false);
+
+        for (Test test : tests) {
+            testIdToNameMap.put(test.getId(), buildTestName( test ).replace("\n", " "));
+        }
+
+        return testIdToNameMap;
+    }
+
+    private static String buildTestName( Test test ){
+        Localization localization = test.getLocalizedTestName();
+
+        if( LANGUAGE_LOCALE.equals( ConfigurationProperties.LOCALE.FRENCH.getRepresentation() )){
+            return localization.getFrench();
+        }else{
+            return localization.getEnglish();
+        }
+    }
+    private static Map<String, String> createTestIdToAugmentedNameMap() {
+        Map<String, String> testIdToNameMap = new HashMap<String, String>();
+
+        List<Test> tests = new TestDAOImpl().getAllTests(false);
+
+        for (Test test : tests) {
+            testIdToNameMap.put(test.getId(), buildAugmentedTestName( test ).replace( "\n", " " ));
+        }
+
+        return testIdToNameMap;
+    }
+
+    private static Map<String, String> createTestIdToReportingNameMap(){
+        Map<String, String> testIdToNameMap = new HashMap<String, String>();
+
+        List<Test> tests = new TestDAOImpl().getAllActiveTests(false);
+
+        for (Test test : tests) {
+            testIdToNameMap.put(test.getId(), buildReportingTestName( test ) );
+        }
+
+        return testIdToNameMap;
+    }
+
+    private static String buildReportingTestName( Test test ){
+        Localization localization = test.getLocalizedReportingName();
+
+        if( LANGUAGE_LOCALE.equals( ConfigurationProperties.LOCALE.FRENCH.getRepresentation() )){
+            return localization.getFrench();
+        }else{
+            return localization.getEnglish();
+        }
+    }
+    private static String buildAugmentedTestName( Test test ){
+        Localization localization = test.getLocalizedTestName();
+
+        String sampleName = "";
+
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.TEST_NAME_AUGMENTED, "true" )){
+            TypeOfSample typeOfSample = new TestService( test ).getTypeOfSample();
+            if( typeOfSample != null && !typeOfSample.getId().equals( VARIABLE_TYPE_OF_SAMPLE_ID ) ){
+                sampleName = "(" + typeOfSample.getLocalizedName() + ")";
+            }
+        }
+
+        if( LANGUAGE_LOCALE.equals( ConfigurationProperties.LOCALE.FRENCH.getRepresentation() )){
+            return localization.getFrench() + sampleName;
+        }else{
+            return localization.getEnglish()  + sampleName;
+        }
+    }
+
+    public static List<Test> getTestsForSampleType(String sampleTypeId){
+        ArrayList<Test> tests = new ArrayList<Test>();
+
+        List<TypeOfSampleTest> typeOfSampleTests = TYPE_OF_SAMPLE_TEST_DAO.getTypeOfSampleTestsForSampleType( sampleTypeId);
+        for( TypeOfSampleTest typeOfSampleTest : typeOfSampleTests){
+            tests.add( new TestService(typeOfSampleTest.getTestId()).getTest());
+        }
+
+        return tests;
     }
 }

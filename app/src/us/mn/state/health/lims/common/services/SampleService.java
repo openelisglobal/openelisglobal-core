@@ -20,9 +20,22 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
+import us.mn.state.health.lims.organization.dao.OrganizationDAO;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
+import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.person.dao.PersonDAO;
+import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
+import us.mn.state.health.lims.person.valueholder.Person;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
+import us.mn.state.health.lims.requester.dao.RequesterTypeDAO;
+import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
+import us.mn.state.health.lims.requester.daoimpl.RequesterTypeDAOImpl;
+import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
+import us.mn.state.health.lims.requester.valueholder.RequesterType;
+import us.mn.state.health.lims.requester.valueholder.SampleRequester;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
@@ -33,6 +46,7 @@ import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,12 +58,21 @@ public class SampleService {
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
     private static final SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
     private static final SampleQaEventDAO sampleQaEventDAO  = new SampleQaEventDAOImpl();
-    private static final Set<Integer> CONFIRMATION_STATUS_SET = new HashSet<Integer>(  );
+    private static final SampleRequesterDAO sampleRequesterDAO = new SampleRequesterDAOImpl();
+    private static final PersonDAO personDAO = new PersonDAOImpl();
     public static final String TABLE_REFERENCE_ID;
+    private static Long PERSON_REQUESTER_TYPE_ID;
+    private static Long ORGANIZATION_REQUESTER_TYPE_ID;
 
     static{
         ReferenceTablesDAO refTableDAO = new ReferenceTablesDAOImpl();
         TABLE_REFERENCE_ID = refTableDAO.getReferenceTableByName( "SAMPLE" ).getId();
+
+        RequesterTypeDAO requesterTypeDAO = new RequesterTypeDAOImpl();
+        RequesterType type = requesterTypeDAO.getRequesterTypeByName( "provider" );
+        PERSON_REQUESTER_TYPE_ID  = type != null ? Long.parseLong( type.getId() ) : Long.MIN_VALUE;
+        type = requesterTypeDAO.getRequesterTypeByName( "organization" );
+        ORGANIZATION_REQUESTER_TYPE_ID = type != null ? Long.parseLong( type.getId() ) : Long.MIN_VALUE;
     }
 
 	private Sample sample;
@@ -62,9 +85,7 @@ public class SampleService {
     public SampleService( String accessionNumber){
         this.sample = sampleDAO.getSampleByAccessionNumber( accessionNumber );
     }
-    static {
-        CONFIRMATION_STATUS_SET.add( Integer.parseInt( StatusService.getInstance().getStatusID( StatusService.AnalysisStatus.ReferredIn ) ) );
-    }
+
 	/**
 	 * Gets the date of when the order was completed
 	 * @return The date of when it was completed, null if it was not yet completed
@@ -91,8 +112,16 @@ public class SampleService {
         return StatusService.getInstance().getStatusID( StatusService.AnalysisStatus.Canceled ).equals( analysis.getStatusId() );
     }
 
-    public Date getOrderedDate(){
-		return sample.getReceivedDate();
+    public Timestamp getOrderedDate(){
+        if( sample == null){
+            return null;
+        }
+        ObservationHistory observation =  ObservationHistoryService.getObservationForSample( ObservationHistoryService.ObservationType.REQUEST_DATE, sample.getId() );
+		if( observation != null && observation.getValue() != null){
+            return DateUtil.convertStringDateToTruncatedTimestamp( observation.getValue() );
+        }else{ //If ordered date is not given then use received date
+            return sample.getReceivedTimestamp();
+        }
 	}
 
     public String getAccessionNumber(){
@@ -114,8 +143,11 @@ public class SampleService {
         return sample.getReceivedTimeForDisplay();
     }
 
+    public String getReceived24HourTimeForDisplay(){
+        return sample.getReceived24HourTimeForDisplay();
+    }
     public boolean isConfirmationSample(){
-        return !analysisDAO.getAnalysesBySampleIdAndStatusId( sample.getId(), CONFIRMATION_STATUS_SET ).isEmpty();
+        return sample != null && sample.getIsConfirmation();
     }
 
     public Sample getSample(){
@@ -137,4 +169,42 @@ public class SampleService {
     public List<SampleQaEvent> getSampleQAEventList(){
         return sample == null ? new ArrayList<SampleQaEvent>(  ) : sampleQaEventDAO.getSampleQaEventsBySample(sample);
     }
+
+    public Person getPersonRequester(){
+        if( sample == null ){
+            return null;
+        }
+
+        List<SampleRequester> requesters = sampleRequesterDAO.getRequestersForSampleId( sample.getId() );
+
+        for( SampleRequester requester : requesters ){
+            if( PERSON_REQUESTER_TYPE_ID == requester.getRequesterTypeId() ){
+                Person person = new Person();
+                person.setId( String.valueOf( requester.getRequesterId() ) );
+                personDAO.getData( person );
+                return person.getId() != null ? person : null;
+            }
+        }
+
+        return null;
+    }
+
+    public Organization getOrganizationRequester(){
+        if( sample == null ){
+            return null;
+        }
+
+        List<SampleRequester> requesters = sampleRequesterDAO.getRequestersForSampleId( sample.getId() );
+
+        for( SampleRequester requester : requesters ){
+            if( ORGANIZATION_REQUESTER_TYPE_ID == requester.getRequesterTypeId() ){
+                OrganizationDAO organizationDAO = new OrganizationDAOImpl();
+                Organization org = organizationDAO.getOrganizationById( String.valueOf( requester.getRequesterId() ) );
+                return org != null ? org : null;
+            }
+        }
+
+        return null;
+    }
+
 }

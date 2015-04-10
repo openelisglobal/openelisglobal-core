@@ -77,12 +77,12 @@ public abstract class ConfigurationProperties {
         notesRequiredForModifyResults,//If true a note is required when a result is modified
         resultTechnicianName,        //If true the technicians name is needed for results
         allowResultRejection,        //If true then a technician has the ability to reject an individual test and select a reason for rejection
+        restrictFreeTextRefSiteEntry, //If true then a user cannot enter new referring sites during sample entry and must choose from list provided
         autoFillTechNameBox,         //If true a box will be provided to auto-fill technicians name for all results on page
         autoFillTechNameUser,        //If true the technicians name will be auto-filled with the name of the logged in user
         AUTOFILL_COLLECTION_DATE,    //If true the collection date will be auto-filled with current date
         failedValidationMarker,      //If true results that failed validation will have icon next to them
         resultsResendTime,           //How much time between trying to resend results that failed to reach their destination
-        useLogoInReport,             //If true a lab logo will be used on reports
         TRACK_PATIENT_PAYMENT,       //If true then patient payment status can be entered
         ALERT_FOR_INVALID_RESULTS,   //If true then technician will get an alert for results outside of the valid range
         DEFAULT_LANG_LOCALE,         //Default language locale
@@ -105,7 +105,14 @@ public abstract class ConfigurationProperties {
         PHONE_FORMAT,                //Format of phone number
         VALIDATE_PHONE_FORMAT,       //If true then entered phone numbers will be validated against format
         ALLOW_DUPLICATE_SUBJECT_NUMBERS, //If true then duplicate subject numbers are allowed
-        VALIDATE_REJECTED_TESTS //If true then if the technician rejects a test the next step is validation
+        VALIDATE_REJECTED_TESTS, //If true then if the technician rejects a test the next step is validation
+        TEST_NAME_AUGMENTED,   //If true then in some places the test name will be suffixed with the sample type
+        USE_BILLING_REFERENCE_NUMBER,       //If true then the user can enter billing codes for latter reporting
+        BILLING_REFERENCE_NUMBER_LABEL,   //The label being used for the billing reference number
+        ORDER_PROGRAM,   //Should program be part of an order
+        BANNER_TEXT, //Text on Banner
+        CLOCK_24,    //True for 24 hour clock, false for 12 hour clock
+        PATIENT_NATIONALITY //True if patient nationality should be collected with patient information
     }
 
 	

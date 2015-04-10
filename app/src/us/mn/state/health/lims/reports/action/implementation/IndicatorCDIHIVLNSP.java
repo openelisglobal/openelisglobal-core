@@ -16,9 +16,7 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
@@ -30,8 +28,8 @@ public class IndicatorCDIHIVLNSP extends IndicatorHIV implements IReportCreator,
 	private static String HIV_INDETERMINATE_ID = "undefined";
 	
 	static{
-		HIV_TESTS.add("Dénombrement des lymphocytes CD4 (mm3)");
-		HIV_TESTS.add("Dénombrement des lymphocytes  CD4 (%)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes CD4 (mm3)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes  CD4 (%)");
 		HIV_TESTS.add("Test rapide HIV 1 + HIV 2");
 		
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
@@ -56,11 +54,6 @@ public class IndicatorCDIHIVLNSP extends IndicatorHIV implements IReportCreator,
 		}
 	}
 	
-	@Override
-	protected String getSiteLogo(){
-		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
-	}
-
 	@Override
 	protected String getLabNameLine1() {
 		return StringUtil.getContextualMessageForKey("report.labName.one");

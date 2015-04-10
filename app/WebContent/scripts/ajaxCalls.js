@@ -1,3 +1,7 @@
+function defaultFailure(xhr){
+    alert(xhr.responseText);
+}
+
 function getLabOrder( orderNumber, success, failure){
 	if( !failure ){	failure = defaultFailure;}
 	
@@ -10,6 +14,19 @@ function getLabOrder( orderNumber, success, failure){
 				onFailure : failure
 			});
 
+}
+
+function getTestNames( testId, success, failure){
+    if( !failure ){	failure = defaultFailure;}
+
+    new Ajax.Request('ajaxQueryXML',
+        {
+            method : 'get',
+            parameters : "provider=TestNamesProvider&testId=" + testId ,
+            //indicator: 'throbbing',
+            onSuccess : success,
+            onFailure : failure
+        });
 }
 
 function getDistrictsForRegion( regionId, selectedValue, success, failure){
@@ -41,8 +58,8 @@ function getCodeForOrganization( organizationId, success, failure){
 }
 
 
-function getTestsForSampleType(sampleTypeId, labOrderTypeId, success, failure) {
-	var request = "&sampleType=" + sampleTypeId + "&labOrderType=" + labOrderTypeId;
+function getTestsForSampleType(sampleTypeId, success, failure) {
+	var request = "&sampleType=" + sampleTypeId;
 	if( !failure ){	failure = defaultFailure;}
 	
 	new Ajax.Request('ajaxQueryXML', // url
@@ -192,6 +209,4 @@ function getProvidersForOrg( orgKey, success, failure){
         }
     );
 }
-function defaultFailure(xhr){
-	//alert(xhr.responseText);
-}
+

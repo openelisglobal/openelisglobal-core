@@ -255,17 +255,20 @@
 	<mapping
 		resource="us/mn/state/health/lims/reports/valueholder/DocumentType.hbm.xml" />
 	<mapping
-		resource="us/mn/state/health/lims/laborder/valueholder/LabOrderItem.hbm.xml" />
-	<mapping
-		resource="us/mn/state/health/lims/laborder/valueholder/LabOrderType.hbm.xml" />
-	<mapping
 		resource="us/mn/state/health/lims/qaevent/valueholder/QaObservationType.hbm.xml" />
 	<mapping
 		resource="us/mn/state/health/lims/qaevent/valueholder/QaObservation.hbm.xml" />
     <mapping
-            resource="us/mn/state/health/lims/dataexchange/order/valueholder/ElectronicOrder.hbm.xml" />
+        resource="us/mn/state/health/lims/dataexchange/order/valueholder/ElectronicOrder.hbm.xml" />
     <mapping
-            resource="us/mn/state/health/lims/testdictionary/valueholder/TestDictionary.hbm.xml" />
+        resource="us/mn/state/health/lims/testdictionary/valueholder/TestDictionary.hbm.xml" />
+    <mapping
+        resource="us/mn/state/health/lims/localization/valueholder/Localization.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/image/valueholder/Image.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/referral/valueholder/ReferringTestResult.hbm.xml" />
+
 </session-factory>
 
 </hibernate-configuration>

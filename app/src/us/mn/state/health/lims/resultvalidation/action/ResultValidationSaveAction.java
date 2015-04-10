@@ -34,7 +34,9 @@ import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapte
 import us.mn.state.health.lims.common.services.registration.ValidationUpdateRegister;
 import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
 import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
@@ -199,6 +201,10 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		for(IResultUpdate updater : updaters){
 			updater.postTransactionalCommitUpdate(this);
 		}
+		
+		// route save back to RetroC specific ResultValidationRetroCAction
+		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI"))
+			forward = "successRetroC";
 
 		if( isBlankOrNull( testSectionName )){
 			return mapping.findForward(forward);
@@ -483,7 +489,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		if(ResultType.DICTIONARY.matches( analysisItem.getResultType() )){
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysisItem.getTestId(), analysisItem.getResult());
 		}else{
-			List<TestResult> testResultList = testResultDAO.getTestResultsByTest(analysisItem.getTestId());
+			List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( analysisItem.getTestId() );
 			// we are assuming there is only one testResult for a numeric type
 			// result
 			if(!testResultList.isEmpty()){

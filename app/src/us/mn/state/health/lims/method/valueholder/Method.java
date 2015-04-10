@@ -15,11 +15,11 @@
 */
 package us.mn.state.health.lims.method.valueholder;
 
-import java.sql.Date;
-
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
+
+import java.sql.Date;
 
 public class Method extends BaseObject {
 
@@ -79,11 +79,7 @@ public class Method extends BaseObject {
 
 	public void setActiveBeginDate(Date activeBeginDate) {
 		this.activeBeginDate = activeBeginDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.activeBeginDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				activeBeginDate, locale);
+		this.activeBeginDateForDisplay = DateUtil.convertSqlDateToStringDate(activeBeginDate);
 	}
 
 	public Date getActiveBeginDate() {
@@ -92,11 +88,7 @@ public class Method extends BaseObject {
 
 	public void setActiveEndDate(Date activeEndDate) {
 		this.activeEndDate = activeEndDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.activeEndDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				activeEndDate, locale);
+		this.activeEndDateForDisplay = DateUtil.convertSqlDateToStringDate(	activeEndDate);
 	}
 
 	public Date getActiveEndDate() {

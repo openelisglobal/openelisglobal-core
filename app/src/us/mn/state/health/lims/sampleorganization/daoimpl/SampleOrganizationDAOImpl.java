@@ -170,7 +170,7 @@ public class SampleOrganizationDAOImpl extends BaseDAOImpl implements SampleOrga
 		try {
 		String sql = "from SampleOrganization so where samp_id = :param";
 		Query query = HibernateUtil.getSession().createQuery(sql);
-		query.setInteger("param", Integer.valueOf(sampleOrganization.getSampleId()));
+		query.setInteger("param", Integer.valueOf(sampleOrganization.getSample().getId()));
 		List list = query.list();
 		HibernateUtil.getSession().flush();
 		HibernateUtil.getSession().clear();

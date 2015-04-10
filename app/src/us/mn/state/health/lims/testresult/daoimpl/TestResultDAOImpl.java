@@ -256,13 +256,13 @@ public class TestResultDAOImpl extends BaseDAOImpl implements TestResultDAO {
 
 	}
 
-	public List getAllTestResultsPerTest(Test test) throws LIMSRuntimeException {
+	public List getAllActiveTestResultsPerTest( Test test ) throws LIMSRuntimeException {
 		if ( test == null || (test.getId()==null) || (test.getId().length()==0))
 			return null;
 
 		List list;
 		try {
-			String sql = "from TestResult t where t.test = :testId order by t.resultGroup, t.id asc";
+			String sql = "from TestResult t where t.test = :testId and t.isActive = true order by t.resultGroup, t.id asc";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setInteger("testId", Integer.parseInt(test.getId()));
 
@@ -270,8 +270,8 @@ public class TestResultDAOImpl extends BaseDAOImpl implements TestResultDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			LogEvent.logError("TestResultDAOImpl","getAllTestResultsPerTest()",e.toString());
-			throw new LIMSRuntimeException("Error in TestResult getAllTestResultsPerTest()",e);
+			LogEvent.logError("TestResultDAOImpl","getAllActiveTestResultsPerTest()",e.toString());
+			throw new LIMSRuntimeException("Error in TestResult getAllActiveTestResultsPerTest()",e);
 		}
 
 		return list;
@@ -305,10 +305,10 @@ public class TestResultDAOImpl extends BaseDAOImpl implements TestResultDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<TestResult> getTestResultsByTest(String testId) throws LIMSRuntimeException {
+	public List<TestResult> getActiveTestResultsByTest( String testId ) throws LIMSRuntimeException {
 		List<TestResult> list;
 		try {
-			String sql = "from TestResult t where  t.test = :testId";
+			String sql = "from TestResult t where  t.test = :testId and t.isActive = true";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setInteger("testId", Integer.parseInt(testId));
 
@@ -318,7 +318,7 @@ public class TestResultDAOImpl extends BaseDAOImpl implements TestResultDAO {
 			return list;
 
 		} catch (Exception e) {
-			handleException(e, "getTestResultsByTest");
+			handleException(e, "getActiveTestResultsByTest");
 		}
 
 	return null;

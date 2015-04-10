@@ -23,8 +23,6 @@ import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
 import us.mn.state.health.lims.gender.valueholder.Gender;
-import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
-import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -51,12 +49,10 @@ public class DisplayListService implements LocaleChangeListener {
 
     public enum ListType {
 		HOURS, 
-		MINS, 
-		SAMPLE_TYPE, 
-		INITIAL_SAMPLE_CONDITION, 
-		SAMPLE_PATIENT_PRIMARY_ORDER_TYPE, 
-		SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE, 
-		SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE, 
+		MINS,
+        SAMPLE_TYPE_ACTIVE,
+        SAMPLE_TYPE_INACTIVE,
+		INITIAL_SAMPLE_CONDITION,
         SAMPLE_PATIENT_PAYMENT_OPTIONS,
 		PATIENT_HEALTH_REGIONS, 
 		PATIENT_MARITAL_STATUS, 
@@ -66,6 +62,7 @@ public class DisplayListService implements LocaleChangeListener {
 		SAMPLE_PATIENT_REFERRING_CLINIC, 
 		QA_EVENTS,
 		TEST_SECTION,
+		TEST_SECTION_BY_NAME,
 		HAITI_DEPARTMENTS,
         PATIENT_SEARCH_CRITERIA,
         PANELS,
@@ -73,7 +70,9 @@ public class DisplayListService implements LocaleChangeListener {
         ALL_TESTS,
         REJECTION_REASONS,
         REFERRAL_REASONS,
-        REFERRAL_ORGANIZATIONS
+        REFERRAL_ORGANIZATIONS,
+        TEST_LOCATION_CODE,
+        PROGRAM
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
@@ -82,11 +81,9 @@ public class DisplayListService implements LocaleChangeListener {
 	static {
 		typeToListMap.put(ListType.HOURS, createHourList());
 		typeToListMap.put(ListType.MINS, createMinList());
-		typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
+        typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
+        typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_PRIMARY_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimary"));
-		typeToListMap.put(ListType.SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_follow_up"));
-		typeToListMap.put(ListType.SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_initial"));
 		typeToListMap.put(ListType.PATIENT_HEALTH_REGIONS,createPatientHealthRegions());
 		typeToListMap.put(ListType.PATIENT_MARITAL_STATUS,createFromDictionaryCategory("Marital Status Demographic Information"));
 		typeToListMap.put(ListType.PATIENT_NATIONALITY,createFromDictionaryCategory("Nationality Demographic Information"));
@@ -95,6 +92,7 @@ public class DisplayListService implements LocaleChangeListener {
 		typeToListMap.put(ListType.SAMPLE_PATIENT_REFERRING_CLINIC,	createReferringClinicList());
         typeToListMap.put(ListType.QA_EVENTS, createSortedQAEvents());
         typeToListMap.put(ListType.TEST_SECTION, createTestSectionList());
+        typeToListMap.put(ListType.TEST_SECTION_BY_NAME, createTestSectionByNameList());
 		typeToListMap.put(ListType.HAITI_DEPARTMENTS, createAddressDepartmentList());
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
@@ -104,6 +102,8 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
         typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
+        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
+        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
@@ -111,11 +111,9 @@ public class DisplayListService implements LocaleChangeListener {
     @Override
     public void localeChanged(String locale) {
         //refreshes those lists which are dependent on local
-        typeToListMap.put(ListType.SAMPLE_TYPE, createSampleTypeList());
+        typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
+        typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategory("specimen reception condition"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_PRIMARY_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimary"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_FOLLOW_UP_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_follow_up"));
-        typeToListMap.put(ListType.SAMPLE_PATIENT_INITIAL_PERIOD_ORDER_TYPE,createSamplePatientOrderType("samplePatientEntryPrimaryHIV_initial"));
         typeToListMap.put(ListType.PATIENT_HEALTH_REGIONS,createPatientHealthRegions());
         typeToListMap.put(ListType.PATIENT_MARITAL_STATUS,createFromDictionaryCategory("Marital Status Demographic Information"));
         typeToListMap.put(ListType.PATIENT_NATIONALITY,createFromDictionaryCategory("Nationality Demographic Information"));
@@ -123,12 +121,19 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.GENDERS, createGenderList());
         typeToListMap.put(ListType.QA_EVENTS, createSortedQAEvents());
         typeToListMap.put(ListType.TEST_SECTION, createTestSectionList());
+        typeToListMap.put(ListType.TEST_SECTION_BY_NAME, createTestSectionByNameList());
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategory("patientPayment"));
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
         typeToListMap.put(ListType.PANELS, createPanelList());
         dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
         typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
+        new TestService( (Test)null ).localeChanged( locale );
+        typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
+        typeToListMap.put(ListType.ALL_TESTS, createTestList());
+        typeToListMap.put(ListType.TEST_LOCATION_CODE, createDictionaryListForCategory( "testLocationCode" ));
+        typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
+
     }
 
     public static List<IdValuePair> getList(ListType listType) {
@@ -175,17 +180,41 @@ public class DisplayListService implements LocaleChangeListener {
     }
 
     public static List<IdValuePair> getFreshList(ListType listType) {
-		// note this should be expanded but the only use case we have is for
-		// referring clinics
-		switch (listType) {
-		case SAMPLE_PATIENT_REFERRING_CLINIC: {
-			typeToListMap.put(ListType.SAMPLE_PATIENT_REFERRING_CLINIC, createReferringClinicList());
-			break;
-		}
-
-		}
+		refreshList( listType);
 		return typeToListMap.get(listType);
 	}
+
+    public static void refreshList( ListType listType){
+
+        switch (listType) {
+            case SAMPLE_PATIENT_REFERRING_CLINIC: {
+                typeToListMap.put(ListType.SAMPLE_PATIENT_REFERRING_CLINIC, createReferringClinicList());
+                break;
+            }
+            case ALL_TESTS:{
+                TestService.testNamesChanged();
+                typeToListMap.put(ListType.ALL_TESTS, createTestList());
+                break;
+            }
+            case ORDERABLE_TESTS:{
+                TestService.testNamesChanged();
+                typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
+                break;
+            }
+            case SAMPLE_TYPE_ACTIVE:{
+                typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
+                break;
+            }
+            case SAMPLE_TYPE_INACTIVE:{
+                typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
+                break;
+            }
+            case REFERRAL_ORGANIZATIONS:{
+                typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
+                break;
+            }
+        }
+    }
 
 	private static List<IdValuePair> createReferringClinicList() {
 		List<IdValuePair> requesterList = new ArrayList<IdValuePair>();
@@ -255,8 +284,15 @@ public class DisplayListService implements LocaleChangeListener {
 
         List<Test> testList = new TestDAOImpl().getAllActiveOrderableTests();
         for(Test test : testList){
-            tests.add( new IdValuePair( test.getId(), test.getDescription() ) );
+            tests.add( new IdValuePair( test.getId(), TestService.getLocalizedTestNameWithType( test )) );
         }
+
+        Collections.sort( tests, new Comparator<IdValuePair>(){
+            @Override
+            public int compare( IdValuePair o1, IdValuePair o2 ){
+                return o1.getValue().compareTo( o2.getValue() );
+            }
+        } );
 
         return tests;
     }
@@ -266,7 +302,14 @@ public class DisplayListService implements LocaleChangeListener {
 
         List<Test> testList = new TestDAOImpl().getAllActiveTests(false);
         for(Test test : testList){
-            tests.add( new IdValuePair( test.getId(), test.getDescription() ) );
+            tests.add( new IdValuePair( test.getId(), TestService.getLocalizedTestNameWithType( test ) ) );
+
+            Collections.sort( tests, new Comparator<IdValuePair>(){
+                @Override
+                public int compare( IdValuePair o1, IdValuePair o2 ){
+                    return o1.getValue().compareTo( o2.getValue() );
+                }
+            } );
         }
 
         return tests;
@@ -300,26 +343,15 @@ public class DisplayListService implements LocaleChangeListener {
 
         return numberedList;
     }
-	private static List<IdValuePair> createSamplePatientOrderType(String context) {
-		List<IdValuePair> orderTypeList = new ArrayList<IdValuePair>();
 
-		List<LabOrderType> orderTypes = new LabOrderTypeDAOImpl().getLabOrderTypesByDomainAndContext("HUMAN", context);
-
-		for (LabOrderType orderType : orderTypes) {
-			orderTypeList.add(new IdValuePair(orderType.getId(), orderType.getLocalizedName()));
-		}
-
-		return orderTypeList;
-	}
-
-	private static List<IdValuePair> createSampleTypeList() {
+	private static List<IdValuePair> createSampleTypeList(boolean inactiveTypes) {
 		TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
 		List<TypeOfSample> list = typeOfSampleDAO.getTypesForDomainBySortOrder(TypeOfSampleDAO.SampleDomain.HUMAN);
 
 		List<IdValuePair> filteredList = new ArrayList<IdValuePair>();
 
 		for (TypeOfSample type : list) {
-			if (type.isActive()) {
+			if ((!inactiveTypes && type.isActive()) || (inactiveTypes && !type.isActive()) ) {
 				filteredList.add(new IdValuePair(type.getId(), type.getLocalizedName()));
 			}
 		}
@@ -390,7 +422,19 @@ public class DisplayListService implements LocaleChangeListener {
 		
 		return testSectionsPairs;
 	}
+
 	
+	private static List<IdValuePair> createTestSectionByNameList() {
+		List<IdValuePair> testSectionsPairs = new ArrayList<IdValuePair>();
+		List<TestSection> testSections = new TestSectionDAOImpl().getAllActiveTestSections();
+		
+		for(TestSection section : testSections){
+			testSectionsPairs.add(new IdValuePair(section.getId(), section.getTestSectionName()));
+		}
+		
+		return testSectionsPairs;
+	}
+
 	private static List<IdValuePair> createAddressDepartmentList(){
 		List<IdValuePair> departmentPairs = new ArrayList<IdValuePair>();
 		List<Dictionary> departments = new DictionaryDAOImpl().getDictionaryEntrysByCategory("description", "haitiDepartment", true);

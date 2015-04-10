@@ -21,8 +21,9 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.SampleService;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -139,11 +140,16 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
         super.createReportParameters();
         reportParameters.put("reportPeriod", StringUtil.getMessageForKey("reports.label.referral.title")
              + " " + lowDateStr + " - " + highDateStr);
-        reportParameters.put("reportTitle", reportLocation == null ? "" : "Renvoyé à: " + reportLocation.getOrganizationName());
+        reportParameters.put("reportTitle", reportLocation == null ? "" : StringUtil.getMessageForKey("report.test.status.referredOut") + ": " + reportLocation.getOrganizationName());
         reportParameters.put("referralSiteName", reportLocation == null ? "" : reportLocation.getOrganizationName());
     	reportParameters.put("directorName", ConfigurationProperties.getInstance().getPropertyValue(Property.labDirectorName));
 		reportParameters.put("labName1", StringUtil.getContextualMessageForKey("report.labName.one"));
 		reportParameters.put("labName2", StringUtil.getContextualMessageForKey("report.labName.two"));
+    }
+
+    @Override
+    protected String getHeaderName(){
+        return "GeneralHeader.jasper";
     }
 
     @Override
@@ -165,17 +171,17 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 	 * @param referral
 	 */
 	private void reportReferral(Referral referral) {
-		reportAnalysis = referral.getAnalysis();
+        currentAnalysisService = new AnalysisService( referral.getAnalysis() );
 		Sample sample = referralDao.getReferralById(referral.getId()).getAnalysis().getSampleItem().getSample();
 		currentSampleService = new SampleService(sample);
 		findPatientFromSample();
 
-        String note = new NoteService( reportAnalysis ).getNotesAsString( false, true, "<br/>", false );
+        String note =  currentAnalysisService.getNotesAsString( false, true, "<br/>", false  );
 		List<ReferralResult> referralResults = referralResultDAO.getReferralResultsForReferral(referral.getId());
 		for (int i = 0; i < referralResults.size(); i++) {
 			i = reportReferralResultValue(referralResults, i);
 			ReferralResult referralResult = referralResults.get(i);
-			ClinicalPatientData data = reportAnalysisResults( false);
+			ClinicalPatientData data = buildClinicalPatientData( false );
 			data.setReferralSentDate((referral != null && referral.getSentDate() != null) ? DateUtil.formatDateAsText(referral.getSentDate()) : "");
 			data.setReferralResult(reportReferralResultValue);
 			data.setReferralNote(note);
@@ -184,7 +190,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 				Test test = new Test();
 				test.setId(testId);
 				testDAO.getData(test);
-				data.setReferralTestName(test.getReportingDescription());
+				data.setReferralTestName( TestService.getUserLocalizedReportingTestName( test ) );
 				
 				String uom = getUnitOfMeasure( test);
 				if (reportReferralResultValue != null) {
@@ -192,8 +198,8 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 				}
 				data.setReferralRefRange(addIfNotEmpty(getRange(referralResult.getResult()), uom));
 				data.setTestSortOrder(GenericValidator.isBlankOrNull(test.getSortOrder()) ? Integer.MAX_VALUE : Integer.parseInt(test.getSortOrder()));
-				data.setSectionSortOrder(reportAnalysis.getTestSection().getSortOrderInt());
-				data.setTestSection(reportAnalysis.getTestSection().getLocalizedName());
+				data.setSectionSortOrder( currentAnalysisService.getTestSection().getSortOrderInt() );
+				data.setTestSection( currentAnalysisService.getTestSection().getLocalizedName() );
 			}
 			Timestamp referralReportDate = referralResult.getReferralReportDate();
 			data.setReferralResultReportDate((referralReportDate == null) ? null : DateUtil.formatDateAsText(referralReportDate));
@@ -221,10 +227,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 
          return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
     }
-	@Override
-	protected String getSiteLogo() {
-		return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
-	}
+
 	@Override
 	protected void postSampleBuild() {
 		// TODO Auto-generated method stub

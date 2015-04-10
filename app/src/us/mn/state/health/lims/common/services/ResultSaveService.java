@@ -105,7 +105,7 @@ public class ResultSaveService {
             if(ResultType.DICTIONARY.matches(serviceBean.getResultType()) || isQualifiedResult){
                 setTestResultsForDictionaryResult(serviceBean.getTestId(), serviceBean.getResultValue(), result);  //support qualified result
             }else{
-                List<TestResult> testResultList = testResultDAO.getTestResultsByTest(serviceBean.getTestId());
+                List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( serviceBean.getTestId() );
                 // we are assuming there is only one testResult for a numeric
                 // type result
                 if(!testResultList.isEmpty()){

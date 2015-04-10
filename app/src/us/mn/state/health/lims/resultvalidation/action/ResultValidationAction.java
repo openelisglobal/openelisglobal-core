@@ -16,17 +16,25 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationPaging;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.resultvalidation.util.ResultsValidationUtility;
+import us.mn.state.health.lims.test.dao.TestSectionDAO;
+import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
+import us.mn.state.health.lims.test.valueholder.TestSection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,55 +50,57 @@ public class ResultValidationAction extends BaseResultValidationAction {
 		BaseActionForm dynaForm = (BaseActionForm) form;
 
 		request.getSession().setAttribute(SAVE_DISABLED, "true");
-		String testSectionName = (request.getParameter("type"));
+		String testSectionId = (request.getParameter("testSectionId"));
 		String testName = (request.getParameter("test"));
 
 		ResultValidationPaging paging = new ResultValidationPaging();
 		String newPage = request.getParameter("page");
 
+		TestSection ts = null;
+
 		if (GenericValidator.isBlankOrNull(newPage)) {
 
 			// Initialize the form.
 			dynaForm.initialize(mapping);
-
-            ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
-			setRequestType(testSectionName);
-
-			if (!GenericValidator.isBlankOrNull(testSectionName)) {
-				String sectionName = Character.toUpperCase(testSectionName.charAt(0)) + testSectionName.substring(1);
-				sectionName = getDBSectionName(sectionName);
-                List<AnalysisItem> resultList = resultsValidationUtility.getResultValidationList( sectionName, testName, getValidationStatus( testSectionName ) );
-				paging.setDatabaseResults(request, dynaForm, resultList);
+			
+			// load testSections for drop down
+			TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
+			PropertyUtils.setProperty(dynaForm, "testSections", DisplayListService.getList(ListType.TEST_SECTION));
+			PropertyUtils.setProperty(dynaForm, "testSectionsByName", DisplayListService.getList(ListType.TEST_SECTION_BY_NAME));
+			
+			if (!GenericValidator.isBlankOrNull(testSectionId)) {
+				ts = testSectionDAO.getTestSectionById(testSectionId);
+				PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
 			}
+			
+			
+			List<AnalysisItem> resultList = null;
+			ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
+			setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
+			if (!GenericValidator.isBlankOrNull(testSectionId)) {
+               resultList = resultsValidationUtility.getResultValidationList( testName, getValidationStatus(), testSectionId );
+				
+			} else {
+				resultList = new ArrayList<AnalysisItem>();
+			}
+			paging.setDatabaseResults(request, dynaForm, resultList);
 			
 		} else {
 			paging.page(request, dynaForm, newPage);
 		}
 
-		if (testSectionName.equals("serology")) {
-			return mapping.findForward("elisaSuccess");
-		} else {
-			return mapping.findForward(FWD_SUCCESS);
-		}
+		return mapping.findForward(FWD_SUCCESS);
 	}
 
-	public List<Integer> getValidationStatus(String testSection) {
+	public List<Integer> getValidationStatus() {
         List<Integer> validationStatus = new ArrayList<Integer>();
-
-		if ("serology".equals(testSection)) {
-			validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
-			validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
-			// This next status determines if NonConformity analysis can still
-			// be displayed on bio. validation page. We are awaiting feedback on
-			// RetroCI
-			// validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.NonConforming)));
-		} else {
-            validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
-            if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.VALIDATE_REJECTED_TESTS , "true")){
-                validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected)));
-            }
-		}
+        validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance)));
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.VALIDATE_REJECTED_TESTS , "true")){
+            validationStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected)));
+        }
 
         return validationStatus;
 	}
+	
+
 }

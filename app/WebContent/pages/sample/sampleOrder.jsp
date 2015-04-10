@@ -9,7 +9,9 @@
                  us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
                  us.mn.state.health.lims.common.util.StringUtil,
                  us.mn.state.health.lims.common.util.IdValuePair,
-                 us.mn.state.health.lims.common.util.Versioning" %>
+                 us.mn.state.health.lims.common.util.Versioning,
+                 us.mn.state.health.lims.common.util.DateUtil" %>
+<%@ page import="us.mn.state.health.lims.common.services.LocalizationService" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -33,6 +35,7 @@
     boolean trackPayment = false;
     boolean requesterLastNameRequired = false;
     boolean acceptExternalOrders = false;
+    boolean restrictNewReferringSiteEntries = false;
     IAccessionNumberValidator accessionNumberValidator;
 %>
 <%
@@ -50,6 +53,7 @@
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     requesterLastNameRequired = FormFields.getInstance().useField( Field.SampleEntryRequesterLastNameRequired );
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ACCEPT_EXTERNAL_ORDERS, "true" );
+    restrictNewReferringSiteEntries = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.restrictFreeTextRefSiteEntry, "true");
 
 %>
 
@@ -133,7 +137,6 @@
         setCorrectSave();
     }
 
-
     function siteListChanged(textValue) {
         var siteList = $("requesterId");
 
@@ -155,14 +158,13 @@
         }
     }
 
-    function labPeriodChanged(labOrderPeriodElement) {
-        if (labOrderPeriodElement.length - 1 == labOrderPeriodElement.selectedIndex) {
-            $("labOrderPeriodOtherId").show();
+    function testLocationCodeChanged(element) {
+        if (element.length - 1 == element.selectedIndex) {
+            $("testLocationCodeOtherId").show();
         } else {
-            $("labOrderPeriodOtherId").hide();
-            $("labOrderPeriodOtherId").value = "";
+            $("testLocationCodeOtherId").hide();
+            $("testLocationCodeOtherId").value = "";
         }
-
     }
 
     function setOrderModified(){
@@ -218,7 +220,7 @@
 <tr>
     <td><bean:message key="sample.entry.requestDate"/>:
         <span class="requiredlabel">*</span><span
-                style="font-size: xx-small; "><bean:message key="sample.date.format"/></span></td>
+                style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span></td>
     <td><html:text name='<%=formName %>'
                    property="sampleOrderItems.requestDate"
                    styleId="requestDate"
@@ -233,7 +235,7 @@
         <%= StringUtil.getContextualMessageForKey( "quick.entry.received.date" ) %>
         :
         <span class="requiredlabel">*</span>
-        <span style="font-size: xx-small; "><bean:message key="sample.date.format"/>
+        <span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%>
         </span>
     </td>
     <td colspan="2">
@@ -325,6 +327,7 @@
                      property="sampleOrderItems.referringSiteId"
                      onchange="setOrderModified();siteListChanged(this);setCorrectSave();"
                      onkeyup="capitalizeValue( this.value );"
+                     
                 >
             <option value=""></option>
             <html:optionsCollection name="<%=formName%>" property="sampleOrderItems.referringSiteList" label="value"
@@ -348,6 +351,24 @@
                    property="sampleOrderItems.referringSiteCode"
                    onchange="setOrderModified();setCorrectSave();">
         </html:text>
+    </td>
+</tr>
+<% } %>
+<% if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ORDER_PROGRAM, "true" )){ %>
+<tr class="spacerRow">
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td><bean:message key="label.program"/>:</td>
+    <td>
+        <html:select name="<%=formName %>" property="sampleOrderItems.program" onchange="setOrderModified();" >
+            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.programList"
+                           type="IdValuePair">
+                <option value='<%=optionValue.getId()%>' <%=optionValue.getId().equals(sampleOrderItem.getProgram() ) ? "selected='selected'" : ""%>>
+                    <bean:write name="optionValue" property="value"/>
+                </option>
+            </logic:iterate>
+        </html:select>
     </td>
 </tr>
 <% } %>
@@ -482,41 +503,43 @@
     </td>
 </tr>
 <% } %>
-<% if( FormFields.getInstance().useField( Field.SampleEntryLabOrderTypes ) ){%>
+<tr>
+<% if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.USE_BILLING_REFERENCE_NUMBER, "true" )){ %>
+    <td><label for="billingReferenceNumber">
+        <%= LocalizationService.getLocalizedValueById( ConfigurationProperties.getInstance().getPropertyValue( Property.BILLING_REFERENCE_NUMBER_LABEL ))%>
+    </label>
+    </td>
+    <td>
+        <html:text name='<%=formName %>'
+                    property="sampleOrderItems.billingReferenceNumber"
+                    styleClass="text"
+                    styleId="billingReferenceNumber"
+                    onchange="setOrderModified();makeDirty()" />
+    </td>
+</tr>
+<% } %>
+<% if( FormFields.getInstance().useField( Field.TEST_LOCATION_CODE ) ){%>
 <tr>
     <td><bean:message key="sample.entry.sample.period"/>:</td>
     <td>
         <html:select name="<%=formName %>"
-                     property="sampleOrderItems.followupPeriodOrderType"
-                     onchange="setOrderModified(); labPeriodChanged( this )"
-                     styleId="followupLabOrderPeriodId"
-                     style="display:none">
+                     property="sampleOrderItems.testLocationCode"
+                     onchange="setOrderModified(); testLocationCodeChanged( this )"
+                     styleId="testLocationCodeId">
             <option value=''></option>
-            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.followupPeriodOrderTypes"
+            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.testLocationCodeList"
                            type="IdValuePair">
-                <option value='<%=optionValue.getId()%>' <%=optionValue.getValue().equals(sampleOrderItem.getFollowupPeriodOrderType() ) ? "selected='selected'" : ""%> >
-                    <bean:write name="optionValue" property="value"/>
-                </option>
-            </logic:iterate>
-        </html:select>
-        <html:select name="<%=formName %>"
-                     property="sampleOrderItems.initialPeriodOrderType"
-                     onchange="setOrderModified(); labPeriodChanged( this )"
-                     styleId="initialLabOrderPeriodId"
-                     style="display:none">
-            <option value=''></option>
-            <logic:iterate id="optionValue" name='<%=formName%>' property="sampleOrderItems.initialPeriodOrderTypes"
-                           type="IdValuePair">
-                <option value='<%=optionValue.getId()%>' <%=optionValue.getValue().equals(sampleOrderItem.getInitialPeriodOrderType() ) ? "selected='selected'" : ""%> >
+                <option value='<%=optionValue.getId()%>' <%=optionValue.getId().equals(sampleOrderItem.getTestLocationCode() ) ? "selected='selected'" : ""%> >
                     <bean:write name="optionValue" property="value"/>
                 </option>
             </logic:iterate>
         </html:select>
         &nbsp;
         <html:text name='<%= formName %>'
-                   property="sampleOrderItems.otherPeriodOrder"
-                   styleId="labOrderPeriodOtherId"
-                   style="display:none"/>
+                   property="sampleOrderItems.otherLocationCode"
+                   styleId="testLocationCodeOtherId"
+                   style='display:none'
+                    />
     </td>
 </tr>
 <% } %>
@@ -532,32 +555,27 @@
 </div>
 
 <script type="text/javascript">
-    function displayOrderTypeDependencies() {
-        var orderSelection, selectOptions;
 
-        if (<%="HIV_firstVisit".equals(sampleOrderItem.getOrderType())%>){
-            orderSelection = $jq("#initialLabOrderPeriodId");
-        }else if(<%="HIV_followupVisit".equals(sampleOrderItem.getOrderType())%>){
-            orderSelection = $jq("#followupLabOrderPeriodId");
-        }
-
-        if( orderSelection){
-            if( $jq("#labOrderPeriodOtherId").val() ){
-                $jq("#labOrderPeriodOtherId").show();
-                selectOptions = orderSelection.find("option");
-                selectOptions[selectOptions.length - 1].selected = true;
+    <% if( FormFields.getInstance().useField( Field.TEST_LOCATION_CODE ) ){%>
+    function showTestLocationCode(){
+            if(( $jq("#testLocationCodeId option").length -1 ) == $jq("#testLocationCodeId option:selected").index() ){
+                $jq("#testLocationCodeOtherId").show();
             }
-            orderSelection.show();
-        }
-}
+    }
+    <% } %>
+
     $jq(document).ready(function () {
         var dropdown = $jq("select#requesterId");
         autoCompleteWidth = dropdown.width() + 66 + 'px';
-        clearNonMatching = false;
+        <% if(restrictNewReferringSiteEntries) { %>
+       			clearNonMatching = true;
+        <% } else {%>
+        		clearNonMatching = false;
+        <% } %>
         capitialize = true;
         // Actually executes autocomplete
         dropdown.combobox();
-        // invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
+        invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
         maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
 
         resultCallBack = function (textValue) {
@@ -566,7 +584,9 @@
             setCorrectSave();
         };
 
-        displayOrderTypeDependencies();
+        <% if( FormFields.getInstance().useField( Field.TEST_LOCATION_CODE ) ){%>
+            showTestLocationCode();
+        <% } %>
     });
 
 </script>

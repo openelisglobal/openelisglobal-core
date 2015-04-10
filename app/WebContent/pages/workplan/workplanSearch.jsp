@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
-                 us.mn.state.health.lims.common.util.Versioning,
-				 us.mn.state.health.lims.common.util.SystemConfiguration" %>
+                 us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -27,12 +27,10 @@
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" language="JavaScript1.2">
 
-function doShowTests(){
-
-	var form = document.forms[0];
-	form.action = '<%=responseAction%>' + "?type=" + '<%=workplanType %>';
-	form.target = "";
-	form.submit();
+function doShowTests(element){
+	
+	window.location.href = '<%=responseAction%>' + "?type=" + '<%=workplanType %>' + "&selectedSearchID=" + element.value;
+	
 }
 
 function validateTest(){
@@ -56,20 +54,15 @@ function /*boolean*/ handleEnterEvent(){
 	<h2><bean:message key="sample.entry.search"/></h2>
 	<table width="40%">
 		<tr>
-			<td width="50%" align="right" >
+			<td width="50%" align="right" nowrap>
 				<bean:write name="<%=formName %>" property="searchLabel"/>
 			</td>
 			<td>
 				<html:select name="<%=formName%>" property="selectedSearchID" styleId="testName"
-						 onchange="makeDirty();" >
-					<app:optionsCollection name="<%=formName%>" property="searchTypes" label="description" value="id" />
+						 onchange="doShowTests(this);" >
+					<app:optionsCollection name="<%=formName%>" property="searchTypes" label="value" value="id" />
 				</html:select>
 	   		</td>
-	   		<td>
-	   			<html:button property="retrieveTestsButton" styleId="retrieveTestsID"  onclick="doShowTests();"  >
-					<bean:message key="label.button.runsearch"/>
-				</html:button>
-			</td>
 		</tr>
 	</table>
 	<br/>

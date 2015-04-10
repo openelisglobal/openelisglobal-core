@@ -30,7 +30,6 @@ public class AdminFormFields {
 		CountyMenu,
 		DictionaryMenu,
 		DictionaryCategoryMenu,
-		GenderMenu,
 		LabelMenu,
 		MethodMenu,
 		OrganizationMenu,
@@ -77,7 +76,8 @@ public class AdminFormFields {
 		PRINTED_REPORTS_CONFIGURATION,
 		WORKPLAN_CONFIGURATION,
 		NON_CONFORMITY_CONFIGURATION,
-        PATIENT_ENTRY_CONFIGURATION
+        PATIENT_ENTRY_CONFIGURATION,
+        TEST_MANAGEMENT
 	}
 
 	private static AdminFormFields instance = null;

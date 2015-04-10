@@ -1,12 +1,13 @@
-<%@page import="us.mn.state.health.lims.common.util.ConfigurationProperties.Property"%>
-<%@page import="us.mn.state.health.lims.common.util.ConfigurationProperties"%>
+<%@page import="us.mn.state.health.lims.common.action.IActionConstants"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
-	import="us.mn.state.health.lims.common.action.IActionConstants,
-	        us.mn.state.health.lims.common.formfields.FormFields,
+	import="us.mn.state.health.lims.common.formfields.FormFields,
 	        us.mn.state.health.lims.common.formfields.FormFields.Field,
-	        us.mn.state.health.lims.common.util.IdValuePair,
-            us.mn.state.health.lims.common.util.Versioning,
-	        us.mn.state.health.lims.common.util.StringUtil"%>
+	        us.mn.state.health.lims.common.util.ConfigurationProperties,
+	        us.mn.state.health.lims.common.util.IdValuePair"%>
+<%@ page import="us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
+<%@ page import="us.mn.state.health.lims.common.util.DateUtil" %>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
+<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -56,7 +57,6 @@ var currentTypeForTests = -1;
 var selectedTypeRowId = -1;
 var sampleChangeListeners = [];
 var sampleIdStart = 0;
-var labOrderType = "none"; //if set will be done by other tiles
 
 
 function /*void*/ addSampleChangedListener( listener ){
@@ -288,7 +288,11 @@ function convertSampleToXml( id ){
 
 function sampleTypeSelected( element ){
 	var currentTypeIndex = element.selectedIndex;
-	$("addSampleButton").disabled = currentTypeIndex == 0;
+	if(currentTypeIndex != 0){
+		addNewSamples();
+		
+		element.options[0].selected = true;
+	}
 }
 
 function sampleClicked( id ){
@@ -576,7 +580,7 @@ function sectionSelectionChanged( selectionElement ){
 
 function editSelectedTest( ){
 	if( currentCheckedType == -1 || currentTypeForTests != currentCheckedType  ){
-    	getTestsForSampleType(currentCheckedType, labOrderType, processGetTestSuccess, processGetTestFailure); //this is an asynchronous call and setSampleType will be called on the return of the call
+    	getTestsForSampleType(currentCheckedType, processGetTestSuccess, processGetTestFailure); //this is an asynchronous call and setSampleType will be called on the return of the call
     }else{
     	setSampleTests();
     }
@@ -815,7 +819,7 @@ function sampleTypeQualifierChanged(element){
 					value="0">
 					<app:optionsCollection name="<%=formName%>" property="sampleTypes" label="value" value="id" />
 				</html:select>
-                <input type="button" id="addSampleButton" onclick="addNewSamples()"  value="<%=StringUtil.getMessageForKey("sample.entry.addSample")%>"  disabled="disabled">
+                 
 			</td>
 		</tr>
 	</Table>
@@ -840,7 +844,7 @@ function sampleTypeQualifierChanged(element){
 				<% } %>
 				<% if( useCollectionDate ){ %>
 				<th >
-					<bean:message key="sample.collectionDate"/>&nbsp;<bean:message key="sample.date.format"/>
+					<bean:message key="sample.collectionDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
 				</th>
 				<th >
 					<bean:message key="sample.collectionTime"/>

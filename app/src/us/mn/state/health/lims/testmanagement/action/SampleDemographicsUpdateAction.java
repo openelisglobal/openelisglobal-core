@@ -15,23 +15,12 @@
 */
 package us.mn.state.health.lims.testmanagement.action;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.action.dao.ActionDAO;
 import us.mn.state.health.lims.action.daoimpl.ActionDAOImpl;
 import us.mn.state.health.lims.action.valueholder.Action;
@@ -48,14 +37,7 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.provider.validation.BasicProjectIdOrNameValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.CityStateZipComboValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.CityValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.HumanSampleSourceValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.HumanSampleTypeValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.OrganizationLocalAbbreviationValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.StateValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.ZipValidationProvider;
+import us.mn.state.health.lims.common.provider.validation.*;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -104,6 +86,11 @@ import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author aiswarya raman
@@ -205,9 +192,7 @@ public class SampleDemographicsUpdateAction extends BaseAction {
 
 		// set current date for validation of dates
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		PersonDAO personDAO = new PersonDAOImpl();
 		PatientDAO patientDAO = new PatientDAOImpl();
@@ -246,7 +231,7 @@ public class SampleDemographicsUpdateAction extends BaseAction {
 			if (!StringUtil.isNullorNill(sample.getId())) {
 				sampleHuman.setSampleId(sample.getId());
 				sampleHumanDAO.getDataBySample(sampleHuman);
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				// bugzilla 1773 need to store sample not sampleId for use in
 				// sorting
@@ -565,7 +550,6 @@ public class SampleDemographicsUpdateAction extends BaseAction {
 			sampleHuman.setPatientId(patient.getId());
 			sampleHuman.setProviderId(provider.getId());
 			sampleHumanDAO.updateData(sampleHuman);
-			sampleOrganization.setSampleId(sample.getId());
 			sampleOrganization.setSample(sample);
 			sampleOrganizationDAO.updateData(sampleOrganization);
 			// bugzilla 1773 need to store sample not sampleId for use in
@@ -595,7 +579,7 @@ public class SampleDemographicsUpdateAction extends BaseAction {
 			
 				// bugzilla 2028 need additional information for qa events
 				typeOfSamp = sampleItem.getTypeOfSample();
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				//bugzilla 2589
 				String submitterNumber = "";

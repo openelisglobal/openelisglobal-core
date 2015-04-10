@@ -40,7 +40,6 @@ public class SystemConfiguration {
 	private Properties properties = null;
 	private Map<String, Locale> localePropertyToLocaleMap = new HashMap<String, Locale>();
 
-	public static final String DEFAULT_BANNER_STYLE = "Minn";
 	private SystemConfiguration() {
 		InputStream propertyStream = null;
 
@@ -116,19 +115,21 @@ public class SystemConfiguration {
 	}
 
 	public Locale getDefaultLocale() {
-		String localeString = ConfigurationProperties.getInstance().getPropertyValue(Property.DEFAULT_LANG_LOCALE);
-
-		Locale locale = localePropertyToLocaleMap.get(localeString);
-		
-		if( locale == null){
-			if (localeString != null && localeString.length() == 5) {
-				locale = new Locale(localeString.substring(0, 2), localeString.substring(3));
-				localePropertyToLocaleMap.put(localeString, locale);
-			}
-		}
-		
-		return locale == null ? Locale.US : locale;
+        return getLocaleByLocalString( ConfigurationProperties.getInstance().getPropertyValue(Property.DEFAULT_LANG_LOCALE) );
 	}
+
+    public Locale getLocaleByLocalString( String localeString){
+        Locale locale = localePropertyToLocaleMap.get(localeString);
+
+        if( locale == null){
+            if (localeString != null && localeString.length() == 5) {
+                locale = new Locale(localeString.substring(0, 2), localeString.substring(3));
+                localePropertyToLocaleMap.put(localeString, locale);
+            }
+        }
+
+        return locale == null ? Locale.US : locale;
+    }
 
 	public void setDefaultLocale( String locale ){
 		ConfigurationProperties.getInstance().setPropertyValue(Property.DEFAULT_LANG_LOCALE, locale);
@@ -912,7 +913,6 @@ public class SystemConfiguration {
 		properties.setProperty("programcodes", programCodes);
 	}
 
-	//bugzilla 2531
 	public String getNewbornPatientRelation() {
 		String string = properties.getProperty("newborn.patient.relation");
 		if (string != null) {
@@ -920,10 +920,6 @@ public class SystemConfiguration {
 		}
 		return "M";
 	}
-
-    public String getBannerStyle(){
-    	return properties.getProperty("banner.style", "Minn");
-    }
 
     //we are letting the date locale differ from the default locale. Not a good thing
 	public Locale getDateLocale() {

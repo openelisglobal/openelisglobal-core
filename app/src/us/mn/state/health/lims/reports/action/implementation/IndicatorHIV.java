@@ -25,6 +25,7 @@ import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -102,7 +103,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 		if (dictionary != null) {
 			TEST_HIV_IND_ID = dictionary.getId();
 		}else{
-			dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("Indeterminé", "Haiti Lab");
+			dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("IndeterminÃ©", "Haiti Lab");
 			if (dictionary != null) {
 				TEST_HIV_IND_ID = dictionary.getId();
 			}	
@@ -113,7 +114,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 			CLINICAL_POSITIVE_ID = dictionary.getId();
 		}
 
-		dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("Négatif", "CLINICAL GENERAL");
+		dictionary = dictionaryDAO.getDictionaryEntrysByNameAndCategoryDescription("NÃ©gatif", "CLINICAL GENERAL");
 		if (dictionary != null) {
 			CLINICAL_NEGATIVE_ID = dictionary.getId();
 		}
@@ -127,8 +128,8 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 		HIV_TESTS.add("VIH Test - Oraquick");
 		HIV_TESTS.add("Test de VIH");
 		HIV_TESTS.add("Test rapide HIV 1 + HIV 2");
-		HIV_TESTS.add("Dénombrement des lymphocytes CD4 (mm3)");
-		HIV_TESTS.add("Dénombrement des lymphocytes  CD4 (%)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes CD4 (mm3)");
+		HIV_TESTS.add("DÃ©nombrement des lymphocytes  CD4 (%)");
 		
 
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
@@ -140,7 +141,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 
 	@Override
 	protected String reportFileName() {
-		return "HaitiHIVSummary";
+		return "HIVSummary";
 	}
 
 	public JRDataSource getReportDataSource() throws IllegalStateException {
@@ -172,7 +173,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 
 		for (Analysis analysis : analysisList) {
 
-			String testName = analysis.getTest().getTestName();
+			String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 
 			TestBucket bucket = testBuckets.get(testName);
 
@@ -193,8 +194,8 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 				testName.equals("CD4 en %") ||
 				testName.equals("CD4  Compte Abs") ||
 				testName.equals("CD4 Compte en %") ||
-				testName.equals("Dénombrement des lymphocytes CD4 (mm3)") ||
-				testName.equals("Dénombrement des lymphocytes  CD4 (%)") ){
+				testName.equals("DÃ©nombrement des lymphocytes CD4 (mm3)") ||
+				testName.equals("DÃ©nombrement des lymphocytes  CD4 (%)") ){
 				if( firstResult.getMinNormal() == firstResult.getMaxNormal() ){
 					continue;
 				}
@@ -363,12 +364,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 
 	@Override
 	protected String getNameForReportRequest() {
-		return StringUtil.getMessageForKey("openreports.hiv.aggregate");
-	}
-
-	@Override
-	protected String getSiteLogo() {
-		return "labLogo.jpg";
+		return StringUtil.getContextualMessageForKey("openreports.hiv.aggregate");
 	}
 
 	@Override

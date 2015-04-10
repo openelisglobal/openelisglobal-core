@@ -49,14 +49,15 @@ public class SampleOrderItem implements Serializable{
     private String facilityFax;
     private String paymentOptionSelection;
     private Collection paymentOptions;
-    private String followupPeriodOrderType;
-    private Collection followupPeriodOrderTypes;
-    private String initialPeriodOrderType;
-    private Collection initialPeriodOrderTypes;
-    private String otherPeriodOrder;
+    private String otherLocationCode;
     private Boolean modified = false;
     private String sampleId;
     private boolean readOnly = false;
+    private String billingReferenceNumber;
+    private String testLocationCode;
+    private Collection testLocationCodeList;
+    private String program;
+    private Collection programList;
 
     public String getNewRequesterName(){
         return newRequesterName;
@@ -274,44 +275,12 @@ public class SampleOrderItem implements Serializable{
         this.paymentOptions = paymentOptions;
     }
 
-    public String getFollowupPeriodOrderType(){
-        return followupPeriodOrderType;
+    public String getOtherLocationCode(){
+        return otherLocationCode;
     }
 
-    public void setFollowupPeriodOrderType( String followupPeriodOrderType ){
-        this.followupPeriodOrderType = followupPeriodOrderType;
-    }
-
-    public Collection getFollowupPeriodOrderTypes(){
-        return followupPeriodOrderTypes;
-    }
-
-    public void setFollowupPeriodOrderTypes( Collection followupPeriodOrderTypes ){
-        this.followupPeriodOrderTypes = followupPeriodOrderTypes;
-    }
-
-    public String getInitialPeriodOrderType(){
-        return initialPeriodOrderType;
-    }
-
-    public void setInitialPeriodOrderType( String initialPeriodOrderType ){
-        this.initialPeriodOrderType = initialPeriodOrderType;
-    }
-
-    public Collection getInitialPeriodOrderTypes(){
-        return initialPeriodOrderTypes;
-    }
-
-    public void setInitialPeriodOrderTypes( Collection initialPeriodOrderTypes ){
-        this.initialPeriodOrderTypes = initialPeriodOrderTypes;
-    }
-
-    public String getOtherPeriodOrder(){
-        return otherPeriodOrder;
-    }
-
-    public void setOtherPeriodOrder( String otherPeriodOrder ){
-        this.otherPeriodOrder = otherPeriodOrder;
+    public void setOtherLocationCode( String otherLocationCode ){
+        this.otherLocationCode = otherLocationCode;
     }
 
     public Boolean getModified(){
@@ -336,5 +305,45 @@ public class SampleOrderItem implements Serializable{
 
     public void setReadOnly( boolean readOnly ){
         this.readOnly = readOnly;
+    }
+
+    public String getBillingReferenceNumber(){
+        return billingReferenceNumber;
+    }
+
+    public void setBillingReferenceNumber( String billingReferenceNumber ){
+        this.billingReferenceNumber = billingReferenceNumber;
+    }
+
+    public String getTestLocationCode(){
+        return testLocationCode;
+    }
+
+    public void setTestLocationCode( String testLocationCode ){
+        this.testLocationCode = testLocationCode;
+    }
+
+    public Collection getTestLocationCodeList(){
+        return testLocationCodeList;
+    }
+
+    public void setTestLocationCodeList( Collection testLocationCodeList ){
+        this.testLocationCodeList = testLocationCodeList;
+    }
+
+    public String getProgram(){
+        return program;
+    }
+
+    public void setProgram( String program ){
+        this.program = program;
+    }
+
+    public Collection getProgramList(){
+        return programList;
+    }
+
+    public void setProgramList( Collection programList ){
+        this.programList = programList;
     }
 }

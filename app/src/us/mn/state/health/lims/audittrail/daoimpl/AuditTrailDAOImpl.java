@@ -31,7 +31,6 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
@@ -41,15 +40,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 
 
-/**
- *  @author         Hung Nguyen
- *  @date created   09/12/2006
- */
 public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 
 	//For an insert log the id, sys_user_id, ref id, reftable, timestamp, activity (='I').  The change column would be blank, since the
@@ -1185,7 +1181,7 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 
 	/**
 	 * Convert to xml format
-	 * @param list
+	 * @param list the list to be converted
 	 * @return xml string
 	 */
 	private String getXMLFormat(Vector list) {
@@ -1240,8 +1236,8 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 	 * @return xml string
 	 */
     public String getXMLData(String table, String id) throws LIMSRuntimeException {
-    	StringBuffer xml = null;
-    	//buzilla 2154
+    	StringBuffer xml;
+
 		LogEvent.logDebug("AuditTrailDAOImpl","getXMLData()","getting History instance");
         try {
         	String out = (String)HibernateUtil.getSession().createSQLQuery("select to_char(dbms_xmlgen.getxml('select * from "+table+" where id="+id+"')) as xml from dual").addScalar("xml", Hibernate.STRING).uniqueResult();
@@ -1250,7 +1246,6 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
         	return xml.toString();
 
          } catch (Exception e) {
-        	 //buzilla 2154
 			 LogEvent.logError("AuditTrailDAOImpl","getXMLData()",e.toString());
         	 throw new LIMSRuntimeException("Error in AuditTrail getXMLData()", e);
          }
@@ -1268,7 +1263,7 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
 
     @Override
     public List getHistoryByRefIdAndRefTableId( String refId, String tableId ) throws LIMSRuntimeException{
-        List list = null;
+        List list;
 
         try {
 
@@ -1287,37 +1282,39 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
         return list;
     }
 
-    @SuppressWarnings("unchecked")
-	@Override
-	public List<History> getHistoryByRefTableId(History searchHistory) throws LIMSRuntimeException {
-    	try {
+    @SuppressWarnings( "unchecked" )
+    @Override
+    public List<History> getHistoryByRefTableIdAndDateRange( String referenceTableId, Date start, Date end ) throws LIMSRuntimeException{
+        String sql = "from History h where h.referenceTable = :tableId and (h.timestamp between :start and :end)  order by h.referenceId, h.timestamp desc";
 
-    		String sql = "from History h where h.referenceTable = :tableId order by h.timestamp desc, h.activity desc";
-    		org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
-    		query.setInteger("tableId", Integer.parseInt(searchHistory.getReferenceTable()));
+        try{
 
-    		List<History> list = query.list();
-    		closeSession();
-    		return list;
-         } catch (Exception e) {
-        	 handleException(e, "getHistoryByRefTableId");
-         }
+            org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+            query.setInteger("tableId", Integer.parseInt(referenceTableId));
+            query.setTimestamp( "start", start );
+            query.setTimestamp( "end", end );
 
-		return null;
-	}
-    
-	/**
-     * bugzilla 2599
+            List<History> list = query.list();
+            closeSession();
+            return list;
+        } catch (Exception e) {
+            handleException(e, "getHistoryByRefTableIdAndDateRange");
+        }
+
+        return null;
+    }
+
+    /**
 	 * Get list of history records by systemUser, date and referenceTableId
 	 * @param history valueholder
 	 * @return list of history objects
 	 */
     public List getHistoryBySystemUserAndDateAndRefTableId(History history) throws LIMSRuntimeException {
-    	List list = new Vector();
+    	List list;
 
     	try {
 
-    	    String sql = "";
+    	    String sql;
     		if (!StringUtil.isNullorNill(history.getReferenceTable())) {
     			if (!StringUtil.isNullorNill(history.getSysUserId())) {
     				if (history.getTimestamp() != null) {
@@ -1357,8 +1354,7 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
     		}
 
     		if (history.getTimestamp() != null) {
-			  String stringLocale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-    		  query.setParameter("param3", DateUtil.convertTimestampToStringDate(history.getTimestamp(), stringLocale));
+    		  query.setParameter("param3", DateUtil.convertTimestampToStringDate(history.getTimestamp()));
     		}
 
     		list = query.list();

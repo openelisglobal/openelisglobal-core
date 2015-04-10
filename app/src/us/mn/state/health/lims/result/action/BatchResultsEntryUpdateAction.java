@@ -15,25 +15,12 @@
 */
 package us.mn.state.health.lims.result.action;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -67,6 +54,12 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -166,10 +159,7 @@ public class BatchResultsEntryUpdateAction extends BaseAction {
 		String localeString = SystemConfiguration.getInstance().getDefaultLocale()
 				.toString();
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		// initialize the form
 		dynaForm.initialize(mapping);
@@ -286,10 +276,7 @@ public class BatchResultsEntryUpdateAction extends BaseAction {
 												.isNullorNill((String) resultLastupdatedList
 														.get(j))) {
 
-									reslastupdated = DateUtil
-											.formatStringToTimestamp(
-													(String) resultLastupdatedList
-															.get(j), localeString);
+									reslastupdated = DateUtil.formatStringToTimestamp((String) resultLastupdatedList.get(j));
 								} else {
 									if (resultLastupdatedList.get(j) instanceof java.sql.Timestamp) {
 										reslastupdated = (Timestamp) resultLastupdatedList

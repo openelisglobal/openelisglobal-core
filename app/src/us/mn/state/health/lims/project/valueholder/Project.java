@@ -17,18 +17,17 @@
 */
 package us.mn.state.health.lims.project.valueholder;
 
-import java.sql.Date;
-import java.util.List;
-import java.util.Set;
-
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
+import us.mn.state.health.lims.common.valueholder.ValueHolder;
+import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-import us.mn.state.health.lims.common.valueholder.ValueHolder;
-import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+
+import java.sql.Date;
+import java.util.Set;
 
 public class Project extends BaseObject {
 
@@ -149,11 +148,7 @@ public class Project extends BaseObject {
 
 	public void setStartedDate(Date startedDate) {
 		this.startedDate = startedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.startedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				startedDate, locale);
+		this.startedDateForDisplay = DateUtil.convertSqlDateToStringDate(startedDate);
 	}
 
 	public Date getStartedDate() {
@@ -162,11 +157,7 @@ public class Project extends BaseObject {
 
 	public void setCompletedDate(Date completedDate) {
 		this.completedDate = completedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				completedDate, locale);
+		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(	completedDate);
 	}
 
 	public Date getCompletedDate() {

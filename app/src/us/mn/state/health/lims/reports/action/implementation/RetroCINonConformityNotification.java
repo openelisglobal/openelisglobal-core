@@ -213,7 +213,7 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 
 		String sampleAccessionNumber = sample.getAccessionNumber();
 		String receivedDate = sample.getReceivedDateForDisplay();
-		String receivedHour = sample.getReceivedTimeForDisplay();
+		String receivedHour = sample.getReceivedTimeForDisplay( );
 		String doctor = ReportUtil.findDoctorForSample(sample);
 
 		String orgName = "";
@@ -233,9 +233,9 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 				item.setReceivedHour(receivedHour);
 				item.setService(orgName);
 
-				item.setBiologist(qa.getObservation(QAObservationType.AUTHORIZER));
+				item.setBiologist(qa.getObservationForDisplay( QAObservationType.AUTHORIZER ));
 				item.setNonConformityDate(DateUtil.convertTimestampToStringDate(qa.getLastupdated()));
-				item.setSection(qa.getObservation(QAObservationType.SECTION));
+				item.setSection(qa.getObservationForDisplay( QAObservationType.SECTION ));
 				item.setSubjectNumber(patient.getNationalId());
 				item.setSiteSubjectNumber(patient.getExternalId());
 				item.setStudy((project != null) ? project.getLocalizedName() : "");
@@ -273,11 +273,6 @@ public class RetroCINonConformityNotification extends RetroCIReport implements I
 			ReportUtil.markDocumentsAsPrinted(ReportUtil.DocumentTypes.NON_CONFORMITY_NOTIFCATION, sampleQaEventIds, "1", checkIdsForPriorPrintRecord);
 			return new JRBeanCollectionDataSource(reportItems);
 		}
-	}
-
-	@Override
-	protected String errorReportFileName() {
-		return CI_ERROR_REPORT;
 	}
 
 	@Override

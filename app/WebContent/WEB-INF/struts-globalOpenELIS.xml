@@ -64,6 +64,7 @@
             <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
             <form-property name="ableToCancelResults" type="java.lang.Boolean" initial="false" />
+            <form-property name="warning" type="java.lang.String" initial="" />
 		</form-bean>
 
 
@@ -101,7 +102,7 @@
 			<form-property name="ProjectData" type="us.mn.state.health.lims.sample.form.ProjectData" />
 		</form-bean>
 
- 		<form-bean name="patientEditByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+ 		<form-bean name="PatientEditByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<!-- Drop downs -->
  			<form-property name="formLists" type="java.util.Map"/>
  			<form-property name="dictionaryLists" type="java.util.Map"/>
@@ -134,6 +135,7 @@
 			<!-- demographic observations -->
 			<form-property name="observations" type="us.mn.state.health.lims.patient.valueholder.ObservationData"/>
 			<form-property name="ProjectData" type="us.mn.state.health.lims.sample.form.ProjectData" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
 		</form-bean>
 
 		<form-bean name="sampleEntryByProjectForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -177,6 +179,10 @@
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="testSections" type="java.util.List"/>
+            <form-property name="testSectionsByName" type="java.util.List"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
+			<form-property name="displayTestSections" type="java.lang.Boolean" initial="true" />
 		</form-bean>
 
 		<form-bean name="PatientResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -199,6 +205,8 @@
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
+            <form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="AccessionResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -220,6 +228,10 @@
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="testSections" type="java.util.List"/>
+            <form-property name="testSectionsByName" type="java.util.List"/>
+            <form-property name="testSectionId" type="java.lang.String"/>
+            <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
 		</form-bean>
 
 		<form-bean name="StatusResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -243,6 +255,8 @@
 			<form-property name="logbookType" type="java.lang.String" initial="" />
 			<form-property name="referralReasons" type="java.util.Collection" />
             <form-property name="rejectReasons" type="java.util.Collection" />
+            <form-property name="displayTestSections" type="java.lang.Boolean" initial="false" />
+            <form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
 
 		<form-bean name="InventoryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -261,6 +275,10 @@
 			<form-property name="resultList" type="java.util.List" />
 			<form-property name="testSection" type="java.lang.String" initial="" />
 			<form-property name="testName" type="java.lang.String" initial="" />
+			<form-property name="testSections" type="java.util.List"/>
+			<form-property name="testSectionsByName" type="java.util.List"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
+			<form-property name="displayTestSections" type="java.lang.Boolean" initial="true" />
 		</form-bean>
 
 		<form-bean name="WorkplanForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -277,7 +295,11 @@
 			<form-property name="resultList" type="java.util.ArrayList" />
 			<form-property name="workplanType" type="java.lang.String" initial="" />
 			<form-property name="searchAction" type="java.lang.String" initial="" />
+			<form-property name="testSections" type="java.util.List"/>
+			<form-property name="testSectionsByName" type="java.util.List"/>
+			<form-property name="testSectionId" type="java.lang.String"/>
 		</form-bean>
+		
 
 		<form-bean name="DataImportForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
       		<form-property name="lastupdated" type="java.sql.Timestamp" />
@@ -459,13 +481,17 @@
 		<form-bean name="siteInformationForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="paramName" type="java.lang.String" initial="" />
 			<form-property name="description" type="java.lang.String" initial="" />
-			<form-property name="value" type="java.lang.String" initial="" />
+            <form-property name="value" type="java.lang.String" initial="" />
 			<form-property name="encrypted" type="boolean" initial="false" />
 			<form-property name="valueType" type="java.lang.String" initial="text" />
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="siteInfoDomainName" type="java.lang.String" initial="SiteInformation"/>
 			<form-property name="dictionaryValues" type="java.util.Collection" />
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
+            <form-property name="descriptionKey" type="java.lang.String" initial="" />
+            <form-property name="englishValue" type="java.lang.String" initial="" />
+            <form-property name="frenchValue" type="java.lang.String" initial="" />
 		</form-bean>
 
 		<form-bean name="sampleEntryConfigMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -478,11 +504,14 @@
 			<form-property name="paramName" type="java.lang.String" initial="" />
 			<form-property name="description" type="java.lang.String" initial="" />
 			<form-property name="value" type="java.lang.String" initial="" />
+            <form-property name="englishValue" type="java.lang.String" initial="" />
+            <form-property name="frenchValue" type="java.lang.String" initial="" />
 			<form-property name="encrypted" type="boolean" initial="false" />
 			<form-property name="valueType" type="java.lang.String" initial="text" />
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="siteInfoDomainName" type="java.lang.String" initial="sampleEntryConfig"/>
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
 		</form-bean>
 
 
@@ -501,6 +530,7 @@
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="siteInfoDomainName" type="java.lang.String" initial="ResultConfiguration"/>
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
 		</form-bean>
 
 		<form-bean name="PrintedReportsConfigurationMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -518,6 +548,7 @@
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="siteInfoDomainName" type="java.lang.String" initial="PrintedReportsConfiguration"/>
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
 		</form-bean>
 
 		<form-bean name="WorkplanConfigurationMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -535,6 +566,7 @@
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="siteInfoDomainName" type="java.lang.String" initial="WorkplanConfiguration"/>
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
 		</form-bean>
 
         <form-bean name="PatientConfigurationMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -552,6 +584,7 @@
             <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
             <form-property name="siteInfoDomainName" type="java.lang.String" initial="PaitientConfiguration"/>
             <form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
         </form-bean>
 
 
@@ -570,6 +603,7 @@
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="siteInfoDomainName" type="java.lang.String" initial="non_conformityConfiguration"/>
 			<form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
 		</form-bean>
 
 		<form-bean name="userRoleMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -624,7 +658,7 @@
 			<form-property name="systemUserLastupdated" type="java.sql.Timestamp" initial="" />
 		</form-bean>
 
-		<form-bean name="databaseCleaningForm" type="us.mn.state.health.lims.common.action.BaseActionForm"/>
+        <form-bean name="databaseCleaningForm" type="us.mn.state.health.lims.common.action.BaseActionForm"/>
 
 		<form-bean name="referredOutTestsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
@@ -667,9 +701,25 @@
             <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
             <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
         </form-bean>
+
+        <form-bean name="testRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="testList" type="java.util.List" />
+            <form-property name="nameEnglish" type="java.lang.String" initial="" />
+            <form-property name="nameFrench" type="java.lang.String" initial="" />
+            <form-property name="reportNameEnglish" type="java.lang.String" initial="" />
+            <form-property name="reportNameFrench" type="java.lang.String" initial="" />
+            <form-property name="testId" type="java.lang.String" initial="" />
+        </form-bean>
+
+		<form-bean name="testActivationForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+			<form-property name="activeTestList" type="java.util.List" />
+			<form-property name="inactiveTestList" type="java.util.List" />
+			<form-property name="jsonChangeList" type="java.lang.String" initial="" />
+		</form-bean>
+
+        <form-bean name="testManagementConfigForm" type="us.mn.state.health.lims.common.action.BaseActionForm" />
 	</form-beans>
 
-	
 
 	<action-mappings>
 
@@ -684,6 +734,27 @@
 			    validate="false"	>
 		   <forward name="success" path="masterListsPageDefinition" />
 	    </action>
+
+
+        <action path="/TestManagementConfigMenu" name="testManagementConfigForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+                <forward name="success" path="testManagementConfigDefinition"  />
+        </action>
+
+        <action path="/TestRenameEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.test.action.TestRenameAction" >
+            <forward name="success" path="testRenameDefinition" />
+        </action>
+
+        <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.test.action.TestRenameUpdate" >
+            <forward name="success" path="/TestRenameEntry.do" />
+        </action>
+
+		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationAction" >
+			<forward name="success" path="testActivationDefinition" />
+		</action>
+
+		<action path="/TestActivationUpdate" name="testActivationForm" type="us.mn.state.health.lims.test.action.TestActivationUpdate" >
+			<forward name="success" path="/TestActivation.do" />
+		</action>
 
 		<action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"
@@ -847,8 +918,15 @@
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 
+		<action path="/ResultValidationRetroC" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ResultValidationRetroCAction">
+			<forward name="success" path="resultValidationDefinition" />
+			<forward name="elisaSuccess" path="elisaAlgorithmResultValidationDefinition" />
+			<forward name="fail" path="homePageDefinition" />
+		</action>
+
 		<action path="/ResultValidationSave" name="ResultValidationForm" type="us.mn.state.health.lims.resultvalidation.action.ResultValidationSaveAction">
 			<forward name="success" path="/ResultValidation.do" />
+			<forward name="successRetroC" path="/ResultValidationRetroC.do" />
 			<forward name="fail" path="homePageDefinition" />
 			<forward name="error" path="resultValidationDefinition" />
 		</action>
@@ -953,14 +1031,14 @@
 			<forward name="fail" path="patientEntryByProjectDefinition" />
 		</action>
 
-		<action path="/PatientEditByProject" name="patientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEditByProjectAction"
+		<action path="/PatientEditByProject" name="PatientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEditByProjectAction"
 			validate="false"
 		>
 			<forward name="success" path="patientEditByProjectDefinition" />
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 
-		<action path="/PatientEditByProjectSave" name="patientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEntryByProjectUpdateAction"
+		<action path="/PatientEditByProjectSave" name="PatientEditByProjectForm"  type="us.mn.state.health.lims.patient.action.PatientEntryByProjectUpdateAction"
 			validate="false"
 		>
 			<forward name="success" path="/PatientEditByProject.do?forward=success" />
@@ -1530,6 +1608,5 @@
 		<action path="/AuditTrailReport" name="AuditTrailViewForm" type="us.mn.state.health.lims.audittrail.action.AuditTrailViewAction" >
 			<forward name="success" path="auditTrailViewDefinition" />
 		</action>
-
 	</action-mappings>
 </struts-config>

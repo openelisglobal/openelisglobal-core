@@ -1,6 +1,3 @@
-
-
-
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
 	import="java.util.List,
@@ -19,7 +16,8 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
 	us.mn.state.health.lims.common.util.StringUtil,
     us.mn.state.health.lims.common.util.Versioning,
-    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException" %>
+    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException,
+    us.mn.state.health.lims.common.util.DateUtil" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -36,8 +34,18 @@
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage"  />
 
 <bean:define id="logbookType" name="<%=formName%>" property="logbookType" />
-
-
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+	<bean:define id="testSectionsByName" name="<%=formName%>" property="testSectionsByName" />
+	<script type="text/javascript" >
+		var testSectionNameIdHash = [];		
+		<% 
+			for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
+				out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+			}
+		%>
+	</script>
+</logic:equal>
+	
 <%!
 	List<String> hivKits;
 	List<String> syphilisKits;
@@ -93,6 +101,7 @@
 	failedValidationMarks = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.failedValidationMarker, "true");
 	noteRequired =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.notesRequiredForModifyResults, "true");
 	autofillTechBox = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameBox, "true");
+
 %>
 
 <link rel="stylesheet" type="text/css" href="css/bootstrap_simple.css?ver=<%= Versioning.getBuildNumber() %>" />
@@ -133,7 +142,6 @@ var pagingSearch = {};
 		out.print( "pagingSearch[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
 	}
 %>
-
 
 $jq(document).ready( function() {
 			var searchTerm = '<%=searchTerm%>';
@@ -257,6 +265,8 @@ function /*void*/ handleReferralReasonChange(select,  index ){
 //this overrides the form in utilities.jsp
 function  /*void*/ savePage()
 {
+	
+	$jq( "#saveButtonId" ).prop("disabled",true);
 	window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
 	form.action = '<%=formName%>'.sub('Form','') + "Update.do"  + '<%= logbookType == "" ? "" : "?type=" + logbookType  %>';
@@ -320,6 +330,10 @@ function processTestReflexCD4Success(parameters)
 
 }
 
+function submitTestSectionSelect( element ) {
+	window.location.href = "LogbookResults.do?testSectionId=" + element.value + "&type=" + testSectionNameIdHash[element.value] ;	
+}
+
 var showForceWarning = true;
 function forceTechApproval(checkbox, index ){
 	if( $jq(checkbox).attr('checked')){
@@ -360,6 +374,30 @@ function updateShadowResult(source, index){
 
 </script>
 
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+<div id="searchDiv" class="colorFill"  >
+<div id="PatientPage" class="colorFill" style="display:inline" >
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr bgcolor="white">
+			<td width="50%" align="right" >
+				<%= StringUtil.getMessageForKey("workplan.unit.types") %>
+			</td>
+			<td>
+			<html:select name='<%= formName %>' property="testSectionId" 
+				 onchange="submitTestSectionSelect(this);" >
+				<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+			</html:select>
+	   		</td>
+		</tr>
+	</table>
+	<br/>
+	<h1>
+		
+	</h1>
+</div>
+</div>
+</logic:equal>
 
 <!-- Modal popup-->
 <div id="reflexSelect" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -395,7 +433,7 @@ function updateShadowResult(source, index){
 	</div>
 </logic:equal>
 
-        <logic:equal  name='<%=formName%>' property="singlePatient" value="true">
+<logic:equal  name='<%=formName%>' property="singlePatient" value="true">
 <% if(!depersonalize){ %>        
 <table style="width:100%" >
 	<tr>
@@ -517,7 +555,7 @@ function updateShadowResult(source, index){
 
 		<th style="text-align: left">
 			<bean:message key="result.test.date"/><br/>
-			<bean:message key="sample.date.format"/>
+			<%=DateUtil.getDateUserPrompt()%>
 		</th>
 		<logic:equal  name="<%=formName%>" property="displayTestMethod" value="true">
 			<th style="width: 72px; padding-right: 10px; text-align: center">
@@ -1030,7 +1068,18 @@ function updateShadowResult(source, index){
 </logic:notEqual>
 
 </logic:notEqual>
-<logic:equal name="testCount"  value="0">
-<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+
+
+<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+	<logic:equal name="testCount"  value="0">
+		<logic:notEmpty name="<%=formName %>" property="testSectionId">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+		</logic:notEmpty>
+	</logic:equal>
 </logic:equal>
 
+<logic:notEqual  name="<%=formName %>" property="displayTestSections" value="true">
+	<logic:equal name="testCount"  value="0">
+	<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+	</logic:equal>
+</logic:notEqual>

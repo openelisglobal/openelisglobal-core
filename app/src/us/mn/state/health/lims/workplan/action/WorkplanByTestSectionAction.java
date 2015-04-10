@@ -26,12 +26,16 @@ import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.dao.TestSectionDAO;
@@ -61,10 +65,25 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 
 		request.getSession().setAttribute(SAVE_DISABLED, "true");
 
+		String testSectionId = (request.getParameter("testSectionId"));
+
 		// Initialize the form.
 		dynaForm.initialize(mapping);
 		String workplan = request.getParameter("type");
-		setRequestType(workplan);
+		
+		// load testSections for drop down
+		TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
+		PropertyUtils.setProperty(dynaForm, "testSections", DisplayListService.getList(ListType.TEST_SECTION));
+		PropertyUtils.setProperty(dynaForm, "testSectionsByName", DisplayListService.getList(ListType.TEST_SECTION_BY_NAME));
+		
+		TestSection ts = null;
+		
+		if (!GenericValidator.isBlankOrNull(testSectionId)) {
+			ts = testSectionDAO.getTestSectionById(testSectionId);
+			PropertyUtils.setProperty(dynaForm, "testSectionId", "0");
+		}
+		
+		
 		
 		List<TestResultItem> workplanTests = new ArrayList<TestResultItem>();
 
@@ -74,12 +93,13 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		}
 
 		// workplan by department
-		if (!GenericValidator.isBlankOrNull(workplan)) {
-
+		setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
+		if (!GenericValidator.isBlankOrNull(testSectionId)) {
 			// get tests based on test section
-			workplanTests = getWorkplanByTestSection(workplan);
+			workplanTests = getWorkplanByTestSection(testSectionId);
 			PropertyUtils.setProperty(dynaForm, "workplanTests", workplanTests);
 			PropertyUtils.setProperty(dynaForm, "searchFinished", Boolean.TRUE);
+			PropertyUtils.setProperty(dynaForm, "testName", ts.getLocalizedName());
 
 		} else {
 			// set workplanTests as empty
@@ -90,17 +110,12 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		if (isPatientNameAdded())
 		    addPatientNamesToList(workplanTests);
 		PropertyUtils.setProperty(dynaForm, "workplanType", workplan);
-		PropertyUtils.setProperty(dynaForm, "testName", getTestName(workplan));
-
+		PropertyUtils.setProperty(dynaForm, "searchLabel", StringUtil.getMessageForKey("workplan.unit.types"));
 		return mapping.findForward(FWD_SUCCESS);
 	}
 
-	private String getTestName(String type) {
-		return StringUtil.getContextualMessageForKey("test.section." + type);
-	}
-
 	@SuppressWarnings("unchecked")
-	private List<TestResultItem> getWorkplanByTestSection(String testSection) {
+	private List<TestResultItem> getWorkplanByTestSection(String testSectionId) {
 
 		List<Analysis> testList = new ArrayList<Analysis>();
 		List<TestResultItem> workplanTestList = new ArrayList<TestResultItem>();
@@ -114,9 +129,9 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 		boolean isNFSTest = false;
 		TestResultItem testResultItem = new TestResultItem();
 
-		if (!(GenericValidator.isBlankOrNull(testSection))) {
+		if (!(GenericValidator.isBlankOrNull(testSectionId))) {
 
-			String sectionId = getTestSectionId();
+			String sectionId = testSectionId; 
 			testList = (List<Analysis>) analysisDAO.getAllAnalysisByTestSectionAndStatus(sectionId, statusList, true);
 
 			if (testList.isEmpty()) {
@@ -216,19 +231,7 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
         }
 
 	}
-	
-	private String getTestSectionId() {
 
-		TestSection testSection = new TestSection();
-		String testSectionName = getTestSectionName();
-		testSection.setTestSectionName(testSectionName);
-
-		TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
-		testSection = testSectionDAO.getTestSectionByName(testSection);
-
-		return testSection == null ? null : testSection.getId();
-	}
-	
     private void addPatientNameToList(TestResultItem firstTestResultItem, List<TestResultItem> workplanTestList, int insertPosition, int sampleGroupingNumber) {
         TestResultItem testResultItem = new TestResultItem();
         testResultItem.setAccessionNumber(firstTestResultItem.getAccessionNumber());

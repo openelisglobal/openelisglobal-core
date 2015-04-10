@@ -36,7 +36,6 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.CountyMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.DictionaryMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.DictionaryCategoryMenu,  Boolean.FALSE);
-		defaultAttributes.put(Field.GenderMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.LabelMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.MethodMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.OrganizationMenu,  Boolean.FALSE);
@@ -84,6 +83,7 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.WORKPLAN_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.NON_CONFORMITY_CONFIGURATION, Boolean.TRUE);
         defaultAttributes.put( Field.PATIENT_ENTRY_CONFIGURATION, Boolean.TRUE );
+        defaultAttributes.put( Field.TEST_MANAGEMENT, Boolean.TRUE);
 	}
 
 	@Override
@@ -107,6 +107,8 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 			return new CI_IPCIAdminFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_CI_REGIONAL.equals(fieldSet)){
 			return new CI_RegionalAdminFormFields().getImplementationAttributes();
+		}else if(IActionConstants.FORM_FIELD_SET_KENYA.equals(fieldSet)){
+			return new KenyaAdminFormFields().getImplementationAttributes();
 		}
 
 		return null;

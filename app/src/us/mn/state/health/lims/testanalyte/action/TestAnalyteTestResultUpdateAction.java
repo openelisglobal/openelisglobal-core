@@ -15,22 +15,11 @@
 */
 package us.mn.state.health.lims.testanalyte.action;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -55,6 +44,11 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -196,7 +190,7 @@ public class TestAnalyteTestResultUpdateAction extends
 			TestResultDAO testResultDAO = new TestResultDAOImpl();
 
 			// save off list of old testresults
-			List oldTestResults = testResultDAO.getAllTestResultsPerTest(test);
+			List oldTestResults = testResultDAO.getAllActiveTestResultsPerTest( test );
 			List testResultsToDelete = new ArrayList();
 
 			HashMap oldTestResultsMap = new HashMap();
@@ -223,7 +217,7 @@ public class TestAnalyteTestResultUpdateAction extends
 					
 					testResult.setTest(test);
 					//bugzilla 1625
-					testResult.setIsActive(YES);
+					testResult.setIsActive(true);
 					if (flagsList.get(j) != null) {
 						testResult.setFlags((String) flagsList.get(j));
 					} else {
@@ -277,7 +271,7 @@ public class TestAnalyteTestResultUpdateAction extends
 									&& !StringUtil
 											.isNullorNill((String) testResultLastupdatedList
 													.get(j))) {
-								trlastupdated = DateUtil.formatStringToTimestamp((String)testResultLastupdatedList.get(j), locale);
+								trlastupdated = DateUtil.formatStringToTimestamp((String)testResultLastupdatedList.get(j));
 							} else {
 								if (testResultLastupdatedList.get(j) instanceof java.sql.Timestamp) {
 									trlastupdated = (Timestamp) testResultLastupdatedList
@@ -393,10 +387,8 @@ public class TestAnalyteTestResultUpdateAction extends
 					if (testAnalyteLastupdatedList != null
 							&& testAnalyteLastupdatedList.get(i) != null) {
 						if (testAnalyteLastupdatedList.get(i) instanceof java.lang.String
-								&& !StringUtil
-										.isNullorNill((String) testAnalyteLastupdatedList
-												.get(i))) {
-							talastupdated = DateUtil.formatStringToTimestamp((String)testAnalyteLastupdatedList.get(i), locale);
+								&& !StringUtil.isNullorNill((String)testAnalyteLastupdatedList.get(i))) {
+							talastupdated = DateUtil.formatStringToTimestamp((String)testAnalyteLastupdatedList.get(i));
 						} else {
 							if (testAnalyteLastupdatedList.get(i) instanceof java.sql.Timestamp) {
 								talastupdated = (Timestamp) testAnalyteLastupdatedList

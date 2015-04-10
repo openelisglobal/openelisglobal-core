@@ -36,7 +36,8 @@ public class ObservationHistory extends BaseObject implements SimpleBaseEntity<S
 	 */
 	public static enum ValueType {
 		DICTIONARY("D"),	// the value is a FK to Dictionary.id
-		LITERAL("L");		// the value is simply a literal value
+		LITERAL("L"),		// the value is simply a literal value
+        KEY("K");           // the value is a key for localization
 
 		private String code;
 

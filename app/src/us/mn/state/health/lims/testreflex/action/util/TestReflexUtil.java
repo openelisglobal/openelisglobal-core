@@ -23,6 +23,7 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
@@ -127,7 +128,7 @@ public class TestReflexUtil {
 	}
 	
 	public static String makeReflexTestName(TestReflex testReflex) {
-		return testReflex.getAddedTest().getLocalizedName();
+		return TestService.getUserLocalizedTestName( testReflex.getAddedTest() );
 	}
 
 	public static String makeReflexScriptName(TestReflex testReflex) {

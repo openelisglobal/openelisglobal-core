@@ -45,18 +45,10 @@ import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.laborder.dao.LabOrderTypeDAO;
-import us.mn.state.health.lims.laborder.daoimpl.LabOrderTypeDAOImpl;
-import us.mn.state.health.lims.laborder.valueholder.LabOrderType;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
-import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
-import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
-import us.mn.state.health.lims.organization.dao.OrganizationDAO;
-import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
 import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
@@ -64,9 +56,6 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
 import us.mn.state.health.lims.patientidentity.daoimpl.PatientIdentityDAOImpl;
 import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
-import us.mn.state.health.lims.patientidentitytype.dao.PatientIdentityTypeDAO;
-import us.mn.state.health.lims.patientidentitytype.daoimpl.PatientIdentityTypeDAOImpl;
-import us.mn.state.health.lims.patientidentitytype.valueholder.PatientIdentityType;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.person.valueholder.Person;
@@ -81,14 +70,6 @@ import us.mn.state.health.lims.referral.daoimpl.ReferralReasonDAOImpl;
 import us.mn.state.health.lims.referral.daoimpl.ReferralResultDAOImpl;
 import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
-import us.mn.state.health.lims.requester.dao.RequesterTypeDAO;
-import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
-import us.mn.state.health.lims.requester.daoimpl.RequesterTypeDAOImpl;
-import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
-import us.mn.state.health.lims.requester.valueholder.RequesterType;
-import us.mn.state.health.lims.requester.valueholder.SampleRequester;
-import us.mn.state.health.lims.result.dao.ResultDAO;
-import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
@@ -103,7 +84,6 @@ import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.Res
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -117,12 +97,10 @@ public abstract class PatientReport extends Report{
 
     protected SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
     protected DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-    private ResultDAO resultDAO = new ResultDAOImpl();
     protected SampleDAO sampleDAO = new SampleDAOImpl();
     protected PatientDAO patientDAO = new PatientDAOImpl();
     protected PersonDAO personDAO = new PersonDAOImpl();
     protected ProviderDAO providerDAO = new ProviderDAOImpl();
-    protected SampleRequesterDAO requesterDAO = new SampleRequesterDAOImpl();
     protected TestDAO testDAO = new TestDAOImpl();
     protected ReferralReasonDAO referralReasonDAO = new ReferralReasonDAOImpl();
     protected ReferralDAO referralDao = new ReferralDAOImpl();
@@ -131,7 +109,6 @@ public abstract class PatientReport extends Report{
     protected AnalysisDAO analysisDAO = new AnalysisDAOImpl();
     protected NoteDAO noteDAO = new NoteDAOImpl();
     protected PersonAddressDAO addressDAO = new PersonAddressDAOImpl();
-    private LabOrderTypeDAO labOrderTypeDAO = new LabOrderTypeDAOImpl();
     private List<String> handledOrders;
     private List<Analysis> updatedAnalysis = new ArrayList<Analysis>(  );
 
@@ -150,51 +127,17 @@ public abstract class PatientReport extends Report{
 
     protected IPatientService patientService;
     protected Provider currentProvider;
-    protected Analysis reportAnalysis;
+    protected AnalysisService currentAnalysisService;
     protected String reportReferralResultValue;
     protected List<ClinicalPatientData> reportItems;
     protected String completionDate;
     protected SampleService currentSampleService;
 
-    protected static String ST_NUMBER_IDENTITY_TYPE_ID = "0";
-    protected static String SUBJECT_NUMBER_IDENTITY_TYPE_ID = "0";
-    protected static String HEALTH_REGION_IDENTITY_TYPE_ID = "0";
-    protected static String HEALTH_DISTRICT_IDENTITY_TYPE_ID = "0";
-    protected static String LAB_TYPE_OBSERVATION_ID = "0";
-    protected static String LAB_SUBTYPE_OBSERVATION_ID = "0";
-    protected static Long PERSON_REQUESTER_TYPE_ID;
-    protected static Long ORGANIZATION_REQUESTER_TYPE_ID;
     protected static final NoteType[] FILTER = {NoteType.EXTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
     protected Map<String, Boolean> sampleCompleteMap;
     protected Map<String, Boolean> sampleCorrectedMap;
 
     static{
-        PatientIdentityTypeDAO identityTypeDAO = new PatientIdentityTypeDAOImpl();
-        List<PatientIdentityType> typeList = identityTypeDAO.getAllPatientIdenityTypes();
-
-        for( PatientIdentityType identityType : typeList ){
-            if( "ST".equals( identityType.getIdentityType() ) ){
-                ST_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
-            }else if( "SUBJECT".equals( identityType.getIdentityType() ) ){
-                SUBJECT_NUMBER_IDENTITY_TYPE_ID = identityType.getId();
-            }else if( "HEALTH REGION".equals( identityType.getIdentityType() ) ){
-                HEALTH_REGION_IDENTITY_TYPE_ID = identityType.getId();
-            }else if( "HEALTH DISTRICT".equals( identityType.getIdentityType() ) ){
-                HEALTH_DISTRICT_IDENTITY_TYPE_ID = identityType.getId();
-            }
-        }
-
-        RequesterTypeDAO requesterTypeDAO = new RequesterTypeDAOImpl();
-        RequesterType type = requesterTypeDAO.getRequesterTypeByName( "provider" );
-        if( type != null ){
-            PERSON_REQUESTER_TYPE_ID = Long.parseLong( type.getId() );
-        }
-
-        type = requesterTypeDAO.getRequesterTypeByName( "organization" );
-        if( type != null ){
-            ORGANIZATION_REQUESTER_TYPE_ID = Long.parseLong( type.getId() );
-        }
-
         List<AddressPart> partList = new AddressPartDAOImpl().getAll();
         for( AddressPart part : partList ){
             if( "department".equals( part.getPartName() ) ){
@@ -203,18 +146,9 @@ public abstract class PatientReport extends Report{
                 ADDRESS_COMMUNE_ID = part.getId();
             }
         }
-
-        ObservationHistoryType ohType = new ObservationHistoryTypeDAOImpl().getByName( "primaryOrderType" );
-        LAB_TYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
-
-        ohType = new ObservationHistoryTypeDAOImpl().getByName( "secondaryOrderType" );
-        LAB_SUBTYPE_OBSERVATION_ID = ohType == null ? null : ohType.getId();
-
     }
 
     abstract protected String getReportNameForParameterPage();
-
-    abstract protected String getSiteLogo();
 
     abstract protected void postSampleBuild();
 
@@ -232,11 +166,6 @@ public abstract class PatientReport extends Report{
 
     protected boolean useReportingDescription(){
         return true;
-    }
-
-    @Override
-    protected String errorReportFileName(){
-        return HAITI_ERROR_REPORT;
     }
 
     public void setRequestParameters( BaseActionForm dynaForm ){
@@ -328,6 +257,10 @@ public abstract class PatientReport extends Report{
     }
 
     private void findPatientInfo(){
+        if( patientService.getPerson() == null){
+            return;
+        }
+
         patientDept = "";
         patientCommune = "";
         if( ADDRESS_DEPT_ID != null ){
@@ -349,37 +282,19 @@ public abstract class PatientReport extends Report{
     }
 
     private void findContactInfo(){
-        List<SampleRequester> requesters = requesterDAO.getRequestersForSampleId( currentSampleService.getId() );
         currentContactInfo = "";
         currentSiteInfo = "";
         currentProvider = null;
 
-        for( SampleRequester requester : requesters ){
-            if( ORGANIZATION_REQUESTER_TYPE_ID == requester.getRequesterTypeId() ){
-                OrganizationDAO organizationDAO = new OrganizationDAOImpl();
-                Organization org = organizationDAO.getOrganizationById( String.valueOf( requester.getRequesterId() ) );
-                if( org != null ){
-                    currentSiteInfo = org.getOrganizationName();
-                }
-            }
+        Organization org = currentSampleService.getOrganizationRequester();
+        if( org != null ){
+            currentSiteInfo = org.getOrganizationName();
+        }
 
-            if( PERSON_REQUESTER_TYPE_ID == requester.getRequesterTypeId() ){
-                StringBuilder buffer = new StringBuilder();
-                Person person = new Person();
-                person.setId( String.valueOf( requester.getRequesterId() ) );
-                personDAO.getData( person );
-                if( person.getId() != null ){
-                    buffer.append( person.getLastName() );
-                    if( !GenericValidator.isBlankOrNull( person.getLastName() ) && !GenericValidator.isBlankOrNull( person.getFirstName() ) ){
-                        buffer.append( ", " );
-                    }
-                    buffer.append( person.getFirstName() );
-
-                    currentProvider = providerDAO.getProviderByPerson( person );
-                }
-
-                currentContactInfo = buffer.toString();
-            }
+        Person person = currentSampleService.getPersonRequester();
+        if( person != null){
+            currentContactInfo = new PersonService( person ).getLastFirstName();
+            currentProvider = providerDAO.getProviderByPerson( person );
         }
     }
 
@@ -389,10 +304,10 @@ public abstract class PatientReport extends Report{
         patientList.addAll( patientDAO.getPatientsByNationalId( patientNumber ) );
 
         if( patientList.isEmpty() ){
-            List<PatientIdentity> identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, ST_NUMBER_IDENTITY_TYPE_ID );
+            List<PatientIdentity> identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, PatientService.PATIENT_ST_IDENTITY);
 
             if( identities.isEmpty() ){
-                identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID );
+                identities = patientIdentityDAO.getPatientIdentitiesByValueAndType( patientNumber, PatientService.PATIENT_SUBJECT_IDENTITY );
             }
 
             if( !identities.isEmpty() ){
@@ -467,28 +382,15 @@ public abstract class PatientReport extends Report{
     protected void createReportParameters(){
         super.createReportParameters();
         reportParameters.put( "siteId", ConfigurationProperties.getInstance().getPropertyValue( Property.SiteCode ) );
-        reportParameters.put( "siteLogo", useLogo ? getSiteLogo() : null );
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI LNSP" ) ){
-            reportParameters.put( "headerName", "CILNSPHeader.jasper" );
-            reportParameters.put( "printLNSPLabPersons", Boolean.TRUE );
-        }else if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "Haiti LNSP" ) ){
+        reportParameters.put("headerName", getHeaderName());
+        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "Haiti LNSP" ) ){
             reportParameters.put( "useSTNumber", Boolean.FALSE );
         }else{
             reportParameters.put( "useSTNumber", Boolean.TRUE );
         }
-
-        reportParameters.put( "leftImage", getLeftImage() );
     }
 
-    protected String getLeftImage(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI IPCI" ) ){
-            return "IPCI_Logo.png";
-        }else if( ConfigurationProperties.getInstance().isPropertyValueEqual( Property.configurationName, "CI_REGIONAL" ) ){
-            return "LNSPLogo.jpg";
-        }else{
-            return "HaitiFlag.gif";
-        }
-    }
+    protected abstract String getHeaderName();
 
     protected String getPatientDOB(){
         if( patientDOB == null ){
@@ -520,23 +422,23 @@ public abstract class PatientReport extends Report{
     }
 
     protected void reportResultAndConclusion( ClinicalPatientData data ){
-        List<Result> resultList = resultDAO.getResultsByAnalysis( reportAnalysis );
+        List<Result> resultList =  currentAnalysisService.getResults();
 
 
-        Test test = reportAnalysis.getTest();
-        String note = new NoteService( reportAnalysis ).getNotesAsString( true, true, "<br/>", FILTER, true );
+        Test test = currentAnalysisService.getTest();
+        String note = new NoteService( currentAnalysisService.getAnalysis() ).getNotesAsString( true, true, "<br/>", FILTER, true );
         if( note != null){
             data.setNote( note );
         }
-        data.setTestSection( reportAnalysis.getTestSection().getLocalizedName() );
+        data.setTestSection( currentAnalysisService.getTestSection().getLocalizedName() );
         data.setTestSortOrder( GenericValidator.isBlankOrNull( test.getSortOrder() ) ? Integer.MAX_VALUE : Integer.parseInt( test.getSortOrder() ) );
         data.setSectionSortOrder( test.getTestSection().getSortOrderInt() );
 
-        if( StatusService.getInstance().matches( reportAnalysis.getStatusId(), AnalysisStatus.Canceled ) ){
+        if( StatusService.getInstance().matches(  currentAnalysisService.getStatusId(), AnalysisStatus.Canceled ) ){
             data.setResult( StringUtil.getMessageForKey( "report.test.status.canceled" ) );
-        }else if( reportAnalysis.isReferredOut() ){
-                data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
-                return;
+        }else if( currentAnalysisService.getAnalysis().isReferredOut() ){
+            setReferredOutResult( data );
+            return;
          /* Not sure which rules this would support -- above statement was conditional on no patient alerts
             if( noResults( resultList ) ){
                 data.setResult( StringUtil.getMessageForKey( "report.test.status.referredOut" ) );
@@ -546,55 +448,53 @@ public abstract class PatientReport extends Report{
                 setNormalRange( data, test, resultList.get( 0 ) );
             }
          */
-        }else if( !StatusService.getInstance().matches( reportAnalysis.getStatusId(), AnalysisStatus.Finalized ) ){
+        }else if( !StatusService.getInstance().matches( currentAnalysisService.getStatusId(), AnalysisStatus.Finalized ) ){
             sampleCompleteMap.put( currentSampleService.getAccessionNumber(), Boolean.FALSE );
-            data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+            setEmptyResult( data );
         }else{
             if( resultList.isEmpty()){
-                data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+                setEmptyResult( data );
             }else{
                 setAppropriateResults( resultList, data );
                 Result result = resultList.get( 0 );
                 setCorrectedStatus( result, data );
                 setNormalRange( data, test, result );
                 data.setResult( getAugmentedResult( data, result ) );
-                data.setFinishDate( reportAnalysis.getCompletedDateForDisplay() );
+                data.setFinishDate( currentAnalysisService.getCompletedDateForDisplay() );
                 data.setAlerts( getResultFlag( result, null, data ) );
             }
         }
 
-        data.setParentResult( reportAnalysis.getParentResult() );
+        data.setParentResult( currentAnalysisService.getAnalysis().getParentResult() );
         data.setConclusion( currentConclusion );
     }
 
+    protected void setReferredOutResult(ClinicalPatientData data){
+        data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+    }
+
+    protected void setEmptyResult( ClinicalPatientData data ){
+        data.setResult( StringUtil.getMessageForKey( "report.test.status.inProgress" ) );
+    }
+
     private void setCorrectedStatus( Result result, ClinicalPatientData data ){
-            if( reportAnalysis.isCorrectedSincePatientReport() && !GenericValidator.isBlankOrNull( result.getValue() )){
+            if( currentAnalysisService.getAnalysis().isCorrectedSincePatientReport() && !GenericValidator.isBlankOrNull( result.getValue() )){
                 data.setCorrectedResult( true );
                 sampleCorrectedMap.put( currentSampleService.getAccessionNumber(), true);
-                reportAnalysis.setCorrectedSincePatientReport( false );
-                updatedAnalysis.add( reportAnalysis );
+                currentAnalysisService.getAnalysis().setCorrectedSincePatientReport( false );
+                updatedAnalysis.add( currentAnalysisService.getAnalysis() );
             }
     }
 
-    private boolean noResults( List<Result> resultList ){
-        if( resultList.isEmpty() || GenericValidator.isBlankOrNull( resultList.get( 0 ).getValue() )){
-            return true;
-        }
-
-        Result result = resultList.get( 0 );
-        return ( ResultType.MULTISELECT.getDBValue().equals( result.getResultType() ) || ResultType.DICTIONARY.getDBValue().equals( result.getResultType() ) ) && "0".equals( result.getValue() );
-
-    }
-
     private void setNormalRange( ClinicalPatientData data, Test test, Result result ){
-        String uom = getUnitOfMeasure(  test );
+        String uom = getUnitOfMeasure( test );
         data.setTestRefRange( addIfNotEmpty( getRange( result ), appendUOMToRange() ? uom : null ) );
         data.setUom( uom );
     }
 
     private String getAugmentedResult( ClinicalPatientData data, Result result ){
         String resultValue = data.getResult();
-        if( TestIdentityService.isTestNumericViralLoad( reportAnalysis.getTest() ) ){
+        if( TestIdentityService.isTestNumericViralLoad( currentAnalysisService.getTest() ) ){
             try{
                 resultValue += " (" + twoDecimalFormat.format( Math.log10( Double.parseDouble( resultValue ) ) ) + ")log ";
             }catch( IllegalFormatException e ){
@@ -621,7 +521,7 @@ public abstract class PatientReport extends Report{
                     }
                 }
             }else if( ResultType.isDictionaryVariant( result.getResultType() )){
-                boolean isAbnormal = false;
+                boolean isAbnormal;
 
                 if( data == null){
                     isAbnormal = new ResultService( result ).isAbnormalDictionaryResult();
@@ -687,10 +587,10 @@ public abstract class PatientReport extends Report{
                 }
             }else{
                 //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
+                ResultService resultService = new ResultService( resultList.get( 0 ) );
 
-                String resultType = resultList.get( 0 ).getResultType();
-
-                if( ResultType.DICTIONARY.matches( resultType ) ){
+                if( ResultType.DICTIONARY.matches(  resultService.getTestType()) ){
+                    data.setAbnormalResult( resultService.isAbnormalDictionaryResult() );
                     List<Result> dictionaryResults = new ArrayList<Result>();
                     Result quantification = null;
                     for( Result sibResult : resultList ){
@@ -714,7 +614,7 @@ public abstract class PatientReport extends Report{
                             }
                         }
                     }
-                }else if( ResultType.isMultiSelectVariant( resultType ) ){
+                }else if( ResultType.isMultiSelectVariant( resultService.getTestType()) ){
                     Dictionary dictionary = new Dictionary();
                     StringBuilder multiResult = new StringBuilder();
 
@@ -798,20 +698,22 @@ public abstract class PatientReport extends Report{
      *
      * @return  A single record
      */
-    protected ClinicalPatientData reportAnalysisResults( boolean hasParent){
+    protected ClinicalPatientData buildClinicalPatientData( boolean hasParent ){
         ClinicalPatientData data = new ClinicalPatientData();
         String testName = null;
         String sortOrder = "";
         String receivedDate =  currentSampleService.getReceivedDateForDisplay();
 
-        boolean doAnalysis = reportAnalysis != null;
+        boolean doAnalysis = currentAnalysisService != null;
 
         if( doAnalysis ){
             testName = getTestName(hasParent);
+            //Not sure if it is a bug in escapeHtml but the wrong markup is generated
+            testName = StringEscapeUtils.escapeHtml( testName ).replace( "&mu", "&micro" );
         }
 
         if( FormFields.getInstance().useField( Field.SampleEntryUseReceptionHour ) ){
-            receivedDate += " " + currentSampleService.getReceivedTimeForDisplay();
+            receivedDate += " " + currentSampleService.getReceivedTimeForDisplay( );
         }
 
         data.setContactInfo( currentContactInfo );
@@ -824,28 +726,30 @@ public abstract class PatientReport extends Report{
         setPatientName( data );
         data.setDept( patientDept );
         data.setCommune( patientCommune );
-        data.setStNumber( getLazyPatientIdentity( STNumber, ST_NUMBER_IDENTITY_TYPE_ID ) );
-        data.setSubjectNumber( getLazyPatientIdentity( subjectNumber, SUBJECT_NUMBER_IDENTITY_TYPE_ID ) );
-        data.setHealthRegion( getLazyPatientIdentity( healthRegion, HEALTH_REGION_IDENTITY_TYPE_ID ) );
-        data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, HEALTH_DISTRICT_IDENTITY_TYPE_ID ) );
-        //Not sure if it is a bug in escapeHtml but the wrong markup is generated
-        testName = StringEscapeUtils.escapeHtml( testName ).replace( "&mu", "&micro" );
+        data.setStNumber( getLazyPatientIdentity( STNumber, PatientService.PATIENT_ST_IDENTITY ) );
+        data.setSubjectNumber( getLazyPatientIdentity( subjectNumber, PatientService.PATIENT_SUBJECT_IDENTITY ) );
+        data.setHealthRegion( getLazyPatientIdentity( healthRegion, PatientService.PATIENT_HEALTH_REGION_IDENTITY ) );
+        data.setHealthDistrict( getLazyPatientIdentity( healthDistrict, PatientService.PATIENT_HEALTH_DISTRICT_IDENTITY ) );
+        data.setLabOrderType( ObservationHistoryService.getValueForSample( ObservationType.PROGRAM, currentSampleService.getId() )  );
         data.setTestName(  testName  );
         data.setPatientSiteNumber( ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, currentSampleService.getId() ) );
+        data.setBillingNumber( ObservationHistoryService.getValueForSample( ObservationType.BILLING_REFERENCE_NUMBER, currentSampleService.getId() ) );
 
         if( doAnalysis ){
-            data.setPanel( reportAnalysis.getPanel() );
-            if( reportAnalysis.getPanel() != null ){
-                data.setPanelName( reportAnalysis.getPanel().getPanelName() );
+            data.setPanel( currentAnalysisService.getPanel());
+            if( currentAnalysisService.getPanel() != null ){
+                data.setPanelName( currentAnalysisService.getPanel().getPanelName() );
             }
-            data.setTestDate( DateUtil.convertSqlDateToStringDate( reportAnalysis.getCompletedDate() ) );
-            sortOrder = reportAnalysis.getSampleItem().getSortOrder();
+            data.setTestDate(  currentAnalysisService.getCompletedDateForDisplay());
+            sortOrder = currentAnalysisService.getAnalysis().getSampleItem().getSortOrder();
             data.setOrderFinishDate( completionDate );
-            data.setOrderDate( DateUtil.convertTimestampToStringDateAnd12HourTime( new Timestamp( currentSampleService.getOrderedDate().getTime() )) );
+            data.setOrderDate( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( currentSampleService.getOrderedDate() ) );
+            data.setSampleId( currentSampleService.getAccessionNumber() + "-" + sortOrder );
+            data.setSampleType( currentAnalysisService.getTypeOfSample().getLocalizedName()  );
+            data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( currentAnalysisService.getAnalysis().getSampleItem().getCollectionDate() ));
         }
 
         data.setAccessionNumber( currentSampleService.getAccessionNumber() + "-" + sortOrder );
-        data.setLabOrderType( createLabOrderType() );
 
         if( doAnalysis ){
             reportResultAndConclusion( data );
@@ -858,43 +762,15 @@ public abstract class PatientReport extends Report{
         String testName;
 
         if( useReportingDescription() ){
-            testName = reportAnalysis.getTest().getReportingDescription();
+            testName = TestService.getUserLocalizedReportingTestName( currentAnalysisService.getTest() );
         }else{
-            testName = reportAnalysis.getTest().getTestName();
+            testName = TestService.getUserLocalizedTestName( currentAnalysisService.getTest() );
         }
 
         if( GenericValidator.isBlankOrNull( testName ) ){
-            testName = reportAnalysis.getTest().getTestName();
+            testName = TestService.getUserLocalizedTestName( currentAnalysisService.getTest() );
         }
         return (indent ? "    " : "") + testName;
-    }
-
-    private String createLabOrderType(){
-        if( LAB_TYPE_OBSERVATION_ID == null ){
-            return "";
-        }
-
-        List<ObservationHistory> primaryOrderTypes = observationDAO.getAll( patientService.getPatient(), currentSampleService.getSample(), LAB_TYPE_OBSERVATION_ID );
-        if( primaryOrderTypes.isEmpty() ){
-            return "";
-        }
-
-        LabOrderType primaryLabOrderType = labOrderTypeDAO.getLabOrderTypeByType( primaryOrderTypes.get( 0 ).getValue() );
-        if( primaryLabOrderType == null ){
-            return "";
-        }
-
-        if( LAB_SUBTYPE_OBSERVATION_ID == null ){
-            return primaryLabOrderType.getLocalizedName();
-        }
-
-        List<ObservationHistory> subOrderTypes = observationDAO.getAll( patientService.getPatient(), currentSampleService.getSample(), LAB_SUBTYPE_OBSERVATION_ID );
-        if( subOrderTypes.isEmpty() ){
-            return primaryLabOrderType.getLocalizedName();
-        }else{
-            return primaryLabOrderType.getLocalizedName() + " : " + subOrderTypes.get( 0 ).getValue();
-        }
-
     }
 
     /**
@@ -966,12 +842,12 @@ public abstract class PatientReport extends Report{
         Date dobDate = DateUtil.convertStringDateToSqlDate( dob );
         int months = DateUtil.getAgeInMonths( dobDate, DateUtil.getNowAsSqlDate() );
         if( months > 35 ){
-            return ( months / 12 ) + " A";
+            return ( months / 12 ) + " " + StringUtil.getMessageForKey("abbreviation.year.single");
         }else if( months > 0 ){
-            return months + " M";
+            return months + " " + StringUtil.getMessageForKey("abbreviation.month.single");
         }else{
             int days = DateUtil.getAgeInDays( dobDate, DateUtil.getNowAsSqlDate() );
-            return days + " J";
+            return days + " " + StringUtil.getMessageForKey("abbreviation.day.single");
         }
 
     }

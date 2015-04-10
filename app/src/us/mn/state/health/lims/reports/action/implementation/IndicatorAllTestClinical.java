@@ -31,11 +31,4 @@ public class IndicatorAllTestClinical extends IndicatorAllTest implements IRepor
 		return "";
 	}
 
-	@Override
-	protected String getSiteLogo() {
-		return "labLogo.jpg";
-	}
-
-
-
 }

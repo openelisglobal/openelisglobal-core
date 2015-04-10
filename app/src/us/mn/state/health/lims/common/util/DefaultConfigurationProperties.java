@@ -67,11 +67,11 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.notesRequiredForModifyResults, "modify results note required", "false" );
 		setDBPropertyMappingAndDefault(Property.resultTechnicianName, "ResultTechnicianName", "false");
 		setDBPropertyMappingAndDefault(Property.allowResultRejection, "allowResultRejection", "false");
+		setDBPropertyMappingAndDefault(Property.restrictFreeTextRefSiteEntry, "restrictFreeTextRefSiteEntry", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameBox, "autoFillTechNameBox", "false");
 		setDBPropertyMappingAndDefault(Property.autoFillTechNameUser, "autoFillTechNameUser", "false");
 		setDBPropertyMappingAndDefault(Property.failedValidationMarker, "showValidationFailureIcon", "true");
 		setDBPropertyMappingAndDefault(Property.SiteName, "SiteName", "");
-		setDBPropertyMappingAndDefault(Property.useLogoInReport, "useLogoInReport", "true");
 		setDBPropertyMappingAndDefault(Property.PasswordRequirments , "passwordRequirements", "MINN");
 		setDBPropertyMappingAndDefault(Property.FormFieldSet , "setFieldForm", IActionConstants.FORM_FIELD_SET_HAITI);
 		setDBPropertyMappingAndDefault(Property.StringContext , "stringContext","");
@@ -103,6 +103,13 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault(Property.VALIDATE_PHONE_FORMAT, "validate phone format", "true");
         setDBPropertyMappingAndDefault( Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "Allow duplicate subject number", "true" );
         setDBPropertyMappingAndDefault( Property.VALIDATE_REJECTED_TESTS, "validateTechnicalRejection", "false" );
+        setDBPropertyMappingAndDefault( Property.TEST_NAME_AUGMENTED, "augmentTestNameWithType", "true" );
+        setDBPropertyMappingAndDefault( Property.USE_BILLING_REFERENCE_NUMBER, "billingRefNumber", "false" );
+        setDBPropertyMappingAndDefault( Property.BILLING_REFERENCE_NUMBER_LABEL, "billingRefNumberLocalization", "-1" );
+        setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "false" );
+        setDBPropertyMappingAndDefault( Property.BANNER_TEXT, "bannerHeading", "-1" );
+        setDBPropertyMappingAndDefault( Property.CLOCK_24, "24 hour clock", "true" );
+        setDBPropertyMappingAndDefault( Property.PATIENT_NATIONALITY, "supportPatientNationality", "false");
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

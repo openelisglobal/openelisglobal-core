@@ -1,18 +1,12 @@
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.validator.GenericValidator;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -25,6 +19,11 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class PatientEIDReport extends RetroCIPatientReport {
 
@@ -84,7 +83,7 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 
 			}
 
-			String testName = analysis.getTest().getTestName();
+			String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
 
 			List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 			
@@ -137,7 +136,7 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 		data.setGender(reportPatient.getGender());
 		data.setCollectiondate( DateUtil.convertTimestampToStringDateAndTime(reportSample.getCollectionDate()));
 		SampleOrganization sampleOrg = new SampleOrganization();
-		sampleOrg.setSampleId(reportSample.getId());
+		sampleOrg.setSample(reportSample);
 		orgDAO.getDataBySample(sampleOrg);
 		data.setServicename(sampleOrg.getId() == null ? "" : sampleOrg.getOrganization().getOrganizationName());
 		data.setAccession_number(reportSample.getAccessionNumber());

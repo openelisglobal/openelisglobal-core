@@ -155,7 +155,7 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 				FollowupRequiredData item = new FollowupRequiredData();
 
 				item.setCollectiondate(sample.getCollectionDateForDisplay() + " " + sample.getCollectionTimeForDisplay());
-				item.setReceivedDate(sample.getReceivedDateForDisplay() + " " + sample.getReceivedTimeForDisplay());
+				item.setReceivedDate(sample.getReceivedDateForDisplay() + " " + sample.getReceivedTimeForDisplay( ));
 				item.setLabNo(sample.getAccessionNumber());
 				item.setDoctor(getOptionalObservationHistory(sample, OBSERVATION_DOCTOR_ID));
 				item.setNonConformityNotes(getNonConformingNotes(sample));
@@ -196,17 +196,17 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 			}
 			allNotes.append(" : ");
 			
-			if( "0".equals(qa.getObservation(QAObservationType.SECTION))){
+			if( "0".equals(qa.getObservationValue( QAObservationType.SECTION ))){
 				allNotes.append(StringUtil.getMessageForKey("report.followup.no.section"));
 			}else{
-				allNotes.append(qa.getObservation(QAObservationType.SECTION));
+				allNotes.append(qa.getObservationForDisplay( QAObservationType.SECTION ));
 			}
 			allNotes.append(" : ");
 			
-			if( GenericValidator.isBlankOrNull(qa.getObservation(QAObservationType.AUTHORIZER))){
+			if( GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.AUTHORIZER ))){
 				allNotes.append(StringUtil.getMessageForKey("report.followup.no.authorizer"));
 			}else{
-				allNotes.append(qa.getObservation(QAObservationType.AUTHORIZER));
+				allNotes.append(qa.getObservationForDisplay( QAObservationType.AUTHORIZER ));
 			}
 			allNotes.append(" : ");
 			

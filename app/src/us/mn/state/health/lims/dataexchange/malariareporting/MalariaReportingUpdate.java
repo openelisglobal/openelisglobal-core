@@ -16,11 +16,6 @@
  */
 package us.mn.state.health.lims.dataexchange.malariareporting;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -45,6 +40,11 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MalariaReportingUpdate implements IResultUpdate {
 
@@ -147,7 +147,7 @@ public class MalariaReportingUpdate implements IResultUpdate {
 	}
 
 	private boolean isPositiveResult(Result result) {
-		return (!ResultUtil.getStringValueOfResult(result).matches("(?i)^neg.*") && !ResultUtil.getStringValueOfResult(result).matches("(?i)^nég.*"));
+		return (!ResultUtil.getStringValueOfResult(result).matches("(?i)^neg.*") && !ResultUtil.getStringValueOfResult(result).matches("(?i)^nÃ©g.*"));
 	}
 	
 	private List<Result> malariaResultsForOrder(ResultSet resultSet) {

@@ -68,7 +68,6 @@ sub sendOffsite{
     	}
 	}           
 }
-
 my $postgres_pwd  = 'clinlims';
 my $keepFileDays  = 30;
 my $siteId = 'IPCI';
@@ -84,12 +83,14 @@ my $cmd = 'pg_dump -h localhost  -U clinlims -f "' . $snapShotFileName . '" -n \
 my $zipCmd = 'gzip -f ' .  $snapShotFileName;
 my $backBaseDir          = cwd();
 my $baseFileName         = 'CI_IPCIOpenElis';
+my $mountedBackup        = "";
 my $dailyDir             = "$backBaseDir/daily";
 my $cumulativeDir        = "$backBaseDir/cumulative";
 my $queueDir             = "$backBaseDir/transmissionQueue";
 my $timeStamp            = getTimeStamp();
 my $todaysCummlativeFile = "$siteId$baseFileName$timeStamp.backup.gz";
 my $maxTimeSpan = 60 * 60 * 24 * $keepFileDays;
+
 
 $ENV{'PGPASSWORD'} = "$postgres_pwd";
 
@@ -99,6 +100,9 @@ system("$zipCmd")  and warn "Error while running: $! \n";
 
 copy( $snapShotFileNameZipped, "$cumulativeDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
 copy( $snapShotFileNameZipped, "$queueDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
+if (-d $mountedBackup) {
+    copy( $snapShotFileNameZipped, "$mountedBackup/$todaysCummlativeFile" ) or die "File cannot be copied.";
+}
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 

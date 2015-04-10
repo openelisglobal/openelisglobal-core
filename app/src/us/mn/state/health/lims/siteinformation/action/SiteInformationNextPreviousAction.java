@@ -17,21 +17,19 @@
 */
 package us.mn.state.health.lims.siteinformation.action;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class SiteInformationNextPreviousAction extends BaseAction {
 
@@ -46,12 +44,12 @@ public class SiteInformationNextPreviousAction extends BaseAction {
 		
 		String id = request.getParameter(ID);
 		
-		String start = (String) request.getParameter("startingRecNo");
-		String direction = (String) request.getParameter("direction");
+		String start = request.getParameter("startingRecNo");
+		String direction = request.getParameter("direction");
 
 		if( id != null && !id.equals("0")){
 			SiteInformationUpdateAction updateAction = new SiteInformationUpdateAction();
-			String updateResponse = updateAction.validateAndUpdateSiteInformation(mapping, request, (BaseActionForm)form, false);
+			String updateResponse = updateAction.validateAndUpdateSiteInformation( request, (BaseActionForm)form, false);
 			
 			if( updateResponse == FWD_FAIL){
 				return getForward(mapping.findForward(FWD_FAIL), id, start);
@@ -96,7 +94,7 @@ public class SiteInformationNextPreviousAction extends BaseAction {
 						// disable previous button
 						request.setAttribute(PREVIOUS_DISABLED, TRUE);
 					}
-					id = siteInformation.getId().toString();
+					id = siteInformation.getId();
 				} else {
 					// just disable next button
 					request.setAttribute(PREVIOUS_DISABLED, TRUE);

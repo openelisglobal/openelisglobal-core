@@ -15,6 +15,8 @@
 */
 package us.mn.state.health.lims.test.valueholder;
 
+import us.mn.state.health.lims.common.services.TestService;
+
 import java.util.Comparator;
 
 /**
@@ -30,7 +32,7 @@ public class AssignableTestComparator implements Comparable {
    // You can put the default sorting capability here
    public int compareTo(Object obj) {
       Test t = (Test)obj;
-      return this.name.compareTo(t.getTestName());
+      return this.name.compareTo( TestService.getUserLocalizedTestName( t ));
    }
    
  

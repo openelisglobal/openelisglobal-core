@@ -72,7 +72,6 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 		// currently this is the only one being excluded for Haiti_LNSP. If it
 		// gets more complicate use the status sets
 		excludedStatusIds = new HashSet<Integer>();
-		excludedStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)));
 		excludedStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
 	}
 

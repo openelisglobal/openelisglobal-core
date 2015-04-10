@@ -15,15 +15,6 @@
 */
 package us.mn.state.health.lims.sample.action;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
@@ -32,7 +23,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -71,6 +61,10 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * The QuickEntryUpdateAction class represents the Update Action for the
@@ -182,10 +176,7 @@ public class QuickEntryUpdateAction extends BatchSampleProcessingBaseAction {
 					sample.setCollectionTimeForDisplay("00:00");
 					// Set entered date to today's date
 					Date today = Calendar.getInstance().getTime();
-					Locale locale = (Locale) request.getSession().getAttribute(
-							"org.apache.struts.action.LOCALE");
-					String dateAsText = DateUtil.formatDateAsText(today,
-							locale);
+					String dateAsText = DateUtil.formatDateAsText(today);
 					sample.setEnteredDateForDisplay(dateAsText);
 					
 					//bugzilla 2528

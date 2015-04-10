@@ -63,7 +63,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 
 	@Override
 	protected String reportFileName() {
-		return "HaitiLabAggregate";
+		return "LabAggregate";
 	}
 
 	public JRDataSource getReportDataSource() throws IllegalStateException {
@@ -97,12 +97,12 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 
 			TestBucket bucket = new TestBucket();
 
-			bucket.testName = test.getReportingDescription();
+			bucket.testName = TestService.getUserLocalizedTestName( test );
 			bucket.testSort = Integer.parseInt(test.getSortOrder());
 			bucket.testSection = test.getTestSection().getLocalizedName();
 			bucket.sectionSort = test.getTestSection().getSortOrderInt();
 			
-			testNameToBucketList.put(test.getReportingDescription(), bucket);
+			testNameToBucketList.put( TestService.getUserLocalizedReportingTestName( test ), bucket);
 			testBucketList.add(bucket);
 		}
 
@@ -207,18 +207,18 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
             //that entry will not be in the test to test section map
             if( USER_TEST_SECTION_ID.equals( analysis.getTest().getTestSection().getId() ) ){
                 String concatedName = analysis.getTestSection().getLocalizedName()
-                        + analysis.getTest().getLocalizedName();
+                        + TestService.getUserLocalizedTestName( analysis.getTest() );
                 testBucket = concatSection_TestToBucketMap.get( concatedName );
                 if( testBucket == null ){
                     testBucket = new TestBucket();
-                    testBucket.testName = test.getReportingDescription();
+                    testBucket.testName = TestService.getUserLocalizedReportingTestName( test );
                     testBucket.testSort = Integer.parseInt( test.getSortOrder() );
                     testBucket.testSection = analysis.getTestSection().getLocalizedName();
                     testBucket.sectionSort = analysis.getTestSection().getSortOrderInt();
                     concatSection_TestToBucketMap.put( concatedName, testBucket );
                 }
             }else{
-                testBucket = testNameToBucketList.get( test.getReportingDescription() );
+                testBucket = testNameToBucketList.get( TestService.getUserLocalizedReportingTestName( test ));
             }
 
             if( testBucket != null ){

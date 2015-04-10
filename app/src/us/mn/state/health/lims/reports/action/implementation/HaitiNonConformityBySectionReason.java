@@ -26,13 +26,8 @@ public class HaitiNonConformityBySectionReason extends NonConformityBySectionRea
 	}
 
 	@Override
-	protected String errorReportFileName() {
-		return HAITI_ERROR_REPORT;
-	}
-
-	@Override
 	protected String getHeaderName() {
-		return "HaitiHeader.jasper";
+		return "GeneralHeader.jasper";
 	}
 
 	@Override
@@ -41,10 +36,7 @@ public class HaitiNonConformityBySectionReason extends NonConformityBySectionRea
 		reportParameters.put("supportStudy", "false");
 		reportParameters.put("supportService", "false");
 		reportParameters.put("supportSiteSubject", "false");
-		
-		String logoName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP") ? "HaitiLNSP.jpg" : "labLogo.jpg";
-		reportParameters.put("siteLogo", useLogo ? logoName : null);
-			reportParameters.put("labName1", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-			reportParameters.put("labName2", "");
+		reportParameters.put("labName1", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
+		reportParameters.put("labName2", "");
 	}
 }

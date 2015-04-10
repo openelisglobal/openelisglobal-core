@@ -121,11 +121,7 @@ public class SampleQaEventAction extends BaseObject {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.createdDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				createdDate, locale);
+		this.createdDateForDisplay = DateUtil.convertSqlDateToStringDate(createdDate);
 	}
 
 	public String getCreatedDateForDisplay() {

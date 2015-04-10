@@ -15,14 +15,9 @@
 */
 package us.mn.state.health.lims.patient.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -35,6 +30,10 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.person.valueholder.Person;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author diane benz
@@ -104,18 +103,15 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 
 	public void updateData(Patient patient) throws LIMSRuntimeException {
 
-		Patient oldData = (Patient)readPatient(patient.getId());
-		Patient newData = patient;
+		Patient oldData = readPatient(patient.getId());
 
-		//add to audit trail
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = patient.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "PATIENT";
-			auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
+			auditDAO.saveHistory(patient,oldData,sysUserId,event,tableName);
 		}  catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("PatientDAOImpl","AuditTrail updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in Patient AuditTrail updateData()", e);
 		}
@@ -127,7 +123,6 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 			HibernateUtil.getSession().evict(patient);
 			HibernateUtil.getSession().refresh(patient);
 		} catch (Exception e) {
-			//bugzilla 2154
 			LogEvent.logError("PatientDAOImpl","updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in Patient updateData()", e);
 		}
@@ -169,17 +164,12 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 	}
 
 	private void updateDisplayValues(Patient pat) {
-		// set the display dates for STARTED_DATE, COMPLETED_DATE
-		String locale = SystemConfiguration.getInstance()
-				.getDefaultLocale().toString();
-
 		if (pat.getBirthDate() != null && pat.getBirthDateForDisplay() == null)
-			pat.setBirthDateForDisplay(DateUtil.convertTimestampToStringDate(pat.getBirthDate(),locale));
+			pat.setBirthDateForDisplay(DateUtil.convertTimestampToStringDate(pat.getBirthDate()));
 		if (pat.getBirthTime() != null)
-			pat.setBirthTimeForDisplay(DateUtil.convertSqlDateToStringDate(pat.getBirthTime(),
-							locale));
+			pat.setBirthTimeForDisplay(DateUtil.convertSqlDateToStringDate(pat.getBirthTime()));
 		if (pat.getDeathDate() != null)
-			pat.setDeathDateForDisplay(DateUtil.convertSqlDateToStringDate(pat.getDeathDate(),	locale));
+			pat.setDeathDateForDisplay(DateUtil.convertSqlDateToStringDate(pat.getDeathDate()));
 	}
 
 	public List getAllPatients() throws LIMSRuntimeException {
@@ -278,13 +268,13 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-    protected Patient getPatientByStringProperty(String propertyName, String nationalId) {
+    protected Patient getPatientByStringProperty(String propertyName, String propertyValue) {
         List<Patient> patients;
 
         try {
             String sql = "From Patient p where p." + propertyName + " = :" + propertyName;
             Query query = HibernateUtil.getSession().createQuery(sql);
-            query.setString(propertyName, nationalId);
+            query.setString(propertyName, propertyValue);
             patients = query.list();
             HibernateUtil.getSession().flush();
             HibernateUtil.getSession().clear();
@@ -292,7 +282,7 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
             e.printStackTrace();
             throw new LIMSRuntimeException("Error in Patient getPatientByStringProperty(" + propertyName + "\", ) " , e);
         }
-        return patients.size() > 0 ? patients.get(0) : null;
+        return patients.isEmpty() ? null : patients.get(0);
 	}
 
     public Patient getPatientByNationalId(String nationalId) {

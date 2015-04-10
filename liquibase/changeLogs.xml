@@ -2126,7 +2126,7 @@ ALTER TABLE sampletracking OWNER TO clinlims;
                    <where>name = 'patientSearchPassword'</where>
            </update>
 </changeSet>
-<changeSet author="paulsc" id="85" runAlways="true">
+<changeSet author="paulsc" id="85" >
            <comment>copies the description to the name column</comment>
            <sql>update clinlims.test set name = description where name is null;</sql>
 </changeSet>
@@ -2225,6 +2225,8 @@ ALTER TABLE sampletracking OWNER TO clinlims;
 <include file="OE3.3/HaitiLNSPData.xml"/>
 <include file="OE3.3/CDIRegLabData.xml"/>
 <include file="OE3.4/Base.xml"/>
+<include file="OE4.2/Base.xml"/>
+<include file="OE5.1/Base.xml"/>
 </databaseChangeLog>
 
 

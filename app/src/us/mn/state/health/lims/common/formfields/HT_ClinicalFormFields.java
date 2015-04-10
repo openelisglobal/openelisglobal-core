@@ -17,28 +17,21 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 public class HT_ClinicalFormFields implements IFormFieldsForImplementation {
 
 	public HashMap<Field, Boolean> getImplementationAttributes() {
 		HashMap<Field, Boolean> settings = new HashMap<Field, Boolean>();
-		settings.put(Field.OrgState, Boolean.FALSE);
-		settings.put(Field.ZipCode, Boolean.FALSE);
-		settings.put(Field.MLS, Boolean.FALSE);
-		settings.put(Field.OrganizationCLIA, Boolean.FALSE);
-		settings.put(Field.OrganizationParent, Boolean.FALSE);
 		settings.put(Field.InlineOrganizationTypes, Boolean.TRUE);
 		settings.put(Field.DepersonalizedResults, Boolean.TRUE);
 		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
-		settings.put(Field.OrganizationShortName, Boolean.TRUE);
 		settings.put(Field.OrganizationMultiUnit, Boolean.FALSE);
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
-		settings.put(Field.AddressCity, Boolean.FALSE);
-		settings.put(Field.AddressCommune, Boolean.TRUE);
-		settings.put(Field.AddressDepartment, Boolean.TRUE);
-		settings.put(Field.AddressVillage, Boolean.TRUE);
+		settings.put(Field.ADDRESS_CITY, Boolean.FALSE);
+		settings.put(Field.ADDRESS_DEPARTMENT, Boolean.TRUE);
 		settings.put(Field.PatientRequired, Boolean.TRUE);
         settings.put(Field.SampleCondition, Boolean.TRUE);
         settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);

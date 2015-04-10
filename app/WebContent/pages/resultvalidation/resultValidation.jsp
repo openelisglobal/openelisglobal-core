@@ -9,7 +9,9 @@
 	us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType,
     java.text.DecimalFormat,
 	java.util.List,
-	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem" %>
+	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem,
+	us.mn.state.health.lims.common.util.ConfigurationProperties,
+	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -22,7 +24,7 @@
 <bean:define id="testName"	value='<%=request.getParameter("test")%>' />
 <bean:define id="results" name="<%=formName%>" property="resultList" />
 <bean:define id="pagingSearch" name='<%=formName%>' property="paging.searchTermToPage" type="List<IdValuePair>" /> 
-
+<bean:define id="testSectionsByName" name='<%=formName%>' property="testSectionsByName" />
 <bean:size id="resultCount" name="results" />
 
 <%!
@@ -31,6 +33,7 @@
 	int rowColorIndex = 2;
 	IAccessionNumberValidator accessionNumberValidator;
 	String searchTerm = null;
+	boolean showTestSectionSelect = false;
 %>
 <%
 
@@ -41,6 +44,8 @@
 	currentAccessionNumber="";
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 	searchTerm = request.getParameter("searchTerm");
+	showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");
+	
 %>
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/math-extend.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -50,7 +55,6 @@
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>" />
 <script type="text/javascript" src="<%=basePath%>scripts/testReflex.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/multiselectUtils.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
-<script type="text/javascript" src="<%=basePath%>scripts/testResults.js?ver=<%=Versioning.getBuildNumber() %>" ></script>
 
 
 <script type="text/javascript" >
@@ -166,6 +170,19 @@ function savePage() {
 	var form = window.document.forms[0];
 	form.action = "ResultValidationSave.do" + '<%= "?type=" + testSection + "&test=" + testName %>';
 	form.submit();
+}
+
+function submitTestSectionSelect( element ) {
+	
+	var testSectionNameIdHash = [];
+
+	<%
+		for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
+			out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+		}
+	%>
+		window.location.href = "ResultValidationSave.do?testSectionId=" + element.value + "&test=&type=" + testSectionNameIdHash[element.value];
+	
 }
 
 function toggleSelectAll( element ) {
@@ -284,6 +301,30 @@ function /*boolean*/ handleEnterEvent(){
 
 </script>
 
+<% if( showTestSectionSelect ){ %>
+<div id="searchDiv" class="colorFill"  >
+<div id="PatientPage" class="colorFill" style="display:inline" >
+<h2><bean:message key="sample.entry.search"/></h2>
+	<table width="30%">
+		<tr>
+			<td width="50%" align="right" >
+				<%= StringUtil.getMessageForKey("workplan.unit.types") %>
+			</td>
+			<td>			
+				<html:select name='<%= formName %>' property="testSectionId" 
+					 onchange="submitTestSectionSelect(this);" >
+					<app:optionsCollection name="<%=formName%>" property="testSections" label="value" value="id" />
+				</html:select>
+		   	</td>
+		</tr>
+	</table>
+	<br/>
+	<h1>
+		
+	</h1>
+</div>
+</div>
+	<% }%>
 <logic:notEqual name="resultCount" value="0">
 <div  style="width:80%" >
 	<html:hidden styleId="currentPageID" name="<%=formName%>" property="paging.currentPage"/>
@@ -320,7 +361,7 @@ function /*boolean*/ handleEnterEvent(){
 <Table style="width:80%" >
     <tr>
 		<th colspan="3" style="background-color: white;width:15%;">
-			<img src="./images/nonconforming.gif" /> = <%= StringUtil.getContextualMessageForKey("result.nonconforming.item")%>'
+			<img src="./images/nonconforming.gif" /> = <%= StringUtil.getContextualMessageForKey("result.nonconforming.item")%>
 		</th>
 		<th style="text-align:center;width:3%;" style="background-color: white">&nbsp;
 				<bean:message key="validation.accept.all" />
@@ -381,7 +422,7 @@ function /*boolean*/ handleEnterEvent(){
 			<html:hidden name="resultList" property="noteId" indexed="true" />
 			<html:hidden name="resultList" property="resultId"  indexed="true" styleId='<%="resultIdValue_" + index%>'/>
             <html:hidden name="resultList" property="hasQualifiedResult" indexed="true" styleId='<%="hasQualifiedResult_" + index %>' />
-            <html:hidden name="resultList" property="valid" indexed="true" styleId='<%="valid_" + index%>' />
+
 			<%if( resultList.isMultipleResultForSample() && showAccessionNumber ){ 
 			     showAccessionNumber = false; %>
 			<tr  class='<%=(rowColorIndex % 2 == 0) ? "evenRow" : "oddRow" %>'  >
@@ -441,9 +482,8 @@ function /*boolean*/ handleEnterEvent(){
 					           id='<%= "resultId_" + index %>'
 							   class='<%= (resultList.getIsHighlighted() ? "invalidHighlight " : " ") + (resultList.isReflexGroup() ? "reflexGroup_" + resultList.getSampleGroupingNumber()  : "")  +  
 							              (resultList.isChildReflex() ? " childReflex_" + resultList.getSampleGroupingNumber(): "") %> ' 
-							   onchange='<%=  "markUpdated(); makeDirty(); updateLogValue(this, " + index + "); " +
-								                (resultList.isReflexGroup() && !resultList.isChildReflex() ? "updateReflexChild(" + resultList.getSampleGroupingNumber()  +  " ); " : "") +
-								                  "checkNumberFormat( this," + index + ", " + resultList.getSignificantDigits() + ");" %>'/>
+							   onchange='<%=  "markUpdated(); makeDirty(); updateLogValue(this, " + index + "); trim(this, " + resultList.getSignificantDigits() + ");" +
+								                (resultList.isReflexGroup() && !resultList.isChildReflex() ? "updateReflexChild(" + resultList.getSampleGroupingNumber()  +  " ); " : "")  %>'/>
 	    				<% } %>
 						<bean:write name="resultList" property="units"/>
 					<% }else if( ResultType.DICTIONARY.matches(resultList.getResultType())){ %>
@@ -626,9 +666,21 @@ function /*boolean*/ handleEnterEvent(){
 
 
   	</logic:notEqual>
-  	<logic:equal name="resultCount"  value="0">
-		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+  	
+	<logic:equal  name="<%=formName %>" property="displayTestSections" value="true">
+		<logic:equal name="resultCount"  value="0">
+			<logic:notEmpty name="<%=formName %>" property="testSectionId">
+			<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+			</logic:notEmpty>
+		</logic:equal>
 	</logic:equal>
+	
+	<logic:notEqual  name="<%=formName %>" property="displayTestSections" value="true">
+		<logic:equal name="resultCount"  value="0">
+		<h2><%= StringUtil.getContextualMessageForKey("result.noTestsFound") %></h2>
+		</logic:equal>
+	</logic:notEqual>
+	  	
 </Table>
 
    <logic:notEqual name="resultCount" value="0">

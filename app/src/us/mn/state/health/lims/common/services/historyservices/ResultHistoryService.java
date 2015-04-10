@@ -16,31 +16,25 @@
  */
 package us.mn.state.health.lims.common.services.historyservices;
 
+import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
+import us.mn.state.health.lims.audittrail.valueholder.History;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.result.dao.ResultDAO;
+import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
+import us.mn.state.health.lims.result.valueholder.Result;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
-import us.mn.state.health.lims.audittrail.valueholder.History;
-import us.mn.state.health.lims.common.services.StatusService;
-import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
-import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
-import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.result.dao.ResultDAO;
-import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
-import us.mn.state.health.lims.result.valueholder.Result;
-
 public class ResultHistoryService extends HistoryService {
-	private static String RESULT_TABLE_ID;
 	private static ResultDAO resultDAO = new ResultDAOImpl();
-
-	static {
-		ReferenceTablesDAO tableDAO = new ReferenceTablesDAOImpl();
-		RESULT_TABLE_ID = tableDAO.getReferenceTableByName("RESULT").getId();
-	}
 
 	public ResultHistoryService(Result result, Analysis analysis) {
 		setUpForResult(result, analysis);
@@ -48,16 +42,16 @@ public class ResultHistoryService extends HistoryService {
 
 	@SuppressWarnings("unchecked")
 	private void setUpForResult(Result result, Analysis analysis) {
-		if ( !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.ReferredIn)) &&  analysis.getTest() != null) {
+		if ( analysis.getTest() != null) {
 			History searchHistory = new History();
 			searchHistory.setReferenceId(result.getId());
-			searchHistory.setReferenceTable(RESULT_TABLE_ID);
+			searchHistory.setReferenceTable( ResultService.TABLE_REFERENCE_ID);
 			historyList = auditTrailDAO.getHistoryByRefIdAndRefTableId(searchHistory);
 
 			newValueMap = new HashMap<String, String>();
 			newValueMap.put(VALUE_ATTRIBUTE, getViewableValue(result.getValue(), result));
 
-			identifier = analysis.getTest().getDescription() + " - " + analysis.getAnalysisType();
+			identifier = TestService.getLocalizedTestNameWithType( analysis.getTest() ) + " - " + analysis.getAnalysisType();
 		} else {
 			historyList = new ArrayList<History>();
 		}

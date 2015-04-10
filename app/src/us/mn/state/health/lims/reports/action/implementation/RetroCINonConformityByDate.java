@@ -19,11 +19,6 @@ package us.mn.state.health.lims.reports.action.implementation;
 
 
 public class RetroCINonConformityByDate extends NonConformityByDate implements IReportCreator {
-    
-    @Override
-    protected String errorReportFileName(){
-		return CI_ERROR_REPORT;
-	}
 
 	@Override
 	protected String getHeaderName() {

@@ -44,12 +44,12 @@ public class ActivityReportByTestSection extends ActivityReport implements IRepo
 
     @Override
     protected String getActivityLabel(){
-        return "Unité: " + unitName;
+        return StringUtil.getMessageForKey( "report.unit" ) + ": " + unitName;
     }
 
     @Override
     protected void buildReportContent( ReportSpecificationList unitSelection ){
-        unitName = getNameForId( unitSelection );
+        unitName = unitSelection.getSelectionAsName();
         createReportParameters();
 
         List<Result> resultList = ResultService.getResultsInTimePeriodInTestSection( dateRange.getLowDate(), dateRange.getHighDate(), unitSelection.getSelection() );

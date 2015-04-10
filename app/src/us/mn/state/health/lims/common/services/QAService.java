@@ -22,6 +22,7 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.qaevent.dao.QaEventDAO;
@@ -83,16 +84,16 @@ public class QAService {
 	}
 
 	public enum QAObservationValueType {
-		LITERAL("L"), DICTIOANRY("D");
+		LITERAL("L"), DICTIONARY("D"), KEY("K");
 
-		private final String dbSymbole;
+		private final String dbSymbol;
 
-		QAObservationValueType(String symbole) {
-			this.dbSymbole = symbole;
+		QAObservationValueType(String symbol) {
+			this.dbSymbol = symbol;
 		}
 
-		String getDBSymbole() {
-			return dbSymbole;
+		String getDBSymbol() {
+			return dbSymbol;
 		}
 	}
 
@@ -127,20 +128,26 @@ public class QAService {
 		return sampleQaEvent.getSampleItem();
 	}
 
-	public String getObservation(QAObservationType section) {
+	public String getObservationValue( QAObservationType section ) {
 		QaObservation observation = observationDAO.getQaObservationByTypeAndObserved(section.getDBName(), "SAMPLE", sampleQaEvent.getId());
-
-		if (observation != null) {
-			if ("L".equals(observation.getValueType())) {
-				return observation.getValue();
-			} else if ("D".equals(observation.getValueType())) {
-				return dictDAO.getDictionaryById(observation.getValue()).getDictEntry();
-			}
-		}
-
-		return null;
+        return observation == null ? null : observation.getValue();
 	}
 
+    public String getObservationForDisplay(QAObservationType section){
+        QaObservation observation = observationDAO.getQaObservationByTypeAndObserved(section.getDBName(), "SAMPLE", sampleQaEvent.getId());
+
+        if (observation != null) {
+            if( "K".equals( observation.getValueType() )){
+                return StringUtil.getContextualMessageForKey(observation.getValue()) ;
+            }else if ("L".equals(observation.getValueType())) {
+                return observation.getValue();
+            } else if ("D".equals(observation.getValueType())) {
+                return dictDAO.getDictionaryById(observation.getValue()).getDictEntry();
+            }
+        }
+
+        return null;
+    }
 	public Timestamp getLastupdated() {
 		return sampleQaEvent.getLastupdated();
 	}
@@ -158,7 +165,7 @@ public class QAService {
 
 	public void setObservation(QAObservationType observationType, String value, QAObservationValueType type, boolean rejectEmptyValues) {
 		if( rejectEmptyValues && 
-		    ((type == QAObservationValueType.DICTIOANRY && "O".equals(value)) || GenericValidator.isBlankOrNull(value))){
+		    ((type == QAObservationValueType.DICTIONARY && "O".equals(value)) || GenericValidator.isBlankOrNull(value))){
 			return;
 		}
 		
@@ -174,7 +181,7 @@ public class QAService {
 			// id may be null at this point
 			observation.setObservedId(sampleQaEvent.getId()); 
 			observation.setObservedType(ObservedType.SAMPLE.getDBName());
-			observation.setValueType(type.getDBSymbole());
+			observation.setValueType(type.getDBSymbol());
 		}
 
 		observation.setValue(value);

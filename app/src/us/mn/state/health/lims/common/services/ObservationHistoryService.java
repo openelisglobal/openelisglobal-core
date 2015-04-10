@@ -42,11 +42,12 @@ public class ObservationHistoryService{
 		PAYMENT_STATUS("paymentStatus"), 
 		REQUEST_DATE("requestDate"), 
 		NEXT_VISIT_DATE("nextVisitDate"), 
-		REFERRING_SITE("referringSite"), 
-		PRIMARY_ORDER_TYPE("primaryOrderType"), 
-		SECONDARY_ORDER_TYPE("secondaryOrderType"), 
-		OTHER_SECONDARY_ORDER_TYPE(	"otherSecondaryOrderType"),
-		REFERRERS_PATIENT_ID("referrersPatientId");
+		REFERRING_SITE("referringSite"),
+		REFERRERS_PATIENT_ID("referrersPatientId"),
+        BILLING_REFERENCE_NUMBER("billingRefNumber"),
+        TEST_LOCATION_CODE("testLocationCode"),
+        TEST_LOCATION_CODE_OTHER("testLocationCodeOther"),
+        PROGRAM("program");
 		
 		private String dbName;
 
@@ -89,7 +90,7 @@ public class ObservationHistoryService{
                 return observation.getValue();
             }else{
                 if(!GenericValidator.isBlankOrNull( observation.getValue() )){
-                    return dictionaryDAO.getDataForId(observation.getValue()).getDictEntry();
+                    return dictionaryDAO.getDataForId(observation.getValue()).getLocalizedName();
                 }
             }
         }

@@ -21,17 +21,10 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.AnalysisService;
-import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.ResultService;
-import us.mn.state.health.lims.common.services.SampleService;
-import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
-import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -66,7 +59,6 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 	private static final SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static final ResultDAO resultDAO = new ResultDAOImpl();
-	private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 	private static final SampleDAO sampleDAO = new SampleDAOImpl();
 	private static final SampleRequesterDAO sampleRequesterDAO = new SampleRequesterDAOImpl();
 	private static final OrganizationDAO organizationDAO = new OrganizationDAOImpl();
@@ -143,9 +135,9 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 
 		ts.setAccessionNumber(order.getAccessionNumber());
 		ts.setReceptionDate(order.getReceivedDateForDisplay());
-		ts.setReceptionTime(DateUtil.convertTimestampToString12HourTime( order.getReceivedTimestamp()));
-		ts.setCollectionDate(DateUtil.convertTimestampToStringDate(sampleItem.getCollectionDate()));		
-		ts.setCollectionTime(DateUtil.convertTimestampToString12HourTime( sampleItem.getCollectionDate()));
+		ts.setReceptionTime(DateUtil.convertTimestampToStringConfiguredHourTime( order.getReceivedTimestamp() ));
+		ts.setCollectionDate(DateUtil.convertTimestampToStringDate( sampleItem.getCollectionDate() ));		
+		ts.setCollectionTime(DateUtil.convertTimestampToStringConfiguredHourTime( sampleItem.getCollectionDate() ));
 		ts.setAge(createReadableAge(patientService.getDOB()));
 		ts.setDOB(patientService.getDOB());
 		ts.setFirstName(patientService.getFirstName());
@@ -155,7 +147,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ts.setStatus(StatusService.getInstance().getStatusName(StatusService.getInstance().getAnalysisStatusForID(analysis.getStatusId())));
 		ts.setSampleType(sampleItem.getTypeOfSample().getLocalizedName());
 		ts.setTestBench(analysis.getTestSection() == null ? "" : analysis.getTestSection().getTestSectionName());
-		ts.setTestName(analysis.getTest() == null ? "" : analysis.getTest().getTestName());
+        ts.setTestName( TestService.getUserLocalizedTestName( analysis.getTest() ) );
         ts.setDepartment( StringUtil.blankIfNull(patientService.getAddressComponents().get(PatientService.ADDRESS_DEPT) ) );
         String notes = new NoteService( analysis ).getNotesAsString( false, false, "|", false );
         if( notes != null){
@@ -177,11 +169,6 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 			}
 		}
 		testExportList.add(ts);
-	}
-
-    @Override
-	protected String errorReportFileName(){
-		return HAITI_ERROR_REPORT;
 	}
 
 	@Override
@@ -241,7 +228,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		Date dobDate = DateUtil.convertStringDateToSqlDate(dob);
 		int months = DateUtil.getAgeInMonths(dobDate, DateUtil.getNowAsSqlDate());
 		if(months > 35){
-			return (months / 12) + " A";
+			return (months / 12) + " Ans";
 		}else if(months > 0){
 			return months + " M";
 		}else{

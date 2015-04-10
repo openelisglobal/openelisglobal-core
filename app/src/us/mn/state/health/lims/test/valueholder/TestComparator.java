@@ -15,6 +15,8 @@
  */
 package us.mn.state.health.lims.test.valueholder;
 
+import us.mn.state.health.lims.common.services.TestService;
+
 import java.util.Comparator;
 
 public class TestComparator implements Comparable<Test> {
@@ -22,18 +24,18 @@ public class TestComparator implements Comparable<Test> {
 
 	// You can put the default sorting capability here
 	public int compareTo(Test t) {
-		return this.name.compareTo(t.getTestName());
+		return this.name.compareTo( TestService.getUserLocalizedTestName( t ));
 	}
 
 	public static final Comparator<Test> NAME_COMPARATOR = new Comparator<Test>() {
 		public int compare(Test a, Test b) {
-			return ((a.getTestName().toLowerCase()).compareTo(b.getTestName().toLowerCase()));
+			return ((TestService.getUserLocalizedTestName( a ).toLowerCase()).compareTo(TestService.getUserLocalizedTestName( b ).toLowerCase()));
 		}
 	};
 
 	public static final Comparator<Test> DESCRIPTION_COMPARATOR = new Comparator<Test>() {
 		public int compare(Test a, Test b) {
-			return ((a.getDescription().toLowerCase()).compareTo(b.getDescription().toLowerCase()));
+			return ((TestService.getLocalizedTestNameWithType( a ).toLowerCase()).compareTo(TestService.getLocalizedTestNameWithType( b ).toLowerCase()));
 		}
 	};
 

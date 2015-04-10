@@ -42,40 +42,41 @@ public class DefaultFormFields extends AFormFields {
 		setFieldTrue(Field.InsuranceNumber);
 		setFieldTrue(Field.CollectionDate);
 		setFieldTrue(Field.OrgLocalAbrev);
-		setFieldTrue(Field.OrgState);
-		setFieldTrue(Field.ZipCode);
-		setFieldTrue(Field.MLS);
 		setFieldTrue(Field.ProviderInfo);
 		setFieldTrue(Field.NationalID);
 		setFieldTrue(Field.Occupation);
 		setFieldTrue(Field.OrganizationAddressInfo);
-		setFieldTrue(Field.OrganizationCLIA);
-		setFieldTrue(Field.OrganizationParent);
 		setFieldTrue(Field.OrganizationShortName);
 		setFieldTrue(Field.OrganizationMultiUnit);
 		setFieldTrue(Field.OrganizationOrgId);
-		setFieldTrue(Field.AddressCity);
+		setFieldTrue(Field.ADDRESS_CITY );
 		setFieldTrue(Field.PatientRequired);
-        setFieldTrue(Field.QAFullProviderInfo);
+        setFieldTrue(Field.QA_FULL_PROVIDER_INFO );
+        setFieldTrue(Field.QA_REQUESTER_SAMPLE_ID);
         setFieldTrue(Field.PatientIDRequired);
 		setFieldTrue(Field.PatientNameRequired);
 		setFieldTrue(Field.SampleEntryRequestingSiteSampleId);
+        setFieldTrue( Field.ADDRESS_COMMUNE );
+        setFieldTrue( Field.ADDRESS_VILLAGE );
+
+        setFieldFalse(Field.OrgState);
+        setFieldFalse(Field.ZipCode);
+        setFieldFalse(Field.MLS);
 		setFieldFalse(Field.CollectionTime);
 		setFieldFalse(Field.RequesterSiteList);
 		setFieldFalse(Field.InlineOrganizationTypes);
 		setFieldFalse(Field.SubjectNumber);
-		setFieldFalse(Field.Commune);
-		setFieldFalse(Field.AddressDepartment);
+        setFieldFalse(Field.SubjectNumberRequired );
+		setFieldFalse(Field.ADDRESS_DEPARTMENT );
 		setFieldFalse(Field.MotherInitial);
-		setFieldFalse(Field.ResultsAccept);
 		setFieldFalse(Field.SearchSampleStatus);
 		setFieldFalse(Field.DepersonalizedResults);
 		setFieldFalse(Field.SEARCH_PATIENT_WITH_LAB_NO);
 		setFieldFalse(Field.ResultsReferral);
 		setFieldFalse(Field.ValueHozSpaceOnResults);
 		setFieldFalse(Field.InitialSampleCondition);
-		setFieldFalse(Field.AddressCommune);
-		setFieldFalse(Field.AddressVillage);
+        setFieldFalse(Field.OrganizationCLIA);
+        setFieldFalse(Field.OrganizationParent);
 		setFieldFalse(Field.PatientRequired_SampleConfirmation);
         setFieldFalse(Field.SampleCondition);
         setFieldFalse(Field.Project);        
@@ -91,12 +92,10 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.SampleEntryProviderFax);
 		setFieldFalse(Field.SampleEntryProviderEmail);
 		setFieldFalse(Field.SampleEntryHealthFacilityAddress);
-		setFieldFalse(Field.SampleEntryLabOrderTypes);
 		setFieldFalse(Field.SampleEntrySampleCollector);
 		setFieldFalse(Field.PatientPhone);
 		setFieldFalse(Field.PatientHealthRegion);
 		setFieldFalse(Field.PatientHealthDistrict);
-		setFieldFalse(Field.PatientNationality);
 		setFieldFalse(Field.PatientMarriageStatus);
 		setFieldFalse(Field.PatientEducation);
 		setFieldFalse(Field.SampleEntryPatientClinical);
@@ -106,6 +105,7 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.QATimeWithDate);
 		setFieldFalse(Field.SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER);
 		setFieldFalse(Field.NON_CONFORMITY_PROVIDER_ADDRESS);
+        setFieldFalse( Field.TEST_LOCATION_CODE );
 	}
 
 	@Override
@@ -137,8 +137,9 @@ public class DefaultFormFields extends AFormFields {
 			return new CI_IPCIFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_CI_REGIONAL.equals(fieldSet)){
 			return new CI_RegionalFormFields().getImplementationAttributes();
+		}else if(IActionConstants.FORM_FIELD_SET_KENYA.equals(fieldSet)){
+			return new KenyaFormFields().getImplementationAttributes();
 		}
-
 		return null;
 	}
 }

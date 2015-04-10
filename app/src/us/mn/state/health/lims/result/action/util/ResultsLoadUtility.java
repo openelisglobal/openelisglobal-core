@@ -118,7 +118,7 @@ public class ResultsLoadUtility {
 
 	private static String ANALYTE_CONCLUSION_ID;
 	private static String ANALYTE_CD4_CNT_CONCLUSION_ID;
-    private static String NUMERIC_RESULT_TYPE_ID;
+    private static final String NUMERIC_RESULT_TYPE = "N";
 	private static boolean depersonalize = FormFields.getInstance().useField(Field.DepersonalizedResults);
 	private boolean useTechSignature =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
 	private static boolean supportReferrals = FormFields.getInstance().useField(Field.ResultsReferral);
@@ -140,10 +140,6 @@ public class ResultsLoadUtility {
 		analyte.setAnalyteName("generated CD4 Count");
 		analyte = analyteDAO.getAnalyteByName(analyte, false);
 		ANALYTE_CD4_CNT_CONCLUSION_ID = analyte == null ? "" : analyte.getId();
-
-        TypeOfTestResult typeOfTestResult = new TypeOfTestResultDAOImpl().getTypeOfTestResultByType( "N" );
-        NUMERIC_RESULT_TYPE_ID = typeOfTestResult != null ? typeOfTestResult.getId() : "";
-
 	}
 
 	public ResultsLoadUtility(String currentUserId) {
@@ -197,8 +193,11 @@ public class ResultsLoadUtility {
 	 * dob, gender, st, nationalId
 	 */
 	@Deprecated
-	public void addIdentifingPatientInfo(Patient patient, DynaActionForm dynaForm) throws IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
+	public void addIdentifingPatientInfo(Patient patient, DynaActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+		if( patient == null){
+			return;
+		}
 
 		PatientIdentityTypeMap identityMap = PatientIdentityTypeMap.getInstance();
 		List<PatientIdentity> identityList = PatientUtil.getIdentityListForPatient(patient);
@@ -670,6 +669,10 @@ public class ResultsLoadUtility {
             testItem.setQualifiedResultValue( quantifiedResult.getValue() );
             testItem.setHasQualifiedResult( true );
         }
+
+        if( NUMERIC_RESULT_TYPE.equals( testResults.get( 0 ).getTestResultType()  )){
+            testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
+        }
 		return testItem;
 	}
 
@@ -683,10 +686,6 @@ public class ResultsLoadUtility {
 			testItem.setValid(getIsValid(testItem.getResultValue(), resultLimit));
 			testItem.setNormal(getIsNormal(testItem.getResultValue(), resultLimit));
             testItem.setNormalRange( ResultLimitService.getDisplayReferenceRange( resultLimit, testResults.get( 0 ).getSignificantDigits(), " - " ));
-            if( NUMERIC_RESULT_TYPE_ID.equals( resultLimit.getResultTypeId() )){
-                testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
-            }
-
 		}
 	}
 

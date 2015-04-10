@@ -16,23 +16,11 @@
  */
 package us.mn.state.health.lims.dataexchange.MalariaSurveilance;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -61,6 +49,10 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
+
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class MalariaSurveilanceJob implements Job {
 	private static final String CRON_MALARIA_SCHEDULER = "sendMalariaSurviellanceReport";
@@ -107,7 +99,7 @@ public class MalariaSurveilanceJob implements Job {
 		TestResultDAO testResultDAO = new TestResultDAOImpl();
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 
-		List<TestResult> malariaResults = testResultDAO.getTestResultsByTest(MALARIA_TEST_ID);
+		List<TestResult> malariaResults = testResultDAO.getActiveTestResultsByTest( MALARIA_TEST_ID );
 
 		for (TestResult testResult : malariaResults) {
 			Dictionary dictionary = dictionaryDAO.getDictionaryById(testResult.getValue());
@@ -117,7 +109,7 @@ public class MalariaSurveilanceJob implements Job {
 		}
 
 		for (String rapidTestId : RAPID_TEST_IDS) {
-			List<TestResult> rapidResults = testResultDAO.getTestResultsByTest(rapidTestId);
+			List<TestResult> rapidResults = testResultDAO.getActiveTestResultsByTest( rapidTestId );
 
 			for (TestResult testResult : rapidResults) {
 				Dictionary dictionary = dictionaryDAO.getDictionaryById(testResult.getValue());

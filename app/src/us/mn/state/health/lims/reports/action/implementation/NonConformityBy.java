@@ -17,15 +17,15 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A class for generating reports that have counts of various things, organized into groups.  The group is the high-level idea in this class.
@@ -99,12 +99,10 @@ public abstract class NonConformityBy extends Report implements IReportCreator {
         dateRange = new DateRange(lowDateStr, highDateStr);
         
         createReportParameters();
-        
         errorFound = !validateSubmitParameters();
         if ( errorFound ) {
             return;
         }
-
         createReportItems();
         if ( this.reportItems.size() == 0 ) {
             add1LineErrorMessage("report.error.message.noPrintableItems");

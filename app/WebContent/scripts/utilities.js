@@ -26,7 +26,8 @@ var yearIndex = 2;
 
 var setUpDateIndecies = function() {
         var splitPattern = datePattern.split("/");
-        for (var i = 0; i < 3; i++) {
+        var i;
+        for (i = 0; i < 3; i++) {
             if (splitPattern[i] == "DD") {
                 dayIndex = i;
             } else if (splitPattern[i] == "MM") {
@@ -946,8 +947,12 @@ function showQuanitiy(selector, index, dictionaryIds, context) {
 }
 
 function round(value, exp) {
-    if (typeof exp === 'undefined' || +exp === 0)
+    if (typeof exp === 'undefined' || +exp === 0 )
         return Math.round(value);
+
+    if(+exp === -1){
+        return value;
+    }
 
     value = +value;
     exp  = +exp;

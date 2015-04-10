@@ -15,24 +15,12 @@
 */
 package us.mn.state.health.lims.sample.action;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
-
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.citystatezip.dao.CityStateZipDAO;
@@ -42,14 +30,7 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.provider.validation.CityStateZipComboValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.CityValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.HumanSampleSourceValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.HumanSampleTypeValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.OrganizationLocalAbbreviationValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.ProjectIdValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.StateValidationProvider;
-import us.mn.state.health.lims.common.provider.validation.ZipValidationProvider;
+import us.mn.state.health.lims.common.provider.validation.*;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -84,6 +65,11 @@ import us.mn.state.health.lims.sourceofsample.valueholder.SourceOfSample;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author diane benz
@@ -126,13 +112,9 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 		String accessionNumber = (String) dynaForm.get("accessionNumber");
 		//bugzilla 2154
 		LogEvent.logDebug("HumanSampleTwoPopulateHashMapFromDE1Action","performAction()","accessionNumber coming in: " + accessionNumber);
-		String start = (String) request.getParameter("startingRecNo");
 
-		String typeOfSample = (String) dynaForm.get("typeOfSampleDesc");
-		String sourceOfSample = (String) dynaForm.get("sourceOfSampleDesc");
-
-		List typeOfSamples = new ArrayList();
-		List sourceOfSamples = new ArrayList();
+		List typeOfSamples;
+		List sourceOfSamples;
 
 		if (dynaForm.get("typeOfSamples") != null) {
 			typeOfSamples = (List) dynaForm.get("typeOfSamples");
@@ -175,7 +157,6 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 
 		if (project2IdOrName != null && project2NameOrId != null) {
 			try {
-				Integer i = Integer.valueOf(project2IdOrName);
 				project2Id = project2IdOrName;
 
 			} catch (NumberFormatException nfe) {
@@ -191,9 +172,7 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 		
 		// set current date for validation of dates
 		Date today = Calendar.getInstance().getTime();
-		Locale locale = (Locale) request.getSession().getAttribute(
-				"org.apache.struts.action.LOCALE");
-		String dateAsText = DateUtil.formatDateAsText(today, locale);
+		String dateAsText = DateUtil.formatDateAsText(today);
 
 		Patient patient = new Patient();
 		Person person = new Person();
@@ -271,7 +250,7 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 			if (!StringUtil.isNullorNill(sample.getId())) {
 				sampleHuman.setSampleId(sample.getId());
 				sampleHumanDAO.getDataBySample(sampleHuman);
-				sampleOrganization.setSampleId(sample.getId());
+				sampleOrganization.setSample(sample);
 				sampleOrganizationDAO.getDataBySample(sampleOrganization);
 				// bugzilla 1773 need to store sample not sampleId for use in
 				// sorting
@@ -301,7 +280,7 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 			//bugzilla 2154
 			LogEvent.logError("HumanSampleTwoPopulateHashMapFromDE1Action","performAction()",lre.toString());
 			errors = new ActionMessages();
-			ActionError error = null;
+			ActionError error;
 			if (lre.getException() instanceof org.hibernate.StaleObjectStateException) {
 				// how can I get popup instead of struts error at the top of
 				// page?
@@ -374,8 +353,7 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 		PropertyUtils.setProperty(dynaForm, "accessionNumber", sample
 				.getAccessionNumber());
 		// set receivedDate
-		PropertyUtils.setProperty(dynaForm, "receivedDateForDisplay",
-				(String) sample.getReceivedDateForDisplay());
+		PropertyUtils.setProperty(dynaForm, "receivedDateForDisplay", sample.getReceivedDateForDisplay());
 
 		PropertyUtils.setProperty(dynaForm, "typeOfSamples", typeOfSamples);
 		PropertyUtils.setProperty(dynaForm, "sourceOfSamples", sourceOfSamples);
@@ -403,6 +381,7 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 			String status = SystemConfiguration.getInstance().getSampleStatusEntry1Complete(); //status = 2
 			String humanDomain = SystemConfiguration.getInstance().getHumanDomain(); 
 			UserTestSectionDAO userTestSectionDAO = new UserTestSectionDAOImpl();
+            Locale locale = (Locale) request.getSession().getAttribute("org.apache.struts.action.LOCALE");
 			List accessionNumberListTwo = userTestSectionDAO.getSamplePdfList(request, locale, status, humanDomain);
 			PropertyUtils.setProperty(form, "accessionNumberListTwo", accessionNumberListTwo);	
 		}		
@@ -435,7 +414,7 @@ public class HumanSampleTwoPopulateHashMapFromDE1Action extends BaseAction {
 		CityStateZip cityStateZip = new CityStateZip();
 
 		// use 5-digit zipcode for validation
-		String zc5Dig = null;
+		String zc5Dig;
 		zc5Dig = zipCode.substring(0, 5);
 		cityStateZip.setZipCode(zc5Dig);
 		cityStateZip.setCity(city);

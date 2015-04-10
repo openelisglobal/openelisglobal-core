@@ -171,7 +171,6 @@ public class StringUtil {
 				String post = phone.substring(9, 13);
 				returnPhone = area + "/" + pre + "-" + post;
 			} catch (Exception e) {
-				// bugzilla 2154
 				LogEvent.logError("StringUtil", "formatPhone()", e.toString());
 			}
 
@@ -247,7 +246,6 @@ public class StringUtil {
 			}
 			return "";
 		} catch (Exception e) {
-			// bugzilla 2154
 			LogEvent.logError("StringUtil", "trim()", e.toString());
 			throw new LIMSRuntimeException("Error trimming string ", e);
 		}
@@ -305,6 +303,22 @@ public class StringUtil {
 		String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
 		return ResourceLocator.getInstance().getMessageResources().getMessage(new Locale(locale), messageKey);
 	}
+
+    public static String getMessageForKeyAndLocale(String messageKey, Locale locale) {
+        if (null == messageKey) {
+            return null;
+        }
+
+        return ResourceLocator.getInstance().getMessageResources().getMessage(locale, messageKey);
+    }
+
+    public static String getMessageForKeyAndLocale(String messageKey, String arg0, String arg1, Locale locale) {
+        if (null == messageKey) {
+            return null;
+        }
+
+        return ResourceLocator.getInstance().getMessageResources().getMessage(locale, messageKey, arg0, arg1);
+    }
 
 	public static String getMessageForKey(String messageKey, String arg) {
 		if (null == messageKey) {
@@ -508,6 +522,28 @@ public class StringUtil {
 		return left.compareTo(right);
 	}
 
+    /**
+     * Tests for equals without worrying about null.  If they are both null they are equal
+     *
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public static boolean safeEquals(String left, String right) {
+        if( left == right){
+            return true;
+        }
+
+        if (left == null) {
+            left = "";
+        }
+        if (right == null) {
+            right = "";
+        }
+        return left.equals(right);
+    }
+
 	public static String replaceAllChars(String text, char replacement) {
 		if (text == null) {
 			return null;
@@ -541,13 +577,13 @@ public class StringUtil {
 		if( string.contains(toBeRemoved)){
 			String[] subStrings = string.trim().split(toBeRemoved);
 			
-			StringBuffer reconsituted = new StringBuffer();
+			StringBuffer reconstituted = new StringBuffer();
 			
 			for( String subString : subStrings){
-				reconsituted.append(subString);
+				reconstituted.append( subString );
 			}
 			
-			return reconsituted.toString();
+			return reconstituted.toString();
 		}else{
 			return string;
 		}
@@ -583,6 +619,10 @@ public class StringUtil {
 	}
 
     public static String doubleWithSignificantDigits( double value, String significantDigits ){
+        if( significantDigits.equals( "-1" )){
+            return String.valueOf( value );
+        }
+
         String format = "%1$." + significantDigits + "f";
         return String.format(format, value);
     }

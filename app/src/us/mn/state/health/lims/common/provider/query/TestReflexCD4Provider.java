@@ -17,15 +17,8 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.validator.GenericValidator;
-
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.XMLUtil;
 import us.mn.state.health.lims.result.dao.ResultDAO;
@@ -36,6 +29,12 @@ import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 public class TestReflexCD4Provider extends BaseQueryProvider {
 
@@ -176,7 +175,7 @@ public class TestReflexCD4Provider extends BaseQueryProvider {
 
 		XMLUtil.appendKeyValue("conclusionText", testReflex.getActionScriptlet().getScriptletName(), xml);
 		XMLUtil.appendKeyValue("conclusionId", testReflex.getActionScriptletId(), xml);
-		XMLUtil.appendKeyValue("testText", testReflex.getAddedTest().getLocalizedName(), xml);
+		XMLUtil.appendKeyValue("testText", TestService.getUserLocalizedTestName( testReflex.getAddedTest() ), xml);
 		XMLUtil.appendKeyValue("testId", testReflex.getAddedTestId(), xml);
 	}
 

@@ -15,20 +15,8 @@
 */
 package us.mn.state.health.lims.result.action;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.Globals;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-import org.apache.struts.action.ActionRedirect;
-
+import org.apache.struts.action.*;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -62,6 +50,12 @@ import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author diane benz
@@ -207,15 +201,12 @@ public class ResultsEntryNotesUpdateAction extends BaseAction {
 					note.setSubject((String) noteSubjectList.get(i));
 					note.setText((String) noteTextList.get(i));
 					note.setNoteType((String) noteTypeList.get(i));
-					String locale = SystemConfiguration.getInstance()
-							.getDefaultLocale().toString();
 
 					Timestamp noteTimestamp = null;
 					if (!StringUtil.isNullorNill((String) noteLastupdatedList
 							.get(i))) {
 
-						noteTimestamp = DateUtil.formatStringToTimestamp(
-								(String) noteLastupdatedList.get(i), locale);
+						noteTimestamp = DateUtil.formatStringToTimestamp((String) noteLastupdatedList.get(i));
 					}
 
 					note.setLastupdated(noteTimestamp);

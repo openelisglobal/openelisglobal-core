@@ -179,13 +179,13 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 		}
 
 		if (STNumber) {
-			queryBuilder.append(" pi.identity_data like :");
+			queryBuilder.append(" pi.identity_data ilike :");
 			queryBuilder.append(ST_NUMBER_PARAM);
 			queryBuilder.append(" or");
 		}
 
 		if (subjectNumber) {
-			queryBuilder.append(" piSN.identity_data like :");
+			queryBuilder.append(" piSN.identity_data ilike :");
 			queryBuilder.append(SUBJECT_NUMBER_PARAM);
 			queryBuilder.append(" or");
 		}

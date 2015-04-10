@@ -29,6 +29,7 @@ fi
 
 git rev-list HEAD | tac | nl | tail -n 1 | sed 's/\t/ hash-/g'  |sed 's/\s\{2,\}/revision-/g' > ../../version.txt 
 cd ../..
+sed '2!d' source/openelisglobal-core/app/src/build.properties  > build.txt
 
 #build and package application
 LANG=en_US ant buildpackage
@@ -40,9 +41,9 @@ then
 fi
 
 #stop tomcat
-sudo /etc/init.d/tomcat5.5 stop
+sudo /etc/init.d/tomcat6 stop
 #this will insure that we don't have stale compiled jsp files
-sudo -u tomcat55 rm -r /usr/share/tomcat5.5/work/Catalina/localhost/
+sudo  rm -r /usr/share/tomcat6/work/Catalina/localhost/
 wait
 
 #install haitiOpenElis
@@ -50,58 +51,67 @@ if [ -f ./warRoot/openElis.war ]
 then
    echo "installing haitiOpenElis"
 
-   if [ -d /usr/share/tomcat5.5/webapps/haitiOpenElis ]
+   if [ -d /usr/share/tomcat6/webapps/haitiOpenElis ]
    then
-       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/haitiOpenElis
+       sudo rm -r /usr/share/tomcat6/webapps/haitiOpenElis
    fi		
    
-   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/haitiOpenElis.war
+   sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/haitiOpenElis.war
 
    echo "installing CDIOpenElis"
 
-   if [ -d /usr/share/tomcat5.5/webapps/CDIOpenElis ]
+   if [ -d /usr/share/tomcat6/webapps/CDIOpenElis ]
    then
-       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CDIOpenElis
+       sudo rm -r /usr/share/tomcat6/webapps/CDIOpenElis
    fi		
 
-   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CDIOpenElis.war
+   sudo  cp warRoot/openElis.war /usr/share/tomcat6/webapps/CDIOpenElis.war
 
    echo "installing LNSP_HaitiOpenElis"
 
-   if [ -d /usr/share/tomcat5.5/webapps/LNSP_HaitiOpenElis ]
+   if [ -d /usr/share/tomcat6/webapps/LNSP_HaitiOpenElis ]
    then
-       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/LNSP_HaitiOpenElis
+       sudo rm -r /usr/share/tomcat6/webapps/LNSP_HaitiOpenElis
    fi		
 
-   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/LNSP_HaitiOpenElis.war
+   sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/LNSP_HaitiOpenElis.war
 
    echo "installing CI_LNSPOpenElis"
 
-   if [ -d /usr/share/tomcat5.5/webapps/CI_LNSPOpenElis ]
+   if [ -d /usr/share/tomcat6/webapps/CI_LNSPOpenElis ]
    then
-       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CI_LNSPOpenElis
+       sudo  rm -r /usr/share/tomcat6/webapps/CI_LNSPOpenElis
    fi		
 
-   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CI_LNSPOpenElis.war
+   sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/CI_LNSPOpenElis.war
 
    echo "installing CDI_RegLabOpenElis"
 
-   if [ -d /usr/share/tomcat5.5/webapps/CDI_RegLabOpenElis ]
+   if [ -d /usr/share/tomcat6/webapps/CDI_RegLabOpenElis ]
    then
-       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CDI_RegLabOpenElis
+       sudo  rm -r /usr/share/tomcat6/webapps/CDI_RegLabOpenElis
    fi		
 
-   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CDI_RegLabOpenElis.war
+   sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/CDI_RegLabOpenElis.war
+
+  echo "installing KenyaOpenElis"
+
+   if [ -d /usr/share/tomcat6/webapps/KenyaOpenElis ]
+   then
+       sudo rm -r /usr/share/tomcat6/webapps/KenyaOpenElis
+   fi
+
+   sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/KenyaOpenElis.war
 
 #for new instance copy-modify from here to end marker 
    echo "installing CI_IPCIOpenElis"
 
-   if [ -d /usr/share/tomcat5.5/webapps/CI_IPCIOpenElis ]
+   if [ -d /usr/share/tomcat6/webapps/CI_IPCIOpenElis ]
    then
-       sudo -u tomcat55 rm -r /usr/share/tomcat5.5/webapps/CI_IPCIOpenElis
+       sudo rm -r /usr/share/tomcat6/webapps/CI_IPCIOpenElis
    fi		
 
-   sudo -u tomcat55 cp warRoot/openElis.war /usr/share/tomcat5.5/webapps/CI_IPCIOpenElis.war
+   sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/CI_IPCIOpenElis.war
 #end marker
 else
    echo "missing openElis.war file" 
@@ -112,4 +122,7 @@ LANG=en_US.UTF-8 ant updateDB
 wait
 
 #restart tomcat
-sudo /etc/init.d/tomcat5.5 start
+sudo /etc/init.d/tomcat6 start
+
+#build installers while we wait
+ant installers

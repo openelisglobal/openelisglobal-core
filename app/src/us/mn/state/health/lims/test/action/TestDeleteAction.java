@@ -86,7 +86,7 @@ public class TestDeleteAction extends BaseAction {
 			//System.out.println("Going to delete Test");
 			TestDAO testDAO = new TestDAOImpl();
 			testDAO.deleteData(tests);
-            TypeOfSampleUtil.clearTestCache();			
+            TypeOfSampleUtil.clearCache();
 			//System.out.println("Just deleted Test");
 			// initialize the form
 			dynaForm.initialize(mapping);

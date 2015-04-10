@@ -15,16 +15,15 @@
 */
 package us.mn.state.health.lims.analysisqaevent.valueholder;
 
-import java.sql.Date;
-
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.qaevent.valueholder.QaEvent;
+
+import java.sql.Date;
 
 public class AnalysisQaEvent extends BaseObject {
 
@@ -114,11 +113,7 @@ public class AnalysisQaEvent extends BaseObject {
 
 	public void setCompletedDate(Date completedDate) {
 		this.completedDate = completedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				completedDate, locale);
+		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(	completedDate);
 	}
 
 	public String getCompletedDateForDisplay() {

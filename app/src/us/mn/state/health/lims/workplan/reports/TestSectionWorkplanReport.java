@@ -24,7 +24,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,10 +60,17 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
 		parameterMap.put("nameOfTest", getNameOfTest());
 		parameterMap.put("nameOfPatient", getNameOfPatient());
 		parameterMap.put("labName", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName));
-        parameterMap.put("siteLogo", getSiteLogo());
-        parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
-        parameterMap.put("prefixLength", PREFIX_LENGTH );
-        parameterMap.put("SUBREPORT_DIR", reportPath);
+                parameterMap.put("accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
+                parameterMap.put("prefixLength", PREFIX_LENGTH );
+                parameterMap.put("SUBREPORT_DIR", reportPath);
+                parameterMap.put("receptionDate", StringUtil.getMessageForKey("report.receptionDate"));
+                parameterMap.put("workPlan", StringUtil.getMessageForKey("report.workPlan"));
+                parameterMap.put("appointmentDate", StringUtil.getMessageForKey("report.appointmentDate"));
+                parameterMap.put("testName", StringUtil.getMessageForKey("report.testName"));
+                parameterMap.put("date", StringUtil.getMessageForKey("report.date"));
+                parameterMap.put("from", StringUtil.getMessageForKey("report.from"));
+                parameterMap.put("appointment", StringUtil.getMessageForKey("report.appointment"));
+                parameterMap.put("about", StringUtil.getMessageForKey("report.about"));
 
 		return parameterMap;	
 	
@@ -92,13 +98,6 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
     public void setReportPath(String reportPath) {
         this.reportPath = reportPath;
         
-    }
-
-    protected String getSiteLogo(){
-        if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP")){
-            return "images" + File.separator + "HaitiLNSP.jpg";   
-        } else 
-            return null;
     }
 
     protected String getNameOfTest(){

@@ -459,7 +459,7 @@ div.dataTables_filter {
   display: inline-block;
   padding: 1px;
   margin: 2px;
-  border: 1px solid transparent;
+    border: 1px solid transparent;
   width: 65px;
 }
 .results-readonly.invalidHighlight {
@@ -467,6 +467,14 @@ div.dataTables_filter {
   border-width: 1px;
 }
 
+.confirmation{
+    border: 2px solid transparent;
+    color: #336699;
+}
+
+input.disabled-text-button {
+    color:#808080;
+}
 /***** To Be Sorted *****/
 th.leftVertical, td.leftVertical{
 	border-left-style:solid;
@@ -865,6 +873,9 @@ a.sortableheader:link, .sorthead {
   text-decoration: underline;
 }
 
+.error {
+    border-color:red ;
+}
 
 /* - - - - - - - - - - - - - - - - - - - - -
 
@@ -1001,6 +1012,21 @@ tr.rowTemplate {display: none}
   font-style: italic
 }
 
+/* for jquery drag and drop sortable */
+
+.sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; border: 2px solid silver;}
+.sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.0em; height: 16px; }
+.sortable li span { position: absolute; margin-left: -1.3em; }
+.ui-state-default_oe, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
+{ border: 1px solid #d3d3d3/*{borderColorDefault}*/;
+  background: #e6e6e6/*{bgColorDefault}*/ 50%/*{bgDefaultXPos}*/ 50%/*{bgDefaultYPos}*/ repeat-x/*{bgDefaultRepeat}*/;
+  font-weight: normal/*{fwDefault}*/;
+  color: #555555/*{fcDefault}*/;
+}
+.ui-state-defaulta_oe a, .ui-state-default a:link, .ui-state-default a:visited { color: #555555/*{fcDefault}*/; text-decoration: none; }
+#sortOrder td{ vertical-align: top; }
+#sampleTypeSortOrder td{ vertical-align: top; }
+
 /* Experimental CSS for use on updated OE forms */
 .oe-form {
   max-width: 800px;
@@ -1040,4 +1066,10 @@ tr.rowTemplate {display: none}
 input[type=radio] + label {
   margin-right: 0.5em /* Adds spacing after 1st radio button on horizontal line */
 }
+
+.altered{
+  color: #00bb00;
+}
+
+
 /* End experimental CSS for use on updated OE forms */

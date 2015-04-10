@@ -149,11 +149,7 @@ public class Analysis extends BaseObject {
 
 	public void setCompletedDate(Date completedDate) {
 		this.completedDate = completedDate;
-
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				completedDate, locale);
+		this.completedDateForDisplay = DateUtil.convertSqlDateToStringDate(	completedDate);
 	}
 
 	public String getCompletedDateForDisplay() {
@@ -184,11 +180,7 @@ public class Analysis extends BaseObject {
 
 	public void setStartedDate(Date startedDate) {
 		this.startedDate = startedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.startedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				startedDate, locale);
+		this.startedDateForDisplay = DateUtil.convertSqlDateToStringDate(startedDate);
 	}
 
 	public String getStartedDateForDisplay() {
@@ -226,11 +218,7 @@ public class Analysis extends BaseObject {
 
 	public void setPrintedDate(Date printedDate) {
 		this.printedDate = printedDate;
-
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.printedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				printedDate, locale);
+		this.printedDateForDisplay = DateUtil.convertSqlDateToStringDate(printedDate);
 	}
 
 	public String getPrintedDateForDisplay() {
@@ -252,11 +240,7 @@ public class Analysis extends BaseObject {
 
 	public void setReleasedDate(Date releasedDate) {
 		this.releasedDate = releasedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.releasedDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				releasedDate, locale);
+		this.releasedDateForDisplay = DateUtil.convertSqlDateToStringDate(releasedDate);
 	}
 
 	public String getReleasedDateForDisplay() {
@@ -286,11 +270,8 @@ public class Analysis extends BaseObject {
 
 	public void setSoNotifyReceivedDate(Date soNotifyReceivedDate) {
 		this.soNotifyReceivedDate = soNotifyReceivedDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
 		this.soNotifyReceivedDateForDisplay = DateUtil
-				.convertSqlDateToStringDate(soNotifyReceivedDate, locale);
+				.convertSqlDateToStringDate(soNotifyReceivedDate);
 	}
 
 	public String getSoNotifyReceivedDateForDisplay() {
@@ -313,11 +294,7 @@ public class Analysis extends BaseObject {
 
 	public void setSoNotifySendDate(Date soNotifySendDate) {
 		this.soNotifySendDate = soNotifySendDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.soNotifySendDateForDisplay = DateUtil
-				.convertSqlDateToStringDate(soNotifySendDate, locale);
+		this.soNotifySendDateForDisplay = DateUtil.convertSqlDateToStringDate(soNotifySendDate);
 	}
 
 	public String getSoNotifySendDateForDisplay() {
@@ -339,11 +316,7 @@ public class Analysis extends BaseObject {
 
 	public void setSoSendDate(Date soSendDate) {
 		this.soSendDate = soSendDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.soSendDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				soSendDate, locale);
+		this.soSendDateForDisplay = DateUtil.convertSqlDateToStringDate(soSendDate);
 	}
 
 	public String getSoSendDateForDisplay() {
@@ -373,11 +346,7 @@ public class Analysis extends BaseObject {
 
 	public void setSoSendEntryDate(Date soSendEntryDate) {
 		this.soSendEntryDate = soSendEntryDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.soSendEntryDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				soSendEntryDate, locale);
+		this.soSendEntryDateForDisplay = DateUtil.convertSqlDateToStringDate(soSendEntryDate);
 	}
 
 	public String getSoSendEntryDateForDisplay() {
@@ -399,11 +368,7 @@ public class Analysis extends BaseObject {
 
 	public void setSoSendReadyDate(Date soSendReadyDate) {
 		this.soSendReadyDate = soSendReadyDate;
-		// also update String date
-		String locale = SystemConfiguration.getInstance().getDefaultLocale()
-				.toString();
-		this.soSendReadyDateForDisplay = DateUtil.convertSqlDateToStringDate(
-				soSendReadyDate, locale);
+		this.soSendReadyDateForDisplay = DateUtil.convertSqlDateToStringDate(soSendReadyDate);
 	}
 
 	public String getSoSendReadyDateForDisplay() {

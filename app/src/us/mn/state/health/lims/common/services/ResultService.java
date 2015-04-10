@@ -23,6 +23,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.dao.ResultSignatureDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -51,6 +52,11 @@ public class ResultService {
 	private Result result;
 	private Test test;
 	private List<ResultLimit> resultLimit;
+    public static final String TABLE_REFERENCE_ID;
+
+    static{
+        TABLE_REFERENCE_ID = new ReferenceTablesDAOImpl().getReferenceTableByName("RESULT").getId();
+    }
 
 	public ResultService(Result result) {
 		this.result = result;
@@ -63,11 +69,11 @@ public class ResultService {
 	}
 
 	public String getTestName() {
-		return test != null ? test.getTestName() : "";
+		return TestService.getUserLocalizedTestName( test );
 	}
 
 	public String getTestDescription() {
-		return test != null ? test.getDescription() : "";
+		return TestService.getLocalizedTestNameWithType( test );
 	}
 
 	public String getSampleType() {
@@ -161,7 +167,7 @@ public class ResultService {
 	            if( resultList.size() == 1 ){
 	                reportResult = getDictEntry();
 	            }else{
-	                //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
+	                //If dictionary result it can also have a quantified result
                     List<Result> dictionaryResults = new ArrayList<Result>();
                     Result quantification = null;
                     for( Result sibResult : resultList ){

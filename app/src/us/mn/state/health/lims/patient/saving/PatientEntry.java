@@ -23,17 +23,15 @@
  */
 package us.mn.state.health.lims.patient.saving;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.beanutils.DynaBean;
-
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 
 
 public class PatientEntry extends Accessioner {
@@ -63,7 +61,7 @@ public class PatientEntry extends Accessioner {
 
     @Override
     protected void populateSampleData() throws Exception {
-    	Timestamp receivedDate = DateUtil.convertStringDatePreserveStringTimeToTimestamp(sample.getReceivedDateForDisplay(), sample.getReceivedTimeForDisplay(), 
+    	Timestamp receivedDate = DateUtil.convertStringDatePreserveStringTimeToTimestamp(sample.getReceivedDateForDisplay(), sample.getReceived24HourTimeForDisplay( ),
     																					 projectFormMapper.getReceivedDate(), projectFormMapper.getReceivedTime());
     	Timestamp collectionDate = DateUtil.convertStringDatePreserveStringTimeToTimestamp(sample.getCollectionDateForDisplay(), sample.getCollectionTimeForDisplay(),
     																					   projectFormMapper.getCollectionDate(), projectFormMapper.getCollectionTime());
