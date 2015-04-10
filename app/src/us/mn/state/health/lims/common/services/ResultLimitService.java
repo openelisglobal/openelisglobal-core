@@ -19,20 +19,20 @@ package us.mn.state.health.lims.common.services;
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.util.DAOImplFactory;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
+import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
+import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeoftestresult.dao.TypeOfTestResultDAO;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  */
@@ -253,5 +253,46 @@ public class ResultLimitService{
     @SuppressWarnings("unchecked")
     public static List<ResultLimit> getResultLimits(Test test){
         return resultLimitDAO.getAllResultLimitsForTest(test);
+    }
+
+    /**
+     * The id in the returned set of IdValuePair refers to the upper end of the age range in months
+     * It will be either a number or "Infinity"
+     * @return A list of pairs
+     */
+    public static List<IdValuePair> getPredefinedAgeRanges(){
+        List<IdValuePair> ages = new ArrayList<IdValuePair>();
+
+        List<SiteInformation> siteInformationList = new SiteInformationDAOImpl().getSiteInformationByDomainName("resultAgeRange");
+
+        for( SiteInformation info : siteInformationList){
+            String localizedName = null;
+           if("new born".equals(info.getName())){
+                localizedName = info.getName();
+            }else if( "infant".equals(info.getName())){
+                localizedName = info.getName();
+            }else if( "young child".equals(info.getName())){
+                localizedName = info.getName();
+            }else if( "child".equals(info.getName())){
+                localizedName = info.getName();
+            }else if( "adult".equals(info.getName())){
+                localizedName = info.getName();
+            }
+
+            ages.add(new IdValuePair(info.getValue(), localizedName));
+        }
+
+        Collections.sort(ages, new Comparator<IdValuePair>() {
+            @Override
+            public int compare(IdValuePair o1, IdValuePair o2) {
+                if( "Infinity".equals(o1.getId())){ return 1;  }
+
+                if( "Infinity".equals(o2.getId())){ return -1;  }
+
+                return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
+            }
+        });
+
+        return ages;
     }
 }

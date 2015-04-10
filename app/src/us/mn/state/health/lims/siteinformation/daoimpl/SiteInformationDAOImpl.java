@@ -86,12 +86,11 @@ public class SiteInformationDAOImpl extends BaseDAOImpl implements SiteInformati
 	public void updateData(SiteInformation siteInformation) throws LIMSRuntimeException {
 		
 		SiteInformation oldData = readSiteInformation(siteInformation.getId());
-		SiteInformation newData = siteInformation;
 
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 
-			auditDAO.saveHistory(newData,oldData, siteInformation.getSysUserId(), IActionConstants.AUDIT_TRAIL_UPDATE, "SITE_INFORMATION");
+			auditDAO.saveHistory(siteInformation,oldData, siteInformation.getSysUserId(), IActionConstants.AUDIT_TRAIL_UPDATE, "SITE_INFORMATION");
 		}  catch (Exception e) {
 			LogEvent.logError("SiteInformationDAOImpl","AuditTrail updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in SiteInformation AuditTrail updateData()", e);
@@ -127,7 +126,7 @@ public class SiteInformationDAOImpl extends BaseDAOImpl implements SiteInformati
 
 	@SuppressWarnings("unchecked")
 	public List<SiteInformation> getAllSiteInformation() throws LIMSRuntimeException {
-		List<SiteInformation> list = null;
+		List<SiteInformation> list;
 		try {
 			String sql = "from SiteInformation";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -166,13 +165,13 @@ public class SiteInformationDAOImpl extends BaseDAOImpl implements SiteInformati
 	}
 
 	public SiteInformation readSiteInformation(String idString) {
-		SiteInformation recoveredSiteInformation = null;
+		SiteInformation recoveredSiteInformation;
 		try {
 			recoveredSiteInformation = (SiteInformation)HibernateUtil.getSession().get(SiteInformation.class, idString);
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			LogEvent.logError("SiteInformationDAOImpl","readSiteInformation()",e.toString());
+			LogEvent.logError("SiteInformationDAOImpl", "readSiteInformation()", e.toString());
 			throw new LIMSRuntimeException("Error in SiteInformation readSiteInformation()", e);
 		}			
 		
@@ -234,6 +233,21 @@ public class SiteInformationDAOImpl extends BaseDAOImpl implements SiteInformati
 			handleException(e, "getSiteInformationById");
 		}
 		
+		return null;
+	}
+
+	public List<SiteInformation> getSiteInformationByDomainName(String domainName) {
+		String sql = "From SiteInformation si where si.domain.name = :domainName";
+		try{
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setString("domainName", domainName);
+			List<SiteInformation> list = query.list();
+			closeSession();
+			return list;
+		}catch (HibernateException e){
+			handleException(e, "getSiteInformationByDomainName");
+		}
+
 		return null;
 	}
 }
