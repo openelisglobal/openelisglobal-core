@@ -108,6 +108,10 @@
                 $jq(".sexRange_" + index).show();
             }else{
                 $jq(".sexRange_" + index).hide();
+                $jq( "#lowNormal_G_" + index).val("-Infinity");
+                $jq( "#highNormal_G_" + index).val("Infinity");
+                $jq( "#lowNormal_G_" + index).removeClass("error");
+                $jq( "#highNormal_G_" + index).removeClass("error");
             }
         }
 
@@ -297,11 +301,16 @@
 
         function normalRangeCheck( index, edge ){
             var lowNormalValue, highNormalValue, lowValidValue, highValidValue;
+            var lowGenderNormalValue, highGenderNormalValue;
+            var lowGenderNormal, highGenderNormal;
             var lowNormal = $jq( "#lowNormal_" + index);
             var highNormal = $jq( "#highNormal_" + index);
             var lowValid = $jq("#lowValid");
             var highValid = $jq("#highValid");
+            var checkGenderValues = $jq("#genderCheck_" + index).is(':checked');
 
+            //check to see if the normal ranges are numeric (Except for infinity) and then compare them to make sure they
+            //are ordered correctly.
             lowNormal.removeClass("error");
             lowNormalValue = +lowNormal.val();
             if( lowNormalValue != "-Infinity" &&
@@ -329,7 +338,38 @@
                 }
             }
 
+            if( checkGenderValues) {
+                lowGenderNormal = $jq( "#lowNormal_G_" + index);
+                highGenderNormal = $jq( "#highNormal_G_" + index);
+                lowGenderNormal.removeClass("error");
+                lowGenderNormalValue = +lowGenderNormal.val();
+                if (lowGenderNormalValue != "-Infinity" &&
+                        lowGenderNormalValue != lowGenderNormal.val()) {
+                    lowGenderNormal.addClass("error");
+                    alert("Low normal value must be a number or '-Infinity'");
+                    return;
+                }
 
+                highGenderNormal.removeClass("error");
+                highGenderNormalValue = +highGenderNormal.val();
+                if (highGenderNormalValue != "Infinity" &&
+                        highGenderNormalValue != highGenderNormal.val()) {
+                    highGenderNormal.addClass("error");
+                    alert("highGender normal value must be a number or 'Infinity'");
+                    return;
+                }
+
+                if (highGenderNormalValue != "Infinity" && lowGenderNormalValue != "-Infinity") {
+                    if (highGenderNormalValue <= lowGenderNormalValue) {
+                        highGenderNormal.addClass("error");
+                        lowGenderNormal.addClass("error");
+                        alert("Low normal value must be less than high normal value");
+                        return;
+                    }
+                }
+            }
+
+            //below we are testing against the valid values
             lowValidValue = +lowValid.val();
             if( lowValidValue != "-Infinity" &&
                     lowValidValue != lowValid.val() ){
@@ -342,7 +382,8 @@
                 return;
             }
 
-            if( lowValidValue == "-Infinity" && highValidValue == "Infinity" ){
+
+            if( lowValidValue == "-Infinity" && highValidValue == "Infinity"){
                 return;
             }
 
@@ -356,6 +397,20 @@
                 highNormal.addClass("error");
                 alert( "high normal range must be less than or equal to the high valid range");
                 return;
+            }
+
+            if( checkGenderValues) {
+                if (lowValidValue != "-Infinity" && lowGenderNormalValue < lowValidValue) {
+                    lowGenderNormal.addClass("error");
+                    alert("Low normal range must be greater than or equal to the low valid range");
+                    return;
+                }
+
+                if (highValidValue != "Infinity" && highGenderNormalValue > highValidValue) {
+                    highGenderNormal.addClass("error");
+                    alert("high normal range must be less than or equal to the high valid range");
+                    return;
+                }
             }
         }
 
@@ -434,7 +489,6 @@
                   step = "step3Numeric";
                   makeSortListsReadOnly();
                   $jq("#normalRangeDiv").show();
-                  $jq(".confirmHide").hide();  //change
                   $jq("#sampleTypeSelectionDiv").hide();
               }
             }
@@ -727,7 +781,7 @@
         <div id="normalRangeTemplate" style="display:none;" >
             <table>
                 <tr class="row_index">
-                    <td ><input type="hidden" class="rowKey" value="index" /><input type="checkbox" onchange="genderMatersForRange(this, 'index')"></td>
+                    <td ><input type="hidden" class="rowKey" value="index" /><input id="genderCheck_index" type="checkbox" onchange="genderMatersForRange(this, 'index')"></td>
                     <td >
                         <span class="sexRange_index" style="display: none">
                             Male
@@ -760,8 +814,8 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><input type="text" value="-Infinity" size="10"></td>
-                    <td><input type="text" value="Infinity" size="10"></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_index" class="lowNormal" onchange="normalRangeCheck('index', 'low');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_G_index" class="highNormal" onchange="normalRangeCheck('index', 'low');"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -786,7 +840,7 @@
                     <td colspan="2"></td>
                 </tr>
                 <tr class="row_0">
-                    <td ><input type="hidden" class="rowKey" value="0" /><input type="checkbox" onchange="genderMatersForRange(this, '0')"></td>
+                    <td ><input type="hidden" class="rowKey" value="0" /><input id="genderCheck_0" type="checkbox" onchange="genderMatersForRange(this, '0')"></td>
                     <td >
                         <span class="sexRange_0" style="display: none">
                             Male
@@ -818,8 +872,8 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><input type="text" value="-Infinity" size="10"></td>
-                    <td><input type="text" value="Infinity" size="10"></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_0" class="lowNormal" onchange="normalRangeCheck('0', 'low');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_G_0" class="highNormal" onchange="normalRangeCheck('0', 'high');"></td>
                     <td></td>
                     <td></td>
                     <td></td>
