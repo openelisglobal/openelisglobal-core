@@ -45,7 +45,7 @@
 
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/commons-collections-2.1.1.jar"/>
 
-        <pathelement location="${projectroot}/WebContent/WEB-INF/lib/commons-collections-2.1.jar"/>
+        <pathelement location="${projectroot}/WebContent/WEB-INF/lib/commons-collections4-4.0.jar"/>
 
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/commons-digester.jar"/>
 

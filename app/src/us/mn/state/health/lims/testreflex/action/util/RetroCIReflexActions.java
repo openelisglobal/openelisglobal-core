@@ -48,6 +48,7 @@ import java.util.Map;
 
 public class RetroCIReflexActions extends ReflexAction {
 
+    private static TestDAO testDAO = new TestDAOImpl();
 	private static final String HIV_D = "HIV D";
 	private static final String HIV_2 = "HIV 2";
 	private static final String HIV_1 = "HIV 1";
@@ -55,6 +56,9 @@ public class RetroCIReflexActions extends ReflexAction {
 	private static final String HIV_INDETERMINATE = "HIV Indeterminate";
 	private static final String HIV_INVALID = "HIV Invalid";
 	private static final String HIV_NAME = "hivStatus";
+    private static final String VIRONOSTIKA = "Vironostika";
+    private static final String INNOLIA = "Innolia";
+    private static final String VIRONOSTIKA_OR_INNOLIA = "Vir. or Innolia";
 	private static String OBSERVATION_HIV_STATUS_ID;
 	private static Analyte ANALYTE_CONCLUSION;
 	private static Analyte ANALYTE_CD4_CT_GENERATED;
@@ -107,20 +111,14 @@ public class RetroCIReflexActions extends ReflexAction {
 		ANALYTE_CD4_CT_GENERATED = analyteDAO.getAnalyteByName(analyte, false);
 
 		CD4_RESULT_TEST_DEPENDANCIES = new ArrayList<Integer>();
-		TestDAO testDAO = new TestDAOImpl();
-		Test test = new Test();
-		test.setTestName("GB");
-		test = testDAO.getTestByName(test);
-		CD4_RESULT_TEST_DEPENDANCIES.add(Integer.parseInt(test.getId()));
-		test.setTestName("Lymph %");
-		test = testDAO.getTestByName(test);
-		CD4_RESULT_TEST_DEPENDANCIES.add(Integer.parseInt(test.getId()));
-		test.setTestName("CD4 percentage count");
-		test = testDAO.getTestByName(test);
-		CD4_RESULT_TEST_DEPENDANCIES.add(Integer.parseInt(test.getId()));
 
-		test.setTestName("CD4 absolute count");
-		test = testDAO.getTestByName(test);
+		Test test = testDAO.getTestByName("GB");
+		CD4_RESULT_TEST_DEPENDANCIES.add(Integer.parseInt(test.getId()));
+		test = testDAO.getTestByName("Lymph %");
+		CD4_RESULT_TEST_DEPENDANCIES.add(Integer.parseInt(test.getId()));
+		test = testDAO.getTestByName("CD4 percentage count");
+		CD4_RESULT_TEST_DEPENDANCIES.add(Integer.parseInt(test.getId()));
+		test = testDAO.getTestByName("CD4 absolute count");
 
 		TestResultDAO testResultDAO = new TestResultDAOImpl();
 		@SuppressWarnings("unchecked")
@@ -144,7 +142,13 @@ public class RetroCIReflexActions extends ReflexAction {
 
 			} else if (action.equals("Calc CD4")) {
 				finalResult = getCD4CalculationResult(result.getAnalysis().getSampleItem().getSample());
-			}
+			} else if( action.equals(VIRONOSTIKA_OR_INNOLIA)){
+                Test test = testDAO.getTestByName(VIRONOSTIKA);
+                if( !test.isActive()){
+                    test = testDAO.getTestByName(INNOLIA);
+                }
+                createReflexedAnalysis(test);
+            }
 		}
 
 	}

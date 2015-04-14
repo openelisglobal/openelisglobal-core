@@ -61,11 +61,10 @@ import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.*;
 
-public class ResultsValidationRetroCUtility {
+public class ResultsValidationRetroCIUtility {
 
 
 
@@ -236,7 +235,7 @@ public class ResultsValidationRetroCUtility {
 		item.setAccessionNumber( resultItem.getAccessionNumber() );
 		item.setResult( new Result() );
 		item.getResult().setValue( "0" );
-		item.setResultType( ResultType.NUMERIC.getDBValue() );
+		item.setResultType( TypeOfTestResultService.ResultType.NUMERIC.getCharacterValue() );
 		item.setTestSortNumber( "0" );
 		return item;
 	}
@@ -344,7 +343,7 @@ public class ResultsValidationRetroCUtility {
 				List<ResultValidationItem> testResultItemList = getResultItemFromAnalysis(analysis);
 				//NB.  The resultValue is filled in during getResultItemFromAnalysis as a side effect of setResult
 				for (ResultValidationItem validationItem : testResultItemList) {
-					if (ResultType.isDictionaryVariant( validationItem.getResultType() )) {
+					if (TypeOfTestResultService.ResultType.isDictionaryVariant( validationItem.getResultType() )) {
 						dictionary = new Dictionary();
 						String resultValue = null;
 						try {
@@ -376,7 +375,7 @@ public class ResultsValidationRetroCUtility {
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
 
 		if (valid == null) {
-			valid = getSampleRecordStatus( sample ) == StatusService.RecordStatus.ValidationRegistration;
+			valid = getSampleRecordStatus( sample ) != RecordStatus.NotRegistered;
 			accessionToValidMap.put(sample.getAccessionNumber(), valid);
 		}
 
@@ -503,14 +502,14 @@ public class ResultsValidationRetroCUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && testResults.size() > 0 && ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
+		if (testResults != null && testResults.size() > 0 && TypeOfTestResultService.ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 			values.add(new IdValuePair("0", ""));
 
 			for (TestResult testResult : testResults) {
 				// Note: result group use to be a criteria but was removed, if
 				// results are not as expected investigate
-				if ( ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
+				if ( TypeOfTestResultService.ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
 					dictionary = dictionaryDAO.getDataForId(testResult.getValue());
 					String displayValue = dictionary.getLocalizedName();
 
@@ -528,7 +527,7 @@ public class ResultsValidationRetroCUtility {
 
 
 	private String getTestResultType(List<TestResult> testResults) {
-		String testResultType = ResultType.NUMERIC.getDBValue();
+		String testResultType = TypeOfTestResultService.ResultType.NUMERIC.getCharacterValue();
 
 		if (testResults != null && testResults.size() > 0) {
 			testResultType = testResults.get(0).getTestResultType();
@@ -722,7 +721,7 @@ public class ResultsValidationRetroCUtility {
             if( !multiResultEntered){
                 AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
                 analysisResultList.add(convertedItem);
-                if( ResultType.isMultiSelectVariant( testResultItem.getResultType() )){
+                if( TypeOfTestResultService.ResultType.isMultiSelectVariant( testResultItem.getResultType() )){
                     multiResultEntered = true;
                     currentMultiSelectAnalysisItem = convertedItem;
                 }
@@ -774,7 +773,9 @@ public class ResultsValidationRetroCUtility {
 		analysisResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
 		analysisResultItem.setTestName(testName);
 		analysisResultItem.setUnits(testUnits);
-		analysisResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		if (!(testResultItem.getAnalysis() == null)) {
+			analysisResultItem.setAnalysisId(testResultItem.getAnalysis().getId());
+		}
 		analysisResultItem.setPastNotes(testResultItem.getPastNotes());
 		analysisResultItem.setResultId(testResultItem.getResultId());
 		analysisResultItem.setResultType(testResultItem.getResultType());
@@ -783,13 +784,13 @@ public class ResultsValidationRetroCUtility {
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
 		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
         if( result != null){
-            if( ResultType.isMultiSelectVariant( testResultItem.getResultType() ) ){
+            if( TypeOfTestResultService.ResultType.isMultiSelectVariant( testResultItem.getResultType() ) && !(testResultItem.getAnalysis() == null) ){
                 analysisResultItem.setMultiSelectResultValues( new AnalysisService( testResultItem.getAnalysis() ).getJSONMultiSelectResults() );
             }else{
                 analysisResultItem.setResult( getFormattedResult( testResultItem ) );
             }
 
-            if( ResultType.NUMERIC.matches( testResultItem.getResultType() )){
+            if( TypeOfTestResultService.ResultType.NUMERIC.matches( testResultItem.getResultType() )){
             	if (result.getMinNormal() == null || result.getMaxNormal() == null) {
             		analysisResultItem.setSignificantDigits(result.getSignificantDigits());
             	} else {
@@ -799,8 +800,10 @@ public class ResultsValidationRetroCUtility {
         }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
-		analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
-                StatusService.getInstance().matches( testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected ));
+		if (!(testResultItem.getAnalysis() == null)) {
+			analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
+					StatusService.getInstance().matches( testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected ));
+		}
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
         analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
@@ -851,10 +854,7 @@ public class ResultsValidationRetroCUtility {
 	}
 
 	private String getTestId(String testName) {
-		Test test = new Test();
-		test.setTestName(testName);
-		test = testDAO.getTestByName(test);
-
+		Test test = testDAO.getTestByName(testName);
 		return test.getId();
 	}
 

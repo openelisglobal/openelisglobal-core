@@ -19,6 +19,7 @@ package us.mn.state.health.lims.sample.util.CI;
 
 import java.util.*;
 
+import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.patient.valueholder.ObservationData;
@@ -37,8 +38,9 @@ public class RTNFormMapper extends BaseProjectFormMapper implements IProjectForm
 		List<Test> testList = new ArrayList<Test>();
 
 		if (projectData.getSerologyHIVTest()){
-			testList.add(createTest("Murex"));
-			testList.add(createTest("Integral"));
+            CollectionUtils.addIgnoreNull(testList, createTest("Vironostika", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Murex", true));
+			CollectionUtils.addIgnoreNull(testList, createTest("Integral", true));
 		}
 
 		return testList;

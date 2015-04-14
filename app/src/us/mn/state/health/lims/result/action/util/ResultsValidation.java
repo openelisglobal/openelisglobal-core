@@ -10,6 +10,7 @@ import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.DateValidationProvider;
 import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -17,7 +18,6 @@ import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -146,7 +146,7 @@ public class ResultsValidation {
 
     private boolean resultHasChanged( TestResultItem item ){
 
-        if( TypeOfTestResult.ResultType.isMultiSelectVariant( item.getResultType() )){
+        if( TypeOfTestResultService.ResultType.isMultiSelectVariant( item.getResultType() )){
             List<Result> resultList = new AnalysisService( item.getAnalysisId() ).getResults();
             ArrayList<String> dictionaryIds = new ArrayList<String>( resultList.size() );
             for(Result result : resultList){

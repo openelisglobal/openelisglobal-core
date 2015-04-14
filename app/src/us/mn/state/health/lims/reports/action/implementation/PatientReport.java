@@ -80,7 +80,6 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
@@ -512,7 +511,7 @@ public abstract class PatientReport extends Report{
     protected String getResultFlag( Result result, String imbed, ClinicalPatientData data ){
         String flag = "";
         try{
-            if( ResultType.NUMERIC.matches( result.getResultType() ) && !GenericValidator.isBlankOrNull( result.getValue() ) ){
+            if( TypeOfTestResultService.ResultType.NUMERIC.matches( result.getResultType() ) && !GenericValidator.isBlankOrNull( result.getValue() ) ){
                 if( result.getMinNormal() != null & result.getMaxNormal() != null && ( result.getMinNormal() != 0.0 || result.getMaxNormal() != 0.0 ) ){
                     if( Double.valueOf( result.getValue() ) < result.getMinNormal() ){
                         flag = "B";
@@ -520,7 +519,7 @@ public abstract class PatientReport extends Report{
                         flag = "E";
                     }
                 }
-            }else if( ResultType.isDictionaryVariant( result.getResultType() )){
+            }else if( TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() )){
                 boolean isAbnormal;
 
                 if( data == null){
@@ -569,7 +568,7 @@ public abstract class PatientReport extends Report{
             //If only one result just get it and get out
             if( resultList.size() == 1 ){
                 Result result = resultList.get( 0 );
-                if( ResultType.isDictionaryVariant( result.getResultType() ) ){
+                if( TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() ) ){
                     Dictionary dictionary = new Dictionary();
                     dictionary.setId( result.getValue() );
                     dictionaryDAO.getData( dictionary );
@@ -583,20 +582,20 @@ public abstract class PatientReport extends Report{
                 }else{
                     reportResult = new ResultService( result ).getResultValue( true );
                     //TODO - how is this used.  Selection types can also have UOM and reference ranges
-                    data.setHasRangeAndUOM( ResultType.NUMERIC.matches( result.getResultType() ) );
+                    data.setHasRangeAndUOM( TypeOfTestResultService.ResultType.NUMERIC.matches( result.getResultType() ) );
                 }
             }else{
                 //If multiple results it can be a quantified result, multiple results with quantified other results or it can be a conclusion
                 ResultService resultService = new ResultService( resultList.get( 0 ) );
 
-                if( ResultType.DICTIONARY.matches(  resultService.getTestType()) ){
+                if( TypeOfTestResultService.ResultType.DICTIONARY.matches(  resultService.getTestType()) ){
                     data.setAbnormalResult( resultService.isAbnormalDictionaryResult() );
                     List<Result> dictionaryResults = new ArrayList<Result>();
                     Result quantification = null;
                     for( Result sibResult : resultList ){
-                        if( ResultType.DICTIONARY.matches( sibResult.getResultType() ) ){
+                        if( TypeOfTestResultService.ResultType.DICTIONARY.matches( sibResult.getResultType() ) ){
                             dictionaryResults.add( sibResult );
-                        }else if( ResultType.ALPHA.matches( sibResult.getResultType() ) && sibResult.getParentResult() != null ){
+                        }else if( TypeOfTestResultService.ResultType.ALPHA.matches( sibResult.getResultType() ) && sibResult.getParentResult() != null ){
                             quantification = sibResult;
                         }
                     }
@@ -614,7 +613,7 @@ public abstract class PatientReport extends Report{
                             }
                         }
                     }
-                }else if( ResultType.isMultiSelectVariant( resultService.getTestType()) ){
+                }else if( TypeOfTestResultService.ResultType.isMultiSelectVariant( resultService.getTestType()) ){
                     Dictionary dictionary = new Dictionary();
                     StringBuilder multiResult = new StringBuilder();
 
@@ -631,7 +630,7 @@ public abstract class PatientReport extends Report{
 
                     Result quantifiedResult = null;
                     for( Result subResult : resultList ){
-                        if( ResultType.ALPHA.matches( subResult.getResultType() ) ){
+                        if( TypeOfTestResultService.ResultType.ALPHA.matches( subResult.getResultType() ) ){
                             quantifiedResult = subResult;
                             resultList.remove( subResult );
                             break;
@@ -820,7 +819,7 @@ public abstract class PatientReport extends Report{
         if( value == null ){
             return reportResult;
         }
-        if( ResultType.isDictionaryVariant( type ) ){
+        if( TypeOfTestResultService.ResultType.isDictionaryVariant( type ) ){
             if( result.getValue() != null && !"null".equals( result.getValue() )){
                 Dictionary dictionary = new Dictionary();
                 dictionary.setId( result.getValue() );

@@ -16,6 +16,7 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -24,16 +25,17 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationPaging;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
-import us.mn.state.health.lims.resultvalidation.util.ResultsValidationRetroCUtility;
+import us.mn.state.health.lims.resultvalidation.util.ResultsValidationRetroCIUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultValidationRetroCAction extends BaseResultValidationRetroCAction {
+public class ResultValidationRetroCIAction extends BaseResultValidationRetroCIAction {
 
     @Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -52,8 +54,10 @@ public class ResultValidationRetroCAction extends BaseResultValidationRetroCActi
 
 			// Initialize the form.
 			dynaForm.initialize(mapping);
+			PropertyUtils.setProperty(dynaForm, "testSectionsByName", new ArrayList<IdValuePair>()); //required on jsp page
+			PropertyUtils.setProperty(dynaForm, "displayTestSections", false);
 
-            ResultsValidationRetroCUtility resultsValidationUtility = new ResultsValidationRetroCUtility();
+            ResultsValidationRetroCIUtility resultsValidationUtility = new ResultsValidationRetroCIUtility();
 			setRequestType(testSectionName);
 
 			if (!GenericValidator.isBlankOrNull(testSectionName)) {

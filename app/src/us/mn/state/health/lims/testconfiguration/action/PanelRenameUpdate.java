@@ -13,7 +13,7 @@
  *
  * Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
  */
-package us.mn.state.health.lims.test.action;
+package us.mn.state.health.lims.testconfiguration.action;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -23,23 +23,18 @@ import org.hibernate.Transaction;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.DisplayListService;
-import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.localization.daoimpl.LocalizationDAOImpl;
 import us.mn.state.health.lims.localization.valueholder.Localization;
-import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.panel.dao.PanelDAO;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author diane benz
- *         <p/>
- *         To change this generated comment edit the template variable "typecomment":
- *         Window>Preferences>Java>Templates. To enable and disable the creation of type
- *         comments go to Window>Preferences>Java>Code Generation.
- */
-public class TestRenameUpdate extends BaseAction{
+public class PanelRenameUpdate extends BaseAction{
+
 
     protected ActionForward performAction( ActionMapping mapping,
                                            ActionForm form, HttpServletRequest request,
@@ -48,37 +43,35 @@ public class TestRenameUpdate extends BaseAction{
         String forward = FWD_SUCCESS;
 
         BaseActionForm dynaForm = ( BaseActionForm ) form;
-        String testId = dynaForm.getString( "testId" );
+        String panelId = dynaForm.getString( "panelId" );
         String nameEnglish = dynaForm.getString( "nameEnglish" );
         String nameFrench = dynaForm.getString( "nameFrench" );
-        String reportNameEnglish = dynaForm.getString( "reportNameEnglish" );
-        String reportNameFrench = dynaForm.getString( "reportNameFrench" );
         String userId = getSysUserId( request );
 
-        updateTestNames( testId, nameEnglish, nameFrench, reportNameEnglish, reportNameFrench, userId );
+        updatePanelNames(panelId, nameEnglish, nameFrench, userId);
 
+        //Refresh panel names
+        DisplayListService.getFreshList( DisplayListService.ListType.PANELS );
         return mapping.findForward( forward );
     }
 
-    private void updateTestNames( String testId, String nameEnglish, String nameFrench, String reportNameEnglish, String reportNameFrench, String userId ){
-        Test test = new TestService( testId ).getTest();
+    private void updatePanelNames(String panelId, String nameEnglish, String nameFrench, String userId){
+        PanelDAO panelDAO = new PanelDAOImpl();
+        Panel panel = panelDAO.getPanelById(panelId);
 
-        if( test != null ){
+        if( panel != null ){
 
-            Localization name = test.getLocalizedTestName();
-            Localization reportingName = test.getLocalizedReportingName();
+            Localization name = panel.getLocalization();
+
             name.setEnglish( nameEnglish.trim() );
             name.setFrench( nameFrench.trim() );
             name.setSysUserId( userId );
-            reportingName.setEnglish( reportNameEnglish.trim() );
-            reportingName.setFrench( reportNameFrench.trim() );
-            reportingName.setSysUserId( userId );
 
             Transaction tx = HibernateUtil.getSession().beginTransaction();
 
             try{
                 new LocalizationDAOImpl().updateData( name );
-                new LocalizationDAOImpl().updateData( reportingName );
+
                 tx.commit();
             }catch( HibernateException e ){
                 tx.rollback();
@@ -86,12 +79,7 @@ public class TestRenameUpdate extends BaseAction{
                 HibernateUtil.closeSession();
             }
 
-
         }
-
-        //Refresh test names
-        DisplayListService.getFreshList( DisplayListService.ListType.ALL_TESTS );
-        DisplayListService.getFreshList( DisplayListService.ListType.ORDERABLE_TESTS );
     }
 
     protected String getPageTitleKey(){

@@ -38,7 +38,6 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,8 +63,8 @@ public class ResultSaveService {
         List<Result> results = new ArrayList<Result>();
         boolean isQualifiedResult = serviceBean.isHasQualifiedResult();
 
-        if( ResultType.MULTISELECT.matches( serviceBean.getResultType() ) ||
-                ResultType.CASCADING_MULTISELECT.matches( serviceBean.getResultType() )){
+        if( TypeOfTestResultService.ResultType.MULTISELECT.matches( serviceBean.getResultType() ) ||
+                TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.matches( serviceBean.getResultType() )){
 
 
             if( !GenericValidator.isBlankOrNull( serviceBean.getMultiSelectResultValues() )){
@@ -102,7 +101,7 @@ public class ResultSaveService {
                 }
             }
 
-            if(ResultType.DICTIONARY.matches(serviceBean.getResultType()) || isQualifiedResult){
+            if(TypeOfTestResultService.ResultType.DICTIONARY.matches(serviceBean.getResultType()) || isQualifiedResult){
                 setTestResultsForDictionaryResult(serviceBean.getTestId(), serviceBean.getResultValue(), result);  //support qualified result
             }else{
                 List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( serviceBean.getTestId() );
@@ -237,7 +236,6 @@ public class ResultSaveService {
 
     private void setNewResultValues(ResultSaveBean serviceBean, Result result){
         result.setAnalysis(analysis);
-        result.setAnalysisId(analysis.getId());
         result.setIsReportable(serviceBean.getReportable());
         result.setResultType(serviceBean.getResultType());
         result.setMinNormal(serviceBean.getLowerNormalRange());

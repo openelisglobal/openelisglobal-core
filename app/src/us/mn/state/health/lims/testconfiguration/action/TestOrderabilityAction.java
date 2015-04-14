@@ -14,7 +14,7 @@
  * Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
  */
 
-package us.mn.state.health.lims.test.action;
+package us.mn.state.health.lims.testconfiguration.action;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
@@ -26,6 +26,7 @@ import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.test.beanItems.TestActivationBean;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,31 +35,25 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class TestActivationAction extends BaseAction {
+public class TestOrderabilityAction extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        PropertyUtils.setProperty(form, "activeTestList", createTestList(true));
-        PropertyUtils.setProperty(form, "inactiveTestList", createTestList(false));
+        PropertyUtils.setProperty(form, "orderableTestList", createTestList());
 
         return mapping.findForward(FWD_SUCCESS);
     }
 
-    private List<TestActivationBean> createTestList(boolean active) {
+    private List<TestActivationBean> createTestList() {
         ArrayList<TestActivationBean> testList = new ArrayList<TestActivationBean>();
 
-        List<IdValuePair> sampleTypeList = DisplayListService.getList(active ? DisplayListService.ListType.SAMPLE_TYPE_ACTIVE : DisplayListService.ListType.SAMPLE_TYPE_INACTIVE);
-
-        //if not active we use alphabetical ordering, the default is display order
-        if( !active){
-          IdValuePair.sortByValue( sampleTypeList );
-        }
+        List<IdValuePair> sampleTypeList = DisplayListService.getList( DisplayListService.ListType.SAMPLE_TYPE_ACTIVE );
 
         for( IdValuePair pair : sampleTypeList){
             TestActivationBean bean = new TestActivationBean();
 
-            List<Test> tests = TestService.getTestsForSampleType(pair.getId());
-            List<IdValuePair> activeTests = new ArrayList<IdValuePair>();
-            List<IdValuePair> inactiveTests = new ArrayList<IdValuePair>();
+            List<Test> tests = TypeOfSampleUtil.getActiveTestsBySampleTypeId(pair.getId(), false);
+            List<IdValuePair> orderableTests = new ArrayList<IdValuePair>();
+            List<IdValuePair> unorderableTests = new ArrayList<IdValuePair>();
 
             //initial ordering will be by display order.  Inactive tests will then be re-ordered alphabetically
             Collections.sort(tests, new Comparator<Test>() {
@@ -69,18 +64,17 @@ public class TestActivationAction extends BaseAction {
             });
 
             for( Test test : tests) {
-                if( test.isActive()) {
-                    activeTests.add(new IdValuePair(test.getId(), TestService.getUserLocalizedTestName(test)));
+                if( test.getOrderable()) {
+                     orderableTests.add(new IdValuePair(test.getId(), TestService.getUserLocalizedTestName(test)));
                 }else{
-                    inactiveTests.add(new IdValuePair(test.getId(), TestService.getUserLocalizedTestName(test)));
+                    unorderableTests.add(new IdValuePair(test.getId(), TestService.getUserLocalizedTestName(test)));
                 }
             }
 
-            IdValuePair.sortByValue( inactiveTests);
 
-            bean.setActiveTests(activeTests);
-            bean.setInactiveTests(inactiveTests);
-            if( !activeTests.isEmpty() || !inactiveTests.isEmpty()) {
+            bean.setActiveTests( orderableTests);
+            bean.setInactiveTests(unorderableTests);
+            if( ! orderableTests.isEmpty() || !unorderableTests.isEmpty()) {
                 bean.setSampleType(pair);
                 testList.add(bean);
             }

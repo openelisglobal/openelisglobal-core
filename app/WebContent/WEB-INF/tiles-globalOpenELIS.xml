@@ -282,18 +282,51 @@
     </definition>
 
     <definition name="testManagementConfigDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testManagement.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testManagement.jsp"/>
     </definition>
 
     <definition name="testRenameDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testRename.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testRename.jsp"/>
+    </definition>
+
+    <definition name="panelRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/panelRename.jsp"/>
     </definition>
 
     <definition name="testActivationDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testActivation.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testActivation.jsp"/>
     </definition>
 
-	<definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
+    <definition name="testOrderabilityDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testOrderability.jsp"/>
+    </definition>
+
+    <definition name="testAddDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testAdd.jsp"/>
+    </definition>
+
+    <definition name="testCatalogDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testCatalog.jsp"/>
+    </definition>
+
+    <definition name="testSectionManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionManagement.jsp" />
+    </definition>
+
+    <definition name="testSectionCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionCreate.jsp" />
+    </definition>
+
+    <definition name="testSectionOrderDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionOrder.jsp" />
+    </definition>
+
+    <definition name="testSectionAssignDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionAssign.jsp" />
+    </definition>
+
+
+    <definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
     	<put name="body" value="/pages/userrole/userRoleMenu.jsp"/>
     </definition>
 

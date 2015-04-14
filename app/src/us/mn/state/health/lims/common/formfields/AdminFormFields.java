@@ -70,14 +70,12 @@ public class AdminFormFields {
 		SystemUserSectionMenu,
 		SystemUserModuleMenu,
 		UnifiedSystemUserMenu,
-		OpenReports,
 		TestUsageAggregatation,
 		RESULT_REPORTING_CONFIGURATION,
 		PRINTED_REPORTS_CONFIGURATION,
 		WORKPLAN_CONFIGURATION,
 		NON_CONFORMITY_CONFIGURATION,
         PATIENT_ENTRY_CONFIGURATION,
-        TEST_MANAGEMENT
 	}
 
 	private static AdminFormFields instance = null;

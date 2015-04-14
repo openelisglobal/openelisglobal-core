@@ -74,7 +74,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 
 		String success = VALID;
 
-		List<Test> tests = TypeOfSampleUtil.getTestListBySampleTypeId(sampleType, true);
+		List<Test> tests = TypeOfSampleUtil.getActiveTestsBySampleTypeId(sampleType, true);
 
 		Collections.sort(tests, new Comparator<Test>(){
 			@Override
@@ -105,6 +105,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
         if( isVariableTypeOfSample){
             xml.append( "<variableSampleType/>" );
         }
+		XMLUtil.appendKeyValue("sampleTypeId", sampleType, xml);
 		addTests(tests, xml);
 
 		List<TypeOfSamplePanel> panelList = getPanelList(sampleType);

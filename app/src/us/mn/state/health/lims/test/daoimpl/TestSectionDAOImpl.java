@@ -85,7 +85,6 @@ public class TestSectionDAOImpl extends BaseDAOImpl implements TestSectionDAO {
 	public boolean insertData(TestSection testSection) throws LIMSRuntimeException {
 		
 		try {
-			// bugzilla 1482 throw Exception if record already exists
 			if (duplicateTestSectionExists(testSection)) {
 				throw new LIMSDuplicateRecordException(
 						"Duplicate record exists for "
@@ -94,12 +93,8 @@ public class TestSectionDAOImpl extends BaseDAOImpl implements TestSectionDAO {
 			
 			String id = (String)HibernateUtil.getSession().save(testSection);
 			testSection.setId(id);
-			
-			//bugzilla 1824 inserts will be logged in history table
-			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
-			String sysUserId = testSection.getSysUserId();
-			String tableName = "TEST_SECTION";
-			auditDAO.saveNewHistory(testSection,sysUserId,tableName);
+
+            new AuditTrailDAOImpl().saveNewHistory(testSection,testSection.getSysUserId(),"TEST_SECTION");
 			
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
@@ -429,32 +424,23 @@ public class TestSectionDAOImpl extends BaseDAOImpl implements TestSectionDAO {
 	private boolean duplicateTestSectionExists(TestSection testSection) throws LIMSRuntimeException {
 		try {
 
-			// not case sensitive hemolysis and Hemolysis are considered
-			// duplicates
-			String sql = "from TestSection t where trim(lower(t.organization.organizationName)) = :param and trim(lower(t.testSectionName)) = :param2 and t.id != :param3";
-			org.hibernate.Query query = HibernateUtil.getSession().createQuery(
-					sql);
-			query.setParameter("param", testSection.getOrganization().getOrganizationName().toLowerCase().trim());
-			query.setParameter("param2", testSection.getTestSectionName().toLowerCase().trim());
 
-	
-			// initialize with 0 (for new records where no id has been generated
-			// yet
+			String sql = "from TestSection t where trim(lower(t.testSectionName)) = :name and t.id != :id";
+			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+
+			query.setParameter("name", testSection.getTestSectionName().toLowerCase().trim());
+
 			String testSectionId = "0";
 			if (!StringUtil.isNullorNill(testSection.getId())) {
 				testSectionId = testSection.getId();
 			}
-			query.setInteger("param3", Integer.parseInt(testSectionId));
+			query.setInteger("id", Integer.parseInt(testSectionId));
 
 			List list = query.list();
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 
-			if (list.size() > 0) {
-				return true;
-			} else {
-				return false;
-			}
+            return !list.isEmpty();
 
 		} catch (Exception e) {
 			LogEvent.logError("TestSectionDAOImpl","duplicateTestSectionExists()",e.toString());
@@ -478,7 +464,21 @@ public class TestSectionDAOImpl extends BaseDAOImpl implements TestSectionDAO {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+    public List<TestSection> getAllInActiveTestSections() {
+        String sql = "from TestSection t where t.isActive = 'N' order by t.sortOrderInt";
+
+        try {
+            Query query = HibernateUtil.getSession().createQuery(sql);
+            List<TestSection> sections = query.list();
+            closeSession();
+            return sections;
+        } catch (HibernateException e) {
+            handleException(e, "getAllInActiveTestSections");
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
 	@Override
 	public TestSection getTestSectionByName(String testSection) throws LIMSRuntimeException {
 		try {

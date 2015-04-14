@@ -18,6 +18,7 @@ package us.mn.state.health.lims.result.action.util;
 
 import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -25,7 +26,6 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
 import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class ResultUtil {
 	private static final TestAnalyteDAO testAnalyteDAO = new TestAnalyteDAOImpl();
 	
 	public static String getStringValueOfResult( Result result){
-		if( ResultType.isDictionaryVariant( result.getResultType() )){
+		if( TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() )){
 			return dictionaryDAO.getDictionaryById(result.getValue()).getLocalizedName();
 		}else{
 			return result.getValue();
@@ -43,11 +43,20 @@ public class ResultUtil {
 	
 	@SuppressWarnings("unchecked")
 	public static TestAnalyte getTestAnalyteForResult(Result result) {
+        /*
+        The logic behind this code is that there is a matching of some analytes to the number of times the test has been
+        run.  i.e. if there is a positive HIV test some labs will run it again as a reflex.  This code below is to make
+        sure that we don't have an endless loop, but it does not feel very robust.  This is due for a refactoring.
 
+         */
 		if (result.getTestResult() != null) {
 			List<TestAnalyte> testAnalyteList = testAnalyteDAO.getAllTestAnalytesPerTest(result.getTestResult().getTest());
 
-			if (testAnalyteList.size() > 0) {
+            if( testAnalyteList.size() == 1){
+                return testAnalyteList.get(0);
+            }
+
+			if (testAnalyteList.size() > 1) {
 				int distanceFromRoot = 0;
 
 				Analysis parentAnalysis = result.getAnalysis().getParentAnalysis();
@@ -77,8 +86,8 @@ public class ResultUtil {
     }
 	public static boolean areResults(TestResultItem item) {
 		return !(GenericValidator.isBlankOrNull(item.getShadowResultValue()) ||
-				(ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getShadowResultValue()))) ||
-				(ResultType.isMultiSelectVariant(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
+				(TypeOfTestResultService.ResultType.DICTIONARY.matches(item.getResultType()) && "0".equals(item.getShadowResultValue()))) ||
+				(TypeOfTestResultService.ResultType.isMultiSelectVariant(item.getResultType()) && !GenericValidator.isBlankOrNull(item.getMultiSelectResultValues()));
 	}
 
 	public static boolean isForcedToAcceptance(TestResultItem item){

@@ -34,6 +34,9 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.scriptlet.dao.ScriptletDAO;
 import us.mn.state.health.lims.scriptlet.daoimpl.ScriptletDAOImpl;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
+import us.mn.state.health.lims.test.dao.TestDAO;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
+import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testreflex.dao.TestReflexDAO;
 import us.mn.state.health.lims.testreflex.daoimpl.TestReflexDAOImpl;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
@@ -76,7 +79,7 @@ public class TestReflexUtil {
 		scriptlet.setScriptletName("Calculate CD4");
 		scriptlet = scriptletDAO.getScriptletByName(scriptlet);
 		if (!(scriptlet == null || scriptlet.getId() == null)) {
-			CD4_SCRIPTLET_ID = scriptletDAO.getScriptletByName(scriptlet).getId();
+			CD4_SCRIPTLET_ID = scriptlet.getId();
 		}
 
 		TRIGGERING_REFLEX_TEST_IDS = new HashSet<String>();
@@ -224,6 +227,7 @@ public class TestReflexUtil {
 		 * 7. A single result forced the user to select reflexes
 		 * 8. A mixture of new and previous results forced the user to select reflexes
 		 * 9. Multiselect results forced the user to select reflexes for each result
+		 * 10. A scriptlet determines what the next test will be
 		 */
 
 		/*
@@ -253,7 +257,7 @@ public class TestReflexUtil {
 			// list may be empty or have previous handled reflexes
 			List<String> handledReflexIdList = getHandledReflexesForSample(sampleIdToHandledTestReflexIds, reflexBean);
 
-			// use cases 1-6
+			// use cases 1-6, 10
 			if (reflexBean.getTriggersToSelectedReflexesMap().isEmpty()) {
                 handleAutomaticReflexes( parentAnalysisList, reflexBean, handledReflexIdList );
             } else { // use cases 7,8,9
@@ -405,7 +409,7 @@ public class TestReflexUtil {
 			reflexAction.handleReflex(reflex, result, actionSelectionId);
 
 			ObservationHistory observation = reflexAction.getObservation();
-			Analysis newAnalysis = reflexAction.getNewAnalysis();
+
 
 			if (observation != null && handleAction) {
 				observation.setPatientId(patientId);
@@ -414,6 +418,7 @@ public class TestReflexUtil {
 				observationDAO.insertData(observation);
 			}
 
+            Analysis newAnalysis = reflexAction.getNewAnalysis();
 			Result finalResult = reflexAction.getFinalResult();
 
 			/*******

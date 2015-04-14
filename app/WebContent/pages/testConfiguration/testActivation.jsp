@@ -5,7 +5,6 @@
 <%@ page import="us.mn.state.health.lims.common.util.IdValuePair" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
-<%@ page import="us.mn.state.health.lims.test.beanItems.TestActivationBean" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -27,9 +26,6 @@
   ~ Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
   --%>
 
-<script type="text/javascript" src="scripts/jquery-ui.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-
-
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
 
 <%!
@@ -45,6 +41,8 @@
     columnCount = 0;
     testCount = 0;
 %>
+
+<script type="text/javascript" src="scripts/jquery-ui.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <link rel="stylesheet" media="screen" type="text/css"
       href="<%=basePath%>css/jquery_ui/jquery.ui.theme.css?ver=<%= Versioning.getBuildNumber() %>"/>
 
@@ -93,7 +91,7 @@
         deactivate = $jq(".active.activationChanged").length;
         activate = $jq(".inactive.activationChanged").length;
 
-        $jq("#nextButtonSelect").attr('disabled', ( deactivate == 0 && activate == 0))
+        $jq("#nextButtonSelect").attr('disabled', ( deactivate == 0 && activate == 0));
 
         if(  deactivate == 0 && activate == 0){
             makeClean();
@@ -146,10 +144,11 @@
     }
 
     function listActivatedItems( jsonObj){
-        var sortIndex;
         var activateSampleType = true;
         var activateTestList = $jq("#testActivateList");
         var activateSampleList = $jq("#sampleTypeActivateList");
+        var jsonBlob, sortOrder;
+
         $jq("#testActivate").show();
         $jq("#sortOrderList ul.sortable").each(function(){
             activateTestList.append("<br />");
@@ -212,7 +211,7 @@
                     jsonBlob = {};
                     jsonBlob.id = $jq(this).val();
                     jsonObj.deactivateTest[jsonObj.deactivateTest.length] = jsonBlob;
-                    deactivateTestList.append("&nbsp;&nbsp;&nbsp;&nbsp;" + $jq(this).siblings("span").text())
+                    deactivateTestList.append("&nbsp;&nbsp;&nbsp;&nbsp;" + $jq(this).siblings("span").text());
                     deactivateTestList.append("<br />");
                 });
 
@@ -268,7 +267,7 @@
 
 
                 headerCell = $jq(document.createElement("th"));
-                headerCell.attr("width", '<%=columnSize + "%"%>')
+                headerCell.attr("width", '<%=columnSize + "%"%>');
                 headerCell.text(sampleType.text());
                 headerRow.append(headerCell);
 
@@ -488,7 +487,7 @@
 </div>
 
 
-<div id="sortOrder" class="selectHide sortShow"style="display: none">
+<div id="sortOrder" class="selectHide sortShow" style="display:none">
     <h4><%=StringUtil.getMessageForKey("label.test.display.order")%></h4>
     <div id="sortOrderList" class="selectClear" ></div>
 </div>

@@ -34,10 +34,7 @@ public class TypeOfSampleUtil {
 		createTypeOfSampleIdentityMap();
 	}
 
-	public static void rebuildMaps(){
-		createTypeOfSampleIdentityMap();
-	}
-    public static List<Test> getTestListBySampleTypeId(String sampleTypeId, boolean orderableOnly) {
+    public static List<Test> getActiveTestsBySampleTypeId(String sampleTypeId, boolean orderableOnly) {
 
         List<Test> testList = sampleIdTestMap.get(sampleTypeId);
 
@@ -52,6 +49,21 @@ public class TypeOfSampleUtil {
         }
     }
 
+    public static List<Test> getAllTestsBySampleTypeId(String sampleTypeId){
+        List<Test> testList = new ArrayList<Test>();
+        TypeOfSampleTestDAO sampleTestsDAO = new TypeOfSampleTestDAOImpl();
+
+        List<TypeOfSampleTest> testLinks = sampleTestsDAO.getTypeOfSampleTestsForSampleType(sampleTypeId);
+
+        TestDAO testDAO = new TestDAOImpl();
+
+        for (TypeOfSampleTest link : testLinks) {
+            testList.add(testDAO.getTestById(link.getTestId()));
+        }
+
+        Collections.sort(testList, TestComparator.NAME_COMPARATOR);
+        return testList;
+    }
 	public static TypeOfSample getTransientTypeOfSampleById(String id){
 			return typeOfSampleDAO.getTypeOfSampleById(id);
 	}

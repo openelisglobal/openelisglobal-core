@@ -34,7 +34,6 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public class AnalysisService{
         }
 
         String parentResultType = analysis.getParentResult() != null ? analysis.getParentResult().getResultType() : "";
-        if(  ResultType.isMultiSelectVariant( parentResultType ) ){
+        if(  TypeOfTestResultService.ResultType.isMultiSelectVariant( parentResultType ) ){
             Dictionary dictionary = dictionaryDAO.getDictionaryById( analysis.getParentResult().getValue() );
             if( dictionary != null){
                 String parentResult = dictionary.getLocalAbbreviation();
@@ -97,7 +96,7 @@ public class AnalysisService{
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         StringBuilder multiSelectBuffer = new StringBuilder();
         for( Result existingResult : existingResults ){
-            if( ResultType.isMultiSelectVariant( existingResult.getResultType() )){
+            if( TypeOfTestResultService.ResultType.isMultiSelectVariant( existingResult.getResultType() )){
                 multiSelectBuffer.append( existingResult.getValue() );
                 multiSelectBuffer.append( ',' );
             }
@@ -118,13 +117,13 @@ public class AnalysisService{
         List<Result> existingResults = resultDAO.getResultsByAnalysis( analysis );
         List<String> quantifiableResultsIds = new ArrayList<String>(  );
         for( Result existingResult : existingResults ){
-            if( ResultType.isDictionaryVariant( existingResult.getResultType() ) ){
+            if( TypeOfTestResultService.ResultType.isDictionaryVariant( existingResult.getResultType() ) ){
                 quantifiableResultsIds.add( existingResult.getId() );
             }
         }
 
         for( Result existingResult : existingResults ){
-            if( !ResultType.isDictionaryVariant( existingResult.getResultType() ) &&
+            if( !TypeOfTestResultService.ResultType.isDictionaryVariant( existingResult.getResultType() ) &&
                     existingResult.getParentResult() != null &&
                     quantifiableResultsIds.contains( existingResult.getParentResult().getId()) &&
                     !GenericValidator.isBlankOrNull(existingResult.getValue())){
