@@ -453,8 +453,8 @@ public class StringUtil {
 	/**
 	 * Solves the problem of how to deal with commas within quoted strings for csv.  I couldn't figure out a regex that would cover
 	 * it so we're doing it the hard way.  It will stumble if '~' is embedded in the string.  This will fail on mixed fields such as
-	 * 1,2,"something, else", 4,5 
-	 *  
+	 * 1,2,"something, else", 4,5
+	 *
 	 */
 	public static String[] separateCSVWithEmbededQuotes(String line){
 		
@@ -660,4 +660,22 @@ public class StringUtil {
         return delimitedString;
     }
 
+	public static Double doubleWithInfinity(String significantDigits) {
+		if( GenericValidator.isBlankOrNull(significantDigits)){
+			return null;
+		}
+		if( "Infinity".equals(significantDigits)){
+			return Double.POSITIVE_INFINITY;
+		}
+		if( "-Infinity".equals(significantDigits)){
+			return Double.NEGATIVE_INFINITY;
+		}
+
+		try{
+			return new Double(significantDigits);
+		}catch(NumberFormatException e){
+			LogEvent.logError("StringUtil", "doubleWithInfinity(" + significantDigits + ")", e.toString());
+			return null;
+		}
+	}
 }
