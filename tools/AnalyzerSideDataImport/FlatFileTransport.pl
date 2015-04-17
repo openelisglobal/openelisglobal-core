@@ -1,4 +1,4 @@
- use File::Copy;
+use File::Copy;
 use File::stat;
 use Time::localtime;
 use File::Basename;
@@ -46,7 +46,7 @@ sub sendToServer{
     my $upLoadPassword = shift;
     
     my $maxRetryCount = 2;
-    my $curlExe = '.\curl\curl.exe';
+    my $curlExe = 'C:\curl\curl.exe';
     
     my @files = <$queueDir/*.*>; 
     
@@ -85,9 +85,26 @@ sub sendToServer{
     }           
 }
 
-my $upLoadtargetURL = 'http://192.168.1.1:8080/CDIOpenElis/importAnalyzer';
+sub printTime{
+    @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+    @weekDays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+
+    $second = localtime->sec;
+    $minute = localtime->min;
+    $hour = localtime->hour;
+    $month = localtime->mon;
+    $year = localtime->year + 1900;;
+    $dayOfWeek = localtime->wday;
+    $dayOfMonth = localtime->mday;
+
+    print "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year\n";
+}
+
+#my $upLoadtargetURL = 'http://54.191.189.60:8080/CDIOpenElis/importAnalyzer';
+my $upLoadtargetURL = 'http://localhost:8080/openElisGlobal/importAnalyzer';
+
 my $stagingDir1 = ".\\staging";
-my $stagingDir2 = "Y:";
+#my $stagingDir2 = "Y:";
 my $queueDir = ".\\transmissionQueue";
 my $upLoadUserName = 'analyzer';
 my $upLoadPassword = 'ied1poh2Ku!';
@@ -96,18 +113,10 @@ print "Welcome to analyzer import\n";
  
 while( 1 ){
     updateQueue( $stagingDir1, $queueDir, $timeTagFile1 );
-    updateQueue( $stagingDir2, $queueDir, $timeTagFile2 );
+ #   updateQueue( $stagingDir2, $queueDir, $timeTagFile2 );
     sendToServer($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword);
 
-    sleep 30;
+   
+   printTime(); 
+ sleep 30;
 }
-
-
-
-
-
-
-
-
-
- basename($file) eq $timeTagFile
