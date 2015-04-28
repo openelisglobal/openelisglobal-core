@@ -18,17 +18,13 @@
 package us.mn.state.health.lims.dictionary.daoimpl;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 
-import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -301,7 +297,7 @@ public class DictionaryDAOImpl extends BaseDAOImpl implements DictionaryDAO {
 
     // this is for autocomplete
     // modified for 2062
-    public List<Dictionary> getDictionaryEntrysByCategory(String filter, String categoryFilter)
+    public List<Dictionary> getDictionaryEntrysByCategoryAbbreviation(String filter, String categoryFilter)
                     throws LIMSRuntimeException {
         try {
             String sql = "";
@@ -362,20 +358,20 @@ public class DictionaryDAOImpl extends BaseDAOImpl implements DictionaryDAO {
 
     // bugzilla 2063 - this is when we know the category (local_abbrev) and we
     // need list of entries
-    public List<Dictionary> getDictionaryEntrysByCategory(String categoryFilter) throws LIMSRuntimeException {
-        return getDictionaryEntrysByCategory("localAbbreviation", categoryFilter, true);
+    public List<Dictionary> getDictionaryEntrysByCategoryAbbreviation(String categoryFilter) throws LIMSRuntimeException {
+        return getDictionaryEntrysByCategoryAbbreviation("localAbbreviation", categoryFilter, true);
     }
     
-    public List<Dictionary> getDictionaryEntrysByCategoryName(String categoryName) throws LIMSRuntimeException {
-        List<Dictionary> entries = getDictionaryEntrysByCategory("categoryName", categoryName, false);
+    public List<Dictionary> getDictionaryEntrysByCategoryNameLocalizedSort(String categoryName) throws LIMSRuntimeException {
+        List<Dictionary> entries = getDictionaryEntrysByCategoryAbbreviation("categoryName", categoryName, false);
         BaseObject.sortByLocalizedName(entries);
         return entries;
     }
 
     /**
-     * @see DictionaryDAO#getDictionaryEntrysByCategory(String, String, boolean)
+     * @see DictionaryDAO#getDictionaryEntrysByCategoryAbbreviation(String, String, boolean)
      */
-    public List<Dictionary> getDictionaryEntrysByCategory(String fieldName, String fieldValue, boolean orderByDictEntry)
+    public List<Dictionary> getDictionaryEntrysByCategoryAbbreviation(String fieldName, String fieldValue, boolean orderByDictEntry)
                     throws LIMSRuntimeException {
         try {
             String sql = "from Dictionary d where d.isActive= " + enquote(YES);
@@ -401,8 +397,8 @@ public class DictionaryDAOImpl extends BaseDAOImpl implements DictionaryDAO {
 
         } catch (Exception e) {
             // bugzilla 2154
-            LogEvent.logError("DictionaryDAOImpl", "getDictionaryEntrysByCategory()", e.toString());
-            throw new LIMSRuntimeException("Error in Dictionary getDictionaryEntrysByCategory(String categoryFilter)",
+            LogEvent.logError("DictionaryDAOImpl", "getDictionaryEntrysByCategoryAbbreviation()", e.toString());
+            throw new LIMSRuntimeException("Error in Dictionary getDictionaryEntrysByCategoryAbbreviation(String categoryFilter)",
                             e);
         }
     }

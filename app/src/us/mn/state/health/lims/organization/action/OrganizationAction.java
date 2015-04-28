@@ -244,7 +244,7 @@ public class OrganizationAction extends BaseAction {
 
 	private List<Dictionary> getDepartmentList() {
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-		return dictionaryDAO.getDictionaryEntrysByCategory("description", "haitiDepartment", true);
+		return dictionaryDAO.getDictionaryEntrysByCategoryAbbreviation("description", "haitiDepartment", true);
 	}
 
 	protected String getPageTitleKey() {

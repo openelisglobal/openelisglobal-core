@@ -232,7 +232,7 @@ public class PatientManagementInfo implements Serializable {
 
 	public List<Dictionary> getAddressDepartments() {
 		if( addressDepartments == null){
-			addressDepartments = new DictionaryDAOImpl().getDictionaryEntrysByCategory("description", "haitiDepartment", true);
+			addressDepartments = new DictionaryDAOImpl().getDictionaryEntrysByCategoryAbbreviation("description", "haitiDepartment", true);
 		}
 
 		return addressDepartments;

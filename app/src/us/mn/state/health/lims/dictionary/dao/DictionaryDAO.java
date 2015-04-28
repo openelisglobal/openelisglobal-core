@@ -58,7 +58,7 @@ public interface DictionaryDAO extends BaseDAO {
 	 * @return a list of Dictionary beans.
 	 * @throws LIMSRuntimeException
 	 */
-	public List<Dictionary> getDictionaryEntrysByCategory(String filter, String dictionaryCategory) throws LIMSRuntimeException;
+	public List<Dictionary> getDictionaryEntrysByCategoryAbbreviation(String filter, String dictionaryCategory) throws LIMSRuntimeException;
 
 	//bugzilla 2063
     /**
@@ -68,7 +68,7 @@ public interface DictionaryDAO extends BaseDAO {
      * @return a list of matches
      * @throws LIMSRuntimeException
      */
-	public List<Dictionary> getDictionaryEntrysByCategory(String dictionaryCategory) throws LIMSRuntimeException;
+	public List<Dictionary> getDictionaryEntrysByCategoryAbbreviation(String dictionaryCategory) throws LIMSRuntimeException;
 
 	/**
 	 * Find Dictionary entites by DictionaryCategory.categoryName, sorted by Dictionary.getLocalizedName (Resource String)
@@ -76,7 +76,7 @@ public interface DictionaryDAO extends BaseDAO {
 	 * @return List<Dictionary>
 	 * @throws LIMSRuntimeException
 	 */
-    public List<Dictionary> getDictionaryEntrysByCategoryName(String dictionaryCategoryName) throws LIMSRuntimeException;
+    public List<Dictionary> getDictionaryEntrysByCategoryNameLocalizedSort(String dictionaryCategoryName) throws LIMSRuntimeException;
 
     /**
      * A more complex lower level version of getting entries when you want to find them by some field and maybe sort by entry value.
@@ -87,7 +87,7 @@ public interface DictionaryDAO extends BaseDAO {
      * @throws LIMSRuntimeException
      */
 
-    public List<Dictionary> getDictionaryEntrysByCategory(String fieldName, String fieldValue, boolean orderByDictEntry);
+    public List<Dictionary> getDictionaryEntrysByCategoryAbbreviation(String fieldName, String fieldValue, boolean orderByDictEntry);
 
 	//bugzilla 1411
 	public Integer getTotalDictionaryCount() throws LIMSRuntimeException;
