@@ -388,7 +388,7 @@ public class StatusService{
 		}
 
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-		List<Dictionary> dictionaryList = dictionaryDAO.getDictionaryEntrysByCategoryName("REC_STATUS");
+		List<Dictionary> dictionaryList = dictionaryDAO.getDictionaryEntrysByCategoryNameLocalizedSort("REC_STATUS");
 
 		for(Dictionary dictionary : dictionaryList){
 			addToRecordMap(dictionary);
