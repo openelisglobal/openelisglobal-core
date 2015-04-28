@@ -762,6 +762,8 @@
             <form-property name="resultTypeList" type="java.util.List" />
             <form-property name="ageRangeList" type="java.util.List" />
             <form-property name="labUnitList" type="java.util.List" />
+			<form-property name="dictionaryList" type="java.util.List" />
+			<form-property name="groupedDictionaryList" type="java.util.List" />
         </form-bean>
 
 		<form-bean name="testCatalogForm" type="org.apache.struts.validator.DynaValidatorForm" >

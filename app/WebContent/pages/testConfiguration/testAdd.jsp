@@ -55,6 +55,7 @@
 <bean:define id="resultTypeList" name='<%=formName%>'  property="resultTypeList" type="java.util.List<IdValuePair>" />
 <bean:define id="testUnitList" name='<%=formName%>'  property="labUnitList" type="java.util.List<IdValuePair>" />
 <bean:define id="ageRangeList" name='<%=formName%>'  property="ageRangeList" type="java.util.List<IdValuePair>" />
+<bean:define id="dictionaryList" name='<%=formName%>'  property="dictionaryList" type="java.util.List<IdValuePair>" />
 
 
     <script type="text/javascript">
@@ -460,8 +461,8 @@
                 $jq("#step2Div .required").each(function(){
                     if(!$jq(this).val() || $jq(this).val() == 0 || $jq(this).val().length == 0 ){ ready = false; } });
             }
-            $jq( "#nextButton" ).prop( "disabled", !ready );
-         //   $jq( "#nextButton" ).prop( "disabled", false );
+         //   $jq( "#nextButton" ).prop( "disabled", !ready );
+            $jq( "#nextButton" ).prop( "disabled", false );
         }
 
         function nextStep(){
@@ -489,6 +490,13 @@
                   makeSortListsReadOnly();
                   $jq("#normalRangeDiv").show();
                   $jq("#sampleTypeSelectionDiv").hide();
+              }else if( resultTypeId == '<%= TypeOfTestResultService.ResultType.DICTIONARY.getId()%>'||
+                      resultTypeId == '<%= TypeOfTestResultService.ResultType.MULTISELECT.getId()%>' ||
+                      resultTypeId == '<%= TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.getId()%>'){
+                  step = 'step3Dictionary';
+                  makeSortListsReadOnly();
+                  $jq("#sampleTypeSelectionDiv").hide();
+                  $jq(".dictionarySelect").show();
               }
             }else if( step == "step3Numeric"){
                 $jq( "#normalRangeDiv input,select").prop("disabled", true );
@@ -823,6 +831,20 @@
                 <div id="testDisplayOrderDiv" style="float:left; width:40%;">
                     <div id="sortTitleDiv" align="center"><bean:message key="label.test.display.order"/></div>
                     <div id="endOrderMarker"></div>
+                    <div class="dictionarySelect" style="float:left; width:33%; display:none; overflow: hidden ">
+                        Select List Options<br/>
+                        <select id="dictionarySelection" multiple="multiple" title="Multiple">
+                            <% for(IdValuePair pair : dictionaryList ){ %>
+                            <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
+                            <% } %>
+                        </select><br/><br/><br/>
+                    </div>
+                    <div id="sortDictionaryDiv" align="center" class="dictionarySelect" style="float:left; width:33%; display:none;">Result order</div>
+                    <div class="dictionarySelect" style="float:left; width:20%; display:none">
+                        Qualifiers<br/>
+                        <select id="qualifierSelection" multiple="multiple" title="Multiple">
+                        </select><br/><br/><br/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -931,6 +953,7 @@
             <label for="significantDigits" >Significant Digits</label>
             <input type="number" min="0" max="10" id="significantDigits" >
         </div>
+
 
         <div class="selectShow confirmHide" style="margin-left:auto; margin-right:auto;width: 40%; ">
             <input type="button"
