@@ -204,7 +204,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 				String matchTests = getTestIndexesForPanels(samplePanel.getPanelId(), testNameOrderMap, panelItemDAO);
 				if(!GenericValidator.isBlankOrNull(matchTests)){
 					int panelOrder = panelDAO.getPanelById(samplePanel.getPanelId()).getSortOrderInt();
-					selected.add(new PanelTestMap(samplePanel.getPanelId(), panelOrder, panel.getPanelName(), matchTests));
+					selected.add(new PanelTestMap(samplePanel.getPanelId(), panelOrder, panel.getLocalizedName(), matchTests));
 				}
 			}
 		}
