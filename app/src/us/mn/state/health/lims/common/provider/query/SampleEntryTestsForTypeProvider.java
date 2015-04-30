@@ -28,8 +28,6 @@ import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
-import us.mn.state.health.lims.test.dao.TestDAO;
-import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testdictionary.daoimpl.TestDictionaryDAOImpl;
@@ -46,7 +44,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
-	private TestDAO testDAO = new TestDAOImpl();
 	private PanelDAO panelDAO = new PanelDAOImpl();
 	private static final String USER_TEST_SECTION_ID;
     private static final String VARIABLE_SAMPLE_TYPE_ID;
@@ -196,7 +193,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 		Map<String, Integer> testNameOrderMap = new HashMap<String, Integer>();
 
 		for(int i = 0; i < tests.size(); i++){
-			testNameOrderMap.put(TestService.getUserLocalizedTestName( tests.get( i ) ), new Integer(i));
+			testNameOrderMap.put(TestService.getUserLocalizedTestName( tests.get( i ) ), i);
 		}
 
 		PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
@@ -239,16 +236,11 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 	private String getDerivedNameFromPanel(PanelItem item){
 		//This cover the transition in the DB between the panel_item being linked by name
 		// to being linked by id
-		if(item.getTestId() != null){
-			Test test = testDAO.getTestById(item.getTestId());
-			if(test != null){
-				return TestService.getUserLocalizedTestName( test );
-			}
+		if(item.getTest() != null ){
+				return TestService.getUserLocalizedTestName( item.getTest() );
 		}else{
 			return item.getTestName();
 		}
-
-		return null;
 	}
 
 	public class PanelTestMap{

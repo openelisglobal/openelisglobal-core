@@ -436,12 +436,6 @@ function getTestDisplayRowHtml( name, id, row ){
 	return "<input name='testName' class='testName'  value='" + id + "' id='testName_" + row  + "' type='hidden' >" + name;
 }
 
-
-
-function processGetTestFailure(xhr){
-  // alert(xhr.responseText);
-}
-
 function getValueFromXmlElement( parent, tag ){
 	var element = parent.getElementsByTagName( tag );
 
@@ -580,7 +574,7 @@ function sectionSelectionChanged( selectionElement ){
 
 function editSelectedTest( ){
 	if( currentCheckedType == -1 || currentTypeForTests != currentCheckedType  ){
-    	getTestsForSampleType(currentCheckedType, processGetTestSuccess, processGetTestFailure); //this is an asynchronous call and setSampleType will be called on the return of the call
+    	getTestsForSampleType(currentCheckedType, processGetTestSuccess); //this is an asynchronous call and setSampleType will be called on the return of the call
     }else{
     	setSampleTests();
     }

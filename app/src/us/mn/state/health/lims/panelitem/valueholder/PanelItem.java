@@ -39,8 +39,6 @@ public class PanelItem extends EnumValueItemImpl {
 	private String methodName;
 
 	private String testName;
-
-	private String testId;
 	
 	public PanelItem() {
 		super();
@@ -123,14 +121,6 @@ public class PanelItem extends EnumValueItemImpl {
 
 	public void setTest(Test test) {
 		this.test.setValue(test);
-	}
-
-	public String getTestId() {
-		return testId;
-	}
-
-	public void setTestId(String testId) {
-		this.testId = testId;
 	}
 
 }
