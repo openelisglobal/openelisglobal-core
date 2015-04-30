@@ -41,7 +41,12 @@ import com.lowagie.text.pdf.PdfCopyFields;
 import com.lowagie.text.pdf.PdfReader;
 
 public abstract class CollectionReport implements IReportCreator {
+	protected String requestedReport;
 
+	@Override
+	public void setRequestedReport(String report){
+		requestedReport = report;
+	}
 	@Override
 	public String getContentType() {
 		return "application/pdf; charset=UTF-8";
@@ -146,6 +151,7 @@ public abstract class CollectionReport implements IReportCreator {
 		IReportCreator reportCreator = ReportImplementationFactory.getReportCreator(reportName);
 
 		if (reportCreator != null) {
+			reportCreator.setRequestedReport(requestedReport);
 			reportCreator.initializeReport(dynaForm);
 			reportCreator.setReportPath(reportPath);
 

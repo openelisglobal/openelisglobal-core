@@ -25,5 +25,5 @@ import us.mn.state.health.lims.reports.valueholder.DocumentTrack;
 public interface DocumentTrackDAO extends GenericDAO<String, DocumentTrack> {
 
 	public List<DocumentTrack> getByTypeRecordAndTable(String typeId, String tableId, String recordId) throws LIMSRuntimeException;
-
+	public List<DocumentTrack> getByTypeRecordAndTableAndName(String reportTypeId, String referenceTable, String id, String name) throws LIMSRuntimeException;
 }

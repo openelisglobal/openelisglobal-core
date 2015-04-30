@@ -108,7 +108,7 @@
 				<reportElement key="rectangle-1" x="206" y="35" width="346" height="36" backcolor="#F8F8F8"/>
 			</rectangle>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="278" y="55" width="270" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="285" y="55" width="263" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -121,7 +121,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{orgname}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="278" y="36" width="270" height="17" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField" x="285" y="36" width="263" height="17" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{showDoctor}]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -141,9 +141,9 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{subjectNumber}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="staticText-1" x="208" y="54" width="70" height="18"/>
+				<reportElement key="staticText-1" x="208" y="54" width="77" height="18"/>
 				<textElement/>
-				<text><![CDATA[Service]]></text>
+				<text><![CDATA[Nom du Centre]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-2" x="0" y="0" width="89" height="18"/>
@@ -176,7 +176,7 @@
 				<text><![CDATA[Date/Heure Prél.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-8" x="208" y="36" width="70" height="18">
+				<reportElement key="staticText-8" x="208" y="36" width="77" height="18">
 					<printWhenExpression><![CDATA[$P{showDoctor}]]></printWhenExpression>
 				</reportElement>
 				<textElement/>
