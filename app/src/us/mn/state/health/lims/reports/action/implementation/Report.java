@@ -56,8 +56,13 @@ public abstract class Report implements IReportCreator {
     protected boolean errorFound = false;
     protected List<ErrorMessages> errorMsgs = new ArrayList<ErrorMessages>();
     protected HashMap<String, Object> reportParameters = null;
+    protected String requestedReport;
     private String fullReportFilename;
-    
+
+    @Override
+    public void setRequestedReport( String report){
+        requestedReport = report;
+    }
 	protected void initializeReport() {
 		initialized = true;
 	}
