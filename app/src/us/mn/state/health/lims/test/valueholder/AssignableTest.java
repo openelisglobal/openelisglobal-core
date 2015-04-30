@@ -57,7 +57,7 @@ public class AssignableTest extends EnumValueItemImpl implements IActionConstant
     
     public AssignableTest(Panel panel) {
     	this.id = panel.getId();
-    	this.assignableTestName = panel.getPanelName();
+    	this.assignableTestName = panel.getLocalizedName();
     	this.description = panel.getDescription();
     	this.displayValue = panel.getDescription();
     	this.type = ASSIGNABLE_TEST_TYPE_PANEL;
