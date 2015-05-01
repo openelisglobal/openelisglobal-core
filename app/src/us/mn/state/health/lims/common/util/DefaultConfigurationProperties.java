@@ -42,9 +42,9 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		propertiesFileMap.put(Property.AmbiguousDateHolder , new KeyDefaultPair("date.ambiguous.date.holder", "X") );
 		propertiesFileMap.put(Property.ReferingLabParentOrg , new KeyDefaultPair("organization.reference.lab.parent", null) );
 		propertiesFileMap.put(Property.resultsResendTime , new KeyDefaultPair("results.send.retry.time", "30") );
-/*		propertiesFileMap.put(Property. , new KeyDefaultPair() );
+//		propertiesFileMap.put(Property. , new KeyDefaultPair() );
 
-	*/
+
 		//config from site_information table
 		dbNamePropertiesMap  = new HashMap<String, ConfigurationProperties.Property>();
 		setDBPropertyMappingAndDefault(Property.SiteCode, "siteNumber", "" );
@@ -109,7 +109,10 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "false" );
         setDBPropertyMappingAndDefault( Property.BANNER_TEXT, "bannerHeading", "-1" );
         setDBPropertyMappingAndDefault( Property.CLOCK_24, "24 hour clock", "true" );
-        setDBPropertyMappingAndDefault( Property.PATIENT_NATIONALITY, "supportPatientNationality", "false");
+		setDBPropertyMappingAndDefault( Property.PATIENT_NATIONALITY, "supportPatientNationality", "false");
+		setDBPropertyMappingAndDefault( Property.PATIENT_ID_REQUIRED, "Patient ID required", "true");
+		setDBPropertyMappingAndDefault( Property.PATIENT_SUBJECT_NUMBER_REQUIRED, "Subject number required", "true");
+		setDBPropertyMappingAndDefault( Property.QA_SAMPLE_ID_REQUIRED, "sample id required", "false");
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

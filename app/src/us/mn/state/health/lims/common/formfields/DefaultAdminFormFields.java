@@ -101,10 +101,8 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 			return new CI_LNSPAdminFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_CDI.equals(fieldSet)){
 			return new CI_RETROAdminFormFields().getImplementationAttributes();
-		}else if(IActionConstants.FORM_FIELD_SET_CI_IPCI.equals(fieldSet)){
-			return new CI_IPCIAdminFormFields().getImplementationAttributes();
-		}else if(IActionConstants.FORM_FIELD_SET_CI_REGIONAL.equals(fieldSet)){
-			return new CI_RegionalAdminFormFields().getImplementationAttributes();
+		}else if(IActionConstants.FORM_FIELD_SET_CI_GENERAL.equals(fieldSet)){
+			return new CI_GeneralAdminFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_KENYA.equals(fieldSet)){
 			return new KenyaAdminFormFields().getImplementationAttributes();
 		}

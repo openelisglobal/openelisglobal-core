@@ -7,7 +7,7 @@
 <%@ page import="us.mn.state.health.lims.common.util.DateUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil, us.mn.state.health.lims.common.util.Versioning" %>
 <%@ page import="us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem" %>
-
+<%@ page import="us.mn.state.health.lims.common.util.ConfigurationProperties" %>
 
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
@@ -497,7 +497,7 @@ function  processPhoneSuccess(xhr){
 			</logic:notEqual>
 		<html:hidden name='<%=formName%>' styleId="doctorNew" property="doctorNew" />
 		<%  if (FormFields.getInstance().useField(Field.QA_FULL_PROVIDER_INFO )) { %>
-        <% if( FormFields.getInstance().useField( Field.QA_REQUESTER_SAMPLE_ID )) { %>
+        <% if(ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.QA_SAMPLE_ID_REQUIRED, "true")) { %>
 					<tr>
 						<td><bean:message key="sample.clientReference" />:</td>
 						<td >

@@ -40,7 +40,6 @@ public class FormFields {
 		MLS,                                    //Include indicator if organization is a sentinel lab
 		InlineOrganizationTypes,                //Should organization types be included when specifying organizations
 		SubjectNumber,                          //Include subject number with patient info
-        SubjectNumberRequired,                  //If using subject number is it required
 		ProviderInfo,                           //Include provider information on order form
 		NationalID,                             //Include national ID with patient info
 		Occupation,                             //Include occupation with patient info
@@ -69,10 +68,8 @@ public class FormFields {
 		PatientRequired,                        // By default, a (minimal) patient to go with a sample is required.
 		PatientRequired_SampleConfirmation,     //Is patient required for sample confirmation
         QA_FULL_PROVIDER_INFO,                     //Include provider information on non-conformity
-        QA_REQUESTER_SAMPLE_ID,                 //If provider info is used on non-conformity should it include provider sample id
 		QASubjectNumber,                        //Include subject number be on non-conformity
 		QATimeWithDate,                         //Include time in addition to date on non-conformity
-		PatientIDRequired,                      //Is patient ID required for patient
 		PatientIDRequired_SampleConfirmation,   //Is patient ID required for patient on sample conformation form
 		PatientNameRequired,                    //Is patient name required
 		SampleEntryUseReceptionHour,            //Include reception time on sample entry
