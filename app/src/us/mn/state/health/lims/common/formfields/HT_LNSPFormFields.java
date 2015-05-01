@@ -53,7 +53,6 @@ public class HT_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.CollectionTime, Boolean.TRUE);
 		settings.put(Field.SAMPLE_ENTRY_USE_REFFERING_PATIENT_NUMBER, Boolean.TRUE);
 		settings.put(Field.SampleEntryRequestingSiteSampleId, Boolean.FALSE);
-        settings.put(Field.PatientIDRequired, Boolean.FALSE );
         settings.put(Field.PatientIDRequired_SampleConfirmation, Boolean.FALSE );
 		return settings;
 	}

@@ -112,7 +112,10 @@ public abstract class ConfigurationProperties {
         ORDER_PROGRAM,   //Should program be part of an order
         BANNER_TEXT, //Text on Banner
         CLOCK_24,    //True for 24 hour clock, false for 12 hour clock
-        PATIENT_NATIONALITY //True if patient nationality should be collected with patient information
+        PATIENT_NATIONALITY, //True if patient nationality should be collected with patient information
+        PATIENT_ID_REQUIRED, //True if patient id is required for new patient
+        PATIENT_SUBJECT_NUMBER_REQUIRED, //True if patient subject number is required for new patient
+        QA_SAMPLE_ID_REQUIRED  //True if sample id required from referring lab
     }
 
 	

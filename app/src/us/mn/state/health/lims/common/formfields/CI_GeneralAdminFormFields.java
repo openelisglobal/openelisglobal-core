@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 import us.mn.state.health.lims.common.formfields.AdminFormFields.Field;
 
-public class CI_IPCIAdminFormFields implements IAdminFormFieldsForImplementation {
+public class CI_GeneralAdminFormFields implements IAdminFormFieldsForImplementation {
 
 	public HashMap<AdminFormFields.Field, Boolean> getImplementationAttributes() {
 		HashMap<AdminFormFields.Field, Boolean> settings = new HashMap<AdminFormFields.Field, Boolean>();
