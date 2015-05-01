@@ -594,16 +594,6 @@
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_sample_confirmation" />
-			<column name="action_url" value="/SampleConfirmationEntry.do" />
-			<column name="display_key" value="banner.menu.sample.confirmation.add" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.sample.confirmation.add" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
 			<column name="presentation_order" valueNumeric="4" />
 			<column name="element_id" value="menu_sample_edit" />
 			<column name="action_url" value="/SampleEdit.do?type=readwrite" />
@@ -656,17 +646,6 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="50" />
-			<column name="element_id" value="menu_reports_confirmation" />
-			<column name="action_url"
-				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
-			<column name="display_key" value="report.confirmation" />
-			<column name="tool_tip_key" value="tooltip.report.confirmation" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_nonconformity_date" />
@@ -709,16 +688,6 @@
 	</changeSet>
 	<changeSet author="paulsc" id="1" context="CI_IPCI"	runOnChange="true" runAlways="true">
 		<comment>Adds the menu items for Cote d'Ivoire IPCI</comment>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_sample_confirmation" />
-			<column name="action_url" value="/SampleConfirmationEntry.do" />
-			<column name="display_key" value="banner.menu.sample.confirmation.add" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.sample.confirmation.add" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -775,17 +744,6 @@
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="50" />
-			<column name="element_id" value="menu_reports_confirmation" />
-			<column name="action_url"
-				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
-			<column name="display_key" value="report.confirmation" />
-			<column name="tool_tip_key" value="tooltip.report.confirmation" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
 				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_nonconformity' ) " />
 			<column name="presentation_order" valueNumeric="1" />
 			<column name="element_id" value="menu_reports_nonconformity_date" />
@@ -828,16 +786,6 @@
 	</changeSet>
 		<changeSet author="pauls" id="2" context="ci_regional"	runOnChange="true" runAlways="true">
 		<comment>Adds the menu items for Cote d'Ivoire Regional Labs</comment>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_sample_confirmation" />
-			<column name="action_url" value="/SampleConfirmationEntry.do" />
-			<column name="display_key" value="banner.menu.sample.confirmation.add" />
-			<column name="tool_tip_key" value="banner.menu.sample.confirmation.add" />
-		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -890,17 +838,6 @@
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPAllTests" />
 			<column name="display_key" value="openreports.all.tests.aggregate" />
 			<column name="tool_tip_key" value="tooltip.openreports.all.tests.aggregate" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="50" />
-			<column name="element_id" value="menu_reports_confirmation" />
-			<column name="action_url"
-				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
-			<column name="display_key" value="report.confirmation" />
-			<column name="tool_tip_key" value="tooltip.report.confirmation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
@@ -1631,17 +1568,7 @@
 		</insert>
 	</changeSet>
 	<changeSet author="jfurlong" id="1" context="Kenya"	runOnChange="true" runAlways="true">
-		<comment>Adds the menu items for Cote d'Ivoire IPCI</comment>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-			<column name="presentation_order" valueNumeric="3" />
-			<column name="element_id" value="menu_sample_confirmation" />
-			<column name="action_url" value="/SampleConfirmationEntry.do" />
-			<column name="display_key" value="banner.menu.sample.confirmation.add" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.sample.confirmation.add" />
-		</insert>
+		<comment>Adds the menu items for Kenya</comment>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
 			<column name="parent_id"
@@ -1694,17 +1621,6 @@
 				value="/Report.do?type=indicator&amp;report=indicatorHaitiLNSPAllTests" />
 			<column name="display_key" value="openreports.all.tests.aggregate" />
 			<column name="tool_tip_key" value="tooltip.openreports.all.tests.aggregate" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_reports_aggregate' ) " />
-			<column name="presentation_order" valueNumeric="50" />
-			<column name="element_id" value="menu_reports_confirmation" />
-			<column name="action_url"
-				value="/Report.do?type=indicator&amp;report=indicatorConfirmation" />
-			<column name="display_key" value="report.confirmation" />
-			<column name="tool_tip_key" value="tooltip.report.confirmation" />
 		</insert>
 		<insert schemaName="clinlims" tableName="menu">
 			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
