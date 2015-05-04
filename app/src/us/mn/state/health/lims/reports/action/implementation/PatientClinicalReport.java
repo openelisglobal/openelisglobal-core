@@ -97,35 +97,8 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 		}
 
         reportItems.addAll( currentSampleReportItems );
-        setCollectionTime( sampleSet, currentSampleReportItems );
+        setCollectionTime( sampleSet, currentSampleReportItems, false );
 	}
-
-    private void setCollectionTime( Set<SampleItem> sampleSet, List<ClinicalPatientData> currentSampleReportItems  ){
-        StringBuilder buffer = new StringBuilder(  );
-        boolean firstItem = true;
-        for( SampleItem sampleItem : sampleSet){
-            if( firstItem){
-                firstItem = false;
-            }else{
-                buffer.append( ", " );
-            }
-
-            buffer.append( sampleItem.getTypeOfSample().getLocalizedName() );
-
-            if( sampleItem.getCollectionDate() == null){
-                buffer.append( " -- " );
-                buffer.append( StringUtil.getMessageForKey( "label.not.available" ) );
-            }else{
-                buffer.append( " " );
-                buffer.append( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( sampleItem.getCollectionDate() ) );
-            }
-        }
-
-        String collectionTimes = buffer.toString();
-        for( ClinicalPatientData clinicalPatientData: currentSampleReportItems){
-            clinicalPatientData.setCollectionDateTime( collectionTimes );
-        }
-    }
 
     private List<ClinicalPatientData> addReferredTests(Referral referral, ClinicalPatientData parentData){
 
