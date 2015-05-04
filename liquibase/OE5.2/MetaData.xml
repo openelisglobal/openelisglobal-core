@@ -185,5 +185,22 @@
             <where>id = ( select id from clinlims.site_information where name = 'setFieldForm' )</where>
         </update>
     </changeSet>
+    <changeSet id="9" author="paulsc">
+        <comment>Add module for test catalog</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="TestCatalog"/>
+            <column name="description" value="Admin=&gt;test mang=&gt;activate"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Test Management' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'TestCatalog' ) " />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
 

@@ -104,6 +104,13 @@ public abstract class Report implements IReportCreator {
         return GenericValidator.isBlankOrNull( siteInformation.getValue() ) ? null: imageDAO.retrieveImageInputStream( siteInformation.getValue() );
     }
 
+    /**
+     *
+     * @return map
+     * @deprecated The correct way to localize JasperReports is to us $R{key}.  This was put in before the correct way
+     * was understood.  Do not add to this list.  It will eventually be moved to the correct way.
+     */
+    @Deprecated
     protected Map<String, String> createLocalizationMap(){
         HashMap<String,String> localizationMap = new HashMap<String, String>(  );
         localizationMap.put( "requestOrderNumber", StringUtil.getMessageForKey( "report.requestOrderNumber" ) );
