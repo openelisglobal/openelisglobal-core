@@ -89,19 +89,18 @@ public class SiteInformationUpdateAction extends BaseAction {
 		//makes the changes take effect immediately
 		ConfigurationProperties.forceReload();
 		
-		return FWD_FAIL == forward ? mapping.findForward(forward) : getForward(mapping.findForward(forward), id, start, direction);
+		return FWD_FAIL.equals(forward) ? mapping.findForward(forward) : getForward(mapping.findForward(forward), id, start, direction);
 
 	}
 
     private String validateAndUpdateLocalization( HttpServletRequest request, String localizationId, String english, String french ){
         LocalizationService localizationService = new LocalizationService(localizationId);
-        localizationService.setCurrentUserId( currentUserId );
-        boolean isNeeded = localizationService.updateLocalizationIfNeeded(english, french );
+        localizationService.setCurrentUserId(currentUserId);
 
         String forward = FWD_SUCCESS_INSERT;
-        if( isNeeded){
+        if( localizationService.updateLocalizationIfNeeded(english, french )){
 
-            ActionMessages errors = new ActionMessages();
+            ActionMessages errors;
             Transaction tx = HibernateUtil.getSession().beginTransaction();
             try{
                 new LocalizationDAOImpl().updateData( localizationService.getLocalization() );
@@ -131,21 +130,10 @@ public class SiteInformationUpdateAction extends BaseAction {
 		String name = dynaForm.getString("paramName");
         String value = dynaForm.getString( "value" );
 		ActionMessages errors = new ActionMessages();
-		if (GenericValidator.isBlankOrNull(name)) {
-            errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError( "error.SiteInformation.name.required" ) );
-            request.setAttribute(Globals.ERROR_KEY, errors);
-			saveErrors(request, errors);
 
-            return FWD_FAIL;
-        }
-
-        if( "phone format".equals( name ) && !PhoneNumberService.validatePhoneFormat( value ) ){
-            errors.add( ActionErrors.GLOBAL_MESSAGE, new ActionError("error.SiteInformation.phone.format"));
-            request.setAttribute(Globals.ERROR_KEY, errors);
-            saveErrors( request, errors );
-
-            return FWD_FAIL;
-        }
+		if( !isValid(request, name, value, errors)){
+			return FWD_FAIL;
+		}
 
         String forward = FWD_SUCCESS_INSERT;
 		SiteInformationDAO siteInformationDAO = new SiteInformationDAOImpl();
@@ -218,6 +206,26 @@ public class SiteInformationUpdateAction extends BaseAction {
 		}
 
 		return forward;
+	}
+
+	private boolean isValid(HttpServletRequest request, String name, String value, ActionMessages errors) {
+		if (GenericValidator.isBlankOrNull(name)) {
+            errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionError("error.SiteInformation.name.required"));
+            request.setAttribute(Globals.ERROR_KEY, errors);
+			saveErrors(request, errors);
+
+            return false;
+        }
+
+		if( "phone format".equals( name ) && !PhoneNumberService.validatePhoneFormat(value) ){
+            errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionError("error.SiteInformation.phone.format"));
+            request.setAttribute(Globals.ERROR_KEY, errors);
+            saveErrors( request, errors );
+
+            return false;
+        }
+
+		return true;
 	}
 
 

@@ -44,6 +44,8 @@ public class Menu extends BaseObject {
 	private String toolTipKey;
 
 	private boolean openInNewWindow;
+
+	private boolean isActive;
 	
 	public String getId() {
 		return id;
@@ -138,4 +140,11 @@ public class Menu extends BaseObject {
 		return openInNewWindow;
 	}
 
+	public boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }

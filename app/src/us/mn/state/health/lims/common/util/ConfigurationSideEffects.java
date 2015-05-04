@@ -18,6 +18,9 @@ package us.mn.state.health.lims.common.util;
 
 import org.apache.commons.validator.GenericValidator;
 
+import us.mn.state.health.lims.menu.daoimpl.MenuDAOImpl;
+import us.mn.state.health.lims.menu.util.MenuUtil;
+import us.mn.state.health.lims.menu.valueholder.Menu;
 import us.mn.state.health.lims.role.dao.RoleDAO;
 import us.mn.state.health.lims.role.daoimpl.RoleDAOImpl;
 import us.mn.state.health.lims.role.valueholder.Role;
@@ -51,6 +54,25 @@ public class ConfigurationSideEffects {
 					siteInformationDAO.updateData(accessionPrefix);
 				}
 			}
+		}
+
+		if("Patient management tab".equals(siteInformation.getName())){
+			MenuDAOImpl menuDAO = new MenuDAOImpl();
+			boolean active = "true".equals(siteInformation.getValue());
+
+			Menu parentMenu = menuDAO.getMenuByElementId("menu_patient");
+			if( parentMenu != null ){
+				parentMenu.setIsActive(active);
+				menuDAO.updateData( parentMenu);
+			}
+
+			Menu menu = menuDAO.getMenuByElementId("menu_patient_add_or_edit");
+			if( menu != null ){
+				menu.setIsActive( active);
+				menuDAO.updateData(menu);
+			}
+
+			MenuUtil.forceRebuild();
 		}
 	}
 }
