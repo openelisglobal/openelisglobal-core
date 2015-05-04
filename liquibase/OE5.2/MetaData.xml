@@ -118,5 +118,72 @@
             <column name="description_key" value="site.info.result.age.adult" />
         </insert>
     </changeSet>
+    <changeSet id="4" author="paulsc">
+        <comment>Adding new settings to site-information and out of form fields</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="Patient ID required" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Is an id required for the patient" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'patientEntryConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instruction.patient.id.required" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.patient.id.required" />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="Subject number required" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Is a subject number required for patient" />
+            <column name="value" value="false" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'patientEntryConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instruction.patient.subNumber.required" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.patient.subjectNumber.required" />
+        </insert>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="sample id required" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="Is an requester sample id required" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" (select id from clinlims.site_information_domain where name = 'non_conformityConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instruction.nonConformity.sample.id" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.nonConformity.sample.id" />
+        </insert>
+    </changeSet>
+    <changeSet id="5" author="paulsc" context="ci_regional">
+        <comment>Sets patient id to existing form field value</comment>
+        <update tableName="site_information" >
+            <column name="value" value="false" />
+            <where>id = ( select id from clinlims.site_information where name = 'Patient ID required' )</where>
+        </update>
+    </changeSet>
+    <changeSet id="6" author="paulsc" context="ci_regional, haitiLNSP">
+        <comment>Sets sample id to existing form field value</comment>
+        <update tableName="site_information" >
+            <column name="value" value="false" />
+            <where>id = ( select id from clinlims.site_information where name = 'sample_id_required' )</where>
+        </update>
+    </changeSet>
+    <changeSet id="7" author="paulsc" context="CI_IPCI, ciLNSP, Kenya">
+        <comment>Sets subject number require to existing form field value</comment>
+        <update tableName="site_information" >
+            <column name="value" value="true" />
+            <where>id = ( select id from clinlims.site_information where name = 'Subject number required' )</where>
+        </update>
+    </changeSet>
+    <changeSet id="8" author="paulsc" context="CI_IPCI, ci_regional">
+        <comment>Sets new field form value</comment>
+        <update tableName="site_information" >
+            <column name="value" value="CI_GENERAL" />
+            <where>id = ( select id from clinlims.site_information where name = 'setFieldForm' )</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
 

@@ -55,6 +55,7 @@
 <bean:define id="resultTypeList" name='<%=formName%>'  property="resultTypeList" type="java.util.List<IdValuePair>" />
 <bean:define id="testUnitList" name='<%=formName%>'  property="labUnitList" type="java.util.List<IdValuePair>" />
 <bean:define id="ageRangeList" name='<%=formName%>'  property="ageRangeList" type="java.util.List<IdValuePair>" />
+<bean:define id="dictionaryList" name='<%=formName%>'  property="dictionaryList" type="java.util.List<IdValuePair>" />
 
 
     <script type="text/javascript">
@@ -79,12 +80,12 @@
 
         function handleMultiSelectChange(e, data){
             if( step == 'step2'){
-                createOrderBoxForSampleType(e, data);
+                createOrderBoxForSampleType( data);
             }
             checkReadyForNextStep(e,data);
         }
 
-        function createOrderBoxForSampleType(e, data){
+        function createOrderBoxForSampleType( data){
             var sampleTypeName = $jq("#sampleTypeSelection option[value=" + data.value + "]").text();
             var divId = data.value;
             if( data.type == 'add'){
@@ -125,7 +126,7 @@
             var response = xhr.responseXML.getElementsByTagName("formfield").item(0);
             var tests = response.getElementsByTagName("test");
             var sampleTypeId = getValueFromXmlElement(response, "sampleTypeId");
-            var test, name, id, li, span;
+            var test, name, id, li;
             var ul = $jq(document.createElement("ul"));
             var length = tests.length;
             ul.addClass("sortable sortable-tag");
@@ -299,7 +300,7 @@
             }
         }
 
-        function normalRangeCheck( index, edge ){
+        function normalRangeCheck( index ){
             var lowNormalValue, highNormalValue, lowValidValue, highValidValue;
             var lowGenderNormalValue, highGenderNormalValue;
             var lowGenderNormal, highGenderNormal;
@@ -409,12 +410,11 @@
                 if (highValidValue != "Infinity" && highGenderNormalValue > highValidValue) {
                     highGenderNormal.addClass("error");
                     alert("high normal range must be less than or equal to the high valid range");
-                    return;
                 }
             }
         }
 
-        function validRangeCheck( index ){
+        function validRangeCheck( ){
             var highValidValue, lowValidValue;
             var lowValid = $jq("#lowValid");
             var highValid = $jq("#highValid");
@@ -490,7 +490,19 @@
                   makeSortListsReadOnly();
                   $jq("#normalRangeDiv").show();
                   $jq("#sampleTypeSelectionDiv").hide();
+              }else if( resultTypeId == '<%= TypeOfTestResultService.ResultType.DICTIONARY.getId()%>'||
+                      resultTypeId == '<%= TypeOfTestResultService.ResultType.MULTISELECT.getId()%>' ||
+                      resultTypeId == '<%= TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.getId()%>'){
+                  step = 'step3Dictionary';
+                  makeSortListsReadOnly();
+                  $jq("#sampleTypeSelectionDiv").hide();
+                  $jq(".dictionarySelect").show();
               }
+            }else if( step == "step3Numeric"){
+                $jq( "#normalRangeDiv input,select").prop("disabled", true );
+                $jq(".confirmHide").hide();
+                $jq(".confirmShow").show();
+                createJSON();
             }
         }
         function navigateBack(){
@@ -518,6 +530,10 @@
                     $jq(".sortable").sortable("enable");
                 }
                 $jq("#sortTitleDiv").text('<%=StringUtil.getMessageForKey("label.test.display.order")%>');
+                $jq(".confirmHide").show();
+                $jq(".confirmShow").hide();
+            }else if( step == "step3Numeric"){
+                $jq( "#normalRangeDiv input,select").prop("disabled", false );
                 $jq(".confirmHide").show();
                 $jq(".confirmShow").hide();
             }
@@ -558,7 +574,10 @@
             jsonObj.active = $jq("#active").attr("checked") ? 'Y' : 'N';
             jsonObj.sampleTypes = [];
             addJsonSortingOrder( jsonObj);
-            //alert(JSON.stringify(jsonObj));
+            if( step == "step3Numeric"){
+                addJsonResultLimits( jsonObj);
+            }
+            //console.log(JSON.stringify(jsonObj));
             $jq("#jsonWad").val(JSON.stringify(jsonObj));
         }
 
@@ -592,6 +611,44 @@
                 });
                 jsonObj.sampleTypes[i] = jsonSampleType;
             }
+        }
+        function addJsonResultLimits( jsonObj ){
+            var rowIndex, limit, gender, yearMonth, upperAge;
+            var countIndex = 0;
+
+            jsonObj.lowValid = $jq("#lowValid").val();
+            jsonObj.highValid = $jq("#highValid").val();
+            jsonObj.significantDigits = $jq("#significantDigits").val();
+            jsonObj.resultLimits = [];
+
+
+            $jq( "#normalRangeDiv .rowKey").each(function(){
+                rowIndex = $jq(this).val();
+                gender = $jq("#genderCheck_" + rowIndex).is( ":checked");
+                yearMonth =  monthYear = $jq(".yearMonthSelect_" + rowIndex + ":checked").val();
+                limit = {};
+
+                upperAge = $jq("#upperAgeSetter_" + rowIndex).val();
+                if( upperAge != "Infinity") {
+                    limit.highAgeRange = yearMonth == "Y" ? (upperAge * 12).toString() : upperAge;
+                }else{
+                    limit.highAgeRange = upperAge;
+                }
+
+                limit.gender = gender;
+                limit.lowNormal = $jq("#lowNormal_" + rowIndex).val();
+                limit.highNormal = $jq("#highNormal_" + rowIndex).val();
+                limit.reportingRange = $jq("#reportingRange_" + rowIndex).val();
+
+                if( gender ){
+                    limit.lowNormalFemale = $jq("#lowNormal_G_" + rowIndex).val();
+                    limit.highNormalFemale = $jq("#highNormal_G_" + rowIndex).val();
+                    limit.reportingRangeFemale = $jq("#reportingRange_G_" + rowIndex).val();
+                }
+
+                jsonObj.resultLimits[countIndex++] = limit;
+            });
+
         }
         function submitAction(target) {
             var form = window.document.forms[0];
@@ -634,8 +691,7 @@
         <span class="tab">The kind of result for this test</span>
         <UL>
             <li>Numeric. Accepts only numeric results in a text box. Results can be evaluated as to being in a normal or
-                a
-                valid range
+                a valid range
             </li>
             <li>Alphanumeric. Accepts either numeric or text in a text box. It will not be evaluated for being normal or
                 valid
@@ -775,6 +831,20 @@
                 <div id="testDisplayOrderDiv" style="float:left; width:40%;">
                     <div id="sortTitleDiv" align="center"><bean:message key="label.test.display.order"/></div>
                     <div id="endOrderMarker"></div>
+                    <div class="dictionarySelect" style="float:left; width:33%; display:none; overflow: hidden ">
+                        Select List Options<br/>
+                        <select id="dictionarySelection" multiple="multiple" title="Multiple">
+                            <% for(IdValuePair pair : dictionaryList ){ %>
+                            <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
+                            <% } %>
+                        </select><br/><br/><br/>
+                    </div>
+                    <div id="sortDictionaryDiv" align="center" class="dictionarySelect" style="float:left; width:33%; display:none;">Result order</div>
+                    <div class="dictionarySelect" style="float:left; width:20%; display:none">
+                        Qualifiers<br/>
+                        <select id="qualifierSelection" multiple="multiple" title="Multiple">
+                        </select><br/><br/><br/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -800,9 +870,9 @@
                             <% } %>
                         </select>
                     </td>
-                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_index" class="lowNormal" onchange="normalRangeCheck('index', 'low');"></td>
-                    <td><input type="text" value="Infinity" size="10" id="highNormal_index" class="highNormal" onchange="normalRangeCheck('index', 'high');"></td>
-                    <td><input type="text" value="" size="12"></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_index" class="lowNormal" onchange="normalRangeCheck('index');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_index" class="highNormal" onchange="normalRangeCheck('index');"></td>
+                    <td><input type="text" value="" size="12" id="reportingRange_index" ></td>
                     <td></td>
                     <td></td>
                     <td><input id="removeButton_index" type="button" class="textButton" onclick='removeLimitRow( index );' value="remove me"/></td>
@@ -814,9 +884,9 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_index" class="lowNormal" onchange="normalRangeCheck('index', 'low');"></td>
-                    <td><input type="text" value="Infinity" size="10" id="highNormal_G_index" class="highNormal" onchange="normalRangeCheck('index', 'low');"></td>
-                    <td></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_index" class="lowNormal" onchange="normalRangeCheck('index');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_G_index" class="highNormal" onchange="normalRangeCheck('index');"></td>
+                    <td><input type="text" value="" size="12" id="reportingRange_G_index"></td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -824,7 +894,7 @@
         </div>
         <div id="normalRangeDiv" style="display:none;" >
             <h3>Normal Range</h3>
-            <table>
+            <table style="display:inline-table">
                 <tr>
                     <th></th>
                     <th colspan="8">Normal Range</th>
@@ -859,11 +929,11 @@
                             <% } %>
                         </select>
                     </td>
-                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_0" class="lowNormal" onchange="normalRangeCheck('0', 'low');"></td>
-                    <td><input type="text" value="Infinity" size="10" id="highNormal_0" class="highNormal" onchange="normalRangeCheck('0', 'high');"></td>
-                    <td><input type="text" value="" size="12"></td>
-                    <td><input type="text" value="-Infinity" size="10" id="lowValid" onchange="validRangeCheck('0');"></td>
-                    <td><input type="text" value="Infinity" size="10" id="highValid" onchange="validRangeCheck('0');"></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_0" class="lowNormal" onchange="normalRangeCheck('0');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_0" class="highNormal" onchange="normalRangeCheck('0');"></td>
+                    <td><input type="text" value="" size="12" id="reportingRange_0"></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowValid" onchange="validRangeCheck();"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highValid" onchange="validRangeCheck();"></td>
                 </tr>
                 <tr class="sexRange_0 row_0" style="display: none">
                     <td ></td>
@@ -872,16 +942,18 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_0" class="lowNormal" onchange="normalRangeCheck('0', 'low');"></td>
-                    <td><input type="text" value="Infinity" size="10" id="highNormal_G_0" class="highNormal" onchange="normalRangeCheck('0', 'high');"></td>
-                    <td></td>
+                    <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_0" class="lowNormal" onchange="normalRangeCheck('0');"></td>
+                    <td><input type="text" value="Infinity" size="10" id="highNormal_G_0" class="highNormal" onchange="normalRangeCheck('0');"></td>
+                    <td><input type="text" value="" size="12" id="reportingRange_G_0"></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr id="endRow"></tr>
             </table>
+            <label for="significantDigits" >Significant Digits</label>
+            <input type="number" min="0" max="10" id="significantDigits" >
         </div>
-        <div id="normalRangeEndDiv" ></div>
+
 
         <div class="selectShow confirmHide" style="margin-left:auto; margin-right:auto;width: 40%; ">
             <input type="button"

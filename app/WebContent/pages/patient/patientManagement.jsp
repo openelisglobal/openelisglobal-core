@@ -51,7 +51,7 @@
 	supportPatientType = FormFields.getInstance().useField(Field.PatientType);
 	supportInsurance = FormFields.getInstance().useField(Field.InsuranceNumber);
 	supportSubjectNumber = FormFields.getInstance().useField(Field.SubjectNumber);
-    subjectNumberRequired = FormFields.getInstance().useField( Field.SubjectNumberRequired );
+    subjectNumberRequired = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.PATIENT_SUBJECT_NUMBER_REQUIRED, "true");
 	supportNationalID = FormFields.getInstance().useField(Field.NationalID);
 	supportOccupation = FormFields.getInstance().useField(Field.Occupation);
 	supportCommune = FormFields.getInstance().useField(Field.ADDRESS_COMMUNE);
@@ -64,7 +64,7 @@
 		patientAgeRequired = false;
 		patientGenderRequired = false;
 	}else{
-		patientIDRequired = FormFields.getInstance().useField(Field.PatientIDRequired);
+		patientIDRequired = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.PATIENT_ID_REQUIRED, "true");
 	    patientRequired = FormFields.getInstance().useField(Field.PatientRequired );
 	    patientAgeRequired = true;
 		patientGenderRequired = true;

@@ -29,6 +29,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.localization.dao.LocalizationDAO;
 import us.mn.state.health.lims.localization.daoimpl.LocalizationDAOImpl;
@@ -37,6 +38,9 @@ import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
+import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
+import us.mn.state.health.lims.resultlimits.daoimpl.ResultLimitDAOImpl;
+import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -82,6 +86,7 @@ public class TestAddUpdate extends BaseAction {
         PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
         TestResultDAO testResultDAO = new TestResultDAOImpl();
         TypeOfSampleTestDAO typeOfSampleTestDAO = new TypeOfSampleTestDAOImpl();
+        ResultLimitDAO resultLimitDAO = new ResultLimitDAOImpl();
 
         Transaction tx = HibernateUtil.getSession().beginTransaction();
         try{
@@ -117,6 +122,12 @@ public class TestAddUpdate extends BaseAction {
                     testResult.setTest(set.test);
                     testResultDAO.insertData(testResult);
                 }
+
+                for( ResultLimit resultLimit : set.resultLimits){
+                    resultLimit.setSysUserId(currentUserId);
+                    resultLimit.setTestId(set.test.getId());
+                    resultLimitDAO.insertData(resultLimit);
+                }
             }
 
             tx.commit();
@@ -140,14 +151,16 @@ public class TestAddUpdate extends BaseAction {
         }
     }
 
-    private void createTestResults(ArrayList<TestResult> testResults, TestAddParams testAddParams) {
+    private void createTestResults(ArrayList<TestResult> testResults, String significantDigits, TestAddParams testAddParams) {
         TypeOfTestResultService.ResultType type = TypeOfTestResultService.getResultTypeById(testAddParams.resultTypeId);
 
-        if (TypeOfTestResultService.ResultType.isTextOnlyVariant(type)){
+        if (TypeOfTestResultService.ResultType.isTextOnlyVariant(type) ||
+                TypeOfTestResultService.ResultType.isNumeric(type)){
             TestResult testResult = new TestResult();
             testResult.setTestResultType(type.getCharacterValue());
             testResult.setSortOrder("1");
             testResult.setIsActive(true);
+            testResult.setSignificantDigits(significantDigits);
             testResults.add(testResult);
         }
     }
@@ -162,12 +175,21 @@ public class TestAddUpdate extends BaseAction {
     }
 
     private List<TestSet> createTestSets(TestAddParams testAddParams) {
+        Double lowValid = null;
+        Double highValid = null;
+        String significantDigits = testAddParams.significantDigits;
+        boolean numericResults = TypeOfTestResultService.ResultType.isNumericById(testAddParams.resultTypeId);
         List<TestSet> testSets = new ArrayList<TestSet>();
         UnitOfMeasure uom = null;
         if(!GenericValidator.isBlankOrNull(testAddParams.uomId) || "0".equals(testAddParams.uomId)) {
             uom = new UnitOfMeasureDAOImpl().getUnitOfMeasureById(testAddParams.uomId);
         }
         TestSection testSection = new TestSectionService( testAddParams.testSectionId).getTestSection();
+
+        if( numericResults ){
+            lowValid = StringUtil.doubleWithInfinity(testAddParams.lowValid);
+            highValid = StringUtil.doubleWithInfinity(testAddParams.highValid);
+        }
         //The number of test sets depend on the number of sampleTypes
         for( int i = 0; i < testAddParams.sampleList.size(); i++){
             TypeOfSample typeOfSample = typeOfSampleDAO.getTypeOfSampleById(testAddParams.sampleList.get(i).sampleTypeId);
@@ -202,12 +224,34 @@ public class TestAddUpdate extends BaseAction {
             typeOfSampleTest.setTypeOfSampleId(typeOfSample.getId());
             testSet.sampleTypeTest = typeOfSampleTest;
 
-            createPanelItems( testSet.panelItems, testAddParams);
-            createTestResults( testSet.testResults, testAddParams );
+            createPanelItems(testSet.panelItems, testAddParams);
+            createTestResults( testSet.testResults, significantDigits, testAddParams );
+            if( numericResults) {
+                testSet.resultLimits = createResultLimits(lowValid, highValid, testAddParams);
+            }
+
             testSets.add( testSet);
         }
 
         return testSets;
+    }
+
+    private ArrayList<ResultLimit> createResultLimits(Double lowValid, Double highValid, TestAddParams testAddParams) {
+        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        for( ResultLimitParams params : testAddParams.limits){
+            ResultLimit limit = new ResultLimit();
+            limit.setResultTypeId(testAddParams.resultTypeId);
+            limit.setGender(params.gender);
+            limit.setMinAge(StringUtil.doubleWithInfinity(params.lowAge));
+            limit.setMaxAge(StringUtil.doubleWithInfinity(params.highAge));
+            limit.setLowNormal(StringUtil.doubleWithInfinity(params.lowLimit));
+            limit.setHighNormal(StringUtil.doubleWithInfinity(params.highLimit));
+            limit.setLowValid(lowValid);
+            limit.setHighValid(highValid);
+            resultLimits.add(limit);
+        }
+
+        return resultLimits;
     }
 
 
@@ -226,12 +270,51 @@ public class TestAddUpdate extends BaseAction {
             extractSampleTypes(obj, parser, testAddParams);
             testAddParams.active = (String) obj.get("active");
             testAddParams.orderable = (String) obj.get("orderable");
+            if( TypeOfTestResultService.ResultType.isNumericById(testAddParams.resultTypeId)){
+                testAddParams.lowValid = (String)obj.get("lowValid");
+                testAddParams.highValid = (String)obj.get("highValid");
+                testAddParams.significantDigits = (String)obj.get("significantDigits");
+                extractLimits( obj, parser, testAddParams);
+            }
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return testAddParams;
+    }
+
+    private void extractLimits(JSONObject obj, JSONParser parser, TestAddParams testAddParams) throws ParseException{
+        String lowAge = "0";
+        String limits = (String)obj.get("resultLimits");
+        JSONArray limitArray = (JSONArray) parser.parse(limits);
+        for( int i = 0; i < limitArray.size(); i++){
+            ResultLimitParams params = new ResultLimitParams();
+            Boolean gender = (Boolean)((JSONObject) limitArray.get(i)).get("gender");
+            if( gender ){
+                params.gender = "M";
+            }
+            String highAge = (String)(((JSONObject) limitArray.get(i)).get("highAgeRange"));
+            params.displayRange = (String)(((JSONObject) limitArray.get(i)).get("reportingRange"));
+            params.lowLimit = (String)(((JSONObject) limitArray.get(i)).get("lowNormal"));
+            params.highLimit = (String)(((JSONObject) limitArray.get(i)).get("highNormal"));
+            params.lowAge = lowAge;
+            params.highAge = highAge;
+            testAddParams.limits.add(params);
+
+            if( gender){
+                params = new ResultLimitParams();
+                params.gender = "F";
+                params.displayRange = (String)(((JSONObject) limitArray.get(i)).get("reportingRangeFemale"));
+                params.lowLimit = (String)(((JSONObject) limitArray.get(i)).get("lowNormalFemale"));
+                params.highLimit = (String)(((JSONObject) limitArray.get(i)).get("highNormalFemale"));
+                params.lowAge = lowAge;
+                params.highAge = highAge;
+                testAddParams.limits.add(params);
+            }
+
+            lowAge = highAge;
+        }
     }
 
     private void extractPanels(JSONObject obj, JSONParser parser, TestAddParams testAddParams) throws ParseException {
@@ -282,6 +365,11 @@ public class TestAddUpdate extends BaseAction {
         ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<SampleTypeListAndTestOrder>();
         String active;
         String orderable;
+        String lowValid;
+        String highValid;
+        String significantDigits;
+        ArrayList<ResultLimitParams> limits = new ArrayList<ResultLimitParams>();
+
 
 
     }
@@ -291,11 +379,20 @@ public class TestAddUpdate extends BaseAction {
         ArrayList<String> orderedTests = new ArrayList<String>();
     }
 
+    private class ResultLimitParams{
+        String gender;
+        String lowAge;
+        String highAge;
+        String lowLimit;
+        String highLimit;
+        String displayRange;
+    }
     private class TestSet{
         Test test;
         TypeOfSampleTest sampleTypeTest;
         ArrayList<Test> sortedTests = new ArrayList<Test>();
         ArrayList<PanelItem> panelItems = new ArrayList<PanelItem>();
         ArrayList<TestResult> testResults = new ArrayList<TestResult>();
+        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
     }
 }

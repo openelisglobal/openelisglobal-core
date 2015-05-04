@@ -112,9 +112,9 @@ public class QaEventAction extends BaseAction {
 		UserTestSectionDAO userTestSectionDAO = new UserTestSectionDAOImpl();
 		//bugzilla 2291
 		List tests = userTestSectionDAO.getAllUserTests(request, true);
-		List dictionaries = dictionaryDAO.getDictionaryEntrysByCategory(SystemConfiguration.getInstance().getQaEventDictionaryCategoryType());
+		List dictionaries = dictionaryDAO.getDictionaryEntrysByCategoryAbbreviation(SystemConfiguration.getInstance().getQaEventDictionaryCategoryType());
 		//bugzilla 2506
-		List dictionaries2 = dictionaryDAO.getDictionaryEntrysByCategory(SystemConfiguration.getInstance().getQaEventDictionaryCategoryCategory());
+		List dictionaries2 = dictionaryDAO.getDictionaryEntrysByCategoryAbbreviation(SystemConfiguration.getInstance().getQaEventDictionaryCategoryCategory());
 		
 		//bugzilla 1856
 		Collections.sort(tests, TestComparator.DESCRIPTION_COMPARATOR);

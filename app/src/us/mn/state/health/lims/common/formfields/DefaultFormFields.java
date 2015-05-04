@@ -52,12 +52,10 @@ public class DefaultFormFields extends AFormFields {
 		setFieldTrue(Field.ADDRESS_CITY );
 		setFieldTrue(Field.PatientRequired);
         setFieldTrue(Field.QA_FULL_PROVIDER_INFO );
-        setFieldTrue(Field.QA_REQUESTER_SAMPLE_ID);
-        setFieldTrue(Field.PatientIDRequired);
 		setFieldTrue(Field.PatientNameRequired);
 		setFieldTrue(Field.SampleEntryRequestingSiteSampleId);
         setFieldTrue( Field.ADDRESS_COMMUNE );
-        setFieldTrue( Field.ADDRESS_VILLAGE );
+        setFieldTrue(Field.ADDRESS_VILLAGE);
 
         setFieldFalse(Field.OrgState);
         setFieldFalse(Field.ZipCode);
@@ -66,7 +64,6 @@ public class DefaultFormFields extends AFormFields {
 		setFieldFalse(Field.RequesterSiteList);
 		setFieldFalse(Field.InlineOrganizationTypes);
 		setFieldFalse(Field.SubjectNumber);
-        setFieldFalse(Field.SubjectNumberRequired );
 		setFieldFalse(Field.ADDRESS_DEPARTMENT );
 		setFieldFalse(Field.MotherInitial);
 		setFieldFalse(Field.SearchSampleStatus);
@@ -133,10 +130,8 @@ public class DefaultFormFields extends AFormFields {
 			return new CI_LNSPFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_CDI.equals(fieldSet)){
 			return new CI_RETROFormFields().getImplementationAttributes();
-		}else if(IActionConstants.FORM_FIELD_SET_CI_IPCI.equals(fieldSet)){
-			return new CI_IPCIFormFields().getImplementationAttributes();
-		}else if(IActionConstants.FORM_FIELD_SET_CI_REGIONAL.equals(fieldSet)){
-			return new CI_RegionalFormFields().getImplementationAttributes();
+		}else if(IActionConstants.FORM_FIELD_SET_CI_GENERAL.equals(fieldSet)){
+			return new CI_GeneralFormFields().getImplementationAttributes();
 		}else if(IActionConstants.FORM_FIELD_SET_KENYA.equals(fieldSet)){
 			return new KenyaFormFields().getImplementationAttributes();
 		}

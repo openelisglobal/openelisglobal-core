@@ -768,7 +768,7 @@ public abstract class PatientReport extends Report{
         if( doAnalysis ){
             data.setPanel( currentAnalysisService.getPanel());
             if( currentAnalysisService.getPanel() != null ){
-                data.setPanelName( currentAnalysisService.getPanel().getPanelName() );
+                data.setPanelName( currentAnalysisService.getPanel().getLocalizedName() );
             }
             data.setTestDate(  currentAnalysisService.getCompletedDateForDisplay());
             data.setSampleSortOrder(currentAnalysisService.getAnalysis().getSampleItem().getSortOrder());

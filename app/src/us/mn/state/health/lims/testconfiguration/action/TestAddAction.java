@@ -25,14 +25,23 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ResultLimitService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
+import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
+import us.mn.state.health.lims.dictionary.valueholder.*;
+import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
+import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TestAddAction extends BaseAction {
+
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
@@ -45,10 +54,82 @@ public class TestAddAction extends BaseAction {
         PropertyUtils.setProperty(form, "uomList", DisplayListService.getList(ListType.UNIT_OF_MEASURE));
         PropertyUtils.setProperty(form, "labUnitList", DisplayListService.getList(ListType.TEST_SECTION));
         PropertyUtils.setProperty(form, "ageRangeList", ResultLimitService.getPredefinedAgeRanges());
+        PropertyUtils.setProperty(form, "dictionaryList", DisplayListService.getList(ListType.DICTIONARY_TEST_RESULTS));
+        PropertyUtils.setProperty(form, "groupedDictionaryList", createGroupedDictionaryList());
+
 
         return mapping.findForward(FWD_SUCCESS);
     }
 
+    private List<List<IdValuePair>> createGroupedDictionaryList() {
+        List<TestResult> testResults = getSortedTestResults();
+
+        HashSet<String> dictionaryIdGroups = getDictionaryIdGroups(testResults);
+
+        return getGroupedDictionaryPairs(dictionaryIdGroups);
+    }
+
+    private List<TestResult> getSortedTestResults() {
+        List<TestResult> testResults = new TestResultDAOImpl().getAllTestResults();
+
+        Collections.sort(testResults, new Comparator<TestResult>() {
+            @Override
+            public int compare(TestResult o1, TestResult o2) {
+                int result = o1.getTest().getId().compareTo(o2.getTest().getId());
+
+                if (result != 0) {
+                    return result;
+                }
+
+                return Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
+            }
+        });
+        return testResults;
+    }
+    private HashSet<String> getDictionaryIdGroups(List<TestResult> testResults) {
+        HashSet< String > dictionaryIdGroups = new HashSet<String>();
+        String currentTestId = null;
+        String dictionaryIdGroup = null;
+        for( TestResult testResult : testResults){
+            if(TypeOfTestResultService.ResultType.isDictionaryVariant(testResult.getTestResultType()) ){
+                if( testResult.getTest().getId().equals(currentTestId) ){
+                    dictionaryIdGroup += "," + testResult.getValue();
+                }else{
+                    currentTestId = testResult.getTest().getId();
+                    if( dictionaryIdGroup != null){
+                        dictionaryIdGroups.add(dictionaryIdGroup);
+                    }
+
+                    dictionaryIdGroup = testResult.getValue();
+                }
+
+            }
+        }
+
+        if( dictionaryIdGroup != null){
+            dictionaryIdGroups.add(dictionaryIdGroup);
+        }
+
+        return dictionaryIdGroups;
+    }
+
+
+    private List<List<IdValuePair>> getGroupedDictionaryPairs( HashSet<String> dictionaryIdGroups) {
+        List<List<IdValuePair>> groups = new ArrayList<List<IdValuePair>>();
+        DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+        for( String group : dictionaryIdGroups){
+            List<IdValuePair> dictionaryPairs = new ArrayList<IdValuePair>();
+            for( String id : group.split(",")){
+                Dictionary dictionary = dictionaryDAO.getDictionaryById(id);
+                if( dictionary != null){
+                    dictionaryPairs.add(new IdValuePair(id, dictionary.getLocalizedName()));
+                }
+            }
+            groups.add(dictionaryPairs);
+        }
+
+        return groups;
+    }
 
     @Override
     protected String getPageTitleKey() {

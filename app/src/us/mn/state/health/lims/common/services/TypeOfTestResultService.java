@@ -45,6 +45,14 @@ public class TypeOfTestResultService {
         public static boolean isMultiSelectVariant( String type ){ return !GenericValidator.isBlankOrNull( type ) && "MC".contains( type );}
         public static boolean isTextOnlyVariant(String type){ return !GenericValidator.isBlankOrNull(type) && "AR".contains( type );}
         public static boolean isTextOnlyVariant(ResultType type){ return "AR".contains( type.getCharacterValue() );}
+
+        public static boolean isNumericById(String resultTypeId) {
+            return NUMERIC.getId().equals(resultTypeId);
+        }
+
+        public static boolean isNumeric(ResultType type) {
+            return "N".equals( type.getCharacterValue());
+        }
     }
 
     public static ResultType getResultTypeById( String id){
