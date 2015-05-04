@@ -77,6 +77,7 @@ import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -671,6 +672,36 @@ public abstract class PatientReport extends Report{
 
     }
 
+    protected void setCollectionTime( Set<SampleItem> sampleSet, List<ClinicalPatientData> currentSampleReportItems, boolean addAccessionNumber  ){
+        StringBuilder buffer = new StringBuilder(  );
+        boolean firstItem = true;
+        for( SampleItem sampleItem : sampleSet){
+            if( firstItem){
+                firstItem = false;
+            }else{
+                buffer.append( ", " );
+            }
+
+            buffer.append( sampleItem.getTypeOfSample().getLocalizedName() );
+            if (addAccessionNumber) {
+            	buffer.append( " " );
+            	buffer.append( sampleItem.getSample().getAccessionNumber() + "-" + sampleItem.getSortOrder());
+            }
+            if( sampleItem.getCollectionDate() == null){
+                buffer.append( " -- " );
+                buffer.append( StringUtil.getMessageForKey( "label.not.available" ) );
+            }else{
+                buffer.append( " " );
+                buffer.append( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( sampleItem.getCollectionDate() ) );
+            }
+        }
+
+        String collectionTimes = buffer.toString();
+        for( ClinicalPatientData clinicalPatientData: currentSampleReportItems){
+            clinicalPatientData.setCollectionDateTime( collectionTimes );
+        }
+    }
+
     /**
      * @see PatientReport#initializeReportItems()
      */
@@ -740,10 +771,10 @@ public abstract class PatientReport extends Report{
                 data.setPanelName( currentAnalysisService.getPanel().getPanelName() );
             }
             data.setTestDate(  currentAnalysisService.getCompletedDateForDisplay());
-            sortOrder = currentAnalysisService.getAnalysis().getSampleItem().getSortOrder();
+            data.setSampleSortOrder(currentAnalysisService.getAnalysis().getSampleItem().getSortOrder());
             data.setOrderFinishDate( completionDate );
             data.setOrderDate( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( currentSampleService.getOrderedDate() ) );
-            data.setSampleId( currentSampleService.getAccessionNumber() + "-" + sortOrder );
+            data.setSampleId( currentSampleService.getAccessionNumber() + "-" + data.getSampleSortOrder() );
             data.setSampleType( currentAnalysisService.getTypeOfSample().getLocalizedName()  );
             data.setCollectionDateTime( DateUtil.convertTimestampToStringDateAndConfiguredHourTime( currentAnalysisService.getAnalysis().getSampleItem().getCollectionDate() ));
         }

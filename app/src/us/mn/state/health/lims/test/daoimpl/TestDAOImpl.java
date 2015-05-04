@@ -1067,6 +1067,23 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return null;
 	}
 
+	@Override
+	public Test getActiveTestByDescription(String description){
+		String sql = "From Test t where t.description = :description and t.isActive='Y'";
+		try{
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setString("description", description);
+
+			Test test = (Test)query.uniqueResult();
+			closeSession();
+			return test;
+		}catch(HibernateException e){
+			handleException(e, "getTestByDescription");
+		}
+
+		return null;
+	}
+
     @Override
     public Test getTestByGUID( String guid){
         String sql = "From Test t where t.guid = :guid";
