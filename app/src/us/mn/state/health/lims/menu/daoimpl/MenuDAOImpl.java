@@ -47,6 +47,24 @@ public class MenuDAOImpl implements MenuDAO {
 		} 
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Menu> getAllActiveMenus() throws LIMSRuntimeException {
+
+		try {
+			String sql = "from Menu m where m.isActive = true";
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			List<Menu> menus = query.list();
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+
+			return menus;
+		} catch(HibernateException e) {
+			LogEvent.logError("MenuDAOImpl","getAllActiveMenus()",e.toString());
+			throw new LIMSRuntimeException("Error in Menu getAllActiveMenus()", e);
+		}
+	}
+
 	public Menu getMenuByElementId(String elementId)  throws LIMSRuntimeException {
 		String sql = "From Menu m where m.elementId = :elementId";
 		try {
@@ -62,5 +80,21 @@ public class MenuDAOImpl implements MenuDAO {
 		}
 		
 	}
+
+	@Override
+	public void updateData(Menu menu) throws LIMSRuntimeException {
+		try {
+			HibernateUtil.getSession().merge(menu);
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+			HibernateUtil.getSession().evict(menu);
+			HibernateUtil.getSession().refresh(menu);
+		} catch (Exception e) {
+
+			LogEvent.logError("Menu.DAOImpl","updateData()",e.toString());
+			throw new LIMSRuntimeException("Error in Menu updateData()", e);
+		}
+	}
+
 
 }
