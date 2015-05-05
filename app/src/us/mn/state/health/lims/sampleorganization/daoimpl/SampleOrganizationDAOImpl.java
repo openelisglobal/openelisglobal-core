@@ -193,12 +193,13 @@ public class SampleOrganizationDAOImpl extends BaseDAOImpl implements SampleOrga
 		try{
 			Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setInteger("sampleId", Integer.parseInt(sample.getId()));
-			SampleOrganization sampleOrg = (SampleOrganization)query.uniqueResult();
+			List<SampleOrganization> sampleOrg = query.list();
 			closeSession();
-			return sampleOrg;
+			//There was a bug that allowed the same sample id / organization id to be entered twice
+			return sampleOrg.isEmpty() ? null : sampleOrg.get(0);
 
 		}catch(HibernateException e){
-			handleException(e, "getDataBySampleID");
+			handleException(e, "getDataBySample");
 		}
 		return null;
 	}
