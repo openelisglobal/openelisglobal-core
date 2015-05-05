@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os.path
 import glob
 import os
 import sys
@@ -37,9 +36,10 @@ LANG_NAME = "en_US.UTF-8"
 APP_NAME = ""
 REPORT_IMAGE_PATH = "/WEB-INF/reports/images/"
 PREVIEW_IMAGE_PATH = "/images/"
-LAB_LOGO_NAME = "labLogo"
-#maps the application name to the liquibase context name
-APP_CONTEX_MAP = { 'CDI':'CDIRetroCI', 'LNSP_Haiti':'haitiLNSP', 'haiti':'haiti', 'CI_LNSP':'ciLNSP', 'CI_IPCI':'CI_IPCI', 'CDI_RegLab':'ci_regional', 'Kenya':'Kenya'}
+PLUGIN_PATH = "/plugin"
+# maps the application name to the liquibase context name
+APP_CONTEX_MAP = {'CDI': 'CDIRetroCI', 'LNSP_Haiti': 'haitiLNSP', 'haiti': 'haiti', 'CI_LNSP': 'ciLNSP',
+                  'CI_IPCI': 'CI_IPCI', 'CDI_RegLab': 'ci_regional', 'Kenya': 'Kenya'}
 CLINLIMS_PWD = ''
 ADMIN_PWD = ''
 SITE_ID = ''
@@ -52,177 +52,181 @@ TOMCAT_VERSION = ''
 TOMCAT_INSTALL_DIR = '/usr/share/'
 NO_PROMPT = False
 
-#note There is a fair amount of copying files, it should be re-written using shutil
+# note There is a fair amount of copying files, it should be re-written using shutil
 def install_crosstab():
-    log("Checking if crosstab is installed in Postgres", True )
+    log("Checking if crosstab is installed in Postgres", True)
 
-    #this creates an empty file to write to
+    # this creates an empty file to write to
     result = open(STAGING_DIR + 'crosstabResult.txt', 'wr')
     result.close()
-    os.chmod(STAGING_DIR + 'crosstabResult.txt',stat.S_IROTH | stat.S_IWOTH)
-
+    os.chmod(STAGING_DIR + 'crosstabResult.txt', stat.S_IROTH | stat.S_IWOTH)
 
     cmd = cmd = 'su -c "psql clinlims -L ' + STAGING_DIR + 'crosstabResult.txt <  ' + CROSSTAB_DIR + 'crosstabCheck.sql" postgres > /dev/null'
-    os.system( cmd )
+    os.system(cmd)
 
-    check_file = open( STAGING_DIR + 'crosstabResult.txt')
+    check_file = open(STAGING_DIR + 'crosstabResult.txt')
 
     for line in check_file:
         if line.find(EXPECTED_CROSSTAB_FUNCTIONS) != -1:
-            log("Crosstabs are installed", True )
+            log("Crosstabs are installed", True)
             return
 
-    log("Installing crosstabs", True )
-    
-    #if tablefunc.so is not present in POSTGRES_LIB_DIR then copy it from CROSSTAB_DIR
-    #the version in CROSSTAB_DIR is for 8.3 (assumes all new installs will be VM based)
-    if not os.path.exists(POSTGRES_LIB_DIR + "tablefunc.so") and "8.3" in POSTGRES_LIB_DIR :
-        #copy the lib file to the lib directory
-        shutil.copy(CROSSTAB_DIR + "tablefunc.so", POSTGRES_LIB_DIR )
-        #run the installer
+    log("Installing crosstabs", True)
+
+    # if tablefunc.so is not present in POSTGRES_LIB_DIR then copy it from CROSSTAB_DIR
+    # the version in CROSSTAB_DIR is for 8.3 (assumes all new installs will be VM based)
+    if not os.path.exists(POSTGRES_LIB_DIR + "tablefunc.so") and "8.3" in POSTGRES_LIB_DIR:
+        # copy the lib file to the lib directory
+        shutil.copy(CROSSTAB_DIR + "tablefunc.so", POSTGRES_LIB_DIR)
+        # run the installer
     cmd = cmd = 'su -c "psql clinlims <  ' + CROSSTAB_DIR + 'tablefunc.sql" postgres'
-    os.system( cmd )
+    os.system(cmd)
+
 
 def check_preconditions():
     """Checks that the correct versions of tomcat, postgres and jre are installed.  Note that the jre check is not very robust"""
     global TOMCAT_VERSION
     global TOMCAT_DIR
     global POSTGRES_LIB_DIR
-    
-    log("Checking for Tomcat 5.5 or later installation", PRINT_TO_CONSOLE )
+
+    log("Checking for Tomcat 5.5 or later installation", PRINT_TO_CONSOLE)
     TOMCAT_DIR = get_tomcat_directory()
     TOMCAT_VERSION = TOMCAT_DIR.strip(TOMCAT_INSTALL_DIR)
     log("Tomcat found version = " + TOMCAT_VERSION, PRINT_TO_CONSOLE)
-    
-    log("Checking for Postgres 8.3 or later installation", PRINT_TO_CONSOLE )
+
+    log("Checking for Postgres 8.3 or later installation", PRINT_TO_CONSOLE)
     os.system('psql --version > tmp')
-    tmpFile = open('tmp')
-    firstLine = tmpFile.readline()
-    tmpFile.close()
-    
-    if len(firstLine) < 1:
-        log("Postgress not installed.  Please install postgres8.3 or later", PRINT_TO_CONSOLE )
+    tmp_file = open('tmp')
+    first_line = tmp_file.readline()
+    tmp_file.close()
+
+    if len(first_line) < 1:
+        log("Postgress not installed.  Please install postgres8.3 or later", PRINT_TO_CONSOLE)
         return False
-    
-    if "8.4" in firstLine:
-        POSTGRES_LIB_DIR  = "/usr/lib/postgresql/8.4/lib/"
-    
-        
-    splitLine = firstLine.split()
-    version = splitLine[2]
-    splitVersion = version.split('.')
+
+    if "8.4" in first_line:
+        POSTGRES_LIB_DIR = "/usr/lib/postgresql/8.4/lib/"
+
+    split_line = first_line.split()
+    version = split_line[2]
+    split_version = version.split('.')
 
     valid = False
 
-    if splitVersion[0].isdigit() and splitVersion[1].isdigit():
-        major = int(splitVersion[0])
-        minor = int(splitVersion[1])
- 
-        valid =  major > 8 or (major == 8 and minor >= 3)
+    if split_version[0].isdigit() and split_version[1].isdigit():
+        major = int(split_version[0])
+        minor = int(split_version[1])
+
+        valid = major > 8 or (major == 8 and minor >= 3)
 
     if valid:
-        log("Postgres found!\n", PRINT_TO_CONSOLE )
+        log("Postgres found!\n", PRINT_TO_CONSOLE)
     else:
-        log("Postgres must be 8.3 or later\n", PRINT_TO_CONSOLE )
+        log("Postgres must be 8.3 or later\n", PRINT_TO_CONSOLE)
         return False
 
-    log("Checking for correcting for correct java runtime", PRINT_TO_CONSOLE )
+    log("Checking for correcting for correct java runtime", PRINT_TO_CONSOLE)
 
-    #do rough check for debian what kind of configuration to do. This is the not a robust part
-    jvmSixPath = "/usr/lib/jvm/java-6-sun/jre/bin/"
+    # do rough check for debian what kind of configuration to do. This is the not a robust part
+    jvm_six_path = "/usr/lib/jvm/java-6-sun/jre/bin/"
 
-    if os.path.exists(jvmSixPath) :
+    if os.path.exists(jvm_six_path):
         updateAlternativePath = "/usr/sbin/update-alternatives"
-        if os.path.exists(updateAlternativePath) :
-            setJavaPath = updateAlternativePath + " --set java " + jvmSixPath + "java"
-            setKeyPath = updateAlternativePath + " --set keytool " + jvmSixPath + "keytool"
+        if os.path.exists(updateAlternativePath):
+            set_java_path = updateAlternativePath + " --set java " + jvm_six_path + "java"
+            set_key_path = updateAlternativePath + " --set keytool " + jvm_six_path + "keytool"
 
-            os.system(setJavaPath)        
-            os.system(setKeyPath)
-    
+            os.system(set_java_path)
+            os.system(set_key_path)
+
     if TOMCAT_VERSION == "tomcat5.5":
-        updateScript = "./configTomcat.sh "
-        os.system( "chmod +x " + updateScript )
-        os.system(updateScript + " > /dev/null ")
+        update_script = "./configTomcat.sh "
+        os.system("chmod +x " + update_script)
+        os.system(update_script + " > /dev/null ")
 
     return True
 
+
 def current_installation():
     name = find_installed_name()
-    return os.path.exists(TOMCAT_DIR + '/conf/Catalina/localhost/' + name +'.xml' )
+    return os.path.exists(TOMCAT_DIR + '/conf/Catalina/localhost/' + name + '.xml')
+
 
 def get_tomcat_directory():
     names = glob.glob(TOMCAT_BASE + '[0-9].[0-9]')
     if names:
         version = names[0].strip(TOMCAT_BASE)
-        splitVersion = version.split('.')
-        major = int(splitVersion[0])
-        minor = int(splitVersion[1])
-        #check for version 5.5 or greater
-        if major == 5 and minor >= 5 :
+        split_version = version.split('.')
+        major = int(split_version[0])
+        minor = int(split_version[1])
+        # check for version 5.5 or greater
+        if major == 5 and minor >= 5:
             log("Found " + names[0], PRINT_TO_CONSOLE)
-            return names[0] 
-        elif major > 5 :
+            return names[0]
+        elif major > 5:
             log("Found " + names[0], PRINT_TO_CONSOLE)
-            return names[0] 
-        else :
-            log("Tomcat must be version 5.5 or later\n", PRINT_TO_CONSOLE )
+            return names[0]
+        else:
+            log("Tomcat must be version 5.5 or later\n", PRINT_TO_CONSOLE)
             return None
-    names = glob.glob(TOMCAT_BASE + '[0-9]')    
-    if names :        
+    names = glob.glob(TOMCAT_BASE + '[0-9]')
+    if names:
         version = names[0].strip(TOMCAT_BASE)
         major = int(version)
-        if major > 5 :
+        if major > 5:
             log("Found " + names[0], PRINT_TO_CONSOLE)
-            return names[0] 
-        else :
-            log("Tomcat must be version 5.5 or later\n", PRINT_TO_CONSOLE )
+            return names[0]
+        else:
+            log("Tomcat must be version 5.5 or later\n", PRINT_TO_CONSOLE)
             return None
     return None
-    
+
+
 def config_files_for_postgres():
-    global ADMIN_PWD    
-    
+    global ADMIN_PWD
+
     if NO_PROMPT:
         pass
     else:
-        ADMIN_PWD = ''.join( Random().sample(string.letters, 12) )
+        ADMIN_PWD = ''.join(Random().sample(string.letters, 12))
         print "This is the postgres admin password.  Please record it in a safe and private place."
         print "It will not be able to be recovered once this script is finished\n"
         print ADMIN_PWD
         print raw_input("\npress any key once you have recorded it")
         os.system('clear')
 
-    #set values for database users
+    # set values for database users
 
-    pgPermissions = open(  TEMPLATE_DIR + 'pgsql-permissions.sql')
+    pg_permissions = open(TEMPLATE_DIR + 'pgsql-permissions.sql')
 
-    outputFile = open( STAGING_DIR + 'pgsqlPermissions.sql', 'w' )
+    output_file = open(STAGING_DIR + 'pgsqlPermissions.sql', 'w')
 
-    for line in pgPermissions:
+    for line in pg_permissions:
         if line.find('itechappPassword') > 0:
-            line = line.replace('[% itechappPassword %]', CLINLIMS_PWD )
-            outputFile.write(line)
+            line = line.replace('[% itechappPassword %]', CLINLIMS_PWD)
+            output_file.write(line)
         elif line.find('adminPassword') > 0:
             line = line.replace('[% adminPassword %]', ADMIN_PWD)
-            outputFile.write(line)
+            output_file.write(line)
         else:
-            outputFile.write(line)
+            output_file.write(line)
 
-    outputFile.close()
-    pgPermissions.close()
+    output_file.close()
+    pg_permissions.close()
+
 
 def get_file_name(file):
-    filenameParts = file.split('/')
-    return filenameParts[len(filenameParts) - 1]
+    filename_parts = file.split('/')
+    return filename_parts[len(filename_parts) - 1]
+
 
 def find_installation_name():
     global APP_NAME
 
-    warFiles = glob.glob( WAR_DIR + '*.war')
+    war_files = glob.glob(WAR_DIR + '*.war')
 
-    for file in warFiles:
-        filename =  get_file_name(file)
+    for file in war_files:
+        filename = get_file_name(file)
 
         if re.match('.*OpenElis.war', filename):
             APP_NAME = filename.split('.')[0]
@@ -235,39 +239,40 @@ def find_installed_name():
     global TOMCAT_VERSION
     TOMCAT_DIR = get_tomcat_directory()
     TOMCAT_VERSION = TOMCAT_DIR.strip(TOMCAT_INSTALL_DIR)
-    warFiles = glob.glob( TOMCAT_DIR + '/webapps/*.war')
+    war_files = glob.glob(TOMCAT_DIR + '/webapps/*.war')
 
-    for file in warFiles:
-        filename =  get_file_name(file)
-        
+    for file in war_files:
+        filename = get_file_name(file)
+
         if re.match('.*OpenElis.war', filename):
             return filename.split('.')[0]
 
     return ''
 
 
-def config_files_for_Tomcat():
-    openElisTemplateFile = open( TEMPLATE_DIR + 'openelis.xml')
-    
-    openElisConfigFile = open( STAGING_DIR  +  APP_NAME + '.xml', 'w')
+def config_files_for_tomcat():
+    openelis_template_file = open(TEMPLATE_DIR + 'openelis.xml')
 
-    for line in openElisTemplateFile:
+    openelis_config_file = open(STAGING_DIR + APP_NAME + '.xml', 'w')
+
+    for line in openelis_template_file:
         if line.find('itechappPassword') > 0:
-            line = line.replace('[% itechappPassword %]', CLINLIMS_PWD )
-        elif line.find('appname') > 0: 
-            openelisline = line.replace('[% appname %]', APP_NAME )
-            openElisConfigFile.write(openelisline)
-            continue   
+            line = line.replace('[% itechappPassword %]', CLINLIMS_PWD)
+        elif line.find('appname') > 0:
+            openelis_line = line.replace('[% appname %]', APP_NAME)
+            openelis_config_file.write(openelis_line)
+            continue
 
-        openElisConfigFile.write(line)
-        
-    openElisConfigFile.close()
-    openElisTemplateFile.close()
+        openelis_config_file.write(line)
+
+    openelis_config_file.close()
+    openelis_template_file.close()
+
 
 def config_site_information():
-    global SITE_ID    
+    global SITE_ID
 
-    #Get site specific information
+    # Get site specific information
     print """
     Some installations require configuuration.  
         You will be asked for specific information which may or may not be needed for this installation.
@@ -277,37 +282,40 @@ def config_site_information():
     if NO_PROMPT:
         pass
     else:
-        siteFile = open( STAGING_DIR + 'siteInfo.sql', 'w' )
+        site_file = open(STAGING_DIR + 'siteInfo.sql', 'w')
         SITE_ID = raw_input("site number for this lab (5 character): ")
-        persisit_site_information( siteFile, 'siteNumber' , 'The site number of the this lab', SITE_ID )
-        persisit_site_information( siteFile, 'Accession number prefix' , 'Prefix for SITEYEARNUM format.  Can not be changed if there are samples', SITE_ID )
-        siteFile.close()
+        persist_site_information(site_file, 'siteNumber', 'The site number of the this lab', SITE_ID)
+        persist_site_information(site_file, 'Accession number prefix',
+                                  'Prefix for SITEYEARNUM format.  Can not be changed if there are samples', SITE_ID)
+        site_file.close()
 
-def persisit_site_information( file, name, description, value ):
+
+def persist_site_information(file, name, description, value):
     DELETE_PRE = 'DELETE from clinlims.site_information where name = \''
     DELETE_POST = '\';\n'
-    
+
     INSERT_PRE = 'INSERT INTO clinlims.site_information( id, lastupdated, "name", description, "value") VALUES ( nextval(\'clinlims.site_information_seq\'), now(), \''
     INSERT_POST = ' );\n\n'
 
-    deleteline = DELETE_PRE + name + DELETE_POST
+    delete_line = DELETE_PRE + name + DELETE_POST
 
-    insertValue = 'null'
+    insert_value = 'null'
     if len(value) > 0:
-        insertValue = '\'' + value + '\''
-    insertline = INSERT_PRE + name + '\', \'' + description + '\', ' + insertValue + INSERT_POST
+        insert_value = '\'' + value + '\''
+    insert_line = INSERT_PRE + name + '\', \'' + description + '\', ' + insert_value + INSERT_POST
 
-    file.write(deleteline) 
-    file.write(insertline) 
+    file.write(delete_line)
+    file.write(insert_line)
+
 
 def install_db():
-
     cmd = 'su -c "psql  <  ' + STAGING_DIR + 'pgsqlPermissions.sql" postgres'
-    os.system( cmd )
+    os.system(cmd)
     cmd = 'su -c "psql clinlims  < ' + DB_DIR + 'databaseInstall.backup" postgres'
-    os.system( cmd )
+    os.system(cmd)
     cmd = 'su -c "psql clinlims <  ' + STAGING_DIR + 'siteInfo.sql" postgres'
-    os.system( cmd )
+    os.system(cmd)
+
 
 def install_backup():
     global SITE_ID
@@ -319,33 +327,33 @@ def install_backup():
             if not over_ride.lower() == "y":
                 return
 
-    #make sure the template files for the backup exits
+    # make sure the template files for the backup exits
     if not os.path.exists(TEMPLATE_DIR + BACKUP_SCRIPT_NAME):
-        log("Not installing backup. Script missing", PRINT_TO_CONSOLE )
+        log("Not installing backup. Script missing", PRINT_TO_CONSOLE)
         return
     else:
-        log("Installing backup", True )
+        log("Installing backup", True)
 
-    #make sure curl is installed
-    log("Checking for curl", True )
-    if os.system( 'which curl' ) == 256:
-        log('curl is not installed. http://curl.linux-mirror.org/', PRINT_TO_CONSOLE )
+    # make sure curl is installed
+    log("Checking for curl", True)
+    if os.system('which curl') == 256:
+        log('curl is not installed. http://curl.linux-mirror.org/', PRINT_TO_CONSOLE)
         return
     else:
-        log("Curl found, continuing with backup installation", PRINT_TO_CONSOLE )
+        log("Curl found, continuing with backup installation", PRINT_TO_CONSOLE)
     if APP_NAME == 'haitiOpenElis' or not NO_PROMPT:
         if len(SITE_ID) < 1:
-             SITE_ID = raw_input("site number or identification for this lab: ")
-             while len(SITE_ID) < 1:
-                 SITE_ID = raw_input("the site number is required to install the backup.  If you want to stop installing the backup use a site number of 'q': ")
-                 if SITE_ID.lower() == 'q':
-                     return
-    
+            SITE_ID = raw_input("site number or identification for this lab: ")
+            while len(SITE_ID) < 1:
+                SITE_ID = raw_input(
+                    "the site number is required to install the backup.  If you want to stop installing the backup use a site number of 'q': ")
+                if SITE_ID.lower() == 'q':
+                    return
 
-    templateFile = open(TEMPLATE_DIR + BACKUP_SCRIPT_NAME, "r")
-    stagingFile = open(STAGING_DIR + BACKUP_SCRIPT_NAME, "w")
+    template_file = open(TEMPLATE_DIR + BACKUP_SCRIPT_NAME, "r")
+    staging_file = open(STAGING_DIR + BACKUP_SCRIPT_NAME, "w")
 
-    for line in templateFile:
+    for line in template_file:
         if line.find("[% installName %]") > 0:
             line = line.replace("[% installName %]", APP_NAME)
         if line.find("[% siteId %]") > 0:
@@ -353,13 +361,10 @@ def install_backup():
         if line.find("[% postgres_password %]") > 0:
             line = line.replace("[% postgres_password %]", CLINLIMS_PWD)
 
-        stagingFile.write(line)
+        staging_file.write(line)
 
-
-    templateFile.close()
-    stagingFile.close()
-
-
+    template_file.close()
+    staging_file.close()
 
     if not os.path.exists(BACKUP_DIR):
         os.makedirs(BACKUP_DIR, 0755)
@@ -374,63 +379,66 @@ def install_backup():
     os.chmod(BACKUP_DIR + BACKUP_SCRIPT_NAME, 0777)
 
     shutil.copy(CRON_FILE_DIR + CRON_FILE, CRON_INSTALL_DIR)
-    
+
     return
 
 def update_with_liquibase():
     global LOG_FILE
     context = False
 
-    appNames = APP_CONTEX_MAP.keys()
+    app_names = APP_CONTEX_MAP.keys()
 
-    for app in appNames:
+    for app in app_names:
         if APP_NAME.find(app) == 0:
             context = APP_CONTEX_MAP[app]
             break
-    
-    contextArg = ''
-    if context:
-        contextArg = "--contexts=" + context
 
-    log("Updating database\n", True )
+    context_arg = ''
+    if context:
+        context_arg = "--contexts=" + context
+
+    log("Updating database\n", True)
     LOG_FILE.flush()
-    cmd  = "java -jar  ./lib/liquibase-1.9.5.jar --defaultsFile=liquibaseInstall.properties " + contextArg + \
-     " --password=" + CLINLIMS_PWD + " --username=clinlims  update >> ../" + LOG_DIR + LOG_FILE_NAME + " 2>&" + str(LOG_FILE.fileno())
+    cmd = "java -jar  ./lib/liquibase-1.9.5.jar --defaultsFile=liquibaseInstall.properties " + context_arg + \
+          " --password=" + CLINLIMS_PWD + " --username=clinlims  update >> ../" + LOG_DIR + LOG_FILE_NAME + " 2>&" + str(
+        LOG_FILE.fileno())
 
     print "The following command may take a few minutes to complete.  Please take a short break until it finishes"
     print cmd
 
-    currentDir = os.getcwd();
-    os.chdir(LIQUIBASE_DIR);
+    current_dir = os.getcwd()
+    os.chdir(LIQUIBASE_DIR)
     result = os.system(cmd)
-    
+
     if result > 0:
-        log("Error running database update", PRINT_TO_CONSOLE )
-        log("Re running with diagnostics", PRINT_TO_CONSOLE )
-        print "For further information please check the log file " +  LOG_DIR + LOG_FILE_NAME
+        log("Error running database update", PRINT_TO_CONSOLE)
+        log("Re running with diagnostics", PRINT_TO_CONSOLE)
+        print "For further information please check the log file " + LOG_DIR + LOG_FILE_NAME
         LOG_FILE.flush()
-        cmd  = "java -jar  ./lib/liquibase-1.9.5.jar --defaultsFile=liquibaseInstall.properties " + contextArg + \
-     " --password=" + CLINLIMS_PWD + " --username=clinlims --logLevel=fine update  >> ../" + LOG_DIR + LOG_FILE_NAME + " 2>&" + str(LOG_FILE.fileno())
+        cmd = "java -jar  ./lib/liquibase-1.9.5.jar --defaultsFile=liquibaseInstall.properties " + context_arg + \
+              " --password=" + CLINLIMS_PWD + " --username=clinlims --logLevel=fine update  >> ../" + LOG_DIR + LOG_FILE_NAME + " 2>&" + str(
+            LOG_FILE.fileno())
         result = os.system(cmd)
 
         if result > 0:
-            os.chdir(currentDir);
-            rollback( )
+            os.chdir(current_dir)
+            rollback()
             clean_exit()
 
-    os.chdir(currentDir);
+    os.chdir(current_dir)
+
 
 def install_no_prompt():
     global NO_PROMPT
     NO_PROMPT = True
     set_environment_variables()
     install()
-    
+
 def set_environment_variables():
-    os.environ["LC_ALL"] = ""	
+    os.environ["LC_ALL"] = ""
     os.environ["LC_CTYPE"] = ""
 
-    
+
 def install():
     set_environment_variables()
     name = find_installed_name()
@@ -447,24 +455,28 @@ def install():
 
 def stop_tomcat():
     try_count = 1
-    if TOMCAT_VERSION != 'tomcat5.5' :
+    if TOMCAT_VERSION != 'tomcat5.5':
         log('/etc/init.d/' + TOMCAT_VERSION + ' stop', PRINT_TO_CONSOLE)
         cmd = '/etc/init.d/' + TOMCAT_VERSION + ' stop'
         os.system(cmd)
     else:
         cmd = 'invoke-rc.d ' + TOMCAT_VERSION + ' stop &> /dev/null'
-        log('Stopping Tomcat servlet engine', PRINT_TO_CONSOLE )
-        while ( os.system(cmd) != 0 ):
+        log('Stopping Tomcat servlet engine', PRINT_TO_CONSOLE)
+        while os.system(cmd) != 0:
             if try_count > 4:
-                log("Unable to stop tomcat.  Abandoning operation", PRINT_TO_CONSOLE )
+                log("Unable to stop tomcat.  Abandoning operation", PRINT_TO_CONSOLE)
                 clean_exit()
 
             try_count += 1
-            log('Stopping Tomcat servlet engine failed, trying again', PRINT_TO_CONSOLE )
+            log('Stopping Tomcat servlet engine failed, trying again', PRINT_TO_CONSOLE)
             time.sleep(3)
 
 def start_tomcat():
     cmd = '/etc/init.d/' + TOMCAT_VERSION + ' start'
+    os.system(cmd)
+
+def restart_tomcat():
+    cmd = '/etc/init.d/' + TOMCAT_VERSION + ' restart'
     os.system(cmd)
 
 def copy_war_file_to_tomcat():
@@ -472,111 +484,122 @@ def copy_war_file_to_tomcat():
     os.system(cmd)
 
 def backup_war_file():
-    log("Backing up application to "  + ROLLBACK_DIR + APP_NAME + get_action_time() + '.war ', PRINT_TO_CONSOLE)
-    cmd = 'cp ' + TOMCAT_DIR + '/webapps/' + APP_NAME  + '.war ' + ROLLBACK_DIR + APP_NAME + get_action_time() + '.war'
+    log("Backing up application to " + ROLLBACK_DIR + get_action_time() + '/' + APP_NAME + '.war ', PRINT_TO_CONSOLE)
+    cmd = 'cp ' + TOMCAT_DIR + '/webapps/' + APP_NAME + '.war ' + ROLLBACK_DIR + get_action_time() + '/' + APP_NAME + '.war'
     os.system(cmd)
 
-def backup_site_logo():
-    log("Backing up labLogo.jpg to "  + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg ', PRINT_TO_CONSOLE)
-    cmd = 'cp ' + TOMCAT_DIR + '/webapps/' + APP_NAME  + REPORT_IMAGE_PATH + LAB_LOGO_NAME + '.jpg ' + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg' 
-    os.system(cmd)    
 
-def restore_site_logo():
-    log("Restoring "  + LAB_LOGO_NAME + '.jpg ', PRINT_TO_CONSOLE)
-    cmd = 'cp '  + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg '   + TOMCAT_DIR + '/webapps/' + APP_NAME  + REPORT_IMAGE_PATH + LAB_LOGO_NAME + '.jpg '
-    os.system(cmd)    
-    cmd = 'cp '  + ROLLBACK_DIR + LAB_LOGO_NAME + get_action_time() + '.jpg '   + TOMCAT_DIR + '/webapps/' + APP_NAME  + PREVIEW_IMAGE_PATH + LAB_LOGO_NAME + '.jpg '
-    os.system(cmd)    
+def backup_plugins():
+    log("Backing up plugins to " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH   , PRINT_TO_CONSOLE)
+    shutil.copytree(TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH,  ROLLBACK_DIR + get_action_time() + '/plugin' )
+
+def restore_plugins():
+
+    if len(os.listdir(ROLLBACK_DIR + get_action_time() + '/plugin/' )) > 1:
+        log("Restoring " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH, PRINT_TO_CONSOLE)
+        cmd = 'cp -r ' + ROLLBACK_DIR + get_action_time() + '/plugin/* ' + TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH
+        os.system(cmd)
+        log("Restarting tomcat to install plugins into OpenElis", PRINT_TO_CONSOLE)
+        return True
+    else:
+        log("No plugins to restore", PRINT_TO_CONSOLE)
+        return False
+
 
 def delete_war_file_from_tomcat(name):
     war_path = TOMCAT_DIR + '/webapps/' + name + '.war'
     os.remove(war_path)
 
+
 def delete_app_directory_from_tomcat(name):
     cmd = 'rm -r ' + TOMCAT_DIR + '/webapps/' + name + '/'
     os.system(cmd)
+
 
 def delete_work_directory_from_tomcat(name):
     cmd = 'rm -r ' + TOMCAT_DIR + '/work/Catalina/localhost/' + name + '/'
     os.system(cmd)
 
+
 def delete_backup():
     if os.path.exists(BACKUP_DIR):
-        log("removing backup", PRINT_TO_CONSOLE )
+        log("removing backup", PRINT_TO_CONSOLE)
         shutil.rmtree(BACKUP_DIR)
 
     if os.path.exists(CRON_INSTALL_DIR + CRON_FILE):
-        log("removing crontab", PRINT_TO_CONSOLE )
+        log("removing crontab", PRINT_TO_CONSOLE)
         os.remove(CRON_INSTALL_DIR + CRON_FILE)
 
+
 def delete_backup_script():
-    if os.path.exists(BACKUP_DIR + BACKUP_SCRIPT_NAME ):
-        os.remove( BACKUP_DIR + BACKUP_SCRIPT_NAME )
+    if os.path.exists(BACKUP_DIR + BACKUP_SCRIPT_NAME):
+        os.remove(BACKUP_DIR + BACKUP_SCRIPT_NAME)
+
 
 def do_install():
     global CLINLIMS_PWD
 
     find_installation_name()
 
-    log("installing " + APP_NAME, PRINT_TO_CONSOLE )
+    log("installing " + APP_NAME, PRINT_TO_CONSOLE)
 
-    CLINLIMS_PWD =  ''.join( Random().sample(string.letters, 12) )
+    CLINLIMS_PWD = ''.join(Random().sample(string.letters, 12))
     config_files_for_postgres()
 
-    #prepare any site-specific information
-    print APP_NAME 
+    # prepare any site-specific information
+    print APP_NAME
     if APP_NAME == 'haitiOpenElis' or APP_NAME == 'CDI_RegLabOpenElis':
         config_site_information()
 
-    #add database users and install db
+    # add database users and install db
     install_db()
 
-    #set values for tomcat
-    config_files_for_Tomcat()
+    # set values for tomcat
+    config_files_for_tomcat()
 
-    #run liquibase for any last minute updates
+    # run liquibase for any last minute updates
     update_with_liquibase()
 
     stop_tomcat()
 
 
-    #copy postgres jar file
-    postgresFile = glob.glob( BIN_DIR + 'postgres*')
-    if TOMCAT_VERSION == "tomcat5.5" :
-        cmd = 'cp ' + postgresFile[0] + ' ' + TOMCAT_DIR + '/common/lib/'  
-    else :
-        cmd = 'cp ' + postgresFile[0] + ' ' + TOMCAT_DIR + '/lib/'  
+    # copy postgres jar file
+    postgres_file = glob.glob(BIN_DIR + 'postgres*')
+    if TOMCAT_VERSION == "tomcat5.5":
+        cmd = 'cp ' + postgres_file[0] + ' ' + TOMCAT_DIR + '/common/lib/'
+    else:
+        cmd = 'cp ' + postgres_file[0] + ' ' + TOMCAT_DIR + '/lib/'
     os.system(cmd)
- 
-    #add config files    
-    cmd = 'cp ' + STAGING_DIR + APP_NAME +'.xml ' + TOMCAT_DIR + '/conf/Catalina/localhost/'  
+
+    # add config files
+    cmd = 'cp ' + STAGING_DIR + APP_NAME + '.xml ' + TOMCAT_DIR + '/conf/Catalina/localhost/'
     os.system(cmd)
-    if TOMCAT_VERSION == "tomcat5.5" :
-        cmd = 'chown tomcat55:nogroup ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME +'.xml' 
-    else :
-        cmd = 'chown ' + TOMCAT_VERSION + ":" + TOMCAT_VERSION + ' ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME +'.xml'
+    if TOMCAT_VERSION == "tomcat5.5":
+        cmd = 'chown tomcat55:nogroup ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
+    else:
+        cmd = 'chown ' + TOMCAT_VERSION + ":" + TOMCAT_VERSION + ' ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
     os.system(cmd)
-     
+
     copy_war_file_to_tomcat()
 
     start_tomcat()
 
     install_backup()
 
-    #remove the files with passwords
-    stagingFiles = glob.glob(STAGING_DIR + '*')
-    for file in stagingFiles:
+    # remove the files with passwords
+    staging_files = glob.glob(STAGING_DIR + '*')
+    for file in staging_files:
         cmd = "rm " + file
         os.system(cmd)
-        
-    
+
+
 def do_uninstall():
     global APP_NAME
-    
+
     log("checking for current installation", PRINT_TO_CONSOLE)
-    
+
     installed_name = find_installed_name()
-    
+
     if len(installed_name) == 0:
         log("Unable to find installed OpenELIS in tomcat", PRINT_TO_CONSOLE)
         print "The database can **NOT** be backed up\n"
@@ -584,18 +607,18 @@ def do_uninstall():
         if remove_db.lower() == 'y':
             log("User selected to remove database", not PRINT_TO_CONSOLE)
             delete_database()
-        return;
-    
+        return
+
     if not find_installation_name():
-        log( 'Unable to find name of application in installer, exiting', PRINT_TO_CONSOLE)
-        return;
-    
+        log('Unable to find name of application in installer, exiting', PRINT_TO_CONSOLE)
+        return
+
     if not APP_NAME == installed_name:
-        log('Installed name: ' + installed_name + " does not match name in installer: " + APP_NAME, PRINT_TO_CONSOLE ); 
-        remove = raw_input("Do you want to remove " + installed_name + "? y/n");
+        log('Installed name: ' + installed_name + " does not match name in installer: " + APP_NAME, PRINT_TO_CONSOLE)
+        remove = raw_input("Do you want to remove " + installed_name + "? y/n")
         if not (remove.lower() == 'y'):
-            return;
-    else: 
+            return
+    else:
         remove = raw_input("Do you want to remove " + APP_NAME + " from tomcat? y/n ")
         if not remove.lower() == 'y':
             return
@@ -604,40 +627,42 @@ def do_uninstall():
 
     stop_tomcat()
 
-    backup_db( )
+    backup_db()
 
     backup_war_file()
 
     backup_config_file()
 
-    log("removing " + APP_NAME, PRINT_TO_CONSOLE )
+    log("removing " + APP_NAME, PRINT_TO_CONSOLE)
 
     config_file = TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
     if not os.path.isfile(config_file):
-        log("unable to find config file, continuing", not PRINT_TO_CONSOLE )
+        log("unable to find config file, continuing", not PRINT_TO_CONSOLE)
     else:
         os.remove(config_file)
 
     delete_war_file_from_tomcat(APP_NAME)
 
     delete_app_directory_from_tomcat(APP_NAME)
-        
-    do_delete_backup = raw_input("Do you want to remove backupfiles from this machines y/n ")    
+
+    do_delete_backup = raw_input("Do you want to remove backupfiles from this machines y/n ")
     if do_delete_backup.lower() == 'y':
         delete_backup()
 
-    delete_backup_script()    
+    delete_backup_script()
 
     delete_database()
 
     start_tomcat()
 
-def delete_database():
-    log("Dropping clinlims database and OpenELIS database roles", PRINT_TO_CONSOLE )
 
-    os.system( 'su -c "dropdb -e clinlims" postgres')
-    os.system( 'su -c "dropuser -e clinlims" postgres')
-    os.system( 'su -c "dropuser -e admin" postgres' )
+def delete_database():
+    log("Dropping clinlims database and OpenELIS database roles", PRINT_TO_CONSOLE)
+
+    os.system('su -c "dropdb -e clinlims" postgres')
+    os.system('su -c "dropuser -e clinlims" postgres')
+    os.system('su -c "dropuser -e admin" postgres')
+
 
 def check_update_preconditions():
     global TOMCAT_DIR
@@ -645,162 +670,176 @@ def check_update_preconditions():
     TOMCAT_DIR = get_tomcat_directory()
     TOMCAT_VERSION = TOMCAT_DIR.strip(TOMCAT_INSTALL_DIR)
 
-    #get name of existing war files
-    webapps = glob.glob( TOMCAT_DIR + '/webapps/*.war' )
-    
-    #get name of new war file
+    # get name of existing war files
+    webapps = glob.glob(TOMCAT_DIR + '/webapps/*.war')
+
+    # get name of new war file
     find_installation_name()
 
-    matchingWar = APP_NAME + ".war"
-    #return their compare value
+    matching_war = APP_NAME + ".war"
+    # return their compare value
     for file in webapps:
-        if matchingWar == get_file_name(file):
+        if matching_war == get_file_name(file):
             return True
 
     return False
 
-def find_password( app_name ):
-    global CLINLIMS_PWD
-   
-    configFile =  open( TOMCAT_DIR + '/conf/Catalina/localhost/' + app_name + '.xml')
 
-    for line in configFile:
+def find_password(app_name):
+    global CLINLIMS_PWD
+
+    config_file = open(TOMCAT_DIR + '/conf/Catalina/localhost/' + app_name + '.xml')
+
+    for line in config_file:
         password_index = line.find("password")
         if password_index > 0:
             password_values = line[password_index:].split("\"")
             CLINLIMS_PWD = password_values[1]
             return True
 
+
 def apply_separate_test_fix():
     if not os.path.exists(FIX_DIR + "collapseTests/packages/python-pgsql_2.5.1-2+b2_i386.deb"):
-        log("Note: Not applying separateTestFix.", PRINT_TO_CONSOLE )
+        log("Note: Not applying separateTestFix.", PRINT_TO_CONSOLE)
         return
 
     matches = glob.glob(os.path.join(APT_CACHE_DIR, "python-pgsql*"))
 
-    #The only systems this is being applied to are those where the module has not
-    #yet been installed so if it is installed it is assumed that the fix has been run already
+    # The only systems this is being applied to are those where the module has not
+    # yet been installed so if it is installed it is assumed that the fix has been run already
     if len(matches) > 0:
-        log("Separate Test Fix already run", PRINT_TO_CONSOLE )
+        log("Separate Test Fix already run", PRINT_TO_CONSOLE)
         return
 
-    log("Apply Separate Test Fix", PRINT_TO_CONSOLE )
+    log("Apply Separate Test Fix", PRINT_TO_CONSOLE)
 
     packages = glob.glob(FIX_DIR + "collapseTests/packages/*")
 
     for package in packages:
-        shutil.copy(package, APT_CACHE_DIR )
+        shutil.copy(package, APT_CACHE_DIR)
 
     cmd = "dpkg -i " + FIX_DIR + "collapseTests/packages/*"
-    os.system( cmd )
+    os.system(cmd)
 
     cmd = "python " + FIX_DIR + "collapseTests/testReconfiguration_Linux.py -p " + CLINLIMS_PWD + " -d clinlims"
-    os.system( cmd )
+    os.system(cmd)
 
-    log("Fix applied", PRINT_TO_CONSOLE )
+    log("Fix applied", PRINT_TO_CONSOLE)
 
-    
+
 def get_action_time():
     global ACTION_TIME
-    
+
     if ACTION_TIME == '':
         ACTION_TIME = strftime("%Y_%m_%d-%H_%M_%S", time.localtime())
-        
+        cmd = 'mkdir ' + ROLLBACK_DIR + '/' + ACTION_TIME
+        os.system(cmd)
+
     return ACTION_TIME
-        
+
+
 def backup_db():
-    backup_name = 'openElis' + get_action_time() + '.backup'
-    find_password( find_installed_name())
-    log( "backing up database to " + ROLLBACK_DIR + backup_name, PRINT_TO_CONSOLE )
-    os.system("PGPASSWORD=\"" + CLINLIMS_PWD + "\";export PGPASSWORD; su -c  'pg_dump -h localhost -U clinlims clinlims > " + ROLLBACK_DIR + backup_name + "'")
+    backup_name = get_action_time() + '/openElis.backup'
+    find_password(find_installed_name())
+    log("backing up database to " + ROLLBACK_DIR + backup_name, PRINT_TO_CONSOLE)
+    os.system(
+        "PGPASSWORD=\"" + CLINLIMS_PWD + "\";export PGPASSWORD; su -c  'pg_dump -h localhost -U clinlims clinlims > " + ROLLBACK_DIR + backup_name + "'")
+
 
 def backup_config_file():
     app_name = find_installed_name()
-    backup_name = app_name + get_action_time() + '.xml'
-    
-    log("Backing up configuration to "  + ROLLBACK_DIR + backup_name, PRINT_TO_CONSOLE)
+    backup_name = get_action_time() + '/' + app_name + '.xml'
+
+    log("Backing up configuration to " + ROLLBACK_DIR + backup_name, PRINT_TO_CONSOLE)
     cmd = 'cp ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + app_name + ".xml " + ROLLBACK_DIR + backup_name
     os.system(cmd)
-    
-def do_update():
-    log("Updating " + APP_NAME, PRINT_TO_CONSOLE )
 
-    if not find_password( APP_NAME ):
-        log("Unable to find password from configuration file. Exiting", PRINT_TO_CONSOLE )
+
+def do_update():
+    log("Updating " + APP_NAME, PRINT_TO_CONSOLE)
+
+    if not find_password(APP_NAME):
+        log("Unable to find password from configuration file. Exiting", PRINT_TO_CONSOLE)
         return
 
     stop_tomcat()
 
-    backup_db( )
+    backup_db()
 
-    backup_war_file( )
+    backup_war_file()
 
     backup_config_file()
-    
-    backup_site_logo()
 
-    delete_app_directory_from_tomcat( APP_NAME )
+    backup_plugins()
 
-    delete_work_directory_from_tomcat( APP_NAME )
+    delete_app_directory_from_tomcat(APP_NAME)
+
+    delete_work_directory_from_tomcat(APP_NAME)
 
     copy_war_file_to_tomcat()
 
     update_with_liquibase()
 
-    #apply_separate_test_fix() -- no longer needed 2.4 or later
+    # apply_separate_test_fix() -- no longer needed 2.4 or later
 
     install_backup()
 
     start_tomcat()
-    
-    time.sleep(10)
-    
-    restore_site_logo()
 
-    log("Finished updating " + APP_NAME, PRINT_TO_CONSOLE )
+    time.sleep(10)
+
+    if restore_plugins():
+        restart_tomcat()
+
+    log("Finished updating " + APP_NAME, PRINT_TO_CONSOLE)
+
 
 def update():
     if not check_update_preconditions():
-        log(APP_NAME + "is not an existing installation, can not update.\n", PRINT_TO_CONSOLE )
-        webapps = glob.glob( TOMCAT_DIR + '/webapps/*.war' )
+        log(APP_NAME + "is not an existing installation, can not update.\n", PRINT_TO_CONSOLE)
+        webapps = glob.glob(TOMCAT_DIR + '/webapps/*.war')
         clean_exit()
 
     do_update()
 
-    #check if backup exists
+    # check if backup exists
     if not os.path.exists(BACKUP_DIR + BACKUP_SCRIPT_NAME):
         install_backup()
-def ensure_dir_exists( dir ):
+
+
+def ensure_dir_exists(dir):
     if not os.path.exists(dir):
-        os.mkdir( dir )
+        os.mkdir(dir)
 
-def rollback( ):
-    log("\nRolling back to previous installation", PRINT_TO_CONSOLE )
 
-    if not os.path.exists(ROLLBACK_DIR + APP_NAME + get_action_time() + '.war'):
-        if os.path.exists(TOMCAT_DIR + '/webapps/' + APP_NAME + '.war' ):
-            log("Application still installed, nothing more to do.", PRINT_TO_CONSOLE )
+def rollback():
+    log("\nRolling back to previous installation", PRINT_TO_CONSOLE)
+
+    if not os.path.exists(ROLLBACK_DIR + get_action_time() + '/' + APP_NAME + '.war'):
+        if os.path.exists(TOMCAT_DIR + '/webapps/' + APP_NAME + '.war'):
+            log("Application still installed, nothing more to do.", PRINT_TO_CONSOLE)
         else:
             log("Unable to restore application.  File missing " + ROLLBACK_DIR + APP_NAME + '.war', PRINT_TO_CONSOLE)
     else:
         cmd = 'cp ' + ROLLBACK_DIR + APP_NAME + '.war ' + TOMCAT_DIR + '/webapps/'
         os.system(cmd)
-        log("\nRollback finished", PRINT_TO_CONSOLE )
+        log("\nRollback finished", PRINT_TO_CONSOLE)
 
     log("Please report errors to http://groups.google.com/group/openelisglobal", PRINT_TO_CONSOLE)
-    log("or https://openelis.cirg.washington.edu/OpenElisInfo/#contact \n", PRINT_TO_CONSOLE )
+    log("or https://openelis.cirg.washington.edu/OpenElisInfo/#contact \n", PRINT_TO_CONSOLE)
 
     start_tomcat()
-    
+
+
 def check_on_writable_system():
     if not os.access('./', os.W_OK | os.X_OK):
-        print( "Unable to write to file system.  Please copy installer to hard disk")
+        print("Unable to write to file system.  Please copy installer to hard disk")
         print("Exiting")
         exit()
-        
+
 
 def write_help():
-     print """
+    print """
 setup_OpenELIS.py <options>
     This script must be run as sudo or else it will fail due to permission problems.
 
@@ -821,47 +860,51 @@ setup_OpenELIS.py <options>
 -help - This screen
         """
 
+
 def write_version():
-     log("\n",PRINT_TO_CONSOLE)
-     log("------------------------------------", not PRINT_TO_CONSOLE)
-     log("OpenELIS installer Version " + VERSION, PRINT_TO_CONSOLE )
+    log("\n", PRINT_TO_CONSOLE)
+    log("------------------------------------", not PRINT_TO_CONSOLE)
+    log("OpenELIS installer Version " + VERSION, PRINT_TO_CONSOLE)
+
 
 def open_log_file():
     global LOG_FILE
     LOG_FILE = open(LOG_DIR + LOG_FILE_NAME, 'a')
+
 
 def clean_exit():
     global LOG_FILE
     LOG_FILE.close()
     exit()
 
-def log( message, toConsole):
-    LOG_FILE.write( message + "\n" )
+
+def log(message, toConsole):
+    LOG_FILE.write(message + "\n")
     if toConsole:
         print message
 
-#Main entry point
+# Main entry point
 if len(sys.argv) > 1:
-    
+
     os.putenv("LANG", LANG_NAME)
 
     check_on_writable_system()
 
-    ensure_dir_exists( STAGING_DIR )
-    ensure_dir_exists( LOG_DIR )
-    ensure_dir_exists( ROLLBACK_DIR )
+    ensure_dir_exists(STAGING_DIR)
+    ensure_dir_exists(LOG_DIR)
+    ensure_dir_exists(ROLLBACK_DIR)
     open_log_file()
     write_version()
 
     arg = sys.argv[1]
-    
+
     if arg == "-installCrossTabs":
-        log( "installCrossTabs " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
+        log("installCrossTabs " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
         install_crosstab()
         clean_exit()
-        
+
     if arg == "-uninstall":
-        log( "uninstall " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
+        log("uninstall " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
         print "This will uninstall OpenELIS from this machine including **ALL** data from database"
         remove = raw_input("Do you want to continue with the uninstall? y/n: ")
         if remove.lower() == 'y':
@@ -869,43 +912,43 @@ if len(sys.argv) > 1:
         clean_exit()
 
     if arg == "-update":
-        log( "update " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
+        log("update " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
         update()
-        install_crosstab();
-        #find_installation_name()
-        #find_password()
-        #apply_separate_test_fix()
+        install_crosstab()
+        # find_installation_name()
+        # find_password()
+        # apply_separate_test_fix()
         clean_exit()
 
     if arg == "-installBackup":
-        log( "installBackup " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
+        log("installBackup " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
         find_installation_name()
         find_password(APP_NAME)
         install_backup()
         clean_exit()
 
     if arg == "-install":
-        log( "install " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
-        install();
-        install_crosstab();
+        log("install " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
+        install()
+        install_crosstab()
         clean_exit()
 
     if arg == "-installNoPrompt":
-        log( "installNoPrompt " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
-        install_no_prompt();
-        install_crosstab();
-        clean_exit()
-        
-    if arg == "-version":
-        #version already written
+        log("installNoPrompt " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
+        install_no_prompt()
+        install_crosstab()
         clean_exit()
 
-    #if all else fails give help
+    if arg == "-version":
+        # version already written
+        clean_exit()
+
+    # if all else fails give help
     write_help()
     clean_exit()
 
 
 
-#default is help
+# default is help
 write_help()
 
