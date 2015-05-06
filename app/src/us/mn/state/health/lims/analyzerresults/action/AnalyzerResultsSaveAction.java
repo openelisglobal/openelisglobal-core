@@ -86,7 +86,7 @@ import java.util.*;
 
 public class AnalyzerResultsSaveAction extends BaseAction {
 
-	private static final boolean IS_RFTROCI = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.configurationName, "CI RetroCI");
+	private static final boolean IS_RETROCI = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.configurationName, "CI RetroCI");
 	private static final String REJECT_VALUE = "XXXX";
 	private ResultDAO resultDAO = new ResultDAOImpl();
 	private NoteDAO noteDAO = new NoteDAOImpl();
@@ -106,7 +106,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	private static final String DBS_SAMPLE_TYPE_ID;
 
 	static {
-		if(IS_RFTROCI) {
+		if(IS_RETROCI) {
 			TypeOfSample typeOfSample = new TypeOfSample();
 			typeOfSample.setDescription("DBS");
 			typeOfSample.setDomain("H");
@@ -646,7 +646,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	}
 
 	private String getTypeOfSampleId(List<Analysis> analysisList, String accessionNumber) {
-		if (IS_RFTROCI && accessionNumber.startsWith("LDBS")) {
+		if (IS_RETROCI && accessionNumber.startsWith("LDBS")) {
 			List<TypeOfSampleTest> typeOfSmapleTestList = typeOfSampleTestDAO.getTypeOfSampleTestsForTest(analysisList.get(0).getTest().getId());
 
 			for (TypeOfSampleTest typeOfSampleTest : typeOfSmapleTestList) {
