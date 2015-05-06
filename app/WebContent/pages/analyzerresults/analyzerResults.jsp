@@ -357,7 +357,7 @@ function /*void*/ markUpdated(){
 						 	     id='<%="showHideButton_" + dataIndex %>'
 						    />
 						 </logic:notEmpty>
-				<html:hidden property="hideShowFlag"  styleId='<%="hideShow_" + dataIndex %>' value="hidden" />
+				<html:hidden name='<%=resultList%>' property="hideShowFlag"  styleId='<%="hideShow_" + dataIndex %>' value="hidden" />
             <% } %>
 
 		</td>

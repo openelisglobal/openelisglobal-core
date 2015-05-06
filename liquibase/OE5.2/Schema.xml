@@ -44,5 +44,12 @@
             COMMENT ON COLUMN clinlims.panel.name_localization_id IS 'reference to the localization record for the panel name';
         </sql>
     </changeSet>
-
+    <changeSet id="3" author="paulsc">
+        <comment>Removes size restrictions on some fields in analyzer_results</comment>
+        <modifyColumn tableName="analyzer_results">
+            <column name="test_name" type="VARCHAR"/>
+            <column name="result" type="VARCHAR" />
+            <column name="units" type="VARCHAR" />
+        </modifyColumn>
+    </changeSet>
 </databaseChangeLog>
