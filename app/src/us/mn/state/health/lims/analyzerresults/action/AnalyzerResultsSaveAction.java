@@ -39,6 +39,7 @@ import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.services.StatusSet;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -85,6 +86,7 @@ import java.util.*;
 
 public class AnalyzerResultsSaveAction extends BaseAction {
 
+	private static final boolean IS_RETROCI = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.configurationName, "CI RetroCI");
 	private static final String REJECT_VALUE = "XXXX";
 	private ResultDAO resultDAO = new ResultDAOImpl();
 	private NoteDAO noteDAO = new NoteDAOImpl();
@@ -104,11 +106,15 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	private static final String DBS_SAMPLE_TYPE_ID;
 
 	static {
-		TypeOfSample typeOfSample = new TypeOfSample();
-		typeOfSample.setDescription("DBS");
-		typeOfSample.setDomain("H");
-		typeOfSample = new TypeOfSampleDAOImpl().getTypeOfSampleByDescriptionAndDomain(typeOfSample, false);
-		DBS_SAMPLE_TYPE_ID = typeOfSample.getId();
+		if(IS_RETROCI) {
+			TypeOfSample typeOfSample = new TypeOfSample();
+			typeOfSample.setDescription("DBS");
+			typeOfSample.setDomain("H");
+			typeOfSample = new TypeOfSampleDAOImpl().getTypeOfSampleByDescriptionAndDomain(typeOfSample, false);
+			DBS_SAMPLE_TYPE_ID = typeOfSample.getId();
+		}else{
+			DBS_SAMPLE_TYPE_ID = null;
+		}
 	}
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -640,7 +646,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	}
 
 	private String getTypeOfSampleId(List<Analysis> analysisList, String accessionNumber) {
-		if (accessionNumber.startsWith("LDBS")) {
+		if (IS_RETROCI && accessionNumber.startsWith("LDBS")) {
 			List<TypeOfSampleTest> typeOfSmapleTestList = typeOfSampleTestDAO.getTypeOfSampleTestsForTest(analysisList.get(0).getTest().getId());
 
 			for (TypeOfSampleTest typeOfSampleTest : typeOfSmapleTestList) {
