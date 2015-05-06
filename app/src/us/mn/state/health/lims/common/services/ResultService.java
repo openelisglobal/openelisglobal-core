@@ -68,7 +68,7 @@ public class ResultService {
 	}
 
 	public String getTestName() {
-		return TestService.getUserLocalizedTestName( test );
+		return TestService.getUserLocalizedTestName(test);
 	}
 
 	public String getTestDescription() {
@@ -214,6 +214,9 @@ public class ResultService {
 			return buffer.toString();
 		} else if (TypeOfTestResultService.ResultType.NUMERIC.matches(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
+            if( significantPlaces == -1){
+                return result.getValue() + appendUOM( includeUOM );
+            }
             if (significantPlaces == 0) {
                 return result.getValue().split("\\.")[0] + appendUOM( includeUOM );
             }
