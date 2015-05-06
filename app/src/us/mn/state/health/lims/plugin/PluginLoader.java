@@ -18,6 +18,8 @@ package us.mn.state.health.lims.plugin;
 
 import org.apache.commons.io.IOUtils;
 import org.dom4j.*;
+import us.mn.state.health.lims.common.exception.LIMSException;
+import us.mn.state.health.lims.common.log.LogEvent;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -91,7 +93,7 @@ public class PluginLoader {
     }
 
     private boolean loadFromXML(JarFile jar, JarEntry entry) {
-
+        Attribute description = null;
         try {
             URL url = new URL("jar:file:///" + jar.getName() + "!/");
             InputStream input = jar.getInputStream(entry);
@@ -104,7 +106,13 @@ public class PluginLoader {
 
             Element versionElement = doc.getRootElement().element(VERSION);
 
+            if( versionElement == null){
+                LogEvent.logError("PluginLoader", "load", "Missing version number in plugin");
+                System.out.println("Missing version number in plugin");
+                return false;
+            }
             if (!SUPPORTED_VERSION.equals(versionElement.getData())) {
+                LogEvent.logError("PluginLoader", "load", "Unsupported version number.  Expected " + SUPPORTED_VERSION + " got " + versionElement.getData());
                 System.out.println("Unsupported version number.  Expected " + SUPPORTED_VERSION + " got " + versionElement.getData());
                 return false;
             }
@@ -112,40 +120,45 @@ public class PluginLoader {
             Element analyzerImporter = doc.getRootElement().element(ANALYZER_IMPORTER);
 
             if (analyzerImporter != null) {
-                Attribute description = analyzerImporter.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
-                System.out.println( "Loading: " + description.getValue());
+                description = analyzerImporter.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
                 Attribute path = analyzerImporter.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
                 loadActualPlugin(url, path.getValue());
+                System.out.println("Loaded: " + description.getValue());
             }
 
             Element menu = doc.getRootElement().element(MENU);
 
             if (menu != null) {
-                Attribute description = menu.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
-                System.out.println( "Loading: " + description.getValue());
+                description = menu.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
                 Attribute path = menu.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
                 loadActualPlugin(url, path.getValue());
+                System.out.println("Loaded: " + description.getValue());
             }
 
             Element permissions = doc.getRootElement().element(PERMISSION);
 
             if (permissions != null) {
-                Attribute description = permissions.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
+                description = permissions.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
                 Attribute path = permissions.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
-                boolean loaded = loadActualPlugin(url, path.getValue());
-                if( loaded ){
-                    System.out.println( "Loading: " + description.getValue());
-                }else{
-                    System.out.println( "Failed Loading: " + description.getValue());
-                }
+                loadActualPlugin(url, path.getValue());
+                System.out.println( "Loaded: " + description.getValue());
             }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         } catch (DocumentException e) {
             e.printStackTrace();
+            return false;
+        } catch (LIMSException e){
+            if( description != null) {
+                LogEvent.logError("PluginLoader", "load", "Failed Loading: " + description.getValue());
+                System.out.println("Failed Loading: " + description.getValue());
+            }
+            return false;
         }
 
 
@@ -154,22 +167,24 @@ public class PluginLoader {
 
 
     @SuppressWarnings("unchecked")
-    private boolean loadActualPlugin(URL url, String classPath) {
+    private void loadActualPlugin(URL url, String classPath) throws LIMSException {
         try {
             URL[] urls = {url};
             ClassLoader classLoader = new URLClassLoader(urls, this.getClass().getClassLoader());
 
             Class<APlugin> aClass = (Class<APlugin>) classLoader.loadClass(classPath);
             APlugin instance = aClass.newInstance();
-            return instance.connect();
+            instance.connect();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new LIMSException("See previous stack trace");
         } catch (InstantiationException e) {
             e.printStackTrace();
+            throw new LIMSException("See previous stack trace");
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+            throw new LIMSException("See previous stack trace");
         }
 
-        return false;
     }
 }
