@@ -32,6 +32,7 @@ import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 public class PluginLoader {
     private static final String PLUGIN_ANALYZER = "plugin" + File.separator;
@@ -45,6 +46,8 @@ public class PluginLoader {
     private static final String EXTENSION = "extension";
     private static final String DESCRIPTION = "description";
     private static final String VALUE = "value";
+    private int JDK_VERSION_MAJOR;
+    private int JDK_VERSION_MINOR;
     private ServletContext context;
 
     public PluginLoader(ServletContextEvent event) {
@@ -57,6 +60,10 @@ public class PluginLoader {
     }
 
     private void loadDirectory( File pluginDir ){
+        String[] version = System.getProperty("java.version").split("\\.");
+        JDK_VERSION_MAJOR = Integer.parseInt(version[0]);
+        JDK_VERSION_MINOR = Integer.parseInt(version[1]);
+
         File[] files = pluginDir.listFiles();
 
         if (files != null) {
@@ -76,6 +83,8 @@ public class PluginLoader {
         try {
             JarFile jar = new JarFile(pluginFile);
 
+            if (checkJDKVersions(pluginFile.getName(), jar)) return;
+
             final Enumeration<JarEntry> entries = jar.entries();
             while (entries.hasMoreElements()) {
                 final JarEntry entry = entries.nextElement();
@@ -90,6 +99,23 @@ public class PluginLoader {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean checkJDKVersions(String fileName, JarFile jar) throws IOException {
+        Manifest manifest = jar.getManifest();
+        String[] jarVersion = manifest.getMainAttributes().getValue("Created-By").split("\\.");
+        int jarVersionMajor = Integer.parseInt(jarVersion[0]);
+        int jarVersionMinor = Integer.parseInt( jarVersion[1]);
+        if( jarVersionMajor > JDK_VERSION_MAJOR || ( jarVersionMajor == JDK_VERSION_MAJOR && jarVersionMinor > JDK_VERSION_MINOR )){
+            LogEvent.logError("PluginLoader", "check jdk version", "The plugin " + fileName + " was compiled with a higher JDK version (" + getVersion(jarVersionMajor, jarVersionMinor) + ") than the runtime JDK (" + getVersion(JDK_VERSION_MAJOR, JDK_VERSION_MINOR) + ")");
+            System.out.println("The plugin " + fileName + " was compiled with a higher JDK version (" + getVersion(jarVersionMajor, jarVersionMinor) + ") than the runtime JDK (" + getVersion(JDK_VERSION_MAJOR, JDK_VERSION_MINOR) + ")");
+            return true;
+        }
+        return false;
+    }
+
+    private String getVersion(int major, int minor) {
+        return major + "." + minor;
     }
 
     private boolean loadFromXML(JarFile jar, JarEntry entry) {
