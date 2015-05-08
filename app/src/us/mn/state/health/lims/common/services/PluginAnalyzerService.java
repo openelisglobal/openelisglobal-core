@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.common.services;
 
 import org.hibernate.Transaction;
+import org.jfree.util.Log;
 import us.mn.state.health.lims.analyzer.dao.AnalyzerDAO;
 import us.mn.state.health.lims.analyzer.daoimpl.AnalyzerDAOImpl;
 import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
@@ -26,6 +27,7 @@ import us.mn.state.health.lims.analyzerimport.daoimpl.AnalyzerTestMappingDAOImpl
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
 import us.mn.state.health.lims.analyzerimport.valueholder.AnalyzerTestMapping;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.plugin.AnalyzerImporterPlugin;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
@@ -54,7 +56,6 @@ public class PluginAnalyzerService {
         if ( analyzer != null && analyzer.getId() != null) {
             if (analyzer.isActive()) {
                 registerAanlyzerInCache(name, analyzer.getId());
-                return analyzer.getId();
             } else {
                 analyzer.setActive(true);
             }
@@ -120,6 +121,8 @@ public class PluginAnalyzerService {
                 analyzerMapping.setAnalyzerTestName(names.getAnalyzerTestName());
                 analyzerMapping.setTestId(testId);
                 testMappings.add(analyzerMapping);
+            }else{
+                LogEvent.logError("PluginAnalyzerService", "createTestMappings", "Unable to find test " + names.getDbbTestName() + " in test catalog");
             }
         }
         return testMappings;

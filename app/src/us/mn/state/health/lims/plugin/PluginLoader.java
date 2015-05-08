@@ -83,7 +83,7 @@ public class PluginLoader {
         try {
             JarFile jar = new JarFile(pluginFile);
 
-            if (checkJDKVersions(pluginFile.getName(), jar)) return;
+            if (!checkJDKVersions(pluginFile.getName(), jar)) return;
 
             final Enumeration<JarEntry> entries = jar.entries();
             while (entries.hasMoreElements()) {
@@ -103,15 +103,20 @@ public class PluginLoader {
 
     private boolean checkJDKVersions(String fileName, JarFile jar) throws IOException {
         Manifest manifest = jar.getManifest();
+        if( manifest == null){
+            LogEvent.logError("PluginLoader", "check jdk version", "Manifest file not in jar file, unable to check jdk versions");
+            System.out.println("Manifest file not in jar file, unable to check jdk versions");
+            return true;
+        }
         String[] jarVersion = manifest.getMainAttributes().getValue("Created-By").split("\\.");
         int jarVersionMajor = Integer.parseInt(jarVersion[0]);
         int jarVersionMinor = Integer.parseInt( jarVersion[1]);
         if( jarVersionMajor > JDK_VERSION_MAJOR || ( jarVersionMajor == JDK_VERSION_MAJOR && jarVersionMinor > JDK_VERSION_MINOR )){
             LogEvent.logError("PluginLoader", "check jdk version", "The plugin " + fileName + " was compiled with a higher JDK version (" + getVersion(jarVersionMajor, jarVersionMinor) + ") than the runtime JDK (" + getVersion(JDK_VERSION_MAJOR, JDK_VERSION_MINOR) + ")");
             System.out.println("The plugin " + fileName + " was compiled with a higher JDK version (" + getVersion(jarVersionMajor, jarVersionMinor) + ") than the runtime JDK (" + getVersion(JDK_VERSION_MAJOR, JDK_VERSION_MINOR) + ")");
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     private String getVersion(int major, int minor) {
