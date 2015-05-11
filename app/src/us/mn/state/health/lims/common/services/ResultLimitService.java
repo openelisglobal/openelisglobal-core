@@ -51,10 +51,13 @@ public class ResultLimitService{
     }
 
     public ResultLimit getResultLimitForTestAndPatient( Test test, Patient patient){
+        return getResultLimitForTestAndPatient(test.getId(), patient);
+    }
+
+    public ResultLimit getResultLimitForTestAndPatient( String testId, Patient patient){
         currPatientAge = INVALID_PATIENT_AGE;
 
-        @SuppressWarnings( "unchecked" )
-        List<ResultLimit> resultLimits = getResultLimits(test);
+        List<ResultLimit> resultLimits = getResultLimits(testId);
 
         if (resultLimits.isEmpty()) {
             return null;
@@ -250,9 +253,13 @@ public class ResultLimitService{
 
         return resultLimit.getMinAge() + separator + resultLimit.getMaxAge();
     }
-    @SuppressWarnings("unchecked")
+
     public static List<ResultLimit> getResultLimits(Test test){
-        return resultLimitDAO.getAllResultLimitsForTest(test);
+        return getResultLimits(test.getId());
+    }
+
+    public static List<ResultLimit> getResultLimits(String testId){
+        return resultLimitDAO.getAllResultLimitsForTest(testId);
     }
 
     /**
