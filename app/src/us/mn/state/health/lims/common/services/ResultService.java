@@ -338,10 +338,9 @@ public class ResultService {
         return range;
     }
 
-	@SuppressWarnings("unchecked")
 	private List<ResultLimit> getResultLimits() {
 		if (resultLimit == null) {
-			resultLimit = new ResultLimitDAOImpl().getAllResultLimitsForTest(test);
+			resultLimit = new ResultLimitDAOImpl().getAllResultLimitsForTest(test.getId());
 		}
 
 		return resultLimit;
