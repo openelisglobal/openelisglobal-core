@@ -759,6 +759,7 @@ public class ResultsValidationRetroCIUtility {
 			testUnits = "";
 			testName = StringUtil.getMessageForKey("result.conclusion.cd4");
 			analysisResultItem.setShowAcceptReject(false);
+			analysisResultItem.setReadOnly(true);
 			sortOrder = CD4_COUNT_SORT_NUMBER;
 		} else if (testResultItem.getTestName().equals(totalTestName)) {
 			analysisResultItem.setShowAcceptReject(false);
