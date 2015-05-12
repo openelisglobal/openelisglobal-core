@@ -478,8 +478,8 @@ div.dataTables_filter {
   width: 65px;
 }
 .results-readonly.invalidHighlight {
-  padding: 1px;
-  border-width: 1px;
+  padding: 2px 4px 2px 4px;
+  border: none;
 }
 
 .confirmation{

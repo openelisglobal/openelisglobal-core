@@ -153,13 +153,6 @@ public class RetroCIReflexActions extends ReflexAction {
 
 	}
 
-	/*
-	 * This may be dead code
-	 */
-	public void addCD4Calculation(Result result) {
-		this.result = result;
-		finalResult = getCD4CalculationResult(result.getAnalysis().getSampleItem().getSample());
-	}
 
 	public Result getCD4CalculationResult(Sample sample) {
 		Result calculatedResult = null;
@@ -191,6 +184,7 @@ public class RetroCIReflexActions extends ReflexAction {
 					calculatedResult.setTestResult(TEST_RESULT_CD4_CALCULATED);
 					calculatedResult.setAnalyte(ANALYTE_CD4_CT_GENERATED);
 					calculatedResult.setAnalysis(CD4Result.getAnalysis());
+					calculatedResult.setSortOrder( nextSortOrder(CD4Result));
 				}
 				
 				calculatedResult.setValue(String.valueOf(result));
@@ -201,6 +195,14 @@ public class RetroCIReflexActions extends ReflexAction {
 		}
 		
 		return calculatedResult;
+	}
+
+	private String nextSortOrder(Result result) {
+		if( result == null || GenericValidator.isBlankOrNull(result.getSortOrder())){
+			return "0";
+		}
+
+		return String.valueOf(Integer.parseInt(result.getSortOrder()) + 1);
 	}
 
 	private void addHIVObservation(String action) {

@@ -265,8 +265,8 @@ public class ResultsLoadUtility {
 			public int compare(ResultItem a, ResultItem b) {
 				int accessionSort = b.getSequenceAccessionNumber().compareTo(a.getSequenceAccessionNumber());
 
-				if( accessionSort == 0){ //only the accession number sorting is reversed
-					if( !GenericValidator.isBlankOrNull(a.getTestSortOrder()) && !GenericValidator.isBlankOrNull(b.getTestSortOrder())){
+				if (accessionSort == 0) { //only the accession number sorting is reversed
+					if (!GenericValidator.isBlankOrNull(a.getTestSortOrder()) && !GenericValidator.isBlankOrNull(b.getTestSortOrder())) {
 						try {
 							return Integer.parseInt(a.getTestSortOrder()) - Integer.parseInt(b.getTestSortOrder());
 						} catch (NumberFormatException e) {
@@ -641,7 +641,7 @@ public class ResultsLoadUtility {
 		testItem.setTestKitId(testKitId);
 		testItem.setTestKitInventoryId(testKitInventoryId);
 		testItem.setTestKitInactive(testKitInactive);
-		testItem.setReadOnly(isLockCurrentResults() && result != null && result.getId() != null);
+		testItem.setReadOnly( isReadOnly(isConclusion, isCD4Conclusion) && result != null && result.getId() != null);
 		testItem.setReferralId(referralId);
 		testItem.setReferredOut(!GenericValidator.isBlankOrNull(referralId) && !referralCanceled);
         testItem.setShadowReferredOut( testItem.isReferredOut() );
@@ -673,7 +673,11 @@ public class ResultsLoadUtility {
 		return testItem;
 	}
 
-    private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem, List<TestResult> testResults){
+	private boolean isReadOnly(boolean isConclusion, boolean isCD4Conclusion) {
+		return isConclusion || isCD4Conclusion || isLockCurrentResults();
+	}
+
+	private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem, List<TestResult> testResults){
 		if( resultLimit != null){
 			testItem.setResultLimitId(resultLimit.getId());
 			testItem.setLowerNormalRange(resultLimit.getLowNormal() == Double.NEGATIVE_INFINITY ? 0 : resultLimit.getLowNormal());
