@@ -362,16 +362,16 @@ function makeDirty(){
 		</td>
         <% if( useCollectionDate ){ %>
         <td >
-            <% if( existingTests.getCollectionDate() != null ){%>
-            <html:text name='existingTests'
-                       property='collectionDate'
-                       maxlength='10'
-                       size ='12'
-                       onchange="checkValidEntryDate(this, 'past', true);"
-                       styleId='<%= "collectionDate_" + index %>'
-                       styleClass='text <%=isEditable? "" : " readOnly"%>'
-                       indexed="true"/>
-            <% } %>
+			<% if( existingTests.getCollectionDate() != null ){%>
+			<html:text name='existingTests'
+					   property='collectionDate'
+					   maxlength='10'
+					   size ='12'
+					   onchange="checkValidEntryDate(this, 'past', true);"
+					   styleId='<%= "collectionDate_" + index %>'
+					   styleClass='<%= "text" + (isEditable? "" : " readOnly") %>'
+					   indexed="true" />
+			<% } %>
         </td>
         <td >
             <% if( existingTests.getCollectionDate() != null ){%>
