@@ -1655,14 +1655,78 @@
 			<column name="display_key" value="reports.label.referred.out" />
 			<column name="tool_tip_key" value="tooltip.reports.label.referred.out" />
 		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="presentation_order" valueNumeric="11" />
-			<column name="element_id" value="menu_help" />
-			<column name="action_url" value="/documentation/CI_IPCI_fr.pdf" />
-			<column name="display_key" value="banner.menu.help" />
-			<column name="tool_tip_key" value="tooltip.banner.menu.help" />
-			<column name="new_window" value="true" />
-		</insert>
-	</changeSet>	
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="presentation_order" valueNumeric="11" />
+            <column name="element_id" value="menu_help" />
+            <column name="display_key" value="banner.menu.help" />
+            <column name="tool_tip_key" value="banner.menu.help" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_help' ) " />
+            <column name="presentation_order" valueNumeric="1" />
+            <column name="element_id" value="menu_help_navigation" />
+            <column name="action_url" value="/documentation/K_NavQRG_OE5.1.pdf" />
+            <column name="display_key" value="banner.menu.help.navigation" />
+            <column name="tool_tip_key" value="banner.menu.help.navigation" />
+            <column name="new_window" value="true" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_help' ) " />
+            <column name="presentation_order" valueNumeric="2" />
+            <column name="element_id" value="menu_help_test_order" />
+            <column name="action_url" value="/documentation/K_1_JobAid_OrderTest_OE5.1.pdf" />
+            <column name="display_key" value="banner.menu.help.test.order" />
+            <column name="tool_tip_key" value="banner.menu.help.test.order" />
+            <column name="new_window" value="true" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_help' ) " />
+            <column name="presentation_order" valueNumeric="3" />
+            <column name="element_id" value="menu_help_patient_find" />
+            <column name="action_url" value="/documentation/K_2_JobAid_SearchPatient_OE5.1.pdf" />
+            <column name="display_key" value="banner.menu.help.patient.search" />
+            <column name="tool_tip_key" value="banner.menu.help.patient.search" />
+            <column name="new_window" value="true" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_help' ) " />
+            <column name="presentation_order" valueNumeric="4" />
+            <column name="element_id" value="menu_help_patient_create" />
+            <column name="action_url" value="/documentation/K_3_JobAid_CreatePatient_OE5.1.pdf" />
+            <column name="display_key" value="banner.menu.help.patient.create" />
+            <column name="tool_tip_key" value="banner.menu.help.patient.create" />
+            <column name="new_window" value="true" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_help' ) " />
+            <column name="presentation_order" valueNumeric="5" />
+            <column name="element_id" value="menu_help_non_conformity" />
+            <column name="action_url" value="/documentation/K_5_JobAid_NonCon_OE5.1.pdf" />
+            <column name="display_key" value="banner.menu.help.nonconformity" />
+            <column name="tool_tip_key" value="banner.menu.help.nonconformity" />
+            <column name="new_window" value="true" />
+        </insert>
+        <insert schemaName="clinlims" tableName="menu">
+            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
+            <column name="parent_id"
+                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_help' ) " />
+            <column name="presentation_order" valueNumeric="6" />
+            <column name="element_id" value="menu_help_results" />
+            <column name="action_url" value="/documentation/K_6_JobAid_Results_OE5.1.pdf" />
+            <column name="display_key" value="banner.menu.help.results" />
+            <column name="tool_tip_key" value="banner.menu.help.results" />
+            <column name="new_window" value="true" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
