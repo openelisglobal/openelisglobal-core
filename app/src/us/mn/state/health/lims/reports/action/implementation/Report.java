@@ -175,13 +175,7 @@ public abstract class Report implements IReportCreator {
         localizationMap.put("undetermined", StringUtil.getMessageForKey( "report.undetermined" ));
         localizationMap.put("percentage", StringUtil.getMessageForKey( "report.percentage" ));
         localizationMap.put("waiting", StringUtil.getMessageForKey( "report.percentage" ));
-        /*Summary of all Tests*/
-        localizationMap.put("globalLabReport", StringUtil.getMessageForKey( "report.globalLabReport" ));
-        localizationMap.put("notStarted", StringUtil.getMessageForKey( "report.notStarted" ));
-        localizationMap.put("inProgress", StringUtil.getMessageForKey( "report.inProgress" ));
-        localizationMap.put("complete", StringUtil.getMessageForKey( "report.complete" ));
-        localizationMap.put("footNote", StringUtil.getMessageForKey( "report.footNote" ));
-        localizationMap.put("labTotal", StringUtil.getMessageForKey( "report.labTotal" ));
+
         /*Referred Test reports*/
         localizationMap.put("orderNo", StringUtil.getMessageForKey( "report.orderNo" ));
         localizationMap.put("referredTest", StringUtil.getMessageForKey( "report.referredTest" ));
