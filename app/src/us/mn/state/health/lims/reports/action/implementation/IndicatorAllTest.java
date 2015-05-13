@@ -217,6 +217,8 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
                     testBucket.sectionSort = analysis.getTestSection().getSortOrderInt();
                     concatSection_TestToBucketMap.put( concatedName, testBucket );
                 }
+            }else if(test.getLocalizedTestName() == null) {
+                testBucket = testNameToBucketList.get( test.getTestName());
             }else{
                 testBucket = testNameToBucketList.get( TestService.getUserLocalizedReportingTestName( test ));
             }
@@ -260,7 +262,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
         proxyTestSection.setId( templateAnalysis.getTestSection().getId() );
 
         proxyTest.setTestSection( proxyTestSection );
-        proxyTest.setReportingDescription( panelName );
+        proxyTest.setTestName( panelName );
 
         return proxyAnalysis;
     }
@@ -273,17 +275,23 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 	}
 	
 	private void mergeLists() {
+        Map<String, TestSection> testSectionMap = getTestSectionNameMap();
+
         //get rid of empty buckets, make sorting faster
         List<TestBucket> fullBucketList = new ArrayList<TestBucket>(  );
         for( TestBucket bucket : testBucketList){
             if((bucket.finishedCount + bucket.notStartedCount + bucket.inProgressCount) > 0){
                 fullBucketList.add( bucket );
+                testSectionMap.remove( bucket.testSection);
             }
         }
 
         testBucketList = fullBucketList;
 
-		for (TestBucket bucket : concatSection_TestToBucketMap.values()) {
+        addEmptySectionsToBucketList(testSectionMap, testBucketList );
+
+
+        for (TestBucket bucket : concatSection_TestToBucketMap.values()) {
 			testBucketList.add(bucket);
 		}
 
@@ -303,7 +311,28 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 
 	}
 
-	@Override
+    private void addEmptySectionsToBucketList(Map<String, TestSection> testSectionMap, List<TestBucket> bucketList) {
+        for( String sectionName : testSectionMap.keySet()){
+            TestSection section = testSectionMap.get(sectionName);
+            TestBucket testBucket = new TestBucket();
+            testBucket.sectionSort = section.getSortOrderInt();
+            testBucket.testSection = sectionName;
+            testBucket.testSort = 0;
+            testBucket.testName = null;
+            bucketList.add(testBucket);
+        }
+    }
+
+    private Map<String, TestSection> getTestSectionNameMap() {
+        List<TestSection> allTestSections = new TestSectionDAOImpl().getAllActiveTestSections();
+        Map<String, TestSection> testSectionMap = new HashMap<String, TestSection>();
+        for( TestSection section : allTestSections){
+            testSectionMap.put( section.getLocalizedName(), section);
+        }
+        return testSectionMap;
+    }
+
+    @Override
 	protected String getNameForReportRequest() {
 		return StringUtil.getMessageForKey("openreports.all.tests.aggregate");
 	}

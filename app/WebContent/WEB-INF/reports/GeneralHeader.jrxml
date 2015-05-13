@@ -29,10 +29,6 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<variable name="hasLogo" class="java.lang.Boolean">
-		<variableExpression><![CDATA[$P{rightHeaderImage} != null]]></variableExpression>
-		<initialValueExpression><![CDATA[false]]></initialValueExpression>
-	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -72,58 +68,25 @@
 				<imageExpression class="java.io.InputStream"><![CDATA[$P{rightHeaderImage}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="5" width="570" height="20">
-					<printWhenExpression><![CDATA[$V{hasLogo}]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="0" y="5" width="570" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName1}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="97" y="46" width="378" height="24">
-					<printWhenExpression><![CDATA[$V{hasLogo}]]></printWhenExpression>
-				</reportElement>
+				<reportElement positionType="Float" x="97" y="46" width="378" height="24"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="102" y="26" width="366" height="20" backcolor="#FFFFFF">
-					<printWhenExpression><![CDATA[$V{hasLogo}]]></printWhenExpression>
-				</reportElement>
+				<reportElement mode="Transparent" x="102" y="26" width="366" height="20" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName2}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="102" y="5" width="468" height="20">
-					<printWhenExpression><![CDATA[!$V{hasLogo}]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName1}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="102" y="27" width="468" height="20" backcolor="#FFFFFF">
-					<printWhenExpression><![CDATA[!$V{hasLogo}]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName2}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="97" y="47" width="478" height="24">
-					<printWhenExpression><![CDATA[!$V{hasLogo}]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font size="16" isBold="true"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="229" y="75" width="118" height="20"/>
