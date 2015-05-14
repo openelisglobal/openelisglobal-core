@@ -1039,4 +1039,17 @@
 		insert into clinlims.system_role_module values (nextval('clinlims.system_module_seq'), 'Y', 'Y', 'Y', 'Y', (select id from clinlims.system_role where name = 'Hematology super user'), (select id from clinlims.system_module where name = 'ResultValidation:immunology'));
         </sql>
     </changeSet>
+    <changeSet id="5" author="paulsc" context="CDIRetroCI">
+        <comment>Droping invalid and indeterminate from Vironostika</comment>
+        <sql>
+            delete from clinlims.test_reflex where test_id = ( select id from clinlims.test where name = 'Vironostika') AND
+            tst_rslt_id in ( select id from clinlims.test_result where test_id = ( select id from clinlims.test where name = 'Vironostika' AND
+            cast(value as numeric) in (select id from
+            clinlims.dictionary where dict_entry in ('Invalid', 'Indeterminate'))) );
+
+            update clinlims.test_result set is_active = false where test_id = ( select id from clinlims.test where name = 'Vironostika' ) AND
+            cast(value as numeric) in (select id from
+            clinlims.dictionary where dict_entry in ('Invalid', 'Indeterminate'));
+        </sql>
+    </changeSet>
 </databaseChangeLog>
