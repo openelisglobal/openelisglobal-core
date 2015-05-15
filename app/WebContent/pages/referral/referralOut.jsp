@@ -619,7 +619,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
 </tr>
 <logic:notEmpty name="referralItems" property="pastNotes">
     <tr class='<%= rowColor %>'>
-        <td valign="top" align="right">Prior Notes:</td>
+        <td valign="top" align="right"><bean:message key="label.prior.note" />:</td>
         <td colspan="5" align="left">
             <%= referralItems.getPastNotes() %>
         </td>
