@@ -27,4 +27,32 @@
             system_module_id = ( select id from clinlims.system_module where name = 'LogbookResults:Mycology' ); </where>
         </update>
 	</changeSet>
+    <changeSet id="2" author="paulsc" context="CI_IPCI">
+        <comment>Correcting spelling for several tests</comment>
+        <update tableName="localization" >
+            <column name="french" value="Scotch test cutané" />
+            <where>id = (select name_localization_id from clinlims.test where guid = 'fef166b1-ecd0-4b20-8b83-51caed628b40' )</where>
+        </update>
+        <update tableName="localization" >
+            <column name="french" value="Scotch test cutané" />
+            <where>id = (select reporting_name_localization_id from clinlims.test where guid = 'fef166b1-ecd0-4b20-8b83-51caed628b40' )</where>
+        </update>
+        <update tableName="localization" >
+            <column name="french" value="Détection de la résistance aux antirétroviraux" />
+            <where>id = (select name_localization_id from clinlims.test where guid = '73e029c6-0f66-428f-a873-5ed0ad219a1e' )</where>
+        </update>
+        <update tableName="localization" >
+            <column name="french" value="Hématocrite" />
+            <where>id = (select name_localization_id from clinlims.test where guid = '34e8dfa8-7971-47fe-b259-b55dac61bcf5' )</where>
+        </update>
+        <update tableName="localization" >
+            <column name="french" value="Hématocrite" />
+            <where>id = (select name_localization_id from clinlims.test where guid = '34e8dfa8-7971-47fe-b259-b55dac61bcf5' )</where>
+        </update>
+        <sql>update localization set french = replace( french, 'Serologie', 'Sérologie' ) where description = 'panel name'; </sql>
+        <update tableName="dictionary" >
+            <column name="dict_entry" value="Autre" />
+            <where>dict_entry = 'Autres'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
