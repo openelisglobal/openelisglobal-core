@@ -340,7 +340,7 @@ public class ResultService {
 
 	private List<ResultLimit> getResultLimits() {
 		if (resultLimit == null) {
-			resultLimit = new ResultLimitDAOImpl().getAllResultLimitsForTest(test.getId());
+			resultLimit = test != null ? new ResultLimitDAOImpl().getAllResultLimitsForTest(test.getId()) : new ArrayList<ResultLimit>();
 		}
 
 		return resultLimit;
