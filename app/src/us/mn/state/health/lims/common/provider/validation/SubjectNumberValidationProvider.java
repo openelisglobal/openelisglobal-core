@@ -61,7 +61,7 @@ public class SubjectNumberValidationProvider extends BaseValidationProvider{
 
             boolean allowDuplicates = ConfigurationProperties.getInstance().isPropertyValueEqual( ConfigurationProperties.Property.ALLOW_DUPLICATE_SUBJECT_NUMBERS, "true" );
             if( !results.isEmpty() ){
-                queryResponse = ( allowDuplicates ? "warning#Warning: " : "fail#Error: " ) + StringUtil.getMessageForKey( "error.duplicate.subjectNumber.warning", number );
+                queryResponse = ( allowDuplicates ? "warning#" + StringUtil.getMessageForKey("alert.warning") : "fail#" + StringUtil.getMessageForKey("alert.error") ) + ": " + StringUtil.getMessageForKey( "error.duplicate.subjectNumber.warning");
             }
         }
         response.setCharacterEncoding( "UTF-8" );
