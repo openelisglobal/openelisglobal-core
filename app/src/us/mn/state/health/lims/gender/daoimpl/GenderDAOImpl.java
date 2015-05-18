@@ -42,16 +42,16 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 	public void deleteData(List genders) throws LIMSRuntimeException {
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
-			for (int i = 0; i < genders.size(); i++) {
-				Gender data = (Gender)genders.get(i);
-			
+			for (Object gender : genders) {
+				Gender data = (Gender) gender;
+
 				Gender oldData = readGender(data.getId());
 				Gender newData = new Gender();
 
 				String sysUserId = data.getSysUserId();
 				String event = IActionConstants.AUDIT_TRAIL_DELETE;
 				String tableName = "GENDER";
-				auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
+				auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
 			}
 		}  catch (Exception e) {
 
@@ -59,9 +59,9 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			throw new LIMSRuntimeException("Error in Gender AuditTrail deleteData()", e);
 		}  
 		
-		try {					
-			for (int i = 0; i < genders.size(); i++) {
-				Gender data = (Gender) genders.get(i);
+		try {
+			for (Object gender : genders) {
+				Gender data = (Gender) gender;
 				data = readGender(data.getId());
 				HibernateUtil.getSession().delete(data);
 				HibernateUtil.getSession().flush();
@@ -86,7 +86,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			String id = (String)HibernateUtil.getSession().save(gender);
 			gender.setId(id);
 			
-			//bugzilla 1824 inserts will be logged in history table
+			
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = gender.getSysUserId();
 			String tableName = "GENDER";
@@ -95,7 +95,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			HibernateUtil.getSession().flush();	
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","insertData()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender insertData()", e);
 		} 
@@ -117,7 +117,6 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 		}
 
 		Gender oldData = readGender(gender.getId());
-		Gender newData = gender;
 
 		//add to audit trail
 		try {
@@ -125,9 +124,9 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			String sysUserId = gender.getSysUserId();
 			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
 			String tableName = "GENDER";
-			auditDAO.saveHistory(newData,oldData,sysUserId,event,tableName);
+			auditDAO.saveHistory(gender,oldData,sysUserId,event,tableName);
 		}  catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","AuditTrail updateData()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender AuditTrail updateData()", e);
 		}  
@@ -139,7 +138,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			HibernateUtil.getSession().evict(gender);
 			HibernateUtil.getSession().refresh(gender);
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","deleteData()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender updateData()", e);
 		} 
@@ -156,7 +155,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 				gender.setId(null);
 			}
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","getData()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender getData()", e);
 		}
@@ -173,7 +172,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch(Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","getAllGenders()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender getAllGenders()", e);
 		} 
@@ -187,7 +186,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			// calculate maxRow to be one more than the page size
 			int endingRecNo = startingRecNo + (SystemConfiguration.getInstance().getDefaultPageSize() + 1);
 			
-			//bugzilla 1399
+			
 			String sql = "from Gender g order by g.description, g.genderType";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setFirstResult(startingRecNo-1);
@@ -198,7 +197,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","getPageOfGenders()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender getPageOfGenders()", e);
 		} 
@@ -213,7 +212,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","readGender()",e.toString());
 			throw new LIMSRuntimeException("Error in Gender readGender(idString)", e);
 		}			
@@ -271,7 +270,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			
 							
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","getPreviousRecord()",e.toString());
 			throw new LIMSRuntimeException("Error in getPreviousRecord() for " + table, e);
 		} 
@@ -300,7 +299,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			
 							
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","getPreviousRecord()",e.toString());
 			throw new LIMSRuntimeException("Error in getPreviousRecord() for " + table, e);
 		} 
@@ -335,7 +334,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 			return list.size() > 0;
 
 		} catch (Exception e) {
-			//bugzilla 2154
+			
 			LogEvent.logError("GenderDAOImpl","duplicateGenderExists()",e.toString());
 			throw new LIMSRuntimeException(
 					"Error in duplicateGenderExists()", e);

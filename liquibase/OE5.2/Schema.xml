@@ -52,4 +52,13 @@
             <column name="units" type="VARCHAR" />
         </modifyColumn>
     </changeSet>
+    <changeSet id="4" author="paulsc">
+        <comment>Adds active column to menu table</comment>
+        <addColumn tableName="menu">
+            <column name="is_active" type="boolean" defaultValueBoolean="true"/>
+        </addColumn>
+        <sql>
+            COMMENT ON COLUMN clinlims.menu.is_active IS 'Is this menu item active.  Allows menu to be turned on/off programatically';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
