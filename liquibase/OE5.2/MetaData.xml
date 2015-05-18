@@ -202,5 +202,20 @@
             <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'TestCatalog' ) " />
         </insert>
     </changeSet>
+    <changeSet id="10" author="paulsc">
+        <comment>Adds patient tab configuration to site information table</comment>
+        <insert tableName="site_information">
+            <column name="id" valueNumeric=" nextval( 'site_information_seq' ) "/>
+            <column name="name" value="Patient management tab" />
+            <column name="lastupdated" valueDate=" now() " />
+            <column name="description" value="If true, display patient tab" />
+            <column name="value" value="true" />
+            <column name="domain_id" valueNumeric=" ( select id from clinlims.site_information_domain where name = 'patientEntryConfig' ) " />
+            <column name="value_type" value="boolean" />
+            <column name="instruction_key" value="instruction.tabs.patientIdentity" />
+            <column name="group" value="0" />
+            <column name="description_key" value="site.info.tabs.patientIdentity" />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
 
