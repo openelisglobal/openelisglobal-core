@@ -12,7 +12,7 @@
         </id>
 
         <many-to-one name="parent" class="us.mn.state.health.lims.menu.valueholder.Menu" fetch="select">
-            <column name="PARENT_ID" precision="10" scale="0" not-null="true" />
+            <column name="PARENT_ID" precision="10" scale="0" not-null="false" />
         </many-to-one>
    
    		<property name="presentationOrder" column="presentation_order" type="java.lang.Integer" />
@@ -20,7 +20,8 @@
    		<property name="actionURL" column="action_url" type="java.lang.String" />
    		<property name="clickAction" column="click_action" type="java.lang.String" />	
    		<property name="displayKey" column="display_key" type="java.lang.String" />	
-   		<property name="toolTipKey" column="tool_tip_key" type="java.lang.String" />	
-   		<property name="openInNewWindow" column="new_window" type="boolean" />
+   		<property name="toolTipKey" column="tool_tip_key" type="java.lang.String" />
+        <property name="openInNewWindow" column="new_window" type="boolean" />
+        <property name="isActive" column="is_active" type="boolean" />
     </class>
 </hibernate-mapping>
