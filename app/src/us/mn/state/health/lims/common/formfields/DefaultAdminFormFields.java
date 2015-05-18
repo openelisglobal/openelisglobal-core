@@ -30,7 +30,6 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 	{
 		defaultAttributes.put(Field.ActionMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.AnalyteMenu,  Boolean.FALSE);
-		defaultAttributes.put(Field.AnalyzerTestNameMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.CodeElementXref,  Boolean.FALSE);
 		defaultAttributes.put(Field.CodeElementTypeMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.CountyMenu,  Boolean.FALSE);
@@ -82,6 +81,7 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.WORKPLAN_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.NON_CONFORMITY_CONFIGURATION, Boolean.TRUE);
         defaultAttributes.put( Field.PATIENT_ENTRY_CONFIGURATION, Boolean.TRUE );
+		defaultAttributes.put(Field.AnalyzerTestNameMenu,  Boolean.TRUE);
 	}
 
 	@Override
