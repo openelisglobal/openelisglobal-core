@@ -51,9 +51,9 @@ public class DateValidationProvider extends BaseValidationProvider {
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// get id from request
-		String dateString = (String) request.getParameter("date");
-		String relative = (String) request.getParameter("relativeToNow");
-		String formField = (String) request.getParameter("field");
+		String dateString = request.getParameter("date");
+		String relative = request.getParameter("relativeToNow");
+		String formField = request.getParameter("field");
 
 		String result = INVALID;
 
