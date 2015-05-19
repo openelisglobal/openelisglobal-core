@@ -324,7 +324,7 @@ public class DateUtil {
 	}
 
 	public static String adjustAmbiguousDate(String date) {
-		String replaceValue = ConfigurationProperties.getInstance().getPropertyValue(Property.AmbiguousDateValue);
+		String replaceValue = ConfigurationProperties.getInstance().getPropertyValue(Property.AmbiguousDateAllowed);
 
 		return date.replaceAll(AMBIGUOUS_DATE_REGEX, replaceValue);
 	}

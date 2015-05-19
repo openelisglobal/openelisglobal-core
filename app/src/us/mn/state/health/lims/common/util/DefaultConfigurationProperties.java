@@ -38,7 +38,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 	{
 		//config from SystemConfiguration.properties
 		propertiesFileMap  = new HashMap<ConfigurationProperties.Property, KeyDefaultPair>();
-		propertiesFileMap.put(Property.AmbiguousDateValue, new KeyDefaultPair("date.ambiguous.date.value", "01") );
+		propertiesFileMap.put(Property.AmbiguousDateAllowed, new KeyDefaultPair("date.ambiguous.date.value", "01") );
 		propertiesFileMap.put(Property.AmbiguousDateHolder , new KeyDefaultPair("date.ambiguous.date.holder", "X") );
 		propertiesFileMap.put(Property.ReferingLabParentOrg , new KeyDefaultPair("organization.reference.lab.parent", null) );
 		propertiesFileMap.put(Property.resultsResendTime , new KeyDefaultPair("results.send.retry.time", "30") );

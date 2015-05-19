@@ -40,6 +40,7 @@
 	boolean patientNamesRequired = true;
 	boolean patientAgeRequired = true;
 	boolean patientGenderRequired = true;
+	String ambiguousDateReplacement = ConfigurationProperties.getInstance().getPropertyValue(ConfigurationProperties.Property.AmbiguousDateHolder);
  %>
 <%
 	String path = request.getContextPath();
@@ -299,6 +300,37 @@ function  /*void*/ processValidateDateSuccess(xhr){
 	}
 	
 	pt_setSave();
+}
+
+function normalizeDateFormat(element){
+	var date = element.value;
+	var dateParts = [3];
+	//If there are not 10 characters then we give up
+	if( date.length != 10){
+		return;
+	}
+
+	//replace all characters with x
+	date = date.replace(/[^\d /]/g, "<%=ambiguousDateReplacement%>");
+
+	dateParts[0] = date.substring(0,2);
+	dateParts[1] = date.substring(3,5);
+	dateParts[2] = date.substring(6);
+
+	//make sure we don't mix meaning in date sections
+	if( dateParts[0].indexOf("<%=ambiguousDateReplacement%>") != -1){
+		dateParts[0] = "<%=ambiguousDateReplacement + ambiguousDateReplacement%>"
+	}
+
+	if( dateParts[1].indexOf("<%=ambiguousDateReplacement%>") != -1){
+		dateParts[1] = "<%=ambiguousDateReplacement + ambiguousDateReplacement%>"
+	}
+
+	if( dateParts[2].indexOf("<%=ambiguousDateReplacement%>") != -1){
+		dateParts[2] = dateParts[2].replace(/<%=ambiguousDateReplacement%>/g, "0");
+	}
+
+	element.value = dateParts[0] + "/" + dateParts[1] + "/" + dateParts[2];
 }
 
 function  /*void*/ checkValidAgeDate(dateElement)
@@ -1068,7 +1100,7 @@ function  processSubjectNumberSuccess(xhr){
 					  size="20"
                       maxlength="10"
                       onkeyup="addDateSlashes(this,event);"
-                      onblur="checkValidAgeDate( this ); updatePatientEditStatus();"
+                      onblur="normalizeDateFormat(this); checkValidAgeDate( this ); updatePatientEditStatus();"
 					  styleId="dateOfBirthID" />
 			<div id="patientProperties.birthDateForDisplayMessage" class="blank" ></div>
 		</td>
