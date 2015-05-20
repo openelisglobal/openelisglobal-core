@@ -303,6 +303,7 @@ function  /*void*/ processValidateDateSuccess(xhr){
 }
 
 function normalizeDateFormat(element){
+	var caretPosition = doGetCaretPosition(element);
 	var date = element.value;
 	var dateParts = [3];
 	//If there are not 10 characters then we give up
@@ -331,8 +332,36 @@ function normalizeDateFormat(element){
 	}
 
 	element.value = dateParts[0] + "/" + dateParts[1] + "/" + dateParts[2];
+	setCaretPosition(element, caretPosition);
 }
 
+function doGetCaretPosition (ctrl) {
+	var CaretPos = 0;	// IE Support
+	if (document.selection) {
+		ctrl.focus ();
+		var Sel = document.selection.createRange ();
+		Sel.moveStart ('character', -ctrl.value.length);
+		CaretPos = Sel.text.length;
+	}
+	// Firefox support
+	else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+		CaretPos = ctrl.selectionStart;
+	return (CaretPos);
+}
+function setCaretPosition(ctrl, pos){
+	if(ctrl.setSelectionRange)
+	{
+		ctrl.focus();
+		ctrl.setSelectionRange(pos,pos);
+	}
+	else if (ctrl.createTextRange) {
+		var range = ctrl.createTextRange();
+		range.collapse(true);
+		range.moveEnd('character', pos);
+		range.moveStart('character', pos);
+		range.select();
+	}
+}
 function  /*void*/ checkValidAgeDate(dateElement)
 {
 	if( dateElement && !dateElement.value.blank() ){
@@ -1099,8 +1128,8 @@ function  processSubjectNumberSuccess(xhr){
 					  styleClass="text"
 					  size="20"
                       maxlength="10"
-                      onkeyup="addDateSlashes(this,event);"
-                      onblur="normalizeDateFormat(this); checkValidAgeDate( this ); updatePatientEditStatus();"
+                      onkeyup="addDateSlashes(this,event); normalizeDateFormat(this);"
+                      onblur="checkValidAgeDate( this ); updatePatientEditStatus();"
 					  styleId="dateOfBirthID" />
 			<div id="patientProperties.birthDateForDisplayMessage" class="blank" ></div>
 		</td>
