@@ -149,4 +149,23 @@ public class DateUtilTest {
         end.set(    2021, JANUARY, 18);
         assertEquals(10, DateUtil.getAgeInYears(start.getTime(), end.getTime()));                
     }
+
+    @Test
+    public void stringSubstitution(){
+        assertEquals("/bc", StringUtil.replaceCharAtIndex("abc",'/', 0));
+        assertEquals("a/c", StringUtil.replaceCharAtIndex("abc",'/', 1));
+        assertEquals("ab/", StringUtil.replaceCharAtIndex("abc",'/', 2));
+        assertEquals("abc", StringUtil.replaceCharAtIndex("abc",'/', 3));
+        assertEquals("abc", StringUtil.replaceCharAtIndex("abc",'/', -1));
+        assertEquals("", StringUtil.replaceCharAtIndex("",'/', 3));
+        assertEquals(null, StringUtil.replaceCharAtIndex(null,'/', 3));
+    }
+
+    @Test
+    public void timeStampConversion(){
+        assertEquals("01/01/2010", DateUtil.adjustAmbiguousDate("xx/xx/2010"));
+        assertEquals("01/20/2010", DateUtil.adjustAmbiguousDate("xx/20/2010"));
+        assertEquals("01/01/2010", DateUtil.adjustAmbiguousDate("xX/xx/2010"));
+        assertEquals("01/01/2010", DateUtil.adjustAmbiguousDate("xX/xxX2010"));
+    }
 }
