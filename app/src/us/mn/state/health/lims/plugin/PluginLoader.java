@@ -108,7 +108,15 @@ public class PluginLoader {
             System.out.println("Manifest file not in jar file, unable to check jdk versions");
             return true;
         }
-        String[] jarVersion = manifest.getMainAttributes().getValue("Created-By").split("\\.");
+
+        String createdBy = manifest.getMainAttributes().getValue("Created-By");
+        if( createdBy == null){
+            LogEvent.logError("PluginLoader", "check jdk version", "JDK version not found in manifest file, unable to check jdk versions");
+            System.out.println("JDK version not found in manifest file, unable to check jdk versions");
+            return true;
+        }
+
+        String[] jarVersion = createdBy.split("\\.");
         int jarVersionMajor = Integer.parseInt(jarVersion[0]);
         int jarVersionMinor = Integer.parseInt( jarVersion[1]);
         if( jarVersionMajor > JDK_VERSION_MAJOR || ( jarVersionMajor == JDK_VERSION_MAJOR && jarVersionMinor > JDK_VERSION_MINOR )){

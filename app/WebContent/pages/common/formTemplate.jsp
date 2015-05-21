@@ -141,7 +141,7 @@ if (document.layers) {
 
 <%--html:errors/--%>
 
-<%--bugzilla 1400--%><%--bugzilla 1664 check_width()--%>
+<%-- check_width()--%>
 <body onLoad="focusOnFirstInputField();check_width();onLoad()" >
 
 <%--action is set in BaseAction--%>
