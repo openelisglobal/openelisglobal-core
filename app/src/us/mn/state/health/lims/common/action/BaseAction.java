@@ -239,7 +239,17 @@ public abstract class BaseAction extends Action implements IActionConstants {
 	 *            the message key to look up
 	 */
 	protected String getMessageForKey(String messageKey) throws Exception {
-		return StringUtil.getContextualMessageForKey(messageKey);
+		String message = StringUtil.getContextualMessageForKey(messageKey);
+		return message == null ? getActualMessage( messageKey ) : message;
+	}
+
+	/**
+	 * Template method to allow subclasses to handle special cases.  The default is to return the message
+	 * @param message The message
+	 * @return The message
+	 */
+	protected String getActualMessage(String message) {
+		return message;
 	}
 
 	protected String getMessageForKey(HttpServletRequest request, String messageKey, String arg0) throws Exception {

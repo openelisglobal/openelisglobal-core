@@ -35,6 +35,8 @@ import us.mn.state.health.lims.analyzerresults.daoimpl.AnalyzerResultsDAOImpl;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.services.PluginMenuService;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -497,11 +499,22 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	protected String getPageSubtitleKey() {
-
-        return analyzerNameToSubtitleKey.get(analyzer);
+		String key = analyzerNameToSubtitleKey.get(analyzer);
+		if( key == null){
+			key = PluginMenuService.getInstance().getKeyForAction("/AnalyzerResults.do?type=" + analyzer);
+		}
+        return key;
 
 	}
 
+	@Override
+	protected String getActualMessage( String messageKey){
+		String actualMessage = null;
+		if( messageKey != null){
+			actualMessage = PluginMenuService.getInstance().getMenuLabel(LocalizationService.getCurrentLocale(), messageKey);
+		}
+		return actualMessage == null ? analyzer : actualMessage;
+	}
 	protected void setAnalyzerRequest(String requestType) {
 		if (!GenericValidator.isBlankOrNull(requestType)) {
            analyzer = AnalyzerTestNameCache.instance().getDBNameForActionName(requestType);
