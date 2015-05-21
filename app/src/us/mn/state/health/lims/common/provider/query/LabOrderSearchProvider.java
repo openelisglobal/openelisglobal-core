@@ -421,7 +421,7 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 
 	private void addAlerts(StringBuilder xml, String patientGuid){
 		PatientService patientService = new PatientService( patientGuid);
-		if( GenericValidator.isBlankOrNull(patientService.getDOB()) || GenericValidator.isBlankOrNull(patientService.getGender())){
+		if( GenericValidator.isBlankOrNull(patientService.getEnteredDOB()) || GenericValidator.isBlankOrNull(patientService.getGender())){
 			XMLUtil.appendKeyValue("user_alert", StringUtil.getMessageForKey("electroinic.order.warning.missingPatientInfo"), xml);
 		}
 	}
