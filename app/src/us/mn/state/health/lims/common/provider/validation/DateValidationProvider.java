@@ -58,7 +58,7 @@ public class DateValidationProvider extends BaseValidationProvider {
 		String result = INVALID;
 
 		if (DateUtil.yearSpecified(dateString)) {
-			dateString = DateUtil.adjustAmbiguousDate(dateString);
+			dateString = DateUtil.normalizeAmbiguousDate(dateString);
 			Date date = getDate(dateString);
 			result = validateDate(date, relative);
 		}

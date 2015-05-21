@@ -163,9 +163,10 @@ public class DateUtilTest {
 
     @Test
     public void timeStampConversion(){
-        assertEquals("01/01/2010", DateUtil.adjustAmbiguousDate("xx/xx/2010"));
-        assertEquals("01/20/2010", DateUtil.adjustAmbiguousDate("xx/20/2010"));
-        assertEquals("01/01/2010", DateUtil.adjustAmbiguousDate("xX/xx/2010"));
-        assertEquals("01/01/2010", DateUtil.adjustAmbiguousDate("xX/xxX2010"));
+        assertEquals("01/01/2010", DateUtil.normalizeAmbiguousDate("xx/xx/2010"));
+        assertEquals("01/20/2010", DateUtil.normalizeAmbiguousDate("xx/20/2010"));
+        assertEquals("01/01/2010", DateUtil.normalizeAmbiguousDate("xX/xx/2010"));
+        assertEquals("01/01/2010", DateUtil.normalizeAmbiguousDate("xX/xxX2010"));
+        assertEquals("01/01/2008", DateUtil.normalizeAmbiguousDate("01/01x2008"));
     }
 }

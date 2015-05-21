@@ -20,66 +20,69 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
 import us.mn.state.health.lims.person.valueholder.Person;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 public interface IPatientService{
 
-	public abstract String getGUID();
+	String getGUID();
 
-	public abstract String getNationalId();
+	String getNationalId();
 
-	public abstract String getSTNumber();
+	String getSTNumber();
 
-	public abstract String getSubjectNumber();
+	String getSubjectNumber();
 
-	public abstract String getFirstName();
+	String getFirstName();
 
-	public abstract String getLastName();
+	String getLastName();
 
-	public abstract String getLastFirstName();
+	String getLastFirstName();
 
-	public abstract String getGender();
+	String getGender();
 
-    public abstract String getLocalizedGender();
+    String getLocalizedGender();
 
-	public abstract Map<String, String> getAddressComponents();
+	Map<String, String> getAddressComponents();
 
-	public abstract String getDOB();
+	String getEnteredDOB();
 
-	public abstract String getPhone();
+	Timestamp getDOB();
 
-	public abstract Person getPerson();
+	String getPhone();
 
-	public abstract String getPatientId();
+	Person getPerson();
 
-	public abstract String getBirthdayForDisplay();
+	String getPatientId();
 
-	public abstract List<PatientIdentity> getIdentityList();
+	String getBirthdayForDisplay();
 
-	public abstract Patient getPatient();
+	List<PatientIdentity> getIdentityList();
 
-    public abstract String getAKA();
+	Patient getPatient();
 
-    public abstract String getMother();
+    String getAKA();
 
-    public abstract String getInsurance();
+    String getMother();
 
-    public abstract String getOccupation();
+    String getInsurance();
 
-    public abstract String getOrgSite();
+    String getOccupation();
 
-    public abstract String getMothersInitial();
+    String getOrgSite();
 
-    public abstract String getEducation();
+    String getMothersInitial();
 
-    public abstract String getMaritalStatus();
+    String getEducation();
 
-    public abstract String getHealthDistrict();
+    String getMaritalStatus();
 
-    public abstract String getHealthRegion();
+    String getHealthDistrict();
 
-    public abstract String getObNumber();
+    String getHealthRegion();
 
-    public abstract String getPCNumber();
+    String getObNumber();
+
+    String getPCNumber();
 }
