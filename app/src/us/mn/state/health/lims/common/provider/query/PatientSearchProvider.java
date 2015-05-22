@@ -96,7 +96,7 @@ public class PatientSearchProvider extends BaseQueryProvider{
 				service.getFirstName(),
 				service.getLastName(),
 				service.getGender(),
-				service.getDOB(),
+				service.getEnteredDOB(),
 				service.getNationalId(),
 				patient.getExternalId(),
 				service.getSTNumber(),

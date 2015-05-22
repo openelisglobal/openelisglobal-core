@@ -37,6 +37,10 @@ public class LocalizationService implements LocaleChangeListener{
         SystemConfiguration.getInstance().addLocalChangeListener( INSTANCE );
     }
 
+    public static String getCurrentLocale() {
+        return LANGUAGE_LOCALE;
+    }
+
     public enum LocalizationType{
         TEST_NAME("test name"),
         REPORTING_TEST_NAME("test report name"),

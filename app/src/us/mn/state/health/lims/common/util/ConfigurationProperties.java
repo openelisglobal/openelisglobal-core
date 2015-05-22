@@ -44,7 +44,7 @@ public abstract class ConfigurationProperties {
 	protected Map<ConfigurationProperties.Property, String> propertiesValueMap = new HashMap<ConfigurationProperties.Property, String>();
     //These should all be upper case.  As you touch them change them
     public enum Property{
-        AmbiguousDateAllowed,         //Are ambiguous dates allowed for DOB.  i.e. patient knows age but not actuall DOB
+        AmbiguousDateValue,         //Are ambiguous dates allowed for DOB.  i.e. patient knows age but not actuall DOB
         AmbiguousDateHolder,        //What character should be used as a placeholder when displaying the date.  i.e. if 'X' then XX/XX/2000
         ReferingLabParentOrg,       //Should the parent organization of a lab be entered.  i.e. The hospital in which the lab is run
         FormFieldSet,               //internal only

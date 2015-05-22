@@ -37,6 +37,7 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -316,13 +317,18 @@ public class PatientService implements IPatientService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see us.mn.state.health.lims.common.services.IPatientService#getDOB()
+	 * @see us.mn.state.health.lims.common.services.IPatientService#getEnteredDOB()
 	 */
 	@Override
-	public String getDOB(){
+	public String getEnteredDOB(){
 			return patient != null ? patient.getBirthDateForDisplay() : "";
 	}
-	
+
+	@Override
+	public Timestamp getDOB() {
+		return patient != null ? patient.getBirthDate() : null;
+	}
+
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getPhone()
 	 */

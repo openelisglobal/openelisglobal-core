@@ -103,7 +103,7 @@ public class PatientSearchLocalWorker extends PatientSearchWorker {
                 service.getFirstName(),
                 service.getLastName(),
                 service.getGender(),
-                service.getDOB(),
+                service.getEnteredDOB(),
                 service.getNationalId(),
                 patient.getExternalId(),
                 service.getSTNumber(),
