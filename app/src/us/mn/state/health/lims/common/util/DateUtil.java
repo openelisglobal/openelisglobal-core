@@ -37,7 +37,7 @@ public class DateUtil {
 	private static final Pattern FOUR_DIGITS = Pattern.compile("\\d{4}");
 	private static final long DAY_IN_MILLSEC = 1000L * 60L * 60L * 24L;
 
-	private static final long WEEK_MS = DAY_IN_MILLSEC * 7;
+	private static final long WEEK_MS = DAY_IN_MILLSEC * 7L;
 
 	static {
 		AMBIGUOUS_DATE_CHAR = ConfigurationProperties.getInstance().getPropertyValue(Property.AmbiguousDateHolder);
