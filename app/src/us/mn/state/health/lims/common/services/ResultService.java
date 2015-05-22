@@ -71,6 +71,10 @@ public class ResultService {
 		return TestService.getUserLocalizedTestName(test);
 	}
 
+    public String getReportingTestName() {
+        return TestService.getUserLocalizedReportingTestName(test);
+    }
+
 	public String getTestDescription() {
 		return TestService.getLocalizedTestNameWithType( test );
 	}
