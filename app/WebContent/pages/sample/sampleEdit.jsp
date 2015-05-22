@@ -105,7 +105,7 @@ window.onbeforeunload = formWarning;
 
 function /*void*/ savePage(){
 	if( samplesHaveBeenAdded() && !sampleAddValid( false )){
-		alert('<%= StringUtil.getMessageForKey("warning.sample.missing.test")%>');
+		alert("<%= StringUtil.getMessageForKey("warning.sample.missing.test")%>");
 		return;
 	}
 
@@ -162,7 +162,7 @@ function processEditAccessionSuccess(xhr)
 	if (message == "SAMPLE_FOUND"){
 		setFieldErrorDisplay( $(formField) );
 		setSaveButton();
-		alert('<%=StringUtil.getMessageForKey("errors.may_not_reuse_accession_number")%>');
+		alert("<%=StringUtil.getMessageForKey("errors.may_not_reuse_accession_number")%>");
 		return;
 	}
 	
@@ -227,9 +227,9 @@ function  /*void*/ processValidateEntryDateSuccess(xhr){
     setSaveButton();
 
     if( message == '<%=IActionConstants.INVALID_TO_LARGE%>' ){
-        alert( '<bean:message key="error.date.inFuture"/>' );
+        alert( "<bean:message key="error.date.inFuture"/>" );
     }else if( message == '<%=IActionConstants.INVALID_TO_SMALL%>' ){
-        alert( '<bean:message key="error.date.inPast"/>' );
+        alert( "<bean:message key="error.date.inPast"/>" );
     }
 }
 
