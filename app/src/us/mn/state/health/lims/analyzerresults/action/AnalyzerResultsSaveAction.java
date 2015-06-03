@@ -753,12 +753,18 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	}
 
 	private void addMinMaxNormal(Result result, AnalyzerResultItem resultItem, Patient patient) {
-		ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(resultItem.getTestId(), patient);
+		boolean limitsFound = false;
 
 		if( resultItem != null){
-			result.setMinNormal( resultLimit.getLowNormal());
-			result.setMaxNormal( resultLimit.getHighNormal());
-		}else{
+			ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(resultItem.getTestId(), patient);
+			if(resultLimit != null) {
+				result.setMinNormal(resultLimit.getLowNormal());
+				result.setMaxNormal(resultLimit.getHighNormal());
+				limitsFound = true;
+			}
+		}
+
+		if( !limitsFound){
 			result.setMinNormal( Double.NEGATIVE_INFINITY);
 			result.setMaxNormal( Double.POSITIVE_INFINITY);
 		}
