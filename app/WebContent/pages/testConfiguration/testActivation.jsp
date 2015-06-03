@@ -379,8 +379,8 @@
        }
     }
     function configureForSelect() {
-        $jq("#step").text('<%=StringUtil.getMessageForKey("label.testActivate")%>');
-        $jq("#instructions").text('<bean:message key="instructions.test.activation"/>');
+        $jq("#step").text("<%=StringUtil.getMessageForKey("label.testActivate")%>");
+        $jq("#instructions").text("<bean:message key="instructions.test.activation"/>");
         $jq("#activateSection input").prop("disabled", false);
         $jq(".selectHide").hide();
         $jq(".selectShow").show();
@@ -390,7 +390,7 @@
 
     function configureForSort() {
         $jq("#step").text("Sort");
-        $jq("#instructions").text('<%=StringUtil.getMessageForKey("instructions.test.activation.sort")%>');
+        $jq("#instructions").text("<%=StringUtil.getMessageForKey("instructions.test.activation.sort")%>");
         $jq(".sortHide").hide();
         $jq(".sortShow").show();
 
@@ -403,8 +403,8 @@
     }
 
     function configureForConfirmation() {
-        $jq("#step").text('<%=StringUtil.getMessageForKey("label.testActivate.confirm")%>');
-        $jq("#instructions").text('<%=StringUtil.getMessageForKey("instructions.test.activation.confirm")%>');
+        $jq("#step").text("<%=StringUtil.getMessageForKey("label.testActivate.confirm")%>");
+        $jq("#instructions").text("<%=StringUtil.getMessageForKey("instructions.test.activation.confirm")%>");
         $jq(".confirmHide").hide();
         $jq(".confirmShow").show();
 

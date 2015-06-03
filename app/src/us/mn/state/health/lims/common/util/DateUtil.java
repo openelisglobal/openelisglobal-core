@@ -37,7 +37,7 @@ public class DateUtil {
 	private static final Pattern FOUR_DIGITS = Pattern.compile("\\d{4}");
 	private static final long DAY_IN_MILLSEC = 1000L * 60L * 60L * 24L;
 
-	private static final long WEEK_MS = DAY_IN_MILLSEC * 7;
+	private static final long WEEK_MS = DAY_IN_MILLSEC * 7L;
 
 	static {
 		AMBIGUOUS_DATE_CHAR = ConfigurationProperties.getInstance().getPropertyValue(Property.AmbiguousDateHolder);
@@ -221,12 +221,7 @@ public class DateUtil {
         return returnDate;
     }
 
-
 	public static String convertTimestampToStringTime(Timestamp date) throws LIMSRuntimeException {
-		return convertTimestampToStringTime(date, null);
-	}
-	// TIMESTAMP
-	public static String convertTimestampToStringTime(Timestamp date, String stringLocale) throws LIMSRuntimeException {
 	
 		String returnTime = null;
 		String hours;
@@ -312,7 +307,7 @@ public class DateUtil {
 
 	public static Timestamp convertAmbiguousStringDateToTimestamp(String dateForDisplay) {
 
-		dateForDisplay = adjustAmbiguousDate(dateForDisplay);
+		dateForDisplay = normalizeAmbiguousDate(dateForDisplay);
 
 		return convertStringDateToTruncatedTimestamp(dateForDisplay);
 	}
@@ -323,8 +318,10 @@ public class DateUtil {
 		return dateParts.length == 3 && FOUR_DIGITS.matcher(dateParts[2]).find();
 	}
 
-	public static String adjustAmbiguousDate(String date) {
+	public static String normalizeAmbiguousDate(String date) {
 		String replaceValue = ConfigurationProperties.getInstance().getPropertyValue(Property.AmbiguousDateValue);
+		date = StringUtil.replaceCharAtIndex(date, '/', 2);
+		date = StringUtil.replaceCharAtIndex(date, '/', 5);
 
 		return date.replaceAll(AMBIGUOUS_DATE_REGEX, replaceValue);
 	}

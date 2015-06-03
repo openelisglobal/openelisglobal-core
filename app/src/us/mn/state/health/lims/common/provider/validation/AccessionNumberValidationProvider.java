@@ -44,9 +44,9 @@ public class AccessionNumberValidationProvider extends BaseValidationProvider {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		// get id from request
-		String targetId = (String) request.getParameter("id");
-		String formField = (String) request.getParameter("field");
-		String form = (String) request.getParameter("form");
+		String targetId = request.getParameter("id");
+		String formField = request.getParameter("field");
+		String form = request.getParameter("form");
 		String result = validate(targetId, form);
 		ajaxServlet.sendData(formField, result, request, response);
 	}
@@ -63,20 +63,17 @@ public class AccessionNumberValidationProvider extends BaseValidationProvider {
 
 		if (!StringUtil.isNullorNill(targetId)) {
 
-			// AIS - bugzilla 1559 - verify isNumeric
 			try {
-				int x = Integer.parseInt(targetId);
 				SampleDAO sampleDAO = new SampleDAOImpl();
-				Sample sample = null;
+
 				// Get sample by passing in sample vo instead of targetId.
-				sample = sampleDAO.getSampleByAccessionNumber(targetId.trim());
+				Sample sample = sampleDAO.getSampleByAccessionNumber(targetId.trim());
 				
 				// BGM - bugzilla 1495 now we need to know which form it's coming from
 				// and need to read what is the correct status from SytemConfig
 				if (sample == null) {
 					retVal = INVALID;
-					
-				} else if (sample != null && form != null) {
+				} else if( form != null) {
 					if (form.equalsIgnoreCase("humanSampleOneForm")) {
 						// bugzilla 1581 handle null status
 						if (!StringUtil.isNullorNill(sample.getStatus())) {

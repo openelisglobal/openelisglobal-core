@@ -55,6 +55,13 @@ public class StringUtil {
 		return string == null || string.equals("") || string.equals("null");
 	}
 
+	public static String replaceCharAtIndex( String string, char character, int index){
+		if( index < 0 || string == null || index >= string.length()){
+			return string;
+		}else{
+			return string.substring(0, index) + character + string.substring(index + 1);
+		}
+	}
 	/**
 	 * Search for tags in a String with oldValue tags and replace the tag with
 	 * the newValue text.

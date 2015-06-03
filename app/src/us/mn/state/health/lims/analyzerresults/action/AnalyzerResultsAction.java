@@ -35,7 +35,7 @@ import us.mn.state.health.lims.analyzerresults.daoimpl.AnalyzerResultsDAOImpl;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -452,8 +452,11 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private String getResultForItem(AnalyzerResults result) {
+		if(TypeOfTestResultService.ResultType.NUMERIC.matches(result.getResultType()) ){
+			return getRoundedToSignificantDigits( result );
+		}
 
-		if ("N".equals(result.getResultType()) || "A".equals(result.getResultType()) || "R".equals(result.getResultType())
+		if ( TypeOfTestResultService.ResultType.isTextOnlyVariant(result.getResultType())
 				|| GenericValidator.isBlankOrNull(result.getResultType()) || GenericValidator.isBlankOrNull(result.getResult())) {
 
 			return result.getResult();
@@ -466,6 +469,43 @@ public class AnalyzerResultsAction extends BaseAction {
 		}else{
 			return result.getResult();
 		}
+	}
+
+	private String getRoundedToSignificantDigits(AnalyzerResults result) {
+
+		List<TestResult> testResults = testResultDAO.getActiveTestResultsByTest(result.getTestId());
+
+		if( GenericValidator.isBlankOrNull(result.getResult()) || testResults.isEmpty()){
+			return result.getResult();
+		}
+
+		Double results;
+		try{
+			results = Double.valueOf(result.getResult());
+		}catch(NumberFormatException e){
+			return result.getResult();
+		}
+
+		TestResult testResult = testResults.get(0);
+
+		String significantDigitsAsString = testResult.getSignificantDigits();
+		if( GenericValidator.isBlankOrNull(significantDigitsAsString) || "-1".equals(significantDigitsAsString)){
+			return result.getResult();
+		}
+
+		Integer significantDigits;
+		try {
+			significantDigits = Integer.parseInt(significantDigitsAsString);
+		}catch (NumberFormatException e){
+			return result.getResult();
+		}
+
+		if( significantDigits == 0){
+			return String.valueOf(Math.round(results));
+		}
+
+		double power = Math.pow(10, significantDigits);
+		return String.valueOf(Math.round(results * power)/power);
 	}
 
 	private String getUnits(String units) {
@@ -497,11 +537,22 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	protected String getPageSubtitleKey() {
-
-        return analyzerNameToSubtitleKey.get(analyzer);
+		String key = analyzerNameToSubtitleKey.get(analyzer);
+		if( key == null){
+			key = PluginMenuService.getInstance().getKeyForAction("/AnalyzerResults.do?type=" + analyzer);
+		}
+        return key;
 
 	}
 
+	@Override
+	protected String getActualMessage( String messageKey){
+		String actualMessage = null;
+		if( messageKey != null){
+			actualMessage = PluginMenuService.getInstance().getMenuLabel(LocalizationService.getCurrentLocale(), messageKey);
+		}
+		return actualMessage == null ? analyzer : actualMessage;
+	}
 	protected void setAnalyzerRequest(String requestType) {
 		if (!GenericValidator.isBlankOrNull(requestType)) {
            analyzer = AnalyzerTestNameCache.instance().getDBNameForActionName(requestType);

@@ -1,6 +1,6 @@
 Installing OpenELIS on Linux
 
-The installer has to be run from a writable file system.  This means that running it from a CD will not work.  
+The installer has to be run from a writeable file system.  This means that running it from a CD will not work.  
 It should be copied to the local file system.
 
 The install script, setup_OpenELIS.py will install global OpenELIS.
@@ -34,15 +34,16 @@ setup_OpenELIS.py <options>
 
 -help - This screen
 
-Both the update and uninstall options will backup the application war file, the tomcat configuration file and the database 
-to the .rolback directory.  By example
+Both the update and uninstall options will backup the application war file, the tomcat configuration file, database dump and any plugins to the rollback directory.  By example
 
 The application file for 12/10/2012 at 5:30:17 PM
-	haitiOpenElis2012_10_12-19_30_17.war
-The configuration file for 12/10/2012 at 5:30:17 PM
-	haitiOpenElis2012_10_12-19_30_17.xml
-The database backup file for 12/10/2012 at 5:30:17 PM	
-	openElis2012_10_12-19_30_17.backup
+	.\rollback\2012_10_12-19_30_17\haitiOpenElis.war
+The configuration file
+	.\rollback\2012_10_12-19_30_17\haitiOpenElis.xml
+The database backup file
+	.\rollback\2012_10_12-19_30_17\openElis.backup
+
+When doing an update any plugins will be reinstalled
 
 --------------------	
 Examples for running	

@@ -292,9 +292,9 @@ public class SystemModuleDAOImpl extends BaseDAOImpl implements SystemModuleDAO 
 
 			List list;
 
-			String sql = "from SystemModule s where trim(lower(s.systemModuleName)) = :moduleName and s.id != :moduleId";
+			String sql = "from SystemModule s where trim(s.systemModuleName) = :moduleName and s.id != :moduleId";
 			Query query = HibernateUtil.getSession().createQuery(sql);
-			query.setParameter("moduleName", systemModule.getSystemModuleName().toLowerCase().trim());
+			query.setParameter("moduleName", systemModule.getSystemModuleName().trim());
 	
 			String systemModuleId = "0";
 			if (!StringUtil.isNullorNill(systemModule.getId())) {

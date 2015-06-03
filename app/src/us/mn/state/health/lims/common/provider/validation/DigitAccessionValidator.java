@@ -18,13 +18,10 @@
 package us.mn.state.health.lims.common.provider.validation;
 
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 public class DigitAccessionValidator implements IAccessionNumberValidator {
@@ -81,23 +78,16 @@ public class DigitAccessionValidator implements IAccessionNumberValidator {
 	}
 
 	public String getInvalidMessage(ValidationResults results) {
-		String configLocale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-		Locale locale = new Locale(configLocale);
-
 		switch (results) {
-		case LENGTH_FAIL:
-			return ResourceLocator.getInstance().getMessageResources().getMessage(locale, "sample.entry.invalid.accession.number.length");
-		case USED_FAIL:
-			return ResourceLocator.getInstance().getMessageResources().getMessage(locale, "sample.entry.invalid.accession.number.used");
-		case PROGRAM_FAIL:
-			return ResourceLocator.getInstance().getMessageResources().getMessage(locale, "sample.entry.invalid.accession.number.program");
-		case FORMAT_FAIL:
-			return ResourceLocator.getInstance().getMessageResources().getMessage(locale, "sample.entry.invalid.accession.number.format");
-		default:
-			return ResourceLocator.getInstance().getMessageResources().getMessage(locale, "sample.entry.invalid.accession.number");
-
+			case LENGTH_FAIL:
+				return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.length");
+			case USED_FAIL:
+				return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.suggestion") + " " + getNextAvailableAccessionNumber(null);
+			case FORMAT_FAIL:
+				return getInvalidFormatMessage(results);
+			default:
+				return StringUtil.getMessageForKey("sample.entry.invalid.accession.number");
 		}
-
 	}
 
     @Override
@@ -113,7 +103,7 @@ public class DigitAccessionValidator implements IAccessionNumberValidator {
         return "0000012";
     }
     public String getNextAvailableAccessionNumber(String prefix)throws IllegalStateException {
-		String nextAccessionNumber = null;
+		String nextAccessionNumber;
 
 		SampleDAO accessionNumberDAO = new SampleDAOImpl();
 

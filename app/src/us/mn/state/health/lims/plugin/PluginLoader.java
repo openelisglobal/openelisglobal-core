@@ -18,6 +18,8 @@ package us.mn.state.health.lims.plugin;
 
 import org.apache.commons.io.IOUtils;
 import org.dom4j.*;
+import us.mn.state.health.lims.common.exception.LIMSException;
+import us.mn.state.health.lims.common.log.LogEvent;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -30,6 +32,7 @@ import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 public class PluginLoader {
     private static final String PLUGIN_ANALYZER = "plugin" + File.separator;
@@ -43,6 +46,8 @@ public class PluginLoader {
     private static final String EXTENSION = "extension";
     private static final String DESCRIPTION = "description";
     private static final String VALUE = "value";
+    private int JDK_VERSION_MAJOR;
+    private int JDK_VERSION_MINOR;
     private ServletContext context;
 
     public PluginLoader(ServletContextEvent event) {
@@ -55,6 +60,10 @@ public class PluginLoader {
     }
 
     private void loadDirectory( File pluginDir ){
+        String[] version = System.getProperty("java.version").split("\\.");
+        JDK_VERSION_MAJOR = Integer.parseInt(version[0]);
+        JDK_VERSION_MINOR = Integer.parseInt(version[1]);
+
         File[] files = pluginDir.listFiles();
 
         if (files != null) {
@@ -74,6 +83,8 @@ public class PluginLoader {
         try {
             JarFile jar = new JarFile(pluginFile);
 
+            if (!checkJDKVersions(pluginFile.getName(), jar)) return;
+
             final Enumeration<JarEntry> entries = jar.entries();
             while (entries.hasMoreElements()) {
                 final JarEntry entry = entries.nextElement();
@@ -90,8 +101,38 @@ public class PluginLoader {
 
     }
 
-    private boolean loadFromXML(JarFile jar, JarEntry entry) {
+    private boolean checkJDKVersions(String fileName, JarFile jar) throws IOException {
+        Manifest manifest = jar.getManifest();
+        if( manifest == null){
+            LogEvent.logError("PluginLoader", "check jdk version", "Manifest file not in jar file, unable to check jdk versions");
+            System.out.println("Manifest file not in jar file, unable to check jdk versions");
+            return true;
+        }
 
+        String createdBy = manifest.getMainAttributes().getValue("Created-By");
+        if( createdBy == null){
+            LogEvent.logError("PluginLoader", "check jdk version", "JDK version not found in manifest file, unable to check jdk versions");
+            System.out.println("JDK version not found in manifest file, unable to check jdk versions");
+            return true;
+        }
+
+        String[] jarVersion = createdBy.split("\\.");
+        int jarVersionMajor = Integer.parseInt(jarVersion[0]);
+        int jarVersionMinor = Integer.parseInt( jarVersion[1]);
+        if( jarVersionMajor > JDK_VERSION_MAJOR || ( jarVersionMajor == JDK_VERSION_MAJOR && jarVersionMinor > JDK_VERSION_MINOR )){
+            LogEvent.logError("PluginLoader", "check jdk version", "The plugin " + fileName + " was compiled with a higher JDK version (" + getVersion(jarVersionMajor, jarVersionMinor) + ") than the runtime JDK (" + getVersion(JDK_VERSION_MAJOR, JDK_VERSION_MINOR) + ")");
+            System.out.println("The plugin " + fileName + " was compiled with a higher JDK version (" + getVersion(jarVersionMajor, jarVersionMinor) + ") than the runtime JDK (" + getVersion(JDK_VERSION_MAJOR, JDK_VERSION_MINOR) + ")");
+            return false;
+        }
+        return true;
+    }
+
+    private String getVersion(int major, int minor) {
+        return major + "." + minor;
+    }
+
+    private boolean loadFromXML(JarFile jar, JarEntry entry) {
+        Attribute description = null;
         try {
             URL url = new URL("jar:file:///" + jar.getName() + "!/");
             InputStream input = jar.getInputStream(entry);
@@ -104,7 +145,13 @@ public class PluginLoader {
 
             Element versionElement = doc.getRootElement().element(VERSION);
 
+            if( versionElement == null){
+                LogEvent.logError("PluginLoader", "load", "Missing version number in plugin");
+                System.out.println("Missing version number in plugin");
+                return false;
+            }
             if (!SUPPORTED_VERSION.equals(versionElement.getData())) {
+                LogEvent.logError("PluginLoader", "load", "Unsupported version number.  Expected " + SUPPORTED_VERSION + " got " + versionElement.getData());
                 System.out.println("Unsupported version number.  Expected " + SUPPORTED_VERSION + " got " + versionElement.getData());
                 return false;
             }
@@ -112,40 +159,45 @@ public class PluginLoader {
             Element analyzerImporter = doc.getRootElement().element(ANALYZER_IMPORTER);
 
             if (analyzerImporter != null) {
-                Attribute description = analyzerImporter.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
-                System.out.println( "Loading: " + description.getValue());
+                description = analyzerImporter.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
                 Attribute path = analyzerImporter.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
                 loadActualPlugin(url, path.getValue());
+                System.out.println("Loaded: " + description.getValue());
             }
 
             Element menu = doc.getRootElement().element(MENU);
 
             if (menu != null) {
-                Attribute description = menu.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
-                System.out.println( "Loading: " + description.getValue());
+                description = menu.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
                 Attribute path = menu.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
                 loadActualPlugin(url, path.getValue());
+                System.out.println("Loaded: " + description.getValue());
             }
 
             Element permissions = doc.getRootElement().element(PERMISSION);
 
             if (permissions != null) {
-                Attribute description = permissions.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
+                description = permissions.element(EXTENSION_POINT).element(DESCRIPTION).attribute(VALUE);
                 Attribute path = permissions.element(EXTENSION_POINT).element(EXTENSION).attribute(PATH);
-                boolean loaded = loadActualPlugin(url, path.getValue());
-                if( loaded ){
-                    System.out.println( "Loading: " + description.getValue());
-                }else{
-                    System.out.println( "Failed Loading: " + description.getValue());
-                }
+                loadActualPlugin(url, path.getValue());
+                System.out.println( "Loaded: " + description.getValue());
             }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         } catch (DocumentException e) {
             e.printStackTrace();
+            return false;
+        } catch (LIMSException e){
+            if( description != null) {
+                LogEvent.logError("PluginLoader", "load", "Failed Loading: " + description.getValue());
+                System.out.println("Failed Loading: " + description.getValue());
+            }
+            return false;
         }
 
 
@@ -154,22 +206,24 @@ public class PluginLoader {
 
 
     @SuppressWarnings("unchecked")
-    private boolean loadActualPlugin(URL url, String classPath) {
+    private void loadActualPlugin(URL url, String classPath) throws LIMSException {
         try {
             URL[] urls = {url};
             ClassLoader classLoader = new URLClassLoader(urls, this.getClass().getClassLoader());
 
             Class<APlugin> aClass = (Class<APlugin>) classLoader.loadClass(classPath);
             APlugin instance = aClass.newInstance();
-            return instance.connect();
+            instance.connect();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new LIMSException("See previous stack trace");
         } catch (InstantiationException e) {
             e.printStackTrace();
+            throw new LIMSException("See previous stack trace");
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+            throw new LIMSException("See previous stack trace");
         }
 
-        return false;
     }
 }

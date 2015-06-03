@@ -104,6 +104,13 @@ public abstract class Report implements IReportCreator {
         return GenericValidator.isBlankOrNull( siteInformation.getValue() ) ? null: imageDAO.retrieveImageInputStream( siteInformation.getValue() );
     }
 
+    /**
+     *
+     * @return map
+     * @deprecated The correct way to localize JasperReports is to us $R{key}.  This was put in before the correct way
+     * was understood.  Do not add to this list.  It will eventually be moved to the correct way.
+     */
+    @Deprecated
     protected Map<String, String> createLocalizationMap(){
         HashMap<String,String> localizationMap = new HashMap<String, String>(  );
         localizationMap.put( "requestOrderNumber", StringUtil.getMessageForKey( "report.requestOrderNumber" ) );
@@ -151,6 +158,9 @@ public abstract class Report implements IReportCreator {
         localizationMap.put("signValidation", StringUtil.getMessageForKey( "report.signValidation" ));
         localizationMap.put("date", StringUtil.getMessageForKey( "report.date" ));
         localizationMap.put("analysisReport", StringUtil.getMessageForKey( "report.analysisReport" ));
+        localizationMap.put("specimen", StringUtil.getMessageForKey( "report.specimen" ));
+        localizationMap.put("specimenCollectTimes", StringUtil.getMessageForKey( "report.specimenCollectTimes" ));
+        
         /* HIV summary*/
         localizationMap.put("total", StringUtil.getMessageForKey( "report.total" ));
         localizationMap.put("children", StringUtil.getMessageForKey( "report.children" ));
@@ -165,20 +175,8 @@ public abstract class Report implements IReportCreator {
         localizationMap.put("undetermined", StringUtil.getMessageForKey( "report.undetermined" ));
         localizationMap.put("percentage", StringUtil.getMessageForKey( "report.percentage" ));
         localizationMap.put("waiting", StringUtil.getMessageForKey( "report.percentage" ));
-        /*Summary of all Tests*/
-        localizationMap.put("globalLabReport", StringUtil.getMessageForKey( "report.globalLabReport" ));
-        localizationMap.put("notStarted", StringUtil.getMessageForKey( "report.notStarted" ));
-        localizationMap.put("inProgress", StringUtil.getMessageForKey( "report.inProgress" ));
-        localizationMap.put("complete", StringUtil.getMessageForKey( "report.complete" ));
-        localizationMap.put("footNote", StringUtil.getMessageForKey( "report.footNote" ));
-        localizationMap.put("labTotal", StringUtil.getMessageForKey( "report.labTotal" ));
-        /*Referred Test reports*/
-        localizationMap.put("orderNo", StringUtil.getMessageForKey( "report.orderNo" ));
-        localizationMap.put("referredTest", StringUtil.getMessageForKey( "report.referredTest" ));
-        localizationMap.put("referredResult", StringUtil.getMessageForKey( "report.referredResult" ));
-        localizationMap.put("other", StringUtil.getMessageForKey( "report.other" ));
-        localizationMap.put("report", StringUtil.getMessageForKey( "report.report" ));
-        localizationMap.put("reason", StringUtil.getMessageForKey( "report.reason" ));
+
+
         localizationMap.put("reception", StringUtil.getMessageForKey( "report.reception" ));
         /* activity report */
         localizationMap.put("activity", StringUtil.getMessageForKey( "report.activity" ));

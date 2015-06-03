@@ -68,8 +68,12 @@ public class ResultService {
 	}
 
 	public String getTestName() {
-		return TestService.getUserLocalizedTestName( test );
+		return TestService.getUserLocalizedTestName(test);
 	}
+
+    public String getReportingTestName() {
+        return TestService.getUserLocalizedReportingTestName(test);
+    }
 
 	public String getTestDescription() {
 		return TestService.getLocalizedTestNameWithType( test );
@@ -214,6 +218,9 @@ public class ResultService {
 			return buffer.toString();
 		} else if (TypeOfTestResultService.ResultType.NUMERIC.matches(getTestType())) {
             int significantPlaces = result.getSignificantDigits();
+            if( significantPlaces == -1){
+                return result.getValue() + appendUOM( includeUOM );
+            }
             if (significantPlaces == 0) {
                 return result.getValue().split("\\.")[0] + appendUOM( includeUOM );
             }
@@ -335,10 +342,9 @@ public class ResultService {
         return range;
     }
 
-	@SuppressWarnings("unchecked")
 	private List<ResultLimit> getResultLimits() {
 		if (resultLimit == null) {
-			resultLimit = new ResultLimitDAOImpl().getAllResultLimitsForTest(test);
+			resultLimit = test != null ? new ResultLimitDAOImpl().getAllResultLimitsForTest(test.getId()) : new ArrayList<ResultLimit>();
 		}
 
 		return resultLimit;

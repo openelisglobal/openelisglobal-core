@@ -21,5 +21,7 @@
     <include file="OE5.2/testSectionLocalization.xml" />
     <include file="OE5.2/panelLocalization.xml" />
     <include file="OE5.2/CDIRetroCIData.xml" />
+    <include file="OE5.2/CI_IPCIData.xml" />
+    <include file="OE5.2/HaitiLNSPData.xml" />
     <include file="OE5.2/postUpdateSchema.xml" />
  </databaseChangeLog>

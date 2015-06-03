@@ -267,7 +267,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
 </tr>
 <tr class='<%=rowColor%>Head' id='<%="referralRow_" + index%>'>
     <td colspan="2">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<bean:message key="resultsentry.sampleType"/>: <b><bean:write name="referralItems"
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<bean:message key="label.sampleType"/>: <b><bean:write name="referralItems"
                                                                                                     property="sampleType"/></b>
     </td>
     <td colspan="2">
@@ -619,7 +619,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters) {
 </tr>
 <logic:notEmpty name="referralItems" property="pastNotes">
     <tr class='<%= rowColor %>'>
-        <td valign="top" align="right">Prior Notes:</td>
+        <td valign="top" align="right"><bean:message key="label.prior.note" />:</td>
         <td colspan="5" align="left">
             <%= referralItems.getPastNotes() %>
         </td>

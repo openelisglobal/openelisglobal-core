@@ -16,7 +16,6 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -47,6 +46,7 @@ import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +139,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ts.setCollectionDate(DateUtil.convertTimestampToStringDate( sampleItem.getCollectionDate() ));		
 		ts.setCollectionTime(DateUtil.convertTimestampToStringConfiguredHourTime( sampleItem.getCollectionDate() ));
 		ts.setAge(createReadableAge(patientService.getDOB()));
-		ts.setDOB(patientService.getDOB());
+		ts.setDOB(patientService.getEnteredDOB());
 		ts.setFirstName(patientService.getFirstName());
 		ts.setLastName(patientService.getLastName());
 		ts.setGender(patientService.getGender());
@@ -219,13 +219,12 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		return dateRange.validateHighLowDate("report.error.message.date.received.missing");
 	}
 
-	private String createReadableAge(String dob){
-		if(GenericValidator.isBlankOrNull(dob)){
+	private String createReadableAge(Timestamp dob){
+		if(dob == null){
 			return "";
 		}
-		dob = dob.replaceAll("XX", "01");
-		dob = dob.replaceAll("xx", "01");
-		Date dobDate = DateUtil.convertStringDateToSqlDate(dob);
+
+		Date dobDate = DateUtil.convertTimestampToSqlDate(dob);
 		int months = DateUtil.getAgeInMonths(dobDate, DateUtil.getNowAsSqlDate());
 		if(months > 35){
 			return (months / 12) + " Ans";

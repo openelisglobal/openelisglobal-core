@@ -32,6 +32,7 @@ import us.mn.state.health.lims.referral.valueholder.ReferralResult;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ClinicalPatientData;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 import java.util.*;
@@ -83,22 +84,20 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
     @Override
     protected String getHeaderName(){
-        if( configName.equals( "CI LNSP")){
-            return "CILNSPHeader.jasper";
-        }else{
-            return "CDIHeader.jasper";
-        }
+        return "CDIHeader.jasper";
     }
 
     @Override
 	protected void createReportItems(){
+        Set<SampleItem> sampleSet = new HashSet<SampleItem>(  );
+
         boolean isConfirmationSample = currentSampleService.isConfirmationSample();
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(currentSampleService.getId(), analysisStatusIds);
 
 		currentConclusion = null;
 		for(Analysis analysis : analysisList){
             boolean hasParentResult = analysis.getParentResult() != null;
-
+            sampleSet.add( analysis.getSampleItem() );
 			if(analysis.getTest() != null ){
                 currentAnalysisService = new AnalysisService( analysis );
 				ClinicalPatientData resultsData = buildClinicalPatientData( hasParentResult );
@@ -123,6 +122,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
                 }
 			}
 		}
+		setCollectionTime( sampleSet, reportItems, true );
 	}
 
     @Override

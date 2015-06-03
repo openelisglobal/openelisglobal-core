@@ -204,7 +204,7 @@ public class ResultReportingCollator {
 			testResult.setPatientFirstName(patientService.getFirstName());
 			testResult.setPatientLastName(patientService.getLastName());
 			testResult.setPatientGender(patientService.getGender());
-			testResult.setPatientBirthdate(patientService.getDOB());
+			testResult.setPatientBirthdate(patientService.getEnteredDOB());
 			testResult.setPatientTelephone(patientService.getPhone());
 
             Map<String, String> addressParts = patientService.getAddressComponents();

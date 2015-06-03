@@ -195,27 +195,26 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 		return getPreviousRecord(id, "ResultLimit", ResultLimit.class);
 	}
 
-	public List getAllResultLimitsForTest(Test test) throws LIMSRuntimeException {
+	@SuppressWarnings("unchecked")
+	public List<ResultLimit> getAllResultLimitsForTest(String testId) throws LIMSRuntimeException {
 
-		if (test == null || GenericValidator.isBlankOrNull(test.getId())){
-            return new ArrayList<ResultLimit>();
-        }
+		if (GenericValidator.isBlankOrNull(testId)){
+			return new ArrayList<ResultLimit>();
+		}
 
-		List list;
 		try {
 			String sql = "from ResultLimit rl where rl.testId = :test_id";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
-			query.setInteger("test_id", Integer.parseInt(test.getId()));
+			query.setInteger("test_id", Integer.parseInt(testId));
 
-			list = query.list();
-			HibernateUtil.getSession().flush();
-			HibernateUtil.getSession().clear();
+			List<ResultLimit> list = query.list();
+			closeSession();
+			return list;
 		} catch (Exception e) {
-			LogEvent.logError("ResultLimitDAOImpl", "getAllResultLimitsPerTest()", e.toString());
-			throw new LIMSRuntimeException("Error in ResultLimitDAOImpl getAllResultLimitsForTest()", e);
+			handleException(e, "getAllResultLimitsForTest");
 		}
 
-		return list;
+		return null;
 	}
 
 	@Override

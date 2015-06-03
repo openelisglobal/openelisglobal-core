@@ -12,12 +12,10 @@
 	{
 %>
 <h1>
-	<logic:notEmpty
-		name="<%=IActionConstants.PAGE_SUBTITLE_KEY%>">
+	<logic:notEmpty	name="<%=IActionConstants.PAGE_SUBTITLE_KEY%>">
 		<bean:write name="<%=IActionConstants.PAGE_SUBTITLE_KEY%>" />
 	</logic:notEmpty> 
-	<logic:empty
-		name="<%=IActionConstants.PAGE_SUBTITLE_KEY%>">
+	<logic:empty name="<%=IActionConstants.PAGE_SUBTITLE_KEY%>">
 		<% if ("0".equals(request.getParameter("ID"))) { %>
 		  <bean:message key="default.add.title" />
 		<% } else { %>
