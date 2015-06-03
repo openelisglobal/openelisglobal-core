@@ -55,10 +55,10 @@
                    onclick="submitAction('TestCatalog.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.catalog.explain")%></li>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.add") %>'
+        <!--<li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.add") %>'
                    onclick="submitAction('TestAdd.do');"
                    class="textButton"/><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.add.explain")%></li>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.add.explain")%></li>-->
         <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.activate") %>'
                    onclick="submitAction('TestActivation.do');"
                    class="textButton"/><br>
