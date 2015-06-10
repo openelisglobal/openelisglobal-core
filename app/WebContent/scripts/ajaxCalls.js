@@ -236,3 +236,32 @@ function getProvidersForOrg( orgKey, success, failure){
     );
 }
 
+function getAllTestsForSampleType( sampleTypeId, success, failure){
+    if( !failure){failure = defaultFailure;	}
+    new Ajax.Request(
+        'ajaxQueryXML',  //url
+        {//options
+            method: 'get', //http method
+            parameters: "provider=AllTestsForSampleTypeProvider&sampleTypeId=" + sampleTypeId,
+            //indicator: 'throbbing'
+            onSuccess: success,
+            onFailure: failure
+        }
+    );
+}
+
+function getPendingAnalysisForTest( testId, success, failure){
+    if( !failure){failure = defaultFailure;	}
+    new Ajax.Request(
+        'ajaxQueryXML',  //url
+        {//options
+            method: 'get', //http method
+            parameters: "provider=getPendingAnalysisForTestProvider&testId=" + testId,
+            //indicator: 'throbbing'
+            onSuccess: success,
+            onFailure: failure
+        }
+    );
+}
+
+

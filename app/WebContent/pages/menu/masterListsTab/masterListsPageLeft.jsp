@@ -80,11 +80,6 @@
   </html:link>
 </li>
 <% } %>
-<%-- li>
-    <html:link action="/NoteMenu">
-    <bean:message key="note.browse.title" />
-  </html:link>
-</li --%>
 <% if(adminFields.useField(Field.OrganizationMenu)){ %>
 <li>
     <html:link action="/OrganizationMenu">
@@ -186,6 +181,11 @@
 <li>
     <html:link action="/TestManagementConfigMenu">
         <bean:message key="configuration.test.management" />
+    </html:link>
+</li>
+<li>
+    <html:link action="/BatchTestReassignment">
+        <bean:message key="configuration.batch.test.reassignment" />
     </html:link>
 </li>
 <% if(adminFields.useField(Field.PATIENT_ENTRY_CONFIGURATION)){ %>
