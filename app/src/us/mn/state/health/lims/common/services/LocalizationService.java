@@ -77,8 +77,10 @@ public class LocalizationService implements LocaleChangeListener{
     }
 
     public static String getLocalizedValueById( String id){
-        Localization localization = localizationDAO.getLocalizationById( id );
+        return getLocalizedValue(localizationDAO.getLocalizationById(id));
+    }
 
+    public static String getLocalizedValue(Localization localization){
         if( localization == null){
             return "";
         }
