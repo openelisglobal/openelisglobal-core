@@ -773,11 +773,10 @@
 
 		<form-bean name="BatchTestReassignment" type="org.apache.struts.validator.DynaValidatorForm" >
 			<form-property name="sampleList" type="java.util.List" />
-			<form-property name="isReload" type="java.lang.Boolean" initial="Boolean.FALSE" />
-			<form-property name="analysisNotStarted" type="java.util.List" />
-			<form-property name="technicianRejected" type="java.util.List" />
-			<form-property name="biologistRejected" type="java.util.List" />
-			<form-property name="notValidated" type="java.util.List" />
+			<form-property name="statusChangedSampleType" type="java.lang.String" initial=""/>
+			<form-property name="statusChangedCurrentTest" type="java.lang.String" initial=""/>
+			<form-property name="statusChangedNextTest" type="java.lang.String" initial=""/>
+			<form-property name="statusChangedList" type="java.util.List" />
 			<form-property name="jsonWad" type="java.lang.String" initial="" />
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 		</form-bean>
@@ -1736,7 +1735,8 @@
 		</action>
 
 		<action path="/BatchTestReassignmentUpdate" name="BatchTestReassignment" type="us.mn.state.health.lims.test.action.BatchTestReassignmentUpdateAction" >
-			<forward name="success" path="BatchTestReassignmentDefinition" />
+			<forward name="success" path="/BatchTestReassignment.do?forward=success" />
+			<forward name="resubmit" path="BatchTestReassignmentDefinition" />
 		</action>
 	</action-mappings>
 </struts-config>

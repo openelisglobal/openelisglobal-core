@@ -4,7 +4,8 @@
          		us.mn.state.health.lims.common.action.IActionConstants,
           		us.mn.state.health.lims.common.util.IdValuePair,
           		us.mn.state.health.lims.common.util.StringUtil,
-         		us.mn.state.health.lims.common.util.Versioning" %>
+         		us.mn.state.health.lims.common.util.Versioning,
+         		us.mn.state.health.lims.test.action.BatchTestStatusChangeBean" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -51,6 +52,16 @@
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>" />
 
 <script type="text/javascript">
+    var currentSampleType = "";
+
+    $jq(document).ready(function(){
+        <%if( request.getAttribute(IActionConstants.FWD_SUCCESS) != null &&
+        ((Boolean)request.getAttribute(IActionConstants.FWD_SUCCESS)) ) { %>
+        if( typeof(showSuccessMessage) != 'undefined' ){
+            showSuccessMessage( true );
+        }
+        <% } %>
+    });
 
     function convertToJQueryMultiselect(){
         $jq("select[multiple]").asmSelect({
@@ -90,6 +101,7 @@
 
     function sampleTypeChanged(selectElement) {
         $jq("#verifySampleTypeSpan").text($jq(selectElement).find(":selected").text());
+        currentSampleType = $jq(selectElement).find(":selected").text();
         if (selectElement.value != 0) {
             getAllTestsForSampleType(selectElement.value, testsForSampleTypeSuccess);
         }
@@ -226,6 +238,7 @@
 
     function handleCancelOnly(checkboxElement){
         if( checkboxElement.checked){
+            alert("<bean:message key="warning.test.batch.reassignment.cancel" />");
             $jq("#replacementTestSelectionSpan").hide();
         }else{
             $jq("#replacementTestSelectionSpan").show();
@@ -261,7 +274,8 @@
         var count = 0;
 
         $jq(".testReplaceFrom").text(canceledTest.text());
-        //N.B.  We are not sending back the canceled test, the analysis ids are good enough
+        jsonWad["current"] = canceledTest.text();
+        jsonWad["sampleType"] = currentSampleType;
 
         if($jq('#cancelOnly:checked').length == 1){
             $jq("#verifyReplaceMessage").hide();
@@ -322,14 +336,44 @@
 
     }
 </script>
+
 <html:hidden styleId="jsonWad" name='<%=formName%>' property="jsonWad" />
 
 <h3><bean:message key="label.selectSampleType"/></h3>
 
 <div id="selectDiv" >
+    <logic:notEmpty name="<%=formName%>" property="statusChangedList" >
+    <hr>
+    <bean:message key="label.test.batch.status.change.warning" /><br><br>
+    <div style="overflow: hidden">
+    <div style="float:left; width:15%;overflow: hidden;">
+        <bean:message key="label.sampleType" />:&nbsp;<bean:write name='<%=formName%>' property="statusChangedSampleType" /><br><br>
+        <bean:message key="label.currentTest" />:&nbsp;<bean:write name='<%=formName%>' property="statusChangedCurrentTest" /><br><br>
+        <bean:write name='<%=formName%>' property="statusChangedNextTest" /><br>
+    </div>
+    <div style="float:left;overflow: hidden;">
+        <table>
+            <tr>
+            <th width="30%"><bean:message key="result.sample.id" /></th>
+            <th width="30%"><bean:message key="report.from" /></th>
+            <th width="30%"><bean:message key="report.to" /></th>
+            </tr>
+            <logic:iterate id="bean" name="<%=formName%>" property="statusChangedList" type="BatchTestStatusChangeBean" >
+                <tr>
+                    <td><bean:write name="bean" property="labNo" /></td>
+                    <td><bean:write name="bean" property="oldStatus" /></td>
+                    <td><bean:write name="bean" property="newStatus" /></td>
+                </tr>
+            </logic:iterate>
+        </table><br>
+    </div>
+    </div>
+    <br>
+    <hr>
+    </logic:notEmpty>
     <bean:message key="label.sampleType" /><br>
 
-    <select onchange="sampleTypeChanged(this)" >
+    <select onchange="sampleTypeChanged(this); makeDirty();" >
     <option value="0"></option>
     <% for (IdValuePair pair : (List<IdValuePair>) sampleTypeList) {%>
     <option value="<%=pair.getId()%>" ><%=pair.getValue()%></option>
@@ -439,3 +483,4 @@
         <input type="button" onclick="restoreSelect()"  value='<%=StringUtil.getMessageForKey("label.button.reject")%>'>
     </div>
 </div>
+

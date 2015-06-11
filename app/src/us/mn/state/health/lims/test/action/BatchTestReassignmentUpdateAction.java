@@ -16,6 +16,7 @@
 
 package us.mn.state.health.lims.test.action;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -31,15 +32,17 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.TestService;
-import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BatchTestReassignmentUpdateAction extends BaseAction {
@@ -48,14 +51,16 @@ public class BatchTestReassignmentUpdateAction extends BaseAction {
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String currentUserId = getSysUserId(request);
         DynaValidatorForm dynaForm = (DynaValidatorForm)form;
-        //dynaForm.initialize(mapping);
-        //PropertyUtils.setProperty(dynaForm, "sampleList", DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE));
+
+
         String jsonString = dynaForm.getString("jsonWad");
-        System.out.println(jsonString);
+       // System.out.println(jsonString);
 
         List<Analysis> newAnalysis = new ArrayList<Analysis>();
         List<Analysis> cancelAnalysis = new ArrayList<Analysis>();
-        manageAnalysis(jsonString, cancelAnalysis, newAnalysis);
+        List<BatchTestStatusChangeBean> changeBeans = new ArrayList<BatchTestStatusChangeBean>();
+        StatusChangedMetaInfo changedMetaInfo = new StatusChangedMetaInfo();
+        manageAnalysis(jsonString, cancelAnalysis, newAnalysis, changeBeans, changedMetaInfo);
 
         String cancelStatus = StatusService.getInstance().getStatusID(StatusService.AnalysisStatus.Canceled);
 
@@ -77,10 +82,21 @@ public class BatchTestReassignmentUpdateAction extends BaseAction {
             tx.rollback();
         }
 
-        return mapping.findForward("success");
+        if( changeBeans.isEmpty()) {
+            return mapping.findForward("success");
+        }else{
+            dynaForm.initialize(mapping);
+            PropertyUtils.setProperty(dynaForm, "sampleList", DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE));
+            PropertyUtils.setProperty(dynaForm, "statusChangedList", changeBeans);
+            PropertyUtils.setProperty(dynaForm, "statusChangedSampleType", changedMetaInfo.sampleTypeName);
+            PropertyUtils.setProperty(dynaForm, "statusChangedCurrentTest", changedMetaInfo.currentTest);
+            PropertyUtils.setProperty(dynaForm, "statusChangedNextTest", changedMetaInfo.nextTest);
+            return mapping.findForward("resubmit");
+        }
     }
 
-    private void manageAnalysis(String jsonString, List<Analysis> cancelAnalysis, List<Analysis> newAnalysis) {
+
+    private void manageAnalysis(String jsonString, List<Analysis> cancelAnalysis, List<Analysis> newAnalysis, List<BatchTestStatusChangeBean> changeBeans, StatusChangedMetaInfo changedMetaInfo) {
         JSONParser parser=new JSONParser();
 
         try {
@@ -95,11 +111,10 @@ public class BatchTestReassignmentUpdateAction extends BaseAction {
             List<Analysis> changeNotValidated = getAnalysisFromJson((String)obj.get("changeNotValidated"), parser);
             List<Analysis> noChangeNotValidated = getAnalysisFromJson((String)obj.get("noChangeNotValidated"), parser);
 
-            Map<StatusService.AnalysisStatus, List<IdValuePair>> statusChangedMap = getAnalysisStatusListtMap();
-            verifyStatusNotChanged(changedNotStarted, noChangedNotStarted, StatusService.AnalysisStatus.NotStarted, statusChangedMap);
-            verifyStatusNotChanged(changeNotValidated, noChangeNotValidated, StatusService.AnalysisStatus.TechnicalAcceptance, statusChangedMap);
-            verifyStatusNotChanged(changeTechReject, noChangeTechReject, StatusService.AnalysisStatus.TechnicalRejected, statusChangedMap);
-            verifyStatusNotChanged(changeBioReject, noChangeBioReject, StatusService.AnalysisStatus.BiologistRejected, statusChangedMap);
+            verifyStatusNotChanged(changedNotStarted, noChangedNotStarted, StatusService.AnalysisStatus.NotStarted, changeBeans);
+            verifyStatusNotChanged(changeNotValidated, noChangeNotValidated, StatusService.AnalysisStatus.TechnicalAcceptance, changeBeans);
+            verifyStatusNotChanged(changeTechReject, noChangeTechReject, StatusService.AnalysisStatus.TechnicalRejected, changeBeans);
+            verifyStatusNotChanged(changeBioReject, noChangeBioReject, StatusService.AnalysisStatus.BiologistRejected, changeBeans);
 
             cancelAnalysis.addAll(changedNotStarted);
             cancelAnalysis.addAll(changeBioReject);
@@ -113,6 +128,20 @@ public class BatchTestReassignmentUpdateAction extends BaseAction {
                 newAnalysis.addAll(createNewAnalysis( newTests, changeTechReject));
             }
 
+            if( !changeBeans.isEmpty()){
+                String newTestsString;
+                if( newTests.isEmpty()){
+                    newTestsString = StringUtil.getMessageForKey("status.test.canceled");
+                }else{
+                    newTestsString = StringUtil.getMessageForKey("label.test.batch.reassignment") + ": " + TestService.getUserLocalizedTestName(newTests.get(0));
+                    for( int i = 1; i < newTests.size(); i++){
+                        newTestsString += ", " + TestService.getUserLocalizedTestName(newTests.get(i));
+                    }
+                }
+                changedMetaInfo.nextTest = newTestsString;
+                changedMetaInfo.currentTest = (String)obj.get("current");
+                changedMetaInfo.sampleTypeName = (String)obj.get("sampleType");
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -131,7 +160,7 @@ public class BatchTestReassignmentUpdateAction extends BaseAction {
         return newAnalysis;
     }
 
-    private void verifyStatusNotChanged(List<Analysis> changed, List<Analysis> noChanged, StatusService.AnalysisStatus status, Map<StatusService.AnalysisStatus, List<IdValuePair>> statusChangedMap) {
+    private void verifyStatusNotChanged(List<Analysis> changed, List<Analysis> noChanged, StatusService.AnalysisStatus status, List<BatchTestStatusChangeBean> changeBeans) {
         String statusId = StatusService.getInstance().getStatusID(status);
 
         List<Analysis> changedAnalysis = new ArrayList<Analysis>();
@@ -153,20 +182,37 @@ public class BatchTestReassignmentUpdateAction extends BaseAction {
         }
 
         if(!changedAnalysis.isEmpty()){
-            List<IdValuePair> pairList = statusChangedMap.get(status);
+            String oldStatus = getStatusName(status);
+
             for( Analysis analysis: changedAnalysis){
-                pairList.add(new IdValuePair(analysis.getId(), analysis.getSampleItem().getSample().getAccessionNumber()));
+                BatchTestStatusChangeBean bean = new BatchTestStatusChangeBean();
+                bean.setLabNo(analysis.getSampleItem().getSample().getAccessionNumber());
+                bean.setOldStatus(oldStatus);
+                bean.setNewStatus(getStatusName(analysis.getStatusId()));
+                changeBeans.add(bean);
             }
         }
     }
 
-    private HashMap<StatusService.AnalysisStatus, List<IdValuePair>> getAnalysisStatusListtMap() {
-        HashMap<StatusService.AnalysisStatus, List<IdValuePair>> map = new HashMap<StatusService.AnalysisStatus, List<IdValuePair>>();
-        map.put(StatusService.AnalysisStatus.NotStarted, new ArrayList<IdValuePair>());
-        map.put(StatusService.AnalysisStatus.TechnicalRejected, new ArrayList<IdValuePair>());
-        map.put(StatusService.AnalysisStatus.BiologistRejected, new ArrayList<IdValuePair>());
-        map.put(StatusService.AnalysisStatus.TechnicalAcceptance, new ArrayList<IdValuePair>());
-        return map;
+    private String getStatusName(String statusId) {
+        StatusService.AnalysisStatus status = StatusService.getInstance().getAnalysisStatusForID(statusId);
+        String name = getStatusName(status);
+        return name == null ? StatusService.getInstance().getStatusName(status) : name;
+    }
+
+    private String getStatusName(StatusService.AnalysisStatus status) {
+        switch( status) {
+            case NotStarted:
+                return StringUtil.getMessageForKey("label.analysisNotStarted");
+            case TechnicalRejected:
+                return StringUtil.getMessageForKey("label.rejectedByTechnician");
+            case TechnicalAcceptance:
+                return StringUtil.getMessageForKey("label.notValidated");
+            case BiologistRejected:
+                return StringUtil.getMessageForKey("label.rejectedByBiologist");
+            default:
+                return null;
+        }
     }
 
 
@@ -223,5 +269,11 @@ public class BatchTestReassignmentUpdateAction extends BaseAction {
     @Override
     protected String getPageSubtitleKey() {
         return "configuration.batch.test.reassignment";
+    }
+
+    private class StatusChangedMetaInfo{
+        public String currentTest;
+        public String nextTest;
+        public String sampleTypeName;
     }
 }
