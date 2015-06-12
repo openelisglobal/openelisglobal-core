@@ -93,6 +93,7 @@
     }
 
     function submitAction(target) {
+        window.onbeforeunload = null;
         var form = window.document.forms[0];
         form.action = target;
         form.submit();
@@ -143,7 +144,6 @@
         $jq("#sampleSelectionDiv").hide();
         $jq("#nextStepButton").attr("disabled", "disabled");
         if($jq("#cancelOnly").is(":checked")){ $jq("#cancelOnly").click();}
-        window.onbeforeunload = null;
     }
 
     function createOption(jsonTest){
