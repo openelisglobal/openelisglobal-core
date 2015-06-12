@@ -56,7 +56,7 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 
 import java.util.*;
 
@@ -150,7 +150,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 			ConfirmationData data = new ConfirmationData();
 
 			data.setLabAccession(accessionNumber + "-" + sampleItem.getSortOrder());
-			data.setSampleType(TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
+			data.setSampleType(TypeOfSampleService.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
 			data.setOrganizationName(StringUtil.replaceNullWithEmptyString(orgName));
 			data.setRequesterAccession(sampleItem.getExternalId());
 			data.setNote(getNoteForSampleItem(sampleItem));

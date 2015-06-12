@@ -755,7 +755,7 @@
         </form-bean>
         
         <form-bean name="testAddForm" type="org.apache.struts.validator.DynaValidatorForm" >
-            <form-property name="jsonWad" type="java.lang.String" initial="" />
+			<form-property name="jsonWad" type="java.lang.String" initial="" />
             <form-property name="sampleTypeList" type="java.util.List" />
             <form-property name="panelList" type="java.util.List" />
             <form-property name="uomList" type="java.util.List" />
@@ -770,6 +770,17 @@
 			<form-property name="testList" type="java.util.List" />
 			<form-property name="testSectionList" type="java.util.List" />
 		</form-bean>
+
+		<form-bean name="BatchTestReassignment" type="org.apache.struts.validator.DynaValidatorForm" >
+			<form-property name="sampleList" type="java.util.List" />
+			<form-property name="statusChangedSampleType" type="java.lang.String" initial=""/>
+			<form-property name="statusChangedCurrentTest" type="java.lang.String" initial=""/>
+			<form-property name="statusChangedNextTest" type="java.lang.String" initial=""/>
+			<form-property name="statusChangedList" type="java.util.List" />
+			<form-property name="jsonWad" type="java.lang.String" initial="" />
+			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+		</form-bean>
+
 	</form-beans>
 
 
@@ -1717,6 +1728,15 @@
 		
 		<action path="/AuditTrailReport" name="AuditTrailViewForm" type="us.mn.state.health.lims.audittrail.action.AuditTrailViewAction" >
 			<forward name="success" path="auditTrailViewDefinition" />
+		</action>
+
+		<action path="/BatchTestReassignment" name="BatchTestReassignment" type="us.mn.state.health.lims.test.action.BatchTestReassignmentAction" >
+			<forward name="success" path="BatchTestReassignmentDefinition" />
+		</action>
+
+		<action path="/BatchTestReassignmentUpdate" name="BatchTestReassignment" type="us.mn.state.health.lims.test.action.BatchTestReassignmentUpdateAction" >
+			<forward name="success" path="/BatchTestReassignment.do?forward=success" />
+			<forward name="resubmit" path="BatchTestReassignmentDefinition" />
 		</action>
 	</action-mappings>
 </struts-config>

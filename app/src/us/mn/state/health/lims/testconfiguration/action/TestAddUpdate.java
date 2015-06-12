@@ -52,7 +52,7 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
@@ -75,7 +75,7 @@ public class TestAddUpdate extends BaseAction {
 
         JSONParser parser=new JSONParser();
 
-        JSONObject obj = (JSONObject)parser.parse(((DynaValidatorForm)form).getString("jsonWad"));
+        JSONObject obj = (JSONObject)parser.parse(jsonString);
         TestAddParams testAddParams = extractTestAddParms(obj, parser);
         List<TestSet> testSets = createTestSets(testAddParams);
         Localization nameLocalization = createNameLocalization(testAddParams);
@@ -138,7 +138,7 @@ public class TestAddUpdate extends BaseAction {
         }
 
         TestService.refreshTestNames();
-        TypeOfSampleUtil.clearCache();
+        TypeOfSampleService.clearCache();
         return mapping.findForward(FWD_SUCCESS);
     }
 

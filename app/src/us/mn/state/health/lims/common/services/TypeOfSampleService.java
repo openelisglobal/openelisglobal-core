@@ -1,4 +1,4 @@
-package us.mn.state.health.lims.typeofsample.util;
+package us.mn.state.health.lims.common.services;
 
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
@@ -18,7 +18,7 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 
 import java.util.*;
 
-public class TypeOfSampleUtil {
+public class TypeOfSampleService {
 
 	private static Map<String, List<Test>> sampleIdTestMap = new HashMap<String, List<Test>>();
     private static Map<String, String> typeOfSampleIdToNameMap;

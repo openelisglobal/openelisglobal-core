@@ -225,5 +225,38 @@
             update clinlims.patient set entered_birth_date = overlay( entered_birth_date PLACING '/' from 6 for 1) where length(entered_birth_date) = 10;;
         </sql>
     </changeSet>
+    <changeSet author="paulsc" id="12"  >
+        <comment>Adds module for batch test reassignment</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="BatchTestReassign"/>
+            <column name="description" value="Admin=&gt;batchTestReassignment"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Test Management' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'BatchTestReassign' ) " />
+        </insert>
+    </changeSet>
+    <changeSet id="13" author="paulsc" context="Kenya, haiti, haitiLNSP, CI_IPCI, ci_regional, ciLNSP">
+        <comment>Links BatchTestReassignment to roles</comment>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Validator' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'BatchTestReassign' ) " />
+        </insert>
+    </changeSet>
+    <changeSet id="14" author="paulsc" context="CDIRetroCI">
+        <comment>Links BatchTestReassignment to roles</comment>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Biologist' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'BatchTestReassign' ) " />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
 

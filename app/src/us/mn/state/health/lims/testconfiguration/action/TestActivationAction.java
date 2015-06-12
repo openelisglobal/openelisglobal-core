@@ -26,7 +26,7 @@ import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.test.beanItems.TestActivationBean;
 import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +57,7 @@ public class TestActivationAction extends BaseAction {
         for( IdValuePair pair : sampleTypeList){
             TestActivationBean bean = new TestActivationBean();
 
-            List<Test> tests = TypeOfSampleUtil.getAllTestsBySampleTypeId(pair.getId());
+            List<Test> tests = TypeOfSampleService.getAllTestsBySampleTypeId(pair.getId());
             List<IdValuePair> activeTests = new ArrayList<IdValuePair>();
             List<IdValuePair> inactiveTests = new ArrayList<IdValuePair>();
 
