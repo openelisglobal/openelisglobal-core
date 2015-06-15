@@ -23,6 +23,7 @@ import static java.util.Calendar.FEBRUARY;
 import static java.util.Calendar.HOUR_OF_DAY;
 import static java.util.Calendar.JANUARY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -168,5 +169,11 @@ public class DateUtilTest {
         assertEquals("01/01/2010", DateUtil.normalizeAmbiguousDate("xX/xx/2010"));
         assertEquals("01/01/2010", DateUtil.normalizeAmbiguousDate("xX/xxX2010"));
         assertEquals("01/01/2008", DateUtil.normalizeAmbiguousDate("01/01x2008"));
+        assertEquals("01/01/2008", DateUtil.normalizeAmbiguousDate("1/1/2008"));
+        assertEquals("01/01/2008", DateUtil.normalizeAmbiguousDate("1x/1x/2008"));
+        assertEquals("01/01/2008", DateUtil.normalizeAmbiguousDate("1x/1xx/2008"));
+        assertNull(DateUtil.normalizeAmbiguousDate("1/1//2008"));
+        assertNull(DateUtil.normalizeAmbiguousDate("01/11/xx08"));
+        assertNull(DateUtil.normalizeAmbiguousDate("01/11/08"));
     }
 }

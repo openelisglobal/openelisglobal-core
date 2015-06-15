@@ -34,7 +34,7 @@ import us.mn.state.health.lims.testdictionary.daoimpl.TestDictionaryDAOImpl;
 import us.mn.state.health.lims.testdictionary.valueholder.TestDictionary;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSamplePanel;
 
 import javax.servlet.ServletException;
@@ -51,7 +51,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 
 	static{
 		USER_TEST_SECTION_ID = new TestSectionDAOImpl().getTestSectionByName("user").getId();
-        VARIABLE_SAMPLE_TYPE_ID = TypeOfSampleUtil.getTypeOfSampleIdForLocalAbbreviation( "Variable" );
+        VARIABLE_SAMPLE_TYPE_ID = TypeOfSampleService.getTypeOfSampleIdForLocalAbbreviation("Variable");
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 
 		String success = VALID;
 
-		List<Test> tests = TypeOfSampleUtil.getActiveTestsBySampleTypeId(sampleType, true);
+		List<Test> tests = TypeOfSampleService.getActiveTestsBySampleTypeId(sampleType, true);
 
 		Collections.sort(tests, new Comparator<Test>(){
 			@Override
