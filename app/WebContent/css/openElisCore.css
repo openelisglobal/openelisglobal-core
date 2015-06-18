@@ -1031,6 +1031,7 @@ tr.rowTemplate {display: none}
 
 .sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; border: 2px solid silver;}
 .sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.0em; height: 16px; }
+#dictionaryNameSortUI li { height: auto; text-align: left;}
 .sortable li span { position: absolute; margin-left: -1.3em; }
 .ui-state-default_oe, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
 { border: 1px solid #d3d3d3/*{borderColorDefault}*/;

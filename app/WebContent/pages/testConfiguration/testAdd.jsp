@@ -56,7 +56,18 @@
 <bean:define id="testUnitList" name='<%=formName%>'  property="labUnitList" type="java.util.List<IdValuePair>" />
 <bean:define id="ageRangeList" name='<%=formName%>'  property="ageRangeList" type="java.util.List<IdValuePair>" />
 <bean:define id="dictionaryList" name='<%=formName%>'  property="dictionaryList" type="java.util.List<IdValuePair>" />
+<bean:define id="groupedDictionaryList" name='<%=formName%>'  property="groupedDictionaryList" type="java.util.List<java.util.List<IdValuePair>>" />
 
+<%!
+    int testCount = 0;
+    int columnCount = 0;
+    int columns = 4;
+%>
+
+<%
+    columnCount = 0;
+    testCount = 0;
+%>
 
     <script type="text/javascript">
         var step = "step1";
@@ -75,12 +86,30 @@
             $jq("select[multiple]").change(function (e, data) {
                 handleMultiSelectChange(e, data);
             });
+
+            $jq("#dictionarySelectId .asmSelect").css("max-width", "275px");
         });
 
 
+        function augmentMultiselects(parent){
+            $jq(parent + " select[multiple]").asmSelect({
+                removeLabel: "X"
+            });
+
+            $jq(parent + " select[multiple]").change(function (e, data) {
+                handleMultiSelectChange(e, data);
+            });
+        }
         function handleMultiSelectChange(e, data){
+            //e is the event
+            //e.currentTarget is the id of the select element
+            //data.type will be add or drop
+            //data.value is the value from the select list
+
             if( step == 'step2'){
                 createOrderBoxForSampleType( data);
+            }else if( step == 'step3Dictionary'){
+                appendOrderBoxForDictionary(e, data);
             }
             checkReadyForNextStep(e,data);
         }
@@ -96,6 +125,60 @@
             }
         }
 
+        function appendOrderBoxForDictionary(e, data) {
+            var dictionaryName = $jq(e.currentTarget).find("option[value=" + data.value + "]").text();
+            var qualifiyList = $jq("#qualifierSelection");
+            var ul = $jq("#dictionaryNameSortUI");
+            var li, option;
+            ul.addClass("sortable");
+            if( e.currentTarget.id == "dictionarySelection") {
+                if (data.type == 'add') {
+                    li = createLI(data.value, dictionaryName, false);
+                    li.addClass("ui-sortable-handle");
+                    ul.append(li);
+                    $jq("#dictionaryNameSortUI").sortable();
+                    $jq("#dictionaryNameSortUI").disableSelection();
+                    $jq("#dictionaryQualify .asmContainer").remove();
+                    $jq("#dictionaryQualify").append(qualifiyList);
+
+                    option = createOption(data.value, dictionaryName, false);
+                    qualifiyList.append(option);
+                    augmentMultiselects("#dictionaryQualify");
+                } else {
+                    $jq("#dictionaryNameSortUI li[value=" + data.value + "]").remove();
+
+                    $jq("#dictionaryQualify .asmContainer").remove();
+                    qualifiyList.find("option[value=" + data.value + "]").remove();
+                    $jq("#dictionaryQualify").append(qualifiyList);
+                    augmentMultiselects("#dictionaryQualify");
+                }
+            }
+        }
+
+        function dictionarySetSelected( index){
+            //clear existing selections
+            $jq("#qualifierSelection option").remove();
+            $jq(".dictionaryMultiSelect .asmList li").remove();
+            $jq(".dictionaryMultiSelect .asmSelect option:disabled").removeAttr("disabled");
+            $jq(".dictionaryMultiSelect .asmSelect .asmOptionDisabled").removeClass("asmOptionDisabled");
+            $jq(".dictionaryMultiSelect option:selected").removeAttr("selected");
+            $jq("#dictionaryNameSortUI li").remove();
+
+            //add new selections
+            $jq("#dictionaryGroup_" + index + " li").each(function(){
+                $jq("#dictionarySelectId .asmSelect option[value=2]").trigger("click");
+                $jq("#dictionarySelectId .asmSelect option[value=" + $jq(this).val() + "]").attr("selected", "selected");
+                $jq("#dictionarySelectId .asmSelect option[value=" + $jq(this).val() + "]").trigger('change');
+            });
+        }
+        function createOption( id, name, isActive){
+            var  option = $jq('<option/>');
+            option.attr({ 'value': id }).text(name);
+            if( isActive == 'N'){
+                option.addClass("inactiveTest");
+            }
+            return option;
+        }
         function guideSelection(checkbox) {
             if (checkbox.checked) {
                 $jq("#guide").show();
@@ -458,11 +541,15 @@
                $jq("#step1Div .required").each(function(){
                    if(!$jq(this).val() || $jq(this).val() == 0 || $jq(this).val().length == 0 ){ ready = false; } });
             }else if( step == "step2"){
-                $jq("#step2Div .required").each(function(){
+                $jq("#sampleTypeSelectionDiv .required").each(function(){
+                    if(!$jq(this).val() || $jq(this).val() == 0 || $jq(this).val().length == 0 ){ ready = false; } });
+            }else if( step == "step3Dictionary"){
+                $jq("#testDisplayOrderDiv .required").each(function(){
                     if(!$jq(this).val() || $jq(this).val() == 0 || $jq(this).val().length == 0 ){ ready = false; } });
             }
-         //   $jq( "#nextButton" ).prop( "disabled", !ready );
-            $jq( "#nextButton" ).prop( "disabled", false );
+
+            $jq( "#nextButton" ).prop( "disabled", !ready );
+            //$jq( "#nextButton" ).removeAttr( "disabled");
         }
 
         function nextStep(){
@@ -473,7 +560,7 @@
                 setStep1ReadOnlyFields();
                 $jq("#step1Div").hide();
                 $jq(".step2").show();
-                $jq( "#nextButton" ).prop( "disabled", true );
+                $jq( "#nextButton" ).attr( "disabled", "disabled" );
             }else if( step == 'step2'){
               resultTypeId = $jq("#resultTypeSelection").val();
               if( resultTypeId == '<%= TypeOfTestResultService.ResultType.ALPHA.getId()%>' ||
@@ -497,13 +584,34 @@
                   makeSortListsReadOnly();
                   $jq("#sampleTypeSelectionDiv").hide();
                   $jq(".dictionarySelect").show();
+                  $jq( "#nextButton" ).attr( "disabled", "disabled" );
               }
             }else if( step == "step3Numeric"){
-                $jq( "#normalRangeDiv input,select").prop("disabled", true );
+                $jq( "#normalRangeDiv input,select").attr("disabled", "disabled" );
                 $jq(".confirmHide").hide();
                 $jq(".confirmShow").show();
                 createJSON();
+            }else if( step == "step3Dictionary"){
+                $jq("#dictionaryExistingGroups").hide();
+                $jq("#dictionarySelectId").hide();
+                $jq("#sortDictionaryDiv").hide();
+                $jq("#dictionaryQualify").hide();
+                buildVerifyDictionaryList();
+                $jq("#dictionaryVerifyId").show();
             }
+        }
+
+        function buildVerifyDictionaryList(){
+            var verifyList = $jq("#dictionaryVerifyListId");
+            var qualifyList = $jq("#dictionaryQualify");
+            var li, qualifyed;
+            $jq("#dictionaryNameSortUI li").each( function(){
+                li = $jq(document.createElement("li"));
+                li.val(this.value);
+                qualifyed = qualifyList.find("option[value=" + this.value + "]:selected").length == 1;
+                li.append($jq(this).text() + (qualifyed ? "-- qualified" : ""));
+                verifyList.append(li);
+            });
         }
         function navigateBack(){
             if( step == 'step1'){
@@ -512,7 +620,7 @@
                 step = 'step1';
                 $jq('.step2').hide();
                 $jq("#step1Div").show();
-                $jq( "#nextButton" ).prop( "disabled", false );
+                $jq( "#nextButton" ).attr( "disabled", "disabled" );
                 $jq( ".sortingMainDiv").remove();
                 $jq('.asmListItemRemove').each(function() {
                     $jq(this).click();
@@ -664,7 +772,7 @@
         <input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
            onclick="submitAction('MasterListsPage.do');"
            class="textButton"/> &rarr;
-    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
+        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
     <bean:message key="configuration.test.add" />
@@ -828,25 +936,70 @@
                         <% } %>
                     </select><br/>
                 </div>
-                <div id="testDisplayOrderDiv" style="float:left; width:40%;">
+                <div id="testDisplayOrderDiv" style="float:left; width:80%;">
                     <div id="sortTitleDiv" align="center"><bean:message key="label.test.display.order"/></div>
                     <div id="endOrderMarker"></div>
-                    <div class="dictionarySelect" style="float:left; width:33%; display:none; overflow: hidden ">
+                    <div class="dictionarySelect dictionaryMultiSelect" id="dictionarySelectId" style="padding:10px; float:left; width:280px; display:none; overflow: hidden ">
                         Select List Options<br/>
-                        <select id="dictionarySelection" multiple="multiple" title="Multiple">
+                        <select id="dictionarySelection" class="required" multiple="multiple" title="Multiple">
                             <% for(IdValuePair pair : dictionaryList ){ %>
                             <option value='<%=pair.getId()%>' ><%=pair.getValue()%></option>
                             <% } %>
                         </select><br/><br/><br/>
                     </div>
-                    <div id="sortDictionaryDiv" align="center" class="dictionarySelect" style="float:left; width:33%; display:none;">Result order</div>
-                    <div class="dictionarySelect" style="float:left; width:20%; display:none">
+                    <div id="dictionaryVerifyId" style="padding:10px; float:left; width:280px; display:none; overflow: hidden ">
+                        Select List<br/>
+                        <ul id="dictionaryVerifyListId" >
+
+                        </ul>
+                    </div>
+                    <div id="sortDictionaryDiv" align="center" class="dictionarySelect" style="padding:10px;float:left; width:33%; display:none;">Result order
+                    <span id="dictionarySortSpan" align="left">
+                        <UL  id="dictionaryNameSortUI" >
+
+                        </UL>
+                    </span></div>
+                    <div id="dictionaryQualify" class="dictionarySelect  dictionaryMultiSelect" style="padding:10px; float:left; width:280px; display:none">
                         Qualifiers<br/>
-                        <select id="qualifierSelection" multiple="multiple" title="Multiple">
-                        </select><br/><br/><br/>
+                        <select  id='qualifierSelection' multiple='multiple' title='Multiple' ></select>
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="dictionaryExistingGroups" class="dictionarySelect" style="display:none; width:100%">
+            <div style="width:100%; text-align:center;" >Existing test sets</div><hr>
+            <table>
+            <% while(testCount < groupedDictionaryList.size()){%>
+            <tr>
+                <td id='<%= "dictionaryGroup_" + testCount%>' style="padding: 5px 10px; vertical-align: top">
+                    <input type="button" value="select" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"  class="textButton"/>
+                    <ul style="padding-left:0px; list-style-type: none">
+                    <% for( IdValuePair pair : groupedDictionaryList.get(testCount)){%>
+                    <li value="<%=pair.getId()%>"><%=pair.getValue()%></li>
+                    <% } %>
+                    </ul>
+                    <%
+                        testCount++;
+                        columnCount = 1;
+                    %></td>
+                <% while(testCount < groupedDictionaryList.size() && ( columnCount < columns )){%>
+                <td id='<%= "dictionaryGroup_" + testCount%>' style="padding: 5px 10px; vertical-align: top">
+                    <input type="button" value="select" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"  class="textButton"/>
+                    <ul style="padding-left:0; list-style-type: none">
+                        <% for( IdValuePair pair : groupedDictionaryList.get(testCount)){%>
+                        <li value="<%=pair.getId()%>"><%=pair.getValue()%></li>
+                        <% } %>
+                    </ul>
+                </td>
+                    <%
+                        testCount++;
+                        columnCount++;
+                    %></td>
+                <% } %>
+
+            </tr>
+            <% } %>
+            </table>
         </div>
         <div id="normalRangeTemplate" style="display:none;" >
             <table>
