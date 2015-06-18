@@ -127,35 +127,35 @@ which closes it the last time through--%>
             <td colspan="2"><span class="catalog-label"><bean:message key="configuration.test.catalog.report.name" /></span></td>
         </tr>
         <tr>
-            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishName()%></>
+            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishName()%></b>
             </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchName()%></>
+            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchName()%></b>
             </td>
-            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishReportName()%></>
+            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishReportName()%></b>
             </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchReportName()%></>
-            </td>
-        </tr>
-        <tr>
-            <td><b><%=bean.getActive()%></>
-            </td>
-            <td><b><%=bean.getOrderable()%></>
+            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchReportName()%></b>
             </td>
         </tr>
         <tr>
-            <td><span class="catalog-label"><bean:message key="label.test.unit" /></span> <b><%=bean.getTestUnit()%></>
+            <td><b><%=bean.getActive()%></b>
             </td>
-            <td><span class="catalog-label"><bean:message key="label.sample.types" /></span> <b><%=bean.getSampleType()%></>
-            </td>
-            <td><span class="catalog-label"><bean:message key="label.panel" /></span> <b><%=bean.getPanel()%></>
-            </td>
-            <td><span class="catalog-label"><bean:message key="label.result.type" /></span> <b><%=bean.getResultType()%></>
+            <td><b><%=bean.getOrderable()%></b>
             </td>
         </tr>
         <tr>
-            <td><span class="catalog-label"><bean:message key="label.uom" /></span> <b><%=bean.getUom()%></>
+            <td><span class="catalog-label"><bean:message key="label.test.unit" /></span> <b><%=bean.getTestUnit()%></b>
             </td>
-            <td><span class="catalog-label"><bean:message key="label.significant.digits" /></span> <b><%= bean.getSignificantDigits() %></>
+            <td><span class="catalog-label"><bean:message key="label.sample.types" /></span> <b><%=bean.getSampleType()%></b>
+            </td>
+            <td><span class="catalog-label"><bean:message key="label.panel" /></span> <b><%=bean.getPanel()%></b>
+            </td>
+            <td><span class="catalog-label"><bean:message key="label.result.type" /></span> <b><%=bean.getResultType()%></b>
+            </td>
+        </tr>
+        <tr>
+            <td><span class="catalog-label"><bean:message key="label.uom" /></span> <b><%=bean.getUom()%></b>
+            </td>
+            <td><span class="catalog-label"><bean:message key="label.significant.digits" /></span> <b><%= bean.getSignificantDigits() %></b>
             </td>
         </tr>
         <% if (bean.isHasDictionaryValues()) {
@@ -164,11 +164,11 @@ which closes it the last time through--%>
         %>
         <tr>
             <td><% if (top) { %><span class="catalog-label"><bean:message key="configuration.test.catalog.select.values" /></span><% } %></td>
-            <td colspan="2"><b><%=value%></>
+            <td colspan="2"><b><%=value%></b>
             </td>
             <td colspan="2"><% if (top) {
                 top = false;%><span class="catalog-label"><bean:message key="configuration.test.catalog.reference.value" /></span>
-                <b><%=bean.getReferenceValue()%></>
+                <b><%=bean.getReferenceValue()%></b>
             </td>
             <% } %>
         </tr>
@@ -188,13 +188,13 @@ which closes it the last time through--%>
         </tr>
         <% for (ResultLimitBean limitBean : bean.getResultLimits()) {%>
         <tr>
-            <td><b><%=limitBean.getGender()%></>
+            <td><b><%=limitBean.getGender()%></b>
             </td>
-            <td><b><%=limitBean.getAgeRange()%></>
+            <td><b><%=limitBean.getAgeRange()%></b>
             </td>
-            <td><b><%=limitBean.getNormalRange()%></>
+            <td><b><%=limitBean.getNormalRange()%></b>
             </td>
-            <td><b><%=limitBean.getValidRange()%></>
+            <td><b><%=limitBean.getValidRange()%></b>
             </td>
         </tr>
         <% } %>
