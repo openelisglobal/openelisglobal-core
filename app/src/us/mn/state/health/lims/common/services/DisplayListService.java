@@ -117,10 +117,25 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.RESULT_TYPE_LOCALIZED, createLocalizedResultTypeList());
         typeToListMap.put(ListType.RESULT_TYPE_RAW, createRawResultTypeList());
         typeToListMap.put(ListType.UNIT_OF_MEASURE, createUOMList());
-        typeToListMap.put(ListType.DICTIONARY_TEST_RESULTS, createFromDictionaryCategoryLocalizedSort("CG"));
+        typeToListMap.put(ListType.DICTIONARY_TEST_RESULTS, createDictionaryTestResults());
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
+
+    private static List<IdValuePair> createDictionaryTestResults() {
+        List<IdValuePair> testResults = createFromDictionaryCategoryLocalizedSort("CG");
+        testResults.addAll(createFromDictionaryCategoryLocalizedSort("HL"));
+        testResults.addAll(createFromDictionaryCategoryLocalizedSort("KL"));
+        testResults.addAll(createFromDictionaryCategoryLocalizedSort("Test Result"));
+
+        Collections.sort(testResults, new Comparator<IdValuePair>() {
+            @Override
+            public int compare(IdValuePair o1, IdValuePair o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+        return testResults;
+    }
 
 
     @Override
@@ -151,7 +166,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.PROGRAM, createDictionaryListForCategory( "programs" )  );
         typeToListMap.put(ListType.RESULT_TYPE_LOCALIZED, createLocalizedResultTypeList());
         typeToListMap.put(ListType.UNIT_OF_MEASURE, createUOMList());
-        typeToListMap.put(ListType.DICTIONARY_TEST_RESULTS, createFromDictionaryCategoryLocalizedSort("CG"));
+        typeToListMap.put(ListType.DICTIONARY_TEST_RESULTS, createDictionaryTestResults());
     }
 
     public static List<IdValuePair> getList(ListType listType) {

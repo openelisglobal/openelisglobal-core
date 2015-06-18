@@ -76,7 +76,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -391,7 +391,7 @@ public class ResultsLoadUtility {
 
 			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,
-					initialConditions,  TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
+					initialConditions,  TypeOfSampleService.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
 			resultItem.setNationalId(nationalId);
 			testResultList.add(resultItem);
 

@@ -20,6 +20,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
@@ -28,11 +29,11 @@ import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 import java.sql.Date;
@@ -48,6 +49,7 @@ public class AnalysisService{
     private static final TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
     private final Analysis analysis;
     public static final String TABLE_REFERENCE_ID;
+    private static final String DEFAULT_ANALYSIS_TYPE = "MANUAL";
 
     static{
         TABLE_REFERENCE_ID = new ReferenceTablesDAOImpl().getReferenceTableByName("ANALYSIS").getId();
@@ -70,9 +72,9 @@ public class AnalysisService{
         Test test = getTest();
         String name = TestService.getLocalizedTestNameWithType( test );
 
-        TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleForTest( test.getId() );
+        TypeOfSample typeOfSample = TypeOfSampleService.getTypeOfSampleForTest(test.getId());
 
-        if( typeOfSample != null && typeOfSample.getId().equals( TypeOfSampleUtil.getTypeOfSampleIdForLocalAbbreviation( "Variable" ))){
+        if( typeOfSample != null && typeOfSample.getId().equals( TypeOfSampleService.getTypeOfSampleIdForLocalAbbreviation("Variable"))){
             name += "(" + analysis.getSampleTypeName() + ")";
         }
 
@@ -213,4 +215,19 @@ public class AnalysisService{
         return analysis == null ? null : analysis.getTestSection();
     }
 
+    public static Analysis buildAnalysis(Test test, SampleItem sampleItem){
+
+            Analysis analysis = new Analysis();
+            analysis.setTest(test);
+            analysis.setIsReportable(test.getIsReportable());
+            analysis.setAnalysisType(DEFAULT_ANALYSIS_TYPE);
+            analysis.setRevision("0");
+            analysis.setStartedDate(DateUtil.getNowAsSqlDate());
+            analysis.setStatusId(StatusService.getInstance().getStatusID(StatusService.AnalysisStatus.NotStarted));
+            analysis.setSampleItem(sampleItem);
+            analysis.setTestSection(test.getTestSection());
+            analysis.setSampleTypeName(sampleItem.getTypeOfSample().getLocalizedName());
+
+        return analysis;
+    }
 }

@@ -47,7 +47,7 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 import ca.uhn.hl7v2.DefaultHapiContext;
@@ -215,13 +215,13 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 			// If there is only one sample type we don't care what was requested
 			boolean hasSingleSampleType = tests.size() == 1;
 			Test singleTest = tests.get(0);
-			TypeOfSample singleSampleType = TypeOfSampleUtil.getTypeOfSampleForTest(singleTest.getId());
+			TypeOfSample singleSampleType = TypeOfSampleService.getTypeOfSampleForTest(singleTest.getId());
 
 			
 			if(tests.size() > 1){
 				if(!GenericValidator.isBlankOrNull(testRequest.getSampleType())){
 					for(Test test : tests){
-						TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleForTest(test.getId());
+						TypeOfSample typeOfSample = TypeOfSampleService.getTypeOfSampleForTest(test.getId());
 						if(typeOfSample.getDescription().equals(testRequest.getSampleType())){
 							hasSingleSampleType = true;
 							singleSampleType = typeOfSample;
@@ -240,7 +240,7 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 					}
 
 					for(Test test : tests){
-						testSampleTypeList.add(new TestSampleType(test, TypeOfSampleUtil.getTypeOfSampleForTest(test.getId())));
+						testSampleTypeList.add(new TestSampleType(test, TypeOfSampleService.getTypeOfSampleForTest(test.getId())));
 					}
 				}
 			}
@@ -262,7 +262,7 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 			Panel panel = panelDAO.getPanelByName(panelRequest.getName());
 
 			if(panel != null){
-				List<TypeOfSample> typeOfSamples = TypeOfSampleUtil.getTypeOfSampleForPanelId(panel.getId());
+				List<TypeOfSample> typeOfSamples = TypeOfSampleService.getTypeOfSampleForPanelId(panel.getId());
 				boolean hasSingleSampleType = typeOfSamples.size() == 1;
 				TypeOfSample singleTypeOfSample = typeOfSamples.get(0);
 				

@@ -44,7 +44,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 import javax.servlet.http.HttpServletRequest;
@@ -317,7 +317,7 @@ public class ReferredOutAction extends BaseAction {
 	}
 
 	private List<IdValuePair> getTestsForTypeOfSample(TypeOfSample typeOfSample) {
-		List<Test> testList = TypeOfSampleUtil.getActiveTestsBySampleTypeId(typeOfSample.getId(), false);
+		List<Test> testList = TypeOfSampleService.getActiveTestsBySampleTypeId(typeOfSample.getId(), false);
 
 		List<IdValuePair> valueList = new ArrayList<IdValuePair>();
 

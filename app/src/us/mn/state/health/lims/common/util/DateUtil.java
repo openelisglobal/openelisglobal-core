@@ -35,6 +35,9 @@ public class DateUtil {
 	public static final String AMBIGUOUS_DATE_CHAR;
 	public static final String AMBIGUOUS_DATE_SEGMENT;
 	private static final Pattern FOUR_DIGITS = Pattern.compile("\\d{4}");
+	private static final Pattern TWO_DIGITS = Pattern.compile("\\d{2}");
+	private static final Pattern DIGIT = Pattern.compile("\\d");
+	private static final Pattern VALID_DATE = Pattern.compile("\\d{2}/\\d{2}/\\d{4}");
 	private static final long DAY_IN_MILLSEC = 1000L * 60L * 60L * 24L;
 
 	private static final long WEEK_MS = DAY_IN_MILLSEC * 7L;
@@ -309,7 +312,7 @@ public class DateUtil {
 
 		dateForDisplay = normalizeAmbiguousDate(dateForDisplay);
 
-		return convertStringDateToTruncatedTimestamp(dateForDisplay);
+		return dateForDisplay == null ? null : convertStringDateToTruncatedTimestamp(dateForDisplay);
 	}
 
 	public static boolean yearSpecified(String dateString) {
@@ -319,11 +322,47 @@ public class DateUtil {
 	}
 
 	public static String normalizeAmbiguousDate(String date) {
-		String replaceValue = ConfigurationProperties.getInstance().getPropertyValue(Property.AmbiguousDateValue);
-		date = StringUtil.replaceCharAtIndex(date, '/', 2);
-		date = StringUtil.replaceCharAtIndex(date, '/', 5);
+		if( VALID_DATE.matcher(date).find()){
+			return date;
+		}
 
-		return date.replaceAll(AMBIGUOUS_DATE_REGEX, replaceValue);
+		String replaceValue = ConfigurationProperties.getInstance().getPropertyValue(Property.AmbiguousDateValue);
+		//N.B.  This is suppose to clean-up historical data in the database.  We will do the best we can
+		if( date.length() != 10){
+			String[] dateParts = date.split("/");
+			if( dateParts.length != 3 || !FOUR_DIGITS.matcher(dateParts[2]).find()){
+				return null;
+			}
+			if( date.length() > 10){
+				return replaceValue + "/" + replaceValue + "/" + date.split("/")[2];
+			}
+
+			for(int i = 0; i < 2; i++) {
+				if (dateParts[i].length() == 1 && DIGIT.matcher(dateParts[i]).find()) {
+					dateParts[i] = "0" + dateParts[i];
+				}else if (dateParts[i].length() == 1 || !TWO_DIGITS.matcher(dateParts[i]).find()) {
+					//if there is a single 'x' or 'X' then replacing it with 01 is what we want
+					return replaceValue + "/" + replaceValue + "/" + date.split("/")[2];
+				}
+			}
+
+			//if we made it here we have corrected what we can
+			return dateParts[0] + "/" + dateParts[1] + "/" + dateParts[2];
+		}else {
+			date = StringUtil.replaceCharAtIndex(date, '/', 2);
+			date = StringUtil.replaceCharAtIndex(date, '/', 5);
+			if( !yearSpecified(date)){
+				return null;
+			}
+			date = date.replaceAll(AMBIGUOUS_DATE_REGEX, replaceValue);
+
+			if(VALID_DATE.matcher(date).find()) {
+				return date;
+			}else{
+				return replaceValue + "/" + replaceValue + "/" + date.split("/")[2];
+				}
+
+		}
 	}
 
 	public static java.sql.Date getNowAsSqlDate() {

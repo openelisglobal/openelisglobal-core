@@ -35,7 +35,7 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,7 +88,7 @@ public class TestActivationUpdate extends BaseAction {
             }
 
             if( !deactivateSampleTypes.isEmpty() || !activateSampleTypes.isEmpty()){
-                TypeOfSampleUtil.clearCache();
+                TypeOfSampleService.clearCache();
             }
 
             tx.commit();
@@ -100,7 +100,7 @@ public class TestActivationUpdate extends BaseAction {
 
         DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE);
         DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_INACTIVE);
-        TypeOfSampleUtil.clearCache();
+        TypeOfSampleService.clearCache();
 
         return mapping.findForward(FWD_SUCCESS);
     }
@@ -138,7 +138,7 @@ public class TestActivationUpdate extends BaseAction {
         List<TypeOfSample> sampleTypes = new ArrayList<TypeOfSample>();
 
         for( String id : sampleTypeIds){
-            TypeOfSample typeOfSample = TypeOfSampleUtil.getTransientTypeOfSampleById(id);
+            TypeOfSample typeOfSample = TypeOfSampleService.getTransientTypeOfSampleById(id);
             typeOfSample.setActive( false );
             typeOfSample.setSysUserId(currentUserId);
             sampleTypes.add(typeOfSample);
@@ -151,7 +151,7 @@ public class TestActivationUpdate extends BaseAction {
         List<TypeOfSample> sampleTypes = new ArrayList<TypeOfSample>();
 
         for( ActivateSet set : sampleTypeSets){
-            TypeOfSample typeOfSample = TypeOfSampleUtil.getTransientTypeOfSampleById(set.id);
+            TypeOfSample typeOfSample = TypeOfSampleService.getTransientTypeOfSampleById(set.id);
             typeOfSample.setActive( true );
             typeOfSample.setSortOrder(set.sortOrder * 10);
             typeOfSample.setSysUserId(currentUserId);
