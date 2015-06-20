@@ -149,15 +149,21 @@ public class AnalyzerTestNameCache {
     }
 
     private MappedTestName createMappedTestName(TestDAO testDAO, AnalyzerTestMapping mapping) {
-        Test test = new Test();
-        test.setId(mapping.getTestId());
-        testDAO.getData(test);
 
         MappedTestName mappedTest = new MappedTestName();
         mappedTest.setAnalyzerTestName(mapping.getAnalyzerTestName());
         mappedTest.setTestId(mapping.getTestId());
-        mappedTest.setOpenElisTestName( TestService.getUserLocalizedTestName( test ));
         mappedTest.setAnalyzerId(mapping.getAnalyzerId());
+        if( mapping.getTestId() != null){
+            Test test = new Test();
+            test.setId(mapping.getTestId());
+            testDAO.getData(test);
+            mappedTest.setOpenElisTestName( TestService.getUserLocalizedTestName( test ));
+        }else{
+            mappedTest.setTestId("-1");
+            mappedTest.setOpenElisTestName( "configuration needed");
+        }
+
 
         return mappedTest;
     }
