@@ -34,7 +34,14 @@ public abstract class AnalyzerLineInserter {
 	}
 
     protected boolean persistImport(String currentUserId, List<AnalyzerResults> results) {
+
         if (results.size() > 0) {
+            for(AnalyzerResults analyzerResults : results ){
+                if( analyzerResults.getTestId().equals("-1")){
+                    analyzerResults.setTestId(null);
+                    analyzerResults.setReadOnly(true);
+                }
+            }
 
             Transaction tx = HibernateProxy.beginTransaction();
 

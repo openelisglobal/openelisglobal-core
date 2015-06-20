@@ -3,6 +3,8 @@
 	us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.util.StringUtil,
 	us.mn.state.health.lims.userrole.action.UserRoleAction"%>
+<%@ page import="us.mn.state.health.lims.analyzer.valueholder.Analyzer" %>
+<%@ page import="us.mn.state.health.lims.test.valueholder.Test" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -10,6 +12,10 @@
 <%@ taglib uri="/tags/labdev-view" prefix="app"%>
 
 <bean:define id="formName" value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
+<bean:define id="analyzerList" name="<%=formName%>" property="analyzerList" type="java.util.List<Analyzer>" />
+<bean:define id="analyzerName" name="<%=formName%>" property="analyzerId" />
+<bean:define id="testList" name="<%=formName%>" property="testList" type="java.util.List<Test>" />
+<bean:define id="testName" name="<%=formName%>" property="testId" />
 
 <%!String allowEdits = "true";%>
 
@@ -19,7 +25,16 @@
 	}
 %>
 
+
 <script language="JavaScript1.2">
+
+	$jq(document).ready( function() {
+		$jq("#analyzerIdHidden").val($jq("#analyzerId").val());
+		if($jq("#analyzerId").val() != 0 ){
+			$jq("#analyzerId").attr('disabled', 'disabled');
+			$jq("#analyzerTestNameId").attr('disabled','disabled');
+		}
+	});
 function validateForm(form) {
 
 	if( $("analyzerId").selectedIndex == 0 ||
@@ -32,6 +47,9 @@ function validateForm(form) {
     return true;
 }
 
+	function copyToHiddenAnalyzer( element ){
+		$jq("#analyzerIdHidden").val(element.value);
+	}
 
 </script>
 
@@ -43,10 +61,13 @@ function validateForm(form) {
 			<span class="requiredlabel">*</span>
 		</td>
 		<td width="80%">
-			<html:select name="<%=formName%>" property="analyzerId" styleId="analyzerId" >
-				<html:option value="0">&nbsp;</html:option>
-				<html:optionsCollection name="<%=formName%>" property="analyzerList" label="name" value="id"/>
-			</html:select>
+			<html:hidden name="<%=formName%>" property="analyzerId" styleId="analyzerIdHidden" />
+			<select id="analyzerId" onchange="copyToHiddenAnalyzer(this);" >
+				<option value="0"></option>
+				<% for( Analyzer analyzer : analyzerList ){%>
+				<option value="<%=analyzer.getId() %>" <%= analyzer.getName().equals(analyzerName) ? "selected='selected'" : "" %> ><%=analyzer.getName()%></option>
+				<% } %>
+			</select>
 
 		</td>
 	</tr>
@@ -69,7 +90,9 @@ function validateForm(form) {
 		<td >
 			<html:select name="<%=formName%>" property="testId" styleId="testId" >
 				<html:option value="0">&nbsp;</html:option>
-				<html:optionsCollection name="<%=formName%>" property="testList" label="name" value="id"/>
+				<% for( Test test : testList ){%>
+				<option value="<%=test.getId() %>" <%= test.getName().equals(testName) ? "selected='selected'" : "" %> ><%=test.getName()%></option>
+				<% } %>
 			</html:select>
 		</td>
 	</tr>
