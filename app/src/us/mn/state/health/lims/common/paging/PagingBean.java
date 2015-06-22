@@ -16,12 +16,14 @@
 */
 package us.mn.state.health.lims.common.paging;
 
+import java.io.Serializable;
 import java.util.List;
 
 import us.mn.state.health.lims.common.util.IdValuePair;
 
 
-public class PagingBean {
+public class PagingBean implements Serializable{
+	static final long serialVersionUID = 1L;
 	private String totalPages;
 	private String currentPage;
 	private List<IdValuePair> searchTermToPage;

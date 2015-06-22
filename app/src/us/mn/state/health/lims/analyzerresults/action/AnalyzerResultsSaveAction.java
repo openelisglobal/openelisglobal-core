@@ -321,6 +321,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 				SampleGrouping sampleGrouping = createRecordsForNewResult(groupedResultList);
 
 				if (sampleGrouping != null) {
+					sampleGrouping.triggersToSelectedReflexesMap = new HashMap<String, List<String>>( );
 					sampleGroupList.add(sampleGrouping);
 				}
 
@@ -336,7 +337,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		// for the last set of results the grouping number will not change
 		SampleGrouping sampleGrouping = createRecordsForNewResult(groupedResultList);
         //TODO currently there are no user selections of reflexes on the analyzer result page so for now this is ok
-        sampleGrouping.triggersToSelectedReflexesMap = new HashMap<String, List<String>>( );
+		sampleGrouping.triggersToSelectedReflexesMap = new HashMap<String, List<String>>( );
 
 		sampleGroupList.add(sampleGrouping);
 
