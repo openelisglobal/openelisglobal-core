@@ -52,55 +52,36 @@ function validateForm(form) {
 	}
 
 </script>
-
-<table width="60%">
-	<tr>
-		<td class="label" width="20%">
-			<bean:message key="analyzer.label" />
+<div style="border: 1px solid;width:40%">
+	<br>
+	<span style="width:40%;float:left;padding-left: 4px;" ><bean:message key="analyzer.label" />
 			:
 			<span class="requiredlabel">*</span>
-		</td>
-		<td width="80%">
-			<html:hidden name="<%=formName%>" property="analyzerId" styleId="analyzerIdHidden" />
-			<select id="analyzerId" onchange="copyToHiddenAnalyzer(this);" >
-				<option value="0"></option>
-				<% for( Analyzer analyzer : analyzerList ){%>
-				<option value="<%=analyzer.getId() %>" <%= analyzer.getName().equals(analyzerName) ? "selected='selected'" : "" %> ><%=analyzer.getName()%></option>
-				<% } %>
-			</select>
-
-		</td>
-	</tr>
-	<tr>
-		<td class="label" >
-		<bean:message key="analyzer.test.name" />
-			:
+	</span>
+	<html:hidden name="<%=formName%>" property="analyzerId" styleId="analyzerIdHidden" />
+	<select id="analyzerId" onchange="copyToHiddenAnalyzer(this);" >
+		<option value="0"></option>
+		<% for( Analyzer analyzer : analyzerList ){%>
+		<option value="<%=analyzer.getId() %>" <%= analyzer.getName().equals(analyzerName) ? "selected='selected'" : "" %> ><%=analyzer.getName()%></option>
+		<% } %>
+	</select><br><br>
+	<span style="width:40%;float:left;padding-left: 4px;" >
+		<bean:message key="analyzer.test.name" />:
+		<span class="requiredlabel">*</span>
+	</span>
+	<html:text name='<%=formName%>' property="analyzerTestName" styleId="analyzerTestNameId" /><br>&nbsp;
+</div>
+<br>
+<div style="width:40%">
+	<span style="width:40%;float:left;padding-left: 4px;" >
+		<bean:message key="analyzer.test.actual.name" />:
 			<span class="requiredlabel">*</span>
-		</td>
-		<td >
-			<html:text name='<%=formName%>' property="analyzerTestName" styleId="analyzerTestNameId" />
-		</td>
-	</tr>
-	<tr>
-		<td class="label" >
-		<bean:message key="analyzer.test.actual.name" />
-			:
-			<span class="requiredlabel">*</span>
-		</td>
-		<td >
-			<html:select name="<%=formName%>" property="testId" styleId="testId" >
-				<html:option value="0">&nbsp;</html:option>
-				<% for( Test test : testList ){%>
-				<option value="<%=test.getId() %>" <%= test.getName().equals(testName) ? "selected='selected'" : "" %> ><%=test.getName()%></option>
-				<% } %>
-			</html:select>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			&nbsp;
-		</td>
-	</tr>
-</table>
-
+	</span>
+<html:select name="<%=formName%>" property="testId" styleId="testId" >
+	<html:option value="0">&nbsp;</html:option>
+	<% for( Test test : testList ){%>
+	<option value="<%=test.getId() %>" <%= test.getName().equals(testName) ? "selected='selected'" : "" %> ><%=test.getName()%></option>
+	<% } %>
+</html:select>
+</div><br><br>
 
