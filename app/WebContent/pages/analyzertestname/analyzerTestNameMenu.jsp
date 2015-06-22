@@ -13,8 +13,7 @@
 <table width="80%" border="2">
 	<tr>
 		<th>&nbsp;</th>
-	   	<th><bean:message key="analyzer.label"/></th>
-	   	<th> <bean:message key="analyzer.test.name"/> </th>
+	   	<th><bean:message key="analyzer.label"/>&nbsp;-&nbsp;<bean:message key="analyzer.test.name"/> </th>
 	   	<th> <bean:message key="analyzer.test.actual.name"/> </th>
 	</tr>
 	<logic:iterate id="analyzerTest" name="<%=formName%>" indexId="ctr" property="menuList" type="NamedAnalyzerTestMapping">
@@ -23,11 +22,9 @@
 	      		<html:multibox name="<%=formName%>" property="selectedIDs" onclick="output()">
 	         		<bean:write name="analyzerTest" property="uniqueId" />
 	      		</html:multibox>
-   	   		</td>
+			</td>
    	   		<td class="textcontent">
-	    		<bean:write name="analyzerTest" property="analyzerName"/>
-	   		</td>
-   	  	 	<td class="textcontent">
+	    		<bean:write name="analyzerTest" property="analyzerName"/>&nbsp;-&nbsp;
 	   	  		<bean:write name="analyzerTest" property="analyzerTestName"/>
 	   		</td>
    	  	 	<td class="textcontent">
