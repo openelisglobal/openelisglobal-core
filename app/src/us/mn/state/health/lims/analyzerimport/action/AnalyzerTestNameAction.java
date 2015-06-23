@@ -52,13 +52,19 @@ public class AnalyzerTestNameAction extends BaseAction {
 
 		dynaForm.initialize(mapping);
 
-
 		List<Analyzer> analyzerList = getAllAnalyzers();
 		List<Test> testList = getAllTests();
 
 		PropertyUtils.setProperty(form, "analyzerList", analyzerList);
 		PropertyUtils.setProperty(form, "testList", testList);
 
+		String id = request.getParameter("selectedIDs");
+		if(id != null){
+			String[] splitId = id.split("#");
+			PropertyUtils.setProperty(form, "analyzerTestName", splitId[1] );
+			PropertyUtils.setProperty(form, "testId", splitId[2] );
+			PropertyUtils.setProperty(form, "analyzerId", splitId[0] );
+		}
 
 		return mapping.findForward(forward);
 	}

@@ -61,4 +61,8 @@
             COMMENT ON COLUMN clinlims.menu.is_active IS 'Is this menu item active.  Allows menu to be turned on/off programatically';
         </sql>
     </changeSet>
+    <changeSet id="5" author="paulsc">
+        <comment>Removes not null constraint from analyzer_test_mapping table</comment>
+        <dropNotNullConstraint tableName="analyzer_test_map" columnName="test_id" />
+    </changeSet>
 </databaseChangeLog>

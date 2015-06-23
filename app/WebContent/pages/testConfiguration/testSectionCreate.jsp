@@ -75,7 +75,7 @@
         });
 
         if (hasError) {
-            alert('<%=StringUtil.getMessageForKey("error.all.required")%>');
+            alert("<%=StringUtil.getMessageForKey("error.all.required")%>");
         } else {
             $jq(".required").each(function () {
                 var element = $jq(this);
@@ -88,7 +88,7 @@
             $jq("#editButtons").hide();
             $jq("#confirmationButtons").show();
             $jq("#confirmationMessage").show();
-            $jq("#action").text('<%=StringUtil.getMessageForKey("label.confirmation")%>');
+            $jq("#action").text("<%=StringUtil.getMessageForKey("label.confirmation")%>");
         }
     }
 
@@ -105,12 +105,12 @@
         $jq("#editButtons").show();
         $jq("#confirmationButtons").hide();
         $jq("#confirmationMessage").hide();
-        $jq("#action").text('<%=StringUtil.getMessageForKey("label.button.edit")%>');
+        $jq("#action").text("<%=StringUtil.getMessageForKey("label.button.edit")%>");
     }
 
     function handleInput(element, locale) {
-        var englishNames = '<%= englishSectionNames %>'.toLowerCase();
-        var frenchNames = '<%= frenchSectionNames %>'.toLowerCase();
+        var englishNames = "<%= englishSectionNames %>".toLowerCase();
+        var frenchNames = "<%= frenchSectionNames %>".toLowerCase();
         var duplicate = false;
         if( locale == 'english'){
             duplicate = englishNames.indexOf( '<%=TestSectionCreateAction.NAME_SEPARATOR%>' + element.value.toLowerCase() + '<%=TestSectionCreateAction.NAME_SEPARATOR%>') != -1;
@@ -137,13 +137,13 @@
 </script>
 
 
-    <input type="button" value='<%= StringUtil.getMessageForKey("banner.menu.administration") %>'
+    <input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
            onclick="submitAction('MasterListsPage.do');"
            class="textButton"/>&rarr;
-    <input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.management") %>'
+    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
-    <input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.manage") %>'
+    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.testUnit.manage") %>"
            onclick="submitAction('TestSectionManagement.do');"
            class="textButton"/>&rarr;
 
@@ -176,15 +176,15 @@
         <h4><bean:message key="configuration.testUnit.confirmation.explain" /></h4>
     </div>
     <div style="text-align: center" id="editButtons">
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.save")%>'
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.next")%>"
                onclick="confirmValues();"/>
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>'
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.previous")%>"
                onclick="submitAction('TestSectionManagement.do');"/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.accept")%>'
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.accept")%>"
                onclick="savePage();"/>
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.reject")%>'
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.reject")%>"
                onclick='rejectConfirmation();'/>
     </div>
 </div>

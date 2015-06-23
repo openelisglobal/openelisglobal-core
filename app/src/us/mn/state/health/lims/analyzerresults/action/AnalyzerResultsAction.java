@@ -472,40 +472,43 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private String getRoundedToSignificantDigits(AnalyzerResults result) {
+		if( result.getTestId() != null) {
+			List<TestResult> testResults = testResultDAO.getActiveTestResultsByTest(result.getTestId());
 
-		List<TestResult> testResults = testResultDAO.getActiveTestResultsByTest(result.getTestId());
+			if (GenericValidator.isBlankOrNull(result.getResult()) || testResults.isEmpty()) {
+				return result.getResult();
+			}
 
-		if( GenericValidator.isBlankOrNull(result.getResult()) || testResults.isEmpty()){
+			Double results;
+			try {
+				results = Double.valueOf(result.getResult());
+			} catch (NumberFormatException e) {
+				return result.getResult();
+			}
+
+			TestResult testResult = testResults.get(0);
+
+			String significantDigitsAsString = testResult.getSignificantDigits();
+			if (GenericValidator.isBlankOrNull(significantDigitsAsString) || "-1".equals(significantDigitsAsString)) {
+				return result.getResult();
+			}
+
+			Integer significantDigits;
+			try {
+				significantDigits = Integer.parseInt(significantDigitsAsString);
+			} catch (NumberFormatException e) {
+				return result.getResult();
+			}
+
+			if (significantDigits == 0) {
+				return String.valueOf(Math.round(results));
+			}
+
+			double power = Math.pow(10, significantDigits);
+			return String.valueOf(Math.round(results * power) / power);
+		}else{
 			return result.getResult();
 		}
-
-		Double results;
-		try{
-			results = Double.valueOf(result.getResult());
-		}catch(NumberFormatException e){
-			return result.getResult();
-		}
-
-		TestResult testResult = testResults.get(0);
-
-		String significantDigitsAsString = testResult.getSignificantDigits();
-		if( GenericValidator.isBlankOrNull(significantDigitsAsString) || "-1".equals(significantDigitsAsString)){
-			return result.getResult();
-		}
-
-		Integer significantDigits;
-		try {
-			significantDigits = Integer.parseInt(significantDigitsAsString);
-		}catch (NumberFormatException e){
-			return result.getResult();
-		}
-
-		if( significantDigits == 0){
-			return String.valueOf(Math.round(results));
-		}
-
-		double power = Math.pow(10, significantDigits);
-		return String.valueOf(Math.round(results * power)/power);
 	}
 
 	private String getUnits(String units) {

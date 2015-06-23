@@ -23,7 +23,7 @@ public class NamedAnalyzerTestMapping {
 	private String analyzerTestName;
 	private String actualTestName;
 	private String uniqueId;
-	private static final String uniqueIdSeperator = "-";
+	private static final String uniqueIdSeperator = "#";
 
 	public String getAnalyzerName() {
 		return analyzerName;
@@ -49,7 +49,7 @@ public class NamedAnalyzerTestMapping {
 	}
 	public String getUniqueId() {
 		if( uniqueId == null){
-			uniqueId = analyzerName + uniqueIdSeperator + analyzerTestName;
+			uniqueId = analyzerName + uniqueIdSeperator + analyzerTestName + uniqueIdSeperator + actualTestName;
 		}
 		return uniqueId;
 	}

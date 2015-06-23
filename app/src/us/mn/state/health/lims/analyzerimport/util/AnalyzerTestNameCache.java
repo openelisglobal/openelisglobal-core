@@ -24,6 +24,7 @@ import us.mn.state.health.lims.analyzerimport.dao.AnalyzerTestMappingDAO;
 import us.mn.state.health.lims.analyzerimport.daoimpl.AnalyzerTestMappingDAOImpl;
 import us.mn.state.health.lims.analyzerimport.valueholder.AnalyzerTestMapping;
 import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -149,15 +150,21 @@ public class AnalyzerTestNameCache {
     }
 
     private MappedTestName createMappedTestName(TestDAO testDAO, AnalyzerTestMapping mapping) {
-        Test test = new Test();
-        test.setId(mapping.getTestId());
-        testDAO.getData(test);
 
         MappedTestName mappedTest = new MappedTestName();
         mappedTest.setAnalyzerTestName(mapping.getAnalyzerTestName());
         mappedTest.setTestId(mapping.getTestId());
-        mappedTest.setOpenElisTestName( TestService.getUserLocalizedTestName( test ));
         mappedTest.setAnalyzerId(mapping.getAnalyzerId());
+        if( mapping.getTestId() != null){
+            Test test = new Test();
+            test.setId(mapping.getTestId());
+            testDAO.getData(test);
+            mappedTest.setOpenElisTestName( TestService.getUserLocalizedTestName( test ));
+        }else{
+            mappedTest.setTestId("-1");
+            mappedTest.setOpenElisTestName(StringUtil.getMessageForKey("warning.configuration.needed"));
+        }
+
 
         return mappedTest;
     }

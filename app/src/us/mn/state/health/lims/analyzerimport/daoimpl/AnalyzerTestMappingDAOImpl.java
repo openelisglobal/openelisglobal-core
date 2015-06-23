@@ -101,4 +101,20 @@ public class AnalyzerTestMappingDAOImpl extends BaseDAOImpl implements AnalyzerT
 			throw new LIMSRuntimeException("Error in AnalyzerTestMappingDAOImpl insertData()", e);
 		}
 	}
+
+	@Override
+	public void updateMapping(AnalyzerTestMapping analyzerTestNameMapping, String currentUserId) throws LIMSRuntimeException {
+
+		try {
+			HibernateUtil.getSession().merge(analyzerTestNameMapping);
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+			HibernateUtil.getSession().evict(analyzerTestNameMapping);
+			HibernateUtil.getSession().refresh(analyzerTestNameMapping);
+		} catch (Exception e) {
+			LogEvent.logError("AnalyzerTestMappingDAOImpl","updateData()",e.toString());
+			throw new LIMSRuntimeException("Error in AnalyzerTestMapping updateData()", e);
+		}
+	}
+
 }
