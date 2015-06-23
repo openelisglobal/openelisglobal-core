@@ -515,7 +515,7 @@
            id="acceptButton"
            style="display: none"/>
 
-    <input type="button" value='<%=StringUtil.getMessageForKey("label.button.back")%>' onclick="navigateBack()" />
+    <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>' onclick="navigateBack()" />
 </div>
 
 <hr/>
@@ -636,7 +636,7 @@
            onclick="nextStepFromSelect();"
            id="nextButtonSelect"/>
 
-    <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>' onclick="navigateBack()" />
+    <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>' onclick="navigateBack()" />
 
 
 </div>
