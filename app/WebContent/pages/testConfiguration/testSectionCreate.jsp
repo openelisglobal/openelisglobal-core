@@ -176,9 +176,9 @@
         <h4><bean:message key="configuration.testUnit.confirmation.explain" /></h4>
     </div>
     <div style="text-align: center" id="editButtons">
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.save")%>"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.next")%>"
                onclick="confirmValues();"/>
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.cancel")%>"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.previous")%>"
                onclick="submitAction('TestSectionManagement.do');"/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
