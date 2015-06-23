@@ -127,6 +127,12 @@ public class TestAddAction extends BaseAction {
             groups.add(dictionaryPairs);
         }
 
+        Collections.sort(groups, new Comparator<List<IdValuePair>>() {
+            @Override
+            public int compare(List<IdValuePair> o1, List<IdValuePair> o2) {
+                return o1.size() - o2.size();
+            }
+        });
         return groups;
     }
 

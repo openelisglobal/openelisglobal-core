@@ -53,6 +53,12 @@ public class TypeOfTestResultService {
         public static boolean isNumeric(ResultType type) {
             return "N".equals( type.getCharacterValue());
         }
+
+        public static boolean isDictionaryVarientById( String resultTypeId){
+            return DICTIONARY.getId().equals( resultTypeId) ||
+                    MULTISELECT.getId().equals( resultTypeId) ||
+                    CASCADING_MULTISELECT.getId().equals( resultTypeId);
+        }
     }
 
     public static ResultType getResultTypeById( String id){

@@ -156,6 +156,7 @@
         }
 
         function dictionarySetSelected( index){
+            var dictionarySelect;
             //clear existing selections
             $jq("#qualifierSelection option").remove();
             $jq(".dictionaryMultiSelect .asmList li").remove();
@@ -166,9 +167,9 @@
 
             //add new selections
             $jq("#dictionaryGroup_" + index + " li").each(function(){
-                $jq("#dictionarySelectId .asmSelect option[value=2]").trigger("click");
-                $jq("#dictionarySelectId .asmSelect option[value=" + $jq(this).val() + "]").attr("selected", "selected");
-                $jq("#dictionarySelectId .asmSelect option[value=" + $jq(this).val() + "]").trigger('change');
+                dictionarySelect = $jq("#dictionarySelectId .asmSelect option[value=" + $jq(this).val() + "]");
+                dictionarySelect.attr("selected", "selected");
+                dictionarySelect.trigger('change');
             });
         }
         function createOption( id, name, isActive){
@@ -585,6 +586,7 @@
                   $jq("#sampleTypeSelectionDiv").hide();
                   $jq(".dictionarySelect").show();
                   $jq( "#nextButton" ).attr( "disabled", "disabled" );
+                  $jq("#sortTitleDiv").attr("align", "left");
               }
             }else if( step == "step3Numeric"){
                 $jq( "#normalRangeDiv input,select").attr("disabled", "disabled" );
@@ -598,6 +600,9 @@
                 $jq("#dictionaryQualify").hide();
                 buildVerifyDictionaryList();
                 $jq("#dictionaryVerifyId").show();
+                $jq(".confirmHide").hide();
+                $jq(".confirmShow").show();
+                createJSON();
             }
         }
 
@@ -684,8 +689,11 @@
             addJsonSortingOrder( jsonObj);
             if( step == "step3Numeric"){
                 addJsonResultLimits( jsonObj);
+            }else if( step == "step3Dictionary"){
+                addJsonDictionary( jsonObj);
             }
-            //console.log(JSON.stringify(jsonObj));
+
+        //    console.log(JSON.stringify(jsonObj));
             $jq("#jsonWad").val(JSON.stringify(jsonObj));
         }
 
@@ -757,6 +765,18 @@
                 jsonObj.resultLimits[countIndex++] = limit;
             });
 
+        }
+
+        function addJsonDictionary( jsonObj){
+            var dictionary;
+            jsonObj.dictionary = [];
+
+            $jq("#dictionarySelection option:selected").each(function(index, value){
+                dictionary = {};
+                dictionary.value = value.value;
+                dictionary.qualified = $jq("#qualifierSelection option:selected[value=" + value.value + "]").length == 1 ? "Y" : "N";
+                jsonObj.dictionary[index] = dictionary;
+            });
         }
         function submitAction(target) {
             var form = window.document.forms[0];
