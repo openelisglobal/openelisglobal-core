@@ -127,6 +127,9 @@ public class DisplayListService implements LocaleChangeListener {
         testResults.addAll(createFromDictionaryCategoryLocalizedSort("HL"));
         testResults.addAll(createFromDictionaryCategoryLocalizedSort("KL"));
         testResults.addAll(createFromDictionaryCategoryLocalizedSort("Test Result"));
+        testResults.addAll(createFromDictionaryCategoryLocalizedSort("HIV1NInd"));
+        testResults.addAll(createFromDictionaryCategoryLocalizedSort("PosNegIndInv"));
+        testResults.addAll(createFromDictionaryCategoryLocalizedSort("HIVResult"));
 
         Collections.sort(testResults, new Comparator<IdValuePair>() {
             @Override

@@ -178,9 +178,9 @@
     </div>
 
     <div style="text-align: center" id="editButtons">
-        <input id="saveButton" type="button" value='<%=StringUtil.getMessageForKey("label.button.save")%>'
+        <input id="saveButton" type="button" value='<%=StringUtil.getMessageForKey("label.button.next")%>'
                onclick="confirmValues();" disabled="disabled"/>
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>'
+        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>'
                onclick='window.onbeforeunload = null; submitAction("TestSectionTestAssign.do")'/>
     </div>
     <div style="text-align: center; display: none;" class="confirmation-step">

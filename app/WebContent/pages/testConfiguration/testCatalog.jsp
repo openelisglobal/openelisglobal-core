@@ -89,83 +89,16 @@
     <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
-    Test Catalog
+    <bean:message key="configuration.test.catalog" />
 </form>
-<h1>Test Catalog</h1>
-<input type="checkbox" onchange="guideSelection(this)">Show guide<br/><br/>
+<h1><bean:message key="configuration.test.catalog" /></h1>
+<input type="checkbox" onchange="guideSelection(this)"><bean:message key="configuration.test.catalog.guide.show" /><br/><br/>
 
-<div id="guide" style="display: none">
-    <b>Name</b><br/>
-    <span class="tab">The name of the test as it will appear within openELIS.  Both English and French are shown</span><br/>
-    <b>Report Name</b><br/>
-    <span class="tab">The name of the test as it will appear in reports.  Both English and French are show</span><br/>
-    <b>Active/Not Active</b><br/>
-  <span class="tab">If the test is active it can be ordered on the order form or as part of a test algorithm.
-  If it is not active it can not be ordered or be part of a test algorith</span><br/>
-    <b>Orderable/Not ordererable</b><br/>
-  <span class="tab">If a test is active and orderable then it can be ordered on an order form.  If it is active but
-  not orderable then it will only be done if it is reflexed from another test</span><br/>
-    <b>Test Unit</b><br/>
-    <span class="tab">Which section of the lab performs the test.  This is also known as a test section.</span><br/>
-    <b>Sample Type</b><br/>
-  <span class="tab">The type of sample on which the the test can be done.  If the intake technician is able to select
-  the type of sample after they have ordered the test it will be marked as user to indicate that the user will
-  select the type</span><br/>
-    <b>Panel</b><br/>
-  <span class="tab">If this test is part of a test panel then the panel will be named here.</span><br/>
-    <b>Result type</b><br/>
-    <span class="tab">The kind of result for this test</span>
-    <UL>
-        <li>N - Numeric. Accepts only numeric results in a text box. Results can be evaluated as to being in a normal or
-            a
-            valid range
-        </li>
-        <li>A - Alphanumeric. Accepts either numeric or text in a text box. It will not be evaluated for being normal or
-            valid
-        </li>
-        <li>R - Free text. Accepts up to 200 characters in a text area. It will not be evaluated for being normal or
-            valid
-        </li>
-        <li>D - Select list. User will be able to select from a dropdown list. The normal value will be specified as the
-            reference value
-        </li>
-        <li>M - Multi-select list. The user will be able to select one or more values from a dropdown list. No reference
-            value will be specified
-        </li>
-        <li>C - Cascading multi-select list. Similar to multi-select but the user will be able to select multiple groups
-            from the dropdown list.
-        </li>
-    </UL>
-    <br/>
-    <b>uom</b><br/>
-    <span class="tab">Unit of measure for the test.  This usually only applies to numeric or alphanumeric result types</span><br/>
-    <b>Significan digits</b><br/>
-  <span class="tab">The number of significant digits for numeric results.  Entered results will be rounded or padded to the correct number of digits.
-    The normal range will also be displayed with the correct number of significant digits</span><br/>
-    <b>Select values</b><br/>
-    <span class="tab">Only specified for select, multi-select or cascading multi-select results.
-        These are the available selections shown to the user.  If the selection is marked as "qualifiable" then when the user
-        selects that value they will be able to enter additional information in a text box.</span><br/>
-    <b>Reference value</b><br/>
-    <span class="tab">The value of a selection for a healthy person.  Only given for select list results</span><br/>
-    <b>Result limits</b><br/>
-    <span class="tab">The limits of normal and valid results for numeric tests.  The values can depend on both the age and sex of the patient.</span><br/>
-    <b>Sex</b><br/>
-    <span class="tab">If the sex of the patient maters for the given values it will be specified here</span><br/>
-    <b>Age range</b><br/>
-    <span class="tab">If the age range (in months) maters for the given values it will be specified here</span><br/>
-    <b>Normal range</b><br/>
-    <span class="tab">Any numeric result within this range is what is expected in a healthy person</span><br/>
-    <b>Valid range</b><br/>
-    <span class="tab">Any numeric result not in this range is an indication that the test may not have been done correctly</span><br/>
-    <br/>
-    <b>Note:</b><br/>
-    <span class="tab">n/a means not available.  The value is not specified</span>
-    <hr/>
+<div id="guide" style="display: none"><bean:message key="configuration.test.catalog.guide" /><hr/>
 </div>
 
-<h4>Select test section to view catalog for that section</h4>
-<input type="checkbox" onchange="sectionSelectionAll(this)">All<br/><br/>
+<h4><bean:message key="configuration.test.catalog.sections" /></h4>
+<input type="checkbox" onchange="sectionSelectionAll(this)"><bean:message key="label.all" /><br/><br/>
 <% for (String testSection : testSectionList) {%>
 <input type="checkbox" class="testSection" value='<%=testSection.replace(" ", "_").replace("/", "_")%>'
        onchange="sectionSelection(this)"><%=testSection%><br/>
@@ -190,39 +123,39 @@ which closes it the last time through--%>
         } %>
     <table width="80%">
         <tr>
-            <td colspan="2"><span class="catalog-label">Name</span></td>
-            <td colspan="2"><span class="catalog-label">Report Name</span></td>
+            <td colspan="2"><span class="catalog-label"><bean:message key="configuration.test.catalog.name" /></span></td>
+            <td colspan="2"><span class="catalog-label"><bean:message key="configuration.test.catalog.report.name" /></span></td>
         </tr>
         <tr>
-            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishName()%></>
+            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishName()%></b>
             </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchName()%></>
+            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchName()%></b>
             </td>
-            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishReportName()%></>
+            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishReportName()%></b>
             </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchReportName()%></>
-            </td>
-        </tr>
-        <tr>
-            <td><b><%=bean.getActive()%></>
-            </td>
-            <td><b><%=bean.getOrderable()%></>
+            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchReportName()%></b>
             </td>
         </tr>
         <tr>
-            <td><span class="catalog-label">Test Unit</span> <b><%=bean.getTestUnit()%></>
+            <td><b><%=bean.getActive()%></b>
             </td>
-            <td><span class="catalog-label">Sample Type</span> <b><%=bean.getSampleType()%></>
-            </td>
-            <td><span class="catalog-label">Panel</span> <b><%=bean.getPanel()%></>
-            </td>
-            <td><span class="catalog-label">Result Type</span> <b><%=bean.getResultType()%></>
+            <td><b><%=bean.getOrderable()%></b>
             </td>
         </tr>
         <tr>
-            <td><span class="catalog-label">uom</span> <b><%=bean.getUom()%></>
+            <td><span class="catalog-label"><bean:message key="label.test.unit" /></span> <b><%=bean.getTestUnit()%></b>
             </td>
-            <td><span class="catalog-label">Significant digits</span> <b><%= bean.getSignificantDigits() %></>
+            <td><span class="catalog-label"><bean:message key="label.sample.types" /></span> <b><%=bean.getSampleType()%></b>
+            </td>
+            <td><span class="catalog-label"><bean:message key="label.panel" /></span> <b><%=bean.getPanel()%></b>
+            </td>
+            <td><span class="catalog-label"><bean:message key="label.result.type" /></span> <b><%=bean.getResultType()%></b>
+            </td>
+        </tr>
+        <tr>
+            <td><span class="catalog-label"><bean:message key="label.uom" /></span> <b><%=bean.getUom()%></b>
+            </td>
+            <td><span class="catalog-label"><bean:message key="label.significant.digits" /></span> <b><%= bean.getSignificantDigits() %></b>
             </td>
         </tr>
         <% if (bean.isHasDictionaryValues()) {
@@ -230,12 +163,12 @@ which closes it the last time through--%>
             for (String value : bean.getDictionaryValues()) {
         %>
         <tr>
-            <td><% if (top) { %><span class="catalog-label">Select values</span><% } %></td>
-            <td colspan="2"><b><%=value%></>
+            <td><% if (top) { %><span class="catalog-label"><bean:message key="configuration.test.catalog.select.values" /></span><% } %></td>
+            <td colspan="2"><b><%=value%></b>
             </td>
             <td colspan="2"><% if (top) {
-                top = false;%><span class="catalog-label">Reference value  </span>
-                <b><%=bean.getReferenceValue()%></>
+                top = false;%><span class="catalog-label"><bean:message key="configuration.test.catalog.reference.value" /></span>
+                <b><%=bean.getReferenceValue()%></b>
             </td>
             <% } %>
         </tr>
@@ -245,23 +178,23 @@ which closes it the last time through--%>
         %>
         <% if (bean.isHasLimitValues()) { %>
         <tr>
-            <td colspan="5" align="center"><span class="catalog-label">Result Limits</span></td>
+            <td colspan="5" align="center"><span class="catalog-label"><bean:message key="configuration.test.catalog.result.limits" /></span></td>
         </tr>
         <tr>
-            <td><span class="catalog-label">Sex</span></td>
-            <td><span class="catalog-label">Age Range (months)</span></td>
-            <td><span class="catalog-label">Normal Range</span></td>
-            <td><span class="catalog-label">Valid Range</span></td>
+            <td><span class="catalog-label"><bean:message key="label.sex" /></span></td>
+            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.age.range.months" /></span></td>
+            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.normal.range" /></span></td>
+            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.valid.range" /></span></td>
         </tr>
         <% for (ResultLimitBean limitBean : bean.getResultLimits()) {%>
         <tr>
-            <td><b><%=limitBean.getGender()%></>
+            <td><b><%=limitBean.getGender()%></b>
             </td>
-            <td><b><%=limitBean.getAgeRange()%></>
+            <td><b><%=limitBean.getAgeRange()%></b>
             </td>
-            <td><b><%=limitBean.getNormalRange()%></>
+            <td><b><%=limitBean.getNormalRange()%></b>
             </td>
-            <td><b><%=limitBean.getValidRange()%></>
+            <td><b><%=limitBean.getValidRange()%></b>
             </td>
         </tr>
         <% } %>

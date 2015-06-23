@@ -162,6 +162,18 @@ public class TestAddUpdate extends BaseAction {
             testResult.setIsActive(true);
             testResult.setSignificantDigits(significantDigits);
             testResults.add(testResult);
+        }else if(TypeOfTestResultService.ResultType.isDictionaryVariant(type.getCharacterValue())){
+            int sortOrder = 10;
+            for(DictionaryParams params : testAddParams.dictionaryParamList){
+                TestResult testResult = new TestResult();
+                testResult.setTestResultType(type.getCharacterValue());
+                testResult.setSortOrder(String.valueOf(sortOrder));
+                sortOrder += 10;
+                testResult.setIsActive(true);
+                testResult.setValue( params.dictionaryId);
+                testResult.setIsQuantifiable(params.isQuantifiable);
+                testResults.add(testResult);
+            }
         }
     }
     private Localization createNameLocalization(TestAddParams testAddParams) {
@@ -275,6 +287,15 @@ public class TestAddUpdate extends BaseAction {
                 testAddParams.highValid = (String)obj.get("highValid");
                 testAddParams.significantDigits = (String)obj.get("significantDigits");
                 extractLimits( obj, parser, testAddParams);
+            }else if( TypeOfTestResultService.ResultType.isDictionaryVarientById(testAddParams.resultTypeId)){
+                String dictionary = (String)obj.get("dictionary");
+                JSONArray dictionaryArray = (JSONArray) parser.parse(dictionary);
+                for( int i = 0; i < dictionaryArray.size(); i++){
+                    DictionaryParams params = new DictionaryParams();
+                    params.dictionaryId = (String)((JSONObject) dictionaryArray.get(i)).get("value");
+                    params.isQuantifiable = "Y".equals((String)((JSONObject) dictionaryArray.get(i)).get("qualified"));
+                    testAddParams.dictionaryParamList.add(params);
+                }
             }
 
         } catch (ParseException e) {
@@ -369,9 +390,7 @@ public class TestAddUpdate extends BaseAction {
         String highValid;
         String significantDigits;
         ArrayList<ResultLimitParams> limits = new ArrayList<ResultLimitParams>();
-
-
-
+        ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<DictionaryParams>();
     }
 
     private class SampleTypeListAndTestOrder{
@@ -394,5 +413,10 @@ public class TestAddUpdate extends BaseAction {
         ArrayList<PanelItem> panelItems = new ArrayList<PanelItem>();
         ArrayList<TestResult> testResults = new ArrayList<TestResult>();
         ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+    }
+
+    private class DictionaryParams{
+        String dictionaryId;
+        boolean isQuantifiable = false;
     }
 }

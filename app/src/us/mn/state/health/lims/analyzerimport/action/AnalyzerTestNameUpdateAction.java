@@ -65,27 +65,35 @@ public class AnalyzerTestNameUpdateAction extends BaseAction {
 		String analyzerId = dynaForm.getString("analyzerId");
 		String testId = dynaForm.getString("testId");
 		String analyzerTestName = dynaForm.getString("analyzerTestName");
+		boolean newMapping = "0".equals(request.getParameter("ID"));
 
 		ActionMessages errors = new ActionMessages();
 
-		validateAnalyzerAndTestName(analyzerId, analyzerTestName, testId, errors);
+		AnalyzerTestMapping analyzerTestNameMapping = validateAnalyzerAndTestName(analyzerId, analyzerTestName, testId, errors, newMapping);
 
 		if (errors.size() > 0) {
 			saveErrors(request, errors);
 			return FWD_FAIL;
 		}
 
-		AnalyzerTestMapping analyzerTestNameMapping = new AnalyzerTestMapping();
-		analyzerTestNameMapping.setAnalyzerId(analyzerId);
-		analyzerTestNameMapping.setAnalyzerTestName(analyzerTestName);
-		analyzerTestNameMapping.setTestId(testId);
+		if( newMapping) {
+			analyzerTestNameMapping = new AnalyzerTestMapping();
+			analyzerTestNameMapping.setAnalyzerId(analyzerId);
+			analyzerTestNameMapping.setAnalyzerTestName(analyzerTestName);
+			analyzerTestNameMapping.setTestId(testId);
+		}
 
 		AnalyzerTestMappingDAO mappingDAO = new AnalyzerTestMappingDAOImpl();
 
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 		try {
-			mappingDAO.insertData(analyzerTestNameMapping, currentUserId);
+			if( newMapping) {
+				mappingDAO.insertData(analyzerTestNameMapping, currentUserId);
+			}else{
+				mappingDAO.updateMapping(analyzerTestNameMapping, currentUserId);
+			}
+
 		} catch (LIMSRuntimeException lre) {
 			tx.rollback();
 
@@ -112,24 +120,34 @@ public class AnalyzerTestNameUpdateAction extends BaseAction {
 		return forward;
 	}
 
-	private void validateAnalyzerAndTestName(String analyzerId, String analyzerTestName, String testId, ActionMessages errors) {
+	private AnalyzerTestMapping validateAnalyzerAndTestName(String analyzerId, String analyzerTestName, String testId, ActionMessages errors, boolean newMapping) {
 		//This is not very efficient but this is a very low usage action
 		if( GenericValidator.isBlankOrNull(analyzerId) ||
 			GenericValidator.isBlankOrNull(analyzerTestName) ||
 			GenericValidator.isBlankOrNull(testId)){
 			errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionError("error.all.required"));
-			return;
+			return null;
 		}
 
+		AnalyzerTestMapping existingMapping = null;
 		AnalyzerTestMappingDAO mappingDAO = new AnalyzerTestMappingDAOImpl();
 		List<AnalyzerTestMapping> testMappingList = mappingDAO.getAllAnalyzerTestMappings();
-
 		for( AnalyzerTestMapping testMapping : testMappingList){
 			if( analyzerId.equals(testMapping.getAnalyzerId()) &&
 				analyzerTestName.equals(testMapping.getAnalyzerTestName())){
-				errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionError("error.analyzer.test.name.duplicate"));
+				if( newMapping) {
+					errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionError("error.analyzer.test.name.duplicate"));
+					return null;
+				}else{
+					existingMapping = testMapping;
+					testMapping.setTestId(testId);
+					break;
+				}
+
 			}
 		}
+
+		return existingMapping;
 	}
 
 	private void persisteError(HttpServletRequest request, ActionError error) {
