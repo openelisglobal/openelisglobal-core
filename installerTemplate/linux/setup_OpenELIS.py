@@ -494,12 +494,15 @@ def backup_war_file():
 
 
 def backup_plugins():
-    log("Backing up plugins to " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH   , PRINT_TO_CONSOLE)
-    shutil.copytree(TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH,  ROLLBACK_DIR + get_action_time() + '/plugin' )
+    if os.path.isdir(TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH):
+        log("Backing up plugins to " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH   , PRINT_TO_CONSOLE)
+        shutil.copytree(TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH,  ROLLBACK_DIR + get_action_time() + '/plugin' )
+    else:
+        log("This version of openELIS does not support plugins, can not backup", PRINT_TO_CONSOLE)
 
 def restore_plugins():
 
-    if len(os.listdir(ROLLBACK_DIR + get_action_time() + '/plugin/' )) > 1:
+    if os.path.isdir(ROLLBACK_DIR + get_action_time() + '/plugin/') and len(os.listdir(ROLLBACK_DIR + get_action_time() + '/plugin/' )) > 1:
         log("Restoring " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH, PRINT_TO_CONSOLE)
         cmd = 'cp -r ' + ROLLBACK_DIR + get_action_time() + '/plugin/* ' + TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH
         os.system(cmd)
