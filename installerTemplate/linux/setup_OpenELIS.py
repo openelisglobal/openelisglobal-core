@@ -95,34 +95,7 @@ def check_preconditions():
     log("Tomcat found version = " + TOMCAT_VERSION, PRINT_TO_CONSOLE)
 
     log("Checking for Postgres 8.3 or later installation", PRINT_TO_CONSOLE)
-    os.system('psql --version > tmp')
-    tmp_file = open('tmp')
-    first_line = tmp_file.readline()
-    tmp_file.close()
-
-    if len(first_line) < 1:
-        log("Postgress not installed.  Please install postgres8.3 or later", PRINT_TO_CONSOLE)
-        return False
-
-    if "8.4" in first_line:
-        POSTGRES_LIB_DIR = "/usr/lib/postgresql/8.4/lib/"
-
-    split_line = first_line.split()
-    version = split_line[2]
-    split_version = version.split('.')
-
-    valid = False
-
-    if split_version[0].isdigit() and split_version[1].isdigit():
-        major = int(split_version[0])
-        minor = int(split_version[1])
-
-        valid = major > 8 or (major == 8 and minor >= 3)
-
-    if valid:
-        log("Postgres found!\n", PRINT_TO_CONSOLE)
-    else:
-        log("Postgres must be 8.3 or later\n", PRINT_TO_CONSOLE)
+    if not check_postgres_preconditions():
         return False
 
     log("Checking for correcting for correct java runtime", PRINT_TO_CONSOLE)
@@ -288,6 +261,37 @@ def config_site_information():
         persist_site_information(site_file, 'Accession number prefix',
                                   'Prefix for SITEYEARNUM format.  Can not be changed if there are samples', SITE_ID)
         site_file.close()
+
+def check_postgres_preconditions():
+    log("Checking for Postgres 8.3 or later installation", PRINT_TO_CONSOLE)
+    os.system('psql --version > tmp')
+    tmp_file = open('tmp')
+    first_line = tmp_file.readline()
+    tmp_file.close()
+
+    if len(first_line) < 1:
+        log("Postgress not installed.  Please install postgres8.3 or later", PRINT_TO_CONSOLE)
+        return False
+
+    split_line = first_line.split()
+    version = split_line[2]
+    split_version = version.split('.')
+
+    valid = False
+
+    if split_version[0].isdigit() and split_version[1].isdigit():
+        major = int(split_version[0])
+        minor = int(split_version[1])
+
+        valid = major > 8 or (major == 8 and minor >= 3)
+
+    if valid:
+        log("Postgres" + str(major) + "." + str(minor) + " found!\n", PRINT_TO_CONSOLE)
+        POSTGRES_LIB_DIR = "/usr/lib/postgresql/" + str(major) + "." + str(minor) + "/lib/"
+        return True
+    else:
+        log("Postgres must be 8.3 or later\n", PRINT_TO_CONSOLE)
+        return False
 
 
 def persist_site_information(file, name, description, value):
@@ -665,6 +669,10 @@ def delete_database():
 
 
 def check_update_preconditions():
+
+    if not check_postgres_preconditions():
+    	return False
+
     global TOMCAT_DIR
     global TOMCAT_VERSION
     TOMCAT_DIR = get_tomcat_directory()
@@ -753,7 +761,6 @@ def backup_config_file():
     log("Backing up configuration to " + ROLLBACK_DIR + backup_name, PRINT_TO_CONSOLE)
     cmd = 'cp ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + app_name + ".xml " + ROLLBACK_DIR + backup_name
     os.system(cmd)
-
 
 def do_update():
     log("Updating " + APP_NAME, PRINT_TO_CONSOLE)
