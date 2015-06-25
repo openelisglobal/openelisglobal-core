@@ -12,7 +12,7 @@ import re
 from time import gmtime, strftime
 from random import Random
 
-VERSION = "2.8"
+VERSION = "5.2"
 TEMPLATE_DIR = "./templates/"
 WAR_DIR = "./warFiles/"
 STAGING_DIR = "./stagingFiles/"
@@ -33,6 +33,7 @@ BACKUP_DIR = os.getenv("HOME") + "/openElisBackup/"
 BACKUP_SCRIPT_NAME = "DatabaseBackup.pl"
 LOG_FILE_NAME = "installer.log"
 LANG_NAME = "en_US.UTF-8"
+POSTGRES_ROLE_UPDATE_FILE_NAME = "updateDBPassword.sql"
 APP_NAME = ""
 REPORT_IMAGE_PATH = "/WEB-INF/reports/images/"
 PREVIEW_IMAGE_PATH = "/images/"
@@ -104,10 +105,10 @@ def check_preconditions():
     jvm_six_path = "/usr/lib/jvm/java-6-sun/jre/bin/"
 
     if os.path.exists(jvm_six_path):
-        updateAlternativePath = "/usr/sbin/update-alternatives"
-        if os.path.exists(updateAlternativePath):
-            set_java_path = updateAlternativePath + " --set java " + jvm_six_path + "java"
-            set_key_path = updateAlternativePath + " --set keytool " + jvm_six_path + "keytool"
+        update_alternative_path = "/usr/sbin/update-alternatives"
+        if os.path.exists(update_alternative_path):
+            set_java_path = update_alternative_path + " --set java " + jvm_six_path + "java"
+            set_key_path = update_alternative_path + " --set keytool " + jvm_six_path + "keytool"
 
             os.system(set_java_path)
             os.system(set_key_path)
@@ -207,6 +208,7 @@ def find_installation_name():
 
     return False
 
+
 def find_installed_name():
     global TOMCAT_DIR
     global TOMCAT_VERSION
@@ -259,8 +261,9 @@ def config_site_information():
         SITE_ID = raw_input("site number for this lab (5 character): ")
         persist_site_information(site_file, 'siteNumber', 'The site number of the this lab', SITE_ID)
         persist_site_information(site_file, 'Accession number prefix',
-                                  'Prefix for SITEYEARNUM format.  Can not be changed if there are samples', SITE_ID)
+                                 'Prefix for SITEYEARNUM format.  Can not be changed if there are samples', SITE_ID)
         site_file.close()
+
 
 def check_postgres_preconditions():
     log("Checking for Postgres 8.3 or later installation", PRINT_TO_CONSOLE)
@@ -386,6 +389,7 @@ def install_backup():
 
     return
 
+
 def update_with_liquibase():
     global LOG_FILE
     context = False
@@ -417,6 +421,7 @@ def update_with_liquibase():
     if result > 0:
         log("Error running database update", PRINT_TO_CONSOLE)
         log("Re running with diagnostics", PRINT_TO_CONSOLE)
+        log("If the issue is reported as an authentication problem run the installer with the '-recover' option", PRINT_TO_CONSOLE)
         print "For further information please check the log file " + LOG_DIR + LOG_FILE_NAME
         LOG_FILE.flush()
         cmd = "java -jar  ./lib/liquibase-1.9.5.jar --defaultsFile=liquibaseInstall.properties " + context_arg + \
@@ -438,6 +443,50 @@ def install_no_prompt():
     set_environment_variables()
     install()
 
+
+def update_postgres_role():
+    template_file = open(TEMPLATE_DIR + POSTGRES_ROLE_UPDATE_FILE_NAME, "r")
+    staging_file = open(STAGING_DIR + POSTGRES_ROLE_UPDATE_FILE_NAME, "w")
+
+    for line in template_file:
+        if line.find("[% postgres_password %]") > 0:
+            line = line.replace("[% postgres_password %]", CLINLIMS_PWD)
+
+    staging_file.write(line)
+
+    template_file.close()
+    staging_file.close()
+
+    cmd = 'su -c "psql  <  ' + STAGING_DIR + POSTGRES_ROLE_UPDATE_FILE_NAME +  '" postgres > /dev/null'
+    os.system(cmd)
+
+
+
+def recover_database():
+
+    over_ride = raw_input("This will reset the database password and may install a new war file.  Do you want to keep going? y/n ")
+    if not over_ride.lower() == "y":
+        return
+
+    find_installed_name()
+    find_installation_name()
+
+    stop_tomcat()
+
+    filename = APP_NAME + '.war'
+    if os.path.exists(TOMCAT_DIR + '/webapps/' + filename):
+        log("Using existing war file " + filename, PRINT_TO_CONSOLE)
+    else:
+        copy_war_file_to_tomcat()
+        log("Installing " + filename + " from installer", PRINT_TO_CONSOLE)
+
+    create_postgres_password()
+    config_files_for_tomcat()
+    copy_tomcat_config_file()
+    update_postgres_role()
+    log("Updated postgres password in database and config file.", PRINT_TO_CONSOLE)
+    start_tomcat()
+
 def set_environment_variables():
     os.environ["LC_ALL"] = ""
     os.environ["LC_CTYPE"] = ""
@@ -457,6 +506,7 @@ def install():
 
     do_install()
 
+
 def stop_tomcat():
     try_count = 1
     if TOMCAT_VERSION != 'tomcat5.5':
@@ -475,17 +525,22 @@ def stop_tomcat():
             log('Stopping Tomcat servlet engine failed, trying again', PRINT_TO_CONSOLE)
             time.sleep(3)
 
+
 def start_tomcat():
     cmd = '/etc/init.d/' + TOMCAT_VERSION + ' start'
     os.system(cmd)
+
 
 def restart_tomcat():
     cmd = '/etc/init.d/' + TOMCAT_VERSION + ' restart'
     os.system(cmd)
 
+
 def copy_war_file_to_tomcat():
     cmd = 'cp ' + WAR_DIR + APP_NAME + '.war ' + TOMCAT_DIR + '/webapps/'
+    log(cmd, PRINT_TO_CONSOLE)
     os.system(cmd)
+
 
 def backup_war_file():
     log("Backing up application to " + ROLLBACK_DIR + get_action_time() + '/' + APP_NAME + '.war ', PRINT_TO_CONSOLE)
@@ -495,14 +550,15 @@ def backup_war_file():
 
 def backup_plugins():
     if os.path.isdir(TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH):
-        log("Backing up plugins to " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH   , PRINT_TO_CONSOLE)
-        shutil.copytree(TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH,  ROLLBACK_DIR + get_action_time() + '/plugin' )
+        log("Backing up plugins to " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH, PRINT_TO_CONSOLE)
+        shutil.copytree(TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH, ROLLBACK_DIR + get_action_time() + '/plugin')
     else:
         log("This version of openELIS does not support plugins, can not backup", PRINT_TO_CONSOLE)
 
-def restore_plugins():
 
-    if os.path.isdir(ROLLBACK_DIR + get_action_time() + '/plugin/') and len(os.listdir(ROLLBACK_DIR + get_action_time() + '/plugin/' )) > 1:
+def restore_plugins():
+    if os.path.isdir(ROLLBACK_DIR + get_action_time() + '/plugin/') and len(
+            os.listdir(ROLLBACK_DIR + get_action_time() + '/plugin/')) > 1:
         log("Restoring " + ROLLBACK_DIR + get_action_time() + PLUGIN_PATH, PRINT_TO_CONSOLE)
         cmd = 'cp -r ' + ROLLBACK_DIR + get_action_time() + '/plugin/* ' + TOMCAT_DIR + '/webapps/' + APP_NAME + PLUGIN_PATH
         os.system(cmd)
@@ -544,13 +600,11 @@ def delete_backup_script():
 
 
 def do_install():
-    global CLINLIMS_PWD
-
     find_installation_name()
 
     log("installing " + APP_NAME, PRINT_TO_CONSOLE)
 
-    CLINLIMS_PWD = ''.join(Random().sample(string.letters, 12))
+    create_postgres_password()
     config_files_for_postgres()
 
     # prepare any site-specific information
@@ -578,14 +632,7 @@ def do_install():
         cmd = 'cp ' + postgres_file[0] + ' ' + TOMCAT_DIR + '/lib/'
     os.system(cmd)
 
-    # add config files
-    cmd = 'cp ' + STAGING_DIR + APP_NAME + '.xml ' + TOMCAT_DIR + '/conf/Catalina/localhost/'
-    os.system(cmd)
-    if TOMCAT_VERSION == "tomcat5.5":
-        cmd = 'chown tomcat55:nogroup ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
-    else:
-        cmd = 'chown ' + TOMCAT_VERSION + ":" + TOMCAT_VERSION + ' ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
-    os.system(cmd)
+    copy_tomcat_config_file()
 
     copy_war_file_to_tomcat()
 
@@ -598,6 +645,21 @@ def do_install():
     for file in staging_files:
         cmd = "rm " + file
         os.system(cmd)
+
+
+def create_postgres_password():
+    global CLINLIMS_PWD
+    CLINLIMS_PWD = ''.join(Random().sample(string.letters, 12))
+
+
+def copy_tomcat_config_file():
+    cmd = 'cp ' + STAGING_DIR + APP_NAME + '.xml ' + TOMCAT_DIR + '/conf/Catalina/localhost/'
+    os.system(cmd)
+    if TOMCAT_VERSION == "tomcat5.5":
+        cmd = 'chown tomcat55:nogroup ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
+    else:
+        cmd = 'chown ' + TOMCAT_VERSION + ":" + TOMCAT_VERSION + ' ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
+    os.system(cmd)
 
 
 def do_uninstall():
@@ -672,9 +734,8 @@ def delete_database():
 
 
 def check_update_preconditions():
-
     if not check_postgres_preconditions():
-    	return False
+        return False
 
     global TOMCAT_DIR
     global TOMCAT_VERSION
@@ -764,6 +825,7 @@ def backup_config_file():
     log("Backing up configuration to " + ROLLBACK_DIR + backup_name, PRINT_TO_CONSOLE)
     cmd = 'cp ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + app_name + ".xml " + ROLLBACK_DIR + backup_name
     os.system(cmd)
+
 
 def do_update():
     log("Updating " + APP_NAME, PRINT_TO_CONSOLE)
@@ -865,6 +927,8 @@ setup_OpenELIS.py <options>
 
 -uninstall - Removes OpenELIS from the system optionally including the database. Make sure you have the clinlims password written down someplace
 
+-recover - Will try to recover the system if somebody has tried to fix the system manually.  It will re-install the war file and reset the database password
+
 -version - The version number of this installer
 
 -help - This screen
@@ -888,12 +952,14 @@ def clean_exit():
     exit()
 
 
-def log(message, toConsole):
+def log(message, to_console):
     LOG_FILE.write(message + "\n")
-    if toConsole:
+    if to_console:
         print message
 
 # Main entry point
+
+
 if len(sys.argv) > 1:
 
     os.putenv("LANG", LANG_NAME)
@@ -949,6 +1015,11 @@ if len(sys.argv) > 1:
         install_crosstab()
         clean_exit()
 
+    if arg == "-recover":
+        log("recover " + strftime("%a, %d %b %Y %H:%M:%S", gmtime()), not PRINT_TO_CONSOLE)
+        recover_database()
+        clean_exit()
+
     if arg == "-version":
         # version already written
         clean_exit()
@@ -957,8 +1028,5 @@ if len(sys.argv) > 1:
     write_help()
     clean_exit()
 
-
-
 # default is help
 write_help()
-
