@@ -30,7 +30,7 @@
 	var testSectionNameIdHash = [];
 	<%
 		for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
-			out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+			out.print( "testSectionNameIdHash[\"" + pair.getId()+ "\"] = \"" + pair.getValue() +"\";\n");
 		}
 	%>
 	</script>
