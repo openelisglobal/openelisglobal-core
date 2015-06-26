@@ -55,6 +55,7 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
+import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
 
@@ -191,6 +192,7 @@ public class TestAddUpdate extends BaseAction {
         Double highValid = null;
         String significantDigits = testAddParams.significantDigits;
         boolean numericResults = TypeOfTestResultService.ResultType.isNumericById(testAddParams.resultTypeId);
+        boolean dictionaryResults = TypeOfTestResultService.ResultType.isDictionaryVarientById(testAddParams.resultTypeId);
         List<TestSet> testSets = new ArrayList<TestSet>();
         UnitOfMeasure uom = null;
         if(!GenericValidator.isBlankOrNull(testAddParams.uomId) || "0".equals(testAddParams.uomId)) {
@@ -237,15 +239,29 @@ public class TestAddUpdate extends BaseAction {
             testSet.sampleTypeTest = typeOfSampleTest;
 
             createPanelItems(testSet.panelItems, testAddParams);
-            createTestResults( testSet.testResults, significantDigits, testAddParams );
+            createTestResults(testSet.testResults, significantDigits, testAddParams);
             if( numericResults) {
                 testSet.resultLimits = createResultLimits(lowValid, highValid, testAddParams);
+            }else if( dictionaryResults){
+                testSet.resultLimits = createDictionaryResultLimit( testAddParams);
             }
 
             testSets.add( testSet);
         }
 
         return testSets;
+    }
+
+    private ArrayList<ResultLimit> createDictionaryResultLimit(TestAddParams testAddParams) {
+        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        if( !GenericValidator.isBlankOrNull(testAddParams.dictionaryReferenceId)){
+            ResultLimit limit = new ResultLimit();
+            limit.setResultTypeId(testAddParams.resultTypeId);
+            limit.setDictionaryNormalId(testAddParams.dictionaryReferenceId);
+            resultLimits.add(limit);
+        }
+
+        return resultLimits;
     }
 
     private ArrayList<ResultLimit> createResultLimits(Double lowValid, Double highValid, TestAddParams testAddParams) {
@@ -276,6 +292,7 @@ public class TestAddUpdate extends BaseAction {
             testAddParams.testReportNameEnglish = (String) obj.get("testReportNameEnglish");
             testAddParams.testReportNameFrench = (String) obj.get("testReportNameFrench");
             testAddParams.testSectionId = (String) obj.get("testSection");
+            testAddParams.dictionaryReferenceId = (String) obj.get("dictioanryReference");
             extractPanels(obj, parser, testAddParams);
             testAddParams.uomId = (String)obj.get("uom");
             testAddParams.resultTypeId = (String)obj.get("resultType");
@@ -389,6 +406,7 @@ public class TestAddUpdate extends BaseAction {
         String lowValid;
         String highValid;
         String significantDigits;
+        String dictionaryReferenceId;
         ArrayList<ResultLimitParams> limits = new ArrayList<ResultLimitParams>();
         ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<DictionaryParams>();
     }

@@ -144,6 +144,9 @@
                     option = createOption(data.value, dictionaryName, false);
                     qualifiyList.append(option);
                     augmentMultiselects("#dictionaryQualify");
+
+                    option = createOption(data.value, dictionaryName, false);
+                    $jq("#referenceSelection").append(option);
                 } else {
                     $jq("#dictionaryNameSortUI li[value=" + data.value + "]").remove();
 
@@ -151,6 +154,7 @@
                     qualifiyList.find("option[value=" + data.value + "]").remove();
                     $jq("#dictionaryQualify").append(qualifiyList);
                     augmentMultiselects("#dictionaryQualify");
+                    $jq("#referenceSelection option[value=" + data.value + "]").remove();
                 }
             }
         }
@@ -164,6 +168,8 @@
             $jq(".dictionaryMultiSelect .asmSelect .asmOptionDisabled").removeClass("asmOptionDisabled");
             $jq(".dictionaryMultiSelect option:selected").removeAttr("selected");
             $jq("#dictionaryNameSortUI li").remove();
+            $jq("#referenceSelection option").remove();
+            $jq("#referenceSelection").append(createOption("0", "", false));
 
             //add new selections
             $jq("#dictionaryGroup_" + index + " li").each(function(){
@@ -600,6 +606,7 @@
                 $jq("#dictionaryQualify").hide();
                 buildVerifyDictionaryList();
                 $jq("#dictionaryVerifyId").show();
+                $jq("#dictionaryReference").show();
                 $jq(".confirmHide").hide();
                 $jq(".confirmShow").show();
                 createJSON();
@@ -772,6 +779,9 @@
             jsonObj.dictionary = [];
 
             $jq("#dictionarySelection option:selected").each(function(index, value){
+                if( $jq("#referenceSelection option:selected[value=" + value.value + "]").length == 1 ){
+                    jsonObj.dictionaryReference = value.value;
+                }
                 dictionary = {};
                 dictionary.value = value.value;
                 dictionary.qualified = $jq("#qualifierSelection option:selected[value=" + value.value + "]").length == 1 ? "Y" : "N";
@@ -979,9 +989,17 @@
 
                         </UL>
                     </span></div>
-                    <div id="dictionaryQualify" class="dictionarySelect  dictionaryMultiSelect" style="padding:10px; float:left; width:280px; display:none">
-                        Qualifiers<br/>
-                        <select  id='qualifierSelection' multiple='multiple' title='Multiple' ></select>
+                    <div class="dictionarySelect" style="padding:10px; float:left; width:280px;display:none" >
+                        <div id="dictionaryReference"  >
+                            reference value<br/>
+                            <select  id='referenceSelection'>
+                                <option value="0" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                            </select>
+                        </div><br>
+                        <div id="dictionaryQualify" class="dictionaryMultiSelect" >
+                            Qualifiers<br/>
+                            <select  id='qualifierSelection' multiple='multiple' title='Multiple' ></select>
+                        </div>
                     </div>
                 </div>
             </div>
