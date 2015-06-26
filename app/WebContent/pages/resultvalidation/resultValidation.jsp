@@ -179,7 +179,7 @@ function submitTestSectionSelect( element ) {
 
 	<%
 		for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
-			out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+			out.print( "testSectionNameIdHash[\"" + pair.getId()+ "\"] = \"" + pair.getValue() +"\";\n");
 		}
 	%>
 		window.location.href = "ResultValidationSave.do?testSectionId=" + element.value + "&test=&type=" + testSectionNameIdHash[element.value];
