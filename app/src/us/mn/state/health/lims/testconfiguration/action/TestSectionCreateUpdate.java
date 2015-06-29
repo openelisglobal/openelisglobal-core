@@ -92,22 +92,6 @@ public class TestSectionCreateUpdate extends BaseAction {
         DisplayListService.refreshList(DisplayListService.ListType.TEST_SECTION);
         DisplayListService.refreshList(DisplayListService.ListType.TEST_SECTION_INACTIVE);
 
-        List<TestSection> sections = new TestSectionDAOImpl().getAllTestSections();
-
-   /*     for (TestSection ts : sections){
-          *//*  System.out.println("INSERT INTO localization(  id, description, english, french, lastupdated)\n" +
-                    "\tVALUES ( nextval('localization_seq'), 'test unit name', '', '" + ts.getLocalizedName() + "', now());");
-            System.out.println("UPDATE test_section set name_localization_id = currval('localization_seq') where display_key = '"+ ts.getNameKey() +"';");
-            System.out.println();
-            *//*
-
-            //System.out.println(ts.getNameKey());
-            //System.out.println(ts.getLocalizedName());
-        }*/
-
-
-
-
         return mapping.findForward(FWD_SUCCESS);
     }
 
@@ -125,6 +109,10 @@ public class TestSectionCreateUpdate extends BaseAction {
         roleModule.setRole(role);
         roleModule.setSystemModule(workplanModule);
         roleModule.setSysUserId(userId);
+        roleModule.setHasAdd("Y");
+        roleModule.setHasDelete("Y");
+        roleModule.setHasSelect("Y");
+        roleModule.setHasUpdate("Y");
         return roleModule;
     }
 
@@ -143,6 +131,10 @@ public class TestSectionCreateUpdate extends BaseAction {
         module.setSystemModuleName(menuItem + ":" + identifyingName);
         module.setDescription(menuItem + "=>" + identifyingName);
         module.setSysUserId(userId);
+        module.setHasAddFlag("Y");
+        module.setHasDeleteFlag("Y");
+        module.setHasSelectFlag("Y");
+        module.setHasUpdateFlag("Y");
         return module;
     }
 
