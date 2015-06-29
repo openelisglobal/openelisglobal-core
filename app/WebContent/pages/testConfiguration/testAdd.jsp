@@ -163,10 +163,7 @@
             var dictionarySelect;
             //clear existing selections
             $jq("#qualifierSelection option").remove();
-            $jq(".dictionaryMultiSelect .asmList li").remove();
-            $jq(".dictionaryMultiSelect .asmSelect option:disabled").removeAttr("disabled");
-            $jq(".dictionaryMultiSelect .asmSelect .asmOptionDisabled").removeClass("asmOptionDisabled");
-            $jq(".dictionaryMultiSelect option:selected").removeAttr("selected");
+            clearMultiSelectContainer($jq(".dictionaryMultiSelect"));
             $jq("#dictionaryNameSortUI li").remove();
             $jq("#referenceSelection option").remove();
             $jq("#referenceSelection").append(createOption("0", "", false));
@@ -565,7 +562,7 @@
             if( step == 'step1'){
                 step = 'step2';
                 setStep1ReadOnlyFields();
-                $jq("#step1Div").hide();
+                $jq(".step1").hide();
                 $jq(".step2").show();
                 $jq( "#nextButton" ).attr( "disabled", "disabled" );
             }else if( step == 'step2'){
@@ -576,8 +573,10 @@
                   //The reason for the li is that the sample sortable UL is hardcoded as sortable, even if it has no contents
                   makeSortListsReadOnly();
                   $jq("#sortTitleDiv").text("Sample type and test sort order");
+                  $jq("#sortTitleDiv").attr("align", "left");
                   $jq(".confirmHide").hide();
                   $jq(".confirmShow").show();
+                  $jq("#step2Confirm").show();
                   createJSON();
               }else if( resultTypeId == '<%= TypeOfTestResultService.ResultType.NUMERIC.getId() %>' ){
                   step = "step3Numeric";
@@ -629,29 +628,13 @@
             if( step == 'step1'){
                 submitAction('TestManagementConfigMenu.do');
             }else if( step == 'step2'){
-                step = 'step1';
-                $jq('.step2').hide();
-                $jq("#step1Div").show();
-                $jq( "#nextButton" ).attr( "disabled", "disabled" );
-                $jq( ".sortingMainDiv").remove();
-                $jq('.asmListItemRemove').each(function() {
-                    $jq(this).click();
-                });
+              goBackToStep1();
             }
         }
 
         function navigateBackFromConfirm(){
             if( step == 'step2'){
-                $jq("#sampleTypeSelectionDiv").show();
-                //The reason for the li is that the sample sortable UL is hardcoded as sortable, even if it has no contents
-                if( $jq(".sortable-tag li").length > 0) {
-                    $jq(".sortable-tag").addClass("sortable");
-                    $jq(".ui-state-default_oe-tag").addClass("ui-state-default_oe");
-                    $jq(".sortable").sortable("enable");
-                }
-                $jq("#sortTitleDiv").text('<%=StringUtil.getMessageForKey("label.test.display.order")%>');
-                $jq(".confirmHide").show();
-                $jq(".confirmShow").hide();
+                goBackToStep2();
             }else if( step == "step3Numeric"){
                 $jq( "#normalRangeDiv input,select").prop("disabled", false );
                 $jq(".confirmHide").show();
@@ -659,6 +642,41 @@
             }
         }
 
+        function goBackToStep1(){
+            step = 'step1';
+            $jq('.step2').hide();
+            $jq(".step1").show();
+            $jq("#step2Confirm").hide();
+            $jq(".selectShow").show();
+            $jq(".confirmShow").hide();
+            $jq( "#nextButton" ).removeAttr( "disabled" );
+            $jq( ".sortingMainDiv").remove();
+            clearMultiSelectContainer( $jq("#sampleTypeSelectionDiv"))
+        }
+
+        function goBackToStep2(){
+            step = "step2";
+            $jq(".confirmShow").hide();
+            $jq(".confirmHide").show();
+            $jq(".step2").show();
+            $jq("#step2Confirm").show();
+            $jq("#sortTitleDiv").attr("align", "center");
+            $jq("#sampleTypeSelectionDiv").show();
+            //The reason for the li is that the sample sortable UL is hardcoded as sortable, even if it has no contents
+            if( $jq(".sortable-tag li").length > 0) {
+                $jq(".sortable-tag").addClass("sortable");
+                $jq(".ui-state-default_oe-tag").addClass("ui-state-default_oe");
+                $jq(".sortable").sortable("enable");
+            }
+            $jq("#sortTitleDiv").text('<%=StringUtil.getMessageForKey("label.test.display.order")%>');
+
+        }
+        function clearMultiSelectContainer( root ){
+            root.find(".asmList li").remove();
+            root.find(".asmSelect option:disabled").removeAttr("disabled");
+            root.find(".asmSelect .asmOptionDisabled").removeClass("asmOptionDisabled");
+            root.find(" option:selected").removeAttr("selected");
+        }
         function setStep1ReadOnlyFields(){
             var panelNames = "";
 
@@ -671,7 +689,9 @@
                 panelNames += ($jq(this).text()) + "\<br\>";
             });
             //we use append for optional
+            $jq("#panelRO").empty();
             $jq("#panelRO").append(panelNames);
+            $jq("#uomRO").empty();
             $jq("#uomRO").append($jq("#uomSelection  option:selected").text());
             $jq("#resultTypeRO").text($jq("#resultTypeSelection  option:selected").text());
             $jq("#activeRO").text($jq("#active").attr("checked") ? "Y" : "N");
@@ -700,7 +720,7 @@
                 addJsonDictionary( jsonObj);
             }
 
-        //    console.log(JSON.stringify(jsonObj));
+            console.log(JSON.stringify(jsonObj));
             $jq("#jsonWad").val(JSON.stringify(jsonObj));
         }
 
@@ -799,13 +819,31 @@
     <br>
     <form>
         <html:hidden styleId="jsonWad" name='<%=formName%>' property="jsonWad" />
+
         <input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
-           onclick="submitAction('MasterListsPage.do');"
-           class="textButton"/> &rarr;
+               onclick="submitAction('MasterListsPage.do');"
+               class="textButton"/> &rarr;
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
-           onclick="submitAction('TestManagementConfigMenu.do');"
-           class="textButton"/>&rarr;
-    <bean:message key="configuration.test.add" />
+               onclick="submitAction('TestManagementConfigMenu.do');"
+               class="textButton"/>&rarr;
+        <span class="step1">
+            <bean:message key="configuration.test.add" />
+        </span>
+        <span class="step2 confirmHide" style="display: none">
+            <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
+                   onclick="goBackToStep1();"
+                   class="textButton"/>&rarr;
+            Select Sample Type
+        </span>
+        <span id="step2Confirm" style="display: none">
+            <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
+                   onclick="goBackToStep1();"
+                   class="textButton"/>&rarr;
+            <input type="button" value="Select Sample Type"
+                   onclick="goBackToStep2();"
+                   class="textButton"/>&rarr;
+            Confirmation
+        </span>
 
     <h3><bean:message key="configuration.test.add" /></h3>
 
@@ -813,6 +851,7 @@
 
     <div id="guide" style="display: none">
         <span class="requiredlabel">*</span> Indicates a required field <br/><br/>
+        <span class="step1" >
         <b>Name</b><span class="requiredlabel">*</span><br/>
         <span class="tab">The name of the test as it will appear within openELIS.  Both English and French are required</span><br/>
         <b>Report Name</b><span class="requiredlabel">*</span><br/>
@@ -847,12 +886,26 @@
                 from the dropdown list.
             </li>
         </UL>
+        <b>Active</b><br>
+        <span class="tab">If the test is active it can be ordered on the order form or as part of a test algorithm.If it is not active it can not be ordered or be part of a test algorithm</span><br>
+        <b>Orderable</b><br>
+        <span class="tab">If a test is active and orderable then it can be ordered on an order form. If it is active butnot orderable then it will only be done if it is reflexed from another test</span><br>
+        </span>
+        <span class="step2 confirmHide" style="display: none">
+            Select one or more sample types.  If you select more than one sample type then the test must be identical in all ways for each sample type.<br><br>
+            After the sample type is selected the order in which the new test, shown in green, will appear can be changed by dragging it up or down.
+            The order will detirmine the order of the tests are shown in the order entry form after a sample type is selected<br>
+        </span>
+        <span class="confirmShow" style="display: none">
+            Verify that all values are correct and either accept them or navigate to change the incorrect values.
+        </span>
         <br/>
         <hr/>
+
     </div>
 
 
-        <div id="step1Div" >
+        <div id="step1Div" class="step1" >
             <table width="80%">
                 <tr>
                     <td width="25%">
@@ -894,7 +947,7 @@
                             <% } %>
                         </select>
                     </td>
-                    <td width="25%" style="vertical-align: top; padding: 4px">
+                    <td width="25%" style="vertical-align: top; padding: 4px" id="panelSelectionCell">
                         <bean:message key="typeofsample.panel.panel" /><br/>
                         <select id="panelSelection" multiple="multiple" title="Multiple">
                             <% for(IdValuePair pair : panelList ){ %>
@@ -957,8 +1010,8 @@
                 <br/>
             </div>
             <div id="step2Div" class="step2" style="float:right;  width:80%; display: none">
-                <div id="sampleTypeSelectionDiv" style="float:left; width:20%;">
-                    <bean:message key="label.sampleType"/>
+                <div class="step2" id="sampleTypeSelectionDiv" style="float:left; width:20%;">
+                    <bean:message key="label.sampleType"/><span class="requiredlabel">*</span>
                     <select id="sampleTypeSelection" class="required" multiple="multiple" title="Multiple">
                         <% for (IdValuePair pair : sampleTypeList) { %>
                         <option value='<%=pair.getId()%>'><%=pair.getValue()%>

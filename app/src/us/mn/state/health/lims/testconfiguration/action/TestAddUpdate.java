@@ -292,7 +292,7 @@ public class TestAddUpdate extends BaseAction {
             testAddParams.testReportNameEnglish = (String) obj.get("testReportNameEnglish");
             testAddParams.testReportNameFrench = (String) obj.get("testReportNameFrench");
             testAddParams.testSectionId = (String) obj.get("testSection");
-            testAddParams.dictionaryReferenceId = (String) obj.get("dictioanryReference");
+            testAddParams.dictionaryReferenceId = (String) obj.get("dictionaryReference");
             extractPanels(obj, parser, testAddParams);
             testAddParams.uomId = (String)obj.get("uom");
             testAddParams.resultTypeId = (String)obj.get("resultType");
