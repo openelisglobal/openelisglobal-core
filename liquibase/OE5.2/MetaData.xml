@@ -258,5 +258,57 @@
             <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'BatchTestReassign' ) " />
         </insert>
     </changeSet>
+    <changeSet id="15" author="paulsc" >
+        <comment>Adds modules to test management tasks so they can get to the actual task</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="TestSectionManagement"/>
+            <column name="description" value="Admin=&gt;test manag=&gt;test section"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="TestSectionOrder"/>
+            <column name="description" value="Admin=&gt;test manag=&gt;test section order"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="TestSectionTestAssign"/>
+            <column name="description" value="Admin=&gt;test manag=&gt;test section assign"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="TestSectionCreate"/>
+            <column name="description" value="Admin=&gt;test manag=&gt;test section create"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <sql>
+        INSERT INTO clinlims.system_role_module( id, has_select, has_add, has_update, has_delete, system_role_id, system_module_id)
+        VALUES ( nextval('system_user_module_seq' ), 'Y', 'Y', 'Y', 'Y',
+            ( select id from clinlims.system_role where name = 'Test Management' ) , ( select id from clinlims.system_module where name = 'MasterList')),
+            ( nextval('system_user_module_seq' ), 'Y', 'Y', 'Y', 'Y',
+            ( select id from clinlims.system_role where name = 'Test Management' ) , ( select id from clinlims.system_module where name = 'TestSectionManagement')),
+            ( nextval('system_user_module_seq' ), 'Y', 'Y', 'Y', 'Y',
+            ( select id from clinlims.system_role where name = 'Test Management' ) , ( select id from clinlims.system_module where name = 'TestSectionOrder')),
+            ( nextval('system_user_module_seq' ), 'Y', 'Y', 'Y', 'Y',
+            ( select id from clinlims.system_role where name = 'Test Management' ) , ( select id from clinlims.system_module where name = 'TestSectionTestAssign')),
+            ( nextval('system_user_module_seq' ), 'Y', 'Y', 'Y', 'Y',
+            ( select id from clinlims.system_role where name = 'Test Management' ) , ( select id from clinlims.system_module where name = 'TestSectionCreate'));
+        </sql>
+    </changeSet>
 </databaseChangeLog>
 
