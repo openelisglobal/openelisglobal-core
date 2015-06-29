@@ -231,7 +231,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	private void validateBirthdateFormat(PatientManagementInfo patientInfo, ActionMessages errors) {
 		String birthDate = patientInfo.getBirthDateForDisplay();
 		boolean validBirthDateFormat = true;
-		System.out.println(birthDate);
+
 		if( !GenericValidator.isBlankOrNull(birthDate)){
 			validBirthDateFormat = birthDate.length() == 10;
 			//the regex matches ambiguous day and month or ambiguous day or completely formed date
