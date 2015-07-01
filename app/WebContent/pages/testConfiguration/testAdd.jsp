@@ -619,6 +619,7 @@
             $jq("#sortDictionaryDiv").hide();
             buildVerifyDictionaryList();
             $jq("#dictionaryVerifyId").show();
+            $jq("#referenceValue").text($jq("#referenceSelection option:selected").text());
             $jq(".selectListConfirm").show();
             $jq(".confirmShow").show();
             $jq(".selectShow").hide();
@@ -630,6 +631,7 @@
         var verifyList = $jq("#dictionaryVerifyListId");
         var qualifyList = $jq("#dictionaryQualify");
         var li, qualified;
+        verifyList.empty();
         $jq("#dictionaryNameSortUI li").each(function () {
             li = $jq(document.createElement("li"));
             li.val(this.value);
@@ -675,6 +677,18 @@
         $jq(".sortingMainDiv").remove();
         $jq("#normalRangeDiv").hide();
         $jq("#normalRangeDiv input,select").removeAttr("disabled");
+        $jq(".resultLimits").hide();
+        $jq("#sortTitleDiv").attr("align", "center");
+        //The reason for the li is that the sample sortable UL is hardcoded as sortable, even if it has no contents
+        if ($jq(".sortable-tag li").length > 0) {
+            $jq(".sortable-tag").addClass("sortable");
+            $jq(".ui-state-default_oe-tag").addClass("ui-state-default_oe");
+            $jq(".sortable").sortable("enable");
+        }
+        $jq("#sortTitleDiv").text('<%=StringUtil.getMessageForKey("label.test.display.order")%>');
+        $jq("#dictionaryVerifyId").hide();
+        $jq(".notStep1BreadCrumb").hide();
+
         clearMultiSelectContainer($jq("#sampleTypeSelectionDiv"));
         clearDictionaryLists();
     }
@@ -702,6 +716,7 @@
         $jq(".selectShow").show();
         $jq("#normalRangeDiv").hide();
         $jq("#normalRangeDiv input,select").removeAttr("disabled");
+        $jq("#dictionaryVerifyId").hide();
     }
 
     function goBackToStep3Dictionary(){
@@ -718,6 +733,7 @@
         $jq(".confirmShow").hide();
         $jq(".selectShow").show();
         $jq(".confirmationBreadCrumb").hide();
+        $jq("#dictionaryVerifyId").hide();
         $jq("#normalRangeDiv").show();
         $jq(".resultLimits").show();
         $jq("#normalRangeDiv input,select").removeAttr("disabled");
@@ -902,13 +918,13 @@
     <span class="step1">
             <bean:message key="configuration.test.add"/>
     </span>
-    <span class="step2" id="step2BreadCrumb" style="display: none">
+    <span class="step2 notStep1BreadCrumb" id="step2BreadCrumb" style="display: none">
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
         Select Sample Type
     </span>
-    <span id="step2Confirm" class="confirmationBreadCrumb" style="display: none">
+    <span id="step2Confirm notStep1BreadCrumb" class="confirmationBreadCrumb" style="display: none">
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
@@ -917,7 +933,7 @@
                class="textButton"/>&rarr;
         Confirmation
     </span>
-    <span class="dictionarySelect" style="display : none" >
+    <span class="dictionarySelect notStep1BreadCrumb" style="display : none" >
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
@@ -926,7 +942,7 @@
                class="textButton"/>&rarr;
         Select List Values
     </span>
-     <span class="resultLimits" style="display : none" >
+     <span class="resultLimits notStep1BreadCrumb" style="display : none" >
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
@@ -935,7 +951,7 @@
                 class="textButton"/>&rarr;
          Set result limits
     </span>
-    <span class="selectListConfirm confirmationBreadCrumb" style="display : none" >
+    <span class="selectListConfirm confirmationBreadCrumb notStep1BreadCrumb" style="display : none" >
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
@@ -981,70 +997,61 @@
         <b>uom</b><br/>
         <span class="tab">Unit of measure for the test.  This usually only applies to numeric or alphanumeric result types</span><br/>
         <b>Result type</b><span class="requiredlabel">*</span><br/>
-        <span class="tab">The kind of result for this test</span>
-        <UL>
-            <li>Numeric. Accepts only numeric results in a text box. Results can be evaluated as to being in a normal or
-                a valid range
-            </li>
-            <li>Alphanumeric. Accepts either numeric or text in a text box. It will not be evaluated for being normal or
-                valid
-            </li>
-            <li>Free text. Accepts up to 200 characters in a text area. It will not be evaluated for being normal or
-                valid
-            </li>
-            <li>Select list. User will be able to select from a dropdown list. The normal value will be specified as the
-                reference value
-            </li>
-            <li>Multi-select list. The user will be able to select one or more values from a dropdown list. No reference
-                value will be specified
-            </li>
-            <li>Cascading multi-select list. Similar to multi-select but the user will be able to select multiple groups
-                from the dropdown list.
-            </li>
-        </UL>
+        <span class="tab">The kind of result for this test:</span><br><br>
+        <span class="tab"><b>Numeric</b> - Accepts only numeric results in a text box. Results can be evaluated as to being in a normal or
+                a valid range</span><br>
+        <span class="tab" ><b>Alphanumeric</b> - Accepts either numeric or text in a text box. It will not be evaluated for being normal or
+                valid</span><br>
+        <span class="tab" ><b>Free text</b> - Accepts up to 200 characters in a text area. It will not be evaluated for being normal or
+                valid</span><br>
+        <span class="tab" ><b>Select list</b> - User will be able to select from a dropdown list. The normal value will be specified as the
+                reference value</span><br>
+        <span class="tab" ><b>Multi-select list</b> - The user will be able to select one or more values from a dropdown list. No reference
+                value will be specified</span><br>
+        <span class="tab" ><b>Cascading multi-select list</b> - Similar to multi-select but the user will be able to select multiple groups
+                from the dropdown list.</span><br><br>
         <b>Active</b><br>
         <span class="tab">If the test is active it can be ordered on the order form or as part of a test algorithm.If it is not active it can not be ordered or be part of a test algorithm</span><br>
         <b>Orderable</b><br>
         <span class="tab">If a test is active and orderable then it can be ordered on an order form. If it is active butnot orderable then it will only be done if it is reflexed from another test</span><br>
         </span>
         <span class="step2" id="step2Guide" style="display: none">
-            Select one or more sample types.  If you select more than one sample type then the test must be identical in all ways for each sample type.<br><br>
-            After the sample type is selected the order in which the new test, shown in green, will appear can be changed by dragging it up or down.
-            The order will detirmine the order of the tests are shown in the order entry form after a sample type is selected<br>
+            <span class="tab">Select one or more sample types.  If you select more than one sample type then the test must be identical in all ways for each sample type.</span><br><br>
+            <span class="tab" >After the sample type is selected the order in which the new test, shown in green, will appear can be changed by dragging it up or down.
+            The order will determine the order of the tests are shown in the order entry form after a sample type is selected<br></span>
         </span>
         <span class="dictionarySelect" style="display: none" >
-            <ul>
-                <li>The list of select list options can either be added one at a time from the dropdown menu or a set can be selected from existing sets.  Selecting an exisiting set will replace
-                    any other selections already made.</li>
-                <li>After the selections are made the order can be changed by dragging the options in the Result Order section.  The order will effect the order of the values when entering results
-                Changing the order will not effect existing sets</li>
-                <li>A reference value can be selected.  This is the value for a 'normal' patient</li>
-                <li>One or more values can be selected to be qualified.  When a technician selects a qualified value they will be show a text box to enter additional information</li>
-            </ul>
+            The list of select list options can either be added one at a time from the dropdown menu or can be selected from and existing set<br>
+            <span class="tab" ><b>Select list options</b><span class="requiredlabel">*</span> The list of existing result values. As a selection is made it will also be added to Result order, refernece value and Qualifiers</span><br>
+            <span class="tab" ><b>Result order </b> The order in which the values will appear when entering results.  The order can be changed by draging an option up or down on the list.</span><br>
+            <span class="tab" ><b>Reference value </b> The result which would be expected of a 'normal' person</span><br>
+            <span class="tab" ><b>Qualifiers </b> If a value is marked as being qualified then if that value is the result of an analysis a text box will be presented for additional information</span><br>
+            <span class="tab" ><b>Existing test sets </b> A convient way to add sets of available results.  They are based on existing sets that have already been entered to the system.  Selecting a set
+            will replace any selections already made</span><br>
         </span>
         <span class="resultLimits" style="display: none;">
-            <b>Overview</b>
+            <b>Overview</b><br>
             <span class="tab" >The results limits indicate the normal and valid result ranges for the new test.  The ranges may be dependent on the sex and age of the patient.
-                The inputs will expand as the selections are made</span>
+                The inputs will expand as the selections are made</span><br><br>
             <b>Sex dependent</b><br/>
-            <span class="tab">Do the limits for this range depend on the sex of the patient.  If selected then another normal range will be given for the age range</span><br/>
-            <b>Age range</b><br/>
+            <span class="tab">Do the limits for this range depend on the sex of the patient.  If selected then another normal range will be given for the age range</span><br><br>
+            <b>Age range</b><br>
             <span class="tab">The upper end of the age range for the normal values.  The lower age range will either be 0 or the value of the previous range.  The age may be given
-            in either months 'M' or years 'Y'.  There are also some predefined age ranges in the dropdown.  The value entered must be greater than the lower age range</span><br/>
-            <b>Range</b><br/>
+            in either months 'M' or years 'Y'.  There are also some predefined age ranges in the dropdown.  The value entered must be greater than the lower age range</span><br><br>
+            <b>Range</b><br>
             <span class="tab">The lower and upper values for the normal range.  The lower range must be less than the upper range.  If the normal range is given as less than some
-            value ( '\< 15 g/l) then the entry would be a range of 0-15.</span><br/>
-            <b>Reporting range</b><br/>
-            <span class="tab">The range which will be used on reports.  If the range is \< 15 g/l then it will be entered as 0-15 in the range fileds and \< 15 in this field.</span><br/>
-            <b>Valid Range</b><br/>
-            <span class="tab">The valid range for this test</span><br/>
-            <b>Significant digits</b><br/>
+            value ( '\< 15 g/l) then the entry would be a range of 0-15.</span><br><br>
+            <b>Reporting range</b><br>
+            <span class="tab">The range which will be used on reports.  If the range is \< 15 g/l then it will be entered as 0-15 in the range fileds and \< 15 in this field.</span><br><br>
+            <b>Valid Range</b><br>
+            <span class="tab">The valid range for this test</span><br><br>
+            <b>Significant digits</b><br>
             <span class="tab">The number of significant digits for results.  By example: if the significant digits are 2 and a result of 5 is entered then the result will be recorded
             as 5.00.  If the result were entered as 5.237 then the result would be recorded as 5.24.  0 is not the same as blank.  0 means that results are only whole numbers.  A blank
-            means that whatever was entered is what would be recordered</span><br/>
+            means that whatever was entered is what would be recorded</span><br><br>
         </span>
         <span class="confirmShow" style="display: none">
-            Verify that all values are correct and either accept them or navigate to change the incorrect values.
+            <b>Verify that all values are correct and either accept them or navigate to change the incorrect values.</b>
         </span>
         <br/>
         <hr/>
@@ -1170,7 +1177,7 @@
             <br/>
         </div>
         <div class="step2" style="float:right;  width:80%; display: none">
-            <div  id="sampleTypeSelectionDiv" style="float:left; width:20%;">
+            <div  id="sampleTypeSelectionDiv" class="step2" style="float:left; width:20%;">
                 <bean:message key="label.sampleType"/><span class="requiredlabel">*</span>
                 <select id="sampleTypeSelection" class="required" multiple="multiple" title="Multiple">
                     <% for (IdValuePair pair : sampleTypeList) { %>
@@ -1193,11 +1200,13 @@
                     </select><br/><br/><br/>
                 </div>
                 <div id="dictionaryVerifyId"
-                     style="padding:10px; float:left; width:280px; display:none; overflow: hidden ">
-                    Select List<br/>
+                     style="padding:10px; float:left; width:280px; display:none; overflow: hidden;">
+                    <span><span class="half-tab">Select List</span><br/>
                     <ul id="dictionaryVerifyListId">
 
                     </ul>
+                    </span>
+                    <span>Reference value<br><ul><li id="referenceValue"></li></ul></span>
                 </div>
                 <div id="sortDictionaryDiv" align="center" class="dictionarySelect"
                      style="padding:10px;float:left; width:33%; display:none;">Result order
