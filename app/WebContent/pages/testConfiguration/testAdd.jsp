@@ -307,19 +307,19 @@
                 lowAge = $jq("#lowerAge_" + index).text();
                 lowAgeModifier = lowAge.charAt(lowAge.length - 1);
                 lowAgeValue = lowAge.substring(0, lowAge.length - 1);
-                lowAgeValue = lowAgeModifier == "Y" ? lowAgeValue *= 12 : +lowAgeValue;
+                lowAgeValue = lowAgeModifier == "<%=StringUtil.getMessageForKey("abbreviation.year.single")%>" ? lowAgeValue *= 12 : +lowAgeValue;
                 highAgeValue = +element.val();
                 if (highAgeValue != element.val()) {
-                    alert("Age must be either a number or 'Infinity'");
+                    alert("<%=StringUtil.getMessageForKey("error.age.value")%>");
                     element.addClass("error");
                     return;
                 }
 
-                newMonthValue = monthYear == 'M' ? highAgeValue : 12 * highAgeValue;
+                newMonthValue = monthYear == '<%=StringUtil.getMessageForKey("abbreviation.month.single")%>' ? highAgeValue : 12 * highAgeValue;
 
                 if (newMonthValue <= lowAgeValue) {
                     element.addClass("error");
-                    alert("Age ending value must be greater then age beginning value");
+                    alert("<%=StringUtil.getMessageForKey("error.age.begining.ending.order")%>");
                     return;
                 }
             }
@@ -369,10 +369,10 @@
             if (ageInMonths == "Infinity") {
                 $jq("#upperAgeSetter_" + index).val(ageInMonths);
             } else if (ageInMonths % 12 == 0) {
-                $jq("input:radio[name=time_" + index + "]").val(['Y']);
+                $jq("input:radio[name=time_" + index + "]").val(["<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"]);
                 $jq("#upperAgeSetter_" + index).val(ageInMonths / 12);
             } else {
-                $jq("input:radio[name=time_" + index + "]").val(['M']);
+                $jq("input:radio[name=time_" + index + "]").val(["<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"]);
                 $jq("#upperAgeSetter_" + index).val(ageInMonths);
             }
             upperAgeRangeChanged(index);
@@ -408,7 +408,7 @@
         if (lowNormalValue != "-Infinity" &&
                 lowNormalValue != lowNormal.val()) {
             lowNormal.addClass("error");
-            alert("Low normal value must be a number or '-Infinity'");
+            alert("<%=StringUtil.getMessageForKey("error.low.normal.value")%>");
             return;
         }
 
@@ -417,7 +417,7 @@
         if (highNormalValue != "Infinity" &&
                 highNormalValue != highNormal.val()) {
             highNormal.addClass("error");
-            alert("High normal value must be a number or 'Infinity'");
+            alert("<%=StringUtil.getMessageForKey("error.high.normal.value")%>");
             return;
         }
 
@@ -425,7 +425,7 @@
             if (highNormalValue <= lowNormalValue) {
                 highNormal.addClass("error");
                 lowNormal.addClass("error");
-                alert("Low normal value must be less than high normal value");
+                alert("<%=StringUtil.getMessageForKey("error.low.normal.high.normal.order")%>");
                 return;
             }
         }
@@ -438,7 +438,7 @@
             if (lowGenderNormalValue != "-Infinity" &&
                     lowGenderNormalValue != lowGenderNormal.val()) {
                 lowGenderNormal.addClass("error");
-                alert("Low normal value must be a number or '-Infinity'");
+                alert("<%=StringUtil.getMessageForKey("error.low.normal.value")%>");
                 return;
             }
 
@@ -447,7 +447,7 @@
             if (highGenderNormalValue != "Infinity" &&
                     highGenderNormalValue != highGenderNormal.val()) {
                 highGenderNormal.addClass("error");
-                alert("highGender normal value must be a number or 'Infinity'");
+                alert("<%=StringUtil.getMessageForKey("error.high.gender.value")%>");
                 return;
             }
 
@@ -455,7 +455,7 @@
                 if (highGenderNormalValue <= lowGenderNormalValue) {
                     highGenderNormal.addClass("error");
                     lowGenderNormal.addClass("error");
-                    alert("Low normal value must be less than high normal value");
+                    alert("<%=StringUtil.getMessageForKey("error.low.normal.high.normal.order")%>");
                     return;
                 }
             }
@@ -481,26 +481,26 @@
 
         if (lowValidValue != "-Infinity" && lowNormalValue < lowValidValue) {
             lowNormal.addClass("error");
-            alert("Low normal range must be greater than or equal to the low valid range");
+            alert("<%=StringUtil.getMessageForKey("error.low.normal.low.valid.order")%>");
             return;
         }
 
         if (highValidValue != "Infinity" && highNormalValue > highValidValue) {
             highNormal.addClass("error");
-            alert("high normal range must be less than or equal to the high valid range");
+            alert("<%=StringUtil.getMessageForKey("error.high.normal.high.valid.order")%>");
             return;
         }
 
         if (checkGenderValues) {
             if (lowValidValue != "-Infinity" && lowGenderNormalValue < lowValidValue) {
                 lowGenderNormal.addClass("error");
-                alert("Low normal range must be greater than or equal to the low valid range");
+                alert("<%=StringUtil.getMessageForKey("error.low.normal.low.valid.order")%>");
                 return;
             }
 
             if (highValidValue != "Infinity" && highGenderNormalValue > highValidValue) {
                 highGenderNormal.addClass("error");
-                alert("high normal range must be less than or equal to the high valid range");
+                alert("<%=StringUtil.getMessageForKey("error.high.normal.high.valid.order")%>");
             }
         }
     }
@@ -515,7 +515,7 @@
         if (lowValidValue != "-Infinity" &&
                 lowValidValue != lowValid.val()) {
             lowValid.addClass("error");
-            alert("Low valid range must be either a number or '-Infinity'");
+            alert("<%=StringUtil.getMessageForKey("error.low.valid.value")%>");
             return;
         }
 
@@ -524,7 +524,7 @@
         if (highValidValue != "Infinity" &&
                 highValidValue != highValid.val()) {
             highValid.addClass("error");
-            alert("High valid range must be either a number or 'Infinity'");
+            alert("<%=StringUtil.getMessageForKey("error.high.valid.value")%>");
             return;
         }
 
@@ -532,7 +532,7 @@
                 lowValidValue >= highValidValue) {
             highValid.addClass("error");
             lowValid.addClass("error");
-            alert("Low valid value must be less than the high valid value");
+            alert("<%=StringUtil.getMessageForKey("error.low.high.valid.order")%>");
             return;
         }
 
@@ -566,7 +566,6 @@
         }
 
         $jq("#nextButton").prop("disabled", !ready);
-        //$jq( "#nextButton" ).removeAttr( "disabled");
     }
 
     function nextStep() {
@@ -861,7 +860,7 @@
 
             upperAge = $jq("#upperAgeSetter_" + rowIndex).val();
             if (upperAge != "Infinity") {
-                limit.highAgeRange = yearMonth == "Y" ? (upperAge * 12).toString() : upperAge;
+                limit.highAgeRange = yearMonth == "<%=StringUtil.getMessageForKey("abbreviation.year.single")%>" ? (upperAge * 12).toString() : upperAge;
             } else {
                 limit.highAgeRange = upperAge;
             }
@@ -922,136 +921,81 @@
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
-        Select Sample Type
+        <%=StringUtil.getMessageForKey("label.selectSampleType")%>
     </span>
     <span id="step2Confirm notStep1BreadCrumb" class="confirmationBreadCrumb" style="display: none">
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
-        <input type="button" value="Select Sample Type"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
                onclick="goBackToStep2();"
                class="textButton"/>&rarr;
-        Confirmation
+        <bean:message key="label.confirmation" />
     </span>
     <span class="dictionarySelect notStep1BreadCrumb" style="display : none" >
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
-        <input type="button" value="Select Sample Type"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
                onclick="goBackToStep2();"
                class="textButton"/>&rarr;
-        Select List Values
+        <bean:message key="label.select.list.values" />
     </span>
      <span class="resultLimits notStep1BreadCrumb" style="display : none" >
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
-         <input type="button" value="Select Sample Type"
+         <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
                 onclick="goBackToStep2();"
                 class="textButton"/>&rarr;
-         Set result limits
+         <bean:message key="label.set.result.limits" />
     </span>
     <span class="selectListConfirm confirmationBreadCrumb notStep1BreadCrumb" style="display : none" >
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
-        <input type="button" value="Select Sample Type"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
            onclick="goBackToStep2();"
            class="textButton"/>&rarr;
-        <input type="button" value="Select List Values"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.select.list.values")%>"
                onclick="goBackToStep3Dictionary();"
                class="textButton"/>&rarr;
-        Confirmation
+        <bean:message key="label.confirmation" />
     </span>
     <span class="resultLimitsConfirm confirmationBreadCrumb" style="display : none" >
         <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                onclick="goBackToStep1();"
                class="textButton"/>&rarr;
-        <input type="button" value="Select Sample Type"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
                onclick="goBackToStep2();"
                class="textButton"/>&rarr;
-        <input type="button" value="Set result limits"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.set.result.limits")%>"
                onclick="goBackToResultLimits();"
                class="textButton"/>&rarr;
-        Confirmation
+        <bean:message key="label.confirmation" />
     </span>
 
 
     <h3><bean:message key="configuration.test.add"/></h3>
 
-    <input type="checkbox" onchange="guideSelection(this)">Show guide<br/><br/>
+    <input type="checkbox" onchange="guideSelection(this)"><bean:message key="label.show.guide" /><br/><br/>
 
     <div id="guide" style="display: none">
-        <span class="requiredlabel">*</span> Indicates a required field <br/><br/>
+        <span class="requiredlabel">*</span> <bean:message key="label.required.field" /><br/><br/>
         <span class="step1">
-        <b>Name</b><span class="requiredlabel">*</span><br/>
-        <span class="tab">The name of the test as it will appear within openELIS.  Both English and French are required</span><br/>
-        <b>Report Name</b><span class="requiredlabel">*</span><br/>
-        <span class="tab">The name of the test as it will appear in reports.  Both English and French are required.
-            If the Name and reporting name are the same click on the button to copy the name</span><br/>
-        <b>Test Section</b><span class="requiredlabel">*</span><br/>
-        <span class="tab">The test section in which the test will be done</span><br/>
-        <b>Panel</b><br/>
-        <span class="tab">If this test is part of a test panel then the panel can be added here.
-            It is possible, but not usual, for a test to be in more then one panel</span><br/>
-        <b>uom</b><br/>
-        <span class="tab">Unit of measure for the test.  This usually only applies to numeric or alphanumeric result types</span><br/>
-        <b>Result type</b><span class="requiredlabel">*</span><br/>
-        <span class="tab">The kind of result for this test:</span><br><br>
-        <span class="tab"><b>Numeric</b> - Accepts only numeric results in a text box. Results can be evaluated as to being in a normal or
-                a valid range</span><br>
-        <span class="tab" ><b>Alphanumeric</b> - Accepts either numeric or text in a text box. It will not be evaluated for being normal or
-                valid</span><br>
-        <span class="tab" ><b>Free text</b> - Accepts up to 200 characters in a text area. It will not be evaluated for being normal or
-                valid</span><br>
-        <span class="tab" ><b>Select list</b> - User will be able to select from a dropdown list. The normal value will be specified as the
-                reference value</span><br>
-        <span class="tab" ><b>Multi-select list</b> - The user will be able to select one or more values from a dropdown list. No reference
-                value will be specified</span><br>
-        <span class="tab" ><b>Cascading multi-select list</b> - Similar to multi-select but the user will be able to select multiple groups
-                from the dropdown list.</span><br><br>
-        <b>Active</b><br>
-        <span class="tab">If the test is active it can be ordered on the order form or as part of a test algorithm.If it is not active it can not be ordered or be part of a test algorithm</span><br>
-        <b>Orderable</b><br>
-        <span class="tab">If a test is active and orderable then it can be ordered on an order form. If it is active butnot orderable then it will only be done if it is reflexed from another test</span><br>
+            <bean:message key="configuration.test.add.guide.test" />
         </span>
         <span class="step2" id="step2Guide" style="display: none">
-            <span class="tab">Select one or more sample types.  If you select more than one sample type then the test must be identical in all ways for each sample type.</span><br><br>
-            <span class="tab" >After the sample type is selected the order in which the new test, shown in green, will appear can be changed by dragging it up or down.
-            The order will determine the order of the tests are shown in the order entry form after a sample type is selected<br></span>
+           <bean:message key="configuration.test.add.guide.sample.type" />
         </span>
         <span class="dictionarySelect" style="display: none" >
-            The list of select list options can either be added one at a time from the dropdown menu or can be selected from and existing set<br>
-            <span class="tab" ><b>Select list options</b><span class="requiredlabel">*</span> The list of existing result values. As a selection is made it will also be added to Result order, refernece value and Qualifiers</span><br>
-            <span class="tab" ><b>Result order </b> The order in which the values will appear when entering results.  The order can be changed by draging an option up or down on the list.</span><br>
-            <span class="tab" ><b>Reference value </b> The result which would be expected of a 'normal' person</span><br>
-            <span class="tab" ><b>Qualifiers </b> If a value is marked as being qualified then if that value is the result of an analysis a text box will be presented for additional information</span><br>
-            <span class="tab" ><b>Existing test sets </b> A convient way to add sets of available results.  They are based on existing sets that have already been entered to the system.  Selecting a set
-            will replace any selections already made</span><br>
+           <bean:message key="configuration.test.add.guide.select.list" />
         </span>
         <span class="resultLimits" style="display: none;">
-            <b>Overview</b><br>
-            <span class="tab" >The results limits indicate the normal and valid result ranges for the new test.  The ranges may be dependent on the sex and age of the patient.
-                The inputs will expand as the selections are made</span><br><br>
-            <b>Sex dependent</b><br/>
-            <span class="tab">Do the limits for this range depend on the sex of the patient.  If selected then another normal range will be given for the age range</span><br><br>
-            <b>Age range</b><br>
-            <span class="tab">The upper end of the age range for the normal values.  The lower age range will either be 0 or the value of the previous range.  The age may be given
-            in either months 'M' or years 'Y'.  There are also some predefined age ranges in the dropdown.  The value entered must be greater than the lower age range</span><br><br>
-            <b>Range</b><br>
-            <span class="tab">The lower and upper values for the normal range.  The lower range must be less than the upper range.  If the normal range is given as less than some
-            value ( '\< 15 g/l) then the entry would be a range of 0-15.</span><br><br>
-            <b>Reporting range</b><br>
-            <span class="tab">The range which will be used on reports.  If the range is \< 15 g/l then it will be entered as 0-15 in the range fileds and \< 15 in this field.</span><br><br>
-            <b>Valid Range</b><br>
-            <span class="tab">The valid range for this test</span><br><br>
-            <b>Significant digits</b><br>
-            <span class="tab">The number of significant digits for results.  By example: if the significant digits are 2 and a result of 5 is entered then the result will be recorded
-            as 5.00.  If the result were entered as 5.237 then the result would be recorded as 5.24.  0 is not the same as blank.  0 means that results are only whole numbers.  A blank
-            means that whatever was entered is what would be recorded</span><br><br>
+            <bean:message key="configuration.test.add.guide.result.limits" />
         </span>
         <span class="confirmShow" style="display: none">
-            <b>Verify that all values are correct and either accept them or navigate to change the incorrect values.</b>
+            <bean:message key="configuration.test.add.guide.verify" />
         </span>
         <br/>
         <hr/>
@@ -1201,15 +1145,15 @@
                 </div>
                 <div id="dictionaryVerifyId"
                      style="padding:10px; float:left; width:280px; display:none; overflow: hidden;">
-                    <span><span class="half-tab">Select List</span><br/>
+                    <span><span class="half-tab"><bean:message key="label.select.list" /></span><br/>
                     <ul id="dictionaryVerifyListId">
 
                     </ul>
                     </span>
-                    <span>Reference value<br><ul><li id="referenceValue"></li></ul></span>
+                    <span><bean:message key="label.reference.value" /><br><ul><li id="referenceValue"></li></ul></span>
                 </div>
                 <div id="sortDictionaryDiv" align="center" class="dictionarySelect"
-                     style="padding:10px;float:left; width:33%; display:none;">Result order
+                     style="padding:10px;float:left; width:33%; display:none;"><bean:message key="label.result.order" />
                     <span id="dictionarySortSpan" align="left">
                         <UL id="dictionaryNameSortUI">
 
@@ -1217,7 +1161,7 @@
                     </span></div>
                 <div class="dictionarySelect" style="padding:10px; float:left; width:280px;display:none">
                     <div id="dictionaryReference">
-                        reference value<br/>
+                        <bean:message key="label.reference.value" /><br/>
                         <select id='referenceSelection'>
                             <option value="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                         </select>
@@ -1225,7 +1169,7 @@
                     <br>
 
                     <div id="dictionaryQualify" class="dictionaryMultiSelect">
-                        Qualifiers<br/>
+                        <bean:message key="label.qualifiers" /><br/>
                         <select id='qualifierSelection' multiple='multiple' title='Multiple'></select>
                     </div>
                 </div>
@@ -1233,13 +1177,13 @@
         </div>
     </div>
     <div id="dictionaryExistingGroups" class="dictionarySelect" style="display:none; width:100%">
-        <div style="width:100%; text-align:center;">Existing test sets</div>
+        <div style="width:100%; text-align:center;"><bean:message key="label.existing.test.sets"/></div>
         <hr>
         <table>
             <% while (testCount < groupedDictionaryList.size()) {%>
             <tr>
                 <td id='<%= "dictionaryGroup_" + testCount%>' style="padding: 5px 10px; vertical-align: top">
-                    <input type="button" value="select" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"
+                    <input type="button" value="<%=StringUtil.getMessageForKey("label.form.select")%>" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"
                            class="textButton"/>
                     <ul style="padding-left:0; list-style-type: none">
                         <% for (IdValuePair pair : groupedDictionaryList.get(testCount)) {%>
@@ -1253,7 +1197,7 @@
                     %></td>
                 <% while (testCount < groupedDictionaryList.size() && (columnCount < columns)) {%>
                 <td id='<%= "dictionaryGroup_" + testCount%>' style="padding: 5px 10px; vertical-align: top">
-                    <input type="button" value="select" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"
+                    <input type="button" value="<%=StringUtil.getMessageForKey("label.form.select")%>" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"
                            class="textButton"/>
                     <ul style="padding-left:0; list-style-type: none">
                         <% for (IdValuePair pair : groupedDictionaryList.get(testCount)) {%>
@@ -1280,13 +1224,13 @@
                 </td>
                 <td>
                         <span class="sexRange_index" style="display: none">
-                            Male
+                            <bean:message key="sex.male" />
                         </span>
                 </td>
-                <td><input class="yearMonthSelect_index" type="radio" name="time_index" value="Y"
-                           onchange="upperAgeRangeChanged( 'index' )" checked>Y
-                    <input class="yearMonthSelect_index" type="radio" name="time_index" value="M"
-                           onchange="upperAgeRangeChanged( 'index' )">M&nbsp;</td>
+                <td><input class="yearMonthSelect_index" type="radio" name="time_index" value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
+                           onchange="upperAgeRangeChanged( 'index' )" checked><bean:message key="abbreviation.year.single" />
+                    <input class="yearMonthSelect_index" type="radio" name="time_index" value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"
+                           onchange="upperAgeRangeChanged( 'index' )"><bean:message key="abbreviation.month.single" />&nbsp;</td>
                 <td id="lowerAge_index">0</td>
                 <td><input type="text" id="upperAgeSetter_index" value="Infinity" size="10"
                            onchange="upperAgeRangeChanged( 'index' )"><span id="upperAge_index"></span></td>
@@ -1307,11 +1251,11 @@
                 <td></td>
                 <td></td>
                 <td><input id="removeButton_index" type="button" class="textButton" onclick='removeLimitRow( index );'
-                           value="remove me"/></td>
+                           value="<%=StringUtil.getMessageForKey("label.remove")%>"/></td>
             </tr>
             <tr class="sexRange_index row_index createdFromTemplate">
                 <td></td>
-                <td> Female</td>
+                <td><bean:message key="sex.female" /></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -1327,20 +1271,20 @@
         </table>
     </div>
     <div id="normalRangeDiv" style="display:none;">
-        <h3>Normal Range</h3>
+        <h3><bean:message key="configuration.test.catalog.normal.range" /></h3>
         <table style="display:inline-table">
             <tr>
                 <th></th>
-                <th colspan="8">Normal Range</th>
-                <th colspan="2">Valid Range</th>
+                <th colspan="8"><bean:message key="configuration.test.catalog.normal.range" /></th>
+                <th colspan="2"><bean:message key="configuration.test.catalog.valid.range" /> </th>
                 <th></th>
             </tr>
             <tr>
-                <td>Sex dependent</td>
-                <td><span class="sexRange" style="display: none">Sex</span></td>
-                <td colspan="4" align="center">Age range</td>
-                <td colspan="2" align="center">Range</td>
-                <td align="center">Reporting range</td>
+                <td><bean:message key="label.sex.dependent" /></td>
+                <td><span class="sexRange" style="display: none"><bean:message key="label.sex" /> </span></td>
+                <td colspan="4" align="center"><bean:message key="label.age.range" /> </td>
+                <td colspan="2" align="center"><bean:message key="label.range" /></td>
+                <td align="center"><bean:message key="label.reporting.range" /></td>
                 <td colspan="2"></td>
             </tr>
             <tr class="row_0">
@@ -1349,13 +1293,13 @@
                 </td>
                 <td>
                         <span class="sexRange_0" style="display: none">
-                            Male
+                            <bean:message key="sex.male" />
                         </span>
-                </td>
-                <td><input class="yearMonthSelect_0" type="radio" name="time_0" value="Y"
-                           onchange="upperAgeRangeChanged('0')" checked>Y
-                    <input class="yearMonthSelect_0" type="radio" name="time_0" value="M"
-                           onchange="upperAgeRangeChanged('0')">M&nbsp;</td>
+                </td>ocalization
+                <td><input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
+                           onchange="upperAgeRangeChanged('0')" checked><bean:message key="abbreviation.year.single" />
+                    <input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"
+                           onchange="upperAgeRangeChanged('0')"><bean:message key="abbreviation.month.single" />&nbsp;</td>
                 <td id="lowerAge_0">0&nbsp;</td>
                 <td><input type="text" id="upperAgeSetter_0" value="Infinity" size="10"
                            onchange="upperAgeRangeChanged('0')"><span id="upperAge_0"></span></td>
@@ -1378,7 +1322,7 @@
             </tr>
             <tr class="sexRange_0 row_0" style="display: none">
                 <td></td>
-                <td> Female</td>
+                <td><bean:message key="sex.female" /></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -1393,7 +1337,7 @@
             </tr>
             <tr id="endRow"></tr>
         </table>
-        <label for="significantDigits">Significant Digits</label>
+        <label for="significantDigits"><bean:message key="label.significant.digits" /></label>
         <input type="number" min="0" max="10" id="significantDigits">
     </div>
 
