@@ -16,6 +16,14 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-
+<changeSet id="1" author="paulsc">
+  <comment>populates name_key for several site_information entries</comment>
+  <sql>
+    update clinlims.site_information set name_key = description_key
+    where name in ('new born','infant', 'young child','child', 'adult' );
+    update clinlims.site_information set description_key = ''
+    where name in ('new born','infant', 'young child','child', 'adult' );
+  </sql>
+</changeSet>
 </databaseChangeLog>
 
