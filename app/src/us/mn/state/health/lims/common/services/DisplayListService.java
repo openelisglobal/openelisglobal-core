@@ -384,6 +384,8 @@ public class DisplayListService implements LocaleChangeListener {
         for(Panel panel : panelList) {
             panels.add(new IdValuePair(panel.getId(), panel.getLocalizedName() ) );
         }
+
+        IdValuePair.sortByValue(panels);
         return panels;
     }
 
