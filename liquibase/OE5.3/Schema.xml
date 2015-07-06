@@ -24,5 +24,10 @@
     <column name="name_key" type="varchar" />
   </addColumn>
 </changeSet>
-
+<changeSet id="2" author="paulsc">
+  <comment>Adds localiztion id column</comment>
+  <addColumn tableName="type_of_sample">
+    <column name="name_localization_id" type="numeric" />
+  </addColumn>
+</changeSet>
 </databaseChangeLog>

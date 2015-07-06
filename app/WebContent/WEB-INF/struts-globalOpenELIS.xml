@@ -753,6 +753,13 @@
             <form-property name="nameFrench" type="java.lang.String" initial="" />
             <form-property name="panelId" type="java.lang.String" initial="" />
         </form-bean>
+
+		<form-bean name="sampleTypeRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+			<form-property name="sampleTypeList" type="java.util.List" />
+			<form-property name="nameEnglish" type="java.lang.String" initial="" />
+			<form-property name="nameFrench" type="java.lang.String" initial="" />
+			<form-property name="sampleTypeId" type="java.lang.String" initial="" />
+		</form-bean>
         
         <form-bean name="testAddForm" type="org.apache.struts.validator.DynaValidatorForm" >
 			<form-property name="jsonWad" type="java.lang.String" initial="" />
@@ -818,6 +825,14 @@
         <action path="/PanelRenameUpdate" name="panelRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.PanelRenameUpdate" >
             <forward name="success" path="/PanelRenameEntry.do" />
         </action>
+
+		<action path="/SampleTypeRenameEntry" name="sampleTypeRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeRenameAction" >
+			<forward name="success" path="sampleTypeRenameDefinition" />
+		</action>
+
+		<action path="/SampleTypeRenameUpdate" name="sampleTypeRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeRenameUpdate" >
+			<forward name="success" path="/SampleTypeRenameEntry.do" />
+		</action>
 
 		<action path="/TestActivation" name="testActivationForm" type="us.mn.state.health.lims.testconfiguration.action.TestActivationAction" >
 			<forward name="success" path="testActivationDefinition" />

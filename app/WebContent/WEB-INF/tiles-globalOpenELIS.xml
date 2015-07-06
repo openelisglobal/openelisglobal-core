@@ -293,6 +293,10 @@
         <put name="body" value="/pages/testConfiguration/panelRename.jsp"/>
     </definition>
 
+    <definition name="sampleTypeRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/sampleTypeRename.jsp"/>
+    </definition>
+
     <definition name="testActivationDefinition" extends="baseMenuDefinition">
         <put name="body" value="/pages/testConfiguration/testActivation.jsp"/>
     </definition>

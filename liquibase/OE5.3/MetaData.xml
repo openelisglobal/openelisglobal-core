@@ -25,5 +25,22 @@
     where name in ('new born','infant', 'young child','child', 'adult' );
   </sql>
 </changeSet>
+  <changeSet id="2" author="paulsc" >
+  <comment>Adds modules to test management tasks so they can get to the actual task</comment>
+  <insert schemaName="clinlims" tableName="system_module">
+    <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+    <column name="name" value="SampleTypeRenameEntry"/>
+    <column name="description" value="Admin=&gt;test manag=&gt;type rename"/>
+    <column name="has_select_flag" value="Y"/>
+    <column name="has_add_flag" value="Y"/>
+    <column name="has_update_flag" value="Y"  />
+    <column name="has_delete_flag" value="Y"/>
+  </insert>
+    <sql>
+      INSERT INTO clinlims.system_role_module( id, has_select, has_add, has_update, has_delete, system_role_id, system_module_id)
+      VALUES ( nextval('system_user_module_seq' ), 'Y', 'Y', 'Y', 'Y',
+      ( select id from clinlims.system_role where name = 'Test Management' ) , ( select id from clinlims.system_module where name = 'SampleTypeRenameEntry'));
+    </sql>
+  </changeSet>
 </databaseChangeLog>
 
