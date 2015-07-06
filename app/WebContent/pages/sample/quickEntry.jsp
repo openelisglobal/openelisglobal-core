@@ -3,6 +3,7 @@
 <%@ page import="us.mn.state.health.lims.common.util.SystemConfiguration" %>   
 
 <%@ page import="java.util.Calendar"  %>
+<%@ page import="us.mn.state.health.lims.common.util.DateUtil" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -778,7 +779,7 @@ function processSampleType() {
 	<tr> 
 		<td width="15%">
 			<bean:message key="quick.entry.received.date"/>:<span class="requiredlabel">*</span>
-			<font size="1"><bean:message key="sample.date.format" /></font>
+			<font size="1"><%=DateUtil.getDateUserPrompt()%></font>
 		</td>
 		<td width="85%"> 
 			<app:text name="<%=formName%>" 

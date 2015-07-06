@@ -262,8 +262,9 @@
 
 <% if( FormFields.getInstance().useField( Field.SampleEntryNextVisitDate ) ){ %>
 <tr>
-    <td><bean:message key="sample.entry.nextVisit.date"/>&nbsp;<span style="font-size: xx-small; "><bean:message
-            key="sample.date.format"/></span>:
+    <td><bean:message key="sample.entry.nextVisit.date"/>&nbsp;<span style="font-size: xx-small; ">
+        <%=DateUtil.getDateUserPrompt()%>
+    </span>:
     </td>
     <td>
         <html:text name='<%= formName %>'
