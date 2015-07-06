@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.util.SystemConfiguration,us.mn.state.health.lims.common.formfields.FormFields,us.mn.state.health.lims.common.util.StringUtil, org.apache.commons.httpclient.NameValuePair"%>
+<%@ page import="us.mn.state.health.lims.common.util.DateUtil" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -116,7 +117,7 @@ iarv = new ArvInitialProjectChecker();
 		<td>
 			<bean:message key="sample.entry.project.receivedDate" />
 			&nbsp;
-			<bean:message key="sample.date.format" />
+			<%=DateUtil.getDateUserPrompt()%>
 		</td>
 		<td>
 			<app:text name="<%=formName%>" property="receivedDateForDisplay"
@@ -132,7 +133,7 @@ iarv = new ArvInitialProjectChecker();
 		<td>
 			<bean:message key="patient.project.interviewDate" />
 			&nbsp;
-			<bean:message key="sample.date.format" />
+			<%=DateUtil.getDateUserPrompt()%>
 		</td>
 		<td>
 			<app:text name="<%=formName%>" property="interviewDate"
@@ -275,7 +276,7 @@ iarv = new ArvInitialProjectChecker();
 		<td>
 			<bean:message key="patient.project.dateOfBirth" />
 			&nbsp;
-			<bean:message key="sample.date.format" />
+			<%=DateUtil.getDateUserPrompt()%>
 		</td>
 		<td>
 			<app:text name="<%=formName%>" property="birthDateForDisplay"
