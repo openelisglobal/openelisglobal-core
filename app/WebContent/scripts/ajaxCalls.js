@@ -37,9 +37,9 @@ function getTestNames( testId, success, failure){
  * @param failure
  */
 function getEntityNames( entitiyId,entityName ,success, failure){
-    var permited = ['panel'];
+    var permitted = ['panel','sampleType'];
 
-    if( permited.indexOf(entityName) == -1){
+    if( permitted.indexOf(entityName) == -1){
         alert( "\"" + entityName + "\" has not been implemented for getEntityNames");
         return;
     }

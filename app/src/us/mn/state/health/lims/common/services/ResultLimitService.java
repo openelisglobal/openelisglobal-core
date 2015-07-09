@@ -275,15 +275,15 @@ public class ResultLimitService{
         for( SiteInformation info : siteInformationList){
             String localizedName = null;
            if("new born".equals(info.getName())){
-                localizedName = info.getName();
+                localizedName = info.getLocalizedName();
             }else if( "infant".equals(info.getName())){
-                localizedName = info.getName();
+                localizedName = info.getLocalizedName();
             }else if( "young child".equals(info.getName())){
-                localizedName = info.getName();
+                localizedName = info.getLocalizedName();
             }else if( "child".equals(info.getName())){
-                localizedName = info.getName();
+                localizedName = info.getLocalizedName();
             }else if( "adult".equals(info.getName())){
-                localizedName = info.getName();
+                localizedName = info.getLocalizedName();
             }
 
             ages.add(new IdValuePair(info.getValue(), localizedName));

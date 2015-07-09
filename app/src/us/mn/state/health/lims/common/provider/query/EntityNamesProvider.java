@@ -21,6 +21,8 @@ import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.localization.valueholder.Localization;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,7 @@ import java.io.StringWriter;
 
 public class EntityNamesProvider extends BaseQueryProvider {
     public static final String PANEL = "panel";
+    public static final String SAMPLE_TYPE = "sampleType";
 	protected AjaxServlet ajaxServlet = null;
 
     @Override
@@ -72,6 +75,8 @@ public class EntityNamesProvider extends BaseQueryProvider {
 
         if( PANEL.equals(entityName)){
             localization = getLocalizationForPanel(id);
+        }else if(SAMPLE_TYPE.equals(entityName)){
+            localization = getLocalizationForSampleType(id);
         }//add entity types as needed
 
         if( localization != null){
@@ -90,6 +95,11 @@ public class EntityNamesProvider extends BaseQueryProvider {
     private Localization getLocalizationForPanel(String id) {
         Panel panel = new PanelDAOImpl().getPanelById( id );
         return panel != null ? panel.getLocalization() : null;
+    }
+
+    private Localization getLocalizationForSampleType(String id) {
+        TypeOfSample typeOfSample = new TypeOfSampleDAOImpl().getTypeOfSampleById(id);
+        return typeOfSample != null ? typeOfSample.getLocalization() : null;
     }
 
     @Override
