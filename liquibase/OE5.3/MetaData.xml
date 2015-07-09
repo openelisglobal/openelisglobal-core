@@ -16,6 +16,22 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-
+    <changeSet author="jfurlong" id="1" context="Kenya, haiti, haitiLNSP, CI_IPCI, ci_regional, ciLNSP"  >
+        <comment>Sets permissions for listing plugins</comment>
+        <insert schemaName="clinlims" tableName="system_module">
+            <column name="id" valueNumeric=" nextval( 'system_module_seq' )  "/>
+            <column name="name" value="ListPlugins"/>
+            <column name="description" value="Lists the installed plugins at this site"/>
+            <column name="has_select_flag" value="Y"/>
+            <column name="has_add_flag" value="Y"/>
+            <column name="has_update_flag" value="Y"  />
+            <column name="has_delete_flag" value="Y"/>
+        </insert>
+        <insert tableName="system_role_module">
+            <column name="id" valueNumeric=" nextval( 'system_user_module_seq' )  " />
+            <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Maintenance Admin' ) " />
+            <column name="system_module_id" valueNumeric=" ( select id from clinlims.system_module where name = 'ListPlugins' ) " />
+        </insert>
+    </changeSet>
 </databaseChangeLog>
 

@@ -781,6 +781,11 @@
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 		</form-bean>
 
+		<form-bean name="listPluginForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+			<form-property name="pluginList" type="java.util.List" />
+		</form-bean>
+
 	</form-beans>
 
 
@@ -1738,5 +1743,10 @@
 			<forward name="success" path="/BatchTestReassignment.do?forward=success" />
 			<forward name="resubmit" path="BatchTestReassignmentDefinition" />
 		</action>
+		
+		<action path="/ListPlugins" name="listPluginForm" type="us.mn.state.health.lims.analyzer.action.ListPluginAction">
+			<forward name="success" path="ListPluginsPageDefinition" />
+		</action>
+		
 	</action-mappings>
 </struts-config>
