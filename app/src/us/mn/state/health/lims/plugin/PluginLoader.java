@@ -29,7 +29,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -50,6 +52,14 @@ public class PluginLoader {
     private int JDK_VERSION_MINOR;
     private ServletContext context;
 
+    private static List<String> currentPlugins;
+    
+    private static void registerPluginNames(List<String> listOfPlugins) {
+    	if (currentPlugins == null) {
+    		currentPlugins = listOfPlugins;
+    	}
+    }
+    
     public PluginLoader(ServletContextEvent event) {
         context = event.getServletContext();
     }
@@ -63,6 +73,7 @@ public class PluginLoader {
         String[] version = System.getProperty("java.version").split("\\.");
         JDK_VERSION_MAJOR = Integer.parseInt(version[0]);
         JDK_VERSION_MINOR = Integer.parseInt(version[1]);
+        List<String> pluginList = new ArrayList<String>();
 
         File[] files = pluginDir.listFiles();
 
@@ -70,12 +81,14 @@ public class PluginLoader {
             for (File file : files) {
                 if (file.getName().endsWith("jar")) {
                     loadPlugin(file);
+                    pluginList.add(file.getName());
                 }else if(file.isDirectory()){
                     System.out.println("Checking plugin subfolder: " + file.getName());
                     loadDirectory( file );
                 }
             }
         }
+        registerPluginNames(pluginList);
     }
 
     private void loadPlugin(File pluginFile) {
@@ -225,5 +238,9 @@ public class PluginLoader {
             throw new LIMSException("See previous stack trace");
         }
 
+    }
+    
+    public static List<String> getCurrentPlugins() {
+    	return currentPlugins;
     }
 }

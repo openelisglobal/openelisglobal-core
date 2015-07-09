@@ -374,6 +374,9 @@
         <put name="body" value="/pages/test/batchTestReassignment.jsp"/>
         <put name="footer" value="/pages/common/emptyPlaceHolder.jsp"/>
     </definition>
-
+    
+	 <definition name="ListPluginsPageDefinition" extends="masterListsPageDefinition">
+    	<put name="body" value="/pages/plugin/listPlugin.jsp"/>
+    </definition>
 
 </tiles-definitions>
