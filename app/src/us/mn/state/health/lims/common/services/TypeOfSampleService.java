@@ -4,8 +4,10 @@ import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
+import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestComparator;
+import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
@@ -195,4 +197,10 @@ public class TypeOfSampleService {
 		
 		return panelIdToTypeOfSampleMap.get(id);
 	}
+    
+    @SuppressWarnings("unchecked")
+	public static List<TypeOfSample> getAllTypeOfSamples() {
+        return new TypeOfSampleDAOImpl().getAllTypeOfSamples();
+    }
+
 }

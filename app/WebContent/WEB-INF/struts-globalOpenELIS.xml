@@ -883,6 +883,36 @@
             <forward name="success" path="/TestSectionTestAssign.do" />
         </action>
 
+<!-- -->
+        <action path="/SampleTypeManagement" name="sampleTypeManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+            <forward name="success" path="sampleTypeManagementDefinition"  />
+        </action>
+
+        <action path="/SampleTypeCreate" name="sampleTypeCreateForm" type="us.mn.state.health.lims.testconfiguration.action.sampleTypeCreateAction" >
+            <forward name="success" path="sampleTypeCreateDefinition" />
+        </action>
+
+        <action path="/SampleTypeCreateUpdate" name="sampleTypeCreateForm" type="us.mn.state.health.lims.testconfiguration.action.sampleTypeCreateUpdate" >
+            <forward name="success" path="/sampleTypeCreate.do" />
+        </action>
+
+        <action path="/SampleTypeOrder" name="sampleTypeOrderForm" type="us.mn.state.health.lims.testconfiguration.action.sampleTypeOrderAction" >
+            <forward name="success" path="sampleTypeOrderDefinition" />
+        </action>
+
+        <action path="/SampleTypeOrderUpdate" name="sampleTypeOrderForm" type="us.mn.state.health.lims.testconfiguration.action.sampleTypeOrderUpdate" >
+            <forward name="success" path="/sampleTypeOrder.do" />
+        </action>
+
+        <action path="/SampleTypeTestAssign" name="sampleTypeTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.sampleTypeTestAssignAction" >
+            <forward name="success" path="sampleTypeAssignDefinition" />
+        </action>
+
+        <action path="/SampleTypeTestAssignUpdate" name="sampleTypeTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.sampleTypeTestAssignUpdate" >
+            <forward name="success" path="/sampleTypeTestAssign.do" />
+        </action>
+
+<!-- -->
         <action path="/TestAdd" name="testAddForm" type="us.mn.state.health.lims.testconfiguration.action.TestAddAction" >
             <forward name="success" path="testAddDefinition" />
         </action>
