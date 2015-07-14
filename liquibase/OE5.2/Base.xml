@@ -24,4 +24,5 @@
     <include file="OE5.2/CI_IPCIData.xml" />
     <include file="OE5.2/HaitiLNSPData.xml" />
     <include file="OE5.2/postUpdateSchema.xml" />
+    <include file="OE5.2/ciRegionalData.xml" />
  </databaseChangeLog>
