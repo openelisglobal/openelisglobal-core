@@ -734,6 +734,15 @@
             <form-property name="testUnitFrenchName" type="java.lang.String" />
         </form-bean>
 
+        <form-bean name="sampleTypeCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="existingSampleTypeList" type="java.util.List" />
+            <form-property name="inactiveSampleTypeList" type="java.util.List" />
+            <form-property name="existingEnglishNames" type="java.lang.String" />
+            <form-property name="existingFrenchNames" type="java.lang.String" />
+            <form-property name="sampleTypeEnglishName" type="java.lang.String" />
+            <form-property name="sampleTypeFrenchName" type="java.lang.String" />
+        </form-bean>
+
         <form-bean name="testSectionOrderForm" type="org.apache.struts.validator.DynaValidatorForm" >
             <form-property name="testSectionList" type="java.util.List" />
             <form-property name="jsonChangeList" type="java.lang.String" initial="" />
@@ -883,6 +892,36 @@
             <forward name="success" path="/TestSectionTestAssign.do" />
         </action>
 
+<!-- -->
+        <action path="/SampleTypeManagement" name="sampleTypeManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+            <forward name="success" path="sampleTypeManagementDefinition"  />
+        </action>
+
+        <action path="/SampleTypeCreate" name="sampleTypeCreateForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeCreateAction" >
+            <forward name="success" path="sampleTypeCreateDefinition" />
+        </action>
+
+        <action path="/SampleTypeCreateUpdate" name="sampleTypeCreateForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeCreateUpdate" >
+            <forward name="success" path="/SampleTypeCreate.do" />
+        </action>
+
+        <action path="/SampleTypeOrder" name="sampleTypeOrderForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeOrderAction" >
+            <forward name="success" path="sampleTypeOrderDefinition" />
+        </action>
+
+        <action path="/SampleTypeOrderUpdate" name="sampleTypeOrderForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeOrderUpdate" >
+            <forward name="success" path="/SampleTypeOrder.do" />
+        </action>
+
+        <action path="/SampleTypeTestAssign" name="sampleTypeTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeTestAssignAction" >
+            <forward name="success" path="sampleTypeAssignDefinition" />
+        </action>
+
+        <action path="/SampleTypeTestAssignUpdate" name="sampleTypeTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeTestAssignUpdate" >
+            <forward name="success" path="/SampleTypeTestAssign.do" />
+        </action>
+
+<!-- -->
         <action path="/TestAdd" name="testAddForm" type="us.mn.state.health.lims.testconfiguration.action.TestAddAction" >
             <forward name="success" path="testAddDefinition" />
         </action>

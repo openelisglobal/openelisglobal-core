@@ -56,6 +56,7 @@ public class DisplayListService implements LocaleChangeListener {
 		MINS,
         SAMPLE_TYPE_ACTIVE,
         SAMPLE_TYPE_INACTIVE,
+        SAMPLE_TYPE,
 		INITIAL_SAMPLE_CONDITION,
         SAMPLE_PATIENT_PAYMENT_OPTIONS,
 		PATIENT_HEALTH_REGIONS, 
@@ -90,6 +91,7 @@ public class DisplayListService implements LocaleChangeListener {
 	static {
 		typeToListMap.put(ListType.HOURS, createHourList());
 		typeToListMap.put(ListType.MINS, createMinList());
+		typeToListMap.put(ListType.SAMPLE_TYPE, createTypeOfSampleList());
         typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
         typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategoryLocalizedSort("specimen reception condition"));
@@ -144,6 +146,7 @@ public class DisplayListService implements LocaleChangeListener {
     @Override
     public void localeChanged(String locale) {
         //refreshes those lists which are dependent on local
+    	typeToListMap.put(ListType.SAMPLE_TYPE, createTypeOfSampleList());
         typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
         typeToListMap.put(ListType.SAMPLE_TYPE_INACTIVE, createSampleTypeList(true));
         typeToListMap.put(ListType.INITIAL_SAMPLE_CONDITION, createFromDictionaryCategoryLocalizedSort("specimen reception condition"));
@@ -524,6 +527,18 @@ public class DisplayListService implements LocaleChangeListener {
 		return testSectionsPairs;
 	}
 
+	private static List<IdValuePair> createTypeOfSampleList() {
+		List<IdValuePair> typeOfSamplePairs = new ArrayList<IdValuePair>();
+		@SuppressWarnings("unchecked")
+		List<TypeOfSample> typeOfSamples = new TypeOfSampleDAOImpl().getAllTypeOfSamples();
+		
+		for(TypeOfSample typeOfSample : typeOfSamples){
+			typeOfSamplePairs.add(new IdValuePair(typeOfSample.getId(), typeOfSample.getLocalizedName()));
+		}
+		
+		return typeOfSamplePairs;
+	}
+	
 	private static List<IdValuePair> createInactiveTestSection(){
         List<IdValuePair> testSectionsPairs = new ArrayList<IdValuePair>();
         List<TestSection> testSections = new TestSectionDAOImpl().getAllInActiveTestSections();

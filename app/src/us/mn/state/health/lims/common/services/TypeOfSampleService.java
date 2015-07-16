@@ -195,4 +195,10 @@ public class TypeOfSampleService {
 		
 		return panelIdToTypeOfSampleMap.get(id);
 	}
+    
+    @SuppressWarnings("unchecked")
+	public static List<TypeOfSample> getAllTypeOfSamples() {
+        return new TypeOfSampleDAOImpl().getAllTypeOfSamples();
+    }
+
 }
