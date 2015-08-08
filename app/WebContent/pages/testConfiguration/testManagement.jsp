@@ -79,6 +79,10 @@
                    onclick="submitAction('SampleTypeManagement.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.sampleType.manage.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.manage") %>"
+                   onclick="submitAction('PanelManagement.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.panel.manage.explain")%></li>    
     </ul>
 
 

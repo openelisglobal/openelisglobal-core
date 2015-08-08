@@ -223,6 +223,23 @@ public class PanelDAOImpl extends BaseDAOImpl implements PanelDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Panel> getAllPanels() throws LIMSRuntimeException {
+		try {
+			String sql = "from Panel p order by p.sortOrderInt";
+			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+
+			List<Panel>list = query.list();
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+			return list;
+		} catch (Exception e) {
+			LogEvent.logError("PanelDAOImpl","getAllPanels()",e.toString());
+			throw new LIMSRuntimeException("Error in Panel getAllPanels()", e);
+		}
+
+	}	
+	
 	public List getPageOfPanels(int startingRecNo) throws LIMSRuntimeException {
 		List list = new Vector();
 		try {

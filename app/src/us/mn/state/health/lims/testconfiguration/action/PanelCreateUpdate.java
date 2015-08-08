@@ -35,25 +35,25 @@ import us.mn.state.health.lims.systemmodule.daoimpl.SystemModuleDAOImpl;
 import us.mn.state.health.lims.systemmodule.valueholder.SystemModule;
 import us.mn.state.health.lims.systemusermodule.daoimpl.RoleModuleDAOImpl;
 import us.mn.state.health.lims.systemusermodule.valueholder.RoleModule;
-import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
-import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SampleTypeCreateUpdate extends BaseAction {
+public class PanelCreateUpdate extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         RoleDAO roleDAO = new RoleDAOImpl();
         RoleModuleDAOImpl roleModuleDAO = new RoleModuleDAOImpl();
         SystemModuleDAO systemModuleDAO = new SystemModuleDAOImpl();
         DynaValidatorForm dynaForm = (DynaValidatorForm)form;
-        String identifyingName = dynaForm.getString("sampleTypeEnglishName");
+        String identifyingName = dynaForm.getString("panelEnglishName");
         String userId = getSysUserId(request);
 
-        Localization localization = createLocalization(dynaForm.getString("sampleTypeFrenchName"), identifyingName, userId);
+        Localization localization = createLocalization(dynaForm.getString("panelFrenchName"), identifyingName, userId);
 
-        TypeOfSample typeOfSample = createTypeOfSample(identifyingName, userId);
+        Panel panel = createPanel(identifyingName, userId);
 
         SystemModule workplanModule = createSystemModule("Workplan", identifyingName, userId);
         SystemModule resultModule = createSystemModule("LogbookResults", identifyingName, userId);
@@ -70,8 +70,8 @@ public class SampleTypeCreateUpdate extends BaseAction {
 
         try {
             new LocalizationDAOImpl().insert(localization);
-            typeOfSample.setLocalization(localization);
-            new TypeOfSampleDAOImpl().insertData(typeOfSample);
+            panel.setLocalization(localization);
+            new PanelDAOImpl().insertData(panel);
             systemModuleDAO.insertData(workplanModule);
             systemModuleDAO.insertData(resultModule);
             systemModuleDAO.insertData(validationModule);
@@ -88,8 +88,8 @@ public class SampleTypeCreateUpdate extends BaseAction {
             HibernateUtil.closeSession();
         }
 
-        DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE);
-        DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_INACTIVE);
+        DisplayListService.refreshList(DisplayListService.ListType.PANELS);
+        DisplayListService.refreshList(DisplayListService.ListType.PANELS_INACTIVE);
 
         return mapping.findForward(FWD_SUCCESS);
     }
@@ -98,7 +98,7 @@ public class SampleTypeCreateUpdate extends BaseAction {
         Localization localization = new Localization();
         localization.setEnglish(english);
         localization.setFrench(french);
-        localization.setDescription("type of sample name");
+        localization.setDescription("panel name");
         localization.setSysUserId(currentUserId);
         return localization;
     }
@@ -115,15 +115,14 @@ public class SampleTypeCreateUpdate extends BaseAction {
         return roleModule;
     }
 
-    private TypeOfSample createTypeOfSample(String identifyingName, String userId) {
-        TypeOfSample typeOfSample = new TypeOfSample();
-    	typeOfSample.setDescription(identifyingName);
-    	typeOfSample.setDomain("H");
-    	typeOfSample.setLocalAbbreviation(identifyingName.length() > 10 ? identifyingName.substring(0, 10) : identifyingName);
-    	typeOfSample.setIsActive(false);
-    	typeOfSample.setSortOrder(Integer.MAX_VALUE);
-    	typeOfSample.setSysUserId(userId);
-    	return typeOfSample;
+    private Panel createPanel(String identifyingName, String userId) {
+        Panel panel = new Panel();
+    	panel.setDescription(identifyingName);
+    	panel.setPanelName(identifyingName);
+    	panel.setIsActive("N");
+    	panel.setSortOrderInt(Integer.MAX_VALUE);
+    	panel.setSysUserId(userId);
+    	return panel;
     }
 
     private SystemModule createSystemModule(String menuItem, String identifyingName, String userId) {

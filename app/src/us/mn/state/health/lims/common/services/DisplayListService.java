@@ -26,6 +26,7 @@ import us.mn.state.health.lims.gender.valueholder.Gender;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
+import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.qaevent.dao.QaEventDAO;
@@ -72,6 +73,8 @@ public class DisplayListService implements LocaleChangeListener {
 		HAITI_DEPARTMENTS,
         PATIENT_SEARCH_CRITERIA,
         PANELS,
+        PANELS_ACTIVE,
+        PANELS_INACTIVE,
         ORDERABLE_TESTS,
         ALL_TESTS,
         REJECTION_REASONS,
@@ -109,6 +112,8 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategoryLocalizedSort("patientPayment"));
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
         typeToListMap.put(ListType.PANELS, createPanelList());
+        typeToListMap.put(ListType.PANELS_ACTIVE, createPanelList(false));
+        typeToListMap.put(ListType.PANELS_INACTIVE, createPanelList(true));
         typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
         typeToListMap.put(ListType.ALL_TESTS, createTestList());
         typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
@@ -162,6 +167,8 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.SAMPLE_PATIENT_PAYMENT_OPTIONS, createFromDictionaryCategoryLocalizedSort("patientPayment"));
         typeToListMap.put(ListType.PATIENT_SEARCH_CRITERIA, createPatientSearchCriteria());
         typeToListMap.put(ListType.PANELS, createPanelList());
+        typeToListMap.put(ListType.PANELS_ACTIVE, createPanelList(false));
+        typeToListMap.put(ListType.PANELS_INACTIVE, createPanelList(true));
         dictionaryToListMap = new HashMap<String, List<IdValuePair>>( );
         typeToListMap.put(ListType.REJECTION_REASONS,createDictionaryListForCategory("resultRejectionReasons"));
         typeToListMap.put(ListType.REFERRAL_REASONS, createReferralReasonList());
@@ -296,6 +303,10 @@ public class DisplayListService implements LocaleChangeListener {
                 typeToListMap.put(ListType.ORDERABLE_TESTS, createOrderableTestList());
                 break;
             }
+            case SAMPLE_TYPE:{
+                typeToListMap.put(ListType.SAMPLE_TYPE, createTypeOfSampleList());
+                break;
+            }
             case SAMPLE_TYPE_ACTIVE:{
                 typeToListMap.put(ListType.SAMPLE_TYPE_ACTIVE, createSampleTypeList(false));
                 break;
@@ -314,14 +325,20 @@ public class DisplayListService implements LocaleChangeListener {
                 typeToListMap.put(ListType.TEST_SECTION_INACTIVE, createInactiveTestSection());
                 break;
             }
-
             case REFERRAL_ORGANIZATIONS:{
                 typeToListMap.put(ListType.REFERRAL_ORGANIZATIONS, createReferralOrganizationList());
                 break;
             }
-
             case PANELS: {
                 typeToListMap.put(ListType.PANELS, createPanelList());
+                break;
+            }
+            case PANELS_ACTIVE: {
+                typeToListMap.put(ListType.PANELS, createPanelList(false));
+                break;
+            }
+            case PANELS_INACTIVE: {
+                typeToListMap.put(ListType.PANELS, createPanelList(true));
                 break;
             }
         }
@@ -463,6 +480,21 @@ public class DisplayListService implements LocaleChangeListener {
 		return filteredList;
 	}
 
+	private static List<IdValuePair> createPanelList(boolean inactiveTypes) {
+		PanelDAO panelDAO = new PanelDAOImpl();
+		List<Panel> list = panelDAO.getAllPanels();
+
+		List<IdValuePair> filteredList = new ArrayList<IdValuePair>();
+
+		for (Panel panel : list) {
+			if ((!inactiveTypes && ("Y").equals(panel.getIsActive())) || (inactiveTypes && !("Y").equals(panel.getIsActive())) ) {
+				filteredList.add(new IdValuePair(panel.getId(), panel.getLocalizedName()));
+			}
+		}
+
+		return filteredList;
+	}
+	
 	private static List<IdValuePair> createHourList() {
 		List<IdValuePair> hours = new ArrayList<IdValuePair>();
 
@@ -529,8 +561,7 @@ public class DisplayListService implements LocaleChangeListener {
 
 	private static List<IdValuePair> createTypeOfSampleList() {
 		List<IdValuePair> typeOfSamplePairs = new ArrayList<IdValuePair>();
-		@SuppressWarnings("unchecked")
-		List<TypeOfSample> typeOfSamples = new TypeOfSampleDAOImpl().getAllTypeOfSamples();
+		List<TypeOfSample> typeOfSamples = new TypeOfSampleDAOImpl().getAllTypeOfSamplesSortOrdered();
 		
 		for(TypeOfSample typeOfSample : typeOfSamples){
 			typeOfSamplePairs.add(new IdValuePair(typeOfSample.getId(), typeOfSample.getLocalizedName()));

@@ -29,12 +29,9 @@ import org.json.simple.parser.ParseException;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.test.dao.TestSectionDAO;
-import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
-import us.mn.state.health.lims.test.valueholder.TestSection;
-import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
-import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
-import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.panel.dao.PanelDAO;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,30 +39,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SampleTypeOrderUpdate extends BaseAction {
+public class PanelOrderUpdate extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String changeList = ((DynaValidatorForm) form).getString("jsonChangeList");
 
         JSONParser parser = new JSONParser();
         JSONObject obj = (JSONObject) parser.parse(changeList);
-        List<ActivateSet> orderSet = getActivateSetForActions("sampleTypes", obj, parser);
-        List<TypeOfSample> typeOfSamples = new ArrayList<TypeOfSample>();
+        List<ActivateSet> orderSet = getActivateSetForActions("panels", obj, parser);
+        List<Panel> panels = new ArrayList<Panel>();
 
         String currentUserId = getSysUserId(request);
-        TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
+        PanelDAO panelDAO = new PanelDAOImpl();
         for (ActivateSet sets : orderSet) {
-            TypeOfSample typeOfSample = typeOfSampleDAO.getTypeOfSampleById(sets.id);
-            typeOfSample.setSortOrder(sets.sortOrder);
-            typeOfSample.setSysUserId(currentUserId);
-            typeOfSamples.add(typeOfSample);
+            Panel panel = panelDAO.getPanelById(sets.id);
+            panel.setSortOrder(sets.sortOrder.toString());
+            panel.setSysUserId(currentUserId);
+            panels.add(panel);
         }
 
 
         Transaction tx = HibernateUtil.getSession().beginTransaction();
         try {
-            for (TypeOfSample typeOfSample : typeOfSamples) {
-            	typeOfSampleDAO.updateData(typeOfSample);
+            for (Panel panel : panels) {
+            	panelDAO.updateData(panel);
             }
             tx.commit();
         } catch (HibernateException e) {
@@ -74,8 +71,9 @@ public class SampleTypeOrderUpdate extends BaseAction {
             HibernateUtil.closeSession();
         }
 
-        DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE);
-        DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_INACTIVE);
+        DisplayListService.refreshList(DisplayListService.ListType.PANELS);
+        DisplayListService.refreshList(DisplayListService.ListType.PANELS_INACTIVE);
+        DisplayListService.refreshList(DisplayListService.ListType.PANELS_ACTIVE);
 
         return mapping.findForward(FWD_SUCCESS);
     }
