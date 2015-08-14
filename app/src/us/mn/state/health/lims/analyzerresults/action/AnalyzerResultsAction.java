@@ -285,6 +285,7 @@ public class AnalyzerResultsAction extends BaseAction {
 		resultItem.setLastUpdated(result.getLastupdated());
 		resultItem.setReadOnly((result.isReadOnly() || result.getTestId() == null));
 		resultItem.setResult(getResultForItem(result));
+		resultItem.setSignificantDigits(getSignificantDigitsFromAnalyzerResults(result));
 		resultItem.setTestResultType(result.getResultType());
 		resultItem.setDictionaryResultList(getDictionaryResultList(result));
 		resultItem.setIsHighlighted(!GenericValidator.isBlankOrNull(result.getDuplicateAnalyzerResultId())
@@ -470,14 +471,23 @@ public class AnalyzerResultsAction extends BaseAction {
 			return result.getResult();
 		}
 	}
+	
+	private String getSignificantDigitsFromAnalyzerResults(AnalyzerResults result) {
+
+		List<TestResult> testResults = testResultDAO.getActiveTestResultsByTest(result.getTestId());
+
+		if (GenericValidator.isBlankOrNull(result.getResult()) || testResults.isEmpty()) {
+			return result.getResult();
+		}
+		
+		TestResult testResult = testResults.get(0);
+
+		return testResult.getSignificantDigits();
+
+	}
 
 	private String getRoundedToSignificantDigits(AnalyzerResults result) {
 		if( result.getTestId() != null) {
-			List<TestResult> testResults = testResultDAO.getActiveTestResultsByTest(result.getTestId());
-
-			if (GenericValidator.isBlankOrNull(result.getResult()) || testResults.isEmpty()) {
-				return result.getResult();
-			}
 
 			Double results;
 			try {
@@ -486,9 +496,7 @@ public class AnalyzerResultsAction extends BaseAction {
 				return result.getResult();
 			}
 
-			TestResult testResult = testResults.get(0);
-
-			String significantDigitsAsString = testResult.getSignificantDigits();
+			String significantDigitsAsString = getSignificantDigitsFromAnalyzerResults(result);
 			if (GenericValidator.isBlankOrNull(significantDigitsAsString) || "-1".equals(significantDigitsAsString)) {
 				return result.getResult();
 			}

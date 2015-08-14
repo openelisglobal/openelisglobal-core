@@ -746,7 +746,12 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		String resultValue = resultItem.getIsRejected() ? REJECT_VALUE : resultItem.getResult();
 		result.setValue(resultValue);
 		result.setTestResult(getTestResultForResult(resultItem));
-		result.setResultType(resultItem.getTestResultType());
+		result.setResultType(resultItem.getTestResultType());				
+		//the results table is not autmatically updated with the significant digits from TestResult so we must do this
+		if (!GenericValidator.isBlankOrNull(resultItem.getSignificantDigits())) {
+			result.setSignificantDigits(Integer.parseInt(resultItem.getSignificantDigits()));
+		}
+		
 		addMinMaxNormal(result, resultItem, patient);
 		result.setSysUserId(sysUserId);
 
