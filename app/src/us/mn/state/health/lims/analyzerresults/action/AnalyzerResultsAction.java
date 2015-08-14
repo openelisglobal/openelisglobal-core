@@ -292,9 +292,6 @@ public class AnalyzerResultsAction extends BaseAction {
 				|| GenericValidator.isBlankOrNull(result.getTestId()));
 		resultItem.setUserChoiceReflex(giveUserChoice(result));
 		resultItem.setUserChoicePending(false);
-		
-		TestService testService = new TestService(result.getTestId());
-		
 
 		if (resultItem.isUserChoiceReflex()) {
 			setChoiceForCurrentValue(resultItem, result);
