@@ -60,8 +60,17 @@ public class AnalyzerResultItem implements Serializable {
 	private String selectionTwoText = "";
 	private String selectionTwoValue = "";
 	private boolean nonconforming = false;
+	private String significantDigits = "";
 	
 	
+	public String getSignificantDigits() {
+		return significantDigits;
+	}
+
+	public void setSignificantDigits(String significantDigits) {
+		this.significantDigits = significantDigits;
+	}
+
 	private List<Dictionary> dictionaryResultList;
 
 	public AnalyzerResultItem() {
