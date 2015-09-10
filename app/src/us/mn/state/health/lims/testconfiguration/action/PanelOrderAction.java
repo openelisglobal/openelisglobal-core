@@ -27,11 +27,11 @@ import us.mn.state.health.lims.common.services.DisplayListService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SampleTypeOrderAction extends BaseAction {
+public class PanelOrderAction extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
-        PropertyUtils.setProperty(form, "sampleTypeList", DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE));
+        PropertyUtils.setProperty(form, "panelList", DisplayListService.getList(DisplayListService.ListType.PANELS));
 
         return mapping.findForward(FWD_SUCCESS);
     }

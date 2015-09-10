@@ -23,17 +23,38 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-public class SampleTypeOrderAction extends BaseAction {
+public class PanelCreateAction extends BaseAction {
+    public static final String NAME_SEPARATOR = "$";
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
-        PropertyUtils.setProperty(form, "sampleTypeList", DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE));
+        PropertyUtils.setProperty(form, "existingPanelList", DisplayListService.getList(DisplayListService.ListType.PANELS_ACTIVE));
+        PropertyUtils.setProperty(form, "inactivePanelList", DisplayListService.getList(DisplayListService.ListType.PANELS_INACTIVE));
+        List<Panel> panels = new PanelDAOImpl().getAllPanels();
+        PropertyUtils.setProperty(form, "existingEnglishNames", getExistingTestNames(panels, ConfigurationProperties.LOCALE.ENGLISH));
+        PropertyUtils.setProperty(form, "existingFrenchNames", getExistingTestNames(panels, ConfigurationProperties.LOCALE.FRENCH));
 
         return mapping.findForward(FWD_SUCCESS);
+    }
+
+    private String getExistingTestNames(List<Panel> panels, ConfigurationProperties.LOCALE locale) {
+        StringBuilder builder = new StringBuilder(NAME_SEPARATOR);
+
+        for( Panel panel : panels){
+            builder.append(LocalizationService.getLocalizationValueByLocal(locale, panel.getLocalization()));
+            builder.append(NAME_SEPARATOR);
+        }
+
+        return builder.toString();
     }
 
 

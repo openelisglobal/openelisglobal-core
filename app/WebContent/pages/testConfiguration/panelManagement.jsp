@@ -40,19 +40,19 @@
     <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
-    <%=StringUtil.getMessageForKey( "configuration.sampleType.manage" )%>
+    <%=StringUtil.getMessageForKey( "configuration.panel.manage" )%>
 
     <ul>
-        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.sampleType.create") %>"
-                   onclick="submitAction('SampleTypeCreate.do');"
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.create") %>"
+                   onclick="submitAction('PanelCreate.do');"
                    class="textButton"/><br>
             </li>       
-        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.sampleType.order") %>"
-                   onclick="submitAction('SampleTypeOrder.do');"
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.order") %>"
+                   onclick="submitAction('PanelOrder.do');"
                    class="textButton"/><br>
             </li>
-        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.sampleType.assign") %>"
-                   onclick="submitAction('SampleTypeTestAssign.do');"
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.assign") %>"
+                   onclick="submitAction('PanelTestAssign.do');"
                    class="textButton"/><br>
             </li>
     </ul>

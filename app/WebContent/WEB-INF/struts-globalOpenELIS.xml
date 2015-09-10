@@ -743,8 +743,27 @@
             <form-property name="sampleTypeFrenchName" type="java.lang.String" />
         </form-bean>
 
+        <form-bean name="panelCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="existingPanelList" type="java.util.List" />
+            <form-property name="inactivePanelList" type="java.util.List" />
+            <form-property name="existingEnglishNames" type="java.lang.String" />
+            <form-property name="existingFrenchNames" type="java.lang.String" />
+            <form-property name="panelEnglishName" type="java.lang.String" />
+            <form-property name="panelFrenchName" type="java.lang.String" />
+        </form-bean>
+
         <form-bean name="testSectionOrderForm" type="org.apache.struts.validator.DynaValidatorForm" >
             <form-property name="testSectionList" type="java.util.List" />
+            <form-property name="jsonChangeList" type="java.lang.String" initial="" />
+        </form-bean>
+
+        <form-bean name="sampleTypeOrderForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="sampleTypeList" type="java.util.List" />
+            <form-property name="jsonChangeList" type="java.lang.String" initial="" />
+        </form-bean>
+
+        <form-bean name="panelOrderForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="panelList" type="java.util.List" />
             <form-property name="jsonChangeList" type="java.lang.String" initial="" />
         </form-bean>
 
@@ -756,7 +775,23 @@
             <form-property name="deactivateTestSectionId" type="java.lang.String" initial="" />
         </form-bean>
 
-        <form-bean name="panelRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+        <form-bean name="sampleTypeTestAssignForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="sampleTypeList" type="java.util.List" />
+            <form-property name="sampleTypeTestList" type="java.util.LinkedHashMap" />
+            <form-property name="testId" type="java.lang.String" initial="" />
+            <form-property name="sampleTypeId" type="java.lang.String" initial="" />
+            <form-property name="deactivateSampleTypeId" type="java.lang.String" initial="" />
+        </form-bean>
+
+        <form-bean name="panelTestAssignForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="panelList" type="java.util.List" />
+            <form-property name="panelTestList" type="java.util.LinkedHashMap" />
+            <form-property name="testId" type="java.lang.String" initial="" />
+            <form-property name="panelId" type="java.lang.String" initial="" />
+            <form-property name="deactivatePanelId" type="java.lang.String" initial="" />
+        </form-bean>
+
+       <form-bean name="panelRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
             <form-property name="panelList" type="java.util.List" />
             <form-property name="nameEnglish" type="java.lang.String" initial="" />
             <form-property name="nameFrench" type="java.lang.String" initial="" />
@@ -919,6 +954,35 @@
 
         <action path="/SampleTypeTestAssignUpdate" name="sampleTypeTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeTestAssignUpdate" >
             <forward name="success" path="/SampleTypeTestAssign.do" />
+        </action>
+<!-- -->
+
+        <action path="/PanelManagement" name="panelManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+            <forward name="success" path="panelManagementDefinition"  />
+        </action>
+
+        <action path="/PanelCreate" name="panelCreateForm" type="us.mn.state.health.lims.testconfiguration.action.PanelCreateAction" >
+            <forward name="success" path="panelCreateDefinition" />
+        </action>
+
+        <action path="/PanelCreateUpdate" name="panelCreateForm" type="us.mn.state.health.lims.testconfiguration.action.PanelCreateUpdate" >
+            <forward name="success" path="/PanelCreate.do" />
+        </action>
+
+        <action path="/PanelOrder" name="panelOrderForm" type="us.mn.state.health.lims.testconfiguration.action.PanelOrderAction" >
+            <forward name="success" path="panelOrderDefinition" />
+        </action>
+
+        <action path="/PanelOrderUpdate" name="panelOrderForm" type="us.mn.state.health.lims.testconfiguration.action.PanelOrderUpdate" >
+            <forward name="success" path="/PanelOrder.do" />
+        </action>
+
+        <action path="/PanelTestAssign" name="panelTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.PanelTestAssignAction" >
+            <forward name="success" path="panelAssignDefinition" />
+        </action>
+
+        <action path="/PanelTestAssignUpdate" name="panelTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.PanelTestAssignUpdate" >
+            <forward name="success" path="/PanelTestAssign.do" />
         </action>
 
 <!-- -->

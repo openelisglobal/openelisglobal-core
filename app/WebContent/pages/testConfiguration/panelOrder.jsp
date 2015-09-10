@@ -30,7 +30,7 @@
 <script type="text/javascript" src="scripts/jquery-ui.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
-<bean:define id="sampleTypeList" name='<%=formName%>' property="sampleTypeList" type="java.util.List"/>
+<bean:define id="panelList" name='<%=formName%>' property="panelList" type="java.util.List"/>
 
 
 <%!
@@ -96,13 +96,13 @@
     function buildJSONList(){
         var sortOrder = 0;
         var jsonObj = {};
-        jsonObj.sampleTypes = [];
+        jsonObj.panels = [];
 
         $jq("li.sortItem").each(function(){
             jsonBlob = {};
             jsonBlob.id = $jq(this).val();
             jsonBlob.sortOrder = sortOrder++;
-            jsonObj.sampleTypes[sortOrder - 1] = jsonBlob;
+            jsonObj.panels[sortOrder - 1] = jsonBlob;
         });
 
         $jq("#jsonChangeList").val(JSON.stringify(jsonObj));
@@ -111,7 +111,7 @@
         buildJSONList();
         window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
         var form = window.document.forms[0];
-        form.action = "SampleTypeOrderUpdate.do";
+        form.action = "PanelOrderUpdate.do";
         form.submit();
     }
 </script>
@@ -123,26 +123,26 @@
     <input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.management") %>'
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
-    <input type="button" value='<%= StringUtil.getMessageForKey("configuration.sampleType.manage") %>'
-           onclick="submitAction('SampleTypeManagement.do');"
+    <input type="button" value='<%= StringUtil.getMessageForKey("configuration.panel.manage") %>'
+           onclick="submitAction('PanelManagement.do');"
            class="textButton"/>&rarr;
 
-<%=StringUtil.getMessageForKey( "configuration.sampleType.order" )%>
+<%=StringUtil.getMessageForKey( "configuration.panel.order" )%>
 <br><br>
 
 <div id="editDiv" >
     <h1 id="action"><bean:message key="label.button.edit"/></h1>
 
     <div id="editMessage" >
-        <h3><bean:message key="configuration.sampleType.order.explain"/> </h3>
-        <bean:message key="configuration.sampleType.order.explain.limits" /><br/><br/>
+        <h3><bean:message key="configuration.panel.order.explain"/> </h3>
+        <bean:message key="configuration.panel.order.explain.limits" /><br/><br/>
     </div>
 
     <UL class="sortable" style="width:250px">
-        <% for(int i = 0; i < sampleTypeList.size(); i++){
-            IdValuePair sampleType = (IdValuePair)sampleTypeList.get(i);
+        <% for(int i = 0; i < panelList.size(); i++){
+            IdValuePair panel = (IdValuePair)panelList.get(i);
         %>
-        <LI class="ui-state-default_oe sortItem" value='<%=sampleType.getId() %>' ><span class="ui-icon ui-icon-arrowthick-2-n-s" ></span><%=sampleType.getValue() %></LI>
+        <LI class="ui-state-default_oe sortItem" value='<%=panel.getId() %>' ><span class="ui-icon ui-icon-arrowthick-2-n-s" ></span><%=panel.getValue() %></LI>
         <% } %>
 
     </UL>
@@ -151,7 +151,7 @@
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.next")%>'
                onclick="confirmValues();"/>
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>'
-               onclick='submitAction("SampleTypeManagement.do")'/>
+               onclick='submitAction("PanelManagement.do")'/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.accept")%>'

@@ -30,8 +30,8 @@
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
-<bean:define id="testList" name='<%=formName%>' property="existingSampleTypeList" type="java.util.List"/>
-<bean:define id="inactiveTestList" name='<%=formName%>' property="inactiveSampleTypeList" type="java.util.List"/>
+<bean:define id="testList" name='<%=formName%>' property="existingPanelList" type="java.util.List"/>
+<bean:define id="inactiveTestList" name='<%=formName%>' property="inactivePanelList" type="java.util.List"/>
 <bean:define id="englishSectionNames" name='<%=formName%>' property="existingEnglishNames" type="String"/>
 <bean:define id="frenchSectionNames" name='<%=formName%>' property="existingFrenchNames" type="String"/>
 
@@ -120,7 +120,7 @@
 
         if(duplicate){
             $jq(element).addClass("error");
-            alert("<bean:message key="configuration.sampleType.create.duplicate" />" );
+            alert("<bean:message key="configuration.panel.create.duplicate" />" );
         }else{
             $jq(element).removeClass("error");
         }
@@ -131,7 +131,7 @@
     function savePage() {
         window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
         var form = window.document.forms[0];
-        form.action = "SampleTypeCreateUpdate.do";
+        form.action = "PanelCreateUpdate.do";
         form.submit();
     }
 </script>
@@ -143,43 +143,43 @@
     <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
            onclick="submitAction('TestManagementConfigMenu.do');"
            class="textButton"/>&rarr;
-    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.sampleType.manage") %>"
-           onclick="submitAction('SampleTypeManagement.do');"
+    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.manage") %>"
+           onclick="submitAction('PanelManagement.do');"
            class="textButton"/>&rarr;
 
-<%=StringUtil.getMessageForKey( "configuration.sampleType.create" )%>
+<%=StringUtil.getMessageForKey( "configuration.panel.create" )%>
 <br><br>
 
 <div id="editDiv" >
     <h1 id="action"><bean:message key="label.button.edit"/></h1>
-    <h2><bean:message key="configuration.sampleType.create"/> </h2>
+    <h2><bean:message key="configuration.panel.create"/> </h2>
 
     <table>
         <tr>
-            <th colspan="2" style="text-align: center"><bean:message key="sampleType.new"/></th>
+            <th colspan="2" style="text-align: center"><bean:message key="panel.new"/></th>
         </tr>
         <tr>
             <td style="text-align: center"><bean:message key="label.english"/></td>
             <td style="text-align: center"><bean:message key="label.french"/></td>
         </tr>
         <tr>
-            <td><span class="requiredlabel">*</span><html:text property="sampleTypeEnglishName" name="<%=formName%>" size="40"
+            <td><span class="requiredlabel">*</span><html:text property="panelEnglishName" name="<%=formName%>" size="40"
                                                                styleClass="required"
                                                                onchange="handleInput(this, 'english');checkForDuplicates('english');"/>
             </td>
-            <td><span class="requiredlabel">*</span><html:text property="sampleTypeFrenchName" name="<%=formName%>" size="40"
+            <td><span class="requiredlabel">*</span><html:text property="panelFrenchName" name="<%=formName%>" size="40"
                                                                styleClass="required" onchange="handleInput(this, 'french');"/>
             </td>
         </tr>
     </table>
     <div id="confirmationMessage" style="display:none">
-        <h4><bean:message key="configuration.sampleType.confirmation.explain" /></h4>
+        <h4><bean:message key="configuration.panel.confirmation.explain" /></h4>
     </div>
     <div style="text-align: center" id="editButtons">
         <input type="button" value="<%=StringUtil.getMessageForKey("label.button.next")%>"
                onclick="confirmValues();"/>
         <input type="button" value="<%=StringUtil.getMessageForKey("label.button.previous")%>"
-               onclick="submitAction('SampleTypeManagement.do');"/>
+               onclick="submitAction('PanelManagement.do');"/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
         <input type="button" value="<%=StringUtil.getMessageForKey("label.button.accept")%>"
@@ -189,7 +189,7 @@
     </div>
 </div>
 
-<h3><bean:message key="sampleType.existing" /></h3>
+<h3><bean:message key="panel.existing" /></h3>
 <table width="80%">
     <% while(testCount < testList.size()){%>
     <tr>
@@ -210,7 +210,7 @@
     <% } %>
 </table>
     <% if( !inactiveTestList.isEmpty()){ %>
-    <h3><bean:message key="sampleType.existing.inactive" /></h3>
+    <h3><bean:message key="panel.existing.inactive" /></h3>
     <table width="80%">
         <%  testCount = 0;
             columnCount = 0;

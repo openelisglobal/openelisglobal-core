@@ -337,13 +337,30 @@
         <put name="body" value="/pages/testConfiguration/sampleTypeCreate.jsp" />
     </definition>
 
-    <definition name="sampleTypenOrderDefinition" extends="baseMenuDefinition" >
-        <put name="body" value="/pages/testConfiguration/sampleTypeOrder.jsp" />
-    </definition>
-
     <definition name="sampleTypeAssignDefinition" extends="baseMenuDefinition" >
         <put name="body" value="/pages/testConfiguration/sampleTypeAssign.jsp" />
     </definition>
+    
+    <definition name="sampleTypeOrderDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/sampleTypeOrder.jsp" />
+    </definition>
+
+    <definition name="panelManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/panelManagement.jsp" />
+    </definition>
+
+    <definition name="panelCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/panelCreate.jsp" />
+    </definition>
+
+    <definition name="panelAssignDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/panelAssign.jsp" />
+    </definition>
+    
+    <definition name="panelOrderDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/panelOrder.jsp" />
+    </definition>
+    
 <!-- -->
     <definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
     	<put name="body" value="/pages/userrole/userRoleMenu.jsp"/>

@@ -42,6 +42,8 @@ public interface TypeOfSampleDAO extends BaseDAO {
 	public void deleteData(List typeOfSamples) throws LIMSRuntimeException;
 
 	public List getAllTypeOfSamples() throws LIMSRuntimeException;
+	
+	public List<TypeOfSample> getAllTypeOfSamplesSortOrdered() throws LIMSRuntimeException;
 
 	public List getPageOfTypeOfSamples(int startingRecNo)
 			throws LIMSRuntimeException;
