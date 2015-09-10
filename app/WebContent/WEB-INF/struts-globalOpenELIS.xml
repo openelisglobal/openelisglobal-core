@@ -746,10 +746,14 @@
         <form-bean name="panelCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
             <form-property name="existingPanelList" type="java.util.List" />
             <form-property name="inactivePanelList" type="java.util.List" />
+            <form-property name="existingPanelMap" type="java.util.Map" />
+            <form-property name="inactivePanelMap" type="java.util.Map" />
+            <form-property name="existingSampleTypeList" type="java.util.List" />
             <form-property name="existingEnglishNames" type="java.lang.String" />
             <form-property name="existingFrenchNames" type="java.lang.String" />
             <form-property name="panelEnglishName" type="java.lang.String" />
             <form-property name="panelFrenchName" type="java.lang.String" />
+            <form-property name="sampleTypeId" type="java.lang.String" />
         </form-bean>
 
         <form-bean name="testSectionOrderForm" type="org.apache.struts.validator.DynaValidatorForm" >
@@ -765,6 +769,9 @@
         <form-bean name="panelOrderForm" type="org.apache.struts.validator.DynaValidatorForm" >
             <form-property name="panelList" type="java.util.List" />
             <form-property name="jsonChangeList" type="java.lang.String" initial="" />
+            <form-property name="existingPanelList" type="java.util.List" />
+            <form-property name="inactivePanelList" type="java.util.List" />
+            <form-property name="existingSampleTypeList" type="java.util.List" />            
         </form-bean>
 
         <form-bean name="testSectionTestAssignForm" type="org.apache.struts.validator.DynaValidatorForm" >
@@ -785,10 +792,12 @@
 
         <form-bean name="panelTestAssignForm" type="org.apache.struts.validator.DynaValidatorForm" >
             <form-property name="panelList" type="java.util.List" />
-            <form-property name="panelTestList" type="java.util.LinkedHashMap" />
-            <form-property name="testId" type="java.lang.String" initial="" />
+            <form-property name="selectedPanel" type="us.mn.state.health.lims.testconfiguration.action.PanelTests" />
+            <form-property name="panelTestList" type="java.util.List" />
             <form-property name="panelId" type="java.lang.String" initial="" />
             <form-property name="deactivatePanelId" type="java.lang.String" initial="" />
+            <form-property name="list1" type="java.lang.String[]" />
+            <form-property name="list2" type="java.lang.String[]" />
         </form-bean>
 
        <form-bean name="panelRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -804,6 +813,20 @@
 			<form-property name="nameFrench" type="java.lang.String" initial="" />
 			<form-property name="sampleTypeId" type="java.lang.String" initial="" />
 		</form-bean>
+ 
+        <form-bean name="testSectionRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="testSectionList" type="java.util.List" />
+            <form-property name="nameEnglish" type="java.lang.String" initial="" />
+            <form-property name="nameFrench" type="java.lang.String" initial="" />
+            <form-property name="testSectionId" type="java.lang.String" initial="" />
+        </form-bean>
+        
+        <form-bean name="unitOfMeasureRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="uomList" type="java.util.List" />
+            <form-property name="nameEnglish" type="java.lang.String" initial="" />
+            <form-property name="nameFrench" type="java.lang.String" initial="" />
+            <form-property name="uomId" type="java.lang.String" initial="" />
+        </form-bean>
         
         <form-bean name="testAddForm" type="org.apache.struts.validator.DynaValidatorForm" >
 			<form-property name="jsonWad" type="java.lang.String" initial="" />
@@ -859,7 +882,7 @@
                 <forward name="success" path="testManagementConfigDefinition"  />
         </action>
 
-        <action path="/TestRenameEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameAction" >
+        <action path="/TestEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameAction" >
             <forward name="success" path="testRenameDefinition" />
         </action>
 
@@ -871,9 +894,25 @@
             <forward name="success" path="panelRenameDefinition" />
         </action>
 
+        <action path="/TestSectionRenameEntry" name="testSectionRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionRenameAction" >
+            <forward name="success" path="testSectionRenameDefinition" />
+        </action>
+
+        <action path="/UomRenameEntry" name="unitOfMeasureRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.UomRenameAction" >
+            <forward name="success" path="uomRenameDefinition" />
+        </action>
+
         <action path="/PanelRenameUpdate" name="panelRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.PanelRenameUpdate" >
             <forward name="success" path="/PanelRenameEntry.do" />
         </action>
+        
+        <action path="/TestSectionRenameUpdate" name="testSectionRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestSectionRenameUpdate" >
+            <forward name="success" path="/TestSectionRenameEntry.do" />
+        </action>
+        
+        <action path="/UomRenameUpdate" name="unitOfMeasureRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.UomRenameUpdate" >
+            <forward name="success" path="/UomRenameEntry.do" />
+        </action>        
 
 		<action path="/SampleTypeRenameEntry" name="sampleTypeRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeRenameAction" >
 			<forward name="success" path="sampleTypeRenameDefinition" />

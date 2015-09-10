@@ -16,13 +16,23 @@
 
 package us.mn.state.health.lims.testconfiguration.action;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.panel.valueholder.PanelSortOrderComparator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +42,33 @@ public class PanelOrderAction extends BaseAction {
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
         PropertyUtils.setProperty(form, "panelList", DisplayListService.getList(DisplayListService.ListType.PANELS));
+
+        HashMap<String, List<Panel>> existingSampleTypePanelMap = PanelTestConfigurationUtil.createTypeOfSamplePanelMap(true);
+        HashMap<String, List<Panel>> inactiveSampleTypePanelMap = PanelTestConfigurationUtil.createTypeOfSamplePanelMap(false);
+        PropertyUtils.setProperty(form, "existingSampleTypeList", DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE));
+        //List<Panel> panels = new PanelDAOImpl().getAllPanels();
+        
+        List<SampleTypePanel> sampleTypePanelsExists = new ArrayList<SampleTypePanel>();
+        List<SampleTypePanel> sampleTypePanelsInactive = new ArrayList<SampleTypePanel>();
+
+        for (IdValuePair typeOfSample : DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE)) {
+        	SampleTypePanel sampleTypePanel = new SampleTypePanel(typeOfSample.getValue());
+        	sampleTypePanel.setPanels(existingSampleTypePanelMap.get(typeOfSample.getValue()));
+        	if (sampleTypePanel.getPanels() != null && sampleTypePanel.getPanels().size() > 0) {
+        		Collections.sort(sampleTypePanel.getPanels(), PanelSortOrderComparator.SORT_ORDER_COMPARATOR);
+        	}
+
+        	sampleTypePanelsExists.add(sampleTypePanel);
+        	SampleTypePanel sampleTypePanelInactive = new SampleTypePanel(typeOfSample.getValue());
+        	sampleTypePanelInactive.setPanels(inactiveSampleTypePanelMap.get(typeOfSample.getValue()));
+        	if (sampleTypePanelInactive.getPanels() != null && sampleTypePanelInactive.getPanels().size() > 0) {
+        		Collections.sort(sampleTypePanelInactive.getPanels(), PanelSortOrderComparator.SORT_ORDER_COMPARATOR);
+        	}
+        	
+        	sampleTypePanelsInactive.add(sampleTypePanelInactive);
+        }
+        PropertyUtils.setProperty(form, "existingPanelList", sampleTypePanelsExists);
+        PropertyUtils.setProperty(form, "inactivePanelList", sampleTypePanelsInactive);
 
         return mapping.findForward(FWD_SUCCESS);
     }

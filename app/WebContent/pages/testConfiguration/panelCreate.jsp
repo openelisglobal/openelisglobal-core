@@ -2,10 +2,14 @@
          contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants"
         %>
+<%@ page import="java.util.List" %>
+<%@ page import="us.mn.state.health.lims.panel.valueholder.Panel" %>
 <%@ page import="us.mn.state.health.lims.common.util.IdValuePair" %>
+<%@ page import="us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 <%@ page import="us.mn.state.health.lims.testconfiguration.action.TestSectionCreateAction" %>
+<%@ page import="us.mn.state.health.lims.testconfiguration.action.SampleTypePanel" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -32,6 +36,11 @@
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
 <bean:define id="testList" name='<%=formName%>' property="existingPanelList" type="java.util.List"/>
 <bean:define id="inactiveTestList" name='<%=formName%>' property="inactivePanelList" type="java.util.List"/>
+
+<bean:define id="existingPanels" name='<%=formName%>' property="existingPanelList" type="java.util.List"/>
+<bean:define id="inactivePanels" name='<%=formName%>' property="inactivePanelList" type="java.util.List"/>
+
+<bean:define id="existingSampleTypes" name='<%=formName%>' property="existingSampleTypeList" type="java.util.List"/>
 <bean:define id="englishSectionNames" name='<%=formName%>' property="existingEnglishNames" type="String"/>
 <bean:define id="frenchSectionNames" name='<%=formName%>' property="existingFrenchNames" type="String"/>
 
@@ -39,6 +48,7 @@
     int testCount = 0;
     int columnCount = 0;
     int columns = 4;
+    int sampleTypeCount = 0;
 %>
 
 <%
@@ -156,11 +166,12 @@
 
     <table>
         <tr>
-            <th colspan="2" style="text-align: center"><bean:message key="panel.new"/></th>
+            <th colspan="3" style="text-align: center"><bean:message key="panel.new"/></th>
         </tr>
         <tr>
             <td style="text-align: center"><bean:message key="label.english"/></td>
             <td style="text-align: center"><bean:message key="label.french"/></td>
+            <td style="text-align: center"><bean:message key="label.sampleType"/></td>
         </tr>
         <tr>
             <td><span class="requiredlabel">*</span><html:text property="panelEnglishName" name="<%=formName%>" size="40"
@@ -169,7 +180,19 @@
             </td>
             <td><span class="requiredlabel">*</span><html:text property="panelFrenchName" name="<%=formName%>" size="40"
                                                                styleClass="required" onchange="handleInput(this, 'french');"/>
-            </td>
+            </td>             
+            <td>
+                <span class="requiredlabel">*</span>
+                <html:select name='<%= formName %>' property="sampleTypeId" styleClass="required">
+                    <app:optionsCollection name="<%=formName%>" property="existingSampleTypeList" label="value" value="id" />
+                </html:select>
+            </td>        
+        </tr>
+    </table>
+    <table>
+        <tr>
+        </tr>
+        <tr>
         </tr>
     </table>
     <div id="confirmationMessage" style="display:none">
@@ -188,48 +211,60 @@
                onclick='rejectConfirmation();'/>
     </div>
 </div>
-
+<% sampleTypeCount=0; %>
 <h3><bean:message key="panel.existing" /></h3>
+
+<% while(sampleTypeCount < existingPanels.size()){%>
+<b><%=((SampleTypePanel)existingPanels.get(sampleTypeCount)).getTypeOfSampleName() %></b>
+
 <table width="80%">
-    <% while(testCount < testList.size()){%>
     <tr>
-        <td width='<%= 100/columns + "%"%>'><%= ((IdValuePair)testList.get(testCount)).getValue()%>
-            <%
-                testCount++;
-                columnCount = 1;
-            %></td>
-        <% while(testCount < testList.size() && ( columnCount < columns )){%>
-        <td width='<%= 100/columns + "%"%>'><%= ((IdValuePair)testList.get(testCount)).getValue()%>
-            <%
-                testCount++;
-                columnCount++;
-            %></td>
-        <% } %>
-
-    </tr>
-    <% } %>
-</table>
-    <% if( !inactiveTestList.isEmpty()){ %>
-    <h3><bean:message key="panel.existing.inactive" /></h3>
-    <table width="80%">
-        <%  testCount = 0;
-            columnCount = 0;
-            while(testCount < inactiveTestList.size()){%>
-        <tr>
-            <td width='<%= 100/columns + "%"%>'><%= ((IdValuePair)inactiveTestList.get(testCount)).getValue()%>
-                <%
-                    testCount++;
-                    columnCount = 1;
-                %></td>
-            <% while(testCount < inactiveTestList.size() && ( columnCount < columns )){%>
-            <td width='<%= 100/columns + "%"%>'><%= ((IdValuePair)inactiveTestList.get(testCount)).getValue()%>
-                <%
-                    testCount++;
-                    columnCount++;
-                %></td>
+        <td width='100%>'>
+        <% if( ((SampleTypePanel)existingPanels.get(sampleTypeCount)).getPanels() != null){ 
+        
+            testCount=0;
+        %>
+          
+        <% while(testCount < ((SampleTypePanel)existingPanels.get(sampleTypeCount)).getPanels().size()){ %>
+            <% if (testCount != 0) { %>
+                <%=", " %>
             <% } %>
-
-        </tr>
+            <%=((SampleTypePanel)existingPanels.get(sampleTypeCount)).getPanels().get(testCount).getLocalizedName()%>
+            <% testCount++; %>
+        <% } %>  
         <% } %>
-    </table>
-    <% } %>
+         </td>
+    </tr>
+</table>
+<% sampleTypeCount++; %>
+<br>
+<% } %>
+<h3><bean:message key="panel.existing.inactive" /></h3>
+
+<% if( !inactivePanels.isEmpty()){ %>
+<% sampleTypeCount = 0; %>
+<% while(sampleTypeCount < inactivePanels.size()){%>
+<b><%=((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getTypeOfSampleName() %></b>
+ <table width="80%"> 
+     <tr> 
+        <td width="100%">
+        <% if( ((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getPanels() != null){ 
+        
+        	testCount = 0;
+        %>    
+        
+        <% while(testCount < ((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getPanels().size()){%>
+            <% if (testCount != 0) { %>
+                <%=", " %>
+            <% } %>            
+            <%= ((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getPanels().get(testCount).getLocalizedName() %>
+            <% testCount++; %>
+        <% } %>
+        <% } %>
+        </td>
+     </tr> 
+ </table> 
+<% sampleTypeCount++; %>
+<br>
+<% } %>
+<% } %>

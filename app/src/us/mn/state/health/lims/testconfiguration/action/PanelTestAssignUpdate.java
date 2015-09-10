@@ -10,11 +10,13 @@
  * the License.
  *
  * The Original Code is OpenELIS code.
- *
+ *          
  * Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
  */
-
+                                                                                                                                                          
 package us.mn.state.health.lims.testconfiguration.action;
+
+import java.util.List;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -34,6 +36,7 @@ import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
@@ -45,8 +48,9 @@ import javax.servlet.http.HttpServletResponse;
 public class PanelTestAssignUpdate extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        DynaValidatorForm dynaForm = (DynaValidatorForm)form;
-        String testId = dynaForm.getString("testId");
+        
+    	System.out.println("********************************");
+    	DynaValidatorForm dynaForm = (DynaValidatorForm)form;
         String panelId = dynaForm.getString("panelId");
         String deactivatePanelId = dynaForm.getString("deactivatePanelId");
         boolean updatePanel = false;
@@ -54,14 +58,28 @@ public class PanelTestAssignUpdate extends BaseAction {
         
         Panel panel = new PanelDAOImpl().getPanelById(panelId);
         Panel deActivatePanel = null;
-        
-        //Test test = new TestService(testId).getTest();
-        
-
-        //This covers the case that they are moving the test to the same sample type they are moving it from
-        if(panelId.equals(deactivatePanelId)){
-            return mapping.findForward(FWD_SUCCESS);
-        }
+                        
+        if (!GenericValidator.isBlankOrNull(panelId)) {
+        	PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
+        	@SuppressWarnings("unchecked")
+			List<PanelItem> panelItems = panelItemDAO.getPanelItemsForPanel(panelId);
+        	
+        	String[] newTests = (String[]) dynaForm.get("list1");// request.getParameterValues("list1");
+        	
+        	
+        	
+        	System.out.println(newTests + "********************************" + newTests.length);
+            /*
+        	Transaction tx = HibernateUtil.getSession().beginTransaction();
+            try {
+            		panelItemDAO.deleteData(panelItems);
+                    tx.commit();
+            } catch (HibernateException e) {
+                tx.rollback();
+            } finally {
+                HibernateUtil.closeSession();
+            }
+            */
 /*
         PanelItem typeOfSampleTestOld = new PanelItemDAOImpl().getPanelItemByTestId(testId);
         boolean deleteExistingTypeOfSampleTest = false;
@@ -112,6 +130,7 @@ public class PanelTestAssignUpdate extends BaseAction {
             HibernateUtil.closeSession();
         }
 */
+        }
         DisplayListService.refreshList(DisplayListService.ListType.PANELS);
         DisplayListService.refreshList(DisplayListService.ListType.PANELS_INACTIVE);
 

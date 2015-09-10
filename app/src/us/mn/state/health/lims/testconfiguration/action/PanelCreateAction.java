@@ -25,11 +25,22 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
+import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSamplePanel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PanelCreateAction extends BaseAction {
@@ -37,12 +48,30 @@ public class PanelCreateAction extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
-        PropertyUtils.setProperty(form, "existingPanelList", DisplayListService.getList(DisplayListService.ListType.PANELS_ACTIVE));
-        PropertyUtils.setProperty(form, "inactivePanelList", DisplayListService.getList(DisplayListService.ListType.PANELS_INACTIVE));
+
+        HashMap<String, List<Panel>> existingSampleTypePanelMap = PanelTestConfigurationUtil.createTypeOfSamplePanelMap(true);
+        HashMap<String, List<Panel>> inactiveSampleTypePanelMap = PanelTestConfigurationUtil.createTypeOfSamplePanelMap(false);
+        PropertyUtils.setProperty(form, "existingSampleTypeList", DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE));
         List<Panel> panels = new PanelDAOImpl().getAllPanels();
         PropertyUtils.setProperty(form, "existingEnglishNames", getExistingTestNames(panels, ConfigurationProperties.LOCALE.ENGLISH));
         PropertyUtils.setProperty(form, "existingFrenchNames", getExistingTestNames(panels, ConfigurationProperties.LOCALE.FRENCH));
+        
+        List<SampleTypePanel> sampleTypePanelsExists = new ArrayList<SampleTypePanel>();
+        List<SampleTypePanel> sampleTypePanelsInactive = new ArrayList<SampleTypePanel>();
 
+        for (IdValuePair typeOfSample : DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE)) {
+        	SampleTypePanel sampleTypePanel = new SampleTypePanel(typeOfSample.getValue());
+        	sampleTypePanel.setPanels(existingSampleTypePanelMap.get(typeOfSample.getValue()));
+        	sampleTypePanelsExists.add(sampleTypePanel);
+        	SampleTypePanel sampleTypePanelInactive = new SampleTypePanel(typeOfSample.getValue());
+        	sampleTypePanelInactive.setPanels(inactiveSampleTypePanelMap.get(typeOfSample.getValue()));
+        	sampleTypePanelsInactive.add(sampleTypePanelInactive);
+
+        	
+        }
+        PropertyUtils.setProperty(form, "existingPanelList", sampleTypePanelsExists);
+        PropertyUtils.setProperty(form, "inactivePanelList", sampleTypePanelsInactive);
+        
         return mapping.findForward(FWD_SUCCESS);
     }
 
@@ -55,9 +84,8 @@ public class PanelCreateAction extends BaseAction {
         }
 
         return builder.toString();
-    }
-
-
+    }    
+    
     @Override
     protected String getPageTitleKey() {
         return null;

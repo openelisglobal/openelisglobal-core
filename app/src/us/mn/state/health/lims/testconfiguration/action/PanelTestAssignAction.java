@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.testconfiguration.action;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -25,43 +26,63 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.panel.dao.PanelDAO;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestComparator;
+import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class PanelTestAssignAction extends BaseAction {
     @Override  
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ((DynaValidatorForm)form).initialize(mapping);
-        List<IdValuePair> panels = DisplayListService.getListWithLeadingBlank(DisplayListService.ListType.PANELS);
-        LinkedHashMap<IdValuePair, List<IdValuePair>> panelTestsMap = new LinkedHashMap<IdValuePair, List<IdValuePair>>(panels.size());
+    	
+    	DynaValidatorForm dynaForm = (DynaValidatorForm)form;
+    	String panelId = dynaForm.getString("panelId");
+    	if (panelId == null) {
+    		panelId = "";
+    	}
+    	((DynaValidatorForm)form).initialize(mapping);
+        List<IdValuePair> panels = DisplayListService.getList(DisplayListService.ListType.PANELS);
+        //LinkedHashMap<IdValuePair, List<IdValuePair>> panelTestsMap = new LinkedHashMap<IdValuePair, List<IdValuePair>>(panels.size());
+        //List<PanelTests> panelTestList = new ArrayList<PanelTests>();
+        
+        if (!GenericValidator.isBlankOrNull(panelId)) {
+            PanelDAO panelDAO = new PanelDAOImpl();
+            Panel panel = panelDAO.getPanelById(panelId);
+        	IdValuePair panelPair = new IdValuePair(panelId, panel.getLocalizedName());
 
-        for( IdValuePair panelPair : panels){
-            List<IdValuePair> tests = new ArrayList<IdValuePair>();
-            panelTestsMap.put(panelPair, tests );
-            List<Test> testList = getAllTestsByPanelId(panelPair.getId());
+        	List<IdValuePair> tests = new ArrayList<IdValuePair>();
 
+            List<Test> testList = getAllTestsByPanelId(panelId);
+            
+            PanelTests panelTests = new PanelTests(panelPair);
+                        
             for( Test test : testList){
                 if( test.isActive()) {
-                    tests.add(new IdValuePair(test.getId(), TestService.getLocalizedTestNameWithType(test)));
+                    tests.add(new IdValuePair(test.getId(), TestService.getUserLocalizedTestName(test)));
                 }
             }
+            
+            panelTests.setTests(tests);
+            PropertyUtils.setProperty(form, "selectedPanel", panelTests);
+        }  else {
+        	PropertyUtils.setProperty(form, "selectedPanel", new PanelTests());
         }
         
-        //we can't just append the original list because that list is in the cache
-        List<IdValuePair> joinedList = new ArrayList<IdValuePair>(panels);
-        joinedList.addAll(DisplayListService.getList(DisplayListService.ListType.PANELS_INACTIVE));
-        PropertyUtils.setProperty(form, "panelList", joinedList);
-        PropertyUtils.setProperty(form, "panelTestList", panelTestsMap);
+        
+        PropertyUtils.setProperty(form, "panelList", panels);
+        
 
         return mapping.findForward(FWD_SUCCESS);
     }

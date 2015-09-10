@@ -35,8 +35,11 @@ import us.mn.state.health.lims.systemmodule.daoimpl.SystemModuleDAOImpl;
 import us.mn.state.health.lims.systemmodule.valueholder.SystemModule;
 import us.mn.state.health.lims.systemusermodule.daoimpl.RoleModuleDAOImpl;
 import us.mn.state.health.lims.systemusermodule.valueholder.RoleModule;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSamplePanel;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,12 +52,12 @@ public class PanelCreateUpdate extends BaseAction {
         SystemModuleDAO systemModuleDAO = new SystemModuleDAOImpl();
         DynaValidatorForm dynaForm = (DynaValidatorForm)form;
         String identifyingName = dynaForm.getString("panelEnglishName");
+        String sampleTypeId = dynaForm.getString("sampleTypeId");
         String userId = getSysUserId(request);
 
         Localization localization = createLocalization(dynaForm.getString("panelFrenchName"), identifyingName, userId);
 
         Panel panel = createPanel(identifyingName, userId);
-
         SystemModule workplanModule = createSystemModule("Workplan", identifyingName, userId);
         SystemModule resultModule = createSystemModule("LogbookResults", identifyingName, userId);
         SystemModule validationModule = createSystemModule("ResultValidation", identifyingName, userId);
@@ -71,7 +74,12 @@ public class PanelCreateUpdate extends BaseAction {
         try {
             new LocalizationDAOImpl().insert(localization);
             panel.setLocalization(localization);
-            new PanelDAOImpl().insertData(panel);
+            new PanelDAOImpl().insert(panel);
+            
+            TypeOfSamplePanel typeOfSamplePanel = createTypeOfSamplePanel(sampleTypeId, panel, userId);
+            new TypeOfSamplePanelDAOImpl().insertData(typeOfSamplePanel);
+            
+
             systemModuleDAO.insertData(workplanModule);
             systemModuleDAO.insertData(resultModule);
             systemModuleDAO.insertData(validationModule);
@@ -123,6 +131,14 @@ public class PanelCreateUpdate extends BaseAction {
     	panel.setSortOrderInt(Integer.MAX_VALUE);
     	panel.setSysUserId(userId);
     	return panel;
+    }
+
+    private TypeOfSamplePanel createTypeOfSamplePanel(String sampleTypeId, Panel panel, String userId) {
+    	TypeOfSamplePanel sampleTypePanel = new TypeOfSamplePanel();
+    	sampleTypePanel.setPanelId(panel.getId());
+    	sampleTypePanel.setTypeOfSampleId(sampleTypeId);
+    	sampleTypePanel.setSysUserId(userId);
+    	return sampleTypePanel;
     }
 
     private SystemModule createSystemModule(String menuItem, String identifyingName, String userId) {
