@@ -29,6 +29,7 @@ import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.panel.valueholder.PanelSortOrderComparator;
 import us.mn.state.health.lims.qaevent.dao.QaEventDAO;
 import us.mn.state.health.lims.qaevent.daoimpl.QaEventDAOImpl;
 import us.mn.state.health.lims.qaevent.valueholder.QaEvent;
@@ -39,8 +40,11 @@ import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
+import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSamplePanel;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
@@ -334,11 +338,11 @@ public class DisplayListService implements LocaleChangeListener {
                 break;
             }
             case PANELS_ACTIVE: {
-                typeToListMap.put(ListType.PANELS, createPanelList(false));
+                typeToListMap.put(ListType.PANELS_ACTIVE, createPanelList(false));
                 break;
             }
             case PANELS_INACTIVE: {
-                typeToListMap.put(ListType.PANELS, createPanelList(true));
+                typeToListMap.put(ListType.PANELS_INACTIVE, createPanelList(true));
                 break;
             }
         }
@@ -401,11 +405,12 @@ public class DisplayListService implements LocaleChangeListener {
         ArrayList<IdValuePair> panels = new ArrayList<IdValuePair>(  );
 
         List<Panel> panelList = new PanelDAOImpl().getAllActivePanels();
+        
+        Collections.sort(panelList, PanelSortOrderComparator.SORT_ORDER_COMPARATOR);
         for(Panel panel : panelList) {
             panels.add(new IdValuePair(panel.getId(), panel.getLocalizedName() ) );
         }
 
-        IdValuePair.sortByValue(panels);
         return panels;
     }
 
@@ -483,7 +488,7 @@ public class DisplayListService implements LocaleChangeListener {
 	private static List<IdValuePair> createPanelList(boolean inactiveTypes) {
 		PanelDAO panelDAO = new PanelDAOImpl();
 		List<Panel> list = panelDAO.getAllPanels();
-
+		Collections.sort(list, PanelSortOrderComparator.SORT_ORDER_COMPARATOR);
 		List<IdValuePair> filteredList = new ArrayList<IdValuePair>();
 
 		for (Panel panel : list) {
@@ -494,7 +499,7 @@ public class DisplayListService implements LocaleChangeListener {
 
 		return filteredList;
 	}
-	
+		
 	private static List<IdValuePair> createHourList() {
 		List<IdValuePair> hours = new ArrayList<IdValuePair>();
 

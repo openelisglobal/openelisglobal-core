@@ -6,6 +6,10 @@
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 <%@ page import="java.util.List" %>
+<%@ page import="us.mn.state.health.lims.panel.valueholder.Panel" %>
+<%@ page import="us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample" %>
+<%@ page import="us.mn.state.health.lims.testconfiguration.action.PanelTests" %>
+<%@ page import="us.mn.state.health.lims.test.valueholder.Test" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -97,10 +101,8 @@
     }
 
     function panelSelected( selection){
-        var optionId = $jq(selection).val();
-        $jq("#saveButton").attr("disabled", (0 == optionId));
-        $jq("#toPanel").text($jq("#option_" + optionId).text());
-        $jq("#panelId").val(optionId);
+   	    window.location.href = "PanelTestAssign.do?panelId=" + selection.value ;
+
     }
 
     function confirmValues() {
@@ -127,14 +129,29 @@
 
 
     function savePage() {
-        window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
+        //window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
         var form = window.document.forms[0];
         form.action = "PanelTestAssignUpdate.do";
         form.submit();
     }
+    
+    $jq(function(){
+        $jq("#button1").click(function(){
+            $jq("#list1 > option:selected").each(function(){
+                $jq(this).remove().appendTo("#list2");
+            });
+        });
+        
+        $jq("#button2").click(function(){
+            $jq("#list2 > option:selected").each(function(){
+                $jq(this).remove().appendTo("#list1");
+            });
+        });
+    });
 </script>
-    <html:hidden name="<%=formName%>" property="testId" styleId="testId"/>
-    <html:hidden name="<%=formName%>" property="panelId" styleId="panelId"/>
+    <bean:define id="selectedPanel" name='<%=formName%>' property="selectedPanel" type="us.mn.state.health.lims.testconfiguration.action.PanelTests"/>
+    
+    <html:hidden name="<%=formName%>" property="panelId" styleId="panelId" value="<%=(selectedPanel.getPanelIdValuePair() != null ? selectedPanel.getPanelIdValuePair().getId() : new String()) %>"/>
     <html:hidden name="<%=formName%>" property="deactivatePanelId" styleId="deactivatePanelId"/>
 
     <input type="button" value='<%= StringUtil.getMessageForKey("banner.menu.administration") %>'
@@ -155,20 +172,19 @@
     <h2><bean:message key="configuration.testUnit.assign"/> </h2>
 
     <div class="select-step" >
-        <bean:message key="configuration.panel.assign.explain" />
+    Panel:<html:select name='<%= formName %>' property="panelId" 
+         onchange="panelSelected(this);" >
+        <app:optionsCollection name="<%=formName%>" property="panelList" label="value" value="id" />
+    </html:select>
+<br>
+
+    
+                
     </div>
     <div class="edit-step" style="display:none">
 
         Test: <span class="selectedTestName" ></span><br><br>
         &nbsp;&nbsp;<bean:message key="configuration.panel.assign.new.type" />:&nbsp;
-    <select id="panelSelection" onchange="panelSelected(this);">
-
-        <% for(int i = 0; i < panelList.size(); i++){
-            IdValuePair panel = (IdValuePair)panelList.get(i);
-        %>
-        <option id='<%="option_" + panel.getId()%>' value="<%=panel.getId()%>"><%=panel.getValue()%></option>
-        <% } %>
-    </select>
 
     <div class="confirmation-step" style="display:none">
         <br><span class="selectedTestName" ></span>&nbsp;<bean:message key="configuration.testUnit.confirmation.move.phrase" />&nbsp;<span id="fromPanel" ></span> <bean:message key="word.to" /> <span id="toPanel" ></span>.
@@ -190,39 +206,51 @@
                onclick='rejectConfirmation();'/>
     </div>
 </div>
-    <bean:define id="testMap" name='<%=formName%>' property="panelTestList" type="java.util.LinkedHashMap<IdValuePair, java.util.List<IdValuePair>>"/>
 
-<% for( IdValuePair pair : testMap.keySet()){
- List<IdValuePair> testList = testMap.get(pair);
- %>
-    <div>
-        <h4><%=pair.getValue()%></h4>
-        <% testCount = 0;%>
-        <table width="95%" style="position:relative;left:5%">
-            <% while (testCount < testList.size()) {%>
-            <tr>
-                <%
-                    columnCount = 0;
-                %>
-                <% while (testCount < testList.size() && (columnCount < columns)) {%>
-                <td width='<%=columnSize + "%"%>'>
-                    <input type="button"
-                           class="textButton test"
-                           value='<%=testList.get(testCount).getValue()%>'
-                           onclick="testSelected(this, '<%=testList.get(testCount).getId() %>', '<%=pair.getValue()%>', <%= testList.size() == 1 %>, '<%=pair.getId()%>')"
-                           checked>
-                    <%
-                        testCount++;
-                        columnCount++;
-                    %></td>
-                <% } %>
-                <% while (columnCount < columns) {
-                    columnCount++; %>
-                <td width='<%=columnSize + "%"%>'></td>
-                <% } %>
-            </tr>
-            <% } %>
-        </table>
 
-    </div>
-<%}%>
+<% if (selectedPanel.getPanelIdValuePair()!= null )  {%>
+
+<table style="width:80%">
+<tr>
+<td >
+<div>
+    <h3><%=selectedPanel.getPanelIdValuePair().getValue() %> Tests</h3>
+ 
+    <select  style="height:200px;line-height:200px;width:100%;" id="list1" multiple="multiple" property="list1">
+        <% for (IdValuePair panelTest : selectedPanel.getTests()) {%>
+            <%="<option value='" + panelTest.getId() + "'>" + panelTest.getValue() + "</option>" %>
+        <%} %>
+    </select>
+    
+    
+</div>
+</td>
+<td align="center" valign="middle">
+<input id="button2" type="button" value="&lt" /><br>
+<input id="button1" type="button" value="&gt" />
+</td>
+<td>
+<div>
+     <h3>Available Tests (<%=selectedPanel.getSampleTypeIdValuePair().getValue() %>)</h3>
+    <select style="height:200px;line-height:200px;width:100%;" id="list2" multiple="multiple" style="width:100%;" property="list2">
+        <% for (IdValuePair availableTest : selectedPanel.getAvailableTests()) {%>
+            <%="<option value='" + availableTest.getId() + "'>" + availableTest.getValue() + "</option>" %>
+        <%} %>     
+    </select>
+
+
+</div>
+</td>
+</tr>
+<tr>
+<td colspan="3" align="right">
+
+        <input type="button" value='Save'
+           onclick="savePage();"
+           />
+</td>
+</tr>
+
+</table>
+<%} %>
+</form>

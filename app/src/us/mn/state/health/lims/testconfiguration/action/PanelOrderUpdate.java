@@ -53,7 +53,7 @@ public class PanelOrderUpdate extends BaseAction {
         PanelDAO panelDAO = new PanelDAOImpl();
         for (ActivateSet sets : orderSet) {
             Panel panel = panelDAO.getPanelById(sets.id);
-            panel.setSortOrder(sets.sortOrder.toString());
+            panel.setSortOrderInt(sets.sortOrder); 
             panel.setSysUserId(currentUserId);
             panels.add(panel);
         }

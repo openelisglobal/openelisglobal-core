@@ -52,6 +52,14 @@
                    onclick="submitAction('SampleTypeRenameEntry.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.type.rename.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.testSection.rename") %>"
+                   onclick="submitAction('TestSectionRenameEntry.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.testSection.rename.explain")%></li>   
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.uom.rename") %>"
+                   onclick="submitAction('UomRenameEntry.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.uom.rename.explain")%></li>           
     </ul>
     <h3><bean:message key="configuration.test.management.organization" /></h3>
     <ul>

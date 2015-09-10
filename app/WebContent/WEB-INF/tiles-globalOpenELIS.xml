@@ -293,6 +293,14 @@
         <put name="body" value="/pages/testConfiguration/panelRename.jsp"/>
     </definition>
 
+    <definition name="testSectionRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testSectionRename.jsp"/>
+    </definition>
+
+    <definition name="uomRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/unitOfMeasureRename.jsp"/>
+    </definition>
+
     <definition name="sampleTypeRenameDefinition" extends="baseMenuDefinition">
         <put name="body" value="/pages/testConfiguration/sampleTypeRename.jsp"/>
     </definition>

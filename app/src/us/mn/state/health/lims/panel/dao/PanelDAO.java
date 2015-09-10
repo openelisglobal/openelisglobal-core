@@ -62,4 +62,6 @@ public interface PanelDAO extends BaseDAO {
 
 	public Panel getPanelById(String id) throws LIMSRuntimeException;
 
+	void insert(Panel panel) throws LIMSRuntimeException;
+
 }

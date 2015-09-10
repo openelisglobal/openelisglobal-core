@@ -5,6 +5,11 @@
 <%@ page import="us.mn.state.health.lims.common.util.IdValuePair" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="java.util.List" %>
+<%@ page import="us.mn.state.health.lims.panel.valueholder.Panel" %>
+<%@ page import="us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample" %>
+<%@ page import="us.mn.state.health.lims.testconfiguration.action.SampleTypePanel" %>
+
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -26,11 +31,19 @@
   ~ Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
   --%>
 
+
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/jquery-ui.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
 <bean:define id="panelList" name='<%=formName%>' property="panelList" type="java.util.List"/>
+<bean:define id="testList" name='<%=formName%>' property="existingPanelList" type="java.util.List"/>
+<bean:define id="inactiveTestList" name='<%=formName%>' property="inactivePanelList" type="java.util.List"/>
+
+<bean:define id="existingPanels" name='<%=formName%>' property="existingPanelList" type="java.util.List"/>
+<bean:define id="inactivePanels" name='<%=formName%>' property="inactivePanelList" type="java.util.List"/>
+
+<bean:define id="existingSampleTypes" name='<%=formName%>' property="existingSampleTypeList" type="java.util.List"/>
 
 
 <%!
@@ -38,6 +51,7 @@
     int testCount = 0;
     int columnCount = 0;
     int columns = 4;
+    int sampleTypeCount = 0;
 %>
 
 <%
@@ -160,4 +174,61 @@
                onclick='rejectConfirmation();'/>
     </div>
 </div>
+<% sampleTypeCount=0; %>
+<h3><bean:message key="panel.existing" /></h3>
+
+<% while(sampleTypeCount < existingPanels.size()){%>
+<b><%=((SampleTypePanel)existingPanels.get(sampleTypeCount)).getTypeOfSampleName() %></b>
+
+<table width="80%">
+    <tr>
+        <td width='100%>'>
+        <% if( ((SampleTypePanel)existingPanels.get(sampleTypeCount)).getPanels() != null){ 
+        
+            testCount=0;
+        %>
+        &nbsp;&nbsp;          
+        <% while(testCount < ((SampleTypePanel)existingPanels.get(sampleTypeCount)).getPanels().size()){ %>
+            <% if (testCount != 0) { %>
+                <%=", " %>
+            <% } %>
+            <%=((SampleTypePanel)existingPanels.get(sampleTypeCount)).getPanels().get(testCount).getLocalizedName()%>
+            <% testCount++; %>
+        <% } %>  
+        <% } %>
+         </td>
+    </tr>
+</table>
+<% sampleTypeCount++; %>
+<br>
+<% } %>
+<h3><bean:message key="panel.existing.inactive" /></h3>
+
+<% if( !inactivePanels.isEmpty()){ %>
+<% sampleTypeCount = 0; %>
+<% while(sampleTypeCount < inactivePanels.size()){%>
+<b><%=((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getTypeOfSampleName() %></b>
+ <table width="80%"> 
+     <tr> 
+        <td width="100%">
+        <% if( ((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getPanels() != null){ 
+        
+            testCount = 0;
+        %>    
+        &nbsp;&nbsp;
+        <% while(testCount < ((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getPanels().size()){%>
+            <% if (testCount != 0) { %>
+                <%=", " %>
+            <% } %>            
+            <%= ((SampleTypePanel)inactivePanels.get(sampleTypeCount)).getPanels().get(testCount).getLocalizedName() %>
+            <% testCount++; %>
+        <% } %>
+        <% } %>
+        </td>
+     </tr> 
+ </table> 
+<% sampleTypeCount++; %>
+<br>
+<% } %>
+<% } %>
 
