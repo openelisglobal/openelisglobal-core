@@ -2,11 +2,16 @@ package us.mn.state.health.lims.testconfiguration.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSamplePanel;
 
 public class PanelTests {
 	private IdValuePair panelIdValuePair;
@@ -16,8 +21,13 @@ public class PanelTests {
 	
 	public PanelTests(IdValuePair panelPair) {
 		this.panelIdValuePair = panelPair;
-		List<TypeOfSample> typeOfSamples = TypeOfSampleService.getTypeOfSampleForPanelId(panelPair.getId());
-		
+		List<TypeOfSample> typeOfSamples = new ArrayList<TypeOfSample>(); 
+		TypeOfSamplePanelDAO typeOfSamplePanelDAO = new TypeOfSamplePanelDAOImpl();
+		List<TypeOfSamplePanel> typeOfSamplePanels = typeOfSamplePanelDAO.getTypeOfSamplePanelsForPanel(panelPair.getId());
+
+		for( TypeOfSamplePanel typeOfSamplePanel : typeOfSamplePanels){
+			typeOfSamples.add(new TypeOfSampleDAOImpl().getTypeOfSampleById(typeOfSamplePanel.getTypeOfSampleId()));
+		}
 		if (typeOfSamples != null && typeOfSamples.size() > 0) {
 			TypeOfSample typeOfSample = (TypeOfSample) typeOfSamples.get(0);
 			this.sampleTypeIdValuePair = new IdValuePair(typeOfSample.getId(), typeOfSample.getLocalizedName());
@@ -50,11 +60,14 @@ public class PanelTests {
 		return tests;
 	}
 
-	public void setTests(List<IdValuePair> tests) {
+	public void setTests(List<IdValuePair> tests, Set<String> testIdSet) {
 		this.tests = tests;
 		List<Test> allTests = TypeOfSampleService.getAllTestsBySampleTypeId(this.sampleTypeIdValuePair.getId());
+		
 		for (Test test : allTests) {
-			this.availableTests.add(new IdValuePair(test.getId(), test.getLocalizedName()));
+			if (!testIdSet.contains(test.getId())) {
+				this.availableTests.add(new IdValuePair(test.getId(), test.getLocalizedName()));
+			}
 		}
 		
 	}

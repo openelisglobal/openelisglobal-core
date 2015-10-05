@@ -26,15 +26,10 @@ import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
-import us.mn.state.health.lims.common.services.TestSectionService;
-import us.mn.state.health.lims.common.services.TestService;
-import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
+import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
-import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
@@ -49,91 +44,49 @@ public class PanelTestAssignUpdate extends BaseAction {
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-    	System.out.println("********************************");
     	DynaValidatorForm dynaForm = (DynaValidatorForm)form;
         String panelId = dynaForm.getString("panelId");
-        String deactivatePanelId = dynaForm.getString("deactivatePanelId");
-        boolean updatePanel = false;
         String currentUser = getSysUserId(request);
         
         Panel panel = new PanelDAOImpl().getPanelById(panelId);
-        Panel deActivatePanel = null;
                         
         if (!GenericValidator.isBlankOrNull(panelId)) {
         	PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
         	@SuppressWarnings("unchecked")
 			List<PanelItem> panelItems = panelItemDAO.getPanelItemsForPanel(panelId);
         	
-        	String[] newTests = (String[]) dynaForm.get("list1");// request.getParameterValues("list1");
-        	
-        	
-        	
-        	System.out.println(newTests + "********************************" + newTests.length);
-            /*
+        	String[] newTests = (String[]) dynaForm.get("currentTests");
+            
         	Transaction tx = HibernateUtil.getSession().beginTransaction();
             try {
-            		panelItemDAO.deleteData(panelItems);
-                    tx.commit();
+            	for (PanelItem oldPanelItem : panelItems) {
+            		oldPanelItem.setSysUserId(currentUser);
+            	}
+        		panelItemDAO.deleteData(panelItems);
+                
+        		for (String testId : newTests) {
+        			PanelItem panelItem = new PanelItem();
+        			panelItem.setPanel(panel);
+        			TestDAO testDAO = new TestDAOImpl();
+        			panelItem.setTest(testDAO.getTestById(testId));
+        			panelItem.setLastupdatedFields();
+        			panelItem.setSysUserId(currentUserId);
+        			new PanelItemDAOImpl().insertData(panelItem);
+        		}
+        		
+        		tx.commit();
             } catch (HibernateException e) {
                 tx.rollback();
             } finally {
                 HibernateUtil.closeSession();
             }
-            */
-/*
-        PanelItem typeOfSampleTestOld = new PanelItemDAOImpl().getPanelItemByTestId(testId);
-        boolean deleteExistingTypeOfSampleTest = false;
-        String[] typeOfSamplesTestIDs = new String[1];
-        
-        if (typeOfSampleTestOld != null) {       	
-        	typeOfSamplesTestIDs[0] = typeOfSampleTestOld.getId();
-        	deleteExistingTypeOfSampleTest = true;
-        }
-        
-        if( "N".equals(typeOfSample.getIsActive())){
-        	typeOfSample.setIsActive(true);
-        	typeOfSample.setSysUserId(currentUser);
-        	updateTypeOfSample = true;
-        }
-
-        if( !GenericValidator.isBlankOrNull(deactivatePanelId) ){
-        	deActivateTypeOfSample  = TypeOfSampleService.getTransientTypeOfSampleById(deactivatePanelId);
-        	deActivateTypeOfSample.setIsActive(false);
-        	deActivateTypeOfSample.setSysUserId(currentUser);
-        }
-
-        Transaction tx = HibernateUtil.getSession().beginTransaction();
-        try {
-        	if (deleteExistingTypeOfSampleTest) {
-        		new TypeOfSampleTestDAOImpl().deleteData(typeOfSamplesTestIDs, currentUser);
-        	}
-
-            if(updateTypeOfSample){
-                new TypeOfSampleDAOImpl().updateData(typeOfSample);
-            }            
             
-            TypeOfSampleTest typeOfSampleTest = new TypeOfSampleTest();
-            typeOfSampleTest.setTestId(testId);
-            typeOfSampleTest.setTypeOfSampleId(panelId);
-            typeOfSampleTest.setSysUserId(currentUser);
-            typeOfSampleTest.setLastupdatedFields();
-            
-            new TypeOfSampleTestDAOImpl().insertData(typeOfSampleTest);
-        
-            if( deActivateTypeOfSample != null){
-                new TypeOfSampleDAOImpl().updateData(deActivateTypeOfSample);
-            }
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-        } finally {
-            HibernateUtil.closeSession();
-        }
-*/
         }
         DisplayListService.refreshList(DisplayListService.ListType.PANELS);
         DisplayListService.refreshList(DisplayListService.ListType.PANELS_INACTIVE);
 
+		setSuccessFlag(request);
+        
         return mapping.findForward(FWD_SUCCESS);
     }
 

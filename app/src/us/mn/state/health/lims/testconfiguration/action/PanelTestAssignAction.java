@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class PanelTestAssignAction extends BaseAction {
@@ -54,8 +55,6 @@ public class PanelTestAssignAction extends BaseAction {
     	}
     	((DynaValidatorForm)form).initialize(mapping);
         List<IdValuePair> panels = DisplayListService.getList(DisplayListService.ListType.PANELS);
-        //LinkedHashMap<IdValuePair, List<IdValuePair>> panelTestsMap = new LinkedHashMap<IdValuePair, List<IdValuePair>>(panels.size());
-        //List<PanelTests> panelTestList = new ArrayList<PanelTests>();
         
         if (!GenericValidator.isBlankOrNull(panelId)) {
             PanelDAO panelDAO = new PanelDAOImpl();
@@ -67,14 +66,16 @@ public class PanelTestAssignAction extends BaseAction {
             List<Test> testList = getAllTestsByPanelId(panelId);
             
             PanelTests panelTests = new PanelTests(panelPair);
-                        
+            HashSet<String> testIdSet = new HashSet<String>();
+            
             for( Test test : testList){
                 if( test.isActive()) {
                     tests.add(new IdValuePair(test.getId(), TestService.getUserLocalizedTestName(test)));
+                    testIdSet.add(test.getId());
                 }
             }
             
-            panelTests.setTests(tests);
+            panelTests.setTests(tests, testIdSet);
             PropertyUtils.setProperty(form, "selectedPanel", panelTests);
         }  else {
         	PropertyUtils.setProperty(form, "selectedPanel", new PanelTests());
@@ -83,7 +84,6 @@ public class PanelTestAssignAction extends BaseAction {
         
         PropertyUtils.setProperty(form, "panelList", panels);
         
-
         return mapping.findForward(FWD_SUCCESS);
     }
 
