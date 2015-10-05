@@ -45,12 +45,16 @@
     int columnCount = 0;
     int columns = 3;
     int columnSize = (int) (100 / columns);
+    Boolean success = false;
 %>
 
 <%
     basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
     columnCount = 0;
     testCount = 0;
+    success = (Boolean)request.getAttribute("success");
+    
+
 %>
 
 <link rel="stylesheet" media="screen" type="text/css"
@@ -130,6 +134,7 @@
 
     function savePage() {
         //window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
+        $jq('#list1 option').prop('selected', true);
         var form = window.document.forms[0];
         form.action = "PanelTestAssignUpdate.do";
         form.submit();
@@ -139,16 +144,25 @@
         $jq("#button1").click(function(){
             $jq("#list1 > option:selected").each(function(){
                 $jq(this).remove().appendTo("#list2");
+                $jq('#list2 option').prop('selected', false);
             });
         });
         
         $jq("#button2").click(function(){
             $jq("#list2 > option:selected").each(function(){
                 $jq(this).remove().appendTo("#list1");
+                $jq('#list1 option').prop('selected', false);
             });
         });
     });
+    
+
 </script>
+
+<div id="successMsg" style="text-align:center; color:seagreen;  width : 100%;font-size:170%; visibility : <%=((success != null && success) ? "visible" : "hidden") %>" >
+                <bean:message key="save.success"/>
+</div>
+
     <bean:define id="selectedPanel" name='<%=formName%>' property="selectedPanel" type="us.mn.state.health.lims.testconfiguration.action.PanelTests"/>
     
     <html:hidden name="<%=formName%>" property="panelId" styleId="panelId" value="<%=(selectedPanel.getPanelIdValuePair() != null ? selectedPanel.getPanelIdValuePair().getId() : new String()) %>"/>
@@ -215,8 +229,8 @@
 <td >
 <div>
     <h3><%=selectedPanel.getPanelIdValuePair().getValue() %> Tests</h3>
- 
-    <select  style="height:200px;line-height:200px;width:100%;" id="list1" multiple="multiple" property="list1">
+
+    <select name='currentTests' style="height:200px;line-height:200px;width:100%;" id="list1" multiple="multiple" property="currentTests">
         <% for (IdValuePair panelTest : selectedPanel.getTests()) {%>
             <%="<option value='" + panelTest.getId() + "'>" + panelTest.getValue() + "</option>" %>
         <%} %>
@@ -232,7 +246,7 @@
 <td>
 <div>
      <h3>Available Tests (<%=selectedPanel.getSampleTypeIdValuePair().getValue() %>)</h3>
-    <select style="height:200px;line-height:200px;width:100%;" id="list2" multiple="multiple" style="width:100%;" property="list2">
+    <select name='availableTests' style="height:200px;line-height:200px;width:100%;" id="list2" multiple="multiple" style="width:100%;" property="availableTests">
         <% for (IdValuePair availableTest : selectedPanel.getAvailableTests()) {%>
             <%="<option value='" + availableTest.getId() + "'>" + availableTest.getValue() + "</option>" %>
         <%} %>     

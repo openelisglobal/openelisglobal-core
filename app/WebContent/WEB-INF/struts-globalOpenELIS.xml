@@ -796,8 +796,8 @@
             <form-property name="panelTestList" type="java.util.List" />
             <form-property name="panelId" type="java.lang.String" initial="" />
             <form-property name="deactivatePanelId" type="java.lang.String" initial="" />
-            <form-property name="list1" type="java.lang.String[]" />
-            <form-property name="list2" type="java.lang.String[]" />
+            <form-property name="currentTests" type="java.lang.String[]" />
+            <form-property name="availableTests" type="java.lang.String[]" />
         </form-bean>
 
        <form-bean name="panelRenameEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -882,7 +882,7 @@
                 <forward name="success" path="testManagementConfigDefinition"  />
         </action>
 
-        <action path="/TestEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameAction" >
+        <action path="/TestRenameEntry" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameAction" >
             <forward name="success" path="testRenameDefinition" />
         </action>
 

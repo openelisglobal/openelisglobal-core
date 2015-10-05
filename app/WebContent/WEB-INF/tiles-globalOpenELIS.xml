@@ -362,6 +362,7 @@
     </definition>
 
     <definition name="panelAssignDefinition" extends="baseMenuDefinition" >
+        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
         <put name="body" value="/pages/testConfiguration/panelAssign.jsp" />
     </definition>
     
