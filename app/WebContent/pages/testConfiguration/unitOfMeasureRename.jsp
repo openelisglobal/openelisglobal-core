@@ -76,7 +76,7 @@
             element.addClass("disabled-text-button");
         });
 
-        getEntityNames(uomId, "<%=EntityNamesProvider.PANEL%>", uomNameSuccess );
+        getEntityNames(uomId, "<%=EntityNamesProvider.UNIT_OF_MEASURE%>", uomNameSuccess );
     }
 
     function uomNameSuccess(xhr) {
@@ -159,7 +159,7 @@
     function savePage() {
         window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
         var form = window.document.forms[0];
-        form.action = "PanelRenameUpdate.do";
+        form.action = "UomRenameUpdate.do";
         form.submit();
     }
 </script>
@@ -187,12 +187,12 @@
         <tr>
             <td></td>
             <td style="text-align: center"><bean:message key="label.english"/></td>
-            <td style="text-align: center"><bean:message key="label.french"/></td>
+            
         </tr>
         <tr>
             <td style="padding-right: 20px"><bean:message key="label.current"/>:</td>
             <td id="nameEnglish" style="padding-left: 10px"></td>
-            <td id="nameFrench" style="padding-left: 10px"></td>
+            
         </tr>
         <tr>
             <td style="padding-right: 20px"><bean:message key="label.new"/>:</td>
@@ -200,9 +200,7 @@
                                                                styleClass="required"
                                                                onchange="handleInput(this);"/>
             </td>
-            <td><span class="requiredlabel">*</span><html:text property="nameFrench" name="<%=formName%>" size="40"
-                                                               styleClass="required" onchange="handleInput(this);"/>
-            </td>
+           
         </tr>
     </table>
     <div style="text-align: center" id="editButtons">

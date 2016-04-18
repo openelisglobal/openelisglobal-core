@@ -76,7 +76,7 @@
             element.addClass("disabled-text-button");
         });
 
-        getEntityNames(testSectionId, "<%=EntityNamesProvider.PANEL%>", testSectionNameSuccess );
+        getEntityNames(testSectionId, "<%=EntityNamesProvider.TEST_SECTION%>", testSectionNameSuccess );
     }
 
     function testSectionNameSuccess(xhr) {
@@ -159,7 +159,7 @@
     function savePage() {
         window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
         var form = window.document.forms[0];
-        form.action = "PanelRenameUpdate.do";
+        form.action = "TestSectionRenameUpdate.do";
         form.submit();
     }
 </script>
@@ -177,7 +177,7 @@
 <div id="editDiv" style="display: none">
     <h1 id="action"><bean:message key="label.button.edit"/></h1>
 
-    <h2><%=StringUtil.getMessageForKey( "testSection.browse.title" )%>: <span id="testSectionName"></span></h2>
+    <h2><%=StringUtil.getMessageForKey( "testsection.browse.title" )%>: <span id="testSectionName"></span></h2>
     <br>
     <table>
         <tr>
