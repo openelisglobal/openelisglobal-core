@@ -23,6 +23,7 @@ import org.apache.commons.validator.GenericValidator;
 
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.util.StringUtil;
 
 public class PageIdentityUtil {
 
@@ -43,6 +44,16 @@ public class PageIdentityUtil {
 		String actionName = null;
 
 		actionName = (String) request.getAttribute(IActionConstants.ACTION_KEY);
+		
+		String localizedName = StringUtil.getContextualMessageForKey("dictionary.result.Positif_VIH_2");
+		System.out.println("gnrTest: " + localizedName);
+		
+		if (actionName == null) {
+			System.out.println("actionName is null");
+			actionName = "dummy";
+		} else {
+			System.out.println("actionName is " + actionName);
+		}
 
 		if (actionName.equals("QuickEntryAddTestPopup")) {
 			actionName = "QuickEntry";
