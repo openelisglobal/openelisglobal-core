@@ -16,6 +16,8 @@
 package us.mn.state.health.lims.unitofmeasure.valueholder;
 
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
+import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.localization.valueholder.Localization;
 
 
 public class UnitOfMeasure extends EnumValueItemImpl {
@@ -25,6 +27,8 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 	private String unitOfMeasureName;
 
 	private String description;
+	
+	private ValueHolderInterface localization;
 
 	public UnitOfMeasure() {
 		super();
@@ -59,5 +63,23 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 	@Override
 	protected String getDefaultLocalizedName(){
 		return getUnitOfMeasureName();
+	}
+	
+	public Localization getLocalization() {
+//		return (Localization)localization.getValue();
+//		
+//		UOM has been designed to support localization, 
+//		this method is the break point, to support localization
+//		add columns to database table and Hibernation interface
+//		then call localization.getValue above
+//		
+		
+		Localization _localization = new Localization();
+		_localization.setId(this.getId());
+		_localization.setDescription(this.getDescription());
+		_localization.setEnglish(this.getDefaultLocalizedName());
+		_localization.setFrench("French");
+		
+		return (Localization)_localization;
 	}
 }

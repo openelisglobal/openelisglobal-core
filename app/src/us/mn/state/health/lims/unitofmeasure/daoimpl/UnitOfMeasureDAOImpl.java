@@ -195,6 +195,38 @@ public class UnitOfMeasureDAOImpl extends BaseDAOImpl implements UnitOfMeasureDA
 
 		return list;
 	}
+	
+	public List<UnitOfMeasure> getAllActiveUnitOfMeasures() {
+		List list;
+		try {
+			String sql = "from UnitOfMeasure";
+			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+			//query.setMaxResults(10);
+			//query.setFirstResult(3);				
+			list = query.list();
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+		} catch (Exception e) {
+			//bugzilla 2154
+			LogEvent.logError("UnitOfMeasureDAOImpl","getAllUnitOfMeasures()",e.toString());
+			throw new LIMSRuntimeException("Error in UnitOfMeasure getAllUnitOfMeasures()", e);
+		}
+
+		return list;		
+	}
+//		String sql = "from TestSection t where t.isActive = 'Y' order by t.sortOrderInt";
+//		
+//		try {
+//			Query query = HibernateUtil.getSession().createQuery(sql);
+//			@SuppressWarnings("unchecked")
+//			List<TestSection> sections = query.list();
+//			closeSession();
+//			return sections;
+//		} catch (HibernateException e) {
+//			handleException(e, "getAllActiveTestSections");
+//		}
+//		return null;
+//	}
 
 	public List getPageOfUnitOfMeasures(int startingRecNo) throws LIMSRuntimeException {
 		List list;

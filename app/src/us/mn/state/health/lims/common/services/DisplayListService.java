@@ -345,6 +345,11 @@ public class DisplayListService implements LocaleChangeListener {
                 typeToListMap.put(ListType.PANELS_INACTIVE, createPanelList(true));
                 break;
             }
+            case UNIT_OF_MEASURE: {
+            	UnitOfMeasureService.refreshNames();
+                typeToListMap.put(ListType.UNIT_OF_MEASURE, createUnitOfMeasureList());
+                break;
+            }
         }
     }
 
@@ -562,6 +567,17 @@ public class DisplayListService implements LocaleChangeListener {
 		}
 		
 		return testSectionsPairs;
+	}
+	
+	private static List<IdValuePair> createUnitOfMeasureList() {
+		List<IdValuePair> unitOfMeasuresPairs = new ArrayList<IdValuePair>();
+		List<UnitOfMeasure> unitOfMeasures = new UnitOfMeasureDAOImpl().getAllActiveUnitOfMeasures();
+		
+		for(UnitOfMeasure unitOfMeasure : unitOfMeasures){
+			unitOfMeasuresPairs.add(new IdValuePair(unitOfMeasure.getId(), unitOfMeasure.getLocalizedName()));
+		}
+		
+		return unitOfMeasuresPairs;
 	}
 
 	private static List<IdValuePair> createTypeOfSampleList() {
