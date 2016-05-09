@@ -20,6 +20,7 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.LocaleChangeListener;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.localization.valueholder.Localization;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
@@ -187,6 +188,11 @@ public class TestService implements LocaleChangeListener{
 
         return panelList;
     }
+    
+    public List<Panel> getAllPanels(){
+        return new PanelDAOImpl().getAllPanels();
+    }    
+    
     public TestSection getTestSection(){
         return test == null ? null : test.getTestSection();
     }

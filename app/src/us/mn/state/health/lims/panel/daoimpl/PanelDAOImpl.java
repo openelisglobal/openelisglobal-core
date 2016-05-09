@@ -35,6 +35,7 @@ import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
+import us.mn.state.health.lims.localization.valueholder.Localization;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 
@@ -85,6 +86,22 @@ public class PanelDAOImpl extends BaseDAOImpl implements PanelDAO {
 		
 		clearIDMaps();
 	}
+	
+    @Override
+    public void insert(Panel panel) throws LIMSRuntimeException {
+        try {
+            String id = (String) HibernateUtil.getSession().save(panel);
+            panel.setId(id);
+
+            new AuditTrailDAOImpl().saveNewHistory(panel, panel.getSysUserId(), "PANEL");
+
+            HibernateUtil.getSession().flush();
+            HibernateUtil.getSession().clear();
+        } catch (Exception e) {
+            handleException(e, "insert");
+        }
+    }
+
 
 	public boolean insertData(Panel panel) throws LIMSRuntimeException {
 		try {
@@ -223,6 +240,23 @@ public class PanelDAOImpl extends BaseDAOImpl implements PanelDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Panel> getAllPanels() throws LIMSRuntimeException {
+		try {
+			String sql = "from Panel p order by p.sortOrderInt";
+			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+
+			List<Panel>list = query.list();
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+			return list;
+		} catch (Exception e) {
+			LogEvent.logError("PanelDAOImpl","getAllPanels()",e.toString());
+			throw new LIMSRuntimeException("Error in Panel getAllPanels()", e);
+		}
+
+	}	
+	
 	public List getPageOfPanels(int startingRecNo) throws LIMSRuntimeException {
 		List list = new Vector();
 		try {

@@ -38,7 +38,6 @@
 
 <%!
 	boolean showAccessionNumber = false;
-	boolean displayNoTest = false;
 	String currentAccessionNumber = "";
 	int rowColorIndex = 2;
 %>

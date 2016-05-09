@@ -145,6 +145,8 @@
 	<mapping
 		resource="us/mn/state/health/lims/test/valueholder/TestSection.hbm.xml"/>
 	<mapping
+		resource="us/mn/state/health/lims/renametestsection/valueholder/RenameTestSection.hbm.xml"/>
+	<mapping
 		resource="us/mn/state/health/lims/testanalyte/valueholder/TestAnalyte.hbm.xml"/>
 	<mapping
 		resource="us/mn/state/health/lims/testanalyte/valueholder/TestAnalyteTestResult.hbm.xml"/>

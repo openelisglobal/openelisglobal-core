@@ -17,7 +17,10 @@
 */
 package us.mn.state.health.lims.typeofsample.valueholder;
 
+import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
+import us.mn.state.health.lims.common.valueholder.ValueHolder;
+import us.mn.state.health.lims.localization.valueholder.Localization;
 
 public class TypeOfSample extends BaseObject {
 
@@ -27,17 +30,13 @@ public class TypeOfSample extends BaseObject {
 	private static final long serialVersionUID = 1L;
 
 	private String id;
-
 	private String description;
-
 	private String domain;
-	
 	private String localAbbreviation;
-
 	private boolean isActive;
-	
 	private int sortOrder;
-	
+	private ValueHolder localization = new ValueHolder();
+
 	public String getLocalAbbreviation() {
 		return localAbbreviation;
 	}
@@ -76,7 +75,7 @@ public class TypeOfSample extends BaseObject {
 
 	@Override
 	protected String getDefaultLocalizedName() {
-		return description;
+		return LocalizationService.getLocalizedValue(getLocalization());
 	}
 
 	public boolean isActive() {
@@ -103,5 +102,11 @@ public class TypeOfSample extends BaseObject {
 		this.sortOrder = sortOrder;
 	}
 
-	
+	public Localization getLocalization() {
+		return (Localization)localization.getValue();
+	}
+
+	public void setLocalization(Localization localization) {
+		this.localization.setValue(localization);
+	}
 }

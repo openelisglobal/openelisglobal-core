@@ -22,17 +22,15 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
 import us.mn.state.health.lims.common.action.BaseAction;
-import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.TypeOfTestResultService;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
-import us.mn.state.health.lims.dictionary.valueholder.*;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
-import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
@@ -69,6 +67,7 @@ public class TestAddAction extends BaseAction {
         return getGroupedDictionaryPairs(dictionaryIdGroups);
     }
 
+    @SuppressWarnings("unchecked")
     private List<TestResult> getSortedTestResults() {
         List<TestResult> testResults = new TestResultDAOImpl().getAllTestResults();
 
@@ -81,7 +80,7 @@ public class TestAddAction extends BaseAction {
                     return result;
                 }
 
-                return Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
+                return GenericValidator.isBlankOrNull(o1.getSortOrder()) ? 0 :Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
             }
         });
         return testResults;
@@ -128,6 +127,12 @@ public class TestAddAction extends BaseAction {
             groups.add(dictionaryPairs);
         }
 
+        Collections.sort(groups, new Comparator<List<IdValuePair>>() {
+            @Override
+            public int compare(List<IdValuePair> o1, List<IdValuePair> o2) {
+                return o1.size() - o2.size();
+            }
+        });
         return groups;
     }
 

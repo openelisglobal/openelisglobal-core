@@ -120,5 +120,7 @@ public class SiteInformation extends BaseObject{
 	public void setDescriptionKey(String descriptionKey) {
 		this.descriptionKey = descriptionKey;
 	}
-
+	protected String getDefaultLocalizedName(){
+		return getName();
+	}
 }

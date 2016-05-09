@@ -34,43 +34,63 @@
 
     </script>
     <br>
-    <input type="button" value='<%= StringUtil.getMessageForKey("banner.menu.administration") %>'
+    <input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
            onclick="submitAction('MasterListsPage.do');"
            class="textButton"/> &rarr; <%=StringUtil.getMessageForKey( "configuration.test.management" )%>
 
     <h3><bean:message key="configuration.test.management.spelling" /></h3>
     <ul>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.rename") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.rename") %>"
                    onclick="submitAction('TestRenameEntry.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.rename.explain")%></li>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.panel.rename") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.rename") %>"
                    onclick="submitAction('PanelRenameEntry.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.panel.rename.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.type.rename") %>"
+                   onclick="submitAction('SampleTypeRenameEntry.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.type.rename.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.testSection.rename") %>"
+                   onclick="submitAction('TestSectionRenameEntry.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.testSection.rename.explain")%></li>   
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.uom.rename") %>"
+                   onclick="submitAction('UomRenameEntry.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.uom.rename.explain")%></li>           
     </ul>
     <h3><bean:message key="configuration.test.management.organization" /></h3>
     <ul>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.catalog") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.catalog") %>"
                    onclick="submitAction('TestCatalog.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.catalog.explain")%></li>
-        <!--<li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.add") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
                    onclick="submitAction('TestAdd.do');"
                    class="textButton"/><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.add.explain")%></li>-->
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.activate") %>'
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.add.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.activate") %>"
                    onclick="submitAction('TestActivation.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.activate.explain")%></li>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.orderable") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.orderable") %>"
                    onclick="submitAction('TestOrderability.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.test.orderable.explain")%></li>
-        <li><input type="button" value='<%= StringUtil.getMessageForKey("configuration.testUnit.manage") %>'
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.testUnit.manage") %>"
                    onclick="submitAction('TestSectionManagement.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.testUnit.manage.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.sampleType.manage") %>"
+                   onclick="submitAction('SampleTypeManagement.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.sampleType.manage.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.manage") %>"
+                   onclick="submitAction('PanelManagement.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.panel.manage.explain")%></li>    
     </ul>
 
 

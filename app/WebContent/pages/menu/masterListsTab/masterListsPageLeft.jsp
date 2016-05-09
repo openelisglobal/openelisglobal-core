@@ -350,6 +350,11 @@
   </html:link>
 </li>
 <% } %>
+<li>
+  <html:link action="/ListPlugins">
+    <bean:message key="plugin.menu.list.plugins" />
+  </html:link>
+</li>
 <hr>
 <% if(adminFields.useField(Field.SystemUserModuleMenu)){ %>
 <li>
