@@ -684,7 +684,7 @@
             $jq(".ui-state-default_oe-tag").addClass("ui-state-default_oe");
             $jq(".sortable").sortable("enable");
         }
-        $jq("#sortTitleDiv").text('<%=StringUtil.getMessageForKey("label.test.display.order")%>');
+        $jq("#sortTitleDiv").text('<bean:message key="label.test.display.order"/>');
         $jq("#dictionaryVerifyId").hide();
         $jq(".notStep1BreadCrumb").hide();
 
@@ -703,7 +703,7 @@
             $jq(".ui-state-default_oe-tag").addClass("ui-state-default_oe");
             $jq(".sortable").sortable("enable");
         }
-        $jq("#sortTitleDiv").text('<%=StringUtil.getMessageForKey("label.test.display.order")%>');
+        $jq("#sortTitleDiv").text('<bean:message key="label.test.display.order"/>');
         clearDictionaryLists();
 
         $jq("#sampleTypeSelectionDiv").show();
@@ -1135,7 +1135,7 @@
                 <div id="endOrderMarker"></div>
                 <div class="dictionarySelect dictionaryMultiSelect" id="dictionarySelectId"
                      style="padding:10px; float:left; width:280px; display:none; overflow: hidden ">
-                    Select List Options<span class="requiredlabel">*</span><br/>
+                    <bean:message key="label.select.list.options"/><span class="requiredlabel">*</span><br/>
                     <select id="dictionarySelection" class="required" multiple="multiple" title="Multiple">
                         <% for (IdValuePair pair : dictionaryList) { %>
                         <option value='<%=pair.getId()%>'><%=pair.getValue()%>
