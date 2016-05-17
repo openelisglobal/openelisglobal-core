@@ -179,7 +179,7 @@
 
     <div style="text-align: center" id="editButtons">
         <input id="saveButton" type="button" value='<%=StringUtil.getMessageForKey("label.button.next")%>'
-               onclick="confirmValues();" disabled="disabled"/>configuration.testUnit.confirmation.move.phrase
+               onclick="confirmValues();" disabled="disabled"/>
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>'
                onclick='window.onbeforeunload = null; submitAction("SampleTypeTestAssign.do")'/>
     </div>
