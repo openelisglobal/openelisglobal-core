@@ -147,12 +147,12 @@
            onclick="submitAction('SampleTypeManagement.do');"
            class="textButton"/>&rarr;
 
-<%=StringUtil.getMessageForKey( "configuration.testUnit.assign" )%>
+<%=StringUtil.getMessageForKey( "configuration.sampleType.assign" )%>
 <br><br>
 
     <h1 id="action" ><bean:message key="label.form.select"/></h1>
     <h1 id="action" class="edit-step" style="display: none"></h1>
-    <h2><bean:message key="configuration.testUnit.assign"/> </h2>
+    <h2><bean:message key="configuration.sampleType.assign"/> </h2>
 
     <div class="select-step" >
         <bean:message key="configuration.sampleType.assign.explain" />
@@ -171,9 +171,9 @@
     </select>
 
     <div class="confirmation-step" style="display:none">
-        <br><span class="selectedTestName" ></span>&nbsp;<bean:message key="configuration.testUnit.confirmation.move.phrase" />&nbsp;<span id="fromSampleType" ></span> <bean:message key="word.to" /> <span id="toSampleType" ></span>.
+        <br><span class="selectedTestName" ></span>&nbsp;<bean:message key="configuration.sampleType.confirmation.move.phrase" />&nbsp;<span id="fromSampleType" ></span> <bean:message key="word.to" /> <span id="toSampleType" ></span>.
         <div id="deatcitvateWarning" >
-            <br/><span id="warnDeactivteSampleType"></span>&nbsp;<bean:message key="configuration.testUnit.assign.deactivate" />
+            <br/><span id="warnDeactivteSampleType"></span>&nbsp;<bean:message key="configuration.sampleType.assign.deactivate" />
         </div>
     </div>
 
