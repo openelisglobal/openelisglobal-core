@@ -178,12 +178,12 @@
            onclick="submitAction('PanelManagement.do');"
            class="textButton"/>&rarr;
 
-<%=StringUtil.getMessageForKey( "configuration.testUnit.assign" )%>
+<%=StringUtil.getMessageForKey( "configuration.panel.assign" )%>
 <br><br>
 
     <h1 id="action" ><bean:message key="label.form.select"/></h1>
     <h1 id="action" class="edit-step" style="display: none"></h1>
-    <h2><bean:message key="configuration.testUnit.assign"/> </h2>
+    <h2><bean:message key="configuration.panel.assign"/> </h2>
 
     <div class="select-step" >
     Panel:<html:select name='<%= formName %>' property="panelId" 
@@ -203,7 +203,7 @@
     <div class="confirmation-step" style="display:none">
         <br><span class="selectedTestName" ></span>&nbsp;<bean:message key="configuration.testUnit.confirmation.move.phrase" />&nbsp;<span id="fromPanel" ></span> <bean:message key="word.to" /> <span id="toPanel" ></span>.
         <div id="deatcitvateWarning" >
-            <br/><span id="warnDeactivtePanel"></span>&nbsp;<bean:message key="configuration.testUnit.assign.deactivate" />
+            <br/><span id="warnDeactivtePanel"></span>&nbsp;<bean:message key="configuration.panel.assign.deactivate" />
         </div>
     </div>
 

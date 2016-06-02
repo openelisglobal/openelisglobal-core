@@ -409,7 +409,7 @@ public class DisplayListService implements LocaleChangeListener {
     private static List<IdValuePair> createPanelList(){
         ArrayList<IdValuePair> panels = new ArrayList<IdValuePair>(  );
 
-        List<Panel> panelList = new PanelDAOImpl().getAllActivePanels();
+        List<Panel> panelList = new PanelDAOImpl().getAllPanels();
         
         Collections.sort(panelList, PanelSortOrderComparator.SORT_ORDER_COMPARATOR);
         for(Panel panel : panelList) {
