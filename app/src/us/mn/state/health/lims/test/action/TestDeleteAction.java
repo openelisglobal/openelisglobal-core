@@ -37,7 +37,7 @@ import us.mn.state.health.lims.login.valueholder.UserSessionData;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 
 /**
  * @author diane benz
@@ -86,7 +86,7 @@ public class TestDeleteAction extends BaseAction {
 			//System.out.println("Going to delete Test");
 			TestDAO testDAO = new TestDAOImpl();
 			testDAO.deleteData(tests);
-            TypeOfSampleUtil.clearCache();
+            TypeOfSampleService.clearCache();
 			//System.out.println("Just deleted Test");
 			// initialize the form
 			dynaForm.initialize(mapping);

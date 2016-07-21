@@ -47,7 +47,7 @@ public class DefaultReflexActions extends ReflexAction {
 
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 
-		List<Dictionary> dictionaryList = dictionaryDAO.getDictionaryEntrysByCategoryName("HIVResult");
+		List<Dictionary> dictionaryList = dictionaryDAO.getDictionaryEntrysByCategoryNameLocalizedSort("HIVResult");
 
 		for (Dictionary dictionary : dictionaryList) {
 			if (dictionary.getDictEntry().equals("Positive")) {

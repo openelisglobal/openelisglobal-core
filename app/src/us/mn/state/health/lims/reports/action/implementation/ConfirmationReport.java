@@ -25,6 +25,7 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -55,8 +56,7 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.daoimpl.SampleItemDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 
 import java.util.*;
 
@@ -150,7 +150,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 			ConfirmationData data = new ConfirmationData();
 
 			data.setLabAccession(accessionNumber + "-" + sampleItem.getSortOrder());
-			data.setSampleType(TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
+			data.setSampleType(TypeOfSampleService.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
 			data.setOrganizationName(StringUtil.replaceNullWithEmptyString(orgName));
 			data.setRequesterAccession(sampleItem.getExternalId());
 			data.setNote(getNoteForSampleItem(sampleItem));
@@ -237,7 +237,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 		if (results != null && !results.isEmpty()) {
 			String type = results.get(0).getResultType();
 
-			if ( ResultType.isDictionaryVariant( type )) {
+			if ( TypeOfTestResultService.ResultType.isDictionaryVariant( type )) {
 				StringBuilder builder = new StringBuilder();
 				boolean firstNumber = true;
 				for (Result result : results) {

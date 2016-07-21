@@ -13852,13 +13852,14 @@ COPY type_of_provider (id, description, tp_code) FROM stdin;
 --
 -- Data for Name: type_of_sample; Type: TABLE DATA; Schema: clinlims; Owner: clinlims
 --
+-- gnr 06222016 make Serum english
 
 COPY type_of_sample (id, description, domain, lastupdated, local_abbrev, display_key, is_active, sort_order) FROM stdin;
 3	Plasma	H	2012-10-24 11:58:25.215565	Plasma	sample.type.Plasma	t	20
 1	Urines	H	2012-10-24 11:58:25.215565	Urines	sample.type.Urines	t	30
 4	Sang total	H	2012-10-24 11:58:25.215565	Sang total	sample.type.SangTotal	t	50
 5	Actual type will be selected by user	H	2013-09-19 14:31:47.008874	Variable	sample.type.variable	f	2147483647
-2	Sérum	H	2012-10-24 11:58:25.215565	Sérum	sample.type.Serum	t	10
+2	Serum	H	2012-10-24 11:58:25.215565	Serum	sample.type.Serum	t	10
 \.
 
 

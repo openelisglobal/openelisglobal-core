@@ -26,14 +26,12 @@ public class CI_RETROAdminFormFields implements IAdminFormFieldsForImplementatio
 	public HashMap<AdminFormFields.Field, Boolean> getImplementationAttributes() {
 		HashMap<AdminFormFields.Field, Boolean> settings = new HashMap<AdminFormFields.Field, Boolean>();
 
-		settings.put(Field.AnalyzerTestNameMenu,  Boolean.TRUE);
 		settings.put(Field.DictionaryMenu, Boolean.TRUE);
 		settings.put(Field.OrganizationMenu,  Boolean.TRUE);
 		settings.put(Field.SiteInformationMenu,  Boolean.TRUE);
 		settings.put(Field.ResultInformationMenu, Boolean.TRUE);
 		settings.put(Field.SampleEntryMenu, Boolean.FALSE);
         settings.put( Field.PATIENT_ENTRY_CONFIGURATION, Boolean.FALSE );
-        settings.put( Field.TEST_MANAGEMENT, Boolean.FALSE);
 		return settings;
 	}
 

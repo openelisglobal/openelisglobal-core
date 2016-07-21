@@ -23,11 +23,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.DisplayListService;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationPaging;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
@@ -51,7 +50,6 @@ public class ResultValidationAction extends BaseResultValidationAction {
 
 		request.getSession().setAttribute(SAVE_DISABLED, "true");
 		String testSectionId = (request.getParameter("testSectionId"));
-		String testName = (request.getParameter("test"));
 
 		ResultValidationPaging paging = new ResultValidationPaging();
 		String newPage = request.getParameter("page");
@@ -74,11 +72,11 @@ public class ResultValidationAction extends BaseResultValidationAction {
 			}
 			
 			
-			List<AnalysisItem> resultList = null;
+			List<AnalysisItem> resultList;
 			ResultsValidationUtility resultsValidationUtility = new ResultsValidationUtility();
 			setRequestType(ts == null ? StringUtil.getMessageForKey("workplan.unit.types") : ts.getLocalizedName());
 			if (!GenericValidator.isBlankOrNull(testSectionId)) {
-               resultList = resultsValidationUtility.getResultValidationList( testName, getValidationStatus(), testSectionId );
+               resultList = resultsValidationUtility.getResultValidationList( getValidationStatus(), testSectionId );
 				
 			} else {
 				resultList = new ArrayList<AnalysisItem>();

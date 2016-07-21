@@ -16,12 +16,14 @@
 */
 package us.mn.state.health.lims.analyzerresults.action.beanitems;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 
-public class AnalyzerResultItem  {
+public class AnalyzerResultItem implements Serializable {
+	static final long serialVersionUID = 1L;
 
 	private String id;
 	private String analyzerId;
@@ -58,8 +60,17 @@ public class AnalyzerResultItem  {
 	private String selectionTwoText = "";
 	private String selectionTwoValue = "";
 	private boolean nonconforming = false;
+	private String significantDigits = "";
 	
 	
+	public String getSignificantDigits() {
+		return significantDigits;
+	}
+
+	public void setSignificantDigits(String significantDigits) {
+		this.significantDigits = significantDigits;
+	}
+
 	private List<Dictionary> dictionaryResultList;
 
 	public AnalyzerResultItem() {

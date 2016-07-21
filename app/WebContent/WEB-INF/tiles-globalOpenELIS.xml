@@ -282,18 +282,96 @@
     </definition>
 
     <definition name="testManagementConfigDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testManagement.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testManagement.jsp"/>
     </definition>
 
     <definition name="testRenameDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testRename.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testRename.jsp"/>
+    </definition>
+
+    <definition name="panelRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/panelRename.jsp"/>
+    </definition>
+
+    <definition name="testSectionRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testSectionRename.jsp"/>
+    </definition>
+
+    <definition name="uomRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/unitOfMeasureRename.jsp"/>
+    </definition>
+
+    <definition name="sampleTypeRenameDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/sampleTypeRename.jsp"/>
     </definition>
 
     <definition name="testActivationDefinition" extends="baseMenuDefinition">
-        <put name="body" value="/pages/test/testActivation.jsp"/>
+        <put name="body" value="/pages/testConfiguration/testActivation.jsp"/>
     </definition>
 
-	<definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
+    <definition name="testOrderabilityDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testOrderability.jsp"/>
+    </definition>
+
+    <definition name="testAddDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testAdd.jsp"/>
+    </definition>
+
+    <definition name="testCatalogDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testCatalog.jsp"/>
+    </definition>
+
+    <definition name="testSectionManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionManagement.jsp" />
+    </definition>
+
+    <definition name="testSectionCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionCreate.jsp" />
+    </definition>
+
+    <definition name="testSectionOrderDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionOrder.jsp" />
+    </definition>
+
+    <definition name="testSectionAssignDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/testSectionAssign.jsp" />
+    </definition>
+<!-- -->
+    <definition name="sampleTypeManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/sampleTypeManagement.jsp" />
+    </definition>
+
+    <definition name="sampleTypeCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/sampleTypeCreate.jsp" />
+    </definition>
+
+    <definition name="sampleTypeAssignDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/sampleTypeAssign.jsp" />
+    </definition>
+    
+    <definition name="sampleTypeOrderDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/sampleTypeOrder.jsp" />
+    </definition>
+
+    <definition name="panelManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/panelManagement.jsp" />
+    </definition>
+
+    <definition name="panelCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/panelCreate.jsp" />
+    </definition>
+
+    <definition name="panelAssignDefinition" extends="baseMenuDefinition" >
+        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+        <put name="body" value="/pages/testConfiguration/panelAssign.jsp" />
+    </definition>
+    
+    <definition name="panelOrderDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/panelOrder.jsp" />
+    </definition>
+    
+<!-- -->
+    <definition name="userRoleMenuDefinition" extends="baseMenuSelectListDefinition">
     	<put name="body" value="/pages/userrole/userRoleMenu.jsp"/>
     </definition>
 
@@ -330,6 +408,16 @@
     <definition name="resultReportingConfigurationDefinition" extends="baseDefinition">
     	<put name="body" value="/pages/dataexchange/resultReportingConfiguration.jsp" />
     	<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
+    </definition>
+
+    <definition name="BatchTestReassignmentDefinition" extends="baseDefinition">
+        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+        <put name="body" value="/pages/test/batchTestReassignment.jsp"/>
+        <put name="footer" value="/pages/common/emptyPlaceHolder.jsp"/>
+    </definition>
+    
+	 <definition name="ListPluginsPageDefinition" extends="masterListsPageDefinition">
+    	<put name="body" value="/pages/plugin/listPlugin.jsp"/>
     </definition>
 
 </tiles-definitions>

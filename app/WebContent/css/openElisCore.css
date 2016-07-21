@@ -93,6 +93,21 @@ caption {
   font-size: 23px;
   color: #336699;
 }
+
+.catalog-label{
+  font-size: 13px;
+  font-style: italic;
+  color: #000000;
+}
+
+.tab{
+  margin-left: 40px;
+}
+
+.half-tab{
+  margin-left: 20px;
+}
+
 /***** End overrides of default browser styles *****/
 
 
@@ -463,8 +478,8 @@ div.dataTables_filter {
   width: 65px;
 }
 .results-readonly.invalidHighlight {
-  padding: 1px;
-  border-width: 1px;
+  padding: 2px 4px 2px 4px;
+  border: none;
 }
 
 .confirmation{
@@ -1016,6 +1031,7 @@ tr.rowTemplate {display: none}
 
 .sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; border: 2px solid silver;}
 .sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.0em; height: 16px; }
+#dictionaryNameSortUI li { height: auto; text-align: left;}
 .sortable li span { position: absolute; margin-left: -1.3em; }
 .ui-state-default_oe, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
 { border: 1px solid #d3d3d3/*{borderColorDefault}*/;

@@ -293,7 +293,7 @@ function /*void*/ markUpdated(){
 				<% }  %>
 			</td>
 			<td>
-				<html:text name="resultList" property="testName" readonly="true" style="border-style:hidden;background-color:transparent" />
+				<span style="color: #000000"><%=resultList.getTestName()%></span>
 			</td>
 			<td>
 			    <% if(groupReadOnly || itemReadOnly){ %>
@@ -316,9 +316,8 @@ function /*void*/ markUpdated(){
 					<html:text name="resultList"
 							   styleId='<%= "resultId_" + dataIndex %>' 
 					           property="result" 
-					           style="text-align:right" 
-					           indexed="true" 
-					           size="20" 
+					           style="text-align:right;"
+					           indexed="true"
 					           onchange="markUpdated();"/>
 				</logic:notEqual>
 				<% if(resultList.isUserChoiceReflex()){ %>
@@ -357,7 +356,7 @@ function /*void*/ markUpdated(){
 						 	     id='<%="showHideButton_" + dataIndex %>'
 						    />
 						 </logic:notEmpty>
-				<html:hidden property="hideShowFlag"  styleId='<%="hideShow_" + dataIndex %>' value="hidden" />
+				<html:hidden  property="hideShowFlag"  styleId='<%="hideShow_" + dataIndex %>' value="hidden" />
             <% } %>
 
 		</td>

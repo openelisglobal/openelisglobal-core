@@ -75,7 +75,8 @@ public class ClinicalPatientData{
     private String billingNumber;
     private String sampleType;
     private String sampleId;
-    private String analysisStatus;
+    private String sampleSortOrder;
+	private String analysisStatus;
 
 
 
@@ -134,6 +135,7 @@ public class ClinicalPatientData{
         billingNumber = data.getBillingNumber();
         sampleType = data.getSampleType();
         sampleId = data.getSampleId();
+        sampleSortOrder = data.getSampleSortOrder();
         analysisStatus = data.getAnalysisStatus();
     }
 
@@ -365,6 +367,14 @@ public class ClinicalPatientData{
 
 	public void setHasRangeAndUOM(boolean hasRangeAndUOM) {
 		this.hasRangeAndUOM = hasRangeAndUOM;
+	}
+
+    public String getSampleSortOrder() {
+		return sampleSortOrder;
+	}
+
+    public void setSampleSortOrder(String sampleSortOrder) {
+		this.sampleSortOrder = sampleSortOrder;
 	}
 
 	public String getDept() {

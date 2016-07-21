@@ -282,9 +282,10 @@
          <tableExists schemaName="clinlims" tableName="analyzer_results"/>
   </preConditions>
   <comment>Add read only column to analyzer_results</comment>
+  <!-- gnr 06222016
   <addColumn schemaName="clinlims" tableName="analyzer_results">
              <column name="read_only" defaultValueBoolean="false" type="boolean" remarks="Is this result read only"/>
-  </addColumn>
+  </addColumn> -->
   <sql>
       COMMENT ON COLUMN clinlims.analyzer_results.read_only IS 'Is this result read only';
   </sql>
@@ -300,14 +301,16 @@
        </and>
   </preConditions>
   <comment>Drop columns that related to existing data in database</comment>
+  <!-- gnr 06222016
   <dropForeignKeyConstraint baseTableName="analyzer_results" baseTableSchemaName="clinlims" constraintName="test_fk"/>
   <dropForeignKeyConstraint baseTableName="analyzer_results" baseTableSchemaName="clinlims" constraintName="sample_fk"/>
-  <dropForeignKeyConstraint baseTableName="analyzer_results" baseTableSchemaName="clinlims" constraintName="analysis_fk"/>
+  <dropForeignKeyConstraint baseTableName="analyzer_results" baseTableSchemaName="clinlims" constraintName="analysis_fk"/> -->
   <dropColumn columnName="test_id" schemaName="clinlims" tableName="analyzer_results"/>
+  <!-- gnr 06222016
   <dropColumn columnName="sample_id" schemaName="clinlims" tableName="analyzer_results"/>
-  <dropColumn columnName="analysis_id" schemaName="clinlims" tableName="analyzer_results"/>
+  <dropColumn columnName="analysis_id" schemaName="clinlims" tableName="analyzer_results"/> -->
   </changeSet>
-
+  
  <changeSet id="16" author="paulsc" runOnChange="true">
   <preConditions onFail="MARK_RAN">
          <viewExists  schemaName="clinlims" viewName="accession_test"/>
@@ -326,9 +329,10 @@
 
   <changeSet id="18" author="paulsc" runOnChange="true">
   <comment>Adds a column to the analysis table to indicate if an analysis is the root of a reflex test</comment>
+  <!-- gnr 06222016
   <addColumn schemaName="clinlims" tableName="analysis">
       <column name="reflex_trigger" defaultValueBoolean="false" type="boolean"/>
-  </addColumn>
+  </addColumn> -->
   <sql>
          COMMENT ON COLUMN clinlims.analysis.reflex_trigger IS 'True if this analysis has triggered a reflex test';
   </sql>
@@ -2227,6 +2231,8 @@ ALTER TABLE sampletracking OWNER TO clinlims;
 <include file="OE3.4/Base.xml"/>
 <include file="OE4.2/Base.xml"/>
 <include file="OE5.1/Base.xml"/>
+<include file="OE5.2/Base.xml"/>
+<include file="OE5.3/Base.xml"/>
 </databaseChangeLog>
 
 

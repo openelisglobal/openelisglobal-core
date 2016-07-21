@@ -22,6 +22,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.TestService;
@@ -38,6 +39,7 @@ import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +74,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 		data.setDoctor(getObservationValues(OBSERVATION_DOCTOR_ID));
 		data.setLabNo(reportSample.getAccessionNumber());
+
 	}
 
 	public JRDataSource getReportDataSource() throws IllegalStateException{
@@ -97,7 +100,8 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(reportSample.getId());
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-
+		Timestamp lastReport = new ReportTrackingService().getTimeOfLastNamedReport(reportSample, ReportTrackingService.ReportType.PATIENT, requestedReport);
+		Boolean mayBeDuplicate = lastReport != null;
 		ResultDAO resultDAO = new ResultDAOImpl();
 
 		for(Analysis analysis : analysisList){
@@ -140,8 +144,17 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 					assignResultsToAVRReportData(data, testName, valid ? resultValue : invalidValue);
 				}
 			}
+
+			if( mayBeDuplicate &&
+					StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.Finalized) &&
+					lastReport.before(analysis.getLastupdated())){
+				mayBeDuplicate = false;
+			}
+
 		}
 
+
+		data.setDuplicateReport(mayBeDuplicate);
 		data.setStatus(atLeastOneAnalysisNotValidated ? StringUtil.getMessageForKey("report.status.partial") : StringUtil
 				.getMessageForKey("report.status.complete"));
 
@@ -210,7 +223,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 				}
 			}
 
-		}else if(testName.equals("Murex") || testName.equals("Intgral")){
+		}else if(testName.equals("Murex") || testName.equals("Intgral")){ //Serology must have one of these but not necessarily both
 			data.setShowSerologie(Boolean.TRUE);
 			if(GenericValidator.isBlankOrNull(data.getVih())){
 				data.setVih(invalidValue);

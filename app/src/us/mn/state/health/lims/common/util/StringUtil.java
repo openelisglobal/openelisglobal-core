@@ -52,12 +52,16 @@ public class StringUtil {
 	 * checked for isNullorNill in an Action class need to return true
 	 */
 	public static boolean isNullorNill(String string) {
-		if (string == null || string.equals("") || string.equals("null")) {
-			return true;
-		}
-		return false;
+		return string == null || string.equals("") || string.equals("null");
 	}
 
+	public static String replaceCharAtIndex( String string, char character, int index){
+		if( index < 0 || string == null || index >= string.length()){
+			return string;
+		}else{
+			return string.substring(0, index) + character + string.substring(index + 1);
+		}
+	}
 	/**
 	 * Search for tags in a String with oldValue tags and replace the tag with
 	 * the newValue text.
@@ -77,8 +81,8 @@ public class StringUtil {
 			// without
 			// extra coding when a oldValue label appears at the very end.)
 			String workValue = input + " ";
-			int pos = 0;
-			int pos_end = 0;
+			int pos;
+			int pos_end;
 
 			// Loop through the original text while there are still oldValue
 			// tags
@@ -205,8 +209,7 @@ public class StringUtil {
 		String returnPhone = null;
 		if (phone != null) {
 			try {
-				String ext = phone.substring(13);
-				returnPhone = ext;
+				returnPhone = phone.substring(13);
 			} catch (Exception e) {
 				LogEvent.logError("StringUtil", "formatExtensionForDisplay()", e.toString());
 			}
@@ -230,7 +233,8 @@ public class StringUtil {
 			StringBuffer sb = new StringBuffer();
 			// discard first token
 			for (int i = 1; i < strArr.length; i++) {
-				sb.append("\\" + strArr[i]);
+				sb.append("\\");
+				sb.append(strArr[i]);
 			}
 			return sb.toString();
 		} catch (Exception e) {
@@ -272,7 +276,7 @@ public class StringUtil {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static List createChunksOfText(String text, int maxWidth, boolean observeSpaces) throws Exception {
 		List list = new ArrayList();
-		int indx = -1;
+		int indx;
 		while (text != null && text.length() > 0) {
 			if (text.length() <= maxWidth) {
 				list.add(text);
@@ -456,8 +460,8 @@ public class StringUtil {
 	/**
 	 * Solves the problem of how to deal with commas within quoted strings for csv.  I couldn't figure out a regex that would cover
 	 * it so we're doing it the hard way.  It will stumble if '~' is embedded in the string.  This will fail on mixed fields such as
-	 * 1,2,"something, else", 4,5 
-	 *  
+	 * 1,2,"something, else", 4,5
+	 *
 	 */
 	public static String[] separateCSVWithEmbededQuotes(String line){
 		
@@ -505,10 +509,9 @@ public class StringUtil {
 	 * Compare two strings returning the appropriate -1,0,1; but deal with
 	 * possible null strings which will compare the same as "", aka before any
 	 * other string.
-	 * 
-	 * @author pahill
-	 * @param left
-	 * @param right
+	 *
+	 * @param left left String
+	 * @param right right string
 	 * @return -1 if left is lexically less then right; 0 if they are equal; 1
 	 *         if left is lexically greater than right.
 	 */
@@ -525,10 +528,9 @@ public class StringUtil {
     /**
      * Tests for equals without worrying about null.  If they are both null they are equal
      *
-     *
-     * @param left
-     * @param right
-     * @return
+     * @param left left String
+     * @param right right String
+     * @return true if they are both null or are equal
      */
     public static boolean safeEquals(String left, String right) {
         if( left == right){
@@ -619,7 +621,7 @@ public class StringUtil {
 	}
 
     public static String doubleWithSignificantDigits( double value, String significantDigits ){
-        if( significantDigits.equals( "-1" )){
+        if( GenericValidator.isBlankOrNull(significantDigits) || significantDigits.equals( "-1" )){
             return String.valueOf( value );
         }
 
@@ -636,7 +638,7 @@ public class StringUtil {
      * Builds a delimited String from a list of values
      *
      * @param values A list of Strings to be concatenated
-     * @param delimiter
+     * @param delimiter What separates the strings
      * @param dropBlanksAndNulls If true then keep blank and null Strings out of the list 
      * @return String
      */
@@ -665,4 +667,22 @@ public class StringUtil {
         return delimitedString;
     }
 
+	public static Double doubleWithInfinity(String significantDigits) {
+		if( GenericValidator.isBlankOrNull(significantDigits)){
+			return null;
+		}
+		if( "Infinity".equals(significantDigits)){
+			return Double.POSITIVE_INFINITY;
+		}
+		if( "-Infinity".equals(significantDigits)){
+			return Double.NEGATIVE_INFINITY;
+		}
+
+		try{
+			return new Double(significantDigits);
+		}catch(NumberFormatException e){
+			LogEvent.logError("StringUtil", "doubleWithInfinity(" + significantDigits + ")", e.toString());
+			return null;
+		}
+	}
 }

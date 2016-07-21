@@ -21,7 +21,6 @@
             <column name="DICT_ENTRY" length="4000" />
         </property>
         <property name="localAbbreviation" type="java.lang.String">
-            <!--bugzilla 2059 changed column name and length-->
             <column name="LOCAL_ABBREV" length="10" unique="true" />
         </property>
         <property name="nameKey" type="java.lang.String">

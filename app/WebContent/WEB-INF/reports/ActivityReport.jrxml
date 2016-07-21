@@ -57,7 +57,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<image>
+			<image isUsingCache="true">
 				<reportElement x="1" y="1" width="65" height="64"/>
 				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>

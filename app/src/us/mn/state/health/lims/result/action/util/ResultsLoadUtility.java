@@ -76,10 +76,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
-import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -268,8 +265,8 @@ public class ResultsLoadUtility {
 			public int compare(ResultItem a, ResultItem b) {
 				int accessionSort = b.getSequenceAccessionNumber().compareTo(a.getSequenceAccessionNumber());
 
-				if( accessionSort == 0){ //only the accession number sorting is reversed
-					if( !GenericValidator.isBlankOrNull(a.getTestSortOrder()) && !GenericValidator.isBlankOrNull(b.getTestSortOrder())){
+				if (accessionSort == 0) { //only the accession number sorting is reversed
+					if (!GenericValidator.isBlankOrNull(a.getTestSortOrder()) && !GenericValidator.isBlankOrNull(b.getTestSortOrder())) {
 						try {
 							return Integer.parseInt(a.getTestSortOrder()) - Integer.parseInt(b.getTestSortOrder());
 						} catch (NumberFormatException e) {
@@ -385,7 +382,7 @@ public class ResultsLoadUtility {
 
 				testKit = getInventoryForResult(result);
 
-				multiSelectionResult = ResultType.isMultiSelectVariant( result.getResultType());
+				multiSelectionResult = TypeOfTestResultService.ResultType.isMultiSelectVariant( result.getResultType());
 			}
 
 			String initialConditions = getInitialSampleConditionString(sampleItem);
@@ -394,7 +391,7 @@ public class ResultsLoadUtility {
 
 			TestResultItem resultItem = createTestResultItem(new AnalysisService( analysis ), testKit, notes, sampleItem.getSortOrder(), result,
 					sampleItem.getSample().getAccessionNumber(), patientName, patientInfo, techSignature, techSignatureId,
-					initialConditions,  TypeOfSampleUtil.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
+					initialConditions,  TypeOfSampleService.getTypeOfSampleNameForId(sampleItem.getTypeOfSampleId()));
 			resultItem.setNationalId(nationalId);
 			testResultList.add(resultItem);
 
@@ -644,7 +641,7 @@ public class ResultsLoadUtility {
 		testItem.setTestKitId(testKitId);
 		testItem.setTestKitInventoryId(testKitInventoryId);
 		testItem.setTestKitInactive(testKitInactive);
-		testItem.setReadOnly(isLockCurrentResults() && result != null && result.getId() != null);
+		testItem.setReadOnly( isReadOnly(isConclusion, isCD4Conclusion) && result != null && result.getId() != null);
 		testItem.setReferralId(referralId);
 		testItem.setReferredOut(!GenericValidator.isBlankOrNull(referralId) && !referralCanceled);
         testItem.setShadowReferredOut( testItem.isReferredOut() );
@@ -676,7 +673,11 @@ public class ResultsLoadUtility {
 		return testItem;
 	}
 
-    private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem, List<TestResult> testResults){
+	private boolean isReadOnly(boolean isConclusion, boolean isCD4Conclusion) {
+		return isConclusion || isCD4Conclusion || isLockCurrentResults();
+	}
+
+	private void setResultLimitDependencies(ResultLimit resultLimit, TestResultItem testItem, List<TestResult> testResults){
 		if( resultLimit != null){
 			testItem.setResultLimitId(resultLimit.getId());
 			testItem.setLowerNormalRange(resultLimit.getLowNormal() == Double.NEGATIVE_INFINITY ? 0 : resultLimit.getLowNormal());
@@ -702,7 +703,7 @@ public class ResultsLoadUtility {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && !testResults.isEmpty() && ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
+		if (testResults != null && !testResults.isEmpty() && TypeOfTestResultService.ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Collections.sort(testResults, new Comparator<TestResult>() {
@@ -719,7 +720,7 @@ public class ResultsLoadUtility {
 			
 			String qualifiedDictionaryIds = "";
 			for (TestResult testResult : testResults) {
-				if ( ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
+				if ( TypeOfTestResultService.ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
 					dictionary = new Dictionary();
 					dictionary.setId(testResult.getValue());
 					dictionaryDAO.getData(dictionary);
@@ -789,7 +790,7 @@ public class ResultsLoadUtility {
 	private List<IdValuePair> getAnyDictionaryValues(Result result) {
 		List<IdValuePair> values = null;
 
-		if (result != null && ResultType.isDictionaryVariant( result.getResultType() )) {
+		if (result != null && TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() )) {
 			values = new ArrayList<IdValuePair>();
 
 			Dictionary dictionaryValue = new Dictionary();

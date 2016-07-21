@@ -99,9 +99,8 @@ public class NewbornSampleTwoPopulateData2Action extends BaseAction {
 		patient.setId(sampleHuman.getPatientId());
 		patientDAO.getData(patient);
 		
-		Person person = new Person();
 		PersonDAO personDAO = new PersonDAOImpl();
-		person = patient.getPerson();
+		Person person = patient.getPerson();
 		personDAO.getData(person);
 		
 		SampleNewborn sampleNewborn = new SampleNewborn();
@@ -114,8 +113,7 @@ public class NewbornSampleTwoPopulateData2Action extends BaseAction {
 			newbornSampleTwoMap = (HashMap) dynaForm.get("newbornSampleTwoMap");
 		}
 
-		newbornSampleTwoMap = populateNewbornSampleTwoMap(sample,sampleNewborn,sampleHuman,patient,
-															person,dynaForm);
+		newbornSampleTwoMap = populateNewbornSampleTwoMap(sample,sampleNewborn,patient,	person);
 		PropertyUtils.setProperty(dynaForm, "newbornSampleTwoMap", newbornSampleTwoMap);
 		
 		// set lastupdated fields
@@ -127,9 +125,7 @@ public class NewbornSampleTwoPopulateData2Action extends BaseAction {
 
 	}
 	
-	private HashMap populateNewbornSampleTwoMap(Sample sample, SampleNewborn sampleNewborn, 
-												SampleHuman sampleHuman,
-												Patient patient, Person person,	BaseActionForm dynaForm) {
+	private HashMap populateNewbornSampleTwoMap(Sample sample, SampleNewborn sampleNewborn,	Patient patient, Person person) {
 		HashMap newbornSampleTwoMap = new HashMap();
 		
 		if (person.getFirstName() != null) {
@@ -147,7 +143,7 @@ public class NewbornSampleTwoPopulateData2Action extends BaseAction {
 		if (patient.getBirthDateForDisplay() != null) {
 			newbornSampleTwoMap.put("birthDateForDisplay", patient.getBirthDateForDisplay());
 			String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-			newbornSampleTwoMap.put("birthTimeForDisplay", DateUtil.convertTimestampToStringTime(patient.getBirthDate(), locale));
+			newbornSampleTwoMap.put("birthTimeForDisplay", DateUtil.convertTimestampToStringTime(patient.getBirthDate()));
 		} else {
 			newbornSampleTwoMap.put("birthDateForDisplay", "");
 		}
@@ -155,7 +151,7 @@ public class NewbornSampleTwoPopulateData2Action extends BaseAction {
 		if (sample.getCollectionDateForDisplay() != null) {
 			newbornSampleTwoMap.put("collectionDateForDisplay", sample.getCollectionDateForDisplay());
 			String locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
-			newbornSampleTwoMap.put("collectionTimeForDisplay", DateUtil.convertTimestampToStringTime(sample.getCollectionDate(), locale));
+			newbornSampleTwoMap.put("collectionTimeForDisplay", DateUtil.convertTimestampToStringTime(sample.getCollectionDate()));
 		} else {
 			newbornSampleTwoMap.put("birthDateForDisplay", "");
 		}

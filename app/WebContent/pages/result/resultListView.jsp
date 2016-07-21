@@ -40,7 +40,7 @@
 		var testSectionNameIdHash = [];		
 		<% 
 			for( IdValuePair pair : (List<IdValuePair>) testSectionsByName){
-				out.print( "testSectionNameIdHash[\'" + pair.getId()+ "\'] = \'" + pair.getValue() +"\';\n");
+				out.print( "testSectionNameIdHash[\"" + pair.getId()+ "\"] = \"" + pair.getValue() +"\";\n");
 			}
 		%>
 	</script>
@@ -518,7 +518,7 @@ function updateShadowResult(source, index){
 	<% } %>
 
 	&nbsp;
-	<bean:write name="<%=formName%>" property="paging.currentPage"/> of
+	<bean:write name="<%=formName%>" property="paging.currentPage"/> <bean:message key="report.pageNumberOf" />
 	<bean:write name="<%=formName%>" property="paging.totalPages"/>
 	<div class='textcontent' style="float: right" >
 	<span style="visibility: hidden" id="searchNotFound"><em><%= StringUtil.getMessageForKey("search.term.notFound") %></em></span>

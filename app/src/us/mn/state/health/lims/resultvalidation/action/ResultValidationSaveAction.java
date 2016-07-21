@@ -65,7 +65,6 @@ import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -486,7 +485,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 	protected TestResult getTestResult(AnalysisItem analysisItem){
 		TestResult testResult = null;
-		if(ResultType.DICTIONARY.matches( analysisItem.getResultType() )){
+		if(TypeOfTestResultService.ResultType.DICTIONARY.matches( analysisItem.getResultType() )){
 			testResult = testResultDAO.getTestResultsByTestAndDictonaryResult(analysisItem.getTestId(), analysisItem.getResult());
 		}else{
 			List<TestResult> testResultList = testResultDAO.getActiveTestResultsByTest( analysisItem.getTestId() );
@@ -501,8 +500,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 
 	private boolean areResults(AnalysisItem item){
 		return !( isBlankOrNull( item.getResult() ) ||
-                (ResultType.DICTIONARY.matches( item.getResultType() ) && "0".equals(item.getResult()))) ||
-                (ResultType.isMultiSelectVariant( item.getResultType() ) && !isBlankOrNull( item.getMultiSelectResultValues() ));
+                (TypeOfTestResultService.ResultType.DICTIONARY.matches( item.getResultType() ) && "0".equals(item.getResult()))) ||
+                (TypeOfTestResultService.ResultType.isMultiSelectVariant( item.getResultType() ) && !isBlankOrNull( item.getMultiSelectResultValues() ));
 	}
 
 	private void createSystemUser(){

@@ -71,7 +71,6 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -358,7 +357,7 @@ public class ReferredOutUpdateAction extends BaseAction {
            referralSet.updateTest( referralItem.getReferredTestIdShadow(), referralItem.getReferredTestId(),currentUserId );
         }else{
             String referredResultType = getReferredResultType( referralItem, null );
-            if( ResultType.isMultiSelectVariant( referredResultType ) ){
+            if( TypeOfTestResultService.ResultType.isMultiSelectVariant( referredResultType ) ){
                 if( !GenericValidator.isBlankOrNull( referralItem.getMultiSelectResultValues() ) && !"{}".equals( referralItem.getMultiSelectResultValues() ) ){
                     JSONParser parser = new JSONParser();
                     try{
@@ -425,7 +424,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		
 		String referredResultType = getReferredResultType(referredTest, test);
 		result.setResultType(referredResultType);
-		if ( ResultType.isDictionaryVariant( referredResultType )) {
+		if ( TypeOfTestResultService.ResultType.isDictionaryVariant( referredResultType )) {
 			String dicResult = referredTest.getReferredDictionaryResult();
 			if (!(GenericValidator.isBlankOrNull(dicResult) || "0".equals(dicResult))) {
 				result.setValue(dicResult);
@@ -443,7 +442,7 @@ public class ReferredOutUpdateAction extends BaseAction {
 		
 		String referredResultType = referredTest.getReferredResultType();
 		
-		if ( !ResultType.isDictionaryVariant( referredResultType ) && test != null) {
+		if ( !TypeOfTestResultService.ResultType.isDictionaryVariant( referredResultType ) && test != null) {
 			@SuppressWarnings("unchecked")
 			List<TestResult> testResults = testResultDAO.getAllActiveTestResultsPerTest( test );
 			

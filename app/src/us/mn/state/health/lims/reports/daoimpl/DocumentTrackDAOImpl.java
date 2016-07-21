@@ -54,4 +54,25 @@ public class DocumentTrackDAOImpl extends GenericDAOImpl<String, DocumentTrack >
 		return null;
 	}
 
+	@Override
+	public List<DocumentTrack> getByTypeRecordAndTableAndName(String reportTypeId, String tableId, String recordId, String name) throws LIMSRuntimeException {
+		String sql = "From DocumentTrack dt where dt.documentTypeId = :typeId and dt.tableId = :tableId and dt.recordId = :recordId and dt.documentName = :name order by dt.reportTime";
+
+		try {
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setInteger("typeId", Integer.parseInt(reportTypeId));
+			query.setInteger("tableId", Integer.parseInt(tableId));
+			query.setInteger("recordId", Integer.parseInt(recordId));
+			query.setString("name", name);
+			List<DocumentTrack> documents = query.list();
+			closeSession();
+			return documents;
+
+		} catch (HibernateException e) {
+			handleException(e, "getByTypeRecordAndTableAndName");
+		}
+
+		return null;
+	}
+
 }

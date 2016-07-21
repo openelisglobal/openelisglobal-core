@@ -20,6 +20,7 @@ package us.mn.state.health.lims.sample.util.CI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.test.valueholder.Test;
 
@@ -36,8 +37,9 @@ public class INDFormMapper extends BaseProjectFormMapper implements IProjectForm
 		List<Test> testList = new ArrayList<Test>();
 
 		if (projectData.getSerologyHIVTest()){
-			testList.add(createTest("Murex"));
-			testList.add(createTest("Integral"));
+            CollectionUtils.addIgnoreNull(testList, createTest("Vironostika", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Murex", true));
+			CollectionUtils.addIgnoreNull(testList, createTest("Integral", true));
 		}
 
 		return testList;

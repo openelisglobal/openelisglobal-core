@@ -186,9 +186,9 @@ public enum ObservationHistoryList {
 	public List<Dictionary> getList() {
 		if (list == null) {
 		    if (orderByMessageResource) {
-                list = getDictionaryDAO().getDictionaryEntrysByCategoryName(listName);
+                list = getDictionaryDAO().getDictionaryEntrysByCategoryNameLocalizedSort(listName);
 		    } else {
-		        list = getDictionaryDAO().getDictionaryEntrysByCategory("categoryName", listName, false);
+		        list = getDictionaryDAO().getDictionaryEntrysByCategoryAbbreviation("categoryName", listName, false);
 		    }
 		    modifyList();
 		}

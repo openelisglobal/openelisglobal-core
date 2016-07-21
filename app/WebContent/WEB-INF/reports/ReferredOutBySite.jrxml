@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReferredOutBySite" pageWidth="792" pageHeight="595" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReferredOutBySite" pageWidth="792" pageHeight="595" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30" resourceBundle="MessageResources">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="0.9810479449593481"/>
@@ -161,14 +161,14 @@
 			</textField>
 			<subreport>
 				<reportElement x="87" y="0" width="572" height="136"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{labName2}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="labName1">
 					<subreportParameterExpression><![CDATA[$P{labName1}]]></subreportParameterExpression>
@@ -200,56 +200,56 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("orderNo")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.orderNo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" x="123" y="5" width="74" height="19"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("test")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.test}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="138" y="24" width="206" height="19" backcolor="#CCCCCC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("referredTest")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.referredTest}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="344" y="24" width="287" height="19" backcolor="#CCCCCC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("referredResult")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.referredResult}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" x="344" y="5" width="74" height="19"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("outcome")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.outcome}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="631" y="24" width="64" height="20" backcolor="#CCCCCC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("other")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.other}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="695" y="24" width="57" height="20" backcolor="#CCCCCC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("report")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.report}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" x="575" y="5" width="74" height="19"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("reason")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.reason}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement key="line-1" positionType="FixRelativeToBottom" x="0" y="43" width="802" height="1"/>
@@ -301,14 +301,14 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("reception")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.reception}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement isPrintRepeatedValues="false" x="12" y="15" width="38" height="12" printWhenGroupChanges="referredTestGroup"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("test")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.test}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement key="textField-3" isPrintRepeatedValues="false" mode="Opaque" x="54" y="15" width="69" height="12" printWhenGroupChanges="referredTestGroup" backcolor="#FFFFFF"/>
@@ -348,7 +348,7 @@
 					<printWhenExpression><![CDATA[$P{usePageNumbers}.equals("true")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" "+$P{localization}.get("about")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" "+$R{report.about}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="708" y="0" width="40" height="20">

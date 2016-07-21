@@ -64,6 +64,21 @@ public class LocalizationDAOImpl extends BaseDAOImpl implements LocalizationDAO{
         }
     }
 
+    @Override
+    public void insert(Localization localization) throws LIMSRuntimeException {
+        try {
+            String id = (String) HibernateUtil.getSession().save(localization);
+            localization.setId(id);
+
+            new AuditTrailDAOImpl().saveNewHistory(localization, localization.getSysUserId(), "LOCALIZATION");
+
+            HibernateUtil.getSession().flush();
+            HibernateUtil.getSession().clear();
+        } catch (Exception e) {
+            handleException(e, "insert");
+        }
+    }
+
 
     public Localization readLocalization(String idString) {
         try {

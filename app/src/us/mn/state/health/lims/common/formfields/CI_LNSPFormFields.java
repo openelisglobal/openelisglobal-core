@@ -51,7 +51,6 @@ public class CI_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE, Boolean.TRUE);
 		settings.put(Field.PatientNameRequired, Boolean.FALSE);
 		settings.put(Field.SubjectNumber, Boolean.TRUE);
-        settings.put(Field.SubjectNumberRequired, Boolean.TRUE);
 		settings.put(Field.NationalID, Boolean.TRUE);
 		settings.put(Field.SampleEntryUseReceptionHour, Boolean.TRUE);
 		settings.put(Field.SampleEntryUseRequestDate, Boolean.TRUE);

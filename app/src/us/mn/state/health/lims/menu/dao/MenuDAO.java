@@ -22,6 +22,8 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.menu.valueholder.Menu;
 
 public interface MenuDAO {
-	public List<Menu> getAllMenus() throws LIMSRuntimeException;
-	public Menu getMenuByElementId(String elementId) throws LIMSRuntimeException;
+	List<Menu> getAllMenus() throws LIMSRuntimeException;
+	List<Menu> getAllActiveMenus() throws LIMSRuntimeException;
+	Menu getMenuByElementId(String elementId) throws LIMSRuntimeException;
+	void updateData(Menu menu) throws LIMSRuntimeException;
 }

@@ -18,6 +18,7 @@ package us.mn.state.health.lims.common.services;
 
 import org.hibernate.Transaction;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.reports.dao.DocumentTrackDAO;
@@ -130,15 +131,33 @@ public class ReportTrackingService {
 		return docTrackDAO.getByTypeRecordAndTable(getReportTypeId(type), getReferenceTable(type), sample.getId());
 	}
 
+    public List<DocumentTrack> getReportsForSampleAndReportName(Sample sample,  ReportType type, String name) {
+        return docTrackDAO.getByTypeRecordAndTableAndName(getReportTypeId(type), getReferenceTable(type), sample.getId(), name);
+    }
+
     public DocumentTrack getLastReportForSample( Sample sample, ReportType type){
         List<DocumentTrack> reports = getReportsForSample( sample, type );
         return reports.isEmpty() ? null : reports.get( reports.size() - 1 );
     }
 
-    public Timestamp getTimeOfLastReport( Sample sample, ReportType type){
-        DocumentTrack report = getLastReportForSample( sample, type );
+	public DocumentTrack getLastNamedReportForSample( Sample sample, ReportType type, String name){
+		if( sample == null || type == null || GenericValidator.isBlankOrNull(name)){
+			return null;
+		}
+
+        List<DocumentTrack> reports = getReportsForSampleAndReportName( sample, type, name );
+        return reports.isEmpty() ? null : reports.get( reports.size() - 1 );
+	}
+
+	public Timestamp getTimeOfLastReport( Sample sample, ReportType type){
+        DocumentTrack report = getLastReportForSample(sample, type );
         return report == null ? null : report.getReportTime();
     }
+
+	public Timestamp getTimeOfLastNamedReport( Sample sample, ReportType type, String name){
+		DocumentTrack report = getLastNamedReportForSample( sample, type, name );
+		return report == null ? null : report.getReportTime();
+	}
 
 	public DocumentTrack getDocumentForId(String id){
 		return docTrackDAO.readEntity(id);

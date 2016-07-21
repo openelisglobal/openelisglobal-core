@@ -24,6 +24,7 @@ import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -40,7 +41,6 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -413,9 +413,9 @@ abstract public class CSVColumnBuilder {
 			String type = testResult.getTestResultType();
 			// if it is in the table D have to be translated through the
 			// dictionary, otherwise don't
-			if (ResultType.DICTIONARY.getDBValue().equals(type)) {
+			if (TypeOfTestResultService.ResultType.DICTIONARY.getCharacterValue().equals(type)) {
 				return ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(value);
-			} else if ( ResultType.MULTISELECT.getDBValue().equals(type)) {
+			} else if ( TypeOfTestResultService.ResultType.MULTISELECT.getCharacterValue().equals(type)) {
 				return findMultiSelectItemsForTest(testResult.getTest().getId());
 			}
 			return value;

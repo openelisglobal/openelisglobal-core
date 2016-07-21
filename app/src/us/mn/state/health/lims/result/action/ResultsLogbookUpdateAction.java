@@ -82,7 +82,6 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexBean;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult.ResultType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -500,7 +499,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	private boolean noResults(String value, String multiSelectValue, String type){
 
 		return (GenericValidator.isBlankOrNull(value) && GenericValidator.isBlankOrNull(multiSelectValue)) ||
-				( ResultType.DICTIONARY.matches(type) && "0".equals(value));
+				( TypeOfTestResultService.ResultType.DICTIONARY.matches(type) && "0".equals(value));
 	}
 
 	private ResultInventory createTestKitLinkIfNeeded(TestResultItem testResult, String testKitName){

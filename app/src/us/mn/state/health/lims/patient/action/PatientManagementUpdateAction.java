@@ -73,6 +73,8 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
     private static PatientIdentityDAO identityDAO = new PatientIdentityDAOImpl();
 	private static PatientDAO patientDAO = new PatientDAOImpl();
 	private static PersonAddressDAO personAddressDAO = new PersonAddressDAOImpl();
+	private static final String AMBIGUOUS_DATE_CHAR = ConfigurationProperties.getInstance().getPropertyValue(ConfigurationProperties.Property.AmbiguousDateHolder);
+	private static final String AMBIGUOUS_DATE_HOLDER = AMBIGUOUS_DATE_CHAR + AMBIGUOUS_DATE_CHAR;
 	protected PatientUpdateStatus patientUpdateStatus = PatientUpdateStatus.NO_ACTION;
 
 	private static String ADDRESS_PART_VILLAGE_ID;
@@ -221,10 +223,29 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
             }
         }
 
+		validateBirthdateFormat(patientInfo, errors);
+
         return errors;
     }
 
-    private void setLastUpdatedTimeStamps(PatientManagementInfo patientInfo) {
+	private void validateBirthdateFormat(PatientManagementInfo patientInfo, ActionMessages errors) {
+		String birthDate = patientInfo.getBirthDateForDisplay();
+		boolean validBirthDateFormat = true;
+
+		if( !GenericValidator.isBlankOrNull(birthDate)){
+			validBirthDateFormat = birthDate.length() == 10;
+			//the regex matches ambiguous day and month or ambiguous day or completely formed date
+			if(validBirthDateFormat){
+				validBirthDateFormat = birthDate.matches("(((" + AMBIGUOUS_DATE_HOLDER + "|\\d{2})/\\d{2})|" + AMBIGUOUS_DATE_HOLDER + "/(" + AMBIGUOUS_DATE_HOLDER + "|\\d{2}))/\\d{4}");
+			}
+
+			if( !validBirthDateFormat){
+				errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionError("error.birthdate.format", null, null ));
+			}
+		}
+	}
+
+	private void setLastUpdatedTimeStamps(PatientManagementInfo patientInfo) {
 		String patientUpdate = patientInfo.getPatientLastUpdated();
 		if (!GenericValidator.isBlankOrNull(patientUpdate)) {
 			Timestamp timeStamp = Timestamp.valueOf(patientUpdate);

@@ -14,6 +14,7 @@
  * Copyright (C) The Minnesota Department of Health.  All Rights Reserved.
  *
  * Contributor(s): CIRG, University of Washington, Seattle WA.
+ * Contributor(s): ITECH, University of Washington, Seattle WA.
  */
 package us.mn.state.health.lims.common.action;
 
@@ -39,10 +40,6 @@ import java.util.*;
 public abstract class BaseAction extends Action implements IActionConstants {
 	private static final boolean USE_PARAMETERS = true;
 
-	String pageSubtitle = null;
-
-	String pageTitle = null;
-
 	protected String currentUserId;
 
 	public BaseAction() {
@@ -62,8 +59,8 @@ public abstract class BaseAction extends Action implements IActionConstants {
 			return mapping.findForward(LOGIN_PAGE);
 		}
 
-		String pageSubtitle = null;
-		String pageTitle = null;
+		String pageSubtitle;
+		String pageTitle;
 
 		if (FWD_SUCCESS.equals(request.getParameter("forward"))) {
 			setSuccessFlag(request);
@@ -242,7 +239,17 @@ public abstract class BaseAction extends Action implements IActionConstants {
 	 *            the message key to look up
 	 */
 	protected String getMessageForKey(String messageKey) throws Exception {
-		return StringUtil.getContextualMessageForKey(messageKey);
+		String message = StringUtil.getContextualMessageForKey(messageKey);
+		return message == null ? getActualMessage( messageKey ) : message;
+	}
+
+	/**
+	 * Template method to allow subclasses to handle special cases.  The default is to return the message
+	 * @param message The message
+	 * @return The message
+	 */
+	protected String getActualMessage(String message) {
+		return message;
 	}
 
 	protected String getMessageForKey(HttpServletRequest request, String messageKey, String arg0) throws Exception {
@@ -258,7 +265,7 @@ public abstract class BaseAction extends Action implements IActionConstants {
 			if (null != form) {
 				DynaActionForm theForm = (DynaActionForm) form;
 				theForm.getDynaClass().getName();
-				String name = theForm.getDynaClass().getName().toString();
+				String name = theForm.getDynaClass().getName();
 				// use IActionConstants!
 				request.setAttribute(FORM_NAME, name);
 				request.setAttribute("formType", theForm.getClass().toString());
@@ -314,19 +321,18 @@ public abstract class BaseAction extends Action implements IActionConstants {
 	protected ActionMessages validateAccessionNumber(HttpServletRequest request, ActionMessages errors, BaseActionForm dynaForm)
 			throws Exception {
 
-		String formName = dynaForm.getDynaClass().getName().toString();
+		String formName = dynaForm.getDynaClass().getName();
 
 		AccessionNumberValidationProvider accessionNumberValidator = new AccessionNumberValidationProvider();
 
-		String accessionNumber = "";
-		String result = "";
+		String accessionNumber;
 
-		if (!StringUtil.isNullorNill((String) request.getParameter(ACCESSION_NUMBER))) {
-			accessionNumber = (String) request.getParameter(ACCESSION_NUMBER);
+		if (!StringUtil.isNullorNill(request.getParameter(ACCESSION_NUMBER))) {
+			accessionNumber = request.getParameter(ACCESSION_NUMBER);
 		} else {
 			accessionNumber = (String) dynaForm.get(ACCESSION_NUMBER);
 		}
-		result = accessionNumberValidator.validate(accessionNumber, formName);
+		String result = accessionNumberValidator.validate(accessionNumber, formName);
 
 		String messageKey = "sample.accessionNumber";
 		if (result.equals(INVALID)) {
@@ -346,14 +352,13 @@ public abstract class BaseAction extends Action implements IActionConstants {
 
 		List<Analysis> rootLevelNodes = new ArrayList<Analysis>();
 		for (int i = 0; i < analyses.size(); i++) {
-			Analysis analysis = (Analysis) analyses.get(i);
+			Analysis analysis = analyses.get(i);
 			String analysisId = analysis.getId();
 
 			List<Analysis> children = new ArrayList<Analysis>();
-			for (int j = 0; j < analyses.size(); j++) {
-				Analysis anal = (Analysis) analyses.get(j);
-				if (anal.getParentAnalysis() != null && anal.getParentAnalysis().getId().equals(analysisId)) {
-					children.add(anal);
+			for (Analysis analyse : analyses) {
+				if (analyse.getParentAnalysis() != null && analyse.getParentAnalysis().getId().equals(analysisId)) {
+					children.add(analyse);
 				}
 			}
 			analysis.setChildren(children);
@@ -367,10 +372,9 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		Collections.sort(rootLevelNodes, BaseTestComparator.SORT_ORDER_COMPARATOR);
 
 		analyses = new ArrayList<Analysis>();
-		for (int i = 0; i < rootLevelNodes.size(); i++) {
-			Analysis analysis = (Analysis) rootLevelNodes.get(i);
-			analyses.add(analysis);
-			recursiveSort(analysis, analyses);
+		for (Analysis rootLevelNode : rootLevelNodes) {
+			analyses.add(rootLevelNode);
+			recursiveSort(rootLevelNode, analyses);
 		}
 
 		return analyses;
@@ -382,8 +386,7 @@ public abstract class BaseAction extends Action implements IActionConstants {
 		if (children != null && children.size() > 0) {
 			Collections.sort(children, BaseTestComparator.SORT_ORDER_COMPARATOR);
 		}
-		for (Iterator<Analysis> it = children.iterator(); it.hasNext();) {
-			Analysis childElement = it.next();
+		for (Analysis childElement : children) {
 			analyses.add(childElement);
 			recursiveSort(childElement, analyses);
 		}

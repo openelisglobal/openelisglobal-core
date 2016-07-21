@@ -74,7 +74,7 @@ public class QaEventsEntryAction extends BaseAction {
 		dynaForm.initialize(mapping);
 
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
-		List categoryDictionaries = dictionaryDAO.getDictionaryEntrysByCategory(SystemConfiguration.getInstance().getQaEventDictionaryCategoryCategory());
+		List categoryDictionaries = dictionaryDAO.getDictionaryEntrysByCategoryAbbreviation(SystemConfiguration.getInstance().getQaEventDictionaryCategoryCategory());
 
 
 		PropertyUtils.setProperty(form, "testQaEvents", new ArrayList());

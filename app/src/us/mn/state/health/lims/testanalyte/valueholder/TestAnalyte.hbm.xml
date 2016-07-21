@@ -27,14 +27,6 @@
         <property name="testAnalyteType" type="java.lang.String">
             <column name="TESTALYT_TYPE" length="1" />
         </property>
-<!--
-        <set name="testReflexes" inverse="true">
-            <key>
-                <column name="TEST_ANALYTE_ID" precision="10" scale="0" />
-            </key>
-            <one-to-many class="us.mn.state.health.lims.testreflex.valueholder.TestReflex" />
-        </set>
--->
         <property name="isReportable" type="java.lang.String">
             <column name="IS_REPORTABLE" length="1" />
         </property>

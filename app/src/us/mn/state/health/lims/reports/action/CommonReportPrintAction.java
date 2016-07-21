@@ -53,6 +53,7 @@ public class CommonReportPrintAction extends BaseAction {
 		String forward = FWD_FAIL;
 
 		if (reportCreator != null) {
+			reportCreator.setRequestedReport(request.getParameter("report"));
 			reportCreator.initializeReport(dynaForm);
 			reportCreator.setReportPath(getReportPath());
 

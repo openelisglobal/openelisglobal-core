@@ -241,7 +241,7 @@ public class Patient extends BaseObject {
 	public void setBirthDateForDisplay(String birthDateForDisplay) {
 		this.birthDateForDisplay = birthDateForDisplay;
 
-		if( birthDateForDisplay != null){		
+		if( birthDateForDisplay != null){
 			birthDate = DateUtil.convertAmbiguousStringDateToTimestamp(birthDateForDisplay);
 		}
 	}

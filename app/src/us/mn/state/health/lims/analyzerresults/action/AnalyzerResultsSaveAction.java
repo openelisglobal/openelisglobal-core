@@ -33,12 +33,14 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.services.StatusSet;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
@@ -52,6 +54,7 @@ import us.mn.state.health.lims.result.action.util.ResultUtil;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
+import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
@@ -74,7 +77,7 @@ import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
-import us.mn.state.health.lims.typeofsample.util.TypeOfSampleUtil;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
 
@@ -85,6 +88,7 @@ import java.util.*;
 
 public class AnalyzerResultsSaveAction extends BaseAction {
 
+	private static final boolean IS_RETROCI = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.configurationName, "CI RetroCI");
 	private static final String REJECT_VALUE = "XXXX";
 	private ResultDAO resultDAO = new ResultDAOImpl();
 	private NoteDAO noteDAO = new NoteDAOImpl();
@@ -104,11 +108,15 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	private static final String DBS_SAMPLE_TYPE_ID;
 
 	static {
-		TypeOfSample typeOfSample = new TypeOfSample();
-		typeOfSample.setDescription("DBS");
-		typeOfSample.setDomain("H");
-		typeOfSample = new TypeOfSampleDAOImpl().getTypeOfSampleByDescriptionAndDomain(typeOfSample, false);
-		DBS_SAMPLE_TYPE_ID = typeOfSample.getId();
+		if(IS_RETROCI) {
+			TypeOfSample typeOfSample = new TypeOfSample();
+			typeOfSample.setDescription("DBS");
+			typeOfSample.setDomain("H");
+			typeOfSample = new TypeOfSampleDAOImpl().getTypeOfSampleByDescriptionAndDomain(typeOfSample, false);
+			DBS_SAMPLE_TYPE_ID = typeOfSample.getId();
+		}else{
+			DBS_SAMPLE_TYPE_ID = null;
+		}
 	}
 
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
@@ -313,6 +321,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 				SampleGrouping sampleGrouping = createRecordsForNewResult(groupedResultList);
 
 				if (sampleGrouping != null) {
+					sampleGrouping.triggersToSelectedReflexesMap = new HashMap<String, List<String>>( );
 					sampleGroupList.add(sampleGrouping);
 				}
 
@@ -328,7 +337,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		// for the last set of results the grouping number will not change
 		SampleGrouping sampleGrouping = createRecordsForNewResult(groupedResultList);
         //TODO currently there are no user selections of reflexes on the analyzer result page so for now this is ok
-        sampleGrouping.triggersToSelectedReflexesMap = new HashMap<String, List<String>>( );
+		sampleGrouping.triggersToSelectedReflexesMap = new HashMap<String, List<String>>( );
 
 		sampleGroupList.add(sampleGrouping);
 
@@ -393,7 +402,8 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		sample.setEnteredDate(new Date(new java.util.Date().getTime()));
 		sample.setSysUserId(sysUserId);
 
-		createAndAddItems_Analysis_Results(groupedAnalyzerResultItems, analysisList, resultList, resultToUserSelectionMap, noteList);
+		Patient patient = sampleHumanDAO.getPatientForSample(sample);
+		createAndAddItems_Analysis_Results(groupedAnalyzerResultItems, analysisList, resultList, resultToUserSelectionMap, noteList, patient);
 
 		// We either have to find an existing sample item or create a new one
 		SampleItem sampleItem = getOrCreateSampleItem(groupedAnalyzerResultItems, sample);
@@ -407,7 +417,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		sampleGrouping.addSampleItem = sampleItem.getId() == null;
 		sampleGrouping.statusSet = statusSet;
 		sampleGrouping.accepted = groupedAnalyzerResultItems.get(0).getIsAccepted();
-		sampleGrouping.patient = sampleHumanDAO.getPatientForSample(sample);
+		sampleGrouping.patient = patient;
 		sampleGrouping.resultToUserserSelectionMap = resultToUserSelectionMap;
 
 		return sampleGrouping;
@@ -467,8 +477,8 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		sample.setEnteredDate(new Date(new java.util.Date().getTime()));
 		sample.setSysUserId(sysUserId);
 
-
-		createAndAddItems_Analysis_Results(groupedAnalyzerResultItems, analysisList, resultList, resultToUserSelectionMap, noteList);
+		Patient patient = sampleHumanDAO.getPatientForSample(sample);
+		createAndAddItems_Analysis_Results(groupedAnalyzerResultItems, analysisList, resultList, resultToUserSelectionMap, noteList, patient);
 
 		sampleGrouping.sample = sample;
 		sampleGrouping.sampleItem = sampleItem;
@@ -480,7 +490,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		sampleGrouping.statusSet = statusSet;
 		sampleGrouping.addSampleItem = sampleItem.getId() == null;
 		sampleGrouping.accepted = groupedAnalyzerResultItems.get(0).getIsAccepted();
-		sampleGrouping.patient = sampleHumanDAO.getPatientForSample(sample);
+		sampleGrouping.patient = patient;
 		sampleGrouping.resultToUserserSelectionMap = resultToUserSelectionMap;
 
 		return sampleGrouping;
@@ -505,6 +515,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		SampleItem sampleItem = null;
 		/***** this is causing the status id for the sample in the DB to be updated *********/
 		List<Analysis> dBAnalysisList = analysisDAO.getAnalysesBySampleId(sample.getId());
+		Patient patient = sampleHumanDAO.getPatientForSample(sample);
 
 		for (AnalyzerResultItem resultItem : groupedAnalyzerResultItems) {
 			Analysis analysis = null;
@@ -525,7 +536,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 				test = testDAO.getTestById(test);
 				analysis.setTest(test);
 				// A new sampleItem may be needed
-				TypeOfSample typeOfSample = TypeOfSampleUtil.getTypeOfSampleForTest(test.getId());
+				TypeOfSample typeOfSample = TypeOfSampleService.getTypeOfSampleForTest(test.getId());
 				List<SampleItem> sampleItemsForSample = sampleItemDAO.getSampleItemsBySampleId(sample.getId());
 
 				// if the type of sample is found then assign to analysis
@@ -559,7 +570,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 			analysis.setSysUserId(sysUserId);
 			analysisList.add(analysis);
 
-			Result result = getResult(analysis, resultItem);
+			Result result = getResult(analysis, patient, resultItem);
 			resultToUserSelectionMap.put(result, resultItem.getReflexSelectionId());
 
 			resultList.add(result);
@@ -582,7 +593,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		sampleGrouping.statusSet = statusSet;
 		sampleGrouping.addSampleItem = sampleItem.getId() == null;
 		sampleGrouping.accepted = groupedAnalyzerResultItems.get(0).getIsAccepted();
-		sampleGrouping.patient = sampleHumanDAO.getPatientForSample(sample);
+		sampleGrouping.patient = patient;
 		sampleGrouping.resultToUserserSelectionMap = resultToUserSelectionMap;
 
 		return sampleGrouping;
@@ -612,14 +623,15 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		sampleHuman.setPatientId(PatientUtil.getUnknownPatient().getId());
 		sampleHuman.setSysUserId(sysUserId);
 
-		createAndAddItems_Analysis_Results(groupedAnalyzerResultItems, analysisList, resultList, resultToUserSelectionMap, noteList);
+		Patient patient = PatientUtil.getUnknownPatient();
+		createAndAddItems_Analysis_Results(groupedAnalyzerResultItems, analysisList, resultList, resultToUserSelectionMap, noteList, patient);
 
 		addSampleTypeToSampleItem(sampleItem, analysisList, sample.getAccessionNumber());
 
 		sampleGrouping.sample = sample;
 		sampleGrouping.sampleHuman = sampleHuman;
 		sampleGrouping.sampleItem = sampleItem;
-		sampleGrouping.patient = PatientUtil.getUnknownPatient();
+		sampleGrouping.patient = patient;
 		sampleGrouping.analysisList = analysisList;
 		sampleGrouping.resultList = resultList;
 		sampleGrouping.noteList = noteList;
@@ -640,7 +652,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	}
 
 	private String getTypeOfSampleId(List<Analysis> analysisList, String accessionNumber) {
-		if (accessionNumber.startsWith("LDBS")) {
+		if (IS_RETROCI && accessionNumber.startsWith("LDBS")) {
 			List<TypeOfSampleTest> typeOfSmapleTestList = typeOfSampleTestDAO.getTypeOfSampleTestsForTest(analysisList.get(0).getTest().getId());
 
 			for (TypeOfSampleTest typeOfSampleTest : typeOfSmapleTestList) {
@@ -656,8 +668,8 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 	}
 
 	private void createAndAddItems_Analysis_Results(List<AnalyzerResultItem> groupedAnalyzerResultItems,
-			List<Analysis> analysisList, List<Result> resultList, Map<Result, String> resultToUserSelectionMap,
-			List<Note> noteList) {
+													List<Analysis> analysisList, List<Result> resultList, Map<Result, String> resultToUserSelectionMap,
+													List<Note> noteList, Patient patient) {
 
 		for (AnalyzerResultItem resultItem : groupedAnalyzerResultItems) {
 			Analysis analysis = getExistingAnalysis(resultItem);
@@ -677,7 +689,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 			analysis.setSysUserId(sysUserId);
 			analysisList.add(analysis);
 
-			Result result = getResult(analysis, resultItem);
+			Result result = getResult(analysis, patient, resultItem);
 			resultList.add(result);
 			resultToUserSelectionMap.put(result, resultItem.getReflexSelectionId());
 			if (GenericValidator.isBlankOrNull(resultItem.getNote())) {
@@ -695,7 +707,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		return analysisList.isEmpty() ? null : analysisList.get(0);
 	}
 
-	private Result getResult(Analysis analysis, AnalyzerResultItem resultItem) {
+	private Result getResult(Analysis analysis, Patient patient, AnalyzerResultItem resultItem) {
 
 		Result result = null;
 
@@ -715,7 +727,7 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		}
 
 		if (result == null) {
-			result = createNewResult(resultItem);
+			result = createNewResult(resultItem, patient);
 		}
 
 		return result;
@@ -729,15 +741,39 @@ public class AnalyzerResultsSaveAction extends BaseAction {
 		}
 	}
 
-	private Result createNewResult(AnalyzerResultItem resultItem) {
+	private Result createNewResult(AnalyzerResultItem resultItem, Patient patient) {
 		Result result = new Result();
 		String resultValue = resultItem.getIsRejected() ? REJECT_VALUE : resultItem.getResult();
 		result.setValue(resultValue);
 		result.setTestResult(getTestResultForResult(resultItem));
-		result.setResultType(resultItem.getTestResultType());
+		result.setResultType(resultItem.getTestResultType());				
+		//the results table is not autmatically updated with the significant digits from TestResult so we must do this
+		if (!GenericValidator.isBlankOrNull(resultItem.getSignificantDigits())) {
+			result.setSignificantDigits(Integer.parseInt(resultItem.getSignificantDigits()));
+		}
+		
+		addMinMaxNormal(result, resultItem, patient);
 		result.setSysUserId(sysUserId);
 
 		return result;
+	}
+
+	private void addMinMaxNormal(Result result, AnalyzerResultItem resultItem, Patient patient) {
+		boolean limitsFound = false;
+
+		if( resultItem != null){
+			ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(resultItem.getTestId(), patient);
+			if(resultLimit != null) {
+				result.setMinNormal(resultLimit.getLowNormal());
+				result.setMaxNormal(resultLimit.getHighNormal());
+				limitsFound = true;
+			}
+		}
+
+		if( !limitsFound){
+			result.setMinNormal( Double.NEGATIVE_INFINITY);
+			result.setMaxNormal( Double.POSITIVE_INFINITY);
+		}
 	}
 
 	private TestResult getTestResultForResult(AnalyzerResultItem resultItem) {
