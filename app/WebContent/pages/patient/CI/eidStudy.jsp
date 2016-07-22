@@ -191,7 +191,7 @@ eid = new EidProjectChecker();
         <td>
             <div class="blank"><bean:message key="sample.entry.project.LDBS"/></div>
             <INPUT type="text" name="eid.labNoForDisplay" id="eid.labNoForDisplay" size="5" class="text"
-                onchange="handleLabNoChange( this, 'LDBS', false );makeDirty();"
+                onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LDBS"/>', false );makeDirty();"
                 maxlength="5" />
             <app:text name="<%=formName%>" property="labNo"
                     styleClass="text" style="display:none;"

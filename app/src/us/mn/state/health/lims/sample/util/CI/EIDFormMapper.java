@@ -22,12 +22,13 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 
 public class EIDFormMapper extends BaseProjectFormMapper implements IProjectFormMapper {
 
-	private String projectCode = "LDBS";
+	private String projectCode = StringUtil.getMessageForKey("sample.entry.project.LDBS");
 	private final String projectName = "Early Infant Diagnosis for HIV Study";
 
 	public EIDFormMapper(String projectFormId, BaseActionForm dynaForm)  {
