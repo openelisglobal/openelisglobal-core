@@ -28,6 +28,7 @@ public class ProjectFormMapperFactory {
 	private static final String InitialARV = "InitialARV_Id";
 	private static final String FollowUpARV = "FollowUpARV_Id";
 	private static final String EID = "EID_Id";
+	private static final String VL = "VL_Id";
 	private static final String RTN = "RTN_Id";
 	private static final String IND = "Indeterminate_Id";
 	private static final String SPE = "Special_Request_Id";

@@ -63,6 +63,7 @@ public abstract class BaseSampleEntryAction extends BaseAction {
     protected RequestType requestType = RequestType.UNKNOWN;
 
     public static final String FWD_EID_ENTRY = "eid_entry";
+    public static final String FWD_VL_ENTRY = "vl_entry";
 
 	protected String getPageTitleKey() {
 		return StringUtil.getContextualKeyForKey("sample.entry.title");
