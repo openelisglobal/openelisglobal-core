@@ -5,7 +5,9 @@ use File::Basename;
 use Cwd;
 
 my $timeTagFile1 = 'pijdljkanel_Do_not_remove.ff';
-my $timeTagFile2 = 'uaoiajeehkh_Do_not_remove.ff';
+# my $timeTagFile2 = 'uaoiajeehkh_Do_not_remove.ff';
+
+
 
 sub updateQueue{
     my $maxTime = 0;
@@ -14,9 +16,9 @@ sub updateQueue{
     my $timeTagFile = shift;
     
     if(not -e $stagingDir){
-	print "Not able to find directory \"" . $stagingDir . "\" for importing analyzer results\n\n";
-	return;
-    }
+  	print "Not able to find directory \"" . $stagingDir . "\" for importing analyzer results\n\n";
+  	return;
+   }
 
     my $timeFile = $queueDir . '/' . $timeTagFile; 
     if(not  -e $timeFile ){
@@ -39,6 +41,7 @@ sub updateQueue{
     utime $maxTime, $maxTime, $timeFile if $maxTime > 0;
 }
 
+
 sub sendToServer{
     my $queueDir = shift;
     my $upLoadtargetURL    = shift;
@@ -46,7 +49,7 @@ sub sendToServer{
     my $upLoadPassword = shift;
     
     my $maxRetryCount = 2;
-    my $curlExe = 'C:\curl\curl.exe';
+    my $curlExe = '/usr/bin/curl'; 
     
     my @files = <$queueDir/*.*>; 
     
@@ -102,9 +105,9 @@ sub printTime{
 
 my $upLoadtargetURL = 'http://localhost:8080/openElisGlobal/importAnalyzer';
 
-my $stagingDir1 = ".\\staging";
+my $stagingDir1 = ".//staging";
 #my $stagingDir2 = "Y:";
-my $queueDir = ".\\transmissionQueue";
+my $queueDir = ".//transmissionQueue";
 my $upLoadUserName = 'analyzer';
 my $upLoadPassword = 'analyzer!';
 
