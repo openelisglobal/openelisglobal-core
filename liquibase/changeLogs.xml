@@ -2233,6 +2233,7 @@ ALTER TABLE sampletracking OWNER TO clinlims;
 <include file="OE5.1/Base.xml"/>
 <include file="OE5.2/Base.xml"/>
 <include file="OE5.3/Base.xml"/>
+<include file="OE6.1/Base.xml"/>
 </databaseChangeLog>
 
 

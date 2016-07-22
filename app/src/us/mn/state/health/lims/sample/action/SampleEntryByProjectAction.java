@@ -78,6 +78,8 @@ public class SampleEntryByProjectAction extends BaseSampleEntryAction {
         switch (projectForm) {
         case EID:
             return FWD_EID_ENTRY;
+        case VL:
+            return FWD_VL_ENTRY;
         default:
             return FWD_SUCCESS;
         }
