@@ -37,6 +37,8 @@ import java.util.HashMap;
 public class CommonReportPrintAction extends BaseAction {
 
 	private static String reportPath = null;
+	private static String leftLabLogoPath = null;
+	private static String rightLabLogoPath = null;
 
 
 	@SuppressWarnings("unchecked")
@@ -59,6 +61,8 @@ public class CommonReportPrintAction extends BaseAction {
 
 			HashMap<String, String> parameterMap = (HashMap<String, String>) reportCreator.getReportParameters();
 			parameterMap.put("SUBREPORT_DIR", getReportPath());
+			parameterMap.put("leftHeaderImage2", getLeftHeaderLogoPath());//WINDOWS BUG FIX
+			parameterMap.put("rightHeaderImage2", getRightHeaderLogoPath());//WINDOWS BUG FIX
 
 			try {
 
@@ -111,5 +115,19 @@ public class CommonReportPrintAction extends BaseAction {
 		}
 
 		return reportPath;
+	}
+	
+	public String getLeftHeaderLogoPath() {
+		if (leftLabLogoPath == null) {
+			leftLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/leftLabLogo.jpg";System.out.println("ici:"+leftLabLogoPath);
+		}
+		return leftLabLogoPath;	
+	}
+	
+	public String getRightHeaderLogoPath() {
+		if (rightLabLogoPath == null) {
+			rightLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/rightLabLogo.jpg";
+		}
+		return rightLabLogoPath;		
 	}
 }

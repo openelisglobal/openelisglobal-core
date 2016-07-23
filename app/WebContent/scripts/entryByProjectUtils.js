@@ -207,6 +207,7 @@ function BaseLoader() {
 		clearField(document.getElementById(fieldId));
 		clearField(document.getElementById("farv." + fieldId));
 		clearField(document.getElementById("eid." + fieldId));
+		clearField(document.getElementById("vl." + fieldId));
 		clearField(document.getElementById("rtn." + fieldId));
 	}
 
@@ -225,6 +226,7 @@ function BaseLoader() {
 		this.setField("farv." + fieldId, value);
 		this.setField("rtn." + fieldId, value);
 		this.setField("eid." + fieldId, value);
+		this.setField("vl." + fieldId, value);
 	}
 
 	/**
@@ -352,6 +354,7 @@ function PatientLoader() {
 			handlePatientBirthDateChange($("dateOfBirth"), $("interviewDate"), false, $("age"));
 			handlePatientBirthDateChange($("farv.dateOfBirth"), $("farv.interviewDate"), false, $("farv.age"));
 			handlePatientBirthDateChange($("eid.dateOfBirth"),  $("eid.interviewDate"), false, null, $('eid.month'), $('eid.ageWeek'));
+			handlePatientBirthDateChange($("vl.dateOfBirth"),  $("vl.interviewDate"), false, $("vl.age"));
 			handlePatientBirthDateChange($("rtn.dateOfBirth"),  $("rtn.interviewDate"), false, $("rtn.age"), $("rtn.month"));
 		}
 
@@ -705,6 +708,7 @@ function ObservationHistoryLoader() {
 	    iarv.refresh();
 	    farv.refresh();
 	    eid.refresh();
+	    vl.refresh();
 	    if (rtn != null) {
 		    rtn.refresh();
 	    }

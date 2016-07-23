@@ -51,6 +51,7 @@ public enum ObservationHistoryList {
 	ARV_PROPHYLAXIS("ARV Prophylaxis"),
 	ARV_PROPHYLAXIS_2("Secondary Prophylaxis"),
 	ARV_REGIME("ARV Treatment Regime"),
+	ARV_REASON_FOR_VL_DEMAND("Reason for Viral Load Request", false),
 	
 	RTN_DISEASES("RTN Diseases", false),
 	RTN_EXAM_DISEASES("RTN Examination Diseases", false),
