@@ -89,6 +89,8 @@ public class DisplayListService implements LocaleChangeListener {
         RESULT_TYPE_LOCALIZED,
         RESULT_TYPE_RAW,
         UNIT_OF_MEASURE,
+        UNIT_OF_MEASURE_ACTIVE,
+        UNIT_OF_MEASURE_INACTIVE,
         DICTIONARY_TEST_RESULTS
 	}
 
@@ -128,6 +130,8 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.RESULT_TYPE_LOCALIZED, createLocalizedResultTypeList());
         typeToListMap.put(ListType.RESULT_TYPE_RAW, createRawResultTypeList());
         typeToListMap.put(ListType.UNIT_OF_MEASURE, createUOMList());
+        typeToListMap.put(ListType.UNIT_OF_MEASURE_ACTIVE, createUOMList());
+        typeToListMap.put(ListType.UNIT_OF_MEASURE_INACTIVE, createUOMList());
         typeToListMap.put(ListType.DICTIONARY_TEST_RESULTS, createDictionaryTestResults());
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);

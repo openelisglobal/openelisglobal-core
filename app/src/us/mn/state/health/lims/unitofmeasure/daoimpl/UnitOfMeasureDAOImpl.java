@@ -76,6 +76,7 @@ public class UnitOfMeasureDAOImpl extends BaseDAOImpl implements UnitOfMeasureDA
 	}
 
 	public boolean insertData(UnitOfMeasure unitOfMeasure) throws LIMSRuntimeException {
+		//System.out.println("insertData = " + unitOfMeasure.getUnitOfMeasureName());
 		try {
 			// bugzilla 1482 throw Exception if record already exists
 			if (duplicateUnitOfMeasureExists(unitOfMeasure)) {
@@ -91,7 +92,7 @@ public class UnitOfMeasureDAOImpl extends BaseDAOImpl implements UnitOfMeasureDA
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			String sysUserId = unitOfMeasure.getSysUserId();
 			String tableName = "UNIT_OF_MEASURE";
-			auditDAO.saveNewHistory(unitOfMeasure, sysUserId, tableName);
+			auditDAO.saveNewHistory(unitOfMeasure, "1", tableName);
 			
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();						
