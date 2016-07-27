@@ -26,7 +26,7 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 
 	public HashMap<FormFields.Field, Boolean> getImplementationAttributes() {
 		HashMap<FormFields.Field, Boolean> settings = new HashMap<FormFields.Field, Boolean>();
-		settings.put(Field.StNumber, Boolean.FALSE);
+		settings.put(Field.StNumber,Boolean.FALSE);
 		settings.put(Field.AKA, Boolean.FALSE);
 		settings.put(Field.MothersName, Boolean.FALSE);
 		settings.put(Field.PatientType, Boolean.FALSE);
@@ -40,18 +40,18 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.ResultsReferral, Boolean.TRUE);
 		settings.put(Field.ValueHozSpaceOnResults, Boolean.TRUE);
 		settings.put(Field.InitialSampleCondition, Boolean.TRUE);
-		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
+		//settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
 		settings.put(Field.OrganizationMultiUnit, Boolean.FALSE);
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
-		settings.put(Field.ADDRESS_CITY, Boolean.TRUE);
+		settings.put(Field.ADDRESS_CITY, Boolean.FALSE);
 		settings.put(Field.PatientRequired, Boolean.TRUE);
 		settings.put(Field.SampleCondition, Boolean.FALSE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE, Boolean.TRUE);
 		settings.put(Field.PatientNameRequired, Boolean.FALSE);
 		settings.put(Field.SubjectNumber, Boolean.TRUE);
-		settings.put(Field.NationalID, Boolean.TRUE);
+		settings.put(Field.NationalID,Boolean.TRUE);
 		settings.put(Field.SampleEntryUseReceptionHour, Boolean.TRUE);
 		settings.put(Field.SampleEntryUseRequestDate, Boolean.TRUE);
 		settings.put(Field.SampleEntryNextVisitDate, Boolean.TRUE);
@@ -69,8 +69,22 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.PatientEducation, Boolean.TRUE);
 		settings.put(Field.SampleEntryPatientClinical, Boolean.FALSE);
 		settings.put(Field.SampleEntryRequesterLastNameRequired, Boolean.TRUE);
-		settings.put(Field.QASubjectNumber, Boolean.TRUE);
+		//settings.put(Field.QASubjectNumber, Boolean.TRUE);
 		settings.put(Field.QATimeWithDate, Boolean.TRUE);
+		settings.put(Field.SampleEntryReferralSiteCode, Boolean.TRUE);							
+		settings.put(Field.QA_DOCUMENT_NUMBER, Boolean.TRUE);							
+		settings.put(Field.CollectionTime, Boolean.TRUE);					
+        settings.put(Field.TEST_LOCATION_CODE,Boolean.TRUE);							
+        settings.put(Field.ProviderInfo, Boolean.TRUE);					
+        settings.put(Field.SearchSampleStatus,  Boolean.TRUE);					
+        settings.put(Field.OrganizationAddressInfo, Boolean.FALSE);						
+        settings.put(Field.DepersonalizedResults, Boolean.TRUE);						
+		settings.put(Field.Project, Boolean.TRUE);					
+		settings.put(Field.QA_FULL_PROVIDER_INFO, Boolean.FALSE);					
+		settings.put(Field.QASubjectNumber, Boolean.FALSE);					
+        settings.put(Field.ADDRESS_COMMUNE, Boolean.TRUE);							
+        settings.put(Field.ADDRESS_VILLAGE, Boolean.TRUE);							
+        settings.put(Field.SEARCH_PATIENT_WITH_LAB_NO, Boolean.TRUE);
 
 		
 		return settings;

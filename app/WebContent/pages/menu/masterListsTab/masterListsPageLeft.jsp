@@ -183,11 +183,13 @@
         <bean:message key="configuration.test.management" />
     </html:link>
 </li>
+
 <li>
     <html:link action="/BatchTestReassignment">
         <bean:message key="configuration.batch.test.reassignment" />
     </html:link>
 </li>
+
 <% if(adminFields.useField(Field.PATIENT_ENTRY_CONFIGURATION)){ %>
 <li>
     <html:link action="/PatientConfigurationMenu">
