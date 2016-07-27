@@ -30,17 +30,20 @@ import us.mn.state.health.lims.project.dao.ProjectDAO;
 import us.mn.state.health.lims.project.daoimpl.ProjectDAOImpl;
 import us.mn.state.health.lims.project.valueholder.Project;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RetroCIReport extends Report implements IReportCreator {
 
 	protected static final String ANTIRETROVIRAL_STUDY = "Antiretroviral Study";
 	protected static final String ANTIRETROVIRAL_FOLLOW_UP_STUDY = "Antiretroviral Followup Study";
+	protected static final String VL_STUDY = "Viral Load Results";
 	protected static final String EID_STUDY = "Early Infant Diagnosis for HIV Study";
 	protected static final String INDETERMINATE_STUDY = "Indeterminate Results";
 	protected static final String SPECIAL_REQUEST_STUDY = "Special Request";
 	protected static String ANTIRETROVIRAL_STUDY_ID;
 	protected static String ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID;
+	protected static String VL_STUDY_ID;
 	protected static String EID_STUDY_ID;
 	protected static String SPECIAL_REQUEST_STUDY_ID;
 	protected static String INDETERMINATE_STUDY_ID;
@@ -50,7 +53,7 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 	protected static String OBSERVATION_PROJECT_ID;
 	protected static String OBSERVATION_WHICH_PCR_ID;
 	protected static String OBSERVATION_UNDER_INVESTIGATION_ID;
-
+	protected static List<Integer> ANTIRETROVIRAL_ID= new ArrayList<Integer>();
 
 	protected static String CONCLUSION_ID;
 	protected static String CD4_CNT_CONCLUSION;
@@ -91,6 +94,8 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 				ANTIRETROVIRAL_STUDY_ID = project.getId();
 			}else if(ANTIRETROVIRAL_FOLLOW_UP_STUDY.equals(project.getProjectName())){
 				ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID = project.getId();
+			}else if( VL_STUDY.equals(project.getProjectName())){
+				VL_STUDY_ID = project.getId();
 			}else if( EID_STUDY.equals(project.getProjectName())){
 				EID_STUDY_ID = project.getId();
 			}else if( INDETERMINATE_STUDY.equals(project.getProjectName())){
@@ -99,6 +104,10 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 				SPECIAL_REQUEST_STUDY_ID = project.getId();
 			}
 		}
+		ANTIRETROVIRAL_ID.add(Integer.parseInt(ANTIRETROVIRAL_STUDY_ID));
+		ANTIRETROVIRAL_ID.add(Integer.parseInt(ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID));
+		ANTIRETROVIRAL_ID.add(Integer.parseInt(VL_STUDY_ID));
+		
 	}
 
     /**

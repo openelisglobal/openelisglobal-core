@@ -47,6 +47,7 @@ public class PatientARVInitialVersion2Report extends PatientARVReport implements
 	protected String getProjectId() {
 		return ANTIRETROVIRAL_STUDY_ID;
 	}
+
 	
 	@Override
 	protected void createReportParameters() {

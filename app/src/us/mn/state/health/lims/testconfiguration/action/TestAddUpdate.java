@@ -239,7 +239,7 @@ public class TestAddUpdate extends BaseAction {
             testSet.sampleTypeTest = typeOfSampleTest;
 
             createPanelItems(testSet.panelItems, testAddParams);
-            createTestResults(testSet.testResults, significantDigits, testAddParams);
+            createTestResults( testSet.testResults, significantDigits, testAddParams );
             if( numericResults) {
                 testSet.resultLimits = createResultLimits(lowValid, highValid, testAddParams);
             }else if( dictionaryResults){
@@ -409,6 +409,8 @@ public class TestAddUpdate extends BaseAction {
         String dictionaryReferenceId;
         ArrayList<ResultLimitParams> limits = new ArrayList<ResultLimitParams>();
         ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<DictionaryParams>();
+
+
     }
 
     private class SampleTypeListAndTestOrder{

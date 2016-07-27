@@ -59,6 +59,7 @@ public abstract class Report implements IReportCreator {
     protected String requestedReport;
     private String fullReportFilename;
 
+
     @Override
     public void setRequestedReport( String report){
         requestedReport = report;
@@ -97,6 +98,7 @@ public abstract class Report implements IReportCreator {
         reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
         reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
         reportParameters.put("REPORT_LOCALE", SystemConfiguration.getInstance().getDefaultLocale());
+       
     }
 
     private Object getImage(String siteName){

@@ -76,7 +76,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 
 		if (valid) {
 			List<Sample> reportSampleList = findReportSamples(lowerNumber, upperNumber);
-
+			
 			if (reportSampleList.isEmpty()) {
 				errorFound = true;
 				ErrorMessages msgs = new ErrorMessages();
@@ -154,7 +154,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 
 	private List<Sample> findReportSamples(String lowerNumber, String upperNumber) {
 		SampleDAO sampleDAO = new SampleDAOImpl();
-		return sampleDAO.getSamplesByProjectAndStatusIDAndAccessionRange(getProjectId(), READY_FOR_REPORT_STATUS_IDS, lowerNumber,
+		return sampleDAO.getSamplesByProjectAndStatusIDAndAccessionRange(getProjIdsList(getProjectId()), READY_FOR_REPORT_STATUS_IDS, lowerNumber,
 				upperNumber);
 	}
 
@@ -192,5 +192,16 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 	@Override
 	public List<String> getReportedOrders(){
 	    	return handledOrders;
+	}
+	
+	protected List<Integer> getProjIdsList(String projID){
+		
+		String[] fields = projID.split(":");
+		List<Integer> projIDList= new ArrayList<Integer>();
+		for (int i=0;i<fields.length;i++){
+			projIDList.add(Integer.parseInt(fields[i]));
+		}
+		
+		return projIDList;
 	}
 }

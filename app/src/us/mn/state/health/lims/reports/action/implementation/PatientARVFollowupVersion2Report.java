@@ -47,6 +47,7 @@ public class PatientARVFollowupVersion2Report extends PatientARVReport implement
 		return ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID;
 	}
 	
+	
 	@Override
 	protected void createReportParameters() {
 	    super.createReportParameters();

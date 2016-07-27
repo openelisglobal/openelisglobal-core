@@ -90,6 +90,7 @@ public abstract class ARVColumnBuilder extends CIColumnBuilder {
                         + "\n ORDER BY s.accession_number "
                         );
         // no don't insert another crosstab or table here, go up before the main WHERE clause
+
         return;
     }
 }

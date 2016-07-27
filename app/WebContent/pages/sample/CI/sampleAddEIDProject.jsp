@@ -221,6 +221,7 @@ function /*void*/ setSaveButton() {
 	<option value="EID_Id" ><bean:message key="sample.entry.project.EID.title"/></option>
 	<option value="Indeterminate_Id" ><bean:message key="sample.entry.project.indeterminate.title"/></option>
 	<option value="Special_Request_Id"><bean:message key="sample.entry.project.specialRequest.title"/></option>
+    <option value="VL_Id" ><bean:message key="sample.entry.project.VL.title"/></option>
 </select>
 <br/>
 <hr/>

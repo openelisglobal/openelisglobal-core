@@ -212,9 +212,9 @@ public class ResultsLoadUtility {
 	}
 
 	public List<TestResultItem> getUnfinishedTestResultItemsInTestSection(String testSectionId) {
-
+		
 		List<Analysis> analysisList = analysisDAO.getAllAnalysisByTestSectionAndStatus(testSectionId, analysisStatusList, sampleStatusList);
-
+		
 		return getGroupedTestsForAnalysisList(analysisList, SORT_FORWARD);
 	}
 

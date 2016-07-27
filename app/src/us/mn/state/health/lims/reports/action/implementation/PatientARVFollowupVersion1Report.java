@@ -41,17 +41,18 @@ public class PatientARVFollowupVersion1Report extends PatientARVReport implement
 
 	protected boolean allowSample(){
 		List<ObservationHistory> historyList = observationHistoryDAO.getAll(reportPatient, reportSample, OBSERVATION_PROJECT_ID);
-
+		
 		for( ObservationHistory history : historyList){
 			if( "FollowUpARV_Id".equals(history.getValue())){
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
 
 	protected String getProjectId() {
 		return ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID;
 	}
+	
 }

@@ -74,6 +74,9 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 		data.setDoctor(getObservationValues(OBSERVATION_DOCTOR_ID));
 		data.setLabNo(reportSample.getAccessionNumber());
+		
+	//	data.setStudy(reportParameters.get("studyName").toString()==null ? null:reportParameters.get("studyName").toString());
+
 
 	}
 
@@ -94,7 +97,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		reportItems.add(data);
 
 	}
-
+	
 	protected void setTestInfo(ARVReportData data){
 		boolean atLeastOneAnalysisNotValidated = false;
 		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
@@ -162,9 +165,9 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 	private void assignResultsToAVRReportData(ARVReportData data, String testName, String resultValue){
 
-		if(testName.equals("GlycÃ©mie")){
+		if(testName.equals("Glycémie")){
 			data.setGlyc(resultValue);
-		}else if(testName.equals("CrÃ©atininÃ©mie")){
+		}else if(testName.equals("Créatininémie")){
 			data.setCreatininemie(resultValue);
 		}else if(testName.equals("Transaminases ALTL")){
 			data.setSgpt(resultValue);

@@ -79,10 +79,10 @@ public class SPEFormMapper extends ARVFormMapper implements IProjectFormMapper {
 			CollectionUtils.addIgnoreNull(testList, createTest("p24 Ag", true ));
         }
         if (projectData.getCreatinineTest()) {
-            CollectionUtils.addIgnoreNull(testList, createTest("CrÃ©atininÃ©mie", true ));
+            CollectionUtils.addIgnoreNull(testList, createTest("Créatininémie", true ));
         }
         if (projectData.getGlycemiaTest()) {
-			CollectionUtils.addIgnoreNull(testList, createTest("GlycÃ©mie", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Glycémie", true ));
 		}
 
         if (projectData.getTransaminaseTest()) {
@@ -173,7 +173,7 @@ public class SPEFormMapper extends ARVFormMapper implements IProjectFormMapper {
             CollectionUtils.addIgnoreNull(testList, createTest("Viral Load", true ));
         }
         if (projectData.getGenotypingTest()) {
-            CollectionUtils.addIgnoreNull(testList, createTest("GÃ©notypage", true ));
+            CollectionUtils.addIgnoreNull(testList, createTest("Génotypage", true ));
 		}
 
 		return testList;

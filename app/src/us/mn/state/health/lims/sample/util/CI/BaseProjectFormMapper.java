@@ -237,6 +237,22 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
         
         addHistory(histories ,"currentDiseases", od.getCurrentDiseases(), ValueType.DICTIONARY);
         addHistory(histories ,"currentDiseases", od.getCurrentDiseasesValue(), ValueType.LITERAL);
+        
+        //Viral Load study
+        addHistory(histories ,"arvTreatmentInitDate", od.getArvTreatmentInitDate(), ValueType.LITERAL);
+        addHistory(histories ,"vlReasonForRequest", od.getVlReasonForRequest(), ValueType.DICTIONARY);
+        addHistory(histories ,"vlOtherReasonForRequest", od.getVlReasonForRequest(), ValueType.LITERAL);
+        addHistory(histories ,"initcd4Count", od.getInitcd4Count(), ValueType.LITERAL);
+        addHistory(histories ,"initcd4Percent", od.getInitcd4Percent(), ValueType.LITERAL);
+        addHistory(histories ,"initcd4Date", od.getInitcd4Date(), ValueType.LITERAL);       
+        addHistory(histories ,"demandcd4Count", od.getDemandcd4Count(), ValueType.LITERAL);
+        addHistory(histories ,"demandcd4Percent", od.getDemandcd4Percent(), ValueType.LITERAL);
+        addHistory(histories ,"demandcd4Date", od.getDemandcd4Date(), ValueType.LITERAL);   
+        addHistory(histories ,"vlBenefit", od.getVlBenefit(), ValueType.DICTIONARY);  
+        addHistory(histories ,"priorVLLab", od.getPriorVLLab(), ValueType.LITERAL);
+        addHistory(histories ,"priorVLValue", od.getPriorVLValue(), ValueType.LITERAL);
+        addHistory(histories ,"priorVLDate", od.getPriorVLDate(), ValueType.LITERAL);
+        
         return histories;
     }
 
@@ -254,6 +270,8 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
     public Map<String, List<ObservationHistory>> readObservationHistoryLists(ObservationData od) {
         Map<String, List<ObservationHistory>> historiesLists = new HashMap<String, List<ObservationHistory>>();
         historiesLists.put("priorARVTreatmentINNs", buildObservationHistoryList("priorARVTreatmentINNs", od.getPriorARVTreatment(), od.getPriorARVTreatmentINNsList(), ValueType.LITERAL));
+        historiesLists.put("currentARVTreatmentINNs", buildObservationHistoryList("currentARVTreatmentINNs", od.getCurrentARVTreatment(), od.getCurrentARVTreatmentINNsList(), ValueType.LITERAL));
+           
         // ARV Follow-up lists
         historiesLists.put("futureARVTreatmentINNs", buildObservationHistoryList("futureARVTreatmentINNs", od.getArvTreatmentNew(), od.getFutureARVTreatmentINNsList(), ValueType.LITERAL));
         historiesLists.put("arvTreatmentAdvEffGrd",        readAdverseEffectGrades("arvTreatmentAdvEffGrd", od.getArvTreatmentAnyAdverseEffects(), od.getArvTreatmentAdverseEffects() ));

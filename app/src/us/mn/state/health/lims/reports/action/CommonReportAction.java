@@ -41,7 +41,6 @@ public class CommonReportAction extends BaseAction {
 		PropertyUtils.setProperty(dynaForm, "reportType", request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "reportRequest", request.getParameter("report"));
 		IReportParameterSetter setter = ReportImplementationFactory.getParameterSetter(request.getParameter("report"));
-
 		if( setter != null){
 			setter.setRequestParameters(dynaForm);
 		}
