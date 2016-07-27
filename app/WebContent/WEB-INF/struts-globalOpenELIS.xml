@@ -742,6 +742,15 @@
             <form-property name="sampleTypeEnglishName" type="java.lang.String" />
             <form-property name="sampleTypeFrenchName" type="java.lang.String" />
         </form-bean>
+        
+        <form-bean name="uomCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="existingUomList" type="java.util.List" />
+            <form-property name="inactiveUomList" type="java.util.List" />
+            <form-property name="existingEnglishNames" type="java.lang.String" />
+            <form-property name="existingFrenchNames" type="java.lang.String" />
+            <form-property name="uomEnglishName" type="java.lang.String" />
+            <form-property name="uomFrenchName" type="java.lang.String" />
+        </form-bean>
 
         <form-bean name="panelCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
             <form-property name="existingPanelList" type="java.util.List" />
@@ -994,6 +1003,19 @@
         <action path="/SampleTypeTestAssignUpdate" name="sampleTypeTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeTestAssignUpdate" >
             <forward name="success" path="/SampleTypeTestAssign.do" />
         </action>
+        
+         <action path="/UomManagement" name="uomManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+            <forward name="success" path="uomManagementDefinition"  />
+        </action>
+
+        <action path="/UomCreate" name="uomCreateForm" type="us.mn.state.health.lims.testconfiguration.action.UomCreateAction" >
+            <forward name="success" path="uomCreateDefinition" />
+        </action>
+        
+        <action path="/UomCreateUpdate" name="uomCreateForm" type="us.mn.state.health.lims.testconfiguration.action.UomCreateUpdate" >
+            <forward name="success" path="/UomCreate.do" />
+        </action>
+        
 <!-- -->
 
         <action path="/PanelManagement" name="panelManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
