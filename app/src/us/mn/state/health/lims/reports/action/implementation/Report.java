@@ -94,8 +94,8 @@ public abstract class Report implements IReportCreator {
         reportParameters.put("additionalSiteInfo", ConfigurationProperties.getInstance().getPropertyValue(Property.ADDITIONAL_SITE_INFO));
         reportParameters.put("usePageNumbers", ConfigurationProperties.getInstance().getPropertyValue(Property.USE_PAGE_NUMBERS_ON_REPORTS));
         reportParameters.put("localization", createLocalizationMap());
-        reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
-        reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
+      //  reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
+      //  reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
         reportParameters.put("REPORT_LOCALE", SystemConfiguration.getInstance().getDefaultLocale());
     }
 

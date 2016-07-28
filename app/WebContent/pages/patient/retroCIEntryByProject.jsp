@@ -36,7 +36,7 @@
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="<%=basePath%>scripts/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>scripts/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>jean/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" language="JavaScript1.2">
 
 var dirty = false;
@@ -206,7 +206,7 @@ function adjustFieldsForRequestType() {
 		}	
 		
 	}
-	alert("centerName");
+	
   	if (requestType == "readwrite" || requestType == "readonly") {
     	$("studyFormsID").style.display = "none";
     	if ( projectChecker != null ) {
@@ -221,7 +221,7 @@ function adjustFieldsForRequestType() {
 	if (projectChecker == null ) {
 		return;
 	}
-	alert("no");
+	
 	switch (requestType) {
 	case "initial":
 		break;
