@@ -60,6 +60,9 @@ public class SiteInformationMenuAction extends BaseMenuAction {
         }else if("PatientConfiguration".equals(domainName)){
             dbDomainName = "patientEntryConfig";
             titleKey = "patientEntryConfiguration.browse.title";
+        }else if("MenuStatementConfig".equals(domainName)){
+            dbDomainName = "MenuStatementConfig";
+            titleKey = "MenuStatementConfig.browse.title";
         }
 
 		
