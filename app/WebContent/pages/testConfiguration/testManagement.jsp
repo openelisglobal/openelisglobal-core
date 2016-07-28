@@ -87,6 +87,10 @@
                    onclick="submitAction('SampleTypeManagement.do');"
                    class="textButton"/><br>
             &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.sampleType.manage.explain")%></li>
+        <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.uom.manage") %>"
+                   onclick="submitAction('UomManagement.do');"
+                   class="textButton"/><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<%=StringUtil.getMessageForKey("configuration.uom.manage.explain")%></li>
         <li><input type="button" value="<%= StringUtil.getMessageForKey("configuration.panel.manage") %>"
                    onclick="submitAction('PanelManagement.do');"
                    class="textButton"/><br>

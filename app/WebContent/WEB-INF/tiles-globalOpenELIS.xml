@@ -320,7 +320,15 @@
     <definition name="testCatalogDefinition" extends="baseMenuDefinition">
         <put name="body" value="/pages/testConfiguration/testCatalog.jsp"/>
     </definition>
+    
+    <definition name="uomManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/uomManagement.jsp" />
+    </definition>
 
+    <definition name="uomCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/uomCreate.jsp" />
+    </definition>
+    
     <definition name="testSectionManagementDefinition" extends="baseMenuDefinition" >
         <put name="body" value="/pages/testConfiguration/testSectionManagement.jsp" />
     </definition>
