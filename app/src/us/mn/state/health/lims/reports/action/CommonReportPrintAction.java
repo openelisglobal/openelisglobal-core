@@ -40,6 +40,7 @@ public class CommonReportPrintAction extends BaseAction {
 	private static String leftLabLogoPath = null;
 	private static String rightLabLogoPath = null;
 
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -57,13 +58,12 @@ public class CommonReportPrintAction extends BaseAction {
 			reportCreator.setRequestedReport(request.getParameter("report"));
 			reportCreator.initializeReport(dynaForm);
 			reportCreator.setReportPath(getReportPath());
-		
+
 			HashMap<String, String> parameterMap = (HashMap<String, String>) reportCreator.getReportParameters();
 			parameterMap.put("SUBREPORT_DIR", getReportPath());
-			parameterMap.put("leftHeaderImage2", getLeftHeaderLogoPath());//BUG FIX
-			parameterMap.put("rightHeaderImage2", getRightHeaderLogoPath());//BUG FIX
-		
-	
+			parameterMap.put("leftHeaderImage2", getLeftHeaderLogoPath());//WINDOWS BUG FIX
+			parameterMap.put("rightHeaderImage2", getRightHeaderLogoPath());//WINDOWS BUG FIX
+
 			try {
 
 				response.setContentType(reportCreator.getContentType());
@@ -119,19 +119,15 @@ public class CommonReportPrintAction extends BaseAction {
 	
 	public String getLeftHeaderLogoPath() {
 		if (leftLabLogoPath == null) {
-			leftLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/leftLabLogo.jpg";
+			leftLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/leftLabLogo.jpg";System.out.println("ici:"+leftLabLogoPath);
 		}
-
-		return leftLabLogoPath;
-			
+		return leftLabLogoPath;	
 	}
 	
 	public String getRightHeaderLogoPath() {
 		if (rightLabLogoPath == null) {
 			rightLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/rightLabLogo.jpg";
 		}
-
-		return rightLabLogoPath;
-			
+		return rightLabLogoPath;		
 	}
 }

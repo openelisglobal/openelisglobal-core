@@ -43,8 +43,8 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 	protected static final String SPECIAL_REQUEST_STUDY = "Special Request";
 	protected static String ANTIRETROVIRAL_STUDY_ID;
 	protected static String ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID;
-	protected static String VL_STUDY_ID;
 	protected static String EID_STUDY_ID;
+	protected static String VL_STUDY_ID;
 	protected static String SPECIAL_REQUEST_STUDY_ID;
 	protected static String INDETERMINATE_STUDY_ID;
 	protected static String OBSERVATION_DOCTOR_ID;
@@ -54,6 +54,7 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 	protected static String OBSERVATION_WHICH_PCR_ID;
 	protected static String OBSERVATION_UNDER_INVESTIGATION_ID;
 	protected static List<Integer> ANTIRETROVIRAL_ID= new ArrayList<Integer>();
+
 
 	protected static String CONCLUSION_ID;
 	protected static String CD4_CNT_CONCLUSION;
@@ -107,7 +108,6 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 		ANTIRETROVIRAL_ID.add(Integer.parseInt(ANTIRETROVIRAL_STUDY_ID));
 		ANTIRETROVIRAL_ID.add(Integer.parseInt(ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID));
 		ANTIRETROVIRAL_ID.add(Integer.parseInt(VL_STUDY_ID));
-		
 	}
 
     /**

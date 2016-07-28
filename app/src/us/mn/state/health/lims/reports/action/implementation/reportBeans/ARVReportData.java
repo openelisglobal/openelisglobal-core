@@ -18,7 +18,6 @@ package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 public class ARVReportData {
 
-	private String study;
 	private String glyc;
 	private String creatininemie;
 	private String sgpt;
@@ -57,12 +56,6 @@ public class ARVReportData {
 	private Boolean showPCR = Boolean.FALSE;
 	private Boolean duplicateReport = Boolean.FALSE;
 
-	public String getStudy() {
-		return study;
-	}
-	public void setStudy(String study) {
-		this.study=study;
-	}
 	public String getGlyc() {
 		return glyc;
 	}

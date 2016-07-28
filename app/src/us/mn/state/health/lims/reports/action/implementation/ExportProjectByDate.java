@@ -122,7 +122,6 @@ public class ExportProjectByDate extends CSVSampleExportReport implements IRepor
 			csvColumnBuilder = getColumnBuilder(projectStr);
 			csvColumnBuilder.buildDataSource();
 		} catch (Exception e) {
-			
 			Log.error("Error in " + this.getClass().getSimpleName() + ".createReportItems: ", e);
 			add1LineErrorMessage("report.error.message.general.error");
 		}
@@ -181,7 +180,7 @@ public class ExportProjectByDate extends CSVSampleExportReport implements IRepor
 			return new ARVFollowupColumnBuilder(dateRange, projectStr);
 		} else if (projectTag.equalsIgnoreCase("DBS")) {
 			return new EIDColumnBuilder(dateRange, projectStr);
-		}else if (projectTag.equalsIgnoreCase("VLS")) {
+		} else if (projectTag.equalsIgnoreCase("VLS")) {
 			return new VLColumnBuilder(dateRange, projectStr);
 		} else if (projectTag.equalsIgnoreCase("RTN")) {
 			return new RTNColumnBuilder(dateRange, projectStr);
@@ -205,9 +204,9 @@ public class ExportProjectByDate extends CSVSampleExportReport implements IRepor
 		projects.add(projectDAO.getProjectByName(project, false, false));
 		project.setProjectName("Early Infant Diagnosis for HIV Study");
 		projects.add(projectDAO.getProjectByName(project, false, false));
-		project.setProjectName("Indeterminate Results");
-		projects.add(projectDAO.getProjectByName(project, false, false));
 		project.setProjectName("Viral Load Results");
+		projects.add(projectDAO.getProjectByName(project, false, false));
+		project.setProjectName("Indeterminate Results");
 		projects.add(projectDAO.getProjectByName(project, false, false));
 		return projects;
 	}

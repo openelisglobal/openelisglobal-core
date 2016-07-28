@@ -6,10 +6,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.services.ReportTrackingService;
-import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.TestService;
-import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -70,8 +67,6 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleId(reportSample.getId());
 		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 
-		Timestamp lastReport = new ReportTrackingService().getTimeOfLastNamedReport(reportSample, ReportTrackingService.ReportType.PATIENT, requestedReport);
-		Boolean mayBeDuplicate = lastReport != null;
 		ResultDAO resultDAO = new ResultDAOImpl();
 
 		Date maxCompleationDate = null;
@@ -112,11 +107,6 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 					data.setHiv_status(invalidValue);
 				}
 			}
-			if( mayBeDuplicate &&
-					StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.Finalized) &&
-					lastReport.before(analysis.getLastupdated())){
-				mayBeDuplicate = false;
-			}
 
 		}
 		if (maxCompleationDate != null) {
@@ -132,7 +122,6 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 			data.setPcr_type(dictionary.getDictEntry());
 		}
 
-		data.setDuplicateReport(mayBeDuplicate);
 		data.setStatus(atLeastOneAnalysisNotValidated ? StringUtil.getMessageForKey("report.status.partial") : StringUtil
 				.getMessageForKey("report.status.complete"));
 	}

@@ -155,7 +155,7 @@ abstract public class CSVColumnBuilder {
 				projectTag = "ARVB";
 			} else if (project.getNameKey().contains("VLS")) {
 				projectTag = "VLS";
-			}else {
+			} else {
 				// otherwise we use the letters from the Sample ID prefix, which
 				// at some locations for some projects is undefined.
 				String code = project.getProgramCode();
@@ -204,7 +204,7 @@ abstract public class CSVColumnBuilder {
 	protected void buildResultSet() throws SQLException {
 		makeSQL();
 		String sql = query.toString();
-       // System.out.println("===1===\n" + sql.substring(0, 7000)); // the SQL is chunked out only because Eclipse thinks printing really big strings to the console must be wrong, so it truncates them
+        //System.out.println("===1===\n" + sql.substring(0, 7000)); // the SQL is chunked out only because Eclipse thinks printing really big strings to the console must be wrong, so it truncates them
 		//System.out.println("===2===\n" + sql.substring(7000));
 		Session session = HibernateUtil.getSession().getSessionFactory().openSession();
 		PreparedStatement stmt = session.connection().prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);

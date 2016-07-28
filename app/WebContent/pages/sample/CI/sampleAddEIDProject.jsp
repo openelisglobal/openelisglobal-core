@@ -168,6 +168,7 @@ function hideAllDivs(){
 	toggleDisabledDiv(document.getElementById("FollowUpARV_Id"), false);
 	toggleDisabledDiv(document.getElementById("RTN_Id"), false);
 	toggleDisabledDiv(document.getElementById("EID_Id"), false);
+	toggleDisabledDiv(document.getElementById("VL_Id"), false);
 	toggleDisabledDiv(document.getElementById("Indeterminate_Id"), false);
 	toggleDisabledDiv(document.getElementById("Special_Request_Id"), false);
 
@@ -175,6 +176,7 @@ function hideAllDivs(){
 	document.getElementById('FollowUpARV_Id').style.display = "none";
 	document.getElementById('RTN_Id').style.display = "none";
 	document.getElementById('EID_Id').style.display = "none";
+	document.getElementById('VL_Id').style.display = "none";
 	document.getElementById('Indeterminate_Id').style.display = "none";
 	document.getElementById('Special_Request_Id').style.display = "none";
 }
@@ -221,7 +223,7 @@ function /*void*/ setSaveButton() {
 	<option value="EID_Id" ><bean:message key="sample.entry.project.EID.title"/></option>
 	<option value="Indeterminate_Id" ><bean:message key="sample.entry.project.indeterminate.title"/></option>
 	<option value="Special_Request_Id"><bean:message key="sample.entry.project.specialRequest.title"/></option>
-    <option value="VL_Id" ><bean:message key="sample.entry.project.VL.title"/></option>
+    <option value="VL_Id" ><bean:message key="sample.entry.project.VL.title"/></option>	
 </select>
 <br/>
 <hr/>

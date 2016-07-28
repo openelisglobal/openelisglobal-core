@@ -398,7 +398,6 @@
             <form-property name="selectList" type="us.mn.state.health.lims.reports.action.implementation.ReportSpecificationList" />
 			<form-property name="projectCodeList" type="java.util.Collection"/>
 			<form-property name="instructions" type="java.lang.String" initial="" />
-			<form-property name="sampBy" type="java.lang.String" initial="" />
 		</form-bean>
 
 
@@ -1103,27 +1102,19 @@
 			<forward name="vl_entry" path="sampleEntryVLDefinition" />
 			<forward name="fail" path="homePageDefinition" />
 		</action>
-		
-		<action path="/SampleEntryVLProject" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryVLAction"
-			validate="false"
-		>
-			<forward name="success" path="SamplePatientEntryVLDefinition" />
-			<forward name="fail" path="homePageDefinition" />
-		</action>
-		
 		<action path="/SampleEntryEID" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectAction"
 			validate="false"
 		>
 			<forward name="eid_entry" path="sampleEntryEIDDefinition" />
 			<forward name="fail" path="homePageDefinition" />
-		</action> 
+		</action>    
 		
 		<action path="/SampleEntryVL" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectAction"
 			validate="false"
 		>
 			<forward name="vl_entry" path="sampleEntryVLDefinition" />
 			<forward name="fail" path="homePageDefinition" />
-		</action>                                                                                                                                                                     
+		</action>                                                                                                                                                                    
 
 		<action path="/SampleEntryByProjectSave" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectSaveAction"
 			validate="false"

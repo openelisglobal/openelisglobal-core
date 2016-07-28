@@ -177,5 +177,4 @@ public abstract class PatientIndeterminateReport extends RetroCIPatientReport {
 	protected String getProjectId() {
 		return INDETERMINATE_STUDY_ID;
 	}
-	
 }

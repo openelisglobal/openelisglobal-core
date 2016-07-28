@@ -90,7 +90,7 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 		ResultsPaging paging = new ResultsPaging();
 		List<InventoryKitItem> inventoryList = new ArrayList<InventoryKitItem>();
 		ResultsLoadUtility resultsLoadUtility = new ResultsLoadUtility(currentUserId);
-		
+
 		if (GenericValidator.isBlankOrNull(requestedPage)) {
 			
 			new StatusRules().setAllowableStatusForLoadingResults(resultsLoadUtility);
@@ -100,7 +100,7 @@ public class ResultsLogbookEntryAction extends ResultsLogbookBaseAction {
 			} else {
 				tests = new ArrayList<TestResultItem>();
 			}
-			
+
 			if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.PATIENT_DATA_ON_RESULTS_BY_ROLE, "true") &&   
 					!userHasPermissionForModule(request, "PatientResults") ){
 				for( TestResultItem resultItem : tests){

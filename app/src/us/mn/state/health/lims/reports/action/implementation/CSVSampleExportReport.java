@@ -19,11 +19,10 @@ package us.mn.state.health.lims.reports.action.implementation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.List;
 
 import javax.xml.ws.Response;
 
-import us.mn.state.health.lims.project.valueholder.Project;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder;
 
 public abstract class CSVSampleExportReport extends CSVExportReport {
@@ -32,7 +31,6 @@ public abstract class CSVSampleExportReport extends CSVExportReport {
 	protected String highDateStr;
 	protected List<Object> reportItems;
 	protected int iReportItem = -1;
-	
 
 	protected CSVColumnBuilder csvColumnBuilder;
 	protected DateRange dateRange;

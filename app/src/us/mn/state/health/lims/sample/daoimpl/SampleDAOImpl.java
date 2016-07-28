@@ -573,33 +573,6 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		calendar.setTime(date);
 		return calendar;
 	}
-
-	@SuppressWarnings("unchecked")
-	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(String projectId, List<Integer> inclusiveStatusIdList, String minAccession,
-			String maxAccession) throws LIMSRuntimeException {
-		
-		String sql = "from Sample s where s.statusId in (:statusList) and " +
-		             "s.accessionNumber >= :minAccess and s.accessionNumber <= :maxAccess and " +
-		             "s.id in (select sp.sample.id from SampleProject sp where sp.project.id = :projectId)";
-		try{
-			Query query = HibernateUtil.getSession().createQuery(sql);
-			query.setParameterList("statusList", inclusiveStatusIdList);
-			query.setInteger("projectId", Integer.parseInt(projectId));
-			query.setString("minAccess", minAccession);
-			query.setString("maxAccess", maxAccession);
-
-			List<Sample> sampleList = query.list();
-
-			closeSession();
-
-			return sampleList;
-		}catch(HibernateException e){
-			handleException(e, "getSamplesByProjectAndStatusIDAndAccessionRange");
-		}
-
-		return null;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(List<Integer> inclusiveProjectIdList, List<Integer> inclusiveStatusIdList, String minAccession,
 			String maxAccession) throws LIMSRuntimeException {
@@ -625,6 +598,32 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 
 		return null;
 	}
+	@SuppressWarnings("unchecked")
+	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(String projectId, List<Integer> inclusiveStatusIdList, String minAccession,
+			String maxAccession) throws LIMSRuntimeException {
+
+		String sql = "from Sample s where s.statusId in (:statusList) and " +
+		             "s.accessionNumber >= :minAccess and s.accessionNumber <= :maxAccess and " +
+		             "s.id in (select sp.sample.id from SampleProject sp where sp.project.id = :projectId)";
+		try{
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setParameterList("statusList", inclusiveStatusIdList);
+			query.setInteger("projectId", Integer.parseInt(projectId));
+			query.setString("minAccess", minAccession);
+			query.setString("maxAccess", maxAccession);
+
+			List<Sample> sampleList = query.list();
+
+			closeSession();
+
+			return sampleList;
+		}catch(HibernateException e){
+			handleException(e, "getSamplesByProjectAndStatusIDAndAccessionRange");
+		}
+
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByAccessionRange(String minAccession,	String maxAccession) throws LIMSRuntimeException {
 

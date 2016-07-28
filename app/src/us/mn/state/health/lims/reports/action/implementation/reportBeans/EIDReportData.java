@@ -37,7 +37,6 @@ public class EIDReportData {
 	private String clinicDistrict;
 	private String clinic;
 	private String status;
-	private Boolean duplicateReport = Boolean.FALSE;
 
 	public String getHiv_status() {
 		return hiv_status;
@@ -154,12 +153,6 @@ public class EIDReportData {
 	}
 	public void setReceptiondate(String receptiondate){
 		this.receptiondate = receptiondate;
-	}
-	public Boolean getDuplicateReport() {
-		return duplicateReport;
-	}
-	public void setDuplicateReport(Boolean duplicateReport) {
-		this.duplicateReport = duplicateReport;
 	}
 
 

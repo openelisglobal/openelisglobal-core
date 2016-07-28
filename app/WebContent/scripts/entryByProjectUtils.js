@@ -207,6 +207,7 @@ function BaseLoader() {
 		clearField(document.getElementById(fieldId));
 		clearField(document.getElementById("farv." + fieldId));
 		clearField(document.getElementById("eid." + fieldId));
+		clearField(document.getElementById("vl." + fieldId));
 		clearField(document.getElementById("rtn." + fieldId));
 	}
 
@@ -225,6 +226,7 @@ function BaseLoader() {
 		this.setField("farv." + fieldId, value);
 		this.setField("rtn." + fieldId, value);
 		this.setField("eid." + fieldId, value);
+		this.setField("vl." + fieldId, value);
 	}
 
 	/**
@@ -314,7 +316,7 @@ function PatientLoader() {
 	this.processLoadSuccess = function /*void*/ (xhr, sampleNo) {
 		//console.info("PatientLoader.processLoadSuccess:" + xhr.responseText);
 		var response = xhr.responseXML.getElementsByTagName("formfield").item(0);
-		this.existing = response;
+		this.existing = response;alert("merci");
 		patientLoader.setExistingSubjectNumber();
 		var nationalID = this.getResponseProperty(response, "nationalID");
 		var lastName  = this.getResponseProperty(response, "lastName");
@@ -352,6 +354,7 @@ function PatientLoader() {
 			handlePatientBirthDateChange($("dateOfBirth"), $("interviewDate"), false, $("age"));
 			handlePatientBirthDateChange($("farv.dateOfBirth"), $("farv.interviewDate"), false, $("farv.age"));
 			handlePatientBirthDateChange($("eid.dateOfBirth"),  $("eid.interviewDate"), false, null, $('eid.month'), $('eid.ageWeek'));
+			handlePatientBirthDateChange($("vl.dateOfBirth"),  $("vl.interviewDate"), false, $("vl.age"));
 			handlePatientBirthDateChange($("rtn.dateOfBirth"),  $("rtn.interviewDate"), false, $("rtn.age"), $("rtn.month"));
 		}
 
@@ -668,6 +671,21 @@ function ObservationHistoryLoader() {
 		this.clearFieldInAllStudies("sarcKapo"   );
 		this.clearFieldInAllStudies("xIngPadenp" );
 		this.clearFieldInAllStudies("HIVDement"  );
+		
+		this.clearFieldInAllStudies("arvTreatmentInitDate"  );
+		this.clearFieldInAllStudies("arvTreatmentRegime"  );
+		this.clearFieldInAllStudies("vlOtherReasonForRequest"  );
+		this.clearFieldInAllStudies("initcd4Count"  );
+		this.clearFieldInAllStudies("initcd4Percent"  );
+		this.clearFieldInAllStudies("initcd4Date"  );
+		this.clearFieldInAllStudies("demandcd4Count"  );
+		this.clearFieldInAllStudies("demandcd4Percent"  );
+		this.clearFieldInAllStudies("demandcd4Date"  );
+		this.clearFieldInAllStudies("vlBenefit"  );
+		this.clearFieldInAllStudies("priorVLLab"  );
+		this.clearFieldInAllStudies("priorVLValue"  );
+		this.clearFieldInAllStudies("priorVLDate"  );
+		
 	}
 
 	/**
@@ -705,6 +723,7 @@ function ObservationHistoryLoader() {
 	    iarv.refresh();
 	    farv.refresh();
 	    eid.refresh();
+	    vl.refresh();
 	    if (rtn != null) {
 		    rtn.refresh();
 	    }
@@ -1169,6 +1188,23 @@ function compareAllObservationHistoryFields(isBlankAllowed, fieldPrefix) {
 	compareFieldToExisting(idPre + "HIVDement"  , false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "priorDiseases",   false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "currentDiseases", false, observationHistoryLoader, isBlankAllowed);
+	
+	
+	compareFieldToExisting(idPre + "arvTreatmentInitDate", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "arvTreatmentRegime", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlReasonForRequest", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlOtherReasonForRequest", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "initcd4Count", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "initcd4Percent", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "initcd4Date", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "demandcd4Count", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "demandcd4Percent", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "demandcd4Date", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlBenefit", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "priorVLLab", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "priorVLValue", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "priorVLDate", false, observationHistoryLoader, isBlankAllowed);
+		
 }
 
 function SampleItemTestLoader() {

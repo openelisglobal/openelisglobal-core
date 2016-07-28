@@ -44,29 +44,19 @@
          <put name="body" value="sampleEntryEIDFormDefintion"/>
          <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>
+    
+     <definition name="sampleEntryVLDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleEntryVLFormDefintion"/>
+         <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
+    </definition>
 
     <definition name="sampleEntryEIDFormDefintion" path="/pages/sample/CI/sampleAddEIDProject.jsp">
     	<put name="eidStudy" value="/pages/patient/CI/eidStudy.jsp" />
     </definition>
     
-    <definition name="sampleEntryVLDefinition" extends="baseDefinition">
-         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
-         <put name="body" value="sampleEntryVLFormDefintion"/>
-         <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
-    </definition>
-    
-     <definition name="sampleEntryVLFormDefintion" path="/pages/sample/CI/sampleAddVLProject.jsp">
+    <definition name="sampleEntryVLFormDefintion" path="/pages/sample/CI/sampleAddVLProject.jsp">
     	<put name="vlStudy" value="/pages/patient/CI/vlStudy.jsp" />
-    </definition>
-    
-    <definition name="SamplePatientEntryVLFormDefintion" path="/pages/sample/CI/SamplePatientAddVLProject.jsp">
-    	<put name="vlStudy" value="/pages/patient/CI/vlStudy.jsp" />
-    </definition>
-    
-    <definition name="SamplePatientEntryVLDefinition" extends="baseDefinition">
-         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
-         <put name="body" value="SamplePatientEntryVLFormDefintion"/>
-         <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>
 
    <definition name="sampleEditDefinition" extends="baseDefinition">
@@ -86,6 +76,7 @@
     	<put name="arvInitialStudy" value="/pages/patient/CI/arvInitialStudy.jsp"/>
     	<put name="arvFollowupStudy" value="/pages/patient/CI/arvFollowupStudy.jsp"/>
     	<put name="ediStudy" value="/pages/patient/CI/eidStudy.jsp"/>
+    	<put name="lvStudy" value="/pages/patient/CI/vlStudy.jsp"/>
     	<put name="rtnStudy" value="/pages/patient/CI/rtnStudy.jsp"/>
     </definition>
 
@@ -439,6 +430,5 @@
 	 <definition name="ListPluginsPageDefinition" extends="masterListsPageDefinition">
     	<put name="body" value="/pages/plugin/listPlugin.jsp"/>
     </definition>
-
 
 </tiles-definitions>

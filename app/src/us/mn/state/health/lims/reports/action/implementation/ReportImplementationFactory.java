@@ -26,7 +26,7 @@ public class ReportImplementationFactory{
 	public static IReportParameterSetter getParameterSetter(String report){
 		if(!GenericValidator.isBlankOrNull(report)){
 			if(report.equals("patientARV1")){
-				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, "unknow",null);
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.initial")+"/"+StringUtil.getMessageForKey("reports.label.patient.ARV.followup"),null);
 			}else if(report.equals("patientARVInitial1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
 			}else if(report.equals("patientARVInitial2")){
@@ -66,7 +66,8 @@ public class ReportImplementationFactory{
 			}else if(report.equals("referredOut")){
 				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport") || report.equals("HaitiLNSPExportReport")){
-				return new ReportSpecificationParameters( Parameter.DATE_RANGE, StringUtil.getMessageForKey("reports.label.project.export") + " " + StringUtil.getContextualMessageForKey("sample.collectionDate"), null);
+				return new ReportSpecificationParameters( Parameter.DATE_RANGE,
+                        StringUtil.getMessageForKey("reports.label.project.export") + " " + StringUtil.getContextualMessageForKey("sample.collectionDate"), null);
 			}else if(report.equals("indicatorConfirmation")){
 				return new ConfirmationReport();
 			}else if(isNonConformityByDateReport(report)){
@@ -133,10 +134,10 @@ public class ReportImplementationFactory{
 				return new PatientARVFollowupVersion2Report();
 			}else if(report.equals("patientEID1")){
 				return new PatientEIDVersion1Report();
-			}else if(report.equals("patientVL1")){
-				return new PatientVLVersion1Report();		
 			}else if(report.equals("patientEID2")){
 				return new PatientEIDVersion2Report();
+			}else if(report.equals("patientVL1")){
+				return new PatientVLVersion1Report();
 			}else if(report.equals("patientIndeterminate1")){
 				return new PatientIndeterminateVersion1Report();
 			}else if(report.equals("patientIndeterminate2")){

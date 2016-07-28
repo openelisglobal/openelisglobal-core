@@ -100,13 +100,14 @@ sub printTime{
     print "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year\n";
 }
 
+#my $upLoadtargetURL = 'http://54.191.189.60:8080/CDIOpenElis/importAnalyzer';
 my $upLoadtargetURL = 'http://localhost:8080/openElisGlobal/importAnalyzer';
 
 my $stagingDir1 = ".\\staging";
 #my $stagingDir2 = "Y:";
 my $queueDir = ".\\transmissionQueue";
 my $upLoadUserName = 'analyzer';
-my $upLoadPassword = 'analyzer!';
+my $upLoadPassword = 'ied1poh2Ku!';
 
 print "Welcome to analyzer import\n";
  

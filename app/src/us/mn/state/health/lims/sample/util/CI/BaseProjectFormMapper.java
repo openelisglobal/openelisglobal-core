@@ -341,7 +341,7 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
         if (null == ohTypeId) {
             throw new LIMSRuntimeException("ObservationTypeId.nameKey = " + nameKey + " not found in database. You may need to run a database update." );
         }
-
+        
         ObservationHistory history = new ObservationHistory();
         history.setObservationHistoryTypeId(ohTypeId);
         history.setValue(value);

@@ -185,7 +185,7 @@ public class SysmexReader extends AnalyzerLineInserter {
 	private static final int IP_SUS_GB_Lympho_Aty = index++;
 	private static final int IP_SUS_GB_Anor_Ly_Blasts = index++;
 	private static final int IP_SUS_GB_NRBC = index++;
-	private static final int IP_SUS_GB_Rés_GR_Lyse = index++;
+	private static final int IP_SUS_GB_RÃ©s_GR_Lyse = index++;
 	private static final int IP_SUS_GR_Agglut_GR = index++;
 	private static final int IP_SUS_GR_Turb_HGB_Interf = index++;
 	private static final int IP_SUS_GR_IRON_DEFICIENCY = index++;
@@ -200,7 +200,7 @@ public class SysmexReader extends AnalyzerLineInserter {
 	private static final int Qflag_Lympho_Aty = index++;
 	private static final int Qflag_NRBC = index++;
 	private static final int Qflag_Abn_Ly_Bla = index++;
-	private static final int Qflag_Rés_GR_Lysis = index++;
+	private static final int Qflag_RÃ©s_GR_Lysis = index++;
 	private static final int Qflag_Agglut_GR = index++;
 	private static final int Qflag_Turb_HGB = index++;
 	private static final int Qflag_IRON_DEFICIENCY = index++;

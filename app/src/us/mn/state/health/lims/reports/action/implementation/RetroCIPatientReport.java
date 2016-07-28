@@ -76,7 +76,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 
 		if (valid) {
 			List<Sample> reportSampleList = findReportSamples(lowerNumber, upperNumber);
-			
+
 			if (reportSampleList.isEmpty()) {
 				errorFound = true;
 				ErrorMessages msgs = new ErrorMessages();
@@ -194,14 +194,13 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 	    	return handledOrders;
 	}
 	
-	protected List<Integer> getProjIdsList(String projID){
+    protected List<Integer> getProjIdsList(String projID){
 		
 		String[] fields = projID.split(":");
 		List<Integer> projIDList= new ArrayList<Integer>();
 		for (int i=0;i<fields.length;i++){
 			projIDList.add(Integer.parseInt(fields[i]));
-		}
-		
+		}	
 		return projIDList;
 	}
 }
