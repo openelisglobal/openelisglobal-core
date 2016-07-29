@@ -22,7 +22,7 @@
 <bean:define id="requestType" value='<%=(String)request.getSession().getAttribute("type")%>' />
 <bean:define id="genericDomain" value='' />
 
-<!-- sampleAddEIDProject -->
+<!-- sampleAddVLProject -->
 <%@page import="us.mn.state.health.lims.login.dao.UserModuleDAO"%>
 <%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 <%!
@@ -68,12 +68,12 @@ function Studies() {
 
 	this.getValidator = function /*FieldValidator*/ (divId) {
 		var validator = new FieldValidator();
-	    validator.setRequiredFields( new Array("eid.labNo", "eid.receivedDateForDisplay", "eid.interviewDate", "subjectOrSiteSubject", "eid.centerCode", "eid.gender", "eid.dateOfBirth") );
+	    validator.setRequiredFields( new Array("vl.labNo", "vl.receivedDateForDisplay", "vl.interviewDate", "subjectOrSiteSubject", "vl.centerCode", "vl.gender", "vl.dateOfBirth") );
 		return validator;
 	}
 
 	this.getProjectChecker = function (divId) {
-		return eid;
+		return vl;
 	}
 
 	this.initializeProjectChecker = function () {
@@ -112,7 +112,7 @@ function setDefaultTests( div ) {
 		return;
 	}
 	var tests = new Array();
-	tests = new Array ("eid.dnaPCR", "eid.dbsTaken");
+	tests = new Array ("vl.viralLoadTest", "vl.edtaTubeTaken");
 	
 	for( var i = 0; i < tests.length; i++ ){
 		var testId = tests[i];
@@ -136,7 +136,7 @@ function switchStudyForm( divId ){
 	if (divId != "" && divId != "0") {
 		$("projectFormName").value = divId;
 		switch (divId) {
-		case "EID_Id":
+		case "VL_Id":
 			break;
 		default:
 			//location.replace("SampleEntryByProject.do?type=initial");
@@ -168,17 +168,17 @@ function hideAllDivs(){
 	toggleDisabledDiv(document.getElementById("FollowUpARV_Id"), false);
 	toggleDisabledDiv(document.getElementById("RTN_Id"), false);
 	toggleDisabledDiv(document.getElementById("EID_Id"), false);
-	toggleDisabledDiv(document.getElementById("VL_Id"), false);
 	toggleDisabledDiv(document.getElementById("Indeterminate_Id"), false);
 	toggleDisabledDiv(document.getElementById("Special_Request_Id"), false);
+	toggleDisabledDiv(document.getElementById("VL_Id"), false);
 
 	document.getElementById('InitialARV_Id').style.display = "none";
 	document.getElementById('FollowUpARV_Id').style.display = "none";
 	document.getElementById('RTN_Id').style.display = "none";
 	document.getElementById('EID_Id').style.display = "none";
-	document.getElementById('VL_Id').style.display = "none";
 	document.getElementById('Indeterminate_Id').style.display = "none";
 	document.getElementById('Special_Request_Id').style.display = "none";
+	document.getElementById('VL_Id').style.display = "none";
 }
 
 function /*boolean*/ allSamplesHaveTests(){
@@ -190,7 +190,7 @@ function  /*void*/ savePage__(action) {
 	window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
 	if (action == null) {
-		action = "SampleEntryEIDSave.do?type=" + type
+		action = "SampleEntryVLSave.do?type=" + type
 	}
 	form.action = action;
 	form.submit();
@@ -201,6 +201,48 @@ function /*void*/ setSaveButton() {
 	$("saveButtonId").disabled = !validToSave;
 }
 
+function clearAllFormFields(formName) {
+	var elements = document.forms[formName].elements;
+	for (i=0; i< elements.length; i++) {
+		clearFormElement(elements[i]);
+	}
+}
+
+/**
+ * This function is similar to utilities.js clearField( fieldId ), but covers other types of fields, is not clear that this is actually better.
+ * @author PAHill
+ */
+function clearFormElement(field) {
+    if (field == null) return;
+	var type = field.type.toLowerCase();
+	switch(type) {
+	case "text":
+	case "password":
+	case "textarea":
+	case "hidden":
+		field.value = "";
+		break;
+	case "radio":
+	case "checkbox":
+		if (field.checked) {
+			field.checked = false;
+		}
+		break;
+	case "select-one":
+	case "select-multi":
+		field.selectedIndex = -1;
+		break;
+	default:
+		break;
+	}
+}
+
+function clearFormElements(fieldIds) {
+	var fields = fieldIds.split(',');
+	for (var i=0; i< fields.length; i++) {
+		clearFormElement($(fields[i].trim()));
+	}
+} 
 </script>
 
 <html:hidden name="<%=formName%>" property="currentDate" styleId="currentDate"/>
@@ -223,13 +265,13 @@ function /*void*/ setSaveButton() {
 	<option value="EID_Id" ><bean:message key="sample.entry.project.EID.title"/></option>
 	<option value="Indeterminate_Id" ><bean:message key="sample.entry.project.indeterminate.title"/></option>
 	<option value="Special_Request_Id"><bean:message key="sample.entry.project.specialRequest.title"/></option>
-    <option value="VL_Id" ><bean:message key="sample.entry.project.VL.title"/></option>	
+	<option value="VL_Id" ><bean:message key="sample.entry.project.VL.title"/></option>
 </select>
 <br/>
 <hr/>
 <div id="studies">
-<div id="EID_Id" style="display:none;">
-	<tiles:insert attribute="eidStudy"/>
+<div id="VL_Id" style="display:none;">
+	<tiles:insert attribute="vlStudy"/>
 <table width="100%">
 	<tr>
 		<td ></td>
@@ -244,18 +286,18 @@ function /*void*/ setSaveButton() {
 
 			<html:checkbox name="<%=formName%>" styleId="ARVDryTube"
 				   property="ProjectData.dryTubeTaken"
-				   styleId="eid.dryTubeTaken"
-				   onchange="eid.checkSampleItem($('eid.dryTubeTaken'));"/>
+				   styleId="vl.dryTubeTaken"
+				   onchange="vl.checkSampleItem($('vl.dryTubeTaken'));"/>
 		</td>
 	</tr>
 	<tr>
 		<td></td>
-		<td><bean:message key="sample.entry.project.title.dryBloodSpot" /></td>
+		<td><bean:message key="sample.entry.project.ARV.edtaTubeTaken" /></td>
 		<td>
 			<html:checkbox name="<%=formName%>"
-				   property="ProjectData.dbsTaken"
-				   styleId="eid.dbsTaken"
-				   onchange="eid.checkSampleItem($('eid.dbsTaken'));" />
+				   property="ProjectData.edtaTubeTaken"
+				   styleId="vl.edtaTubeTaken"
+				   onchange="vl.checkSampleItem($('vl.edtaTubeTaken'));" />
 		</td>
 	</tr>
 	<tr>
@@ -266,12 +308,12 @@ function /*void*/ setSaveButton() {
 	</tr>
 	<tr>
 		<td></td>
-		<td><bean:message key="sample.entry.project.dnaPCR" /></td>
+		<td><bean:message key="sample.entry.project.ARV.viralLoadTest" /></td>
 		<td>
 			<html:checkbox name="<%=formName%>"
-				   property="ProjectData.dnaPCR"
-				   styleId="eid.dnaPCR"
-				   onchange="eid.checkSampleItem($('eid.dbsTaken'), $('eid.dnaPCR'));" />
+				   property="ProjectData.viralLoadTest"
+				   styleId="vl.viralLoadTest"
+				   onchange="vl.checkSampleItem($('vl.edtaTubeTaken'), this);" />
 		</td>
 	</tr>
 </table>	

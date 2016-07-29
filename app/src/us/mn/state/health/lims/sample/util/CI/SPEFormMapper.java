@@ -19,6 +19,7 @@ package us.mn.state.health.lims.sample.util.CI;
 
 import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class SPEFormMapper extends ARVFormMapper implements IProjectFormMapper {
 
-	private final String projectCode = "LSPE";
+	private final String projectCode = StringUtil.getMessageForKey("sample.entry.project.LSPE");
 
 	public SPEFormMapper(String projectFormId, BaseActionForm dynaForm) {
 		super(projectFormId, dynaForm);

@@ -49,6 +49,7 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 	}
 
 	public String getUnitOfMeasureName() {
+		//System.out.println("unitOfMeasureName, id = " + this.unitOfMeasureName + " " + this.id);
 		return unitOfMeasureName;
 	}
 
@@ -81,5 +82,9 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 		_localization.setFrench("French");
 		
 		return (Localization)_localization;
+	}
+	
+	public void setLocalization(Localization localization) {
+	    this.localization.setValue( localization );
 	}
 }

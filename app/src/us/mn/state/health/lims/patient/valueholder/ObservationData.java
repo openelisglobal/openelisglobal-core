@@ -78,6 +78,7 @@ public class ObservationData implements Serializable {
     
 	private List<String> priorARVTreatmentINNs  = Arrays.asList(new String[] {null, null, null, null});
 	private List<String> futureARVTreatmentINNs = Arrays.asList(new String[] {null, null, null, null});
+	private List<String> currentARVTreatmentINNs= Arrays.asList(new String[] {null, null, null, null});
 
 	/**
 	 * OI = opportunistic infection
@@ -89,6 +90,10 @@ public class ObservationData implements Serializable {
 
 	private String cd4Count;
 	private String cd4Percent;
+	private String initcd4Count;
+	private String initcd4Percent;
+	private String demandcd4Count;
+	private String demandcd4Percent;
 	private String priorCd4Date;
 	private String antiTbTreatment;
 	private String arvTreatmentAnyAdverseEffects;
@@ -120,7 +125,18 @@ public class ObservationData implements Serializable {
 	private String indSecondTestResult;
 	private String indSiteFinalResult;
 	private String reasonForRequest;
-
+	
+	// VL Patient form
+	private String arvTreatmentInitDate;
+	private String vlReasonForRequest;
+	private String vlOtherReasonForRequest;
+	private String initcd4Date;
+	private String demandcd4Date;
+	private String vlBenefit;
+	private String priorVLLab;
+	private String priorVLValue;
+	private String priorVLDate;
+	
 	// EID Patient form
 	private String eidInfantPTME;
 	private String eidTypeOfClinic;
@@ -338,11 +354,47 @@ public class ObservationData implements Serializable {
 	public void setCd4Count(String cd4Count) {
 		this.cd4Count = cd4Count;
 	}
+	public String getInitcd4Count() {
+		return initcd4Count;
+	}
+	public void setInitcd4Count(String initcd4Count) {
+		this.initcd4Count = initcd4Count;
+	}
+	public String getDemandcd4Count() {
+		return demandcd4Count;
+	}
+	public void setDemandcd4Count(String demandcd4Count) {
+		this.demandcd4Count = demandcd4Count;
+	}
+	public String getInitcd4Date() {
+		return initcd4Date;
+	}
+	public void setInitcd4Date(String initcd4Date) {
+		this.initcd4Date = initcd4Date;
+	}
+	public String getDemandcd4Date() {
+		return demandcd4Date;
+	}
+	public void setDemandcd4Date(String demandcd4Date) {
+		this.demandcd4Date = demandcd4Date;
+	}
 	public String getCd4Percent() {
 		return cd4Percent;
 	}
 	public void setCd4Percent(String cd4Percent) {
 		this.cd4Percent = cd4Percent;
+	}
+	public String getInitcd4Percent() {
+		return initcd4Percent;
+	}
+	public void setInitcd4Percent(String initcd4Percent) {
+		this.initcd4Percent = initcd4Percent;
+	}
+	public String getDemandcd4Percent() {
+		return demandcd4Percent;
+	}
+	public void setDemandcd4Percent(String demandcd4Percent) {
+		this.demandcd4Percent = demandcd4Percent;
 	}
 	public String getPriorCd4Date() {
 		return priorCd4Date;
@@ -375,6 +427,18 @@ public class ObservationData implements Serializable {
 	public List<String> getPriorARVTreatmentINNsList() {
 		return priorARVTreatmentINNs;
 	}
+	
+	public String getCurrentARVTreatmentINNs(int index) {
+	    return currentARVTreatmentINNs.get(index);
+	}
+
+    public void setCurrentARVTreatmentINNs(int index, String value) {
+        currentARVTreatmentINNs.set(index, value);
+    }
+
+	public List<String> getCurrentARVTreatmentINNsList() {
+		return currentARVTreatmentINNs;
+	}	
 
 	public String getFutureARVTreatmentINNs(int index) {
         return futureARVTreatmentINNs.get(index);
@@ -902,7 +966,48 @@ public class ObservationData implements Serializable {
     public void setCurrentDiseasesValue(String currentDiseasesValue) {
         this.currentDiseasesValue = currentDiseasesValue;
     }
-        
+    public String getArvTreatmentInitDate() {
+        return arvTreatmentInitDate;
+    }
+    public void setArvTreatmentInitDate(String arvTreatmentInitDate) {
+        this.arvTreatmentInitDate = arvTreatmentInitDate;
+    }    
+    public String getVlReasonForRequest() {
+        return vlReasonForRequest;
+    }
+    public void setVlReasonForRequest(String vlReasonForRequest) {
+        this.vlReasonForRequest = vlReasonForRequest;
+    }
+    public String getVlOtherReasonForRequest() {
+        return vlOtherReasonForRequest;
+    }
+    public void setVlOtherReasonForRequest(String vlOtherReasonForRequest) {
+        this.vlOtherReasonForRequest = vlOtherReasonForRequest;
+    }
+    public String getVlBenefit() {
+        return vlBenefit;
+    }
+    public void setVlBenefit(String vlBenefit) {
+        this.vlBenefit = vlBenefit;
+    }
+    public String getPriorVLLab() {
+        return priorVLLab;
+    }
+    public void setPriorVLLab(String priorVLLab) {
+        this.priorVLLab = priorVLLab;
+    }
+    public String getPriorVLValue() {
+        return priorVLValue;
+    }
+    public void setPriorVLValue(String priorVLValue) {
+        this.priorVLValue = priorVLValue;
+    }
+    public String getPriorVLDate() {
+        return priorVLDate;
+    }
+    public void setPriorVLDate(String priorVLDate) {
+        this.priorVLDate = priorVLDate;
+    }
     public List<NameValuePair> getPriorDiseasesList() {
         if (priorDiseasesList == null) {
             priorDiseasesList = makeDiseaseList("P", ObservationHistoryList.ARV_DISEASES.getList());

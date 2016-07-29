@@ -314,7 +314,9 @@ public abstract class Accessioner {
 			persistSampleHuman();
 
 			persistObservationHistory();
-			persistObservationHistoryLists();
+	
+		//	persistObservationHistoryLists();// no more running name has been changed to persistObservationHistoryLists1
+			persistObservationHistoryLists2();
 			persistRecordStatus();
 			deleteOldPatient();
 			populateAndPersistUnderInvestigationNote();
@@ -1171,10 +1173,13 @@ public abstract class Accessioner {
      *
      */
 	protected void persistObservationHistoryLists() {
+		System.out.println("FUNCTION NAME PROHIBITED !");
+	}
+	protected void persistObservationHistoryLists2() {
 		if (observationHistoryLists == null) {
 			return;
 		}
-
+		
 		for (String listType : this.observationHistoryLists.keySet()) {
 			// throw away the old list
 			Map<String, ObservationHistory> oldOHes = findExistingObservationHistories(listType);
@@ -1194,6 +1199,7 @@ public abstract class Accessioner {
 				newOH.setSysUserId(sysUserId);
 				newOH.setPatientId(patientInDB.getId());
 				newOH.setSampleId(sample.getId());
+	               
 				observationHistoryDAO.insertData(newOH);
 			}
 		}

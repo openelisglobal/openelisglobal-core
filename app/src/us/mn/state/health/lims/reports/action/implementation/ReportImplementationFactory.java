@@ -25,7 +25,9 @@ public class ReportImplementationFactory{
 
 	public static IReportParameterSetter getParameterSetter(String report){
 		if(!GenericValidator.isBlankOrNull(report)){
-			if(report.equals("patientARVInitial1")){
+			if(report.equals("patientARV1")){
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.all"),null);
+			}else if(report.equals("patientARVInitial1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
 			}else if(report.equals("patientARVInitial2")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
@@ -37,6 +39,8 @@ public class ReportImplementationFactory{
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.EID"), null);
 			}else if(report.equals("patientEID2")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.EID"), null);
+			}else if(report.equals("patientVL1")){
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.VL"), null);
 			}else if(report.equals("patientIndeterminate1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.indeterminate"), null);
 			}else if(report.equals("patientIndeterminate2")){
@@ -118,7 +122,9 @@ public class ReportImplementationFactory{
 
 	public static IReportCreator getReportCreator(String report){
 		if(!GenericValidator.isBlankOrNull(report)){
-			if(report.equals("patientARVInitial1")){
+			if(report.equals("patientARV1")){
+				return new PatientARVVersion1Report();
+			}else if(report.equals("patientARVInitial1")){
 				return new PatientARVInitialVersion1Report();
 			}else if(report.equals("patientARVInitial2")){
 				return new PatientARVInitialVersion2Report();
@@ -130,6 +136,8 @@ public class ReportImplementationFactory{
 				return new PatientEIDVersion1Report();
 			}else if(report.equals("patientEID2")){
 				return new PatientEIDVersion2Report();
+			}else if(report.equals("patientVL1")){
+				return new PatientVLVersion1Report();
 			}else if(report.equals("patientIndeterminate1")){
 				return new PatientIndeterminateVersion1Report();
 			}else if(report.equals("patientIndeterminate2")){
