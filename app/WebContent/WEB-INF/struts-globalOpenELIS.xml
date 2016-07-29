@@ -1129,7 +1129,14 @@
 		>
 			<forward name="eid_entry" path="sampleEntryEIDDefinition" />
 			<forward name="fail" path="homePageDefinition" />
-		</action>                                                                                                                                                                     
+		</action>    
+		
+		<action path="/SampleEntryVL" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectAction"
+			validate="false"
+		>
+			<forward name="vl_entry" path="sampleEntryVLDefinition" />
+			<forward name="fail" path="homePageDefinition" />
+		</action>                                                                                                                                                                    
 
 		<action path="/SampleEntryByProjectSave" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectSaveAction"
 			validate="false"
@@ -1142,6 +1149,13 @@
 		>
 			<forward name="success" path="/SampleEntryEID.do?forward=success" />
 			<forward name="fail" path="sampleEntryEIDDefinition" />
+		</action>
+		
+		<action path="/SampleEntryVLSave" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectSaveAction"
+			validate="false"
+		>
+			<forward name="success" path="/SampleEntryVL.do?forward=success" />
+			<forward name="fail" path="sampleEntryVLDefinition" />
 		</action>
 
 		<action path="/CancelSampleEntryByProject" forward="homePageDefinition">
