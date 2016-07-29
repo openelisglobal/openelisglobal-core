@@ -586,7 +586,25 @@
             <form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
             <form-property name="tag" type="java.lang.String" initial="" />
         </form-bean>
+<!-- -->
+ <form-bean name="MenuStatementConfigMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="menuList" type="java.util.List" />
+            <form-property name="selectedIDs" type="java.lang.String[]" />
+            <form-property name="siteInfoDomainName" type="java.lang.String" initial="MenuStatementConfig" />
+        </form-bean>
 
+        <form-bean name="MenuStatementConfigForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="paramName" type="java.lang.String" initial="" />
+            <form-property name="description" type="java.lang.String" initial="" />
+            <form-property name="value" type="java.lang.String" initial="" />
+            <form-property name="valueType" type="java.lang.String" initial="text" />
+            <form-property name="encrypted" type="boolean" initial="false" />
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="siteInfoDomainName" type="java.lang.String" initial="PaitientConfiguration"/>
+            <form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
+        </form-bean>
+<!-- -->
 
         <form-bean name="NonConformityConfigurationMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="menuList" type="java.util.List" />
@@ -1121,7 +1139,6 @@
 		>
 			<forward name="success" path="sampleEntryByProjectDefinition" />
 			<forward name="eid_entry" path="sampleEntryEIDDefinition" />
-			<forward name="vl_entry" path="sampleEntryVLDefinition" />
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 		<action path="/SampleEntryEID" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectAction"
@@ -1746,7 +1763,44 @@
             <forward name="success" path="siteInformationDefinition" />
             <forward name="fail" path="masterListsPageDefinition" />
         </action>
+<!-- -->
+<action path="/MenuStatementConfigMenu" name="MenuStatementConfigMenuForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationMenuAction">
+            <forward name="success" path="haitiMasterListsPageDefinition" />
+            <forward name="fail" path="/MasterListsPage.do" />
+        </action>
 
+        <action path="/MenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationAction" validate="false">
+            <forward name="success" path="siteInformationDefinition" />
+            <forward name="fail" path="masterListsPageDefinition" />
+        </action>
+        
+         <action path="/UpdateMenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationUpdateAction"
+                validate="false"
+                >
+            <forward name="insertSuccess" path="/MenuStatementConfigMenu.do" redirect="true" />
+            <forward name="fail" path="/MenuStatementConfig.do" />
+        </action>
+
+        <action path="/DeleteMenuStatementConfig" name="MenuStatementConfigMenuForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationDeleteAction">
+            <forward name="success" path="/WorkplanConfiguration.do" />
+            <forward name="fail" path="/WorkplanConfiguration.do" />
+        </action>
+
+        <action path="/NextPreviousMenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationNextPreviousAction">
+            <forward name="success" path="/MenuStatementConfig.do" redirect="true" />
+            <forward name="fail" path="siteInformationDefinition" />
+        </action>
+
+        <action path="/UpdateNextPreviousMenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationNextPreviousAction">
+            <forward name="success" path="/MenuStatementConfig.do" redirect="true" />
+            <forward name="fail" path="siteInformationDefinition" />
+        </action>
+
+        <action path="/CancelMenuStatementConfig" forward="/MenuStatementConfigMenu.do" />
+        
+        
+        
+<!-- -->
         <action path="/UpdatePatientConfiguration" name="PatientConfigurationForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationUpdateAction"
                 validate="false"
                 >

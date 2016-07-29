@@ -66,13 +66,114 @@ public class ConfigurationSideEffects {
 				menuDAO.updateData( parentMenu);
 			}
 
+
+
 			Menu menu = menuDAO.getMenuByElementId("menu_patient_add_or_edit");
 			if( menu != null ){
 				menu.setIsActive( active);
 				menuDAO.updateData(menu);
-			}
-
+								}
+			
+			
+			Menu parentmenustudy = menuDAO.getMenuByElementId("menu_patient_study");
+			if( parentmenustudy != null ){
+				parentmenustudy.setIsActive( active);
+				menuDAO.updateData(parentmenustudy);
+								}
+			
+			Menu menustudycreate = menuDAO.getMenuByElementId("menu_patient_create");
+			if( menustudycreate != null ){
+				menustudycreate.setIsActive( active);
+				menuDAO.updateData(menustudycreate);
+								}
+			
+			
+			Menu menustudycreateinitial = menuDAO.getMenuByElementId("menu_patient_create_initial");
+			if( menustudycreateinitial != null ){
+				menustudycreateinitial.setIsActive( active);
+				menuDAO.updateData(menustudycreateinitial);
+								}
+			
+			Menu menustudycreatedouble = menuDAO.getMenuByElementId("menu_patient_create_double");
+			if( menustudycreatedouble != null ){
+				menustudycreatedouble.setIsActive( active);
+				menuDAO.updateData(menustudycreatedouble);
+								}
+			
+			Menu menustudyedit = menuDAO.getMenuByElementId("menu_patient_edit");
+			if( menustudyedit != null ){
+				menustudyedit.setIsActive( active);
+				menuDAO.updateData(menustudyedit);
+								}
+			Menu menustudyconsult = menuDAO.getMenuByElementId("menu_patient_consult");
+			if( menustudyconsult != null ){
+				menustudyconsult.setIsActive( active);
+				menuDAO.updateData(menustudyconsult);
+								}
+			
 			MenuUtil.forceRebuild();
 		}
+//-------- need to add study remove in reports
+		
+		if("Study Management tab".equals(siteInformation.getName())){
+			MenuDAOImpl menuDAO = new MenuDAOImpl();
+			boolean active = "true".equals(siteInformation.getValue());
+
+			Menu parentMenuStudy = menuDAO.getMenuByElementId("menu_sample_create");
+			if( parentMenuStudy != null ){
+				parentMenuStudy.setIsActive(active);
+				menuDAO.updateData( parentMenuStudy);
+			}
+
+
+
+			Menu menusamplecreateinitial = menuDAO.getMenuByElementId("menu_sample_create_initial");
+			if( menusamplecreateinitial != null ){
+				menusamplecreateinitial.setIsActive( active);
+				menuDAO.updateData(menusamplecreateinitial);
+								}
+			
+			
+			Menu menusamplecreatedouble = menuDAO.getMenuByElementId("menu_sample_create_double");
+			if( menusamplecreatedouble != null ){
+				menusamplecreatedouble.setIsActive( active);
+				menuDAO.updateData(menusamplecreatedouble);
+								}
+			
+			Menu menustudycreate2 = menuDAO.getMenuByElementId("menu_patient_create");
+			if( menustudycreate2 != null ){
+				menustudycreate2.setIsActive( active);
+				menuDAO.updateData(menustudycreate2);
+								}
+			
+			
+			Menu menustudycreateinitial2 = menuDAO.getMenuByElementId("menu_patient_create_initial");
+			if( menustudycreateinitial2 != null ){
+				menustudycreateinitial2.setIsActive( active);
+				menuDAO.updateData(menustudycreateinitial2);
+								}
+			
+			Menu menustudycreatedouble2 = menuDAO.getMenuByElementId("menu_patient_create_double");
+			if( menustudycreatedouble2 != null ){
+				menustudycreatedouble2.setIsActive( active);
+				menuDAO.updateData(menustudycreatedouble2);
+								}
+			
+			Menu menustudyedit2 = menuDAO.getMenuByElementId("menu_patient_edit");
+			if( menustudyedit2 != null ){
+				menustudyedit2.setIsActive( active);
+				menuDAO.updateData(menustudyedit2);
+								}
+			Menu menustudyconsult2 = menuDAO.getMenuByElementId("menu_patient_consult");
+			if( menustudyconsult2 != null ){
+				menustudyconsult2.setIsActive( active);
+				menuDAO.updateData(menustudyconsult2);
+								}
+			
+			MenuUtil.forceRebuild();
+		}	
+
+//--------	
 	}
+
 }
