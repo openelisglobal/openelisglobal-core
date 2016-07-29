@@ -37,7 +37,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 
 import java.util.*;
 
-public class PatientCILNSPClinical extends PatientReport implements IReportCreator, IReportParameterSetter{
+public class PatientCILNSPClinical_vreduit extends PatientReport implements IReportCreator, IReportParameterSetter{
 
 	private AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 	private static Set<Integer> analysisStatusIds;
@@ -58,13 +58,13 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	static final String configName = ConfigurationProperties.getInstance()
 			.getPropertyValue(Property.configurationName);
 
-	public PatientCILNSPClinical(){
+	public PatientCILNSPClinical_vreduit(){
 		super();
 	}
 
 	@Override
 	protected String reportFileName(){
-			return "PatientReportCDI";
+			return "PatientReportCDI_vreduit";
 		//return "PatientClinicalReport";
 	}
 
