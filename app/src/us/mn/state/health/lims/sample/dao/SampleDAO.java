@@ -59,6 +59,8 @@ public interface SampleDAO extends BaseDAO {
 
 	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(String projectId,  List<Integer> inclusiveStatusIdList, String minAccession, String maxAccession) throws LIMSRuntimeException;
 
+	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(List<Integer> inclusiveProjectIdList,  List<Integer> inclusiveStatusIdList, String minAccession, String maxAccession) throws LIMSRuntimeException;
+
 	public List<Sample> getSamplesByAccessionRange(String minAccession, String maxAccession) throws LIMSRuntimeException;
 
 	public String getLargestAccessionNumber();
