@@ -302,6 +302,7 @@ function handleSelectedPatient(){
     if( !(typeof requestType === 'undefined') ){
         form.action += "&type=" + requestType;
     }
+    
     form.submit();
 }
 

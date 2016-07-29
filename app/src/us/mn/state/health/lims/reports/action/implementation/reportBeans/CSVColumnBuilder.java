@@ -153,6 +153,8 @@ abstract public class CSVColumnBuilder {
 				projectTag = "ARVS";
 			} else if (project.getNameKey().contains("ARV")) {
 				projectTag = "ARVB";
+			} else if (project.getNameKey().contains("VLS")) {
+				projectTag = "VLS";
 			} else {
 				// otherwise we use the letters from the Sample ID prefix, which
 				// at some locations for some projects is undefined.
