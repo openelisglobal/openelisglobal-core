@@ -44,9 +44,19 @@
          <put name="body" value="sampleEntryEIDFormDefintion"/>
          <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>
+    
+     <definition name="sampleEntryVLDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleEntryVLFormDefintion"/>
+         <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
+    </definition>
 
     <definition name="sampleEntryEIDFormDefintion" path="/pages/sample/CI/sampleAddEIDProject.jsp">
     	<put name="eidStudy" value="/pages/patient/CI/eidStudy.jsp" />
+    </definition>
+    
+    <definition name="sampleEntryVLFormDefintion" path="/pages/sample/CI/sampleAddVLProject.jsp">
+    	<put name="vlStudy" value="/pages/patient/CI/vlStudy.jsp" />
     </definition>
 
    <definition name="sampleEditDefinition" extends="baseDefinition">
@@ -66,6 +76,7 @@
     	<put name="arvInitialStudy" value="/pages/patient/CI/arvInitialStudy.jsp"/>
     	<put name="arvFollowupStudy" value="/pages/patient/CI/arvFollowupStudy.jsp"/>
     	<put name="ediStudy" value="/pages/patient/CI/eidStudy.jsp"/>
+    	<put name="lvStudy" value="/pages/patient/CI/vlStudy.jsp"/>
     	<put name="rtnStudy" value="/pages/patient/CI/rtnStudy.jsp"/>
     </definition>
 
@@ -320,7 +331,15 @@
     <definition name="testCatalogDefinition" extends="baseMenuDefinition">
         <put name="body" value="/pages/testConfiguration/testCatalog.jsp"/>
     </definition>
+    
+    <definition name="uomManagementDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/uomManagement.jsp" />
+    </definition>
 
+    <definition name="uomCreateDefinition" extends="baseMenuDefinition" >
+        <put name="body" value="/pages/testConfiguration/uomCreate.jsp" />
+    </definition>
+    
     <definition name="testSectionManagementDefinition" extends="baseMenuDefinition" >
         <put name="body" value="/pages/testConfiguration/testSectionManagement.jsp" />
     </definition>

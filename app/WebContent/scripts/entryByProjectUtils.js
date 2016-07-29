@@ -186,7 +186,7 @@ function BaseLoader() {
 		} else {
 			return undefined;
 		}
-	}
+	};
 	
 	/**
 	 * Get a value from the current saved existing value (return probably save as a result of a this.find...(...) call
@@ -207,6 +207,7 @@ function BaseLoader() {
 		clearField(document.getElementById(fieldId));
 		clearField(document.getElementById("farv." + fieldId));
 		clearField(document.getElementById("eid." + fieldId));
+		clearField(document.getElementById("vl." + fieldId));
 		clearField(document.getElementById("rtn." + fieldId));
 	}
 
@@ -225,7 +226,8 @@ function BaseLoader() {
 		this.setField("farv." + fieldId, value);
 		this.setField("rtn." + fieldId, value);
 		this.setField("eid." + fieldId, value);
-	}
+		this.setField("vl." + fieldId, value);
+	};
 
 	/**
 	 * Set a form field with a value, includes either a dropdown list or text field
@@ -352,6 +354,7 @@ function PatientLoader() {
 			handlePatientBirthDateChange($("dateOfBirth"), $("interviewDate"), false, $("age"));
 			handlePatientBirthDateChange($("farv.dateOfBirth"), $("farv.interviewDate"), false, $("farv.age"));
 			handlePatientBirthDateChange($("eid.dateOfBirth"),  $("eid.interviewDate"), false, null, $('eid.month'), $('eid.ageWeek'));
+			handlePatientBirthDateChange($("vl.dateOfBirth"),  $("vl.interviewDate"), false, $("vl.age"));
 			handlePatientBirthDateChange($("rtn.dateOfBirth"),  $("rtn.interviewDate"), false, $("rtn.age"), $("rtn.month"));
 		}
 
@@ -668,6 +671,21 @@ function ObservationHistoryLoader() {
 		this.clearFieldInAllStudies("sarcKapo"   );
 		this.clearFieldInAllStudies("xIngPadenp" );
 		this.clearFieldInAllStudies("HIVDement"  );
+		
+		this.clearFieldInAllStudies("arvTreatmentInitDate"  );
+		this.clearFieldInAllStudies("arvTreatmentRegime"  );
+		this.clearFieldInAllStudies("vlOtherReasonForRequest"  );
+		this.clearFieldInAllStudies("initcd4Count"  );
+		this.clearFieldInAllStudies("initcd4Percent"  );
+		this.clearFieldInAllStudies("initcd4Date"  );
+		this.clearFieldInAllStudies("demandcd4Count"  );
+		this.clearFieldInAllStudies("demandcd4Percent"  );
+		this.clearFieldInAllStudies("demandcd4Date"  );
+		this.clearFieldInAllStudies("vlBenefit"  );
+		this.clearFieldInAllStudies("priorVLLab"  );
+		this.clearFieldInAllStudies("priorVLValue"  );
+		this.clearFieldInAllStudies("priorVLDate"  );
+		
 	}
 
 	/**
@@ -705,6 +723,7 @@ function ObservationHistoryLoader() {
 	    iarv.refresh();
 	    farv.refresh();
 	    eid.refresh();
+	    vl.refresh();
 	    if (rtn != null) {
 		    rtn.refresh();
 	    }
@@ -786,7 +805,7 @@ function BaseProjectChecker() {
 		var isValid = checkValidTimeEntry(field, blanksAllowed);
 		compareSampleField( field.id, false, blanksAllowed, "collectionTimeForDisplay");
 		updateFieldValidity(isValid, field.id );
-	}	
+	};	
 
 	this.setSubjectOrSiteSubjectEntered = function () {
 		var subjectNumber = $(this.idPre + "subjectNumber");
@@ -798,7 +817,7 @@ function BaseProjectChecker() {
 		} else {
 			document.forms[0].subjectOrSiteSubject.value = "1 OR The other IS set";
 		}
-	}
+	};
 	
 	this.checkSubjectNumber = function (blanksAllowed) {
 		makeDirty();
@@ -1082,6 +1101,9 @@ function compareAllObservationHistoryFields(isBlankAllowed, fieldPrefix) {
 		compareFieldToExisting(idPre + "arvTreatmentAdvEffType"+i, false, observationHistoryLoader, isBlankAllowed, "arvTreatmentAdvEffType"+i);    	
 		compareFieldToExisting(idPre + "arvTreatmentAdvEffGrd"+i, false, observationHistoryLoader, isBlankAllowed, "arvTreatmentAdvEffGrd"+i);    	
     }
+    for(var i = 0; i < 4; i ++) {
+		compareFieldToExisting(idPre + "currentARVTreatmentINNs"+i, false, observationHistoryLoader, isBlankAllowed, "currentARVTreatmentINNs"+i);    	
+    }
     compareFieldToExisting(idPre + "arvTreatmentChange", false, observationHistoryLoader, isBlankAllowed);
     compareFieldToExisting(idPre + "arvTreatmentNew", false, observationHistoryLoader, isBlankAllowed);
     compareFieldToExisting(idPre + "arvTreatmentRegime", false, observationHistoryLoader, isBlankAllowed);
@@ -1169,6 +1191,23 @@ function compareAllObservationHistoryFields(isBlankAllowed, fieldPrefix) {
 	compareFieldToExisting(idPre + "HIVDement"  , false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "priorDiseases",   false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "currentDiseases", false, observationHistoryLoader, isBlankAllowed);
+	
+	
+	compareFieldToExisting(idPre + "arvTreatmentInitDate", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "arvTreatmentRegime", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlReasonForRequest", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlOtherReasonForRequest", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "initcd4Count", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "initcd4Percent", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "initcd4Date", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "demandcd4Count", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "demandcd4Percent", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "demandcd4Date", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlBenefit", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "priorVLLab", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "priorVLValue", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "priorVLDate", false, observationHistoryLoader, isBlankAllowed);
+		
 }
 
 function SampleItemTestLoader() {
@@ -1190,7 +1229,7 @@ function SampleItemTestLoader() {
 
 	this.processFindFailure = function(xhr, field) {
 		updateFieldConflict(false, field.id, testInvalid );
-	}
+	};
 
 	this.processFindSuccess = function(xhr, field) {
 		var xml = xhr.responseXML;
@@ -1238,7 +1277,7 @@ function HivStatusLoader() {
 				hivStatusLoader.processFailure(xhr, fieldId);
 			}
 		);
-	}
+	};
 	
 	this.processLoadSuccess = function (xhr, fieldId) {
 		fieldId = "farv.hivStatus";	// there really is only one right field.
