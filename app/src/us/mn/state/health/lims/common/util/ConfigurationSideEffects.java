@@ -113,7 +113,7 @@ public class ConfigurationSideEffects {
 			
 			MenuUtil.forceRebuild();
 		}
-//-------- need to add study remove in reports
+//-------- need add study remove in reports
 		
 		if("Study Management tab".equals(siteInformation.getName())){
 			MenuDAOImpl menuDAO = new MenuDAOImpl();
@@ -140,6 +140,15 @@ public class ConfigurationSideEffects {
 				menuDAO.updateData(menusamplecreatedouble);
 								}
 			
+					
+			
+			Menu menusampleconsult = menuDAO.getMenuByElementId("menu_sample_consult");
+			if( menusampleconsult != null ){
+				menusampleconsult.setIsActive( active);
+				menuDAO.updateData(menusampleconsult);
+						}
+			
+			
 			Menu menustudycreate2 = menuDAO.getMenuByElementId("menu_patient_create");
 			if( menustudycreate2 != null ){
 				menustudycreate2.setIsActive( active);
@@ -164,11 +173,12 @@ public class ConfigurationSideEffects {
 				menustudyedit2.setIsActive( active);
 				menuDAO.updateData(menustudyedit2);
 								}
-			Menu menustudyconsult2 = menuDAO.getMenuByElementId("menu_patient_consult");
+			
+		/*	Menu menustudyconsult2 = menuDAO.getMenuByElementId("menu_patient_consult");
 			if( menustudyconsult2 != null ){
 				menustudyconsult2.setIsActive( active);
 				menuDAO.updateData(menustudyconsult2);
-								}
+								}*/
 			
 			MenuUtil.forceRebuild();
 		}	
