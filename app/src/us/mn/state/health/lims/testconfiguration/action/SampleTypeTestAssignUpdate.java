@@ -72,13 +72,24 @@ public class SampleTypeTestAssignUpdate extends BaseAction {
         	typeOfSamplesTestIDs[0] = typeOfSampleTestOld.getId();
         	deleteExistingTypeOfSampleTest = true;
         }
+    //---------------------------    
+       /* if( "N".equals(typeOfSample.getIsActive())){
+        	typeOfSample.setIsActive(true);
+        	typeOfSample.setSysUserId(currentUser);
+        	updateTypeOfSample = true;
+        }*/
         
-        if( "N".equals(typeOfSample.getIsActive())){
+        
+      // Boolean value = false; 
+        if( typeOfSample.getIsActive()== false){
         	typeOfSample.setIsActive(true);
         	typeOfSample.setSysUserId(currentUser);
         	updateTypeOfSample = true;
         }
-
+        
+        
+        
+//------------------------------------------
         if( !GenericValidator.isBlankOrNull(deactivateSampleTypeId) ){
         	deActivateTypeOfSample  = TypeOfSampleService.getTransientTypeOfSampleById(deactivateSampleTypeId);
         	deActivateTypeOfSample.setIsActive(false);
