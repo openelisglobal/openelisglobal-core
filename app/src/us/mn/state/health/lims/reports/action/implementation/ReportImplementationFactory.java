@@ -63,7 +63,9 @@ public class ReportImplementationFactory{
 				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
 				return new ExportProjectByDate();
-			}else if(report.equals("referredOut")){
+			}else if(report.equals("CISampleRoutineExport")){
+				return new ExportRoutineByDate();
+			}			else if(report.equals("referredOut")){
 				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport") || report.equals("HaitiLNSPExportReport")){
 				return new ReportSpecificationParameters( Parameter.DATE_RANGE,
@@ -164,6 +166,8 @@ public class ReportImplementationFactory{
 				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
 				return new ExportProjectByDate();
+			}else if(report.equals("CISampleRoutineExport")){
+				return new ExportRoutineByDate();
 			}else if(report.equals("referredOut")){
 				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport")){
