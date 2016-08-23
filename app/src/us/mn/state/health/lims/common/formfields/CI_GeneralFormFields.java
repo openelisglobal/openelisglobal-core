@@ -78,7 +78,7 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
         settings.put(Field.ProviderInfo, Boolean.TRUE);					
         settings.put(Field.SearchSampleStatus,  Boolean.TRUE);					
         settings.put(Field.OrganizationAddressInfo, Boolean.FALSE);						
-        settings.put(Field.DepersonalizedResults, Boolean.TRUE);						
+        settings.put(Field.DepersonalizedResults, Boolean.FALSE);						
 		settings.put(Field.Project, Boolean.TRUE);					
 		settings.put(Field.QA_FULL_PROVIDER_INFO, Boolean.FALSE);					
 		settings.put(Field.QASubjectNumber, Boolean.FALSE);					

@@ -128,21 +128,23 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
 
     protected void defineBasicColumns() {
         add("accession_number", "LABNO",    NONE);
-        add("status_id", "STATUT", SAMPLE_STATUS);
-        add("national_id",      "SUJETNO",  NONE);
-       // add("project_id",        "ETUDE",    PROJECT );
-       // add("external_id",      "SUJETSIT", NONE);
-        add("received_date",    "DRCPT",    DATE_TIME );      // reception date
-        add("entered_date",  "DINTV",    DATE_TIME );      // interview date
-        add("organization_code", "SITECODE", NONE);
-        add("organization_name", "SITENOM",  NONE);
-        add("last_name",        "NOM",      NONE);
-        add("first_name",       "PRENOM",   NONE);
-        add("gender",           "SEXE",     GENDER);
+        add("national_id",      "IDENTIFIANT",  NONE);
+        add("gender",           "SEXE",     NONE);
         add("birth_date",       "DATENAIS", DATE);
         add("entered_date",  "AGEANS",   AGE_YEARS); 
         add("entered_date",  "AGEMOIS",  AGE_MONTHS); 
         add("entered_date",  "AGESEMS",  AGE_WEEKS);
+        add("received_date",    "DATERECPT",    DATE_TIME );      // reception date
+        add("entered_date",  "DATESAISIE",    DATE_TIME );      // interview date
+        add("organization_code", "CODEREFERANT", NONE);
+        add("organization_name", "REFERANT",  NONE);
+        add("status_id", "STATUT", SAMPLE_STATUS);
+       // add("project_id",        "ETUDE",    PROJECT );
+       // add("external_id",      "SUJETSIT", NONE);
+        //add("last_name",        "NOM",      NONE);
+        //add("first_name",       "PRENOM",   NONE);
+        
+        
     }
     
     @Override

@@ -344,7 +344,7 @@ abstract public class CSVRoutineColumnBuilder {
 				case Entered:
 					return "Saisie"; // entered, entr�e
 				case Started:
-					return "Commence"; // commenced, commenc�
+					return "En_Cours"; // commenced, commenc�
 				case Finished:
 					return "Fini"; // Finished, Finale
 				case NonConforming_depricated:

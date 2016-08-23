@@ -16,8 +16,17 @@
 */
 package us.mn.state.health.lims.common.util;
 
+import java.util.HashMap;
+
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
 
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.IFormFieldsForImplementation;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.DefaultConfigurationProperties.KeyDefaultPair;
 import us.mn.state.health.lims.menu.daoimpl.MenuDAOImpl;
 import us.mn.state.health.lims.menu.util.MenuUtil;
 import us.mn.state.health.lims.menu.valueholder.Menu;
@@ -28,9 +37,12 @@ import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
 
+
 public class ConfigurationSideEffects {
 	private static final RoleDAO roleDAO = new RoleDAOImpl();
 	private static final SiteInformationDAO siteInformationDAO = new SiteInformationDAOImpl();
+	
+	
 	
 	public void siteInformationChanged( SiteInformation siteInformation){
 		if( "modify results role".equals(siteInformation.getName())){
@@ -56,6 +68,7 @@ public class ConfigurationSideEffects {
 			}
 		}
 
+//--------------------------
 		if("Patient management tab".equals(siteInformation.getName())){
 			MenuDAOImpl menuDAO = new MenuDAOImpl();
 			boolean active = "true".equals(siteInformation.getValue());
@@ -125,8 +138,6 @@ public class ConfigurationSideEffects {
 				menuDAO.updateData( parentMenuStudy);
 			}
 
-
-
 			Menu menusamplecreateinitial = menuDAO.getMenuByElementId("menu_sample_create_initial");
 			if( menusamplecreateinitial != null ){
 				menusamplecreateinitial.setIsActive( active);
@@ -174,11 +185,11 @@ public class ConfigurationSideEffects {
 				menuDAO.updateData(menustudyedit2);
 								}
 			
-		/*	Menu menustudyconsult2 = menuDAO.getMenuByElementId("menu_patient_consult");
+			Menu menustudyconsult2 = menuDAO.getMenuByElementId("menu_patient_consult");
 			if( menustudyconsult2 != null ){
 				menustudyconsult2.setIsActive( active);
 				menuDAO.updateData(menustudyconsult2);
-								}*/
+								}
 			
 			MenuUtil.forceRebuild();
 		}	
