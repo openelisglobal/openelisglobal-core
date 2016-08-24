@@ -71,7 +71,7 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.SampleEntryRequesterLastNameRequired, Boolean.TRUE);
 		//settings.put(Field.QASubjectNumber, Boolean.TRUE);
 		settings.put(Field.QATimeWithDate, Boolean.TRUE);
-		settings.put(Field.SampleEntryReferralSiteCode, Boolean.TRUE);							
+		settings.put(Field.SampleEntryReferralSiteCode, Boolean.FALSE);							
 		settings.put(Field.QA_DOCUMENT_NUMBER, Boolean.TRUE);							
 		settings.put(Field.CollectionTime, Boolean.TRUE);					
         settings.put(Field.TEST_LOCATION_CODE,Boolean.TRUE);							
