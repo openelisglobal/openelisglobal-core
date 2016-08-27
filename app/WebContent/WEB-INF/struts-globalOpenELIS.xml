@@ -1139,6 +1139,7 @@
 		>
 			<forward name="success" path="sampleEntryByProjectDefinition" />
 			<forward name="eid_entry" path="sampleEntryEIDDefinition" />
+			<forward name="vl_entry" path="sampleEntryVLDefinition" />
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 		<action path="/SampleEntryEID" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectAction"
