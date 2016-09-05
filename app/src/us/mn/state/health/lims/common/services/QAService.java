@@ -135,7 +135,7 @@ public class QAService {
 
     public String getObservationForDisplay(QAObservationType section){
         QaObservation observation = observationDAO.getQaObservationByTypeAndObserved(section.getDBName(), "SAMPLE", sampleQaEvent.getId());
-
+                                  
         if (observation != null) {
             if( "K".equals( observation.getValueType() )){
                 return StringUtil.getContextualMessageForKey(observation.getValue()) ;
@@ -145,7 +145,6 @@ public class QAService {
                 return dictDAO.getDictionaryById(observation.getValue()).getDictEntry();
             }
         }
-
         return null;
     }
 	public Timestamp getLastupdated() {
@@ -185,6 +184,7 @@ public class QAService {
 		}
 
 		observation.setValue(value);
+		System.out.println(value + " "+ ObservedType.SAMPLE.getDBName()+ " "+ sampleQaEvent.getId()+ " "+ type.getDBSymbol() );
 		observation.setSysUserId(currentUserId);
 		observationList.add(observation);
 	}

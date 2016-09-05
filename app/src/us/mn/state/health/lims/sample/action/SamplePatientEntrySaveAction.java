@@ -108,6 +108,8 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 
 		boolean useInitialSampleCondition = FormFields.getInstance().useField(Field.InitialSampleCondition);
 		BaseActionForm dynaForm = (BaseActionForm) form;
+	//	String str=(String)dynaForm.get("sampleXML");
+	 //   System.out.println(str);
 		PatientManagementInfo patientInfo = (PatientManagementInfo ) dynaForm.get("patientProperties");
         SampleOrderItem sampleOrder = (SampleOrderItem)dynaForm.get("sampleOrderItems");
 

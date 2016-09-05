@@ -444,8 +444,9 @@ public class NonConformityAction extends BaseAction{
 			extra.setNameKey("testSection.SampleCollection");
 			sections.add(extra);
 		}
-		
+		 
 		sortSections(sections);
+			
 		return sections;
 	}
 

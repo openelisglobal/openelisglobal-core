@@ -12,14 +12,76 @@
 INSERT INTO clinlims.scriptlet(id, name, code_type, code_source, lastupdated) VALUES (12,'SCRIPTLET','S','test',now());
 INSERT INTO clinlims.scriptlet(id, name, code_type, code_source, lastupdated) VALUES (13,'Ais Test','B','C',now());
 </sql>
- </changeSet>   
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.label where name = 'MOLECULAR EPI - TEST';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Insert in clinlims label information</comment>
+    <sql>INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (62,'MOLECULAR EPI - TEST','TEST LABEL FOR MOLECULAR EPIDEMIOLOGY','P',13,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (65,'labelname1','labeldescr1','P',12,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (68,'testa','test','t',11,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (69,'testb','test','t',12,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (70,'testc','test','t',12,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (60,'Diane Test','Diane Test','P',11,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (61,'VIROLOGY-TEST','TEST LABELS FOR VIROLOGY','P',12,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (71,'12','12','1',11,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (67,'test','test','t',12,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (64,'NO LABEL','NO LABEL','P',default,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (66,'Label Name 2','Label Desc 2','P',13,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (1,'aaa','aaa','',default,now());
+INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, lastupdated) VALUES (2,'a','a','',default,now());
 
- <changeSet id="2" author="CI OpenELIS developers group">
-           <comment>Adds test_id columns to analyzer_results</comment>
-        <addColumn tableName="analyzer_results">
-            <column name="test_id" type="numeric(10,0)" >
-			</column >
-        </addColumn>
-    </changeSet>
+</sql>
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.address_part where display_key = 'address.commune';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Insert in clinlims address_part information</comment>
+    <sql>INSERT INTO clinlims.address_part(
+            id, part_name, display_order, display_key)
+    VALUES (nextval('clinlims.address_part_seq'),'department',default,'address.department');
 
+INSERT INTO clinlims.address_part(
+            id, part_name, display_order, display_key)
+    VALUES (nextval('clinlims.address_part_seq'),'commune',default,'address.commune');
+
+    INSERT INTO clinlims.address_part(
+            id, part_name, display_order, display_key)
+    VALUES (nextval('clinlims.address_part_seq'),'village',default,'address.village');   </sql>
+	  </changeSet>
+	  
+  <changeSet id="4" author="CI OpenELIS developers group" context="CDIRetroCI">
+     <preConditions onFail="MARK_RAN">
+       <not>
+            <columnExists columnName="test_id" schemaName="clinlims" tableName="analyzer_results"/>
+       </not>
+  </preConditions>
+	<comment>Adds test_id columns to analyzer_results</comment>
+    <addColumn tableName="analyzer_results">
+      <column name="test_id" type="numeric(10,0)"></column>
+    </addColumn>
+	<sql>
+	       COMMENT ON COLUMN clinlims.analyzer_results.test_id IS 'test_id from test';
+    </sql>
+</changeSet>
+	  
+ <changeSet id="5" author="CI OpenELIS developers group" context="CDIRetroCI">
+     <preConditions onFail="MARK_RAN">
+       <not>
+            <columnExists columnName="display_key" schemaName="clinlims" tableName="test_section"/>
+       </not>
+  </preConditions>
+	<comment>Adds display_key columns to test_section</comment>
+    <addColumn tableName="test_section">
+      <column name="display_key" type="varchar(60)"></column>
+    </addColumn>
+	<sql>
+	       COMMENT ON COLUMN clinlims.test_section.display_key IS 'Resource file lookup key for localization of displaying the name';
+    </sql>
+</changeSet>  
+ 	  
 </databaseChangeLog>

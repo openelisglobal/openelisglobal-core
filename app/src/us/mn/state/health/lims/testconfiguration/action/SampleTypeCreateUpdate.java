@@ -50,6 +50,10 @@ public class SampleTypeCreateUpdate extends BaseAction {
         DynaValidatorForm dynaForm = (DynaValidatorForm)form;
         String identifyingName = dynaForm.getString("sampleTypeEnglishName");
         String userId = getSysUserId(request);
+        
+        System.out.println(userId);
+        
+        
 
         Localization localization = createLocalization(dynaForm.getString("sampleTypeFrenchName"), identifyingName, userId);
 

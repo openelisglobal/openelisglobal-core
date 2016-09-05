@@ -101,4 +101,5 @@ public class QaObservationDAOImpl extends BaseDAOImpl implements QaObservationDA
 		return qaObservation;
 	}
 
+	
 }

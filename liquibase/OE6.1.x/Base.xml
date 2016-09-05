@@ -19,4 +19,10 @@
   <include file="OE6.1.x/Menu.xml" />
   <include file="OE6.1.x/Site_information.xml" />
   <include file="OE6.1.x/MetaData.xml" />
+  <include file="OE6.1.x/uom.xml" />
+  <include file="OE6.1.x/dict.xml" />
+  <include file="OE6.1.x/observation_type.xml" />
+  <include file="OE6.1.x/systemrolemodule.xml" />
+  <include file="OE6.1.x/org.xml" />
+
   </databaseChangeLog>

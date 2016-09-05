@@ -668,7 +668,7 @@ function  processPhoneSuccess(xhr){
 				<bean:message key="label.sampleType" /><span class="requiredlabel">*</span>
 			</th>
 			<th style="width:11%">
-				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %>
+				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %><span class="requiredlabel">*</span>
 			</th>
 			<th style="width:13%">
 				<%=StringUtil.getContextualMessageForKey("label.biologist") %>
