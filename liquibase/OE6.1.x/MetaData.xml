@@ -52,36 +52,59 @@ INSERT INTO clinlims.address_part(
     INSERT INTO clinlims.address_part(
             id, part_name, display_order, display_key)
     VALUES (nextval('clinlims.address_part_seq'),'village',default,'address.village');   </sql>
-	  </changeSet>
-	  
+  </changeSet>
   <changeSet id="4" author="CI OpenELIS developers group" context="CDIRetroCI">
-     <preConditions onFail="MARK_RAN">
-       <not>
-            <columnExists columnName="test_id" schemaName="clinlims" tableName="analyzer_results"/>
-       </not>
-  </preConditions>
-	<comment>Adds test_id columns to analyzer_results</comment>
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists columnName="test_id" schemaName="clinlims" tableName="analyzer_results" />
+      </not>
+    </preConditions>
+    <comment>Adds test_id columns to analyzer_results</comment>
     <addColumn tableName="analyzer_results">
       <column name="test_id" type="numeric(10,0)"></column>
     </addColumn>
-	<sql>
+    <sql>
 	       COMMENT ON COLUMN clinlims.analyzer_results.test_id IS 'test_id from test';
     </sql>
-</changeSet>
-	  
- <changeSet id="5" author="CI OpenELIS developers group" context="CDIRetroCI">
-     <preConditions onFail="MARK_RAN">
-       <not>
-            <columnExists columnName="display_key" schemaName="clinlims" tableName="test_section"/>
-       </not>
-  </preConditions>
-	<comment>Adds display_key columns to test_section</comment>
+  </changeSet>
+  <changeSet id="5" author="CI OpenELIS developers group" context="CDIRetroCI">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists columnName="display_key" schemaName="clinlims" tableName="test_section" />
+      </not>
+    </preConditions>
+    <comment>Adds display_key columns to test_section</comment>
     <addColumn tableName="test_section">
       <column name="display_key" type="varchar(60)"></column>
     </addColumn>
-	<sql>
+    <sql>
 	       COMMENT ON COLUMN clinlims.test_section.display_key IS 'Resource file lookup key for localization of displaying the name';
     </sql>
-</changeSet>  
- 	  
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="6" context="CDIRetroCI">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.test_ssectiont where display_key = 'test.Section.Virology';
+    		</sqlCheck>
+    </preConditions>
+    <comment>update on clinlims test_section</comment>
+    <sql>UPDATE clinlims.test_section
+   SET display_key='test.Section.Virology'
+ WHERE name='Virology';
+
+ UPDATE clinlims.test_section
+   SET display_key='test.Section.Immunology'
+ WHERE  name='Immunology';
+
+ UPDATE clinlims.test_section
+   SET display_key='test.Section.Hematology'
+ WHERE  name='Hematology';
+
+ UPDATE clinlims.test_section
+   SET display_key='test.Section.Serology'
+ WHERE  name='Serology';
+
+ UPDATE clinlims.test_section
+   SET display_key='test.Section.Biochemistry'
+ WHERE  name='Biochemistry';</sql>
+  </changeSet>
 </databaseChangeLog>
