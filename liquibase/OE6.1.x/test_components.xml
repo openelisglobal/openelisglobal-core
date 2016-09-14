@@ -88,23 +88,23 @@ INSERT INTO clinlims.address_part(
     </preConditions>
     <comment>update on clinlims test_section</comment>
     <sql>UPDATE clinlims.test_section
-   SET display_key='testSection.Virology'
+   SET display_key='test.Section.Virology'
  WHERE name='Virology';
 
  UPDATE clinlims.test_section
-   SET display_key='testSection.Immunology'
+   SET display_key='test.Section.Immunology'
  WHERE  name='Immunology';
 
  UPDATE clinlims.test_section
-   SET display_key='testSection.Hematology'
+   SET display_key='test.Section.Hematology'
  WHERE  name='Hematology';
 
  UPDATE clinlims.test_section
-   SET display_key='test.SectionSerology'
+   SET display_key='test.Section.Serology'
  WHERE  name='Serology';
 
  UPDATE clinlims.test_section
-   SET display_key='testSection.Biochemistry'
+   SET display_key='test.Section.Biochemistry'
  WHERE  name='Biochemistry';</sql>
   </changeSet>
 </databaseChangeLog>

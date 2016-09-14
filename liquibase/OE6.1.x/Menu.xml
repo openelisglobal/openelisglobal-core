@@ -199,6 +199,11 @@ INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_
     VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_reports_management'),50,'menu_reports_auditTrail','/AuditTrailReport.do',default,'reports.auditTrail','reports.auditTrail',default,default);
 
 
+INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_workplan'),2,'menu_workplan_panel','/WorkPlanByPanel.do?type=panel',default,'banner.menu.workplan.panel','tooltip.bannner.menu.workplan.panel',default,default);
+
+	
 
 
  </sql>

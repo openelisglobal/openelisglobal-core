@@ -27,131 +27,122 @@ INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, groupi
     <comment>Insert in clinlims new module</comment>
     <sql>
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (900,'LogbookResults:serology','Results=&gt;Enter=&gt;serology','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1000,'LogbookResults:serology','Results=&gt;Enter=&gt;serology','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (901,'Workplan:test','Workplan=&gt;test','Y','Y','Y','Y');
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (902,'Workplan:serology','Workplan=&gt;serology','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1001,'Workplan:test','Workplan=&gt;test','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1002,'Workplan:serology','Workplan=&gt;serology','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (903,'SampleEdit:readwrite','Sample -&gt; edit','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1003,'SampleEdit:readwrite','Sample -&gt; edit','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (904,'Workplan:endocrin','Workplan:endocrin','Y','Y','Y','Y');
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (905,'ResultValidation:Serology-Immunology','ResultValidation=&gt;Serology-Immunology','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1004,'Workplan:endocrin','Workplan:endocrin','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1005,'ResultValidation:Serology-Immunology','ResultValidation=&gt;Serology-Immunology','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (906,'ResultValidation:Hemato-Immunology','ResultValidation=&gt;Hemato-Immunology','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1006,'ResultValidation:Hemato-Immunology','ResultValidation=&gt;Hemato-Immunology','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (907,'Workplan:Hemato-Immunology','Workplan=&gt;Hemato-Immunology','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1007,'Workplan:Hemato-Immunology','Workplan=&gt;Hemato-Immunology','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (908,'ResultValidation:Biochemistry','ResultValidation=&gt;Biochemistry','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1008,'ResultValidation:Biochemistry','ResultValidation=&gt;Biochemistry','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (909,'ResultValidation:Hematology','ResultValidation=&gt;Hematology','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1009,'ResultValidation:Hematology','ResultValidation=&gt;Hematology','Y','Y','Y','Y');
 
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (910,'PatientDataOnResults','Able to view patient data when looking at results','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1010,'PatientDataOnResults','Able to view patient data when looking at results','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (911,'ResultValidation','validation return','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1011,'ResultValidation','validation return','Y','Y','Y','Y');
 
-INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (912,'PanelRenameEntry','Admin=&gt;test mang=&gt;panel rename','Y','Y','Y','Y');
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1012,'PanelRenameEntry','Admin=&gt;test mang=&gt;panel rename','Y','Y','Y','Y');
+
+
 </sql>
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where system_role_id= '59';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where system_role_id= '60';
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new system role module</comment>
     <sql>
 
 
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (881,'Y','Y','Y','Y',1,843);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (882,'Y','Y','Y','Y',1,844);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (883,'Y','Y','Y','Y',1,849);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (884,'Y','Y','Y','Y',1,912);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (885,'Y','Y','Y','Y',1,870);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1000,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='SampleEntryConfig'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1001,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='WorkplanConfiguration'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1002,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='TestActivation'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1003,'Y','Y','Y','Y',1,1012);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1004,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='TestOrderability'));
 
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (886,'Y','Y','Y','Y',1,871);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (887,'Y','Y','Y','Y',1,872);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (888,'Y','Y','Y','Y',1,873);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (889,'Y','Y','Y','Y',1,874);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (890,'Y','Y','Y','Y',1,875);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (891,'Y','Y','Y','Y',1,876);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (892,'Y','Y','Y','Y',1,879);
-
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=1 AND system_module_id=847;
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=1 AND system_module_id=848;
-
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1005,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='TestCatalog'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1006,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='BatchTestReassign'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1007,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='TestSectionManagement'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1008,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='TestSectionOrder'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1009,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='TestSectionTestAssign'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1010,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='TestSectionCreate'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1011,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='SampleTypeRenameEntry'));
 
 	
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (893,'Y','Y','Y','Y',61,8);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (894,'Y','Y','Y','Y',61,26);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (895,'Y','Y','Y','Y',61,45);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (896,'Y','Y','Y','Y',61,66);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (897,'Y','Y','Y','Y',61,583);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1012,'Y','Y','Y','Y',61,8);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1013,'Y','Y','Y','Y',61,26);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1014,'Y','Y','Y','Y',61,45);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1015,'Y','Y','Y','Y',61,66);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1016,'Y','Y','Y','Y',61,583);
 
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (898,'Y','Y','Y','Y',61,825);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (899,'Y','Y','Y','Y',61,46);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (900,'Y','Y','Y','Y',61,47);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (901,'Y','Y','Y','Y',61,72);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (902,'Y','Y','Y','Y',61,21);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (903,'Y','Y','Y','Y',61,22);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (904,'Y','Y','Y','Y',61,23);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1017,'Y','Y','Y','Y',61,(select id from clinlims.system_module where name='Workplan:panel'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1018,'Y','Y','Y','Y',61,(select id from clinlims.system_module where name='Workplan'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1019,'Y','Y','Y','Y',61,(select id from clinlims.system_module where name='AnalyzerResults'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1020,'Y','Y','Y','Y',61,1001);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1021,'Y','Y','Y','Y',61,21);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1022,'Y','Y','Y','Y',61,22);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1023,'Y','Y','Y','Y',61,23);
 
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (905,'Y','Y','Y','Y',61,24);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (906,'Y','Y','Y','Y',61,74);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (907,'Y','Y','Y','Y',61,75);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (908,'Y','Y','Y','Y',61,76);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (909,'Y','Y','Y','Y',61,386);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (910,'Y','Y','Y','Y',61,813);
-
-
-
-
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (911,'Y','Y','Y','Y',64,911);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (912,'Y','Y','Y','Y',64,817);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (913,'Y','Y','Y','Y',64,872);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1024,'Y','Y','Y','Y',61,24);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1025,'Y','Y','Y','Y',61,74);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1026,'Y','Y','Y','Y',61,75);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1027,'Y','Y','Y','Y',61,76);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1028,'Y','Y','Y','Y',61,386);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1029,'Y','Y','Y','Y',61,1007);
 
 
 
 
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (914,'Y','Y','Y','Y',60,48);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (915,'Y','Y','Y','Y',60,328);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (916,'Y','Y','Y','Y',60,386);
-
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (917,'Y','Y','Y','Y',60,903);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (918,'Y','Y','Y','Y',60,220);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (919,'Y','Y','Y','Y',60,651);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (920,'Y','Y','Y','Y',60,105);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (921,'Y','Y','Y','Y',60,106);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (922,'Y','Y','Y','Y',60,54);
-
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (923,'Y','Y','Y','Y',60,55);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (924,'Y','Y','Y','Y',60,56);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (925,'Y','Y','Y','Y',60,57);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (926,'Y','Y','Y','Y',60,58);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (927,'Y','Y','Y','Y',60,59);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1030,'Y','Y','Y','Y',64,1011);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1031,'Y','Y','Y','Y',64,1005);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1032,'Y','Y','Y','Y',64,(select id from clinlims.system_module where name='BatchTestReassign'));
 
 
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (928,'Y','Y','Y','Y',63,28);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (929,'Y','Y','Y','Y',63,29);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (930,'Y','Y','Y','Y',63,30);
-
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (931,'Y','Y','Y','Y',63,445);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (932,'Y','Y','Y','Y',63,446);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (933,'Y','Y','Y','Y',63,447);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (934,'Y','Y','Y','Y',63,503);
 
 
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=57 AND system_module_id=845;
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=57 AND system_module_id=846;
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=57 AND system_module_id=849;
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=57 AND system_module_id=870;
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=57 AND system_module_id=871;
-UPDATE clinlims.system_role_module SET has_select='Y',has_add='Y',has_update='Y',has_delete='Y' WHERE system_role_id=57 AND system_module_id=872;
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1033,'Y','Y','Y','Y',60,48);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1034,'Y','Y','Y','Y',60,328);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1035,'Y','Y','Y','Y',60,386);
+
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1036,'Y','Y','Y','Y',60,1003);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1037,'Y','Y','Y','Y',60,(select id from clinlims.system_module where name='SampleEdit:readonly'));
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1038,'Y','Y','Y','Y',60,651);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1039,'Y','Y','Y','Y',60,105);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1040,'Y','Y','Y','Y',60,106);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1041,'Y','Y','Y','Y',60,54);
+
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1042,'Y','Y','Y','Y',60,55);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1043,'Y','Y','Y','Y',60,56);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1044,'Y','Y','Y','Y',60,57);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1045,'Y','Y','Y','Y',60,58);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1046,'Y','Y','Y','Y',60,59);
+
+
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1047,'Y','Y','Y','Y',63,28);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1048,'Y','Y','Y','Y',63,29);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1049,'Y','Y','Y','Y',63,30);
+
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1050,'Y','Y','Y','Y',63,445);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1051,'Y','Y','Y','Y',63,446);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1052,'Y','Y','Y','Y',63,447);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1053,'Y','Y','Y','Y',63,503);
+
 
 DELETE FROM clinlims.system_role_module  WHERE system_role_id=57 AND system_module_id=17;
 
 
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (935,'Y','Y','Y','Y',57,912);
-INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (936,'Y','Y','Y','Y',57,17);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1054,'Y','Y','Y','Y',57,1012);
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1055,'Y','Y','Y','Y',57,17);
 
 
 

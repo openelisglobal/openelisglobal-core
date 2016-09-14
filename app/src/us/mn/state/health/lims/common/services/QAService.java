@@ -184,7 +184,7 @@ public class QAService {
 		}
 
 		observation.setValue(value);
-		System.out.println(value + " "+ ObservedType.SAMPLE.getDBName()+ " "+ sampleQaEvent.getId()+ " "+ type.getDBSymbol() );
+		//System.out.println(value + " "+ ObservedType.SAMPLE.getDBName()+ " "+ sampleQaEvent.getId()+ " "+ type.getDBSymbol() );
 		observation.setSysUserId(currentUserId);
 		observationList.add(observation);
 	}

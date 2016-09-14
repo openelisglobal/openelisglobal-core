@@ -19,7 +19,7 @@ package us.mn.state.health.lims.common.provider.validation;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
-
+import us.mn.state.health.lims.sample.util.CI.ProjectForm;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,14 +56,15 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 		ValidationResults result;
 		
 		if( ignoreYear || ignoreUsage ){
-			result = AccessionNumberUtil.correctFormat(accessionNumber, !ignoreYear);
-			
+			result = ProjectForm.findProjectFormByFormId(projectFormName)!=null? new ProgramAccessionValidator().validFormat(accessionNumber, !ignoreYear):
+			AccessionNumberUtil.correctFormat(accessionNumber, !ignoreYear);			
 			if( result == ValidationResults.SUCCESS && !ignoreUsage){
 				result = AccessionNumberUtil.isUsed(accessionNumber) ? ValidationResults.SAMPLE_FOUND : ValidationResults.SAMPLE_NOT_FOUND;
 			}
 		}else{
             //year matters and number must not be used
-			result = AccessionNumberUtil.checkAccessionNumberValidity(accessionNumber, recordType, isRequired, projectFormName);	
+			result=ProjectForm.findProjectFormByFormId(projectFormName)!=null? new ProgramAccessionValidator().checkAccessionNumberValidity(accessionNumber, recordType, isRequired, projectFormName):
+			AccessionNumberUtil.checkAccessionNumberValidity(accessionNumber, recordType, isRequired, projectFormName);		
 		}
 		
 

@@ -122,7 +122,7 @@ public class TestSectionCreateUpdate extends BaseAction {
         testSection.setTestSectionName(identifyingName);
         testSection.setIsActive("N");
         String identifyingNameKey=identifyingName.replaceAll(" ","_");
-        testSection.setNameKey("test.Section."+identifyingNameKey );
+        testSection.setNameKey("testSection."+identifyingNameKey );
         
               
         testSection.setSortOrderInt(Integer.MAX_VALUE);

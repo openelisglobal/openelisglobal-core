@@ -126,7 +126,7 @@ INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_fla
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.organization where name= 'EARTH';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.organization where name= 'TENGRELA';
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new organization</comment>
