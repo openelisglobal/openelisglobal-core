@@ -24,5 +24,6 @@
   <include file="OE6.1.x/observation_type.xml" />
   <include file="OE6.1.x/systemrolemodule.xml" />
   <include file="OE6.1.x/org.xml" />
+  <include file="OE6.1.x/test_components.xml" />
 
   </databaseChangeLog>

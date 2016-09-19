@@ -126,6 +126,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		String testSectionName = (String)dynaForm.get("testSection");
 		String testName = (String)dynaForm.get("testName");
 		setRequestType(testSectionName);
+		//----------------------
+		String url = request.getRequestURL().toString();
 		
 		ActionMessages errors = validateModifiedItems(resultItemList);
 
@@ -202,7 +204,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		}
 		
 		// route save back to RetroC specific ResultValidationRetroCAction
-		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI"))
+	//	if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI"))
+		if (url.contains("RetroC"))
 			forward = "successRetroC";
 
 		if( isBlankOrNull( testSectionName )){

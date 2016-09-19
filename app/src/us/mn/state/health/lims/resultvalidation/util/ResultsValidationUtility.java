@@ -28,6 +28,8 @@ import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -208,7 +210,9 @@ public class ResultsValidationUtility {
 
     protected final boolean sampleReadyForValidation(Sample sample) {
 
+    	
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
+		
 
 		if (valid == null) {
 			valid = getSampleRecordStatus( sample ) != RecordStatus.NotRegistered;

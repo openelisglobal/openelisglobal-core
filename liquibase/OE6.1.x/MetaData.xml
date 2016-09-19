@@ -83,9 +83,9 @@ INSERT INTO clinlims.address_part(
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="6" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.test_section where display_key = 'test.Section.Virology';
+	      <sqlCheck expectedResult="0">select count(*) from clinlims.test_section where display_key = 'test.Section.Virology';
     		</sqlCheck>
-    </preConditions>
+		    </preConditions>
     <comment>update on clinlims test_section</comment>
     <sql>UPDATE clinlims.test_section
    SET display_key='testSection.Virology'
@@ -100,11 +100,126 @@ INSERT INTO clinlims.address_part(
  WHERE  name='Hematology';
 
  UPDATE clinlims.test_section
-   SET display_key='test.SectionSerology'
+   SET display_key='testSection.Serology'
  WHERE  name='Serology';
 
  UPDATE clinlims.test_section
    SET display_key='testSection.Biochemistry'
  WHERE  name='Biochemistry';</sql>
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="7" context="CDIRetroCI">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.referral_reason where display_key = 'referral.reason.EQA.testing';
+    		</sqlCheck>
+    </preConditions>
+    <comment>update on clinlims referral_type and referral reason</comment>
+    <sql>INSERT INTO clinlims.referral_type(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_type_seq'),'Confirmation','Sent out to confirm result','referral.type.confirmation',now());
+
+INSERT INTO clinlims.referral_type(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_type_seq'),'QA','Quality assurance','referral.type.qa',now());
+
+
+INSERT INTO clinlims.referral_type(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_type_seq'),'EQA','External Quality Assurance','referral.eqa',now());
+	
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Test not performed','Test was not performed','referral.reason.testNotPerformed',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Confirmation requested','Confirmation requested','referral.reason.confirmation',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Further testing required','Further testing required','referral.reason.moreTests',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Reagent expired','Reagent expired','referral.reason.reagent.expired',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Reagents unavailable','Reagents unavailable','referral.reason.reagent.unavailabe',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Equipment failure','Equipment failure','referral.reason.equipment',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Verification of EQA','Verification of EQA','referral.reason.EQA.verification',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Specimen sent for serotyping','Specimen sent for serotyping','referral.reason.serotyping',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'EQA by Repeat testing','EQA by Repeat testing','referral.reason.EQA.testing',now());
+
+INSERT INTO clinlims.referral_reason(
+            id, name, description, display_key, lastupdated)
+    VALUES (nextval('clinlims.referral_reason_seq'),'Other','Some reason not on list','referral.reason.other',now());</sql>
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="8" context="CDIRetroCI">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.qa_event where display_key = 'qa_event.Diametre';
+    		</sqlCheck>
+    </preConditions>
+    <comment>update on clinlims qa_event</comment>
+    <sql>
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'adult','Age de l’enfant &gt; 18 mois',null,null,null,null,'Y',now(),null,null,'qa_event.adult');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Date_1','Date de prélèvement au-delà d’un (1) mois',null,null,null,null,'Y',now(),null,null,'qa_event.Date_1');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_3','DBS: Nombre de spot rempli  &lt; 3',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_3');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Diametre','Diamètre des spots &lt; 5mm',null,null,null,null,'Y',now(),null,null,'qa_event.Diametre');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_C','DBS spot de sang coagulé',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_C');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_I','DBS spot de sang insuffisant',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_I');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_D','DBS spot de sang dilué par l’alcool',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_D');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_E','Carte DBS sans enveloppe glassine (si plusieurs DBS dans un sachet Ziplock)',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_E');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_NC','Carte DBS non conforme (différente du Whatman 903)',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_NC');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_NI','DBS non identifié',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_NI');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_MI','DBS mal identifié (Identité discordante sur DBS et fiche)',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_MI');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'DBS_SF','DBS sans fiche',null,null,null,null,'Y',now(),null,null,'qa_event.DBS_SF');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Fiche_no_DBS','Fiche de prélèvement sans échantillon DBS',null,null,null,null,'Y',now(),null,null,'qa_event.Fiche_no_DBS');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Hour_No_VL','Heure de prélèvement non notifiée pour la charge virale',null,null,null,null,'Y',now(),null,null,'qa_event.Hour_No_VL');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Prel_NN','Nom du préleveur non notifié',null,null,null,null,'Y',now(),null,null,'qa_event.Prel_NN');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Sample_MI','Echantillon non ou mal identifié ',null,null,null,null,'Y',now(),null,null,'qa_event.Sample_MI');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'No_EDTA','Demande de charge virale sans second tube EDTA ',null,null,null,null,'Y',now(),null,null,'qa_event.No_EDTA');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Sample_NF','Echantillon sur tube reçu sans glacière ou dans une glacière non réfrigérée',null,null,null,null,'Y',now(),null,null,'qa_event.Sample_NF');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Sample_Code','Erreur de codification de l’échantillon ',null,null,null,null,'Y',now(),null,null,'qa_event.Sample_Code');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Tube_I','Tube de prélèvement inapproprié ',null,null,null,null,'Y',now(),null,null,'qa_event.Tube_I');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'EDTA_Volume','Volume de sang total sur Tube EDTA pour demande de charge virale insuffisant (moins de la moitié du tube)',null,null,null,null,'Y',now(),null,null,'qa_event.EDTA_Volume');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'PB_Identity','Discordance d’identité fiche entre de prélèvement et fiche démographique',null,null,null,null,'Y',now(),null,null,'qa_event.PB_Identity');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Order_NF','Demande de charge virale sans fiche de demande appropriée ',null,null,null,null,'Y',now(),null,null,'qa_event.Order_NF');
+
+INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Order_Late','Retard de transmission des échantillons en tube ',null,null,null,null,'Y',now(),null,null,'qa_event.Order_Late');
+</sql>
   </changeSet>
 </databaseChangeLog>

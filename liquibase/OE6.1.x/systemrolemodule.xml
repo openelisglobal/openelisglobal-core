@@ -21,8 +21,10 @@ INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, groupi
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
+	
       <sqlCheck expectedResult="0">select count(*) from clinlims.system_module where description= 'PatientDataOnResults';
     		</sqlCheck>
+	
     </preConditions>
     <comment>Insert in clinlims new module</comment>
     <sql>
@@ -52,6 +54,7 @@ INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_a
 
 INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (1012,'PanelRenameEntry','Admin=&gt;test mang=&gt;panel rename','Y','Y','Y','Y');
 
+alter sequence clinlims.system_module_seq restart with 1200;
 
 </sql>
   </changeSet>
