@@ -160,7 +160,7 @@ public class ResultsValidationRetroCIUtility {
 					testList = getUnValidatedTestResultItemsInTestSection(testSectionId, statusList);
 					// Immunology and Hematology are together
 					//Not sure if this is the correct way to judge this business rule
-					if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI") &&
+					if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI_GENERAL") &&
 							testSectionName.equals("Immunology")) {
 						sw.setMark("Immuno time");
 						// add Hematology tests to list

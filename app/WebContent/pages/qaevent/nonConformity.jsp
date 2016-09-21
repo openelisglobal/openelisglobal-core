@@ -35,7 +35,6 @@
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     
 %>
-
 <link rel="stylesheet" href="css/jquery_ui/jquery.ui.all.css?ver=<%= Versioning.getBuildNumber() %>">
 <link rel="stylesheet" href="css/customAutocomplete.css?ver=<%= Versioning.getBuildNumber() %>">
 
@@ -92,6 +91,9 @@ function /*void*/loadForm() {
 function setMyCancelAction() {
 	setAction(window.document.forms[0], 'Cancel', 'no', '');
 }
+
+function doNothing(searchField){};
+
 
 function onChangeSearchNumber(searchField) {
 	var searchButton = $("searchButtonId");
@@ -334,12 +336,15 @@ function  processPhoneSuccess(xhr){
 	:
 	<input type="text" name="searchNumber"
 		maxlength='<%=Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-		value="" onchange="onChangeSearchNumber(this)" id="searchId">
+		value="" onchange="doNothing(this)" id="searchId">
 	&nbsp;
 	<input type="button" id="searchButtonId"
 		value='<%=StringUtil.getMessageForKey("label.button.search")%>'
 		onclick="loadForm();" disabled="disabled">
 </div>
+
+<!-- value="" onchange="onChangeSearchNumber(this)" id="searchId"> -->
+
 <hr />
 <bean:define id="readOnly" name='<%=formName%>' property="readOnly"	type="java.lang.Boolean" />
 <logic:notEmpty name='<%=formName%>' property="labNo">

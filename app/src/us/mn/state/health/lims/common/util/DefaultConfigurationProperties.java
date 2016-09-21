@@ -54,7 +54,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.PatientSearchPassword, "patientSearchPassword", "" );
 		setDBPropertyMappingAndDefault(Property.UseExternalPatientInfo, "useExternalPatientSource" , "false");
 		setDBPropertyMappingAndDefault(Property.labDirectorName, "lab director" , "");
-		setDBPropertyMappingAndDefault(Property.languageSwitch, "allowLanguageChange", "false" );
+		setDBPropertyMappingAndDefault(Property.languageSwitch, "allowLanguageChange", "true" );
 		setDBPropertyMappingAndDefault(Property.resultReportingURL, "resultReportingURL", "");
 		setDBPropertyMappingAndDefault(Property.reportResults, "resultReporting", "false");
 		setDBPropertyMappingAndDefault(Property.malariaSurveillanceReportURL, "malariaSurURL", "");
