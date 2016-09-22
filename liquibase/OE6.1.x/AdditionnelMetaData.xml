@@ -2,9 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Some settings-->
   <!-- Data specific to CDIRetroCI -->
-  
-  
-  <changeSet id="1" author="CI OpenELIS developers group" context="CDIRetroCI">
+  <changeSet id="1" author="CI OpenELIS developers group" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="display_key" schemaName="clinlims" tableName="type_of_sample" />
@@ -18,8 +16,7 @@
 	       COMMENT ON COLUMN clinlims.type_of_sample.display_key IS 'Resource file lookup key for localization of displaying the name';
     </sql>
   </changeSet>
-  
-  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.qa_event where display_key = 'qa_event.Sample_LA';
     		</sqlCheck>
@@ -43,10 +40,8 @@ INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_seq
 INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Error_Prev_Demo','Discordance d’information entre Fiche de prélèvement et Fiche démographique',null,null,null,null,'Y',now(),null,null,'qa_event.Error_Prev_Demo');
 
 </sql>
-
-  </changeSet> 
-  
-<changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.type_of_sample where display_key = 'Sample.type.Plasma';
     		</sqlCheck>
@@ -75,10 +70,8 @@ INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abb
  WHERE name='statusRules';
 
 </sql>
-
-  </changeSet>   
-  
-<changeSet author="CI OpenELIS developers group" id="4" context="CDIRetroCI">
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="4" context="CDIRetroCI,CDIRetroCI_CT">
     <comment>update on site_information</comment>
     <sql>
   
@@ -95,14 +88,5 @@ INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abb
  WHERE name='configuration name';
 
 </sql>
-
-  </changeSet>     
-  
-
-  
-  
-  
-  
-  
- 
+  </changeSet>
 </databaseChangeLog>
