@@ -27,14 +27,14 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColu
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.RoutineColumnBuilder;
 
-public abstract class CSVSampleExportReport extends CSVExportReport {
+public abstract class CSVRoutineSampleExportReport extends CSVExportReport {
 
 	protected String lowDateStr;
 	protected String highDateStr;
 	protected List<Object> reportItems;
 	protected int iReportItem = -1;
 
-	protected CSVColumnBuilder csvColumnBuilder;
+	protected RoutineColumnBuilder csvRoutineColumnBuilder;
 	protected DateRange dateRange;
 
 	public String getResponseHeaderName(){
@@ -54,17 +54,17 @@ public abstract class CSVSampleExportReport extends CSVExportReport {
         }
    
         ByteArrayOutputStream buffer = new ByteArrayOutputStream(100000);
-        buffer.write(csvColumnBuilder.getColumnNamesLine().getBytes("windows-1252"));
+        buffer.write(csvRoutineColumnBuilder.getColumnNamesLine().getBytes("windows-1252"));
 
         writeResultsToBuffer(buffer);
-        csvColumnBuilder.closeResultSet();
+        csvRoutineColumnBuilder.closeResultSet();
    
         return buffer.toByteArray();
     }
 
 	protected void writeResultsToBuffer(ByteArrayOutputStream buffer) throws Exception, IOException, UnsupportedEncodingException {
-		while (csvColumnBuilder.next()) {
-            buffer.write(csvColumnBuilder.nextLine().getBytes("windows-1252"));
+		while (csvRoutineColumnBuilder.next()) {
+            buffer.write(csvRoutineColumnBuilder.nextLine().getBytes("windows-1252"));
         }
 	}
 

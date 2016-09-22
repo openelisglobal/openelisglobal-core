@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Some settings-->
   <!-- Data specific to CDIRetroCI -->
-  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.scriptlet where name = 'Diane Test';
     		</sqlCheck>
@@ -13,7 +13,7 @@ INSERT INTO clinlims.scriptlet(id, name, code_type, code_source, lastupdated) VA
 INSERT INTO clinlims.scriptlet(id, name, code_type, code_source, lastupdated) VALUES (13,'Ais Test','B','C',now());
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.label where name = 'MOLECULAR EPI - TEST';
     		</sqlCheck>
@@ -35,7 +35,7 @@ INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, la
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.address_part where display_key = 'address.commune';
     		</sqlCheck>
@@ -53,7 +53,7 @@ INSERT INTO clinlims.address_part(
             id, part_name, display_order, display_key)
     VALUES (nextval('clinlims.address_part_seq'),'village',default,'address.village');   </sql>
   </changeSet>
-  <changeSet id="4" author="CI OpenELIS developers group" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet id="4" author="CI OpenELIS developers group" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="test_id" schemaName="clinlims" tableName="analyzer_results" />
@@ -67,7 +67,7 @@ INSERT INTO clinlims.address_part(
 	       COMMENT ON COLUMN clinlims.analyzer_results.test_id IS 'test_id from test';
     </sql>
   </changeSet>
-  <changeSet id="5" author="CI OpenELIS developers group" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet id="5" author="CI OpenELIS developers group" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="display_key" schemaName="clinlims" tableName="test_section" />
@@ -81,11 +81,11 @@ INSERT INTO clinlims.address_part(
 	       COMMENT ON COLUMN clinlims.test_section.display_key IS 'Resource file lookup key for localization of displaying the name';
     </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="6" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet author="CI OpenELIS developers group" id="6" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.test_section where display_key = 'test.section.Virology';
+	      <sqlCheck expectedResult="0">select count(*) from clinlims.test_section where display_key = 'test.section.Virology';
     		</sqlCheck>
-    </preConditions>
+		    </preConditions>
     <comment>update on clinlims test_section</comment>
     <sql>UPDATE clinlims.test_section
    SET display_key='testSection.Virology'
@@ -107,7 +107,7 @@ INSERT INTO clinlims.address_part(
    SET display_key='testSection.Biochemistry'
  WHERE  name='Biochemistry';</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="7" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet author="CI OpenELIS developers group" id="7" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.referral_reason where display_key = 'referral.reason.EQA.testing';
     		</sqlCheck>
@@ -166,7 +166,7 @@ INSERT INTO clinlims.referral_reason(
             id, name, description, display_key, lastupdated)
     VALUES (nextval('clinlims.referral_reason_seq'),'Other','Some reason not on list','referral.reason.other',now());</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="8" context="CDIRetroCI,CDIRetroCI_CT">
+  <changeSet author="CI OpenELIS developers group" id="8" context="CDIRetroCI">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.qa_event where display_key = 'qa_event.Diametre';
     		</sqlCheck>
