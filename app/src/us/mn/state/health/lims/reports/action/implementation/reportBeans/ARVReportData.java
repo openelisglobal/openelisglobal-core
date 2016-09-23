@@ -16,8 +16,26 @@
 */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
-public class ARVReportData {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.validator.GenericValidator;
+
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
+import us.mn.state.health.lims.note.valueholder.Note;
+import us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem;
+import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
+public class ARVReportData {
+	
 	private String glyc;
 	private String creatininemie;
 	private String sgpt;
@@ -55,6 +73,19 @@ public class ARVReportData {
 	private Boolean showSerologie = Boolean.FALSE;
 	private Boolean showPCR = Boolean.FALSE;
 	private Boolean duplicateReport = Boolean.FALSE;
+	
+	private List<SampleQaEvent> sampleQAEventList;
+	private String allQaEvents=null;
+	private String receptionQaEvent=null;
+	private String biochemistryQaEvent=null;
+	private String virologyQaEvent=null;
+	private String virologyEidQaEvent=null;
+	private String virologyVlQaEvent=null;
+	private String serologyQaEvent=null;
+	private String immunologyQaEvent=null;
+	private String hematologyQaEvent=null;
+	
+	private Map<String, String> previousResultMap = new HashMap<String, String>();
 
 	public String getGlyc() {
 		return glyc;
@@ -278,5 +309,121 @@ public class ARVReportData {
 	}
 	public void setDuplicateReport(Boolean duplicateReport) {
 		this.duplicateReport = duplicateReport;
+	}
+	public String getReceptionQaEvent() {
+		return receptionQaEvent;
+	}
+	public void setReceptionQaEvent(String receptionQaEvent) {
+		this.receptionQaEvent = receptionQaEvent;
+	}
+	public String getBiochemistryQaEvent() {
+		return biochemistryQaEvent;
+	}
+	public void setBiochemistryQaEvent(String biochemistryQaEvent) {
+		this.biochemistryQaEvent = biochemistryQaEvent;
+	}
+	public String getVirologyQaEvent() {
+		return virologyQaEvent;
+	}
+	public void setVirologyQaEvent(String virologyQaEvent) {
+		this.virologyQaEvent = virologyQaEvent;
+	}
+	public String getVirologyEidQaEvent() {
+		return virologyEidQaEvent;
+	}
+	public void setVirologyEidQaEvent(String virologyEidQaEvent) {
+		this.virologyEidQaEvent = virologyEidQaEvent;
+	}
+	public String getVirologyVlQaEvent() {
+		return virologyVlQaEvent;
+	}
+	public void setVirologyVlQaEvent(String virologyVlQaEvent) {
+		this.virologyVlQaEvent = virologyVlQaEvent;
+	}
+	public String getSerologyQaEvent() {
+		return serologyQaEvent;
+	}
+	public void setSerologyQaEvent(String serologyQaEvent) {
+		this.serologyQaEvent = serologyQaEvent;
+	}
+	public String getImmunologyQaEvent() {
+		return immunologyQaEvent;
+	}
+	public void setImmunologyQaEvent(String immunologyQaEvent) {
+		this.immunologyQaEvent = immunologyQaEvent;
+	}
+	public String getHematologyQaEvent() {
+		return hematologyQaEvent;
+	}
+	public void setHematologyQaEvent(String hematologyQaEvent) {
+		this.hematologyQaEvent = hematologyQaEvent;
+	}
+	/**
+	 * @param sample
+	 * @return
+	 */
+	public String getAllQaEvents(){
+		return allQaEvents;
+	}
+	public void setAllQaEvents(String  allQaEvents){
+		this.allQaEvents=allQaEvents;
+	}
+	public Map<String, String>  getPreviousResultMap(){
+		return previousResultMap;
+	}
+	public void setPreviousResultMap(Map<String, String> previousResultMap){
+		this.previousResultMap=previousResultMap;
+	}
+	public void getSampleQaEventItems(Sample sample){
+		if(sample != null){
+			getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQAEventList){
+				QAService qa = new QAService(event);
+				QaEventItem item = new QaEventItem();
+				item.setId(qa.getEventId());
+				item.setQaEvent(qa.getQAEvent().getId());
+				SampleItem sampleItem = qa.getSampleItem();
+                // -1 is the index for "all samples"
+				String sampleType=(sampleItem == null) ? "-1" : sampleItem.getTypeOfSample().getNameKey();
+				allQaEvents=allQaEvents==null?sampleType+":"+qa.getQAEvent().getNameKey():allQaEvents+";"+sampleType+":"+qa.getQAEvent().getNameKey();
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.Reception"))
+					receptionQaEvent=receptionQaEvent==null ? qa.getQAEvent().getLocalizedName() : receptionQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+				
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.Biochemistry"))
+					biochemistryQaEvent=biochemistryQaEvent==null ? qa.getQAEvent().getLocalizedName() : biochemistryQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+					
+				else if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.Virology"))
+					virologyQaEvent=virologyQaEvent==null ? qa.getQAEvent().getLocalizedName() : virologyQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+
+				else if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.VL"))
+					virologyVlQaEvent=virologyVlQaEvent==null ? qa.getQAEvent().getLocalizedName() : virologyVlQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+
+				else if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.EID"))
+					virologyEidQaEvent=virologyEidQaEvent==null ? qa.getQAEvent().getLocalizedName() : virologyEidQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+
+				else if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.Serology"))
+					serologyQaEvent=serologyQaEvent==null ? qa.getQAEvent().getLocalizedName() : serologyQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+	
+				else if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.Immunology"))
+				     immunologyQaEvent=immunologyQaEvent==null ? qa.getQAEvent().getLocalizedName() : immunologyQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+				
+				else if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.Hematology"))
+					 hematologyQaEvent=hematologyQaEvent==null ? qa.getQAEvent().getLocalizedName() : hematologyQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+
+			}
+		}
+
+	}
+	public void getSampleQaEvents(Sample sample){
+		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
+		sampleQAEventList = sampleQaEventDAO.getSampleQaEventsBySample(sample);
+	}
+	public static String getNoteForSampleQaEvent(SampleQaEvent sampleQaEvent){
+		if(sampleQaEvent == null || GenericValidator.isBlankOrNull(sampleQaEvent.getId())){
+			return null;
+		}else{
+	        Note note = new NoteService( sampleQaEvent ).getMostRecentNoteFilteredBySubject( null );
+			return note != null ? note.getText() : null;
+		}
 	}
 }

@@ -255,13 +255,13 @@ public class Patient extends BaseObject {
 		this.birthTime = DateUtil.convertStringDateToSqlDate(	birthTimeForDisplay);
 	}
 
-	public String getDeathDateForDisplay() {
-		return deathDateForDisplay;
-	}
-
 	public void setDeathDateForDisplay(String deathDateForDisplay) {
 		this.deathDateForDisplay = deathDateForDisplay;
 		this.deathDate = DateUtil.convertStringDateToSqlDate(	deathDateForDisplay);
+	}
+
+	public String getDeathDateForDisplay() {
+		return deathDateForDisplay;
 	}
 
 	public void setSelectedPersonId(String selectedPersonId) {

@@ -22,6 +22,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -31,6 +32,7 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ARVReportData;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -38,15 +40,19 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
+import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.common.services.SampleService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class PatientARVReport extends RetroCIPatientReport{
 	private List<ARVReportData> reportItems;
 	private String invalidValue = StringUtil.getMessageForKey("report.test.status.inProgress");
-
+	private ARVReportData previousData = new ARVReportData();
 	protected void initializeReportItems(){
 		reportItems = new ArrayList<ARVReportData>();
 	}
@@ -74,6 +80,8 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 		data.setDoctor(getObservationValues(OBSERVATION_DOCTOR_ID));
 		data.setLabNo(reportSample.getAccessionNumber());
+		
+		data.getSampleQaEventItems(reportSample);
 
 	}
 
@@ -87,14 +95,13 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 	protected void createReportItems(){
 		ARVReportData data = new ARVReportData();
-
+		
 		setPatientInfo(data);
 		setTestInfo(data);
-
+		setPreviousTestInfo(data);System.out.println("previousResultMap="+data.getPreviousResultMap());
 		reportItems.add(data);
 
 	}
-
 	protected void setTestInfo(ARVReportData data){
 		boolean atLeastOneAnalysisNotValidated = false;
 		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
@@ -157,7 +164,6 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		data.setDuplicateReport(mayBeDuplicate);
 		data.setStatus(atLeastOneAnalysisNotValidated ? StringUtil.getMessageForKey("report.status.partial") : StringUtil
 				.getMessageForKey("report.status.complete"));
-
 	}
 
 	private void assignResultsToAVRReportData(ARVReportData data, String testName, String resultValue){
@@ -228,6 +234,98 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 			if(GenericValidator.isBlankOrNull(data.getVih())){
 				data.setVih(invalidValue);
 			}
+		}
+	}
+
+	protected void setPreviousTestInfo(ARVReportData data){
+		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+		ResultDAO resultDAO = new ResultDAOImpl();
+	
+		if( GenericValidator.isBlankOrNull(StringUtil.getMessageForKey("previous.test.to.report")))
+		return;
+		
+		String[] testList=StringUtil.getMessageForKey("previous.test.to.report").split(",");
+		
+		for(int i=0;i<testList.length;i++){
+		Analysis analysis=analysisDAO.getPatientPreviousAnalysisForTestName(reportPatient, reportSample, testList[i].trim());
+			if(analysis!=null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled))){
+				String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
+	
+				List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
+				String resultValue = null;
+	
+				boolean valid = ANALYSIS_FINALIZED_STATUS_ID.equals(analysis.getStatusId());
+			//	if(!valid){
+			//		atLeastOneAnalysisNotValidated = true;
+			//	}
+				// there may be more than one result for an analysis if one of
+				// them
+				// is a conclusion
+				if(resultList.size() > 1){
+					for(Result result : resultList){
+						if(result.getAnalyte() != null && result.getAnalyte().getId().equals(CONCLUSION_ID)){
+							Dictionary dictionary = new Dictionary();
+							dictionary.setId(result.getValue());
+							dictionaryDAO.getData(dictionary);
+							data.getPreviousResultMap().put("Vih", valid ? dictionary.getDictEntry() : invalidValue);//data.setVih(valid ? dictionary.getDictEntry() : invalidValue);
+							//data.setShowSerologie(Boolean.TRUE);
+						}else if(result.getAnalyte() != null && result.getAnalyte().getId().equals(CD4_CNT_CONCLUSION)){
+							//data.setCd4(valid ? result.getValue() : invalidValue);
+							data.getPreviousResultMap().put("Cd4",valid ? result.getValue() : invalidValue);
+						}else{
+							resultValue = result.getValue();
+						}
+					}
+				}
+	
+				if(resultList.size() > 0){
+					if(resultValue == null){
+						resultValue = resultList.get(resultList.size() - 1).getValue();
+					}
+				}
+	
+				if(resultValue != null || !valid){
+					assignPreviousResultsToAVRReportData(data, testName, valid ? resultValue : invalidValue);
+				}
+			}
+	
+			
+		}
+	
+	}
+
+	private void assignPreviousResultsToAVRReportData(ARVReportData data, String testName, String resultValue){
+	
+		if(testName.equalsIgnoreCase("Viral Load") || testName.equalsIgnoreCase("Charge Virale")){
+			data.setShowVirologie(Boolean.TRUE);
+			// Results entered via analyzer have log value, results entered
+			// manually may not
+			String baseValue = resultValue;
+			if(!GenericValidator.isBlankOrNull(resultValue) && resultValue.contains("(")){
+				String[] splitValue = resultValue.split("\\(");
+				data.getPreviousResultMap().put("Ampli2", splitValue[0]);//data.setAmpli2(splitValue[0]);
+				baseValue = splitValue[0];
+			}else{
+				data.getPreviousResultMap().put("Ampli2", resultValue);//data.setAmpli2(resultValue);
+			}
+			if(!GenericValidator.isBlankOrNull(baseValue) && !"0".equals(baseValue)){
+				try{
+					double viralLoad = Double.parseDouble(baseValue);
+					data.getPreviousResultMap().put("Ampli2lo", String.format("%.3g%n", Math.log10(viralLoad)));//data.setAmpli2lo(String.format("%.3g%n", Math.log10(viralLoad)));
+				}catch(NumberFormatException nfe){
+					data.getPreviousResultMap().put("Ampli2lo","");//data.setAmpli2lo("");
+				}
+			}
+	
+		}else if(testName.equals("Murex") || testName.equals("Intgral") || testName.equals("Integral")){ //Serology must have one of these but not necessarily both
+		//	data.setShowSerologie(Boolean.TRUE);
+		//	if(GenericValidator.isBlankOrNull(data.getVih())){
+			//	data.setVih(invalidValue);
+		//	}
+		}else {
+			data.getPreviousResultMap().put(testName, resultValue);
+			
 		}
 	}
 }

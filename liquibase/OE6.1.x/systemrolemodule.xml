@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--system role and module updating-->
   <!-- Data specific to CDIRetroCI -->
-  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.system_role where description= 'Intake';
     		</sqlCheck>
@@ -19,7 +19,7 @@ INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, groupi
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
 	
       <sqlCheck expectedResult="0">select count(*) from clinlims.system_module where description= 'PatientDataOnResults';
@@ -58,7 +58,7 @@ alter sequence clinlims.system_module_seq restart with 1200;
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where system_role_id= '60';
     		</sqlCheck>

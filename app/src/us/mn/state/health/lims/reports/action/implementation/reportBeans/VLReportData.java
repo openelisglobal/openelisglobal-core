@@ -16,6 +16,20 @@
  */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.validator.GenericValidator;
+
+import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
+import us.mn.state.health.lims.qaevent.valueholder.retroCI.QaEventItem;
+import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+
 public class VLReportData {
 
 	private String ampli2;
@@ -38,7 +52,13 @@ public class VLReportData {
 	private String clinic;
 	private String status;
 	private Boolean duplicateReport = Boolean.FALSE;
-
+	
+	private List<SampleQaEvent> sampleQAEventList;
+	List<QaEventItem> qaEventItems;
+	
+	private String virologyVlQaEvent=null;
+	private String allQaEvents=null;
+	private String receptionQaEvent=null;
 
 	public String getSubjectno() {
 		return subjectno;
@@ -160,6 +180,50 @@ public class VLReportData {
 	}
 	public void setDuplicateReport(Boolean duplicateReport) {
 		this.duplicateReport = duplicateReport;
+	}
+	public String getVirologyVlQaEvent() {
+		return virologyVlQaEvent;
+	}
+	public void setVirologyVlQaEvent(String virologyVlQaEvent) {
+		this.virologyVlQaEvent = virologyVlQaEvent;
+	}
+	public String getAllQaEvents(){
+		return allQaEvents;
+	}
+	public void setAllQaEvents(String  allQaEvents){
+		this.allQaEvents=allQaEvents;
+	}
+	public String getReceptionQaEvent() {
+		return receptionQaEvent;
+	}
+	public void setReceptionQaEvent(String receptionQaEvent) {
+		this.receptionQaEvent = receptionQaEvent;
+	}
+	public void getSampleQaEventItems(Sample sample){
+	    qaEventItems = new ArrayList<QaEventItem>();
+		if(sample != null){
+			getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQAEventList){
+				QAService qa = new QAService(event);
+				QaEventItem item = new QaEventItem();
+				item.setId(qa.getEventId());
+				item.setQaEvent(qa.getQAEvent().getId());
+				SampleItem sampleItem = qa.getSampleItem();
+                // -1 is the index for "all samples"
+				String sampleType=(sampleItem == null) ? "-1" : sampleItem.getTypeOfSample().getNameKey();
+				allQaEvents=allQaEvents==null?sampleType+":"+qa.getQAEvent().getNameKey():allQaEvents+";"+sampleType+":"+qa.getQAEvent().getNameKey();
+		
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals("testSection.VL"))
+					virologyVlQaEvent=virologyVlQaEvent==null ? qa.getQAEvent().getLocalizedName() : virologyVlQaEvent+" , "+qa.getQAEvent().getLocalizedName();
+	
+				
+			}
+		}
+		
+	}
+	public void getSampleQaEvents(Sample sample){
+		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
+		sampleQAEventList = sampleQaEventDAO.getSampleQaEventsBySample(sample);
 	}
 
 

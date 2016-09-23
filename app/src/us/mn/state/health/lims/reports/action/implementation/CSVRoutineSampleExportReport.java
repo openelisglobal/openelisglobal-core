@@ -27,7 +27,7 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColu
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.RoutineColumnBuilder;
 
-public abstract class CSVRoutineSampleExportReport extends CSVExportReport {
+public abstract class CSVRoutineSampleExportReport extends CSVRoutineExportReport {
 
 	protected String lowDateStr;
 	protected String highDateStr;

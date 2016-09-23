@@ -63,6 +63,7 @@ public class ObservationHistoryPopulateProvider extends BaseQueryProvider {
         "cotrimoxazoleTreatAdvEffGrd",  
         "cotrimoxazoleTreatAdvEffType",
         "currentARVTreatmentINNs"
+       // "initialSampleConditionINNs"
     };
     
     ObservationHistoryDAO ohDAO = new ObservationHistoryDAOImpl();

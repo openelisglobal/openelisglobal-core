@@ -74,13 +74,13 @@ abstract public class CSVRoutineColumnBuilder {
 	 * The list of all columns that can be exported for lookup when report is
 	 * generated
 	 */
-	private final Map<String, CSVColumn> columnsByDbName = new HashMap<String, CSVColumn>();
+	private final Map<String, CSVRoutineColumn> columnsByDbName = new HashMap<String, CSVRoutineColumn>();
 
 	/**
 	 * The list of columns in order of definition, so that we can generate
 	 * JasperReports XML in order for display
 	 */
-	private final List<CSVColumn> columnsInOrder = new ArrayList<CSVColumn>();
+	private final List<CSVRoutineColumn> columnsInOrder = new ArrayList<CSVRoutineColumn>();
 
 	/**
 	 * In order as postgres would order varchar columns (alphabetical ignoring

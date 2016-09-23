@@ -35,6 +35,7 @@
     accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
     
 %>
+
 <link rel="stylesheet" href="css/jquery_ui/jquery.ui.all.css?ver=<%= Versioning.getBuildNumber() %>">
 <link rel="stylesheet" href="css/customAutocomplete.css?ver=<%= Versioning.getBuildNumber() %>">
 
@@ -66,7 +67,6 @@ var confirmNewTypeMessage = "<bean:message key='nonConformant.confirm.newType.me
 				}  
 			});
 }); */
-
 function siteListChanged(textValue){
 	var siteList = $("site");
 	//if the index is 0 it is a new entry, if it is not then the textValue may include the index value
@@ -91,10 +91,9 @@ function /*void*/loadForm() {
 function setMyCancelAction() {
 	setAction(window.document.forms[0], 'Cancel', 'no', '');
 }
-
-function doNothing(searchField){};
-
-
+function doNothing(){
+	
+}
 function onChangeSearchNumber(searchField) {
 	var searchButton = $("searchButtonId");
 	if (searchField.value === "") {
@@ -336,15 +335,12 @@ function  processPhoneSuccess(xhr){
 	:
 	<input type="text" name="searchNumber"
 		maxlength='<%=Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-		value="" onchange="doNothing(this)" id="searchId">
+		value="" onchange="doNothing()" id="searchId">
 	&nbsp;
 	<input type="button" id="searchButtonId"
 		value='<%=StringUtil.getMessageForKey("label.button.search")%>'
 		onclick="loadForm();" disabled="disabled">
 </div>
-
-<!-- value="" onchange="onChangeSearchNumber(this)" id="searchId"> -->
-
 <hr />
 <bean:define id="readOnly" name='<%=formName%>' property="readOnly"	type="java.lang.Boolean" />
 <logic:notEmpty name='<%=formName%>' property="labNo">
@@ -673,7 +669,7 @@ function  processPhoneSuccess(xhr){
 				<bean:message key="label.sampleType" /><span class="requiredlabel">*</span>
 			</th>
 			<th style="width:11%">
-				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %><span class="requiredlabel">*</span>
+				<%=StringUtil.getContextualMessageForKey("nonconformity.section") %>
 			</th>
 			<th style="width:13%">
 				<%=StringUtil.getContextualMessageForKey("label.biologist") %>

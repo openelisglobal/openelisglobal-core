@@ -165,6 +165,19 @@
  			<form-property name="organizationTypeLists" type="java.util.Map"/>
  			<form-property name="dictionaryLists" type="java.util.Map"/>
  			<form-property name="formLists" type="java.util.Map"/>
+ 			
+ 			
+ 			
+ 		
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+            <form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+ 			
 		</form-bean>
 
 		<form-bean name="LogbookResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">

@@ -169,7 +169,7 @@ public abstract class PatientVLReport extends RetroCIPatientReport {
 			}
 
 		}
-
+		data.getSampleQaEventItems(reportSample);
 	}
 
 	protected String getProjectId() {

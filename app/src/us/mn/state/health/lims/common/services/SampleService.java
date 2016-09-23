@@ -19,6 +19,7 @@ package us.mn.state.health.lims.common.services;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
+import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
@@ -44,6 +45,8 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
+import us.mn.state.health.lims.test.dao.TestDAO;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -206,5 +209,46 @@ public class SampleService {
 
         return null;
     }
+
+	public Sample getPatientPreviousSampleForTestName(Patient patient,String testName){
+		SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
+		List<Sample> sampList=sampleHumanDAO.getSamplesForPatient(patient.getId());
+		Sample previousSample=null;
+		List<Integer> sampIDList= new ArrayList<Integer>();
+		List<Integer> testIDList= new ArrayList<Integer>();
+		
+		TestDAO testDAO=new TestDAOImpl();
+		testIDList.add(Integer.parseInt(testDAO.getTestByName(testName).getId()));
+		
+		if (sampList.isEmpty()) return previousSample;
+		
+		for(Sample sample : sampList){
+			sampIDList.add(Integer.parseInt(sample.getId()));
+		}	
+		
+		List<Integer> statusList = new ArrayList<Integer>();
+		statusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized)));
+	
+		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdTestIdAndStatusId(sampIDList,testIDList, statusList);
+		
+		if (analysisList.isEmpty()) return previousSample;
+		
+		
+		for(int j=0;j<analysisList.size();j++){
+			if(j<analysisList.size() && sample.getAccessionNumber().equals(analysisList.get(j).getSampleItem().getSample().getAccessionNumber()))
+				previousSample=analysisList.get(j+1).getSampleItem().getSample();
+			
+		}
+		
+	/*	for(int j=0;j<analysisList.size();j++){
+					
+			if(j<analysisList.size() && sample.getAccessionNumber().equals(analysisList.get(j).getSampleItem().getSample().getAccessionNumber()))
+				return analysisList.get(j+1).getSampleItem().getSample();	  
+		
+		}*/
+		return previousSample;
+		
+	}
 
 }

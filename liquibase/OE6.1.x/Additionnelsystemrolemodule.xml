@@ -3,7 +3,7 @@
   <!--system role and module updating-->
   <!-- Data specific to CDIRetroCI -->
   
-  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where system_role_id= '60';
     		</sqlCheck>

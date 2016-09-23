@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Some settings-->
   <!-- Data specific to CDIRetroCI -->
-  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
 	
 	  <sqlCheck expectedResult="0"> select count(*) from clinlims.localization where english = 'ECBU';
@@ -21,7 +21,7 @@ INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VA
 alter sequence clinlims.localization_seq restart with 300;
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
 	
       <sqlCheck expectedResult="0">select count(*) from clinlims.test_section where name = 'ECBU';
@@ -41,7 +41,7 @@ INSERT INTO clinlims.test_section (id,name, description,org_id,is_external,lastu
 alter sequence clinlims.test_section_seq restart with 200;
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="600">select nextval('clinlims.test_result_seq');</sqlCheck>
     </preConditions>

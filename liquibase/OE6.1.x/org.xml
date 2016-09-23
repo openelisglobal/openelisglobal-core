@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--organization tables updating-->
   <!-- Data specific to CDIRetroCI -->
-  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization_type where short_name= 'referring clinic';
     		</sqlCheck>
@@ -36,7 +36,7 @@
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization where name= 'PORT-BOUET';
     		</sqlCheck>
@@ -124,7 +124,7 @@ INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_fla
 INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_flag, org_mlt_org_mlt_id, org_id, short_name, multiple_unit, street_address, state, internet_address, clia_num, pws_id, lastupdated, mls_lab_flag, is_active, local_abbrev,code) VALUES(2090,'BOUDIALI',default,default,'N',null,2088,'14.2',default,default,default,default,default,default,now(),default,'Y',default,default);
 INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_flag, org_mlt_org_mlt_id, org_id, short_name, multiple_unit, street_address, state, internet_address, clia_num, pws_id, lastupdated, mls_lab_flag, is_active, local_abbrev,code) VALUES(2091,'FERKESSEDOUGOU',default,default,'N',null,2088,'14.3',default,default,default,default,default,default,now(),default,'Y',default,default);</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization where name= 'TENGRELA';
     		</sqlCheck>
@@ -174,7 +174,7 @@ INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_fla
 INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_flag, org_mlt_org_mlt_id, org_id, short_name, multiple_unit, street_address, state, internet_address, clia_num, pws_id, lastupdated, mls_lab_flag, is_active, local_abbrev,code) VALUES(2001,'CI','Seattle','98103','N',null,null,default,default,'DNA','WA',default,default,default,now(),'N','Y','22',default);
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="4" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="4" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization_organization_type where org_id= '2002';
     		</sqlCheck>
@@ -546,7 +546,7 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id)  VALUES
 </sql>
   </changeSet>
   
-  <changeSet author="CI OpenELIS developers group" id="5" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="5" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization_organization_type where org_id= '1002';
     		</sqlCheck>

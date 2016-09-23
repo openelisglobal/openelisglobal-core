@@ -45,10 +45,11 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
 		settings.put(Field.ADDRESS_CITY, Boolean.FALSE);
-		settings.put(Field.PatientRequired, Boolean.TRUE);
+		settings.put(Field.PatientRequired, Boolean.FALSE);
 		settings.put(Field.SampleCondition, Boolean.TRUE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE, Boolean.FALSE);
+		settings.put(Field.QaEventsBySection, Boolean.TRUE);
 		settings.put(Field.PatientNameRequired, Boolean.FALSE);
 		settings.put(Field.SubjectNumber, Boolean.TRUE);
 		settings.put(Field.NationalID,Boolean.TRUE);
@@ -69,7 +70,7 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.PatientEducation, Boolean.TRUE);
 		settings.put(Field.SampleEntryPatientClinical, Boolean.FALSE);
 		settings.put(Field.SampleEntryRequesterLastNameRequired, Boolean.TRUE);
-	
+		//settings.put(Field.QASubjectNumber, Boolean.TRUE);
 		settings.put(Field.QATimeWithDate, Boolean.TRUE);
 		settings.put(Field.SampleEntryReferralSiteCode, Boolean.FALSE);							
 		settings.put(Field.QA_DOCUMENT_NUMBER, Boolean.FALSE);							

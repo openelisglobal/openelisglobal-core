@@ -190,6 +190,7 @@ function  /*void*/ savePage__(action) {
 	window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
 	if (action == null) {
+	//	loadSamples();
 		action = "SampleEntryVLSave.do?type=" + type
 	}
 	form.action = action;
@@ -269,7 +270,7 @@ function clearFormElements(fieldIds) {
 </select>
 <br/>
 <hr/>
-<div id="studies">
+
 <div id="VL_Id" style="display:none;">
 	<tiles:insert attribute="vlStudy"/>
 <table width="100%">
@@ -316,9 +317,10 @@ function clearFormElements(fieldIds) {
 				   onchange="vl.checkSampleItem($('vl.edtaTubeTaken'), this);" />
 		</td>
 	</tr>
+	
 </table>	
 </div>
-</div>
+
 
 <script type="text/javascript" language="JavaScript1.2">
 

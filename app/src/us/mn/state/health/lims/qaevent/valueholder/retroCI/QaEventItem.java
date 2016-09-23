@@ -91,5 +91,4 @@ public class QaEventItem implements Serializable {
         return "QaEventValue [id=" + id + ", qaEvent=" + qaEvent + ", sampleType=" + sampleType + ", authorizer=" + authorizer
         + ", note=" + note + ", remove=" + remove + ", section=" + section + "]";
     }
-	
 }
