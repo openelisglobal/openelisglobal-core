@@ -215,7 +215,6 @@ public class ConfigurationSideEffects {
 				if( menureportsarvinitial1 != null ){
 					menureportsarvinitial1.setIsActive( active);
 					menuDAO.updateData(menureportsarvinitial1); }					
-<<<<<<< HEAD
 			
 			Menu menureportsarvinitial2 = menuDAO.getMenuByElementId("menu_reports_arv_initial2");
 				if( menureportsarvinitial2 != null ){
@@ -348,6 +347,16 @@ public class ConfigurationSideEffects {
 				if( menureportsvlversion1 != null ){
 					menureportsvlversion1.setIsActive( active);
 					menuDAO.updateData(menureportsvlversion1); }	
+				
+				
+			Menu menunonconformitylabno = menuDAO.getMenuByElementId("menu_reports_nonconformity.Labno");
+				if( menunonconformitylabno != null ){
+					menunonconformitylabno.setIsActive( active);
+					menuDAO.updateData(menunonconformitylabno); }	
+				
+				
+				
+				
 			
 				//------validation----		
 				
@@ -392,141 +401,6 @@ public class ConfigurationSideEffects {
 					menuvalidationgeno.setIsActive( active);
 					menuDAO.updateData(menuvalidationgeno); }		
 				
-=======
-			
-			Menu menureportsarvinitial2 = menuDAO.getMenuByElementId("menu_reports_arv_initial2");
-				if( menureportsarvinitial2 != null ){
-					menureportsarvinitial2.setIsActive( active);
-					menuDAO.updateData(menureportsarvinitial2); }
-						
-			Menu menureportarvfollowup1 = menuDAO.getMenuByElementId("menu_reports_arv_followup1");
-				if( menureportarvfollowup1 != null ){
-					menureportarvfollowup1.setIsActive( active);
-					menuDAO.updateData(menureportarvfollowup1); }	
-								
-			Menu menureportarvfollowup2 = menuDAO.getMenuByElementId("menu_reports_arv_followup2");
-				if( menureportarvfollowup2 != null ){
-					menureportarvfollowup2.setIsActive( active);
-					menuDAO.updateData(menureportarvfollowup2); }
-								
-			Menu menureportseid = menuDAO.getMenuByElementId("menu_reports_eid");
-				if( menureportseid != null ){
-					menureportseid.setIsActive( active);
-					menuDAO.updateData(menureportseid); }		
-									
-									
-			Menu menureporteidversion1 = menuDAO.getMenuByElementId("menu_reports_eid_version1");
-				if( menureporteidversion1 != null ){
-					menureporteidversion1.setIsActive( active);
-					menuDAO.updateData(menureporteidversion1); }
-									
-			Menu menureporteidversion2 = menuDAO.getMenuByElementId("menu_reports_eid_version2");
-				if( menureporteidversion2 != null ){
-					menureporteidversion2.setIsActive( active);
-					menuDAO.updateData(menureporteidversion2); }	
-											
-			Menu menureportsindeterminate = menuDAO.getMenuByElementId("menu_reports_indeterminate");
-				if( menureportsindeterminate != null ){
-					menureportsindeterminate.setIsActive( active);
-					menuDAO.updateData(menureportsindeterminate); }
-											
-			Menu menureportsindeterminateversion1 = menuDAO.getMenuByElementId("menu_reports_indeterminate_version1");
-				if( menureportsindeterminateversion1 != null ){
-					menureportsindeterminateversion1.setIsActive( active);
-					menuDAO.updateData(menureportsindeterminateversion1); }					
-	
-			Menu menureportsindeterminateversion2 = menuDAO.getMenuByElementId("menu_reports_indeterminate_version2");
-				if( menureportsindeterminateversion2 != null ){
-					menureportsindeterminateversion2.setIsActive( active);
-					menuDAO.updateData(menureportsindeterminateversion2); }
-				
-			Menu menureportsindeterminatelocation = menuDAO.getMenuByElementId("menu_reports_indeterminate_location");
-				if( menureportsindeterminatelocation != null ){
-					menureportsindeterminatelocation.setIsActive( active);
-					menuDAO.updateData(menureportsindeterminatelocation); }	
-														
-			Menu menureportspecial = menuDAO.getMenuByElementId("menu_reports_special");
-				if( menureportspecial != null ){
-					menureportspecial.setIsActive( active);
-					menuDAO.updateData(menureportspecial); }
-														
-			Menu menureportspatientcollection = menuDAO.getMenuByElementId("menu_reports_patient_collection");
-				if( menureportspatientcollection != null ){
-					menureportspatientcollection.setIsActive( active);
-					menuDAO.updateData(menureportspatientcollection); }									
-
-			Menu menureportsassociated = menuDAO.getMenuByElementId("menu_reports_patient_associated");
-				if( menureportsassociated != null ){
-					menureportsassociated.setIsActive( active);
-					menuDAO.updateData(menureportsassociated); }
-															
-			Menu menureportsindicator = menuDAO.getMenuByElementId("menu_reports_indicator");
-				if( menureportsindicator != null ){
-					menureportsindicator.setIsActive( active);
-					menuDAO.updateData(menureportsindicator); }	
-																	
-			Menu menureportsindicatorperformance = menuDAO.getMenuByElementId("menu_reports_indicator_performance");
-				if( menureportsindicatorperformance != null ){
-					menureportsindicatorperformance.setIsActive( active);
-					menuDAO.updateData(menureportsindicatorperformance); }
-																	
-			Menu menureportsvalidationbacklog = menuDAO.getMenuByElementId("menu_reports_validation_backlog.study");
-				if( menureportsvalidationbacklog != null ){
-					menureportsvalidationbacklog.setIsActive( active);
-					menuDAO.updateData(menureportsvalidationbacklog); }					
-															
-			Menu menureportsnonconformitystudy = menuDAO.getMenuByElementId("menu_reports_nonconformity.study");
-				if( menureportsnonconformitystudy != null ){
-					menureportsnonconformitystudy.setIsActive( active);
-					menuDAO.updateData(menureportsnonconformitystudy); }
-																		
-			Menu menureportnonconformitydatestudy = menuDAO.getMenuByElementId("menu_reports_nonconformity_date.study");
-				if( menureportnonconformitydatestudy != null ){
-					menureportnonconformitydatestudy.setIsActive( active);
-					menuDAO.updateData(menureportnonconformitydatestudy); }	
-																				
-			Menu menureportsnonconformitysection = menuDAO.getMenuByElementId("menu_reports_nonconformity_section.study");
-				if( menureportsnonconformitysection != null ){
-					menureportsnonconformitysection.setIsActive( active);
-					menuDAO.updateData(menureportsnonconformitysection); }
-																				
-			Menu menureportsnonconformitynotification = menuDAO.getMenuByElementId("menu_reports_nonconformity_notification.study");
-				if( menureportsnonconformitynotification != null ){
-					menureportsnonconformitynotification.setIsActive( active);
-					menuDAO.updateData(menureportsnonconformitynotification); }		
-				
-									
-			Menu menureportsfolowrequired = menuDAO.getMenuByElementId("menu_reports_followupRequired_ByLocation.study");
-				if( menureportsfolowrequired != null ){
-					menureportsfolowrequired.setIsActive( active);
-					menuDAO.updateData(menureportsfolowrequired); }
-									
-			Menu menureportsexport = menuDAO.getMenuByElementId("menu_reports_export");
-				if( menureportsexport != null ){
-					menureportsexport.setIsActive( active);
-					menuDAO.updateData(menureportsexport); }	
-											
-			Menu menureportsauditTrail = menuDAO.getMenuByElementId("menu_reports_auditTrail.study");
-				if( menureportsauditTrail != null ){
-					menureportsauditTrail.setIsActive( active);
-					menuDAO.updateData(menureportsauditTrail); }
-											
-			Menu menureportsarvall = menuDAO.getMenuByElementId("menu_reports_arv_all");
-				if( menureportsarvall != null ){
-					menureportsarvall.setIsActive( active);
-					menuDAO.updateData(menureportsarvall); }					
-									
-			Menu menureportsvl = menuDAO.getMenuByElementId("menu_reports_vl");
-				if( menureportsvl != null ){
-					menureportsvl.setIsActive( active);
-					menuDAO.updateData(menureportsvl); }
-												
-			Menu menureportsvlversion1 = menuDAO.getMenuByElementId("menu_reports_vl_version1");
-				if( menureportsvlversion1 != null ){
-					menureportsvlversion1.setIsActive( active);
-					menuDAO.updateData(menureportsvlversion1); }	
-														
->>>>>>> 3226d47a2b753374ddf9404723272ffe52a437e5
 		
 			MenuUtil.forceRebuild();
 		}	
