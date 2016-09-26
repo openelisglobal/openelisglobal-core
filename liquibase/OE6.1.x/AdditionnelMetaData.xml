@@ -103,6 +103,11 @@ INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abb
     UPDATE clinlims.type_of_sample
    SET display_key = 'sample.type.DBS'
  WHERE local_abbrev='DBS';
+ 
+INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_reports_nonconformity.study'),10,'menu_reports_nonconformity.Labno','/Report.do?type=patient&report=retroCINonConformityByLabno',default,'reports.nonConformity.byLabno.report','tooltip.reports.nonConformity.byLabno.report',default,default);
+
 
 </sql>
   </changeSet>

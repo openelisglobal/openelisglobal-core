@@ -22,7 +22,6 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -32,7 +31,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
-import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ARVReportData;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -40,19 +38,14 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
-import us.mn.state.health.lims.sample.valueholder.Sample;
-import us.mn.state.health.lims.common.services.SampleService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class PatientARVReport extends RetroCIPatientReport{
 	private List<ARVReportData> reportItems;
 	private String invalidValue = StringUtil.getMessageForKey("report.test.status.inProgress");
-	private ARVReportData previousData = new ARVReportData();
 	protected void initializeReportItems(){
 		reportItems = new ArrayList<ARVReportData>();
 	}
@@ -98,7 +91,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		
 		setPatientInfo(data);
 		setTestInfo(data);
-		setPreviousTestInfo(data);System.out.println("previousResultMap="+data.getPreviousResultMap());
+		setPreviousTestInfo(data);//System.out.println("previousResultMap="+data.getPreviousResultMap());
 		reportItems.add(data);
 
 	}
@@ -272,7 +265,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 							//data.setShowSerologie(Boolean.TRUE);
 						}else if(result.getAnalyte() != null && result.getAnalyte().getId().equals(CD4_CNT_CONCLUSION)){
 							//data.setCd4(valid ? result.getValue() : invalidValue);
-							data.getPreviousResultMap().put("Cd4",valid ? result.getValue() : invalidValue);
+							data.getPreviousResultMap().put("CD4 absolute count",valid ? result.getValue() : invalidValue);
 						}else{
 							resultValue = result.getValue();
 						}
@@ -298,7 +291,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 	private void assignPreviousResultsToAVRReportData(ARVReportData data, String testName, String resultValue){
 	
 		if(testName.equalsIgnoreCase("Viral Load") || testName.equalsIgnoreCase("Charge Virale")){
-			data.setShowVirologie(Boolean.TRUE);
+			//data.setShowVirologie(Boolean.TRUE);
 			// Results entered via analyzer have log value, results entered
 			// manually may not
 			String baseValue = resultValue;

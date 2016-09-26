@@ -37,6 +37,7 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 	protected static final long MONTH = YEAR / 12L;
 
 	protected List<EIDReportData> reportItems;
+	private String invalidValue = StringUtil.getMessageForKey("report.test.status.inProgress");
 
 	protected void initializeReportItems() {
 		reportItems = new ArrayList<EIDReportData>();
@@ -59,6 +60,7 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 
 		setPatientInfo(data);
 		setTestInfo(data);
+		setPreviousTestInfo(data);//System.out.println("previousResultMap="+data.getPreviousResultMap());
 
 		reportItems.add(data);
 
@@ -167,6 +169,98 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 
 	protected String getProjectId() {
 		return EID_STUDY_ID;
+	}
+
+	protected void setPreviousTestInfo(EIDReportData data){
+		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+		DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+		ResultDAO resultDAO = new ResultDAOImpl();
+	
+		if( GenericValidator.isBlankOrNull(StringUtil.getMessageForKey("previous.test.to.report")))
+		return;
+		
+		String[] testList=StringUtil.getMessageForKey("previous.test.to.report").split(",");
+		
+		for(int i=0;i<testList.length;i++){
+		Analysis analysis=analysisDAO.getPatientPreviousAnalysisForTestName(reportPatient, reportSample, testList[i].trim());
+			if(analysis!=null && !analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled))){
+				String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
+	
+				List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
+				String resultValue = null;
+	
+				boolean valid = ANALYSIS_FINALIZED_STATUS_ID.equals(analysis.getStatusId());
+			//	if(!valid){
+			//		atLeastOneAnalysisNotValidated = true;
+			//	}
+				// there may be more than one result for an analysis if one of
+				// them
+				// is a conclusion
+				if(resultList.size() > 1){
+					for(Result result : resultList){
+						if(result.getAnalyte() != null && result.getAnalyte().getId().equals(CONCLUSION_ID)){
+							Dictionary dictionary = new Dictionary();
+							dictionary.setId(result.getValue());
+							dictionaryDAO.getData(dictionary);
+							data.getPreviousResultMap().put("Vih", valid ? dictionary.getDictEntry() : invalidValue);//data.setVih(valid ? dictionary.getDictEntry() : invalidValue);
+							//data.setShowSerologie(Boolean.TRUE);
+						}else if(result.getAnalyte() != null && result.getAnalyte().getId().equals(CD4_CNT_CONCLUSION)){
+							//data.setCd4(valid ? result.getValue() : invalidValue);
+							data.getPreviousResultMap().put("CD4 absolute count",valid ? result.getValue() : invalidValue);
+						}else{
+							resultValue = result.getValue();
+						}
+					}
+				}
+	
+				if(resultList.size() > 0){
+					if(resultValue == null){
+						resultValue = resultList.get(resultList.size() - 1).getValue();
+					}
+				}
+	
+				if(resultValue != null || !valid){
+					assignPreviousResultsToAVRReportData(data, testName, valid ? resultValue : invalidValue);
+				}
+			}
+	
+			
+		}
+	
+	}
+
+	private void assignPreviousResultsToAVRReportData(EIDReportData data, String testName, String resultValue){
+	
+		if(testName.equalsIgnoreCase("Viral Load") || testName.equalsIgnoreCase("Charge Virale")){
+			//data.setShowVirologie(Boolean.TRUE);
+			// Results entered via analyzer have log value, results entered
+			// manually may not
+			String baseValue = resultValue;
+			if(!GenericValidator.isBlankOrNull(resultValue) && resultValue.contains("(")){
+				String[] splitValue = resultValue.split("\\(");
+				data.getPreviousResultMap().put("Ampli2", splitValue[0]);//data.setAmpli2(splitValue[0]);
+				baseValue = splitValue[0];
+			}else{
+				data.getPreviousResultMap().put("Ampli2", resultValue);//data.setAmpli2(resultValue);
+			}
+			if(!GenericValidator.isBlankOrNull(baseValue) && !"0".equals(baseValue)){
+				try{
+					double viralLoad = Double.parseDouble(baseValue);
+					data.getPreviousResultMap().put("Ampli2lo", String.format("%.3g%n", Math.log10(viralLoad)));//data.setAmpli2lo(String.format("%.3g%n", Math.log10(viralLoad)));
+				}catch(NumberFormatException nfe){
+					data.getPreviousResultMap().put("Ampli2lo","");//data.setAmpli2lo("");
+				}
+			}
+	
+		}else if(testName.equals("Murex") || testName.equals("Intgral") || testName.equals("Integral")){ //Serology must have one of these but not necessarily both
+		//	data.setShowSerologie(Boolean.TRUE);
+		//	if(GenericValidator.isBlankOrNull(data.getVih())){
+			//	data.setVih(invalidValue);
+		//	}
+		}else {
+			data.getPreviousResultMap().put(testName, resultValue);
+			
+		}
 	}
 
 }

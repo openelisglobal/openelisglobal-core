@@ -17,7 +17,9 @@
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.validator.GenericValidator;
 
@@ -58,8 +60,9 @@ public class EIDReportData {
 	
 	private String allQaEvents=null;
 	private String receptionQaEvent=null;
-	
 	private String virologyEidQaEvent=null;
+	
+	private Map<String, String> previousResultMap = new HashMap<String, String>();
 
 	public String getHiv_status() {
 		return hiv_status;
@@ -200,6 +203,12 @@ public class EIDReportData {
 	}
 	public void setReceptionQaEvent(String receptionQaEvent) {
 		this.receptionQaEvent = receptionQaEvent;
+	}
+	public Map<String, String>  getPreviousResultMap(){
+		return previousResultMap;
+	}
+	public void setPreviousResultMap(Map<String, String> previousResultMap){
+		this.previousResultMap=previousResultMap;
 	}
 	public void getSampleQaEventItems(Sample sample){
 	    qaEventItems = new ArrayList<QaEventItem>();

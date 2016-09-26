@@ -16,7 +16,6 @@
 */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

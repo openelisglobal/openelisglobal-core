@@ -235,7 +235,7 @@ abstract public class CSVRoutineColumnBuilder {
     }
 	
 	
-	public String getValue(CSVColumn column, String accessionNumber) throws Exception {
+	public String getValue(CSVRoutineColumn column, String accessionNumber) throws Exception {
 		String value;
 		// look in the data source for a value
 		try {
@@ -270,13 +270,13 @@ abstract public class CSVRoutineColumnBuilder {
 	}
 
 	public void add(String dbName, String csvTitle, Strategy strat) {
-		CSVColumn col = new CSVColumn(dbName, csvTitle, strat);
+		CSVRoutineColumn col = new CSVRoutineColumn(dbName, csvTitle, strat);
 		columnsByDbName.put(dbName, col);
 		columnsInOrder.add(col);
 	}
 
-    public void add(String dbName, String csvTitle, ICSVColumnCustomStrategy customStrategy  ){
-    	CSVColumn col = new CSVColumn(dbName, csvTitle, Strategy.CUSTOM, customStrategy);
+    public void add(String dbName, String csvTitle, ICSVRoutineColumnCustomStrategy customStrategy  ){
+    	CSVRoutineColumn col = new CSVRoutineColumn(dbName, csvTitle, Strategy.CUSTOM, customStrategy);
 		columnsByDbName.put(dbName, col);
 		columnsInOrder.add(col);
     }
@@ -289,19 +289,19 @@ abstract public class CSVRoutineColumnBuilder {
 		return (projectId == null) ? null : projectTagById.get(projectId);
 	}
 */
-	public class CSVColumn {
+	public class CSVRoutineColumn {
 		public String csvName;
 		public String dbName;
 		public Strategy strategy;
-		public ICSVColumnCustomStrategy customStrategy;
+		public ICSVRoutineColumnCustomStrategy customStrategy;
 
-		public CSVColumn(String dbName, String csvName, Strategy strategy) {
+		public CSVRoutineColumn(String dbName, String csvName, Strategy strategy) {
 			this.csvName = csvName;
 			this.dbName = dbName;
 			this.strategy = strategy;
 		}
 		
-		public CSVColumn(String dbName, String csvName, Strategy strategy, ICSVColumnCustomStrategy customStrategy) {
+		public CSVRoutineColumn(String dbName, String csvName, Strategy strategy, ICSVRoutineColumnCustomStrategy customStrategy) {
 			this.csvName = csvName;
 			this.dbName = dbName;
 			this.strategy = strategy;
@@ -606,7 +606,7 @@ abstract public class CSVRoutineColumnBuilder {
 	 */
 	public String getColumnNamesLine() {
 		StringBuilder line = new StringBuilder();
-		for (CSVColumn column : columnsInOrder) {
+		for (CSVRoutineColumn column : columnsInOrder) {
 			line.append(StringUtil.escapeCSVValue(column.csvName));
 			line.append(",");
 		}
@@ -622,7 +622,7 @@ abstract public class CSVRoutineColumnBuilder {
 	public String nextLine() throws Exception {
 		StringBuilder line = new StringBuilder();
 		String accessionNumber = null;
-		for (CSVColumn column : columnsInOrder) {
+		for (CSVRoutineColumn column : columnsInOrder) {
 			//OK this is a little hocky.  Some of the custom translation strategies need the accession number and MOST of the time
 			//they are called after the accession number column.  Not sure what to do if they are ever called before.
 			String translatedValue = StringUtil.escapeCSVValue(getValue(column, accessionNumber));
