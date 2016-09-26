@@ -24,8 +24,11 @@ import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.tools.StopWatch;
@@ -51,6 +54,9 @@ import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.statusofsample.util.StatusRules;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.dao.TestSectionDAO;
@@ -362,6 +368,10 @@ public class ResultsValidationRetroCIUtility {
                     validationItem.setAnalysis( analysis );
 					validationItem.setNonconforming( QAService.isAnalysisParentNonConforming( analysis ) ||
                             StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.TechnicalRejected ) );
+					if(FormFields.getInstance().useField(Field.QaEventsBySection) )
+						validationItem.setNonconforming(getQaEventByTestSection(analysis));
+
+					
 					selectedTestList.add(validationItem);
 				}
 			}
@@ -857,6 +867,25 @@ public class ResultsValidationRetroCIUtility {
 	private String getTestId(String testName) {
 		Test test = testDAO.getTestByName(testName);
 		return test.getId();
+	}
+
+	private boolean getQaEventByTestSection(Analysis analysis){
+		
+		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
+			Sample sample=analysis.getSampleItem().getSample();
+			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQaEventsList){				
+				QAService qa = new QAService(event);
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
+					 return true;				
+			}
+		}
+		return false;
+	}
+
+	public List<SampleQaEvent> getSampleQaEvents(Sample sample){
+		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
+		return sampleQaEventDAO.getSampleQaEventsBySample(sample);
 	}
 
 }

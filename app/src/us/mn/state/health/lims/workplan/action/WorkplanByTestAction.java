@@ -43,9 +43,9 @@ import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-import us.mn.state.health.lims.test.dao.TestSectionDAO;
-import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
-import us.mn.state.health.lims.test.valueholder.TestSection;
+//import us.mn.state.health.lims.test.dao.TestSectionDAO;
+//import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
+//import us.mn.state.health.lims.test.valueholder.TestSection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -170,7 +170,7 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 				testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
 
 				if(FormFields.getInstance().useField(Field.QaEventsBySection))
-					testResultItem.setNonconforming(getQaEventByTestSection(sample,analysis.getTestSection()));
+					testResultItem.setNonconforming(getQaEventByTestSection(analysis));
 				
 				if (!testResultItem.getAccessionNumber().equals(currentAccessionNumber)) {
 					sampleGroupingNumber++;
@@ -246,12 +246,14 @@ public class WorkplanByTestAction extends BaseWorkplanAction {
 		return TestService.getUserLocalizedTestName( testId );
 	}
 
-	private boolean getQaEventByTestSection(Sample sample,TestSection ts){
+	private boolean getQaEventByTestSection(Analysis analysis){
 		
-		if (ts!=null && sample!=null) {
-			for(SampleQaEvent event : getSampleQaEvents(sample)){
+		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
+			Sample sample=analysis.getSampleItem().getSample();
+			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQaEventsList){
 				QAService qa = new QAService(event);
-				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(ts.getNameKey()))
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
 					 return true;				
 			}
 		}

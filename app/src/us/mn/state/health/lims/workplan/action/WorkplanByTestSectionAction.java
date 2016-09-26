@@ -33,10 +33,10 @@ import us.mn.state.health.lims.common.services.ObservationHistoryService.Observa
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.IdValuePair;
+//import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
+//import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
@@ -182,8 +182,8 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 				testResultItem.setTestId(analysis.getTest().getId());
 				testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
 				
-				if(FormFields.getInstance().useField(Field.QaEventsBySection))
-					testResultItem.setNonconforming(getQaEventByTestSection(sample,analysis.getTestSection()));
+				if(FormFields.getInstance().useField(Field.QaEventsBySection) )
+					testResultItem.setNonconforming(getQaEventByTestSection(analysis));
 				
 				testResultItem.setPatientInfo(subjectNumber);
 				testResultItem.setNextVisitDate( nextVisit );
@@ -259,19 +259,22 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
     private boolean isPatientNameAdded() {
         return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP");
     }
-    private boolean getQaEventByTestSection(Sample sample,TestSection ts){
+
+	private boolean getQaEventByTestSection(Analysis analysis){
 		
-		if (ts!=null && sample!=null) {
-			for(SampleQaEvent event : getSampleQaEvents(sample)){
+		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
+			Sample sample=analysis.getSampleItem().getSample();
+			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQaEventsList){
 				QAService qa = new QAService(event);
-				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(ts.getNameKey()))
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
 					 return true;				
 			}
 		}
-    	return false;
-    }
+		return false;
+	}
 
-    public List<SampleQaEvent> getSampleQaEvents(Sample sample){
+	public List<SampleQaEvent> getSampleQaEvents(Sample sample){
 		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
 		return sampleQaEventDAO.getSampleQaEventsBySample(sample);
 	}

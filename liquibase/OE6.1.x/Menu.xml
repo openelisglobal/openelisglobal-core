@@ -214,6 +214,15 @@ INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_
     VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_resultvalidation'),2,'menu_resultvalidation_study',null,default,'banner.menu.resultvalidation_study','tooltip.bannner.menu.resultvalidation_study',default,default);
 	
 
+INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_reports_nonconformity.study'),10,'menu_reports_nonconformity.Labno','/Report.do?type=patient&amp;report=retroCINonConformityByLabno',default,'reports.nonConformity.byLabno.report','tooltip.reports.nonConformity.byLabno.report',default,default);
+
+
+	
+	
+	
+	
 UPDATE clinlims.menu
    SET parent_id=(select id from clinlims.menu where element_id='menu_resultvalidation_study')
    WHERE element_id='menu_resultvalidation_immunology';     	
@@ -232,5 +241,12 @@ UPDATE clinlims.menu
 	
 
  </sql>
+  </changeSet>
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
+    <comment>Insert in clinlims new menu study</comment>
+    <sql>INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),default,11,'menu_help','/documentation/CI_IPCI_fr.pdf',default,'banner.menu.help','tooltip.banner.menu.help','TRUE',default);
+	</sql>
   </changeSet>
 </databaseChangeLog>
