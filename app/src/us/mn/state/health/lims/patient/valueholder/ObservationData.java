@@ -79,6 +79,7 @@ public class ObservationData implements Serializable {
 	private List<String> priorARVTreatmentINNs  = Arrays.asList(new String[] {null, null, null, null});
 	private List<String> futureARVTreatmentINNs = Arrays.asList(new String[] {null, null, null, null});
 	private List<String> currentARVTreatmentINNs= Arrays.asList(new String[] {null, null, null, null});
+	//private List<String> initialSampleConditionINNs= Arrays.asList(new String[] {null, null, null, null});
 
 	/**
 	 * OI = opportunistic infection
@@ -435,11 +436,23 @@ public class ObservationData implements Serializable {
     public void setCurrentARVTreatmentINNs(int index, String value) {
         currentARVTreatmentINNs.set(index, value);
     }
-
+    
 	public List<String> getCurrentARVTreatmentINNsList() {
 		return currentARVTreatmentINNs;
 	}	
+	
+	/*public String getInitialSampleConditionINNs(int index) {
+	    return initialSampleConditionINNs.get(index);
+	}
 
+    public void setInitialSampleConditionINNs(int index, String value) {
+    	initialSampleConditionINNs.set(index, value);
+    }
+
+    public List<String> getInitialSampleConditionINNsList() {
+		return initialSampleConditionINNs;
+	}*/
+    
 	public String getFutureARVTreatmentINNs(int index) {
         return futureARVTreatmentINNs.get(index);
     }

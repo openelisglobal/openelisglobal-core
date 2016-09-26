@@ -38,7 +38,7 @@ import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
  * @author Paul A. Hill (pahill@uw.edu)
  * @since Jan 26, 2011
  */
-public class ExportRoutineByDate extends CSVSampleExportReport implements IReportParameterSetter, IReportCreator {
+public class ExportRoutineByDate extends CSVRoutineSampleExportReport implements IReportParameterSetter, IReportCreator {
 	protected final ProjectDAO projectDAO = new ProjectDAOImpl();
 	//private String projectStr;
 	//private Project project;
@@ -123,8 +123,8 @@ public class ExportRoutineByDate extends CSVSampleExportReport implements IRepor
 	 */
 	private void createReportItems() {
 		try {
-			csvColumnBuilder = getColumnBuilder();
-			csvColumnBuilder.buildDataSource();
+			csvRoutineColumnBuilder = getColumnBuilder();
+			csvRoutineColumnBuilder.buildDataSource();
 		} catch (Exception e) {
 			Log.error("Error in " + this.getClass().getSimpleName() + ".createReportItems: ", e);
 			add1LineErrorMessage("report.error.message.general.error");
@@ -135,8 +135,8 @@ public class ExportRoutineByDate extends CSVSampleExportReport implements IRepor
 	
 		String currentAccessionNumber = null;
 		String[] splitBase = null;
-		while (csvColumnBuilder.next()) {
-			String line = csvColumnBuilder.nextLine();
+		while (csvRoutineColumnBuilder.next()) {
+			String line = csvRoutineColumnBuilder.nextLine();
 			String[] splitLine = line.split(",");
 
 			if (splitLine[0].equals(currentAccessionNumber)) {

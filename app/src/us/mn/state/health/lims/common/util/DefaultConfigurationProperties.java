@@ -54,7 +54,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.PatientSearchPassword, "patientSearchPassword", "" );
 		setDBPropertyMappingAndDefault(Property.UseExternalPatientInfo, "useExternalPatientSource" , "false");
 		setDBPropertyMappingAndDefault(Property.labDirectorName, "lab director" , "");
-		setDBPropertyMappingAndDefault(Property.languageSwitch, "allowLanguageChange", "false" );
+		setDBPropertyMappingAndDefault(Property.languageSwitch, "allowLanguageChange", "true" );
 		setDBPropertyMappingAndDefault(Property.resultReportingURL, "resultReportingURL", "");
 		setDBPropertyMappingAndDefault(Property.reportResults, "resultReporting", "false");
 		setDBPropertyMappingAndDefault(Property.malariaSurveillanceReportURL, "malariaSurURL", "");
@@ -73,7 +73,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.failedValidationMarker, "showValidationFailureIcon", "true");
 		setDBPropertyMappingAndDefault(Property.SiteName, "SiteName", "");
 		setDBPropertyMappingAndDefault(Property.PasswordRequirments , "passwordRequirements", "MINN");
-		setDBPropertyMappingAndDefault(Property.FormFieldSet , "setFieldForm", IActionConstants.FORM_FIELD_SET_HAITI);
+		setDBPropertyMappingAndDefault(Property.FormFieldSet , "setFieldForm", IActionConstants.FORM_FIELD_SET_CI_GENERAL);
 		setDBPropertyMappingAndDefault(Property.StringContext , "stringContext","");
 		setDBPropertyMappingAndDefault(Property.StatusRules , "statusRules", "CI");
 		setDBPropertyMappingAndDefault(Property.ReflexAction , "reflexAction", "Haiti");
@@ -106,7 +106,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
         setDBPropertyMappingAndDefault( Property.TEST_NAME_AUGMENTED, "augmentTestNameWithType", "true" );
         setDBPropertyMappingAndDefault( Property.USE_BILLING_REFERENCE_NUMBER, "billingRefNumber", "false" );
         setDBPropertyMappingAndDefault( Property.BILLING_REFERENCE_NUMBER_LABEL, "billingRefNumberLocalization", "-1" );
-        setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "false" );
+        setDBPropertyMappingAndDefault( Property.ORDER_PROGRAM, "Program", "true" );
         setDBPropertyMappingAndDefault( Property.BANNER_TEXT, "bannerHeading", "-1" );
         setDBPropertyMappingAndDefault( Property.CLOCK_24, "24 hour clock", "true" );
 		setDBPropertyMappingAndDefault( Property.PATIENT_NATIONALITY, "supportPatientNationality", "false");

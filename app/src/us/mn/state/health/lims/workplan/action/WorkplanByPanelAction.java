@@ -26,10 +26,13 @@ import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -40,7 +43,11 @@ import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
+//import us.mn.state.health.lims.test.valueholder.TestSection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -118,6 +125,9 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 						testResultItem.setReceivedDate(getReceivedDateDisplay(sample));
 						testResultItem.setTestName( TestService.getUserLocalizedTestName( analysis.getTest() ));
 						testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
+						if(FormFields.getInstance().useField(Field.QaEventsBySection) )
+							testResultItem.setNonconforming(getQaEventByTestSection(analysis));
+
 						if (addPatientName)
 						    testResultItem.setPatientName(getPatientName(analysis));
 
@@ -181,6 +191,25 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 	
 	private String getPanelName(String panelId) {
 		return panelDAO.getNameForPanelId(panelId);
+	}
+
+	private boolean getQaEventByTestSection(Analysis analysis){
+		
+		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
+			Sample sample=analysis.getSampleItem().getSample();
+			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQaEventsList){
+				QAService qa = new QAService(event);
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
+					 return true;				
+			}
+		}
+		return false;
+	}
+
+	public List<SampleQaEvent> getSampleQaEvents(Sample sample){
+		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
+		return sampleQaEventDAO.getSampleQaEventsBySample(sample);
 	}
 	
 

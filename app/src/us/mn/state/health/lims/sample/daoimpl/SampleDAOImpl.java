@@ -730,4 +730,23 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 
         return null;
     }
+
+	@SuppressWarnings("unchecked")
+	public List<Sample> getSamplesBySampleItem(Integer sampleitemId) throws LIMSRuntimeException {
+		
+		String sql = "from Sample s where s.id in (select si.sample.id from SampleItem si where si.id = :sampleitemId)";
+		try{
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setParameter("sampleitemId", sampleitemId);
+			List<Sample> sampleList = query.list();
+	
+			closeSession();
+	
+			return sampleList;
+		}catch(HibernateException e){
+			handleException(e, "getSamplesBySampleItem");
+		}
+	
+		return null;
+	}
 }

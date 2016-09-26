@@ -347,7 +347,60 @@ public class ConfigurationSideEffects {
 				if( menureportsvlversion1 != null ){
 					menureportsvlversion1.setIsActive( active);
 					menuDAO.updateData(menureportsvlversion1); }	
-														
+				
+				
+			Menu menunonconformitylabno = menuDAO.getMenuByElementId("menu_reports_nonconformity.Labno");
+				if( menunonconformitylabno != null ){
+					menunonconformitylabno.setIsActive( active);
+					menuDAO.updateData(menunonconformitylabno); }	
+				
+				
+				
+				
+			
+				//------validation----		
+				
+			Menu menuvalidationstudy = menuDAO.getMenuByElementId("menu_resultvalidation_study");
+				if( menuvalidationstudy != null ){
+					menuvalidationstudy.setIsActive( active);
+					menuDAO.updateData(menuvalidationstudy); }
+				
+			Menu menuvalidationimmuno = menuDAO.getMenuByElementId("menu_resultvalidation_immunology");
+				if( menuvalidationimmuno != null ){
+					menuvalidationimmuno.setIsActive( active);
+					menuDAO.updateData(menuvalidationimmuno); }
+				
+			Menu menuvalidationbio = menuDAO.getMenuByElementId("menu_resultvalidation_biochemistry");
+				if( menuvalidationbio != null ){
+					menuvalidationbio.setIsActive( active);
+					menuDAO.updateData(menuvalidationbio); }	
+				
+			Menu menuvalidationsero = menuDAO.getMenuByElementId("menu_resultvalidation_serology");
+				if( menuvalidationsero != null ){
+					menuvalidationsero.setIsActive( active);
+					menuDAO.updateData(menuvalidationsero); }				
+				
+
+			Menu menuvalidationdnapcr = menuDAO.getMenuByElementId("menu_resultvalidation_dnapcr");
+				if( menuvalidationdnapcr != null ){
+					menuvalidationdnapcr.setIsActive( active);
+					menuDAO.updateData(menuvalidationdnapcr); }
+				
+			Menu menuvalidationvirology = menuDAO.getMenuByElementId("menu_resultvalidation_virology");
+				if( menuvalidationvirology != null ){
+					menuvalidationvirology.setIsActive( active);
+					menuDAO.updateData(menuvalidationvirology); }
+				
+			Menu menuvalidationVL = menuDAO.getMenuByElementId("menu_resultvalidation_viralload");
+				if( menuvalidationVL != null ){
+					menuvalidationVL.setIsActive( active);
+					menuDAO.updateData(menuvalidationVL); }	
+				
+			Menu menuvalidationgeno= menuDAO.getMenuByElementId("menu_resultvalidation_genotyping");
+				if( menuvalidationgeno != null ){
+					menuvalidationgeno.setIsActive( active);
+					menuDAO.updateData(menuvalidationgeno); }		
+				
 		
 			MenuUtil.forceRebuild();
 		}	

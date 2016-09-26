@@ -28,6 +28,10 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessages;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.hibernate.Transaction;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
@@ -36,6 +40,8 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.StatusService;
@@ -44,6 +50,7 @@ import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.services.StatusSet;
+import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -56,6 +63,9 @@ import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.observationhistorytype.ObservationHistoryTypeMap;
+import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
+import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
+import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -75,6 +85,7 @@ import us.mn.state.health.lims.project.dao.ProjectDAO;
 import us.mn.state.health.lims.project.daoimpl.ProjectDAOImpl;
 import us.mn.state.health.lims.project.valueholder.Project;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
+import us.mn.state.health.lims.sample.action.util.SamplePatientUpdateData;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.form.ProjectData;
@@ -108,6 +119,8 @@ import java.util.Map.Entry;
 
 import static us.mn.state.health.lims.sample.util.CI.ProjectForm.EID;
 import static us.mn.state.health.lims.sample.util.CI.ProjectForm.SPECIAL_REQUEST;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Update/Creates, as needed, a Sample and Patient and all associated parts in
@@ -315,7 +328,7 @@ public abstract class Accessioner {
 
 			persistObservationHistory();
 	
-		//	persistObservationHistoryLists();// no more running name has been changed to persistObservationHistoryLists1
+		//	persistObservationHistoryLists();// no more running name has been changed to persistObservationHistoryLists2
 			persistObservationHistoryLists2();
 			persistRecordStatus();
 			deleteOldPatient();
@@ -1215,7 +1228,6 @@ public abstract class Accessioner {
 		}
 		return existing;
 	}
-
 	protected void persistRecordStatus() {
 		// Special Request and EID don't have a patient entry form, so we move
 		// the patient record status when we move the sample record status.
@@ -1275,4 +1287,53 @@ public abstract class Accessioner {
 	}
 
 	protected abstract String getActionLabel();
+
+	protected void persistInitialSampleConditions(){
+	if(!FormFields.getInstance().useField(Field.InitialSampleCondition)) return;
+		
+	try {
+		String xml=(String)projectFormMapper.getDynaBean().get( "sampleXML" );
+		//System.out.println("AMANI:"+xml);
+		Document sampleDom = DocumentHelper.parseText(xml);
+		for (Iterator i = sampleDom.getRootElement().elementIterator("sample"); i.hasNext();) {
+		Element sampleItem = (Element) i.next();
+		String initialSampleConditionIdString = sampleItem.attributeValue("initialConditionIds");
+		String sampleItemId = sampleItem.attributeValue("sampleID");
+		
+		ObservationHistoryDAO ohDAO = new ObservationHistoryDAOImpl();
+		ObservationHistory observation=new ObservationHistory();			
+		
+		if (!GenericValidator.isBlankOrNull(initialSampleConditionIdString)) {
+				String[] initialSampleConditionIds = initialSampleConditionIdString.split(",");
+				for(int j=0;j<initialSampleConditionIds.length;j++){
+					 observation=new ObservationHistory();
+					 observation.setValue(initialSampleConditionIds[j]);
+					 observation.setValueType(ObservationHistory.ValueType.DICTIONARY);
+					 observation.setObservationHistoryTypeId(getObservationHistoryTypeId(new ObservationHistoryTypeDAOImpl(), "initialSampleCondition"));
+				     observation.setSampleId(sample.getId());
+					 observation.setSampleItemId(sampleItemId);
+					 observation.setPatientId(patientInDB.getId());
+					 observation.setSysUserId(sysUserId);
+					 ohDAO.insertData(observation);
+				}
+			}
+		}
+		
+	  } catch (DocumentException e) {
+		e.printStackTrace();
+	  }
+	//  dynaForm.set("orbservations", observations);
+	
+		
+	}
+
+	private static String getObservationHistoryTypeId(ObservationHistoryTypeDAO ohtDAO, String name) {
+		ObservationHistoryType oht;
+		oht = ohtDAO.getByName(name);
+		if (oht != null) {
+			return oht.getId();
+		}
+	
+		return null;
+	}
 }

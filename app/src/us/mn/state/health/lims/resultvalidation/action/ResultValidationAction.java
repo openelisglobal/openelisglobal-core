@@ -50,16 +50,23 @@ public class ResultValidationAction extends BaseResultValidationAction {
 
 		request.getSession().setAttribute(SAVE_DISABLED, "true");
 		String testSectionId = (request.getParameter("testSectionId"));
+		
+		
 
 		ResultValidationPaging paging = new ResultValidationPaging();
 		String newPage = request.getParameter("page");
 
 		TestSection ts = null;
+		
+		
+		
 
 		if (GenericValidator.isBlankOrNull(newPage)) {
 
 			// Initialize the form.
 			dynaForm.initialize(mapping);
+
+		
 			
 			// load testSections for drop down
 			TestSectionDAO testSectionDAO = new TestSectionDAOImpl();

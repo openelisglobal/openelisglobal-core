@@ -16,9 +16,15 @@ import org.apache.struts.action.ActionMapping;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.SampleOrderService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.ObservationHistoryList;
 import us.mn.state.health.lims.organization.util.OrganizationTypeList;
+import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
+import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.patient.saving.Accessioner;
 import us.mn.state.health.lims.sample.util.CI.ProjectForm;
 
@@ -51,6 +57,14 @@ public class SampleEntryByProjectAction extends BaseSampleEntryAction {
 		PropertyUtils.setProperty(dynaForm, "receivedDateForDisplay", dateAsText);
 		PropertyUtils.setProperty(dynaForm, "interviewDate", dateAsText);
 		PropertyUtils.setProperty(dynaForm, "labNo", "");
+		
+		SampleOrderService sampleOrderService = new SampleOrderService();
+	    PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
+		PropertyUtils.setProperty(dynaForm, "patientProperties", new PatientManagementInfo());
+	    PropertyUtils.setProperty( dynaForm, "patientSearch", new PatientSearch() );
+		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
+		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
+
 
 		addGenderList(dynaForm);
 		addProjectList(dynaForm);
@@ -59,6 +73,10 @@ public class SampleEntryByProjectAction extends BaseSampleEntryAction {
 		addAllPatientFormLists(dynaForm);
 
         setProjectFormName(form, projectFormId);
+        
+        if (FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition)) {
+			PropertyUtils.setProperty(dynaForm, "initialSampleConditionList", DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
+		}
 
         String forward = findForward(projectFormId);
 		return mapping.findForward(forward);
