@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Some settings-->
   <!-- Data specific to CDIRetroCI -->
-  <changeSet id="1" author="CI OpenELIS developers group" context="CDIRetroCI">
+  <changeSet id="1" author="CI OpenELIS developers group" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="display_key" schemaName="clinlims" tableName="type_of_sample" />
