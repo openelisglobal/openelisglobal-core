@@ -76,14 +76,14 @@
     </preConditions>
     <comment>update on type_of_sample</comment>
     <sql>
-INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(141,'sampleType name','Dry Tube','Tube sec - Rouge',now());
-INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(142,'sampleType name','EDTA Tube','Tube EDTA - Violet',now());
-INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(143,'sampleType name','DBS','DBS',now());
+INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(nextval('clinlims.localization_seq'),'sampleType name','Dry Tube','Tube sec - Rouge',now());
+INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(nextval('clinlims.localization_seq'),'sampleType name','EDTA Tube','Tube EDTA - Violet',now());
+INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(nextval('clinlims.localization_seq'),'sampleType name','DBS','DBS',now());
 
 
-INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abbrev,is_active,sort_order,name_localization_id,display_key) VALUES (24,'Dry Tube','H',now(),'Dry','t',default,141,'sample.type.dryTube');
-INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abbrev,is_active,sort_order,name_localization_id,display_key) VALUES (25,'EDTA Tube','H',now(),'EDTA','t',default,142,'sample.type.edtaTube');
-INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abbrev,is_active,sort_order,name_localization_id,display_key) VALUES (26,'DBS','H',now(),'DBS','t',default,143,'sample.type.DBS');
+INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abbrev,is_active,sort_order,name_localization_id,display_key) VALUES (24,'Dry Tube','H',now(),'Dry','t',default,(select id from clinlims.localization where english='Dry Tube'),'sample.type.dryTube');
+INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abbrev,is_active,sort_order,name_localization_id,display_key) VALUES (25,'EDTA Tube','H',now(),'EDTA','t',default,(select id from clinlims.localization where english='EDTA Tube'),'sample.type.edtaTube');
+INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abbrev,is_active,sort_order,name_localization_id,display_key) VALUES (26,'DBS','H',now(),'DBS','t',default,(select id from clinlims.localization where english='DBS'),'sample.type.DBS');
 
 alter sequence clinlims.type_of_sample_seq restart with 30;
 alter sequence clinlims.localization_seq restart with 400;
