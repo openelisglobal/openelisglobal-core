@@ -128,6 +128,21 @@ iarv = new ArvInitialProjectChecker();
 		</td>
 	</tr>
 	<tr>
+            <td></td>
+            <td>
+                 <bean:message key="sample.entry.project.receivedTime" />&nbsp;<bean:message key="sample.military.time.format"/>
+            </td>
+            <td>
+            <app:text name="<%=formName%>"
+                property="receivedTimeForDisplay"   
+                onkeyup="filterTimeKeys(this, event);"                 
+                onblur="iarv.checkReceivedTime(true);"
+                styleClass="text"
+                styleId="iarv.receivedTimeForDisplay" maxlength="5"/>
+                <div id="iarv.receivedTimeForDisplayMessage" class="blank" />
+            </td>
+        </tr>
+	<tr>
 		<!-- DEM 01 -->
 		<td class="required">*</td>
 		<td>
