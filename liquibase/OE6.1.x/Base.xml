@@ -26,4 +26,14 @@
   <include file="OE6.1.x/org.xml" />
   <include file="OE6.1.x/test_components.xml" />
   <include file="OE6.1.x/AdditionnelMetaData.xml" />
+  <include file="OE6.1.x/ci_regional/MetaData.xml" />
+  <include file="OE6.1.x/ci_regional/Menu.xml" />
+  <include file="OE6.1.x/ci_regional/Observation_history_type.xml" />
+  <include file="OE6.1.x/ci_regional/project.xml" />
+  <include file="OE6.1.x/ci_regional/Site_information.xml" />
+  <include file="OE6.1.x/ci_regional/dict.xml" />
+  <include file="OE6.1.x/ci_regional/org.xml" />
+  <include file="OE6.1.x/ci_regional/AddRetroTest.xml" />
+  <include file="OE6.1.x/ci_regional/qa_event.xml" />
+   <include file="OE6.1.x/ci_regional/system_role_module.xml" />
   </databaseChangeLog> 
