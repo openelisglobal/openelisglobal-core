@@ -5,7 +5,7 @@ import static us.mn.state.health.lims.reports.action.implementation.reportBeans.
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.AGE_YEARS;
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.DATE;
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.DATE_TIME;
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.GENDER;
+//import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.GENDER;
 //import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.LOG;
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.NONE;
 //import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.PROJECT;
@@ -136,7 +136,7 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
         add("entered_date",  "AGESEMS",  AGE_WEEKS);
         add("received_date",    "DATERECPT",    DATE_TIME );      // reception date
         add("entered_date",  "DATESAISIE",    DATE_TIME );      // interview date
-        //add("collection_date",  "DATEVALIDAT",    DATE_TIME );      // collection date
+        add("collection_date",  "DATECOLLECT",    DATE_TIME );      // collection date
         add("organization_code", "CODEREFERANT", NONE);
         add("organization_name", "REFERANT",  NONE);
         add("status_id", "STATUT", SAMPLE_STATUS);

@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Some settings-->
   <!-- Data specific to CDIRetroCI -->
-  <changeSet id="1" author="CI OpenELIS developers group" context="CDIRetroCI">
+  <changeSet id="1" author="CI OpenELIS developers group" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="display_key" schemaName="clinlims" tableName="type_of_sample" />
@@ -41,6 +41,7 @@ INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_seq
 
 </sql>
   </changeSet>
+  
   <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.type_of_sample where display_key = 'Sample.type.Plasma';
@@ -62,6 +63,7 @@ INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abb
 
 </sql>
   </changeSet>
+  
   <changeSet author="CI OpenELIS developers group" id="4" context="CDIRetroCI,CDIRetroCI_CT">
     <comment>update on site_information</comment>
     <sql>
@@ -100,7 +102,60 @@ INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abb
    SET display_key = 'sample.type.DBS'
  WHERE local_abbrev='DBS';
  
+INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (27,'SEV-CI','SEV-CI','org_type.SEVCI.name',now());
+INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (28,'ARIEL','Ariel Glaser Foundation','org_type.ARIEL.name',now());
 
 </sql>
   </changeSet>
+  
+ <changeSet author="CI OpenELIS developers group" id="6" context="CDIRetroCI,CDIRetroCI_CT">
+    <comment>Insert in clinlims new site information</comment>
+    <sql>
+
+INSERT INTO clinlims.site_information(
+            id, name, lastupdated, description, value, encrypted, domain_id, 
+            value_type, instruction_key, "group", schedule_id, tag, dictionary_category_id, 
+            description_key, name_key)
+    VALUES (nextval('clinlims.site_information_seq'),'patientSearchURL',now(),'The service URL from which to import patient demographics',null,default,1,'text',default,0,default,default,default,'siteInfo.patientSearchURL',default);
+	
+	
+INSERT INTO clinlims.site_information(
+            id, name, lastupdated, description, value, encrypted, domain_id, 
+            value_type, instruction_key, "group", schedule_id, tag, dictionary_category_id, 
+            description_key, name_key)
+    VALUES (nextval('clinlims.site_information_seq'),'patientSearchLogOnUser',now(),'The user name for using the service',null,default,1,'text',default,0,default,default,default,'siteInfo.patientSearchLogOnUser',default);
+
+INSERT INTO clinlims.site_information(
+            id, name, lastupdated, description, value, encrypted, domain_id, 
+            value_type, instruction_key, "group", schedule_id, tag, dictionary_category_id, 
+            description_key, name_key)
+    VALUES (nextval('clinlims.site_information_seq'),'patientSearchPassword',now(),'The password for using the service',null,default,1,'text',default,0,default,default,default,'siteInfo.patientSearchPassword',default);
+	
+	
+INSERT INTO clinlims.site_information(
+            id, name, lastupdated, description, value, encrypted, domain_id, 
+            value_type, instruction_key, "group", schedule_id, tag, dictionary_category_id, 
+            description_key, name_key)
+    VALUES (nextval('clinlims.site_information_seq'),'useExternalPatientSource',now(),'Use an external source patient demographics true/false','true',default,1,'boolean',default,0,default,default,default,'siteInfo.useExternalPatientSource',default);
+
+ </sql> 
+</changeSet> 
+
+<changeSet author="CI OpenELIS developers group" id="7" context="CDIRetroCI,CDIRetroCI_CT">
+    <comment>update on menu</comment>
+    <sql>
+    INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),null,20,'menu_help','/documentation/CI_IPCI_fr.pdf',default,'banner.menu.help','tooltip.banner.menu.help','TRUE',default);
+
+ 
+
+</sql>
+  </changeSet>
+
+
+
+
+
+
 </databaseChangeLog>
