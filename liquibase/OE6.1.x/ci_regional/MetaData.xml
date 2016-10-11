@@ -100,12 +100,12 @@ alter sequence clinlims.test_section_seq restart with 160;
     </preConditions>
     <comment>update on test_section</comment>
     <sql>
-INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(144,'test unit name','EID','EID',now());
-INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(145,'test unit name','VL','VL',now());
+INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(nextval('clinlims.localization_seq'),'test unit name','EID','EID',now());
+INSERT INTO clinlims.localization(id,description,english,french,lastupdated)  VALUES(nextval('clinlims.localization_seq'),'test unit name','VL','VL',now());
 
 
-INSERT INTO clinlims.test_section (id,name, description,org_id,is_external,lastupdated,parent_test_section,sort_order,is_active,name_localization_id,display_key) VALUES (137,'EID', 'Virologie_EID',NULL,'N',now(),NULL,2147483647,'N',144,'testSection.EID');
-INSERT INTO clinlims.test_section (id,name, description,org_id,is_external,lastupdated,parent_test_section,sort_order,is_active,name_localization_id,display_key) VALUES (138,'VL', 'Virologie_VL',NULL,'N',now(),NULL,2147483647,'N',145,'testSection.VL');
+INSERT INTO clinlims.test_section (id,name, description,org_id,is_external,lastupdated,parent_test_section,sort_order,is_active,name_localization_id,display_key) VALUES (nextval('clinlims.test_section_seq'),'EID', 'Virologie_EID',NULL,'N',now(),NULL,2147483647,'N',(select id from clinlims.localization where english='EID'),'testSection.EID');
+INSERT INTO clinlims.test_section (id,name, description,org_id,is_external,lastupdated,parent_test_section,sort_order,is_active,name_localization_id,display_key) VALUES (nextval('clinlims.test_section_seq'),'VL', 'Virologie_VL',NULL,'N',now(),NULL,2147483647,'N',(select id from clinlims.localization where english='VL'),'testSection.VL');
 
 
 alter sequence clinlims.test_section_seq restart with 150;
