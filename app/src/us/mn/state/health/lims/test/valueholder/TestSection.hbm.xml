@@ -21,6 +21,14 @@
         <property name="description" type="java.lang.String">
             <column name="DESCRIPTION" length="60" not-null="true" />
         </property>
+             
+             
+         <property name="NameKey" type="java.lang.String">
+            <column name="display_key" length="60" />
+        </property>    
+             
+             
+        
         <property name="isExternal" type="java.lang.String">
             <column name="IS_EXTERNAL" length="1" />
         </property>

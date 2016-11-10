@@ -27,6 +27,8 @@ public class ReportImplementationFactory{
 		if(!GenericValidator.isBlankOrNull(report)){
 			if(report.equals("patientARV1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.all"),null);
+			}else if(report.equals("retroCINonConformityByLabno")){
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.all"),null);
 			}else if(report.equals("patientARVInitial1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
 			}else if(report.equals("patientARVInitial2")){
@@ -63,6 +65,8 @@ public class ReportImplementationFactory{
 				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
 				return new ExportProjectByDate();
+			}else if(report.equals("CISampleRoutineExport")){
+				return new ExportRoutineByDate();
 			}else if(report.equals("referredOut")){
 				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport") || report.equals("HaitiLNSPExportReport")){
@@ -124,6 +128,8 @@ public class ReportImplementationFactory{
 		if(!GenericValidator.isBlankOrNull(report)){
 			if(report.equals("patientARV1")){
 				return new PatientARVVersion1Report();
+			}else if(report.equals("retroCINonConformityByLabno")){
+				return new RetroCINonConformityByLabno();
 			}else if(report.equals("patientARVInitial1")){
 				return new PatientARVInitialVersion1Report();
 			}else if(report.equals("patientARVInitial2")){
@@ -163,7 +169,9 @@ public class ReportImplementationFactory{
 			}else if(report.equals("indicatorHaitiLNSPAllTests")){
 				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
-				return new ExportProjectByDate();
+			return new ExportProjectByDate();
+			}else if(report.equals("CISampleRoutineExport")){
+				return new ExportRoutineByDate();
 			}else if(report.equals("referredOut")){
 				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport")){

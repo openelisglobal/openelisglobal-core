@@ -119,7 +119,7 @@ public class CommonReportPrintAction extends BaseAction {
 	
 	public String getLeftHeaderLogoPath() {
 		if (leftLabLogoPath == null) {
-			leftLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/leftLabLogo.jpg";System.out.println("ici:"+leftLabLogoPath);
+			leftLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/leftLabLogo.jpg";
 		}
 		return leftLabLogoPath;	
 	}

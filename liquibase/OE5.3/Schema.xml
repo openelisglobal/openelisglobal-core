@@ -25,7 +25,7 @@
   </addColumn>
 </changeSet>
 <changeSet id="2" author="paulsc">
-  <comment>Adds localiztion id column</comment>
+  <comment>Adds localization id column</comment>
   <addColumn tableName="type_of_sample">
     <column name="name_localization_id" type="numeric" />
   </addColumn>

@@ -79,7 +79,7 @@ public class TestSectionRenameUpdate extends BaseAction{
                 HibernateUtil.closeSession();
             }
 
-        }
+        }         
     }
 
     protected String getPageTitleKey(){

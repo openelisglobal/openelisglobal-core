@@ -6,8 +6,8 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["c:/tomcat 5.5/webapps/haitiOpenElis/WEB-INF/reports/"]]></defaultValueExpression>
 	</parameter>
@@ -97,31 +97,31 @@
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[Dr TEHE G. A.
+				<text><![CDATA[Dr TEHE G. André
 Diagnostic clinique]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="139" y="98" width="90" height="34"/>
+				<reportElement x="134" y="98" width="116" height="34"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[Dr. KOHEMUN-E N.
+				<text><![CDATA[Dr KOHEMUN-E. Natacha
 Sérologie]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="302" y="98" width="110" height="34"/>
+				<reportElement x="279" y="98" width="110" height="34"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[Mme BORGET-A M.Y.
+				<text><![CDATA[M. Ya Kouadio L.
 Diagnostic moléculaire]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="467" y="98" width="80" height="34"/>
+				<reportElement x="440" y="98" width="107" height="34"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[Dr TOURE-A R.
+				<text><![CDATA[Dr TOURE-A. Ramatou
 Assurance qualité]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">

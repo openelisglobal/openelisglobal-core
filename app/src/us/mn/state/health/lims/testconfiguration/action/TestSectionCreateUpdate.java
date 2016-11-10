@@ -121,6 +121,10 @@ public class TestSectionCreateUpdate extends BaseAction {
         testSection.setDescription(identifyingName);
         testSection.setTestSectionName(identifyingName);
         testSection.setIsActive("N");
+        String identifyingNameKey=identifyingName.replaceAll(" ","_");
+        testSection.setNameKey("testSection."+identifyingNameKey );
+        
+              
         testSection.setSortOrderInt(Integer.MAX_VALUE);
         testSection.setSysUserId(userId);
         return testSection;

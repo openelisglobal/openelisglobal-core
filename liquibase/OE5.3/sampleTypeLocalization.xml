@@ -26,7 +26,7 @@
         <comment>localization for haiti clinical</comment>
         <sqlFile path="OE5.3/sampleTypeLocalizationFiles/haitiLNSPsampleTypeLocalization.sql" />
     </changeSet>
-    <changeSet id="3" author="paulsc" context="CDIRetroCI">
+    <changeSet id="3" author="paulsc" context="CDIRetroCI,CDIRetroCI_CT">
         <comment>localization for haiti clinical</comment>
         <sqlFile path="OE5.3/sampleTypeLocalizationFiles/retroCIsampleTypeLocalization.sql" />
     </changeSet>

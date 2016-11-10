@@ -90,8 +90,6 @@ import java.util.List;
 public class SamplePatientEntrySaveAction extends BaseAction {
 
 	private static final String DEFAULT_ANALYSIS_TYPE = "MANUAL";
-
-
 	private OrganizationDAO orgDAO = new OrganizationDAOImpl();
 	private OrganizationAddressDAO orgAddressDAO = new OrganizationAddressDAOImpl();
 	private OrganizationOrganizationTypeDAO orgOrgTypeDAO = new OrganizationOrganizationTypeDAOImpl();

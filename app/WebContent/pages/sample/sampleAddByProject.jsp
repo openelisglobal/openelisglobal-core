@@ -410,7 +410,7 @@ function /*void*/ setSaveButton() {
                         styleClass="text"
                         style="display:none;"
                         styleId="iarv.labNo" />
-                <div id="iarv.labNoMessage" class="blank" />
+                <div id="iarv.labNoMessage" class="blank"  ></div>
             </td>
         </tr>
         <tr>
@@ -764,7 +764,7 @@ function /*void*/ setSaveButton() {
                 <app:text name="<%=formName%>" property="labNo"
                         styleClass="text" style="display:none;"
                         styleId="farv.labNo" />
-                <div id="farv.labNoMessage" class="blank" />
+                <div id="farv.labNoMessage" class="blank" ></div>
             </td>
         </tr>
         <tr>
@@ -1697,7 +1697,7 @@ function /*void*/ setSaveButton() {
                 <app:text name="<%=formName%>" property="labNo"
                         styleClass="text" style="display:none;"
                         styleId="spe.labNo" />
-                <div id="spe.labNoMessage" class="blank" />
+                <div id="spe.labNoMessage" class="blank" ></div>
             </td>
         </tr>
         <tr>
