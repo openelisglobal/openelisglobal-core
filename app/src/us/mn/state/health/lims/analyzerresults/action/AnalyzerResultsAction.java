@@ -581,7 +581,7 @@ public class AnalyzerResultsAction extends BaseAction {
 	}
 
 	private boolean getQaEventByTestSection(Analysis analysis){
-		
+		if(analysis==null) return false;
 		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
 			Sample sample=analysis.getSampleItem().getSample();
 			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
