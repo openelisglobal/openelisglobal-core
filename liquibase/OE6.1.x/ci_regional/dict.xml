@@ -180,6 +180,39 @@ INSERT INTO clinlims.dictionary (id,is_active,dict_entry,lastupdated,local_abbre
 INSERT INTO clinlims.dictionary (id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (1183,'Y','VL Reason Other', now(),'null',400,'sample.entry.project.vl.other',5);
 
 INSERT INTO clinlims.dictionary(id, is_active, dict_entry, lastupdated, local_abbrev, dictionary_category_id, display_key, sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','the paper form doesn''t have any explicit answer.',now(),'NotSpeced',null,'answer.notSpecified',106000);
+
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','B1',now(),'B1',403,'',10);
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','J0',now(),'J0',403,'',20);
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','J15',now(),'J15',403,'',30);
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','M1',now(),'M1',403,'',40);
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','M3',now(),'M3',403,'',50);
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','M6',now(),'M6',403,'',60);
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','M12',now(),'M12',403,'',70);
+INSERT INTO clinlims.dictionary(id,is_active,dict_entry,lastupdated,local_abbrev,dictionary_category_id,display_key,sort_order) VALUES (nextval('clinlims.dictionary_seq'),'Y','Other',now(),'Other',403,'labOrder.hiv.followup.byPeriod.other',80);
+
+
+
+
+
+
+
+
+
+
 </sql>
   </changeSet>
+  
+  <changeSet author="CI OpenELIS developers group" id="3" context="ci_regional,ci_general">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="1">select count(*) from clinlims.dictionary_category where id = 57;
+    		</sqlCheck>
+    </preConditions>
+    <comment>update in dictionary_category</comment>
+    <sql>
+UPDATE clinlims.dictionary_category
+   SET name='Yes No Unknown'
+ WHERE local_abbrev='YesNoUnkn';
+	
+	</sql>
+</changeSet>
 </databaseChangeLog>

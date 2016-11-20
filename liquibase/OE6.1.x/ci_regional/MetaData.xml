@@ -164,4 +164,14 @@ UPDATE clinlims.test_section
  </sql>
   </changeSet>  
     
+<changeSet author="CI OpenELIS developers group" id="7" context="ci_regional,ci_general">
+    
+    <sql>
+ALTER TABLE clinlims.organization
+ALTER COLUMN short_name SET DEFAULT '""';
+ 
+ </sql>
+  </changeSet> 	
+	
+	
 </databaseChangeLog>
