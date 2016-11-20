@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Some settings-->
-  <!-- Data specific to ci_regional -->
-  <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional">
+  <!-- Data specific to ci_regional,ci_general -->
+  <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional,ci_general">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization where name = 'CAT ADJAME';
     		</sqlCheck>
@@ -966,7 +966,7 @@ INSERT INTO clinlims.organization(id, name, city, zip_code, mls_sentinel_lab_fla
 </sql>
  </changeSet> 
 
- <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional">
+ <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional,ci_general">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization where name = 'Disp. STE A. BOCANDA';
     		</sqlCheck>
@@ -1018,7 +1018,7 @@ INSERT INTO clinlims.organization(id, name, city, zip_code, mls_sentinel_lab_fla
 </sql>
 
  </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="ci_regional">
+  <changeSet author="CI OpenELIS developers group" id="3" context="ci_regional,ci_general">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization_type where short_name = 'ARV Service Loc';
     		</sqlCheck>
@@ -1036,7 +1036,7 @@ INSERT INTO clinlims.organization_type(id, short_name, description, name_display
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="4" context="ci_regional">
+  <changeSet author="CI OpenELIS developers group" id="4" context="ci_regional,ci_general">
     <comment>adds on Organization_organization_type</comment>
     <sql>INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (760,20);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (761,20);
@@ -1398,7 +1398,7 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES 
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1079,24);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1080,24);</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="5" context="ci_regional">
+  <changeSet author="CI OpenELIS developers group" id="5" context="ci_regional,ci_general">
     <comment>adds on Organization_organization_type</comment>
     <sql>INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1081,24);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1082,24);
@@ -1757,7 +1757,7 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES 
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1666,23);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1667,23);</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="6" context="ci_regional">
+  <changeSet author="CI OpenELIS developers group" id="6" context="ci_regional,ci_general">
     <comment>adds on Organization_organization_type</comment>
     <sql>INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1668,20);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1669,20);
@@ -2117,7 +2117,7 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES 
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (2010,20);
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="7" context="ci_regional">
+  <changeSet author="CI OpenELIS developers group" id="7" context="ci_regional,ci_general">
     <comment>adds on Organization_organization_type</comment>
     <sql>INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (2011,20);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (2012,20);
@@ -2482,7 +2482,7 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES 
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1101,5);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1102,5);</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="8" context="ci_regional">
+  <changeSet author="CI OpenELIS developers group" id="8" context="ci_regional,ci_general">
     <comment>adds on Organization_organization_type</comment>
     <sql>INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1103,5);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1104,5);
@@ -2845,7 +2845,7 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES 
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1734,5);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1735,5);</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="9" context="ci_regional">
+  <changeSet author="CI OpenELIS developers group" id="9" context="ci_regional,ci_general">
     <comment>adds on Organization_organization_type</comment>
     <sql>INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1736,5);
 INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES (1737,5);

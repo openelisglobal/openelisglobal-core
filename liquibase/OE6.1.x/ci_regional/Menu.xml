@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Menu Study settings-->
-  <!-- Data specific to ci_regional -->
-  <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional">
+  <!-- Data specific to ci_regional,ci_general -->
+  <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional,ci_general">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_study';
     		</sqlCheck>
@@ -268,4 +268,22 @@ INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url
 
  </sql>
   </changeSet>
+  
+   <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional,ci_general">
+   <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id='menu_administration_test_management';
+    		</sqlCheck>
+    </preConditions>
+    <comment>remove in clinlims wrong sub menu in admin</comment>
+    <sql>
+    DELETE FROM clinlims.menu
+    WHERE element_id='menu_administration_test_management';
+  </sql>
+  </changeSet>  
+  
+  
+  
+  
+  
+  
 </databaseChangeLog>
