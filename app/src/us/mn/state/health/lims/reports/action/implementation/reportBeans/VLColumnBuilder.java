@@ -39,7 +39,7 @@ public class VLColumnBuilder extends CIColumnBuilder {
         add("started_date"     ,"STARTED_DATE", NONE);
         add("completed_date"     ,"COMPLETED_DATE", NONE);
         add("released_date"     ,"RELEASED_DATE", NONE);
-        add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
+      //  add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
              
         add("hivStatus"            , "STATVIH", DICT_RAW );
         add("nameOfDoctor"         , "NOMMED", NONE );

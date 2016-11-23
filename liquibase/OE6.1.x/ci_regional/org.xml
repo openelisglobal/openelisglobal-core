@@ -3147,6 +3147,6 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id) VALUES 
     <comment>update on Organization</comment>
     <sql>UPDATE clinlims.organization
    SET short_name=default
- WHERE short_name='';</sql>
+ WHERE short_name is null;</sql>
   </changeSet>
 </databaseChangeLog>
