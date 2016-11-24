@@ -67,7 +67,6 @@ var confirmNewTypeMessage = "<bean:message key='nonConformant.confirm.newType.me
 				}  
 			});
 }); */
-
 function siteListChanged(textValue){
 	var siteList = $("site");
 	//if the index is 0 it is a new entry, if it is not then the textValue may include the index value
@@ -92,7 +91,9 @@ function /*void*/loadForm() {
 function setMyCancelAction() {
 	setAction(window.document.forms[0], 'Cancel', 'no', '');
 }
-
+function doNothing(){
+	
+}
 function onChangeSearchNumber(searchField) {
 	var searchButton = $("searchButtonId");
 	if (searchField.value === "") {
@@ -334,7 +335,7 @@ function  processPhoneSuccess(xhr){
 	:
 	<input type="text" name="searchNumber"
 		maxlength='<%=Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
-		value="" onchange="onChangeSearchNumber(this)" id="searchId">
+		value="" onchange="doNothing()" id="searchId">
 	&nbsp;
 	<input type="button" id="searchButtonId"
 		value='<%=StringUtil.getMessageForKey("label.button.search")%>'

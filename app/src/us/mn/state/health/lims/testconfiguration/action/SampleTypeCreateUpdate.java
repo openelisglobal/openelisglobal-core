@@ -50,6 +50,10 @@ public class SampleTypeCreateUpdate extends BaseAction {
         DynaValidatorForm dynaForm = (DynaValidatorForm)form;
         String identifyingName = dynaForm.getString("sampleTypeEnglishName");
         String userId = getSysUserId(request);
+        
+        System.out.println(userId);
+        
+        
 
         Localization localization = createLocalization(dynaForm.getString("sampleTypeFrenchName"), identifyingName, userId);
 
@@ -123,6 +127,8 @@ public class SampleTypeCreateUpdate extends BaseAction {
     	typeOfSample.setIsActive(false);
     	typeOfSample.setSortOrder(Integer.MAX_VALUE);
     	typeOfSample.setSysUserId(userId);
+    	String identifyingNameKey=identifyingName.replaceAll(" ","_");
+    	typeOfSample.setNameKey("Sample.type."+identifyingNameKey);
     	return typeOfSample;
     }
 

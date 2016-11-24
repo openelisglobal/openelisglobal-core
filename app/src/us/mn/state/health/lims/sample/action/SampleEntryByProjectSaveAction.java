@@ -17,22 +17,43 @@
  */
 package us.mn.state.health.lims.sample.action;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.DynaActionForm;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import us.mn.state.health.lims.patient.valueholder.ObservationData;
 
+import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
+import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.patient.saving.Accessioner;
 import us.mn.state.health.lims.patient.saving.SampleEntry;
 import us.mn.state.health.lims.patient.saving.SampleEntryAfterPatientEntry;
 import us.mn.state.health.lims.patient.saving.SampleSecondEntry;
+import us.mn.state.health.lims.sample.action.util.SamplePatientUpdateData;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 
@@ -43,7 +64,6 @@ public class SampleEntryByProjectSaveAction extends BaseSampleEntryAction {
             throws Exception {
 
         String forward = FWD_SUCCESS;
-
         Accessioner accessioner;
         accessioner = new SampleSecondEntry((DynaBean) form, currentUserId, request);
         if (accessioner.canAccession()) {

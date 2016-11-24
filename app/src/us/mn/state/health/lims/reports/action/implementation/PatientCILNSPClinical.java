@@ -65,6 +65,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 	@Override
 	protected String reportFileName(){
 			return "PatientReportCDI";
+		//return "PatientClinicalReport";
 	}
 
     @Override

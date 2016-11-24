@@ -61,7 +61,9 @@ public class ObservationHistoryPopulateProvider extends BaseQueryProvider {
         "arvTreatmentAdvEffGrd",        
         "arvTreatmentAdvEffType",       
         "cotrimoxazoleTreatAdvEffGrd",  
-        "cotrimoxazoleTreatAdvEffType"
+        "cotrimoxazoleTreatAdvEffType",
+        "currentARVTreatmentINNs"
+       // "initialSampleConditionINNs"
     };
     
     ObservationHistoryDAO ohDAO = new ObservationHistoryDAOImpl();
@@ -86,7 +88,6 @@ public class ObservationHistoryPopulateProvider extends BaseQueryProvider {
 //        requestType = RequestType.valueOfAsUpperCase(s);
 
 		String result = createSearchResultXML();
-
 		ajaxServlet.sendData(xml.toString(), result, request, response);
 	}
 

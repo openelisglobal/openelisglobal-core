@@ -410,7 +410,7 @@ function /*void*/ setSaveButton() {
                         styleClass="text"
                         style="display:none;"
                         styleId="iarv.labNo" />
-                <div id="iarv.labNoMessage" class="blank" />
+                <div id="iarv.labNoMessage" class="blank"  ></div>
             </td>
         </tr>
         <tr>
@@ -764,7 +764,7 @@ function /*void*/ setSaveButton() {
                 <app:text name="<%=formName%>" property="labNo"
                         styleClass="text" style="display:none;"
                         styleId="farv.labNo" />
-                <div id="farv.labNoMessage" class="blank" />
+                <div id="farv.labNoMessage" class="blank" ></div>
             </td>
         </tr>
         <tr>
@@ -1349,7 +1349,7 @@ function /*void*/ setSaveButton() {
             <td>
                 <div class="blank"><bean:message key="sample.entry.project.LIND"/></div>
                 <INPUT type="text" name="ind.labNoForDisplay" id="ind.labNoForDisplay" size="5" class="text"
-                    onchange="handleLabNoChange( this, 'LIND', false );makeDirty();"
+                    onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LIND"/>', false );makeDirty();"
                     maxlength="5" />
                 <app:text name="<%=formName%>" property="labNo" style="display:none;"
                         styleClass="text"
@@ -1692,12 +1692,12 @@ function /*void*/ setSaveButton() {
             <td>
                 <div class="blank"><bean:message key="sample.entry.project.LSPE"/></div>
                 <INPUT type="text" name="spe.labNoForDisplay" id="spe.labNoForDisplay" size="5" class="text"
-                    onchange="handleLabNoChange( this, 'LSPE', 'false' );makeDirty();"
+                    onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LSPE"/>', 'false' );makeDirty();"
                     maxlength="5" />
                 <app:text name="<%=formName%>" property="labNo"
                         styleClass="text" style="display:none;"
                         styleId="spe.labNo" />
-                <div id="spe.labNoMessage" class="blank" />
+                <div id="spe.labNoMessage" class="blank" ></div>
             </td>
         </tr>
         <tr>

@@ -34,9 +34,9 @@ import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapte
 import us.mn.state.health.lims.common.services.registration.ValidationUpdateRegister;
 import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
 import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
+//import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+//import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
@@ -126,6 +126,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		String testSectionName = (String)dynaForm.get("testSection");
 		String testName = (String)dynaForm.get("testName");
 		setRequestType(testSectionName);
+		//----------------------
+		String url = request.getRequestURL().toString();
 		
 		ActionMessages errors = validateModifiedItems(resultItemList);
 
@@ -202,7 +204,8 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		}
 		
 		// route save back to RetroC specific ResultValidationRetroCAction
-		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI"))
+	//	if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI"))
+		if (url.contains("RetroC"))
 			forward = "successRetroC";
 
 		if( isBlankOrNull( testSectionName )){

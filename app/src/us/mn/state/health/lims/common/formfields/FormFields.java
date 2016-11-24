@@ -56,7 +56,8 @@ public class FormFields {
 		NON_CONFORMITY_SITE_LIST,               // site (patient entry or nonconforming) is defined by a list of sites.
 		NON_CONFORMITY_SITE_LIST_USER_ADDABLE,  //Should the user be able to add to the site list
 		NON_CONFORMITY_PROVIDER_ADDRESS,        //Should the providers address be collected on non-conformity page
-        ADDRESS_CITY,                            //Is a city part of an address
+		QaEventsBySection,                      //Should sample non-conformity events regrouped by test section in report
+		ADDRESS_CITY,                            //Is a city part of an address
         ADDRESS_DEPARTMENT,                      //Is department part of an address
         ADDRESS_COMMUNE,                         //Is a commune part of an address
         ADDRESS_VILLAGE,                         //Is a village part of an address
