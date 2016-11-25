@@ -35,7 +35,7 @@ INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, la
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.address_part where display_key = 'address.commune';
     		</sqlCheck>
