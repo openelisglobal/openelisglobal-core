@@ -34,8 +34,7 @@ UPDATE clinlims.site_information
    UPDATE clinlims.site_information
    SET value = 'CDI'
  WHERE name='passwordRequirements';
-
-
+ 
  </sql>
   </changeSet>
 </databaseChangeLog>

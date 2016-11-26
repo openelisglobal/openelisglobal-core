@@ -36,4 +36,5 @@
   <include file="OE6.1.x/ci_regional/AddRetroTest.xml" />
   <include file="OE6.1.x/ci_regional/qa_event.xml" />
    <include file="OE6.1.x/ci_regional/system_role_module.xml" />
+   <include file="OE6.1.x/ci_regional/AdditionalAdd.xml" />
   </databaseChangeLog> 

@@ -1033,8 +1033,8 @@ INSERT INTO clinlims.organization_type(id, short_name, description, name_display
 INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (22,'EID EGPAF','Elizabeth Glaser Pediatric AIDS Foundation','org_type.EGPAF.name',now());
 INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (23,'EID ESTHER','Ensemble pour une Solidarité Thérapeutique Hosp. En Réseau','org_type.ESTHER.name',now());
 INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (24,'EID ICAP','The Internat. Center for AIDS Care and Treatment Programs','org_type.ICAP.name',now());
-INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (27,'SEV-CI','SEV-CI','org_type.SEVCI.name',now());
-INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (28,'ARIEL','Ariel Glaser Foundation','org_type.ARIEL.name',now());
+INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (27,'EID SEV-CI','SEV-CI','org_type.SEVCI.name',now());
+INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (28,'EID ARIEL','Ariel Glaser Foundation','org_type.ARIEL.name',now());
 
 </sql>
   </changeSet>
