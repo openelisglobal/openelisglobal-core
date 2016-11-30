@@ -63,17 +63,42 @@ UPDATE clinlims.menu
    SET action_url = default
  WHERE action_url='/ResultValidationRetroC.do?type=virology&amp;test='; 
  
+ 
+
+ 
 	 </sql>
   </changeSet>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+<changeSet author="CI OpenELIS developers group" id="4" context="ci_regional,ci_general">
+        <comment>Insert virologie functions </comment>
+    <sql>
+	
+UPDATE clinlims.test_section
+   SET is_active='Y'
+ WHERE name='Virologie';
+	
+UPDATE clinlims.system_module
+ SET name='Workplan:Virologie', description='Workplan=&gt;Virologie'
+ WHERE name='Workplan:virology';
+ 
+UPDATE clinlims.system_module
+ SET name='LogbookResults:Virologie', description='LogbookResults=&gt;Enter=&gt;Virologie'
+ WHERE name='LogbookResults:virology';
+ 
+UPDATE clinlims.system_module
+ SET name='ResultValidation:Virologie', description='ResultValidation=&gt;Virologie'
+ WHERE name='ResultValidation:virologie';
+ 
+ 
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1029,'Y','Y','Y','Y',5,(select id from clinlims.system_module where description='Workplan=&gt;Virologie'));
+
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1030,'Y','Y','Y','Y',5,(select id from clinlims.system_module where description='LogbookResults=&gt;Enter=&gt;Virologie'));
+
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1031,'Y','Y','Y','Y',10,(select id from clinlims.system_module where description='ResultValidation=&gt;Virologie'));
+
+ 
+	 </sql>
+  </changeSet>  
+
+   
 </databaseChangeLog>
