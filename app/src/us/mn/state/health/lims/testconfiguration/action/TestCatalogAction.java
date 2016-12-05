@@ -28,6 +28,8 @@ import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.services.TypeOfTestResultService;
+import us.mn.state.health.lims.common.util.SystemConfiguration;
+import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class TestCatalogAction extends BaseAction {
     private DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
@@ -90,8 +93,13 @@ public class TestCatalogAction extends BaseAction {
             bean.setResultType(resultType);
             TypeOfSample typeOfSample = testService.getTypeOfSample();
             bean.setSampleType(typeOfSample != null ? typeOfSample.getLocalizedName() : "n/a");
-            bean.setOrderable(test.getOrderable() ? "Orderable" : "Not orderable");
-            bean.setActive(test.isActive() ? "Active" : "Not active");
+            Locale locale = SystemConfiguration.getInstance().getDefaultLocale();
+            //bean.setOrderable(test.getOrderable() ? "Orderable" : "Not orderable");
+            bean.setOrderable(test.getOrderable() ? ResourceLocator.getInstance().getMessageResources().getMessage(locale, "orderable.text.field") 
+            		: ResourceLocator.getInstance().getMessageResources().getMessage(locale, "not_orderable.text.field"));
+            //bean.setActive(test.isActive() ? "Active" : "Not active");
+            bean.setActive(test.isActive() ? ResourceLocator.getInstance().getMessageResources().getMessage(locale, "active.text.field") 
+            		: ResourceLocator.getInstance().getMessageResources().getMessage(locale, "not_active.text.field"));
             bean.setUom(testService.getUOM(false));
             if( TypeOfTestResultService.ResultType.NUMERIC.matches(resultType)) {
                 bean.setSignificantDigits(testService.getPossibleTestResults().get(0).getSignificantDigits());

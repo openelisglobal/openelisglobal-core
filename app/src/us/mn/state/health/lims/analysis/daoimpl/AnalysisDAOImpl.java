@@ -1428,6 +1428,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 
 	@Override
 	public Analysis getAnalysisById(String analysisId) throws LIMSRuntimeException {
+		if(analysisId==null) return null;
 		try {
 			Analysis analysis = (Analysis) HibernateUtil.getSession().get(Analysis.class, analysisId);
 			closeSession();

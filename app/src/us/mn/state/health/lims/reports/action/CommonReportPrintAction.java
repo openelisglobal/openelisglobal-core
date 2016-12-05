@@ -37,8 +37,7 @@ import java.util.HashMap;
 public class CommonReportPrintAction extends BaseAction {
 
 	private static String reportPath = null;
-	private static String leftLabLogoPath = null;
-	private static String rightLabLogoPath = null;
+	private static String imagesPath = null;
 
 
 	@SuppressWarnings("unchecked")
@@ -61,9 +60,8 @@ public class CommonReportPrintAction extends BaseAction {
 
 			HashMap<String, String> parameterMap = (HashMap<String, String>) reportCreator.getReportParameters();
 			parameterMap.put("SUBREPORT_DIR", getReportPath());
-			parameterMap.put("leftHeaderImage2", getLeftHeaderLogoPath());//WINDOWS BUG FIX
-			parameterMap.put("rightHeaderImage2", getRightHeaderLogoPath());//WINDOWS BUG FIX
-
+			parameterMap.put("imagesPath", getImagesPath());
+			
 			try {
 
 				response.setContentType(reportCreator.getContentType());
@@ -113,21 +111,13 @@ public class CommonReportPrintAction extends BaseAction {
 		if (reportPath == null) {
 			reportPath = getServlet().getServletContext().getRealPath("") + "/WEB-INF/reports/";
 		}
-
 		return reportPath;
 	}
 	
-	public String getLeftHeaderLogoPath() {
-		if (leftLabLogoPath == null) {
-			leftLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/leftLabLogo.jpg";
+	public String getImagesPath() {
+		if (imagesPath == null) {
+			imagesPath = getServlet().getServletContext().getRealPath("") + "/images/" ;
 		}
-		return leftLabLogoPath;	
-	}
-	
-	public String getRightHeaderLogoPath() {
-		if (rightLabLogoPath == null) {
-			rightLabLogoPath = getServlet().getServletContext().getRealPath("") + "/images/rightLabLogo.jpg";
-		}
-		return rightLabLogoPath;		
+		return imagesPath;
 	}
 }

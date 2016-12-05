@@ -46,7 +46,7 @@ public class EIDColumnBuilder extends CIColumnBuilder {
         add("started_date"     ,"STARTED_DATE", NONE);
         add("completed_date"     ,"COMPLETED_DATE", NONE);
         add("released_date"     ,"RELEASED_DATE", NONE);
-        add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);// a means to check unknown patient with id=1
+   //     add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);// a means to check unknown patient with id=1
         
         add("nameOfSampler"     ,"NOMPREV", NONE);
         add("nameOfRequestor"   ,"NOMMED",  NONE);

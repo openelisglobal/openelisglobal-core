@@ -147,9 +147,23 @@ DELETE FROM clinlims.system_role_module  WHERE system_role_id=57 AND system_modu
 INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1054,'Y','Y','Y','Y',57,1012);
 INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1055,'Y','Y','Y','Y',57,17);
 
-
-
-
 </sql>
   </changeSet>
+  
+<changeSet author="CI OpenELIS developers group" id="4" context="CDIRetroCI,CDIRetroCI_CT">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.system_module where name= 'MenuStatementConfig';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Insert in clinlims new role_module and module</comment>
+    <sql>
+	
+INSERT INTO clinlims.system_module(id, name, description, has_select_flag, has_add_flag, has_update_flag,has_delete_flag) VALUES (nextval('clinlims.system_module_seq'),'MenuStatementConfig','Admin=>MenuStatementConfig','Y','Y','Y','Y');
+
+INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1056,'Y','Y','Y','Y',1,(select id from clinlims.system_module where name='MenuStatementConfig'));
+	
+	 </sql>
+  </changeSet>   
+  
+    
 </databaseChangeLog>
