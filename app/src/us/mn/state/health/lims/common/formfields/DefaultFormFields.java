@@ -79,6 +79,7 @@ public class DefaultFormFields extends AFormFields {
         setFieldFalse(Field.Project);        
         setFieldFalse(Field.NON_CONFORMITY_SITE_LIST);
         setFieldFalse(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE);
+        setFieldFalse(Field.QaEventsBySection);
 		setFieldFalse(Field.PatientIDRequired_SampleConfirmation);
 		setFieldFalse(Field.SampleEntryUseReceptionHour);
 		setFieldFalse(Field.SampleEntryUseRequestDate);

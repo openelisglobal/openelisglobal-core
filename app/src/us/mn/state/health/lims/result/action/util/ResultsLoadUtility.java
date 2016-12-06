@@ -33,6 +33,7 @@ import us.mn.state.health.lims.common.services.*;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.*;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -64,6 +65,9 @@ import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.sampleitem.dao.SampleItemDAO;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.statusofsample.util.StatusRules;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
@@ -73,10 +77,10 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem.ResultDisplayType;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
+//import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.common.services.TypeOfSampleService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -660,6 +664,9 @@ public class ResultsLoadUtility {
         testItem.setDisplayResultAsLog(hasLogValue(testService));
         testItem.setNonconforming( analysisService.isParentNonConforming() || 
                 StatusService.getInstance().matches(analysisService.getStatusId(), AnalysisStatus.TechnicalRejected ));
+        if(FormFields.getInstance().useField(Field.QaEventsBySection) )
+        	testItem.setNonconforming(getQaEventByTestSection(analysisService.getAnalysis()));
+
         Result quantifiedResult = analysisService.getQuantifiedResult();
         if( quantifiedResult != null){
             testItem.setQualifiedResultId( quantifiedResult.getId() );
@@ -904,6 +911,25 @@ public class ResultsLoadUtility {
 
 	public boolean isLockCurrentResults() {
 		return lockCurrentResults;
+	}
+
+	private boolean getQaEventByTestSection(Analysis analysis){
+		
+		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
+			Sample sample=analysis.getSampleItem().getSample();
+			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQaEventsList){
+				QAService qa = new QAService(event);
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
+					 return true;				
+			}
+		}
+		return false;
+	}
+
+	public List<SampleQaEvent> getSampleQaEvents(Sample sample){
+		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
+		return sampleQaEventDAO.getSampleQaEventsBySample(sample);
 	}
 
 }

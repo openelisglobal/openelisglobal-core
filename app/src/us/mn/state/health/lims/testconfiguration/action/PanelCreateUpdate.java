@@ -144,7 +144,7 @@ public class PanelCreateUpdate extends BaseAction {
     private SystemModule createSystemModule(String menuItem, String identifyingName, String userId) {
         SystemModule module = new SystemModule();
         module.setSystemModuleName(menuItem + ":" + identifyingName);
-        module.setDescription(menuItem + "=>" + identifyingName);
+        module.setDescription(menuItem + "=>panel=>" + identifyingName);
         module.setSysUserId(userId);
         module.setHasAddFlag("Y");
         module.setHasDeleteFlag("Y");

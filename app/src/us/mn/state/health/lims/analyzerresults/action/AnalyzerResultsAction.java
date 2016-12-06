@@ -35,7 +35,10 @@ import us.mn.state.health.lims.analyzerresults.daoimpl.AnalyzerResultsDAOImpl;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -48,7 +51,11 @@ import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.test.valueholder.Test;
+//import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testreflex.action.util.TestReflexUtil;
 import us.mn.state.health.lims.testreflex.dao.TestReflexDAO;
 import us.mn.state.health.lims.testreflex.daoimpl.TestReflexDAOImpl;
@@ -138,6 +145,9 @@ public class AnalyzerResultsAction extends BaseAction {
 						if (groupHeader == null) {
 							groupHeader = resultItem;
 							setNonConformityStateForResultItem(resultItem);
+							if(FormFields.getInstance().useField(Field.QaEventsBySection) )
+								resultItem.setNonconforming(getQaEventByTestSection(analysisDAO.getAnalysisById(resultItem.getAnalysisId())));
+
 						}
 						resultItem.setSampleGroupingNumber(sampleGroupingNumber);
 
@@ -568,5 +578,24 @@ public class AnalyzerResultsAction extends BaseAction {
 		if (!GenericValidator.isBlankOrNull(requestType)) {
            analyzer = AnalyzerTestNameCache.instance().getDBNameForActionName(requestType);
 		}
+	}
+
+	private boolean getQaEventByTestSection(Analysis analysis){
+		if(analysis==null) return false;
+		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
+			Sample sample=analysis.getSampleItem().getSample();
+			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQaEventsList){
+				QAService qa = new QAService(event);
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
+					 return true;				
+			}
+		}
+		return false;
+	}
+
+	public List<SampleQaEvent> getSampleQaEvents(Sample sample){
+		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
+		return sampleQaEventDAO.getSampleQaEventsBySample(sample);
 	}
 }

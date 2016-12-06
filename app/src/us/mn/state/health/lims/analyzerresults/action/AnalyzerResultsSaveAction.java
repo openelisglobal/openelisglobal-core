@@ -88,7 +88,7 @@ import java.util.*;
 
 public class AnalyzerResultsSaveAction extends BaseAction {
 
-	private static final boolean IS_RETROCI = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.configurationName, "CI RetroCI");
+	private static final boolean IS_RETROCI = ConfigurationProperties.getInstance().isPropertyValueEqual(ConfigurationProperties.Property.configurationName, "CI_GENERAL");
 	private static final String REJECT_VALUE = "XXXX";
 	private ResultDAO resultDAO = new ResultDAOImpl();
 	private NoteDAO noteDAO = new NoteDAOImpl();

@@ -37,6 +37,7 @@ import java.util.HashMap;
 public class CommonReportPrintAction extends BaseAction {
 
 	private static String reportPath = null;
+	private static String imagesPath = null;
 
 
 	@SuppressWarnings("unchecked")
@@ -59,7 +60,8 @@ public class CommonReportPrintAction extends BaseAction {
 
 			HashMap<String, String> parameterMap = (HashMap<String, String>) reportCreator.getReportParameters();
 			parameterMap.put("SUBREPORT_DIR", getReportPath());
-
+			parameterMap.put("imagesPath", getImagesPath());
+			
 			try {
 
 				response.setContentType(reportCreator.getContentType());
@@ -109,7 +111,13 @@ public class CommonReportPrintAction extends BaseAction {
 		if (reportPath == null) {
 			reportPath = getServlet().getServletContext().getRealPath("") + "/WEB-INF/reports/";
 		}
-
 		return reportPath;
+	}
+	
+	public String getImagesPath() {
+		if (imagesPath == null) {
+			imagesPath = getServlet().getServletContext().getRealPath("") + "/images/" ;
+		}
+		return imagesPath;
 	}
 }

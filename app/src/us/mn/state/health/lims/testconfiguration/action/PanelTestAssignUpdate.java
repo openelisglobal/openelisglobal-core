@@ -30,6 +30,7 @@ import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
@@ -47,9 +48,13 @@ public class PanelTestAssignUpdate extends BaseAction {
     	DynaValidatorForm dynaForm = (DynaValidatorForm)form;
         String panelId = dynaForm.getString("panelId");
         String currentUser = getSysUserId(request);
+        boolean updatepanel = false;
+        
+ 
         
         Panel panel = new PanelDAOImpl().getPanelById(panelId);
-                        
+        
+                                
         if (!GenericValidator.isBlankOrNull(panelId)) {
         	PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
         	@SuppressWarnings("unchecked")
@@ -74,6 +79,21 @@ public class PanelTestAssignUpdate extends BaseAction {
         			new PanelItemDAOImpl().insertData(panelItem);
         		}
         		
+//------------------------------------
+        		if( "N".equals(panel.getIsActive())){
+        			panel.setIsActive("Y");
+        			panel.setSysUserId(currentUser);
+        			updatepanel=true;
+            	                	    
+        					}
+        		
+        		 if(updatepanel==true){
+                     new PanelDAOImpl().updateData(panel);
+                 }    
+        		
+//-------------------------------------        		
+      		
+        		
         		tx.commit();
             } catch (HibernateException e) {
                 tx.rollback();
@@ -82,6 +102,17 @@ public class PanelTestAssignUpdate extends BaseAction {
             }
             
         }
+        
+//--------------------------        
+        
+ if(updatepanel==false){
+	 panel.setIsActive("N");
+    panel.setSysUserId(currentUser);
+	 
+    new PanelDAOImpl().updateData(panel);
+ }        
+//---------------------------        
+        
         DisplayListService.refreshList(DisplayListService.ListType.PANELS);
         DisplayListService.refreshList(DisplayListService.ListType.PANELS_INACTIVE);
 

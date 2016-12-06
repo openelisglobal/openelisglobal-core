@@ -22,11 +22,12 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 public class INDFormMapper extends BaseProjectFormMapper implements IProjectFormMapper {
 
-	private String projectCode = "LIND";
+	private String projectCode = StringUtil.getMessageForKey("sample.entry.project.LIND");
 	private final String projectName = "Indeterminate Results";
 
 	public INDFormMapper(String projectFormId, BaseActionForm dynaForm) {

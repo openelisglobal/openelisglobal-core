@@ -713,7 +713,7 @@ public class NonConformityUpdateWorker {
 	}
 
 	private SampleQaEvent addSampleQaEvent(QaEventItem item, SampleItem sampleItem) {
-		QAService qaService = new QAService(new SampleQaEvent());
+		QAService qaService = new QAService(new SampleQaEvent());			
 		qaService.setCurrentUserId(webData.getCurrentSysUserId());
 		qaService.setReportTime(getCompleteDateTime());
 		qaService.setQaEventById(item.getQaEvent());

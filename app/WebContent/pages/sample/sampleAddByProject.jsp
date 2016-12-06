@@ -61,7 +61,7 @@ function  /*void*/ setMyCancelAction(form, action, validate, parameters)
 
 function Studies() {
     this.validators = new Array();
-    this.studyNames = ["InitialARV_Id", "FollowUp_ARV_Id", "RTN_Id", "EID_Id", "Indeterminate_Id", "Special_Request_Id"];
+    this.studyNames = ["InitialARV_Id", "FollowUp_ARV_Id", "RTN_Id", "EID_Id", "VL_Id",  "Indeterminate_Id", "Special_Request_Id"];
 
     this.validators["InitialARV_Id"] = new FieldValidator();
     this.validators["InitialARV_Id"].setRequiredFields( new Array("iarv.labNo", "iarv.receivedDateForDisplay", "iarv.interviewDate", "iarv.centerCode", "subjectOrSiteSubject", "iarv.gender", "iarv.dateOfBirth") );
@@ -172,6 +172,10 @@ function switchStudyForm( divId ){
             //location.replace("SampleEntryByProject.do?type=initial");
             savePage__("SampleEntryByProject.do?type=" + type);
             return;
+        case "VL_Id":
+            //location.replace("SampleEntryByProject.do?type=initial");
+            savePage__("SampleEntryByProject.do?type=" + type);
+            return;
         }
         toggleDisabledDiv(document.getElementById(divId), true);
         //document.forms[0].project.value = divId;
@@ -253,6 +257,7 @@ function /*void*/ setSaveButton() {
     <option value="EID_Id" ><bean:message key="sample.entry.project.EID.title"/></option>
     <option value="Indeterminate_Id" ><bean:message key="sample.entry.project.indeterminate.title"/></option>
     <option value="Special_Request_Id"><bean:message key="sample.entry.project.specialRequest.title"/></option>
+    <option value="VL_Id" ><bean:message key="sample.entry.project.VL.title"/></option>
 </select>
 <br/>
 <hr>
@@ -399,13 +404,13 @@ function /*void*/ setSaveButton() {
             <td>
                 <div class="blank"><bean:message key="sample.entry.project.LART"/></div>
                 <INPUT type="text" name="iarv.labNoForDisplay" id="iarv.labNoForDisplay" size="5" class="text"
-                    onchange="handleLabNoChange( this, 'LART', 'false' );makeDirty();"
+                    onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LART"/>', 'false' );makeDirty();"
                     maxlength="5" />
                 <app:text name="<%=formName%>" property="labNo"
                         styleClass="text"
                         style="display:none;"
                         styleId="iarv.labNo" />
-                <div id="iarv.labNoMessage" class="blank" />
+                <div id="iarv.labNoMessage" class="blank"  ></div>
             </td>
         </tr>
         <tr>
@@ -754,12 +759,12 @@ function /*void*/ setSaveButton() {
             <td>
                 <div class="blank"><bean:message key="sample.entry.project.LART"/></div>
                 <INPUT type=text name="farv.labNoForDisplay" id="farv.labNoForDisplay" size="5" class="text"
-                    onchange="handleLabNoChange( this, 'LART', false );makeDirty();"
+                    onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LART"/>', false );makeDirty();"
                     maxlength="5" />
                 <app:text name="<%=formName%>" property="labNo"
                         styleClass="text" style="display:none;"
                         styleId="farv.labNo" />
-                <div id="farv.labNoMessage" class="blank" />
+                <div id="farv.labNoMessage" class="blank" ></div>
             </td>
         </tr>
         <tr>
@@ -1186,6 +1191,10 @@ function /*void*/ setSaveButton() {
     <h2><bean:message key="sample.entry.project.EID.title"/></h2>
 </div>
 
+<div id="VL_Id" style="display:none;">
+    <h2><bean:message key="sample.entry.project.VL.title"/></h2>
+</div>
+
 <div id="Indeterminate_Id" style="display:none;">
     <h2><bean:message key="sample.entry.project.indeterminate.title"/></h2>
     <table width="100%">
@@ -1340,7 +1349,7 @@ function /*void*/ setSaveButton() {
             <td>
                 <div class="blank"><bean:message key="sample.entry.project.LIND"/></div>
                 <INPUT type="text" name="ind.labNoForDisplay" id="ind.labNoForDisplay" size="5" class="text"
-                    onchange="handleLabNoChange( this, 'LIND', false );makeDirty();"
+                    onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LIND"/>', false );makeDirty();"
                     maxlength="5" />
                 <app:text name="<%=formName%>" property="labNo" style="display:none;"
                         styleClass="text"
@@ -1683,12 +1692,12 @@ function /*void*/ setSaveButton() {
             <td>
                 <div class="blank"><bean:message key="sample.entry.project.LSPE"/></div>
                 <INPUT type="text" name="spe.labNoForDisplay" id="spe.labNoForDisplay" size="5" class="text"
-                    onchange="handleLabNoChange( this, 'LSPE', 'false' );makeDirty();"
+                    onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LSPE"/>', 'false' );makeDirty();"
                     maxlength="5" />
                 <app:text name="<%=formName%>" property="labNo"
                         styleClass="text" style="display:none;"
                         styleId="spe.labNo" />
-                <div id="spe.labNoMessage" class="blank" />
+                <div id="spe.labNoMessage" class="blank" ></div>
             </td>
         </tr>
         <tr>

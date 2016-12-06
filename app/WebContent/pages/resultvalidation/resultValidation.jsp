@@ -34,7 +34,7 @@
 	int rowColorIndex = 2;
 	IAccessionNumberValidator accessionNumberValidator;
 	String searchTerm = null;
-	boolean showTestSectionSelect = false;
+	//boolean showTestSectionSelect = false;
 %>
 <%
 
@@ -45,9 +45,13 @@
 	currentAccessionNumber="";
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 	searchTerm = request.getParameter("searchTerm");
-	showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");
+	String url = request.getAttribute("javax.servlet.forward.servlet_path").toString();	
+	/*	showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");*/
 	
+		
 %>
+
+
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/math-extend.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -302,7 +306,7 @@ function /*boolean*/ handleEnterEvent(){
 
 </script>
 
-<% if( showTestSectionSelect ){ %>
+<% if( !(url.contains("RetroC") )){ %>
 <div id="searchDiv" class="colorFill"  >
 <div id="PatientPage" class="colorFill" style="display:inline" >
 <h2><bean:message key="sample.entry.search"/></h2>
@@ -699,6 +703,7 @@ function /*boolean*/ handleEnterEvent(){
 		<input type="button" value='<%=StringUtil.getMessageForKey("label.button.next") %>' style="width:100px;" disabled="disabled" />
 	<% }else{ %>
 		<input type="button" value='<%=StringUtil.getMessageForKey("label.button.next") %>' style="width:100px;" onclick="pager.pageFoward();"   />
+				
 	<% } %>
 
 		&nbsp;

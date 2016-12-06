@@ -25,7 +25,11 @@ public class ReportImplementationFactory{
 
 	public static IReportParameterSetter getParameterSetter(String report){
 		if(!GenericValidator.isBlankOrNull(report)){
-			if(report.equals("patientARVInitial1")){
+			if(report.equals("patientARV1")){
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.all"),null);
+			}else if(report.equals("retroCINonConformityByLabno")){
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.all"),null);
+			}else if(report.equals("patientARVInitial1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
 			}else if(report.equals("patientARVInitial2")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.ARV.initial"), null);
@@ -37,6 +41,8 @@ public class ReportImplementationFactory{
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.EID"), null);
 			}else if(report.equals("patientEID2")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.EID"), null);
+			}else if(report.equals("patientVL1")){
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.VL"), null);
 			}else if(report.equals("patientIndeterminate1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE,StringUtil.getMessageForKey("reports.label.patient.indeterminate"), null);
 			}else if(report.equals("patientIndeterminate2")){
@@ -45,7 +51,7 @@ public class ReportImplementationFactory{
 				return new PatientIndeterminateByLocationReport();
 			}else if(report.equals("indicatorSectionPerformance")){
 				return new ReportSpecificationParameters( Parameter.NO_SPECIFICATION, StringUtil.getMessageForKey("reports.label.indicator.performance"), null );
-			}else if(report.equals("patientHaitiClinical") || report.equals("patientHaitiLNSP") || report.equals("patientCILNSP")){
+			}else if(report.equals("patientHaitiClinical") || report.equals("patientHaitiLNSP") || report.equals("patientCILNSP")|| report.equals("patientCILNSP_vreduit")){
 				return new PatientClinicalReport();
 			}else if(report.equals("indicatorHaitiClinicalHIV")){
 				return new IndicatorHIV();
@@ -59,6 +65,8 @@ public class ReportImplementationFactory{
 				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
 				return new ExportProjectByDate();
+			}else if(report.equals("CISampleRoutineExport")){
+				return new ExportRoutineByDate();
 			}else if(report.equals("referredOut")){
 				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport") || report.equals("HaitiLNSPExportReport")){
@@ -118,7 +126,11 @@ public class ReportImplementationFactory{
 
 	public static IReportCreator getReportCreator(String report){
 		if(!GenericValidator.isBlankOrNull(report)){
-			if(report.equals("patientARVInitial1")){
+			if(report.equals("patientARV1")){
+				return new PatientARVVersion1Report();
+			}else if(report.equals("retroCINonConformityByLabno")){
+				return new RetroCINonConformityByLabno();
+			}else if(report.equals("patientARVInitial1")){
 				return new PatientARVInitialVersion1Report();
 			}else if(report.equals("patientARVInitial2")){
 				return new PatientARVInitialVersion2Report();
@@ -130,6 +142,8 @@ public class ReportImplementationFactory{
 				return new PatientEIDVersion1Report();
 			}else if(report.equals("patientEID2")){
 				return new PatientEIDVersion2Report();
+			}else if(report.equals("patientVL1")){
+				return new PatientVLVersion1Report();
 			}else if(report.equals("patientIndeterminate1")){
 				return new PatientIndeterminateVersion1Report();
 			}else if(report.equals("patientIndeterminate2")){
@@ -144,6 +158,8 @@ public class ReportImplementationFactory{
 				return new PatientClinicalReport(isLNSP);
 			}else if(report.equals("patientCILNSP")){
 				return new PatientCILNSPClinical();
+			}else if(report.equals("patientCILNSP_vreduit")){
+				return new PatientCILNSPClinical_vreduit();
 			}else if(report.equals("indicatorHaitiClinicalHIV")){
 				return new IndicatorHIV();
 			}else if(report.equals("indicatorHaitiLNSPHIV")){
@@ -153,7 +169,9 @@ public class ReportImplementationFactory{
 			}else if(report.equals("indicatorHaitiLNSPAllTests")){
 				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
-				return new ExportProjectByDate();
+			return new ExportProjectByDate();
+			}else if(report.equals("CISampleRoutineExport")){
+				return new ExportRoutineByDate();
 			}else if(report.equals("referredOut")){
 				return new ReferredOutReport();
 			}else if(report.equals("HaitiExportReport")){

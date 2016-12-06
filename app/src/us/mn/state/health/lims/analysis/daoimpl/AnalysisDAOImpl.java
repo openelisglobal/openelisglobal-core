@@ -45,6 +45,13 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
+import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
+import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.test.dao.TestDAO;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
+import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 
 /**
  * @author diane benz
@@ -1421,6 +1428,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 
 	@Override
 	public Analysis getAnalysisById(String analysisId) throws LIMSRuntimeException {
+		if(analysisId==null) return null;
 		try {
 			Analysis analysis = (Analysis) HibernateUtil.getSession().get(Analysis.class, analysisId);
 			closeSession();
@@ -1430,6 +1438,67 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 		}
 		
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Analysis> getAnalysesBySampleIdTestIdAndStatusId(List<Integer> sampleIdList, List<Integer> testIdList, List<Integer> statusIdList) throws LIMSRuntimeException {
+	
+		if (sampleIdList.isEmpty() || testIdList.isEmpty() || statusIdList.isEmpty()) {
+			return new ArrayList<Analysis>();
+		}
+		String sql = "from Analysis a where a.sampleItem.sample.id in (:sampleIdList) and a.test.id in (:testIdList) and a.statusId in (:statusIdList) order by a.releasedDate desc";
+	
+		try {
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setParameterList("sampleIdList", sampleIdList);
+			query.setParameterList("testIdList", testIdList);
+			query.setParameterList("statusIdList", statusIdList);
+			List<Analysis> analysisList = query.list();
+			closeSession();
+			return analysisList;
+		} catch (HibernateException e) {
+			handleException(e, "getAnalysesBySampleIdTestIdAndStatusId");
+		}
+	
+		return null;
+	
+	}
+
+	public Analysis getPatientPreviousAnalysisForTestName(Patient patient,Sample currentSample, String testName){
+		Analysis previousAnalysis=null;
+		List<Integer> sampIDList= new ArrayList<Integer>();
+		List<Integer> testIDList= new ArrayList<Integer>();
+		TestDAO testDAO=new TestDAOImpl();
+		SampleHumanDAO sampleHumanDAO = new SampleHumanDAOImpl();
+		
+		List<Sample> sampList=sampleHumanDAO.getSamplesForPatient(patient.getId());		
+		
+		if(sampList.isEmpty() || testDAO.getTestByName(testName)==null) return previousAnalysis;
+		
+		testIDList.add(Integer.parseInt(testDAO.getTestByName(testName).getId()));
+		
+		for(Sample sample : sampList){
+			sampIDList.add(Integer.parseInt(sample.getId()));
+		}	
+		
+		List<Integer> statusList = new ArrayList<Integer>();
+		statusList.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized)));
+	
+		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdTestIdAndStatusId(sampIDList,testIDList, statusList);
+		
+		if (analysisList.isEmpty()) return previousAnalysis;
+		
+		for(int i=0;i<analysisList.size();i++){
+		  if(i<analysisList.size()-1 && currentSample.getAccessionNumber().equals(analysisList.get(i).getSampleItem().getSample().getAccessionNumber())){
+			previousAnalysis=analysisList.get(i+1);
+			return previousAnalysis;
+		  }
+		
+		}
+		return previousAnalysis;
+		
 	}
 
 }

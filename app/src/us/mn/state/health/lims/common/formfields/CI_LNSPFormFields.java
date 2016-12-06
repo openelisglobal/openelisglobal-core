@@ -75,6 +75,7 @@ public class CI_LNSPFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.SEARCH_PATIENT_WITH_LAB_NO, Boolean.TRUE);
 		settings.put(Field.CollectionTime, Boolean.TRUE);
         settings.put(Field.TEST_LOCATION_CODE,Boolean.TRUE);
+        settings.put(Field.DepersonalizedResults, Boolean.FALSE);	
 
 		
 		return settings;

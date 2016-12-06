@@ -165,6 +165,19 @@
  			<form-property name="organizationTypeLists" type="java.util.Map"/>
  			<form-property name="dictionaryLists" type="java.util.Map"/>
  			<form-property name="formLists" type="java.util.Map"/>
+ 			
+ 			
+ 			
+ 		
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+            <form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+ 			
 		</form-bean>
 
 		<form-bean name="LogbookResultsForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -586,7 +599,25 @@
             <form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
             <form-property name="tag" type="java.lang.String" initial="" />
         </form-bean>
+<!-- -->
+ <form-bean name="MenuStatementConfigMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="menuList" type="java.util.List" />
+            <form-property name="selectedIDs" type="java.lang.String[]" />
+            <form-property name="siteInfoDomainName" type="java.lang.String" initial="MenuStatementConfig" />
+        </form-bean>
 
+        <form-bean name="MenuStatementConfigForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="paramName" type="java.lang.String" initial="" />
+            <form-property name="description" type="java.lang.String" initial="" />
+            <form-property name="value" type="java.lang.String" initial="" />
+            <form-property name="valueType" type="java.lang.String" initial="text" />
+            <form-property name="encrypted" type="boolean" initial="false" />
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="siteInfoDomainName" type="java.lang.String" initial="PaitientConfiguration"/>
+            <form-property name="editable" type="java.lang.Boolean" initial="Boolean.TRUE" />
+            <form-property name="tag" type="java.lang.String" initial="" />
+        </form-bean>
+<!-- -->
 
         <form-bean name="NonConformityConfigurationMenuForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="menuList" type="java.util.List" />
@@ -741,6 +772,15 @@
             <form-property name="existingFrenchNames" type="java.lang.String" />
             <form-property name="sampleTypeEnglishName" type="java.lang.String" />
             <form-property name="sampleTypeFrenchName" type="java.lang.String" />
+        </form-bean>
+        
+        <form-bean name="uomCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
+            <form-property name="existingUomList" type="java.util.List" />
+            <form-property name="inactiveUomList" type="java.util.List" />
+            <form-property name="existingEnglishNames" type="java.lang.String" />
+            <form-property name="existingFrenchNames" type="java.lang.String" />
+            <form-property name="uomEnglishName" type="java.lang.String" />
+            <form-property name="uomFrenchName" type="java.lang.String" />
         </form-bean>
 
         <form-bean name="panelCreateForm" type="org.apache.struts.validator.DynaValidatorForm" >
@@ -994,6 +1034,19 @@
         <action path="/SampleTypeTestAssignUpdate" name="sampleTypeTestAssignForm" type="us.mn.state.health.lims.testconfiguration.action.SampleTypeTestAssignUpdate" >
             <forward name="success" path="/SampleTypeTestAssign.do" />
         </action>
+        
+         <action path="/UomManagement" name="uomManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
+            <forward name="success" path="uomManagementDefinition"  />
+        </action>
+
+        <action path="/UomCreate" name="uomCreateForm" type="us.mn.state.health.lims.testconfiguration.action.UomCreateAction" >
+            <forward name="success" path="uomCreateDefinition" />
+        </action>
+        
+        <action path="/UomCreateUpdate" name="uomCreateForm" type="us.mn.state.health.lims.testconfiguration.action.UomCreateUpdate" >
+            <forward name="success" path="/UomCreate.do" />
+        </action>
+        
 <!-- -->
 
         <action path="/PanelManagement" name="panelManagementForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
@@ -1099,6 +1152,7 @@
 		>
 			<forward name="success" path="sampleEntryByProjectDefinition" />
 			<forward name="eid_entry" path="sampleEntryEIDDefinition" />
+			<forward name="vl_entry" path="sampleEntryVLDefinition" />
 			<forward name="fail" path="homePageDefinition" />
 		</action>
 		<action path="/SampleEntryEID" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectAction"
@@ -1106,7 +1160,14 @@
 		>
 			<forward name="eid_entry" path="sampleEntryEIDDefinition" />
 			<forward name="fail" path="homePageDefinition" />
-		</action>                                                                                                                                                                     
+		</action>    
+		
+		<action path="/SampleEntryVL" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectAction"
+			validate="false"
+		>
+			<forward name="vl_entry" path="sampleEntryVLDefinition" />
+			<forward name="fail" path="homePageDefinition" />
+		</action>                                                                                                                                                                    
 
 		<action path="/SampleEntryByProjectSave" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectSaveAction"
 			validate="false"
@@ -1119,6 +1180,13 @@
 		>
 			<forward name="success" path="/SampleEntryEID.do?forward=success" />
 			<forward name="fail" path="sampleEntryEIDDefinition" />
+		</action>
+		
+		<action path="/SampleEntryVLSave" name="sampleEntryByProjectForm" type="us.mn.state.health.lims.sample.action.SampleEntryByProjectSaveAction"
+			validate="false"
+		>
+			<forward name="success" path="/SampleEntryVL.do?forward=success" />
+			<forward name="fail" path="sampleEntryVLDefinition" />
 		</action>
 
 		<action path="/CancelSampleEntryByProject" forward="homePageDefinition">
@@ -1709,7 +1777,44 @@
             <forward name="success" path="siteInformationDefinition" />
             <forward name="fail" path="masterListsPageDefinition" />
         </action>
+<!-- -->
+<action path="/MenuStatementConfigMenu" name="MenuStatementConfigMenuForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationMenuAction">
+            <forward name="success" path="haitiMasterListsPageDefinition" />
+            <forward name="fail" path="/MasterListsPage.do" />
+        </action>
 
+        <action path="/MenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationAction" validate="false">
+            <forward name="success" path="siteInformationDefinition" />
+            <forward name="fail" path="masterListsPageDefinition" />
+        </action>
+        
+         <action path="/UpdateMenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationUpdateAction"
+                validate="false"
+                >
+            <forward name="insertSuccess" path="/MenuStatementConfigMenu.do" redirect="true" />
+            <forward name="fail" path="/MenuStatementConfig.do" />
+        </action>
+
+        <action path="/DeleteMenuStatementConfig" name="MenuStatementConfigMenuForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationDeleteAction">
+            <forward name="success" path="/WorkplanConfiguration.do" />
+            <forward name="fail" path="/WorkplanConfiguration.do" />
+        </action>
+
+        <action path="/NextPreviousMenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationNextPreviousAction">
+            <forward name="success" path="/MenuStatementConfig.do" redirect="true" />
+            <forward name="fail" path="siteInformationDefinition" />
+        </action>
+
+        <action path="/UpdateNextPreviousMenuStatementConfig" name="MenuStatementConfigForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationNextPreviousAction">
+            <forward name="success" path="/MenuStatementConfig.do" redirect="true" />
+            <forward name="fail" path="siteInformationDefinition" />
+        </action>
+
+        <action path="/CancelMenuStatementConfig" forward="/MenuStatementConfigMenu.do" />
+        
+        
+        
+<!-- -->
         <action path="/UpdatePatientConfiguration" name="PatientConfigurationForm" type="us.mn.state.health.lims.siteinformation.action.SiteInformationUpdateAction"
                 validate="false"
                 >

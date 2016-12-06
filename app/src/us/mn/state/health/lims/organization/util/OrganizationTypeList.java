@@ -31,12 +31,16 @@ import static us.mn.state.health.lims.organization.valueholder.OrganizationCompa
  * @since 2010-05-19
  */
 public enum OrganizationTypeList {
-    ARV_ORGS("shortName",                   null, "ARV Service Loc"),
-    ARV_ORGS_BY_NAME("organizationName",    null, "ARV Service Loc"),
-    EID_ORGS("shortName",                   SHORTNAME_NUMERIC_COMPARATOR, "EID ACONDA-VS CI", "EID EGPAF", "EID ESTHER", "EID ICAP"),
-    EID_ORGS_BY_NAME("organizationName",    null,                         "EID ACONDA-VS CI", "EID EGPAF", "EID ESTHER", "EID ICAP"),
-    RTN_HOSPITALS("shortName",              SHORTNAME_NUMERIC_COMPARATOR, "RTN HIV Hospitals"),
-    RTN_SERVICES("shortName",               null, "RTN HIV Service Loc"),
+    //ARV_ORGS("shortName",                   null, "ARV Service Loc"),
+    //ARV_ORGS_BY_NAME("organizationName",    null, "ARV Service Loc"),
+	ARV_ORGS("shortName",                   SHORTNAME_NUMERIC_COMPARATOR, "ARV Service Loc"),
+    ARV_ORGS_BY_NAME("organizationName",    ORGANIZATION_NAME_COMPARATOR, "ARV Service Loc"),
+    EID_ORGS("shortName",                   SHORTNAME_NUMERIC_COMPARATOR, "EID ACONDA-VS CI", "EID EGPAF", "EID ESTHER", "EID ICAP", "EID SEV-CI", "EID ARIEL"),
+    EID_ORGS_BY_NAME("organizationName",    ORGANIZATION_NAME_COMPARATOR, "EID ACONDA-VS CI", "EID EGPAF", "EID ESTHER", "EID ICAP", "EID SEV-CI", "EID ARIEL"),
+    RTN_HOSPITALS("shortName",              ORGANIZATION_NAME_COMPARATOR, "RTN HIV Hospitals"),
+    RTN_SERVICES("shortName",               ORGANIZATION_NAME_COMPARATOR, "RTN HIV Service Loc"),
+    //RTN_HOSPITALS("shortName",              SHORTNAME_NUMERIC_COMPARATOR, "RTN HIV Hospitals"),
+    //RTN_SERVICES("shortName",               null, "RTN HIV Service Loc"),
     ;
     
     /**

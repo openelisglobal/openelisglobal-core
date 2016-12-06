@@ -30,13 +30,17 @@ import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.IdValuePair;
+//import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
+//import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.sample.valueholder.Sample;
+import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
+import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
+import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.dao.TestSectionDAO;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
@@ -46,6 +50,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 
 public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 
@@ -116,7 +123,7 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 
 	@SuppressWarnings("unchecked")
 	private List<TestResultItem> getWorkplanByTestSection(String testSectionId) {
-
+		
 		List<Analysis> testList = new ArrayList<Analysis>();
 		List<TestResultItem> workplanTestList = new ArrayList<TestResultItem>();
 		String currentAccessionNumber = new String();
@@ -174,6 +181,10 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 				testResultItem.setSampleGroupingNumber(sampleGroupingNumber);
 				testResultItem.setTestId(analysis.getTest().getId());
 				testResultItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis));
+				
+				if(FormFields.getInstance().useField(Field.QaEventsBySection) )
+					testResultItem.setNonconforming(getQaEventByTestSection(analysis));
+				
 				testResultItem.setPatientInfo(subjectNumber);
 				testResultItem.setNextVisitDate( nextVisit );
 				if (isPatientNameAdded())
@@ -243,11 +254,30 @@ public class WorkplanByTestSectionAction extends BaseWorkplanAction {
         testResultItem.setServingAsTestGroupIdentifier(true);
         workplanTestList.add(insertPosition, testResultItem);
         
-}
+    }
 
     private boolean isPatientNameAdded() {
         return ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "Haiti LNSP");
     }
+
+	private boolean getQaEventByTestSection(Analysis analysis){
+		
+		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
+			Sample sample=analysis.getSampleItem().getSample();
+			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
+			for(SampleQaEvent event : sampleQaEventsList){
+				QAService qa = new QAService(event);
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
+					 return true;				
+			}
+		}
+		return false;
+	}
+
+	public List<SampleQaEvent> getSampleQaEvents(Sample sample){
+		SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
+		return sampleQaEventDAO.getSampleQaEventsBySample(sample);
+	}
 
     
 }

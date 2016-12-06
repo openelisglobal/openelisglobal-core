@@ -46,7 +46,6 @@ import java.util.List;
 public abstract class PatientARVReport extends RetroCIPatientReport{
 	private List<ARVReportData> reportItems;
 	private String invalidValue = StringUtil.getMessageForKey("report.test.status.inProgress");
-
 	protected void initializeReportItems(){
 		reportItems = new ArrayList<ARVReportData>();
 	}
@@ -74,6 +73,8 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 		data.setDoctor(getObservationValues(OBSERVATION_DOCTOR_ID));
 		data.setLabNo(reportSample.getAccessionNumber());
+		
+		data.getSampleQaEventItems(reportSample);
 
 	}
 
@@ -87,14 +88,12 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 
 	protected void createReportItems(){
 		ARVReportData data = new ARVReportData();
-
+		
 		setPatientInfo(data);
 		setTestInfo(data);
-
 		reportItems.add(data);
 
 	}
-
 	protected void setTestInfo(ARVReportData data){
 		boolean atLeastOneAnalysisNotValidated = false;
 		AnalysisDAO analysisDAO = new AnalysisDAOImpl();
@@ -157,7 +156,6 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		data.setDuplicateReport(mayBeDuplicate);
 		data.setStatus(atLeastOneAnalysisNotValidated ? StringUtil.getMessageForKey("report.status.partial") : StringUtil
 				.getMessageForKey("report.status.complete"));
-
 	}
 
 	private void assignResultsToAVRReportData(ARVReportData data, String testName, String resultValue){
