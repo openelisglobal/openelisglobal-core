@@ -102,7 +102,6 @@ UPDATE clinlims.site_information
    SET domain_id = 1
  WHERE name='siteNumber';
  
- 
    UPDATE clinlims.site_information
    SET domaim_id = 1
  WHERE name='Accession number prefix'; 
