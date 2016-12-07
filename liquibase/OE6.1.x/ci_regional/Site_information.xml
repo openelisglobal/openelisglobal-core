@@ -34,7 +34,6 @@ UPDATE clinlims.site_information
   </changeSet>
   
   
-  
   <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional,ci_general">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.site_information where name = 'siteNumber';
@@ -66,6 +65,4 @@ UPDATE clinlims.site_information
  </sql>
   </changeSet>
   
-  
-
 </databaseChangeLog>
