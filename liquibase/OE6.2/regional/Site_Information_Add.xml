@@ -11,7 +11,7 @@
             id, name, lastupdated, description, value, encrypted, domain_id, 
             value_type, instruction_key, "group", schedule_id, tag, dictionary_category_id, 
             description_key, name_key)
-    VALUES (nextval('clinlims.site_information_seq'),'Accession number prefix',now(),'Prefix for SITEYEARNUM format.  Can not be changed if there are samples','(select value from clinlims.site_information where name = 'siteNumber')',default,1,'text',default,0,default,default,default,'siteInfo.Accession.number.prefix',default);
+    VALUES (nextval('clinlims.site_information_seq'),'Accession number prefix',now(),'Prefix for SITEYEARNUM format.  Can not be changed if there are samples',(select value from clinlims.site_information where name = 'siteNumber'),default,1,'text',default,0,default,default,default,'siteInfo.Accession.number.prefix',default);
 	
  
  </sql>

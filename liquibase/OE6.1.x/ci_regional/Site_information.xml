@@ -10,13 +10,7 @@
             id, name, description)
     VALUES (nextval('clinlims.site_information_domain_seq'),'MenuStatementConfig','Manage menu Item');
 
-INSERT INTO clinlims.site_information(
-            id, name, lastupdated, description, value, encrypted, domain_id, 
-            value_type, instruction_key, "group", schedule_id, tag, dictionary_category_id, 
-            description_key, name_key)
-    VALUES (nextval('clinlims.site_information_seq'),'siteNumber',now(),'site Id Number','lnsp',default,1,'text',default,0,default,default,default,'siteInfo.siteNumber',default);
-	
-	
+
 INSERT INTO clinlims.site_information(
             id, name, lastupdated, description, value, encrypted, domain_id, 
             value_type, instruction_key, "group", schedule_id, tag, dictionary_category_id, 
@@ -30,6 +24,11 @@ INSERT INTO clinlims.site_information(
 UPDATE clinlims.site_information
    SET value = 'CI'
  WHERE name='stringContext';
+ 
+UPDATE clinlims.site_information
+   SET value = 'lnsp'
+ WHERE name='siteNumber'; 
+ 
  
    UPDATE clinlims.site_information
    SET value = 'CDI'
