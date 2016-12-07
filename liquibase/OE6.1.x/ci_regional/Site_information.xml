@@ -25,6 +25,10 @@ UPDATE clinlims.site_information
    SET value = 'CI'
  WHERE name='stringContext';
  
+UPDATE clinlims.site_information
+   SET value = 'lnsp'
+ WHERE name='siteNumber'; 
+ 
  
    UPDATE clinlims.site_information
    SET value = 'CDI'
@@ -32,6 +36,7 @@ UPDATE clinlims.site_information
  
  </sql>
   </changeSet>
+<<<<<<< HEAD
   
   
   <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional,ci_general">
@@ -67,4 +72,6 @@ UPDATE clinlims.site_information
   
   
 
+=======
+>>>>>>> parent of 6b5e956... ras
 </databaseChangeLog>
