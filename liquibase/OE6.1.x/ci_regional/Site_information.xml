@@ -70,4 +70,6 @@ UPDATE clinlims.site_information
   </changeSet>
   
 
+=======
+>>>>>>> parent of 6b5e956... ras
 </databaseChangeLog>
