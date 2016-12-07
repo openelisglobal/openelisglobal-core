@@ -65,4 +65,6 @@ UPDATE clinlims.site_information
  </sql>
   </changeSet>
   
+  
+
 </databaseChangeLog>
