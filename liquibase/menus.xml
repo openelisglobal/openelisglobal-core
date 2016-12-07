@@ -200,16 +200,6 @@
             <column name="display_key" value="banner.menu.administration" />
             <column name="tool_tip_key" value="tooltip.banner.menu.administration" />
         </insert>
-	<insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_administration' ) " />
-            <column name="presentation_order" valueNumeric="1" />
-            <column name="element_id" value="menu_administration_test_management" />
-            <column name="action_url" value="/TestManagementConfigMenu.do" />
-            <column name="display_key" value="configuration.test.management" />
-            <column name="tool_tip_key" value="configuration.test.management" />
-        </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="parent_id"
@@ -1575,16 +1565,6 @@
 			<column name="action_url" value="/MasterListsPage.do" />
 			<column name="display_key" value="banner.menu.administration" />
 			<column name="tool_tip_key" value="tooltip.banner.menu.administration" />
-		</insert>
-		<insert schemaName="clinlims" tableName="menu">
-			<column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-			<column name="parent_id"
-				valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_administration' ) " />
-			<column name="presentation_order" valueNumeric="1" />
-			<column name="element_id" value="menu_administration_test_management" />
-			<column name="action_url" value="/TestManagementConfigMenu.do" />
-			<column name="display_key" value="configuration.test.management" />
-			<column name="tool_tip_key" value="configuration.test.management" />
 		</insert>
 	</changeSet>
 	<changeSet author="jfurlong" id="1" context="Kenya"	runOnChange="true" runAlways="true">
