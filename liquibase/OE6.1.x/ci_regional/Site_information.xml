@@ -29,14 +29,13 @@ UPDATE clinlims.site_information
    SET value = 'lnsp'
  WHERE name='siteNumber'; 
  
- 
    UPDATE clinlims.site_information
    SET value = 'CDI'
  WHERE name='passwordRequirements';
  
  </sql>
   </changeSet>
-<<<<<<< HEAD
+
   
   
   <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional,ci_general">
