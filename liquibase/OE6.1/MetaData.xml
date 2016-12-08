@@ -59,11 +59,15 @@ INSERT INTO clinlims.dictionary (id,is_active,dict_entry,lastupdated,local_abbre
               <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_reports_arv_all'</sqlCheck>
           </preConditions>
     <comment>Insert menu elements for viral load report</comment>
-    <sql>INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url,click_action,display_key,tool_tip_key,new_window,is_active) VALUES (69,43,5,'menu_reports_arv_all','/Report.do?type=patient&amp;report=patientARV1','','reports.patient.ARV.version1','tooltip.reports.patient.ARVFollowup.version1','FALSE','TRUE');
+    <sql>
+	
+alter sequence clinlims.menu_seq restart with 80;
+	
+INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url,click_action,display_key,tool_tip_key,new_window,is_active) VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id ='menu_reports_arv'),5,'menu_reports_arv_all','/Report.do?type=patient&amp;report=patientARV1','','reports.patient.ARV.version1','tooltip.reports.patient.ARVFollowup.version1','FALSE','TRUE');
 
-INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url,click_action,display_key,tool_tip_key,new_window,is_active) VALUES (70,42,2,'menu_reports_vl','','','project.VLStudy.name','tooltip.project.VLStudy.name','FALSE','TRUE');
+INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url,click_action,display_key,tool_tip_key,new_window,is_active) VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id ='menu_reports_patients'),2,'menu_reports_vl','','','project.VLStudy.name','tooltip.project.VLStudy.name','FALSE','TRUE');
 
-INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url,click_action,display_key,tool_tip_key,new_window,is_active) VALUES (71,70,1,'menu_reports_vl_version1','/Report.do?type=patient&amp;report=patientVL1','','openreports.patient.VL.version1','tooltip.openreports.patient.VL.version1','FALSE','TRUE');
+INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url,click_action,display_key,tool_tip_key,new_window,is_active) VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id ='menu_reports_vl'),1,'menu_reports_vl_version1','/Report.do?type=patient&amp;report=patientVL1','','openreports.patient.VL.version1','tooltip.openreports.patient.VL.version1','FALSE','TRUE');
 </sql>
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="6" context="CDIRetroCI" runOnChange="true">
