@@ -2,12 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient_ARV_Followup_patient_info" pageWidth="552" pageHeight="802" columnWidth="552" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="subjectNumber" class="java.lang.String"/>
 	<parameter name="birth_date" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="age" class="java.lang.String" isForPrompting="false"/>
@@ -89,7 +89,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{receptiondate}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{receptiondate}.substring(0,10)]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement key="textField" mode="Transparent" x="186" y="0" width="127" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -121,7 +121,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{orgname}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="408" y="18" width="144" height="17" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField" x="403" y="18" width="149" height="17" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{showDoctor}]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -190,7 +190,7 @@
 				<text><![CDATA[Date/Heure Prél.:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-8" x="340" y="18" width="63" height="17">
+				<reportElement key="staticText-8" x="340" y="18" width="90" height="17">
 					<printWhenExpression><![CDATA[$P{showDoctor}]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -199,14 +199,14 @@
 				<text><![CDATA[Prescripteur:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-7" x="145" y="36" width="106" height="18">
+				<reportElement key="staticText-7" x="145" y="36" width="141" height="18">
 					<printWhenExpression><![CDATA[$P{receptiondate} != ""]]></printWhenExpression>
 				</reportElement>
 				<textElement/>
 				<text><![CDATA[Date/Heure Réception:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="251" y="18" width="88" height="18" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField" x="251" y="18" width="108" height="18" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{receptiondate} != ""]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -218,22 +218,8 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{collectiondate}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{collectiondate}.substring(0,10)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement key="staticText-7" x="145" y="54" width="106" height="18">
-					<printWhenExpression><![CDATA[$P{receptiondate} != ""]]></printWhenExpression>
-				</reportElement>
-				<textElement/>
-				<text><![CDATA[Eatat de l'échantillon:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement key="staticText-7" x="251" y="54" width="88" height="18">
-					<printWhenExpression><![CDATA[$P{receptiondate} != ""]]></printWhenExpression>
-				</reportElement>
-				<textElement/>
-				<text><![CDATA[Normal]]></text>
-			</staticText>
 			<staticText>
 				<reportElement key="staticText-1" x="340" y="54" width="58" height="18"/>
 				<textElement>
