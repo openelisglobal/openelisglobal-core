@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+  <!--Some settings-->
+   <changeSet id="1" author="CI OpenELIS developers group" context="CDIRetroCI,CDIRetroCI_CT">
+   <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id= 'menu_results_referred';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Add referred link in the menu</comment>
+    <sql>
+INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_results'),5,'menu_results_referred','/ReferredOutTests.do',default,'banner.menu.referredOut','tooltip.banner.menu.referredOut',default,default);
+   
+</sql>
+  </changeSet>
+  
+   <changeSet id="2" author="CI OpenELIS developers group">
+   <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id= 'menu_results_referred';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Add referred link in the menu</comment>
+    <insert tableName="organization" schemaName="clinlims">
+			<column name="id" valueNumeric=" nextval( 'organization_seq') "></column>
+			<column name="name" value="CEDRES" />
+			<column name="mls_sentinel_lab_flag" value="N" />
+			<column name="lastupdated" valueDate=" now() " />
+			<column name="is_active" value="Y" />
+		</insert>
+		
+	<insert tableName="organization_organization_type" schemaName="clinlims" >
+			<column name="org_id" valueNumeric=" (select id from clinlims.organization where name = 'CEDRES') " />
+			<column name="org_type_id" valueNumeric=" ( select id from clinlims.organization_type where short_name = 'referralLab' ) "></column>
+		</insert>	
+  </changeSet>  
+  
+</databaseChangeLog>
