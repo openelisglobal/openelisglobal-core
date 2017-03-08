@@ -35,7 +35,7 @@ INSERT INTO clinlims.label(id, name, description, printer_type, scriptlet_id, la
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI">
+  <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.address_part where display_key = 'address.commune';
     		</sqlCheck>
@@ -222,4 +222,15 @@ INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_seq
 INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_sequence, reporting_text, test_id, is_holdable, lastupdated, type, category, display_key) VALUES (nextval('clinlims.qa_event_seq'),'Order_Late','Retard de transmission des échantillons en tube ',null,null,null,null,'Y',now(),null,null,'qa_event.Order_Late');
 </sql>
   </changeSet>
+  
+<changeSet author="CI OpenELIS developers group" id="9" context="CDIRetroCI,CDIRetroCI_CT">
+    
+    <sql>
+ALTER TABLE clinlims.organization
+ALTER COLUMN short_name SET DEFAULT '""';
+ 
+ </sql>
+  </changeSet> 	  
+  
+  
 </databaseChangeLog>

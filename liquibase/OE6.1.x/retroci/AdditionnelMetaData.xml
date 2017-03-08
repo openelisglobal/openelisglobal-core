@@ -102,8 +102,8 @@ INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abb
    SET display_key = 'sample.type.DBS'
  WHERE local_abbrev='DBS';
  
-INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (27,'SEV-CI','SEV-CI','org_type.SEVCI.name',now());
-INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (28,'ARIEL','Ariel Glaser Foundation','org_type.ARIEL.name',now());
+INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (27,'EID SEV-CI','SEV-CI','org_type.SEVCI.name',now());
+INSERT INTO clinlims.organization_type(id, short_name, description, name_display_key, lastupdated) VALUES (28,'EID ARIEL','Ariel Glaser Foundation','org_type.ARIEL.name',now());
 
 </sql>
   </changeSet>

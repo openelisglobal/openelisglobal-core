@@ -172,6 +172,9 @@ INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_fla
 INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_flag, org_mlt_org_mlt_id, org_id, short_name, multiple_unit, street_address, state, internet_address, clia_num, pws_id, lastupdated, mls_lab_flag, is_active, local_abbrev,code) VALUES(2130,'LNSP',default,default,'N',null,null,default,default,default,default,default,default,default,now(),default,'Y',default,default);
 INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_flag, org_mlt_org_mlt_id, org_id, short_name, multiple_unit, street_address, state, internet_address, clia_num, pws_id, lastupdated, mls_lab_flag, is_active, local_abbrev,code) VALUES(2131,'BLA CENTRE DE SANTE',default,default,'N',null,null,default,default,default,default,default,default,default,now(),default,'Y',default,default);
 INSERT INTO clinlims.organization (id,name, city, zip_code, mls_sentinel_lab_flag, org_mlt_org_mlt_id, org_id, short_name, multiple_unit, street_address, state, internet_address, clia_num, pws_id, lastupdated, mls_lab_flag, is_active, local_abbrev,code) VALUES(2001,'CI','Seattle','98103','N',null,null,default,default,'DNA','WA',default,default,default,now(),'N','Y','22',default);
+
+ALTER SEQUENCE clinlims.organization_seq restart WITH 2500;
+
 </sql>
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="4" context="CDIRetroCI,CDIRetroCI_CT">
@@ -884,5 +887,11 @@ INSERT INTO clinlims.organization_organization_type(org_id, org_type_id)  VALUES
 </sql>
   </changeSet>
   
+<changeSet author="CI OpenELIS developers group" id="6" context="CDIRetroCI,CDIRetroCI_CT">
+    <comment>update on Organization</comment>
+    <sql>UPDATE clinlims.organization
+   SET short_name=default
+ WHERE short_name is null;</sql>
+  </changeSet>
   
 </databaseChangeLog>
