@@ -22,8 +22,7 @@
 		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rightHeaderImage" class="java.io.InputStream"/>
-	<parameter name="leftHeaderImage2" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="rightHeaderImage2" class="java.lang.String"/>
+	<parameter name="imagesPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -101,7 +100,7 @@
 Diagnostic clinique]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="134" y="98" width="116" height="34"/>
+				<reportElement x="134" y="98" width="111" height="34"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
@@ -141,11 +140,11 @@ Assurance qualité]]></text>
 			</image>
 			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement mode="Transparent" x="1" y="0" width="64" height="57" backcolor="#FFFFFF"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{leftHeaderImage2}]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
 			</image>
 			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement mode="Transparent" x="484" y="0" width="64" height="57" backcolor="#FFFFFF"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{rightHeaderImage2}]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</detail>
