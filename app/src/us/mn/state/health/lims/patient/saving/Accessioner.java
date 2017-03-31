@@ -724,6 +724,7 @@ public abstract class Accessioner {
 		if (GenericValidator.isBlankOrNull(organizationId) || organizationId.equals(BaseProjectFormMapper.ORGANIZATION_ID_NONE)) {
 			return;
 		}
+	
 		Organization org = new Organization();
 		org.setId(organizationId);
 		organizationDAO.getData(org);

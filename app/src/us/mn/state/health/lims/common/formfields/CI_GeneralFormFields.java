@@ -40,7 +40,7 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.ResultsReferral, Boolean.TRUE);
 		settings.put(Field.ValueHozSpaceOnResults, Boolean.TRUE);
 		settings.put(Field.InitialSampleCondition, Boolean.TRUE);
-		//settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
+		settings.put(Field.OrgLocalAbrev, Boolean.FALSE);
 		settings.put(Field.OrganizationMultiUnit, Boolean.FALSE);
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);

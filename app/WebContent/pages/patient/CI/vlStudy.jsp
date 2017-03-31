@@ -100,7 +100,7 @@ vl = new VLProjectChecker();
 			<html:select name="<%=formName%>" 
 			    property="ProjectData.ARVcenterName"
 				styleId="vl.centerName" 
-				onchange="vl.checkCenterName(false)">
+				onchange="vl.checkCenterName(true)">
 				<app:optionsCollection name="<%=formName%>"
 					property="organizationTypeLists.ARV_ORGS_BY_NAME.list" 
 					label="organizationName"
@@ -118,12 +118,13 @@ vl = new VLProjectChecker();
 			<html:select name="<%=formName%>" 
 			property="ProjectData.ARVcenterCode" 
 			styleId="vl.centerCode"
-			onchange="vl.checkCenterCode(false)" >
+			onchange="vl.checkCenterCode(true)" >
 			<app:optionsCollection name="<%=formName%>" 
 			property="organizationTypeLists.ARV_ORGS.list" 
 			label="doubleName" 
 			value="id" />
 			</html:select>
+			<div id="vl.centerCodeMessage" class="blank"></div>
 		</td>
 	</tr>
 		<tr> 
