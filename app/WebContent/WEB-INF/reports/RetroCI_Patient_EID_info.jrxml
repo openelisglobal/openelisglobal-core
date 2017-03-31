@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RetroCI_Patient_EID_info" pageWidth="550" pageHeight="802" whenNoDataType="NoDataSection" columnWidth="550" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -88,7 +88,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{collectiondate}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{collectiondate}.substring(0,10)]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
 				<reportElement key="textField" x="255" y="0" width="118" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
@@ -220,7 +220,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{receptionDate}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{receptionDate}.substring(0,10)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="staticText-7" x="351" y="18" width="93" height="18"/>

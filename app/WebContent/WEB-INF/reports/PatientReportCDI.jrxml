@@ -725,11 +725,11 @@
 				<subreportParameter name="correctedReport">
 					<subreportParameterExpression><![CDATA[$P{correctedReport}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="leftHeaderImage">
 					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="orderFinishDate">
 					<subreportParameterExpression><![CDATA[$F{orderFinishDate}]]></subreportParameterExpression>
