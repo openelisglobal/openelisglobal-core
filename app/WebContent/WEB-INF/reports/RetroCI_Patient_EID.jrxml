@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="640"/>
+	<property name="ireport.y" value="448"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
@@ -15,8 +15,7 @@
 	<parameter name="directorName" class="java.lang.String"/>
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream"/>
-	<parameter name="leftHeaderImage2" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="rightHeaderImage2" class="java.lang.String"/>
+	<parameter name="imagesPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -106,23 +105,17 @@
 			</line>
 			<subreport>
 				<reportElement x="0" y="1" width="552" height="146"/>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="leftHeaderImage2">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage2}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="duplicateReport">
-					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="status">
 					<subreportParameterExpression><![CDATA[$F{status}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="rightHeaderImage2">
-					<subreportParameterExpression><![CDATA[$P{rightHeaderImage2}]]></subreportParameterExpression>
+				<subreportParameter name="duplicateReport">
+					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="studyName">
 					<subreportParameterExpression><![CDATA[$P{studyName}]]></subreportParameterExpression>
@@ -132,6 +125,9 @@
 				</subreportParameter>
 				<subreportParameter name="directorName">
 					<subreportParameterExpression><![CDATA[$P{directorName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="imagesPath">
+					<subreportParameterExpression><![CDATA[$P{imagesPath}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "RetroCIHeader.jasper"]]></subreportExpression>
@@ -189,6 +185,10 @@
 				</textElement>
 				<text><![CDATA[(Analyseur : COBAS AmpliPrep/COBAS TaqMan- Roche) Echantillon : DBS]]></text>
 			</staticText>
+			<image>
+				<reportElement x="274" y="273" width="267" height="102"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "EIDSign.jpg"]]></imageExpression>
+			</image>
 		</band>
 		<band height="448">
 			<printWhenExpression><![CDATA[$F{virologyEidQaEvent}!=null]]></printWhenExpression>

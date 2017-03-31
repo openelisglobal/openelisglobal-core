@@ -406,6 +406,9 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
     // the forms have the organization ID in "centerCode", but sample forms have them in various projectData property.  
     public String getOrganizationId() {
         if (patientForm) {
+           if(getProjectForm().equals(ProjectForm.VL))
+        	return getSampleCenterCode();
+           else
             return dynaForm.get("centerCode").toString();
         } else {
             return getSampleCenterCode();
