@@ -179,7 +179,7 @@ vl = new VLProjectChecker();
         <app:text name="<%=formName%>"
             property="receivedTimeForDisplay"
             onkeyup="filterTimeKeys(this, event);"              
-            onblur="vl.checkReceivedTime(true);"
+            onchange="vl.checkReceivedTime(true);"
             styleClass="text"
             styleId="vl.receivedTimeForDisplay" maxlength="5"/>
             <div id="vl.receivedTimeForDisplayMessage" class="blank"></div>

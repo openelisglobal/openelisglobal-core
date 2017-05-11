@@ -5,6 +5,6 @@
         name="jdbc/LimsDS" 
         password="clinlims" 
         type="javax.sql.DataSource" 
-        url="jdbc:postgresql://localhost:5432/YAKRO" 
+        url="jdbc:postgresql://localhost:5432/clinlims" 
         username="clinlims"/>
 </Context>

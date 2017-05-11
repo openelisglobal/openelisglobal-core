@@ -3,8 +3,8 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="6"/>
-	<property name="ireport.y" value="127"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="55"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -36,6 +36,7 @@
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="imagesPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -701,20 +702,20 @@
 				<subreportParameter name="labName2">
 					<subreportParameterExpression><![CDATA[$P{additionalSiteInfo}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="labName1">
-					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="useSTNumber">
 					<subreportParameterExpression><![CDATA[$P{useSTNumber}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="reportTitle">
-					<subreportParameterExpression><![CDATA[$P{localization}.get("analysisReport")]]></subreportParameterExpression>
+				<subreportParameter name="labName1">
+					<subreportParameterExpression><![CDATA[$P{siteName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="localization">
+					<subreportParameterExpression><![CDATA[$P{localization}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="billingNumberLabel">
 					<subreportParameterExpression><![CDATA[$P{billingNumberLabel}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="localization">
-					<subreportParameterExpression><![CDATA[$P{localization}]]></subreportParameterExpression>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{localization}.get("analysisReport")]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="rightHeaderImage">
 					<subreportParameterExpression><![CDATA[$P{rightHeaderImage}]]></subreportParameterExpression>
@@ -722,11 +723,14 @@
 				<subreportParameter name="footerName">
 					<subreportParameterExpression><![CDATA[$P{footerName}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="headerName">
-					<subreportParameterExpression><![CDATA[$P{headerName}]]></subreportParameterExpression>
+				<subreportParameter name="imagesPath">
+					<subreportParameterExpression><![CDATA[$P{imagesPath}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="completeFlag">
 					<subreportParameterExpression><![CDATA[$F{completeFlag}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="headerName">
+					<subreportParameterExpression><![CDATA[$P{headerName}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="correctedReport">
 					<subreportParameterExpression><![CDATA[$P{correctedReport}]]></subreportParameterExpression>

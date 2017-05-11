@@ -39,6 +39,7 @@ import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,11 +103,20 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 		Timestamp lastReport = new ReportTrackingService().getTimeOfLastNamedReport(reportSample, ReportTrackingService.ReportType.PATIENT, requestedReport);
 		Boolean mayBeDuplicate = lastReport != null;
 		ResultDAO resultDAO = new ResultDAOImpl();
+		Date maxCompleationDate = null;
+		long maxCompleationTime = 0L;
 
 		for(Analysis analysis : analysisList){
+			if (analysis.getCompletedDate() != null) {
+				if (analysis.getCompletedDate().getTime() > maxCompleationTime) {
+					maxCompleationDate = analysis.getCompletedDate();
+					maxCompleationTime = maxCompleationDate.getTime();
+				}
+				
+			}
+					
 			if(!analysis.getStatusId().equals(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled))){
 				String testName = TestService.getUserLocalizedTestName( analysis.getTest() );
-
 				List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
 				String resultValue = null;
 
@@ -151,8 +161,10 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 			}
 
 		}
-
-
+	
+		if (maxCompleationDate != null) {
+			data.setCompleationdate(DateUtil.convertSqlDateToStringDate(maxCompleationDate));
+		}
 		data.setDuplicateReport(mayBeDuplicate);
 		data.setStatus(atLeastOneAnalysisNotValidated ? StringUtil.getMessageForKey("report.status.partial") : StringUtil
 				.getMessageForKey("report.status.complete"));

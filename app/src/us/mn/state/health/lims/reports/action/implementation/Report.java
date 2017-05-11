@@ -102,15 +102,14 @@ public abstract class Report implements IReportCreator {
 				ConfigurationProperties.getInstance().getPropertyValue(
 						Property.USE_PAGE_NUMBERS_ON_REPORTS));
 		reportParameters.put("localization", createLocalizationMap());
-		//reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
-		//reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
-		reportParameters.put("REPORT_LOCALE", SystemConfiguration.getInstance()
-				.getDefaultLocale());
-	}
+			//reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
+			//reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
+			reportParameters.put("REPORT_LOCALE", SystemConfiguration.getInstance()
+					.getDefaultLocale());
+		}
 
 	private Object getImage(String siteName) {
-		SiteInformation siteInformation = siteInformationDAO
-				.getSiteInformationByName(siteName);
+		SiteInformation siteInformation = siteInformationDAO.getSiteInformationByName(siteName);
 		return GenericValidator.isBlankOrNull(siteInformation.getValue()) ? null
 				: imageDAO.retrieveImageInputStream(siteInformation.getValue());
 	}
