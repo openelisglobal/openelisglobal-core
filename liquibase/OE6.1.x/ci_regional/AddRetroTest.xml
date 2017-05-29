@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-  <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional,ci_general,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.localization where french = 'BA#';
     		</sqlCheck>
@@ -87,7 +87,7 @@ INSERT INTO clinlims.localization(id, description, english, french, lastupdated)
 INSERT INTO clinlims.localization(id, description, english, french, lastupdated) VALUES (278,'test name','Innolia','Innolia',now());
 INSERT INTO clinlims.localization(id, description, english, french, lastupdated) VALUES (279,'test report name','Innolia','Innolia',now());</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.unit_of_measure where name = 'Cell/µl';
     		</sqlCheck>
@@ -98,7 +98,7 @@ INSERT INTO clinlims.unit_of_measure(id, name, description, lastupdated)  VALUES
 INSERT INTO clinlims.unit_of_measure(id, name, description, lastupdated)  VALUES (39,'10^3/µl','10^3/µl', now());
 INSERT INTO clinlims.unit_of_measure(id, name, description, lastupdated)  VALUES (41,'10^6/µl','10^6/µl', now());</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="3" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="3" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.analyte where name = 'generated CD4';
     		</sqlCheck>
@@ -123,7 +123,7 @@ INSERT INTO clinlims.analyte(id, analyte_id, name, is_active, external_id, lastu
 INSERT INTO clinlims.analyte(id, analyte_id, name, is_active, external_id, lastupdated, local_abbrev) VALUES (110,null,'Vironostika Unreflex Result','Y',default,now(),default);
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="4" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="4" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.test_section where name = 'Serology';
     		</sqlCheck>
@@ -152,7 +152,7 @@ INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has
     VALUES (1502, 'Y', 'Y', 'Y', 'Y', 5, 
             70);</sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="5" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="5" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.test where id = 159;
     		</sqlCheck>
@@ -244,7 +244,7 @@ INSERT INTO clinlims.test(id, method_id, uom_id, description, loinc, reporting_d
             time_holding, time_wait, time_ta_average,  time_ta_warning, time_ta_max, label_qty, lastupdated, label_id, test_trailer_id, test_section_id,  scriptlet_id, test_format_id, local_code, sort_order, name, orderable,  guid, name_localization_id, reporting_name_localization_id)  VALUES (199,null,default,'Innolia',null,'Innolia',null,'Y',null,null,'N',null,null,null,null,null,null,now(),null,null,97, null,null,'Innolia',40,'Innolia','t','de47583b-3dcc-46bf-bfa2-f03d8bc8670d', 278,279);
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="6" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="6" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.test_result where test_id = 159;
     		</sqlCheck>
@@ -337,7 +337,7 @@ INSERT INTO clinlims.test_result(id, test_id, result_group, flags, tst_rslt_type
 INSERT INTO clinlims.test_result(id, test_id, result_group, flags, tst_rslt_type, value, significant_digits, quant_limit, cont_level, lastupdated, scriptlet_id, sort_order, is_quantifiable, is_active)  VALUES (558,178,null,default,'N',null,0, default,default,now(), default, default,'f','t');
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="7" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="7" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.result_limits where test_id = 159;
     		</sqlCheck>
@@ -425,7 +425,7 @@ INSERT INTO clinlims.result_limits(id, test_id, test_result_type_id, min_age, ma
 
 </sql>
   </changeSet>
-  <changeSet author="CI OpenELIS developers group" id="8" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="8" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.test_analyte where test_id = 162;
     		</sqlCheck>

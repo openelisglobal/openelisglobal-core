@@ -75,7 +75,7 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault(Property.PasswordRequirments , "passwordRequirements", "MINN");
 		setDBPropertyMappingAndDefault(Property.FormFieldSet , "setFieldForm", IActionConstants.FORM_FIELD_SET_CI_GENERAL);
 		setDBPropertyMappingAndDefault(Property.StringContext , "stringContext","");
-		setDBPropertyMappingAndDefault(Property.StatusRules , "statusRules", "RETROCI");
+		setDBPropertyMappingAndDefault(Property.StatusRules , "statusRules", "CI");
 		setDBPropertyMappingAndDefault(Property.ReflexAction , "reflexAction", "Haiti");
 		setDBPropertyMappingAndDefault(Property.AccessionFormat , "acessionFormat", "SITEYEARNUM"); //spelled wrong in DB
 		setDBPropertyMappingAndDefault(Property.TRACK_PATIENT_PAYMENT, "trackPayment", "false");

@@ -68,21 +68,21 @@ sub sendOffsite{
     	}
 	}           
 }
-my $postgres_pwd  = 'sQeXDpFNbyzZ';
+my $postgres_pwd  = 'clinlims';
 my $keepFileDays  = 30;
-my $siteId = 'CASEYTEST';
+my $siteId = 'IPCI';
 #my $upLoadtargetURL = 'https://openelis-recv.cirg.washington.edu/receive-file/receive-file.pl';
-my $upLoadtargetURL ='ftp://172.26.224.55';
-my $upLoadUserName = 'backupoe';
+my $upLoadtargetURL ='ftp://192.168.1.1/EFI/backup';
+my $upLoadUserName = 'backup';
 my $upLoadPassword = 'backupoe';
 
 my $snapShotFileBase     = 'lastSnapshot_' . $siteId; 
 my $snapShotFileName     = $snapShotFileBase . '.backup'; 
 my $snapShotFileNameZipped     = $snapShotFileName . '.gz'; 
-my $cmd = 'pg_dump -h localhost  -U clinlims -f "' . $snapShotFileName . '" -n \"clinlims\" clinlims';
+my $cmd = 'pg_dump -h localhost  -U clinlims -f "' . $snapShotFileName . '" -n \"clinlims\" ci_lnsp';
 my $zipCmd = 'gzip -f ' .  $snapShotFileName;
 my $backBaseDir          = cwd();
-my $baseFileName         = 'clinlims';
+my $baseFileName         = 'CI_IPCIOpenElis';
 my $mountedBackup        = "";
 my $dailyDir             = "$backBaseDir/daily";
 my $cumulativeDir        = "$backBaseDir/cumulative";
@@ -106,7 +106,7 @@ if (-d $mountedBackup) {
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 
-#sendOffsite($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword);
+sendOffsite($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword);
 
    
 

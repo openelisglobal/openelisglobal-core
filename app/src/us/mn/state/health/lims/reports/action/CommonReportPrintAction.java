@@ -109,7 +109,7 @@ public class CommonReportPrintAction extends BaseAction {
 
 	public String getReportPath() {
 		if (reportPath == null) {
-			reportPath = getServlet().getServletContext().getRealPath("") + "/WEB-INF/reports/";			
+			reportPath = getServlet().getServletContext().getRealPath("") + "/WEB-INF/reports/";
 		}
 		return reportPath;
 	}

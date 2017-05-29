@@ -64,8 +64,7 @@ public class ARVReportData {
 	private String collectiondate;
 	private String receptiondate;
 	private String orgname;
-	private String doctor;	
-	private String compleationdate;
+	private String doctor;
 	private String labNo;
 	private String pcr;
 	private String status;
@@ -249,12 +248,6 @@ public class ARVReportData {
 	}
 	public void setDoctor(String doctor) {
 		this.doctor = doctor;
-	}
-	public String getCompleationdate() {
-		return compleationdate;
-	}
-	public void setCompleationdate(String compleationdate) {
-		this.compleationdate = compleationdate;
 	}
 	public String getLabNo() {
 		return labNo;

@@ -76,7 +76,7 @@ vl = new VLProjectChecker();
 			<html:select name="<%=formName%>" 
 			    property="ProjectData.ARVcenterName"
 				styleId="vl.centerName" 
-				onchange="vl.checkCenterName(true)">
+				onchange="vl.checkCenterName(false)">
 				<app:optionsCollection name="<%=formName%>"
 					property="organizationTypeLists.ARV_ORGS_BY_NAME.list" 
 					label="organizationName"
@@ -94,13 +94,12 @@ vl = new VLProjectChecker();
 			<html:select name="<%=formName%>" 
 			property="ProjectData.ARVcenterCode" 
 			styleId="vl.centerCode"
-			onchange="vl.checkCenterCode(true)" >
+			onchange="vl.checkCenterCode(false)" >
 			<app:optionsCollection name="<%=formName%>" 
 			property="organizationTypeLists.ARV_ORGS.list" 
 			label="doubleName" 
 			value="id" />
 			</html:select>
-			<div id="vl.centerCodeMessage" class="blank"></div>
 		</td>
 	</tr>
 		<tr> 
@@ -155,7 +154,7 @@ vl = new VLProjectChecker();
         <app:text name="<%=formName%>"
             property="receivedTimeForDisplay"
             onkeyup="filterTimeKeys(this, event);"              
-            onchange="vl.checkReceivedTime(true);"
+            onblur="vl.checkReceivedTime(true);"
             styleClass="text"
             styleId="vl.receivedTimeForDisplay" maxlength="5"/>
             <div id="vl.receivedTimeForDisplayMessage" class="blank"></div>
@@ -298,41 +297,6 @@ vl = new VLProjectChecker();
 			<div id="vl.hivStatusMessage" class="blank"></div>
 		</td>
 	</tr>
-	
-	<tr id="vl.underInvestigationRow">
-        <td class="required"></td>
-        <td>
-            <bean:message key="patient.project.underInvestigation" />
-        </td>
-        <td>
-            <html:select name="<%=formName%>"
-            property="observations.underInvestigation" onchange="makeDirty();compareAllObservationHistoryFields(true)"
-            styleId="vl.underInvestigation">
-            <app:optionsCollection name="<%=formName%>"
-                property="dictionaryLists.YES_NO.list" label="localizedName"
-                value="id" />
-            </html:select>
-        </td>
-    </tr>    
-	
-	
-	<tr id="vl.underInvestigationRow">
-        <td class="required"></td>
-        <td>
-            <bean:message key="patient.project.underInvestigation" />
-        </td>
-        <td>
-            <html:select name="<%=formName%>"
-            property="observations.underInvestigation" onchange="makeDirty();compareAllObservationHistoryFields(true)"
-            styleId="vl.underInvestigation">
-            <app:optionsCollection name="<%=formName%>"
-                property="dictionaryLists.YES_NO.list" label="localizedName"
-                value="id" />
-            </html:select>
-        </td>
-    </tr>    
-	
-	
 	
 	<tr><td colspan="5"><hr/></td></tr><!-- _________________________________________________ -->
 

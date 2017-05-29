@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Some settings-->
-  <!-- Data specific to ci_regional,ci_general -->
-  <changeSet id="1" author="CI OpenELIS developers group" context="ci_regional,ci_general">
+  <!-- Data specific to ci_regional -->
+  <changeSet id="1" author="CI OpenELIS developers group" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="display_key" schemaName="clinlims" tableName="test_section" />
@@ -17,7 +17,7 @@
     </sql>
   </changeSet>
    
-  <changeSet id="2" author="CI OpenELIS developers group" context="ci_regional,ci_general">
+  <changeSet id="2" author="CI OpenELIS developers group" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="display_key" schemaName="clinlims" tableName="type_of_sample" />
@@ -32,7 +32,7 @@
     </sql>
   </changeSet>
   
- <changeSet id="3" author="CI OpenELIS developers group" context="ci_regional,ci_general">
+ <changeSet id="3" author="CI OpenELIS developers group" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="test_id" schemaName="clinlims" tableName="analyzer_results" />
@@ -47,7 +47,7 @@
     </sql>
   </changeSet>
   
-   <changeSet author="CI OpenELIS developers group" id="4" context="ci_regional,ci_general">
+   <changeSet author="CI OpenELIS developers group" id="4" context="ci_regional">
     <comment>update on type_of_sample</comment>
     <sql>
     UPDATE clinlims.type_of_sample
@@ -69,7 +69,7 @@
   </changeSet>
   
   
-  <changeSet author="CI OpenELIS developers group" id="5" context="ci_regional,ci_general">
+  <changeSet author="CI OpenELIS developers group" id="5" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.type_of_sample where display_key = 'Sample.type.DBS';
     		</sqlCheck>
@@ -93,7 +93,7 @@ alter sequence clinlims.test_section_seq restart with 160;
   </changeSet> 
   
   
- <changeSet author="CI OpenELIS developers group" id="6" context="ci_regional,ci_general">
+ <changeSet author="CI OpenELIS developers group" id="6" context="ci_regional">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.test_section where display_key = 'testSection.EID';
     		</sqlCheck>
@@ -164,14 +164,4 @@ UPDATE clinlims.test_section
  </sql>
   </changeSet>  
     
-<changeSet author="CI OpenELIS developers group" id="7" context="ci_regional,ci_general">
-    
-    <sql>
-ALTER TABLE clinlims.organization
-ALTER COLUMN short_name SET DEFAULT '""';
- 
- </sql>
-  </changeSet> 	
-	
-	
 </databaseChangeLog>
