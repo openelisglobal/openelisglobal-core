@@ -12,9 +12,6 @@ import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
-import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
-import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.VLReportData;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -84,7 +81,7 @@ public abstract class PatientVLReport extends RetroCIPatientReport {
 					maxCompleationDate = analysis.getCompletedDate();
 					maxCompleationTime = maxCompleationDate.getTime();
 				}
-
+				
 			}
 
 			String testName = TestService.getUserLocalizedTestName( analysis.getTest() );

@@ -45,10 +45,10 @@ public class VLReportData {
 	private String gender;
 	private String collectiondate;
 	private String receptiondate;
+	private String compleationdate;
 	private String accession_number;
 	private String servicename;
 	private String doctor;
-	private String compleationdate;
 	private String PTME;
 	private String clinicDistrict;
 	private String clinic;
@@ -112,6 +112,12 @@ public class VLReportData {
 	public void setCollectiondate(String collectiondate) {
 		this.collectiondate = collectiondate;
 	}
+	public String getCompleationdate() {
+		return compleationdate;
+	}
+	public void setCompleationdate(String compleationdate) {
+		this.compleationdate = compleationdate;
+	}
 	public String getAccession_number() {
 		return accession_number;
 	}
@@ -130,12 +136,7 @@ public class VLReportData {
 	public void setDoctor(String doctor) {
 		this.doctor = doctor;
 	}
-	public String getCompleationdate() {
-		return compleationdate;
-	}
-	public void setCompleationdate(String compleationdate) {
-		this.compleationdate = compleationdate;
-	}
+	
 	public String getPTME() {
 		return PTME;
 	}

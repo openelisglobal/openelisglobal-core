@@ -242,6 +242,7 @@ public interface IActionConstants {
     String STATUS_RULES_HAITI = "HAITI";
     String STATUS_RULES_HAITI_LNSP = "LNSP_HAITI";
     String STATUS_RULES_RETROCI = "RETROCI";
+    String STATUS_RULES_CI = "CI_GENERAL";
     String SAMPLE_EDIT_WRITABLE = "SampleEditWritable";
 
     String RESULTS_SESSION_CACHE = "ResultsSessionCache";
