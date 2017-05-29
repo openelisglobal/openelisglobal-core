@@ -36,7 +36,7 @@
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="<%=basePath%>scripts/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>luna/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>neon/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" language="JavaScript1.2">
 
 var dirty = false;
@@ -134,10 +134,7 @@ function Studies() {
 
 	this.validators["EID_Id"] = new FieldValidator();
 	this.validators["EID_Id"].setRequiredFields( new Array("eid.receivedDateForDisplay", "eid.interviewDate", "eid.centerCode", "eid.centerName", "subjectOrSiteSubject", "eid.labNo", "eid.dateOfBirth", "eid.gender" ) );
-	
-	this.validators["VL_Id"] = new FieldValidator();
-	this.validators["VL_Id"].setRequiredFields( new Array("vl.receivedDateForDisplay", "vl.interviewDate", "vl.centerCode", "vl.centerName", "subjectOrSiteSubject", "vl.labNo", "vl.dateOfBirth", "vl.gender" ) );
-	
+
 	this.validators["RTN_Id"] = new FieldValidator();
 	this.validators["RTN_Id"].setRequiredFields( new Array("rtn.labNo", "rtn.receivedDateForDisplay", "rtn.interviewDate", "rtn.gender", "rtn.dateOfBirth", "rtn.nameOfDoctor", "rtn.service", "rtn.hospital") );
 
@@ -154,8 +151,7 @@ function Studies() {
 	this.initializeProjectChecker = function () {
 		this.projectChecker["InitialARV_Id"] = iarv;
 		this.projectChecker["FollowUpARV_Id"] = farv;
-		this.projectChecker["EID_Id"] = eid;	
-		this.projectChecker["VL_Id"] = vl;
+		this.projectChecker["EID_Id"] = eid;		
 		this.projectChecker["RTN_Id"] = rtn;
 	}
 
@@ -186,7 +182,7 @@ function switchStudyForm( divId ) {
 		document.getElementById(divId).style.display = "block";
 		fieldValidator = studies.getValidator(divId); // reset the page var fieldValidator for all fields to use.
 		projectChecker   = studies.getProjectChecker(divId);	// reset the page var projectChecker
-		projectChecker.setSubjectOrSiteSubjectEntered();	
+		projectChecker.setSubjectOrSiteSubjectEntered();		
 	    adjustFieldsForRequestType();
 		setSaveButton();
 	} else {
@@ -204,9 +200,7 @@ function adjustFieldsForRequestType() {
 		if ( nameField && codeField ) {
 			syncLists(codeField, nameField);		
 		}	
-		
 	}
-	
   	if (requestType == "readwrite" || requestType == "readonly") {
     	$("studyFormsID").style.display = "none";
     	if ( projectChecker != null ) {
@@ -221,7 +215,7 @@ function adjustFieldsForRequestType() {
 	if (projectChecker == null ) {
 		return;
 	}
-	
+
 	switch (requestType) {
 	case "initial":
 		break;
@@ -270,13 +264,11 @@ function hideAllDivs(){
 	toggleDisabledDiv(document.getElementById("FollowUpARV_Id"), false);
 	toggleDisabledDiv(document.getElementById("RTN_Id"), false);
 	toggleDisabledDiv(document.getElementById("EID_Id"), false);
-	toggleDisabledDiv(document.getElementById("VL_Id"), false);
 
 	document.getElementById('InitialARV_Id').style.display = "none";
 	document.getElementById('FollowUpARV_Id').style.display = "none";
 	document.getElementById('RTN_Id').style.display = "none";
 	document.getElementById('EID_Id').style.display = "none";
-	document.getElementById('VL_Id').style.display = "none";
 }
 
 </script>
@@ -350,9 +342,6 @@ function initializeStudySelection() {
 	</div>
 	<div id="EID_Id" style="display: none;">
 		<tiles:insert attribute="ediStudy"/>
-	</div>
-	<div id="VL_Id" style="display: none;">
-		<tiles:insert attribute="lvStudy"/>
 	</div>
 	<div id="RTN_Id" style="display: none;">
 		<tiles:insert attribute="rtnStudy"/>

@@ -4,10 +4,10 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="426"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
+	<import value="java.util.*"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
@@ -21,8 +21,7 @@
 	</parameter>
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
-	<parameter name="leftHeaderImage2" class="java.lang.String"/>
-	<parameter name="rightHeaderImage2" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="imagesPath" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -43,6 +42,7 @@
 	<field name="virologyVlQaEvent" class="java.lang.String"/>
 	<field name="allQaEvents" class="java.lang.String"/>
 	<field name="receptionQaEvent" class="java.lang.String"/>
+	<field name="compleationdate" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -62,6 +62,9 @@
 				</subreportParameter>
 				<subreportParameter name="orgname">
 					<subreportParameterExpression><![CDATA[$F{servicename}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="compleationdate">
+					<subreportParameterExpression><![CDATA[$F{compleationdate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="age">
 					<subreportParameterExpression><![CDATA[$F{age}]]></subreportParameterExpression>
@@ -92,24 +95,18 @@
 			</line>
 			<subreport>
 				<reportElement x="0" y="0" width="552" height="134"/>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="OPENREPORTS_REPORT_DIR"/>
-				<subreportParameter name="leftHeaderImage2">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage2}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="duplicateReport">
-					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="status">
 					<subreportParameterExpression><![CDATA[$F{status}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="rightHeaderImage2">
-					<subreportParameterExpression><![CDATA[$P{rightHeaderImage2}]]></subreportParameterExpression>
+				<subreportParameter name="duplicateReport">
+					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="studyName">
 					<subreportParameterExpression><![CDATA[$P{studyName}]]></subreportParameterExpression>
@@ -119,6 +116,9 @@
 				</subreportParameter>
 				<subreportParameter name="directorName">
 					<subreportParameterExpression><![CDATA[$P{directorName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="imagesPath">
+					<subreportParameterExpression><![CDATA[$P{imagesPath}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "RetroCIHeader.jasper"]]></subreportExpression>
@@ -211,6 +211,10 @@
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{virologyVlQaEvent} == null ? "Etat de l'échantillon:Normal" :  "Etat de l'échantillon:"+$F{virologyVlQaEvent}]]></textFieldExpression>
 			</textField>
+			<image onErrorType="Blank">
+				<reportElement x="274" y="273" width="267" height="102" isPrintInFirstWholeBand="true"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "VLSign.jpg"]]></imageExpression>
+			</image>
 		</band>
 		<band height="472">
 			<printWhenExpression><![CDATA[$F{virologyVlQaEvent}!=null]]></printWhenExpression>

@@ -27,8 +27,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 function VLProjectChecker() {
 
     this.idPre = "vl.";
-    var specialKeys = new Array();
-    specialKeys.push(8); //Backspace
 	
     this.checkDate = function (field,blanksAllowed) {
     	makeDirty();
@@ -39,44 +37,22 @@ function VLProjectChecker() {
 	};
    
 	this.checkVLRequestReason = function () {
-		clearFormElements("vl.vlOtherReasonForRequest");
+		clearFormElements("vl.reasonOther");
 		this.displayedByReasonOther();
 	};
 	this.displayedByReasonOther = function () {
-	    var field = $("vl.vlReasonForRequest");
+	    var field = $("vl.reason");
 		showElements( (field.selectedIndex == 5), "vl.reasonOtherRow" );
 	};
 
 	this.checkInterruptedARVTreatment = function () {
 		clearFormElements("vl.arvTreatmentInitDate,vl.arvTreatmentRegime,vl.currentARVTreatmentINNs0,vl.currentARVTreatmentINNs1,vl.currentARVTreatmentINNs2,vl.currentARVTreatmentINNs3");
 		this.displayedByInterruptedARVTreatment();
-	};	
+	};
 	
 	this.displayedByInterruptedARVTreatment = function () {
 	    var field = $("vl.currentARVTreatment");
 		showElements( (field.selectedIndex == 1), "vl.arvTreatmentInitDateRow,vl.arvTreatmentTherapRow,vl.onGoingARVTreatmentINNsRow,vl.currentARVTreatmentINNRow0,vl.currentARVTreatmentINNRow1,vl.currentARVTreatmentINNRow2,vl.currentARVTreatmentINNRow3" );
-	};
-	
-	this.checkVLBenefit = function () {
-		clearFormElements("vl.priorVLLab,vl.priorVLValue,vl.priorVLDate");
-		this.displayedByVLBenefit();
-	};
-	this.displayedByVLBenefit = function () {
-	    var field = $("vl.vlBenefit");
-		showElements( (field.selectedIndex == 1), "vl.priorVLLabRow,vl.priorVLValueRow,vl.priorVLDateRow" );
-	};
-	function IsNumeric(field,e) {
-        var keyCode = e.which ? e.which : e.keyCode
-        var ret = ((keyCode >= 48 && keyCode <= 57) || specialKeys.indexOf(keyCode) != -1);
-        document.getElementById("error").style.display = ret ? "none" : "inline";
-        return ret;
-    };
-    
-    this.refresh = function () {
-		this.refreshBase();		
-		this.displayedByVLBenefit();
-		this.displayedByReasonOther();
-		this.displayedByInterruptedARVTreatment();
 	};
 
 }
@@ -150,8 +126,8 @@ vl = new VLProjectChecker();
                       property="observations.nameOfSampler"
                       onchange="makeDirty();compareAllObservationHistoryFields(true)"
                       styleClass="text"
-                      styleId="vl.nameOfSampler" size="50"/>
-            <div id="vl.nameOfSamplerMessage" class="blank"></div>
+                      styleId="eid.nameOfSampler" size="50"/>
+            <div id="eid.nameOfSamplerMessage" class="blank"></div>
         </td>
     </tr>
    <tr>
@@ -163,10 +139,10 @@ vl = new VLProjectChecker();
         <app:text name="<%=formName%>"
                 property="receivedDateForDisplay"
                 onkeyup="addDateSlashes(this, event);"
-                onchange="vl.checkReceivedDate(false)"
+                onchange="eid.checkReceivedDate(false)"
                 styleClass="text"
-                styleId="vl.receivedDateForDisplay" maxlength="10"/>
-                <div id="vl.receivedDateForDisplayMessage" class="blank"></div>
+                styleId="eid.receivedDateForDisplay" maxlength="10"/>
+                <div id="eid.receivedDateForDisplayMessage" class="blank"></div>
         </td>
     </tr>
     <tr>
@@ -408,14 +384,14 @@ vl = new VLProjectChecker();
 			<html:select name="<%=formName%>"
 					 property="observations.vlReasonForRequest"
 				     onchange="vl.checkVLRequestReason();compareAllObservationHistoryFields(true);"	
-					 styleId="vl.vlReasonForRequest"  >
+					 styleId="vl.reason"  >
 				<app:optionsCollection 
 				    name="<%=formName%>" 
 				    property="dictionaryLists.ARV_REASON_FOR_VL_DEMAND.list"
 					label="localizedName" 
 					value="id" />
 			</html:select>
-			<div id="vl.vlReasonForRequestMessage" class="blank"></div>
+			<div id="vl.ReasonForRequestMessage" class="blank"></div>
 		</td>
 	</tr>
 	
@@ -429,8 +405,8 @@ vl = new VLProjectChecker();
 				property="observations.vlOtherReasonForRequest"
 				onchange="compareAllObservationHistoryFields(true);" 
 				styleClass="text"
-				styleId="vl.vlOtherReasonForRequest" maxlength="50"/>
-				<div id="vl.vlOtherReasonForRequestMessage" class="blank"></div>
+				styleId="vl.reasonOther" maxlength="50"/>
+				<div id="vl.OtherReasonForRequestMessage" class="blank"></div>
 		</td>
 	</tr>
 	
@@ -452,8 +428,8 @@ vl = new VLProjectChecker();
 				onchange="makeDirty();compareAllObservationHistoryFields(true);" 
 				maxlength="4"
 				styleClass="text" 
-				styleId="vl.initcd4Count" />
-			<div id="vl.initcd4CountMessage" class="blank"></div>
+				styleId="vl.cd4Count" />
+			<div id="vl.cd4CountMessage" class="blank"></div>
 		</td>
 	</tr>
 	<tr> 
@@ -465,8 +441,8 @@ vl = new VLProjectChecker();
 			<app:text name="<%=formName%>" property="observations.initcd4Percent"
 				onchange="makeDirty();compareAllObservationHistoryFields(true);" 
 				styleClass="text" 
-				styleId="vl.initcd4Percent" />
-			<div id="vl.initcd4PercentMessage" class="blank"></div>
+				styleId="vl.cd4Percent" />
+			<div id="vl.cd4PercentMessage" class="blank"></div>
 		</td>
 	</tr>	
 	<tr> 
@@ -480,7 +456,7 @@ vl = new VLProjectChecker();
 				onkeyup="addDateSlashes(this, event);"
 				onchange="vl.checkDate(this,false);"
 				styleClass="text"
-				styleId="vl.initcd4Date" maxlength="10"/>
+				styleId="vl.initcd4DateForDisplay" maxlength="10"/>
 				<div id="vl.initcd4DateMessage" class="blank"></div>
 		</td>
 	</tr>
@@ -530,7 +506,7 @@ vl = new VLProjectChecker();
 				onkeyup="addDateSlashes(this, event);"
 				onchange="vl.checkDate(this,false);"
 				styleClass="text"
-				styleId="vl.demandcd4Date" maxlength="10"/>
+				styleId="vl.demandcd4DateForDisplay" maxlength="10"/>
 				<div id="vl.demandcd4DateMessage" class="blank"></div>
 		</td>
 	</tr>
@@ -538,116 +514,19 @@ vl = new VLProjectChecker();
     <tr> 
 		<td></td>
 		<td class="observationsQuestion">
-			<bean:message key="sample.project.priorVLRequest"/>
+			<bean:message key="sample.project.priorCd4Request"/>
 		</td>
 		<td>
 			<html:select name="<%=formName%>" 
 			    property="observations.vlBenefit"	
-			    onchange="vl.checkVLBenefit();compareAllObservationHistoryFields(true);" 
-				styleId="vl.vlBenefit"  >
+			    onchange="makeDirty();compareAllObservationHistoryFields(true);" 
+				styleId="vl.Benefit"  >
 				<app:optionsCollection name="<%=formName%>" 
 				    property="dictionaryLists.YES_NO.list"
 					label="localizedName" value="id" />
 			</html:select>
-			<div id="vl.vlBenefitMessage" class="blank"></div>
+			<div id="vl.BenefitMessage" class="blank"></div>
 		</td>
 	</tr>
-	
-	<tr id="vl.priorVLLabRow" style="display:none"> 
-		<td></td>
-		<td class="observationsSubquestion">
-			<bean:message key="sample.project.priorVLLab"/>
-		</td>
-		<td>
-		<app:text name="<%=formName%>"
-				property="observations.priorVLLab"
-				styleClass="text"
-				styleId="vl.priorVLLab" maxlength="50"/>
-				<div id="vl.priorVLLabMessage" class="blank"></div>
-		</td>
-		
-	</tr>
-	<tr id="vl.priorVLValueRow" style="display:none"> 
-		<td></td>
-		<td class="observationsSubquestion">
-			<bean:message key="sample.project.VLValue"/>
-		</td>
-		<td>
-		<app:text name="<%=formName%>"
-				property="observations.priorVLValue"
-				styleClass="text"
-				onkeypress="vl.IsNumeric(this,event);"
-				styleId="vl.priorVLValue" maxlength="10"/>
-				<div id="vl.priorVLValueMessage" class="blank"></div>
-		</td>
-		
-	</tr>
-	
-	<tr id="vl.priorVLDateRow" style="display:none"> 
-		<td></td>
-		<td class="observationsSubquestion">
-			<bean:message key="sample.project.VLDate"/>
-		</td>
-		<td>
-		<app:text name="<%=formName%>"
-				property="observations.priorVLDate"
-				onkeyup="addDateSlashes(this, event);"
-				onchange="vl.checkDate(this,false);"
-				styleClass="text"
-				styleId="vl.priorVLDate" maxlength="10"/>
-				<div id="vl.priorVLDateMessage" class="blank"></div>
-		</td>
-	</tr>
-	<tr>
-        <td>&nbsp;</td>
-    </tr>
-
-    <tr><td colspan="5"><hr/></td></tr>
-    <tr id="vl.patientRecordStatusRow"style="display: none;">
-        <td class="required"></td>
-        <td>
-            <bean:message key="patient.project.patientRecordStatus" />
-        </td>
-        <td>
-        <INPUT type="text" id="vl.PatientRecordStatus" size="20" class="readOnly text" disabled="disabled" readonly="readonly" />
-        <div id="vl.PatientRecordStatusMessage" class="blank"></div>
-        </td>
-    </tr>
-    <tr id="vl.sampleRecordStatusRow" style="display: none;">
-        <td class="required"></td>
-        <td>
-            <bean:message key="patient.project.sampleRecordStatus" />
-        </td>
-        <td>
-        <INPUT type="text" id="vl.SampleRecordStatus" size="20" class="readOnly text" disabled="disabled" readonly="readonly" />
-        <div id="vl.SampleRecordStatusMessage" class="blank"></div>
-        </td>
-    </tr>
-    <tr><td colspan="6"><hr/></td></tr>
-    <tr id="vl.underInvestigationRow">
-        <td class="required"></td>
-        <td>
-            <bean:message key="patient.project.underInvestigation" />
-        </td>
-        <td>
-            <html:select name="<%=formName%>"
-            property="observations.underInvestigation" onchange="makeDirty();compareAllObservationHistoryFields(true)"
-            styleId="vl.underInvestigation">
-            <app:optionsCollection name="<%=formName%>"
-                property="dictionaryLists.YES_NO.list" label="localizedName"
-                value="id" />
-            </html:select>
-        </td>
-    </tr>    
-    <tr id="vl.underInvestigationCommentRow" >
-        <td class="required"></td>
-        <td>
-            <bean:message key="patient.project.underInvestigationComment" />
-        </td>
-        <td colspan="3">
-            <app:text name="<%=formName%>" property="ProjectData.underInvestigationNote" maxlength="1000" size="80"
-                onchange="makeDirty();" styleId="vl.underInvestigationComment" />
-        </td>
-    </tr>
 	
 </table>

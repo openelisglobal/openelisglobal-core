@@ -25,6 +25,7 @@
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="imagesPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -60,7 +61,7 @@
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[($P{localization} == null ?  "Date d'achèvement" : $P{localization}.get("collectionDate") ) + ": " + $P{orderFinishDate}]]></textFieldExpression>
 			</textField>
-			<image isUsingCache="true">
+			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement x="2" y="2" width="100" height="88"/>
 				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
@@ -86,11 +87,19 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName2}]]></textFieldExpression>
 			</textField>
 			<elementGroup>
-				<image hAlign="Right" isUsingCache="true">
+				<image hAlign="Right" isUsingCache="true" onErrorType="Blank">
 					<reportElement x="470" y="3" width="100" height="88"/>
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{rightHeaderImage}]]></imageExpression>
 				</image>
+				<image hAlign="Right" isUsingCache="false">
+					<reportElement x="470" y="3" width="100" height="88"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
+				</image>
 			</elementGroup>
+			<image isUsingCache="false">
+				<reportElement x="2" y="2" width="100" height="88"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 	<columnFooter>

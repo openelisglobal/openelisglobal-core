@@ -18,12 +18,16 @@ package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.*;
 
+import us.mn.state.health.lims.common.services.StatusService;
+
 //import org.apache.commons.validator.GenericValidator;
 
 //import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
 //import us.mn.state.health.lims.test.valueholder.Test;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
+import us.mn.state.health.lims.test.valueholder.Test;
 
 public class VLColumnBuilder extends CIColumnBuilder {
 
@@ -39,7 +43,7 @@ public class VLColumnBuilder extends CIColumnBuilder {
         add("started_date"     ,"STARTED_DATE", NONE);
         add("completed_date"     ,"COMPLETED_DATE", NONE);
         add("released_date"     ,"RELEASED_DATE", NONE);
-        add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
+   //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
              
         add("hivStatus"            , "STATVIH", DICT_RAW );
         add("nameOfDoctor"         , "NOMMED", NONE );
@@ -135,13 +139,14 @@ public class VLColumnBuilder extends CIColumnBuilder {
 
 	    
 	    + "\n ORDER BY s.accession_number;");
-		
 
 	    return;
 	}
 
 	public void makeSQL() {
-	    query = new StringBuilder();
+		String validStatusId = StatusService.getInstance().getStatusID(StatusService.AnalysisStatus.Finalized);
+		Test test = (Test)new TestDAOImpl().getActiveTestByName("Viral Load").get(0);
+		query = new StringBuilder();
 	    String lowDatePostgres =  postgresDateFormat.format(dateRange.getLowDate());
 	    String highDatePostgres = postgresDateFormat.format(dateRange.getHighDate());
 	    query.append( SELECT_SAMPLE_PATIENT_ORGANIZATION );
@@ -161,8 +166,9 @@ public class VLColumnBuilder extends CIColumnBuilder {
 	
 	    // and finally the join that puts these all together. Each cross table should be listed here otherwise it's not in the result and you'll get a full join
 	    query.append( " WHERE "             
-	    + "\n a.test_id = 174" 
-	    + "\n AND a.status_id = 18" 
+	    + "\n a.test_id =" + test.getId()
+	    + (( validStatusId == null )?"":
+            " AND a.status_id = " + validStatusId)
 	    + "\n AND a.id=r.analysis_id"
 	    + "\n AND a.sampitem_id = si.id" 
 	    + "\n AND s.id = si.samp_id"
@@ -180,7 +186,7 @@ public class VLColumnBuilder extends CIColumnBuilder {
 	    + "\n ORDER BY s.accession_number;");
 	    /////////
 	    // no don't insert another crosstab or table here, go up before the main WHERE clause
-
+	
 	    return;
 	}
 

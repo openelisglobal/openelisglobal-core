@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RetroCIHeader" pageWidth="550" pageHeight="134" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="550" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -22,8 +22,7 @@
 		<defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rightHeaderImage" class="java.io.InputStream"/>
-	<parameter name="leftHeaderImage2" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="rightHeaderImage2" class="java.lang.String"/>
+	<parameter name="imagesPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -44,9 +43,9 @@
 			<staticText>
 				<reportElement x="92" y="19" width="386" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
+					<font size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[LABORATOIRE CDC/RETRO-CI]]></text>
+				<text><![CDATA[LABORATOIRE D'ANALYSES MEDICALES]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="2" y="59" width="63" height="20">
@@ -64,65 +63,26 @@
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA["Résults " + $P{status}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["Résultats " + $P{status}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="1" y="76" width="548" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Chef du laboratorie: Dr ADJE-TOURE Christiane]]></text>
-			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField-2" x="440" y="45" width="109" height="30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="92" y="37" width="386" height="20"/>
+				<reportElement x="92" y="36" width="386" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
+					<font size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CHU TREICHVILLE 01 BP 1712 ABIDJAN 01]]></text>
+				<text><![CDATA[CePReF]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="92" y="57" width="386" height="20"/>
+				<reportElement x="92" y="74" width="386" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
+					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 21 21 42 50/ 21 25 41 89   FAX: 21 24 29 69]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="98" width="80" height="34"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[Dr TEHE G. André
-Diagnostic clinique]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="134" y="98" width="116" height="34"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[Dr KOHEMUN-E. Natacha
-Sérologie]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="279" y="98" width="110" height="34"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[M. Ya Kouadio L.
-Diagnostic moléculaire]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="440" y="98" width="107" height="34"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[Dr TOURE-A. Ramatou
-Assurance qualité]]></text>
+				<text><![CDATA[TEL: 23 52 52 53 / 23 46 25 51  FAX: 23 52 52 43]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="109" y="0" width="331" height="20"/>
@@ -141,12 +101,26 @@ Assurance qualité]]></text>
 			</image>
 			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement mode="Transparent" x="1" y="0" width="64" height="57" backcolor="#FFFFFF"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{leftHeaderImage2}]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
 			</image>
 			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement mode="Transparent" x="484" y="0" width="64" height="57" backcolor="#FFFFFF"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{rightHeaderImage2}]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="3" y="93" width="547" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Responsable Laboratoire : Dr DIALLO K.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="93" y="55" width="386" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Centre de PRise en charge, de Recherche et de Formation]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>

@@ -3,7 +3,6 @@
 			     us.mn.state.health.lims.common.formfields.FormFields,
 			     us.mn.state.health.lims.common.formfields.FormFields.Field,
 			     us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
-			     us.mn.state.health.lims.common.provider.validation.ProgramAccessionValidator,
 			     us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
 			     us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
 <%@ page import="us.mn.state.health.lims.common.util.*" %>
@@ -270,9 +269,7 @@ function /*void*/ dirtySearchInfo(e){
 		newSearchInfo = true; 
 	}
 }
-function /*void*/ doNothing(){ 
-	
-}
+
 function enableSearchButton(eventCode){
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
@@ -305,7 +302,6 @@ function handleSelectedPatient(){
     if( !(typeof requestType === 'undefined') ){
         form.action += "&type=" + requestType;
     }
-    
     form.submit();
 }
 
@@ -353,7 +349,7 @@ function setCaretPosition(ctrl, pos){
     <logic:present property="warning" name="<%=formName%>" >
         <h3 class="important-text"><bean:message key="order.modify.search.warning" /></h3>
     </logic:present>
-    <select id="searchCriteria"  style="float:left" onchange="doNothing()" tabindex="1" class="patientSearch">
+    <select id="searchCriteria"  style="float:left" onchange="enableSearchButton()" tabindex="1" class="patientSearch">
         <%
             for(IdValuePair pair : patientSearch.getSearchCriteria()){
                 out.print("<option value=\"" + pair.getId() +"\">" + pair.getValue() + "</option>");
