@@ -19,7 +19,7 @@
 
   <include file="OE6.2.2/MetaData.xml" />
   <include file="OE6.2.2/AddReferred.xml" />
+  <include file="OE6.2.2/dict.xml" />
   <include file="OE6.2.2/systemrolemodule.xml" />
-   <include file="OE6.2.2/dict.xml" />
   
   </databaseChangeLog> 

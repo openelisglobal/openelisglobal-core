@@ -25,7 +25,6 @@ UPDATE clinlims.test_section
 SET is_active='Y'
 WHERE id=136;
 
-
 UPDATE clinlims.test_section
 SET is_active='Y'
 WHERE description='Virologie_EID';
@@ -34,6 +33,8 @@ WHERE description='Virologie_EID';
 UPDATE clinlims.test_section
 SET is_active='Y'
 WHERE description='Virologie_VL';
+
+
 
 
 </sql>
