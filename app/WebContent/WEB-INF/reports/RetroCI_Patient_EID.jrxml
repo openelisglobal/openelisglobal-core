@@ -4,10 +4,10 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="640"/>
+	<property name="ireport.y" value="295"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
@@ -15,8 +15,7 @@
 	<parameter name="directorName" class="java.lang.String"/>
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream"/>
-	<parameter name="leftHeaderImage2" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="rightHeaderImage2" class="java.lang.String"/>
+	<parameter name="imagesPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -59,23 +58,11 @@
 				<subreportParameter name="accession_number">
 					<subreportParameterExpression><![CDATA[$F{accession_number}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="birth_date">
-					<subreportParameterExpression><![CDATA[$F{birth_date}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="servicename">
-					<subreportParameterExpression><![CDATA[$F{servicename}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ageMonth">
-					<subreportParameterExpression><![CDATA[$F{ageMonth}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ageWeek">
-					<subreportParameterExpression><![CDATA[$F{ageWeek}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="doctor">
-					<subreportParameterExpression><![CDATA[$F{doctor}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="subjectNumber">
 					<subreportParameterExpression><![CDATA[$F{subjectNumber}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="birth_date">
+					<subreportParameterExpression><![CDATA[$F{birth_date}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="receptionDate">
 					<subreportParameterExpression><![CDATA[$F{receptiondate}]]></subreportParameterExpression>
@@ -83,8 +70,17 @@
 				<subreportParameter name="compleationdate">
 					<subreportParameterExpression><![CDATA[$F{compleationdate}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="servicename">
+					<subreportParameterExpression><![CDATA[$F{servicename}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ageMonth">
+					<subreportParameterExpression><![CDATA[$F{ageMonth}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="gender">
 					<subreportParameterExpression><![CDATA[$F{gender}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ageWeek">
+					<subreportParameterExpression><![CDATA[$F{ageWeek}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="subjectno">
 					<subreportParameterExpression><![CDATA[$F{subjectno}]]></subreportParameterExpression>
@@ -94,6 +90,9 @@
 				</subreportParameter>
 				<subreportParameter name="sitesubjectno">
 					<subreportParameterExpression><![CDATA[$F{sitesubjectno}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="doctor">
+					<subreportParameterExpression><![CDATA[$F{doctor}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "RetroCI_Patient_EID_info.jasper"]]></subreportExpression>
@@ -112,17 +111,11 @@
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="leftHeaderImage2">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage2}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="duplicateReport">
 					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="status">
 					<subreportParameterExpression><![CDATA[$F{status}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="rightHeaderImage2">
-					<subreportParameterExpression><![CDATA[$P{rightHeaderImage2}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="studyName">
 					<subreportParameterExpression><![CDATA[$P{studyName}]]></subreportParameterExpression>
@@ -132,6 +125,9 @@
 				</subreportParameter>
 				<subreportParameter name="directorName">
 					<subreportParameterExpression><![CDATA[$P{directorName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="imagesPath">
+					<subreportParameterExpression><![CDATA[$P{imagesPath}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "RetroCIHeader.jasper"]]></subreportExpression>
@@ -189,6 +185,10 @@
 				</textElement>
 				<text><![CDATA[(Analyseur : COBAS AmpliPrep/COBAS TaqMan- Roche) Echantillon : DBS]]></text>
 			</staticText>
+			<image>
+				<reportElement x="274" y="273" width="230" height="75"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "EIDSign.jpg"]]></imageExpression>
+			</image>
 		</band>
 		<band height="448">
 			<printWhenExpression><![CDATA[$F{virologyEidQaEvent}!=null]]></printWhenExpression>

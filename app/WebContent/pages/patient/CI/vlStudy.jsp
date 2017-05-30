@@ -322,6 +322,41 @@ vl = new VLProjectChecker();
 		</td>
 	</tr>
 	
+	<tr id="vl.underInvestigationRow">
+        <td class="required"></td>
+        <td>
+            <bean:message key="patient.project.underInvestigation" />
+        </td>
+        <td>
+            <html:select name="<%=formName%>"
+            property="observations.underInvestigation" onchange="makeDirty();compareAllObservationHistoryFields(true)"
+            styleId="vl.underInvestigation">
+            <app:optionsCollection name="<%=formName%>"
+                property="dictionaryLists.YES_NO.list" label="localizedName"
+                value="id" />
+            </html:select>
+        </td>
+    </tr>    
+	
+	
+	<tr id="vl.underInvestigationRow">
+        <td class="required"></td>
+        <td>
+            <bean:message key="patient.project.underInvestigation" />
+        </td>
+        <td>
+            <html:select name="<%=formName%>"
+            property="observations.underInvestigation" onchange="makeDirty();compareAllObservationHistoryFields(true)"
+            styleId="vl.underInvestigation">
+            <app:optionsCollection name="<%=formName%>"
+                property="dictionaryLists.YES_NO.list" label="localizedName"
+                value="id" />
+            </html:select>
+        </td>
+    </tr>    
+	
+	
+	
 	<tr><td colspan="5"><hr/></td></tr><!-- _________________________________________________ -->
 
 	<tr> 

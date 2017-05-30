@@ -97,6 +97,15 @@ INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has
 INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1031,'Y','Y','Y','Y',10,(select id from clinlims.system_module where description='ResultValidation=&gt;Virologie'));
 
  
+ 
+UPDATE clinlims.site_information
+   SET domain_id = 1
+ WHERE name='siteNumber';
+ 
+   UPDATE clinlims.site_information
+   SET domain_id = 1
+ WHERE name='Accession number prefix'; 
+ 
 	 </sql>
   </changeSet>  
 
