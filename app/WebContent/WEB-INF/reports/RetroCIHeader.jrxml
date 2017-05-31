@@ -45,7 +45,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[LABORATOIRE D'ANALYSES MEDICALES]]></text>
+				<text><![CDATA[LABORATOIRE DE BIOLOGIE MOLECULAIRE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="2" y="59" width="63" height="20">
@@ -66,23 +66,23 @@
 				<textFieldExpression class="java.lang.String"><![CDATA["Résultats " + $P{status}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-2" x="440" y="45" width="109" height="30"/>
+				<reportElement key="textField-2" x="440" y="49" width="109" height="30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="92" y="36" width="386" height="20"/>
+				<reportElement x="92" y="39" width="386" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CePReF]]></text>
+				<text><![CDATA[CHR YAMOUSSOUKRO - BP 1005 YAMOUSSOUKRO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="92" y="74" width="386" height="20"/>
+				<reportElement x="92" y="58" width="386" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="false"/>
+					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 23 52 52 53 / 23 46 25 51  FAX: 23 52 52 43]]></text>
+				<text><![CDATA[TEL: 30 64 01 36   FAX: 30 64 01 26]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="109" y="0" width="331" height="20"/>
@@ -108,18 +108,11 @@
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="3" y="93" width="547" height="20"/>
+				<reportElement x="0" y="78" width="550" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable Laboratoire : Dr DIALLO K.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="93" y="55" width="386" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Centre de PRise en charge, de Recherche et de Formation]]></text>
+				<text><![CDATA[Responsable Laboratoire : Dr HOUEDANOU Chantal]]></text>
 			</staticText>
 		</band>
 	</detail>
