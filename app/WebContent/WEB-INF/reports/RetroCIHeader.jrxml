@@ -57,7 +57,7 @@
 				<text><![CDATA[Duplicata]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="440" y="67" width="109" height="18" backcolor="#FFFFFF">
+				<reportElement mode="Transparent" x="440" y="72" width="109" height="18" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{status} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
@@ -66,7 +66,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA["Résultats " + $P{status}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-2" x="440" y="49" width="109" height="30"/>
+				<reportElement key="textField-2" x="440" y="51" width="109" height="30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
@@ -75,14 +75,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CHR YAMOUSSOUKRO - BP 1005 YAMOUSSOUKRO]]></text>
+				<text><![CDATA[CENTRE HOSPITALIER REGIONAL DE KORHOGO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="92" y="58" width="386" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 30 64 01 36   FAX: 30 64 01 26]]></text>
+				<text><![CDATA[TEL: 36 86 04 53 / Quartier 14 / BP 92 / Email: chr_korhogo@yahoo.fr]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="109" y="0" width="331" height="20"/>
@@ -110,9 +110,16 @@
 			<staticText>
 				<reportElement x="0" y="78" width="550" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable Laboratoire : Dr HOUEDANOU Chantal]]></text>
+				<text><![CDATA[Chef du Laboratoire: Dr GNEGOURI R.  /  Responsable LBM: Dr BEHOUBA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="97" width="548" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Operateur: KOUASSI Dekaho Yves]]></text>
 			</staticText>
 		</band>
 	</detail>

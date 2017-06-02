@@ -185,7 +185,7 @@ iarv = new ArvInitialProjectChecker();
 			</div>
 			<INPUT type="text" name="arv.labNoForDisplay" id="labNoForDisplay"
 				size="5" class="text"
-				onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LART" />', false); makeDirty();"
+				onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LART"/>', false); makeDirty();"
 				maxlength="5" />
 			<app:text name="<%=formName%>" property="labNo"
 				styleClass="text" style="display: none;"

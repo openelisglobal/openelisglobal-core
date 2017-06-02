@@ -206,7 +206,7 @@ farv = new ArvFollowupProjectChecker();
 		  	<app:text name="<%=formName%>" property="labNo"
 				styleClass="text" style="display: none;"
 				styleId="farv.labNo" />
-			<div id="farv.labNoMessage" class="blank"></div>
+			<div id="farv.labNoMessage" class="blank" />
 		</td>
 		<td>
 		</td>
