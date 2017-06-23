@@ -107,7 +107,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labNo}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement key="rectangle-1" x="308" y="18" width="243" height="53" backcolor="#F8F8F8"/>
+				<reportElement key="rectangle-1" x="308" y="17" width="243" height="53" backcolor="#F8F8F8"/>
 			</rectangle>
 			<textField pattern="" isBlankWhenNull="true">
 				<reportElement key="textField" x="372" y="36" width="178" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
