@@ -303,6 +303,40 @@ vl = new VLProjectChecker();
 			<div id="vl.genderMessage" class="blank"></div>
 		</td>
 	</tr>
+	
+	<tr> 
+		<td></td>
+		<td class="observationsQuestion">
+            <bean:message key="sample.project.vlPregnancy" />
+        </td>
+        <td>
+            <html:select name="<%=formName%>"
+            property="observations.vlPregnancy" onchange="makeDirty();compareAllObservationHistoryFields(true)"
+            styleId="vl.vlPregnancy">
+            <app:optionsCollection name="<%=formName%>"
+                property="dictionaryLists.YES_NO.list" label="localizedName"
+                value="id" />
+            </html:select>
+        </td>
+    </tr>  
+    
+    <tr> 
+		<td></td>
+		<td class="observationsQuestion">
+            <bean:message key="sample.project.vlSuckle" />
+        </td>
+        <td>
+            <html:select name="<%=formName%>"
+            property="observations.vlSuckle" onchange="makeDirty();compareAllObservationHistoryFields(true)"
+            styleId="vl.vlSuckle">
+            <app:optionsCollection name="<%=formName%>"
+                property="dictionaryLists.YES_NO.list" label="localizedName"
+                value="id" />
+            </html:select>
+        </td>
+    </tr>   
+     
+	
 	<tr > 
 		<td></td>
 		<td>
@@ -323,6 +357,8 @@ vl = new VLProjectChecker();
 		</td>
 	</tr>
 	
+	
+    	
 	<tr><td colspan="5"><hr/></td></tr><!-- _________________________________________________ -->
 
 	<tr> 
@@ -650,5 +686,6 @@ vl = new VLProjectChecker();
                 onchange="makeDirty();" styleId="vl.underInvestigationComment" />
         </td>
     </tr>
+	
 	
 </table>

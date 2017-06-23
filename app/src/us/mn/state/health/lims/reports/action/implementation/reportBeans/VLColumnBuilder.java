@@ -68,6 +68,8 @@ public class VLColumnBuilder extends CIColumnBuilder {
         add("demandcd4Date"         , "DEMANDCD4_DATE", NONE );
          
         add("vlBenefit"         , "PRIOR_VL_BENEFIT",NONE );
+        add("vlPregnancy"         , "VL_PREGNANCY");
+        add("vlSuckle"         , "VL_SUCKLE");
         add("priorVLLab"         , "PRIOR_VL_Lab",NONE );
         add("priorVLValue"         , "PRIOR_VL_Value",NONE );
         add("priorVLDate"         , "PRIOR_VL_Date",NONE );
