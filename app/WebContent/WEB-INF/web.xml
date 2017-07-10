@@ -15,6 +15,19 @@
    <res-auth>Container</res-auth>
   </resource-ref>
   
+  <!--tomcat disallowed Http method configuration-->
+  <security-constraint>
+    <web-resource-collection>
+    <web-resource-name>Forbidden</web-resource-name>
+    <url-pattern>/*</url-pattern>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>TRACE</http-method>
+    </web-resource-collection>
+    <auth-constraint />
+  </security-constraint>
+
 <filter>
    <filter-name>HttpSecurityHeadersFilter</filter-name>
    <filter-class>us.mn.state.health.lims.common.util.HttpSecurityHeadersFilter</filter-class>
