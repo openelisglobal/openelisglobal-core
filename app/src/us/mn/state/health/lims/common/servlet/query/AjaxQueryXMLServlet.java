@@ -13,6 +13,7 @@ import us.mn.state.health.lims.common.provider.validation.BaseValidationProvider
 import us.mn.state.health.lims.common.provider.validation.ValidationProviderFactory;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.security.SecureXmlHttpServletRequest;
 
 public class AjaxQueryXMLServlet extends AjaxServlet {
 
@@ -46,7 +47,7 @@ public class AjaxQueryXMLServlet extends AjaxServlet {
 		BaseQueryProvider provider = (BaseQueryProvider) QueryProviderFactory
 				.getInstance().getQueryProvider(queryProvider);
 		provider.setServlet(this);
-		provider.processRequest(request, response);
+		provider.processRequest(new SecureXmlHttpServletRequest(request), response);
 	}
 
 }
