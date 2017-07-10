@@ -8,6 +8,7 @@ contentType="text/html; charset=UTF-8"
 import="us.mn.state.health.lims.common.action.IActionConstants"
 import="us.mn.state.health.lims.common.util.Versioning"
 %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%!
 String path = "";
@@ -63,9 +64,9 @@ function setAction(form, action, validate, parameters) {
 	parsedFormName = formName.substring(0,1).toUpperCase() + parsedFormName;
     //alert("parsedFormName " + parsedFormName);
     
-    var idParameter = <%= (String)request.getParameter("ID") %>;
-    var startingRecNoParameter = <%= (String)request.getParameter("startingRecNo")%>;
-    var accessionNumber = <%=  (String)request.getParameter("accessionNumber") %>;
+    var idParameter = '<%= Encode.forJavaScript((String)request.getParameter("ID")) %>';
+    var startingRecNoParameter = '<%= Encode.forJavaScript((String)request.getParameter("startingRecNo")) %>';
+    var accessionNumber = '<%=Encode.forJavaScript((String)request.getParameter("accessionNumber")) %>'';
     // bugzilla 2503
     var filterString = '';
     var doFilter='N';
