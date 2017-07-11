@@ -13,6 +13,7 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties,
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
 <%@ page import="us.mn.state.health.lims.common.services.TypeOfTestResultService" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -64,7 +65,7 @@
 
 <script type="text/javascript" >
 var dirty = false;
-var pager = new OEPager('<%=formName%>', '<%= testSection == "" ? "" : "&type=" + testSection  %>' + '<%= "&test=" + testName  %>');
+var pager = new OEPager('<%=formName%>', '<%= testSection == "" ? "" : "&type=" + Encode.forJavaScript(testSection)  %>' + '<%= "&test=" + Encode.forJavaScript(testName)  %>');
 pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.currentPage"/>');
 
 var pageSearch; //assigned in post load function
@@ -78,7 +79,7 @@ var pagingSearch = {};
 %>
 
 $jq(document).ready( function() {
-			var searchTerm = '<%=searchTerm%>';
+			var searchTerm = '<%=Encode.forJavaScript(searchTerm)%>';
             loadMultiSelects();
             $jq("select[multiple]").asmSelect({
                 removeLabel: "X"
@@ -173,7 +174,7 @@ function savePage() {
 
   window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
-	form.action = "ResultValidationSave.do" + '<%= "?type=" + testSection + "&test=" + testName %>';
+	form.action = "ResultValidationSave.do" + '<%= "?type=" + Encode.forJavaScript(testSection) + "&test=" + Encode.forJavaScript(testName) %>';
 	form.submit();
 }
 
@@ -361,8 +362,8 @@ function /*boolean*/ handleEnterEvent(){
 	</span>
 </div>
 </logic:notEqual>
-<html:hidden name="<%=formName%>"  property="testSection" value="<%=testSection%>" />
-<html:hidden name="<%=formName%>"  property="testName" value="<%=testName%>" />
+<html:hidden name="<%=formName%>"  property="testSection" value="<%=Encode.forHtml(testSection)%>" />
+<html:hidden name="<%=formName%>"  property="testName" value="<%=Encode.forHtml(testName)%>" />
 <logic:notEqual name="resultCount" value="0">
 <Table style="width:80%" >
     <tr>

@@ -4,6 +4,7 @@
 	us.mn.state.health.lims.common.action.IActionConstants,
     us.mn.state.health.lims.common.security.IAuthorizationActionConstants,
 	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -94,7 +95,7 @@ function customOnLoad() {
   var testResultValue = document.getElementById("testResultValue");
   testResultValue.focus();
   
-  var testNotLocked = '<%= request.getParameter(IAuthorizationActionConstants.UPDATE_TESTCOMPONENT_TESTRESULT) %>';
+  var testNotLocked = '<%= Encode.forJavaScript(request.getParameter(IAuthorizationActionConstants.UPDATE_TESTCOMPONENT_TESTRESULT)) %>';
    
   var parentSection = window.opener.getSectionB();
   tbody = parentSection.getElementsByTagName("TBODY")[0];
