@@ -66,7 +66,7 @@ var pagingSearch = new Object();
 %>
 
 $jq(document).ready( function() {
-			var searchTerm = '<%=searchTerm%>';
+			var searchTerm = '<%=Encode.forJavaScript(searchTerm)%>';
 			pageSearch = new OEPageSearch( $("searchNotFound"), "td", pager );
 			
 			if( searchTerm != "null" ){

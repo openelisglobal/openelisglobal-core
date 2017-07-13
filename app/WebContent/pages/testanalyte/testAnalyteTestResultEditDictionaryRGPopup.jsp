@@ -102,7 +102,7 @@ function customOnLoad() {
        
        var rg = inputs[0].value;
        
-       if (rg == '<%=rgNum%>') { //this is matching result group
+       if (rg == '<%=Encode.forJavaScript(rgNum)%>') { //this is matching result group
  
     
 //recreate rows from parent form for this result group
@@ -435,7 +435,7 @@ function saveItToParentForm(form) {
        var section = getRGSection();
        tbody = section.getElementsByTagName("TBODY")[0];
        var trs = tbody.getElementsByTagName("tr");
-       window.opener.replaceResultGroup('<%=rgType%>', '<%=rgNum%>', trs);
+       window.opener.replaceResultGroup('<%=Encode.forJavaScript(rgType)%>', '<%=Encode.forJavaScript(rgNum)%>', trs);
        window.close();
    }
    

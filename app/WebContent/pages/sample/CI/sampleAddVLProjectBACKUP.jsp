@@ -12,6 +12,7 @@
                  us.mn.state.health.lims.common.services.PhoneNumberService,
                  us.mn.state.health.lims.sample.bean.SampleOrderItem" %>
 <%@ page import="us.mn.state.health.lims.sample.util.AccessionNumberUtil" %>
+<%@page import="org.owasp.encoder.Encode"%>
 
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
@@ -92,8 +93,8 @@
 
 <script type="text/javascript" language="JavaScript1.2">
 var dirty = false;
-var type = '<%=requestType%>';
-var requestType = '<%=requestType%>';
+var type = '<%=Encode.forJavaScript(requestType)%>';
+var requestType = '<%=Encode.forJavaScript(requestType)%>';
 var pageType = "Sample";
 birthDateUsageMessage = "<bean:message key='error.dob.complete.less.two.years'/>";
 previousNotMatchedMessage = "<bean:message key='error.2ndEntry.previous.not.matched'/>";

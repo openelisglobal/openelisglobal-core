@@ -35,7 +35,7 @@ public class URLParamFilter implements Filter {
 	
 	public boolean paramInQuery(HttpServletRequest httpRequest) {
 		String[] blacklist = {"loginName=", "password=", "selectedIDs=", "patientProperties.", "sampleOrderItems.", "value=",
-				"selectedRoles=", "account", "expirationDate="};
+				"selectedRoles=", "account", "expirationDate=0", "qaEvents"};
 		String query = httpRequest.getQueryString();
 		if (query != null) {
 			String[] urlParams = query.split("&");

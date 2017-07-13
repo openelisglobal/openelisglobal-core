@@ -2,7 +2,9 @@
 	contentType="text/html; charset=utf-8"
 	import="java.util.Date,java.util.Locale, org.apache.struts.Globals,
 	us.mn.state.health.lims.common.action.IActionConstants, 
-	us.mn.state.health.lims.common.util.SystemConfiguration" %>   
+	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
+	
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -203,7 +205,7 @@ function setAccessionNumberValidationMessage(message, fieldIn) {
 
 function getBarcode(field) {
 	var accNbr = document.forms[0].accessionNumber.value;
-    var preNum = <%=(String)request.getAttribute("preAccessionNumber")%>;
+    var preNum = <%=Encode.forJavaScript((String)request.getAttribute("preAccessionNumber"))%>;
     if ( accNbr.length > 0 ) {
         if ( accNbr != preNum ) {
             setAction(window.document.forms[0], 'PopulateData1', 'no', '');                
