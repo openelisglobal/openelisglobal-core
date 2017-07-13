@@ -7,6 +7,7 @@
 	import="us.mn.state.health.lims.common.util.validator.ActionError"
  %>
 <%@page import="us.mn.state.health.lims.common.util.SystemConfiguration"%>
+<%@page import="org.owasp.encoder.Encode"%>
 <!DOCTYPE html>
 
 <%-- removed deprecated calls to methods in org.apache.struts.util.RequestUtils--%>
@@ -85,10 +86,10 @@ var myActionForm;
         
                	if (messages == null) {
             		messages = message;
-					out.println("messages = \"" + message +"\"");
+					out.println("messages = \"" + Encode.forJavaScript(message) +"\"");
 				}
 				else {
-					out.println("messages = messages + '\\r\\n' + \"" + message +"\"");
+					out.println("messages = messages + '\\r\\n' + \"" + Encode.forJavaScript(message) +"\"");
 				}
 
 				if (error instanceof us.mn.state.health.lims.common.util.validator.ActionError) {
