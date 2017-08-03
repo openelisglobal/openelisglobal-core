@@ -206,7 +206,7 @@ function setAccessionNumberValidationMessage(message, fieldIn) {
 
 function getBarcode(field) {
 	var accNbr = document.forms[0].accessionNumber.value;
-    var preNum = <%=Encode.forJavaScript((String)request.getAttribute("preAccessionNumber"))%>;
+    var preNum = '<%=Encode.forJavaScript((String)request.getAttribute("preAccessionNumber"))%>';
     if ( accNbr.length > 0 ) {
         if ( accNbr != preNum ) {
             setAction(window.document.forms[0], 'PopulateData2', 'no', '');                

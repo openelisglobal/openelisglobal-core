@@ -66,7 +66,7 @@ function setAction(form, action, validate, parameters) {
     
     var idParameter = '<%= Encode.forJavaScript((String)request.getParameter("ID")) %>';
     var startingRecNoParameter = '<%= Encode.forJavaScript((String)request.getParameter("startingRecNo")) %>';
-    var accessionNumber = '<%=Encode.forJavaScript((String)request.getParameter("accessionNumber")) %>'';
+    var accessionNumber = '<%=Encode.forJavaScript((String)request.getParameter("accessionNumber")) %>';
     // bugzilla 2503
     var filterString = '';
     var doFilter='N';
