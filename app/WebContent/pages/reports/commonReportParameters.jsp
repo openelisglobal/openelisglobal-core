@@ -7,6 +7,7 @@
 	us.mn.state.health.lims.common.util.StringUtil"
 %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -152,7 +153,7 @@ function onCancel(){
 function onPrint(){
 	if( formCorrect()){
 		var form = window.document.forms[0];
-		form.action = "ReportPrint.do?type=" + '<%= reportType %>' + "&report=" + '<%=reportRequest%>' + "&cacheBreaker=" + Math.random();
+		form.action = "ReportPrint.do?type=" + '<%= Encode.forJavaScript((String) reportType) %>' + "&report=" + '<%=Encode.forJavaScript((String) reportRequest)%>' + "&cacheBreaker=" + Math.random();
 		form.target = "_blank";
 		form.submit();
 		return false;

@@ -20,6 +20,7 @@ package us.mn.state.health.lims.common.security;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.validator.GenericValidator;
+import org.owasp.encoder.Encode;
 
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
@@ -52,7 +53,7 @@ public class PageIdentityUtil {
 			System.out.println("actionName is null");
 			actionName = "dummy";
 		} else {
-			System.out.println("actionName is " + actionName);
+			System.out.println("actionName is " + Encode.forJava(actionName));
 		}
 
 		if (actionName.equals("QuickEntryAddTestPopup")) {
