@@ -129,13 +129,19 @@ function setDefaultTests( div )
     }
     var tests = new Array();
     if (div=="InitialARV_Id") {
-        tests = new Array("iarv.serologyHIVTest", "iarv.glycemiaTest", "iarv.creatinineTest",
+       /* tests = new Array("iarv.serologyHIVTest", "iarv.glycemiaTest", "iarv.creatinineTest",
                 "iarv.transaminaseTest", "iarv.edtaTubeTaken", "iarv.dryTubeTaken",
-                "iarv.nfsTest", "iarv.cd4cd8Test") ;
-    }
+                "iarv.nfsTest", "iarv.cd4cd8Test") ;*/
+                
+    	tests = new Array("iarv.serologyHIVTest", "iarv.creatinineTest",
+                "iarv.edtaTubeTaken", "iarv.dryTubeTaken",
+                "iarv.nfsTest", "iarv.cd4cd8Test") ;      
+      }
+    
     if (div=="FollowUpARV_Id") {
-        tests = new Array("farv.glycemiaTest", "farv.creatinineTest",
-               "farv.transaminaseTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
+       // tests = new Array("farv.glycemiaTest", "farv.creatinineTest",
+             //  "farv.transaminaseTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
+       tests = new Array("farv.creatinineTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
     }
     //if (div=="EID_Id") {
     //  tests = new Array ("eid.dnaPCR", "eid.dbsTaken");

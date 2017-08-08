@@ -78,7 +78,7 @@ public class CobasTaqmanDBSReader extends AnalyzerLineInserter {
 		boolean columnsFound = manageColumns(lines.get(0));
 
 		if (!columnsFound) {
-			error = "Cobas Taqman DBS analyzer: Unable to find correct columns in file";
+			error = "Cobas Taqman DBS analyzer: Unable to find correct columns in file #";
 			return false;
 		}
 
