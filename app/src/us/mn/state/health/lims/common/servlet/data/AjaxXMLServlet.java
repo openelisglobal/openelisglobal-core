@@ -25,6 +25,7 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.provider.data.BaseDataProvider;
 import us.mn.state.health.lims.common.provider.data.DataProviderFactory;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.security.SecureXmlHttpServletRequest;
 
 /**
 
@@ -60,7 +61,7 @@ public class AjaxXMLServlet extends AjaxServlet {
 		BaseDataProvider provider = (BaseDataProvider) DataProviderFactory
 				.getInstance().getDataProvider(dataProvider);
 		provider.setServlet(this);
-		provider.processRequest(request, response);
+		provider.processRequest(new SecureXmlHttpServletRequest(request), response);
 	}
 
 }
