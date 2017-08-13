@@ -128,7 +128,7 @@ $(document).ready(function () {
     browserDetails += "<li>User-agent header: " + navigator.userAgent + "</li>";
     $("#browser-details").html(browserDetails);
     var pathname = location.href;
-    $("#error-path").html(pathname);
+    $("#error-path").text(pathname);
     var referrerPath = document.referrer;
     var referrer = '<bean:message key="errorpage.previous"/><br />' + referrerPath;
     if (referrerPath != '') {

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="us.mn.state.health.lims.codeelementxref.valueholder">
+    <class name="CodeElementXref" table="CODE_ELEMENT_XREF" optimistic-lock="version" dynamic-update="true">
+        <id name="id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
+            <column name="ID" precision="10" scale="0" />
+            <generator class="sequence">
+               <param name="sequence">code_element_xref_seq</param>
+            </generator>   
+        </id>                                            
+        <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field" />
+        <many-to-one name="messageOrganization" class="us.mn.state.health.lims.messageorganization.valueholder.MessageOrganization" fetch="select">
+            <column name="MESSAGE_ORG_ID" precision="10" scale="0" />
+        </many-to-one>
+        <many-to-one name="codeElementType" class="us.mn.state.health.lims.codeelementtype.valueholder.CodeElementType" fetch="select">
+            <column name="CODE_ELEMENT_TYPE_ID" precision="10" scale="0" />
+        </many-to-one>
+        <many-to-one name="receiverCodeElement" class="us.mn.state.health.lims.receivercodeelement.valueholder.ReceiverCodeElement" fetch="select">
+            <column name="RECEIVER_CODE_ELEMENT_ID" precision="10" scale="0" />
+        </many-to-one>
+        <!-- this cannot be mapped to a single table as it can reference any of several tables-->
+         <property name="selectedLocalCodeElementId" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
+            <column name="LOCAL_CODE_ELEMENT_ID" precision="10" scale="0" />
+        </property>
+      </class>
+      <query name="codeelementxref.getNext">
+         from CodeElementXref cex order by cex.messageOrganization.organization.organizationName, cex.codeElementType.text, cex.selectedLocalCodeElementId
+      </query>
+      <query name="codeelementxref.getPrevious">
+         from CodeElementXref cex order by cex.messageOrganization.organization.organizationName desc, cex.codeElementType.text desc, cex.selectedLocalCodeElementId desc
+      </query>
+</hibernate-mapping>

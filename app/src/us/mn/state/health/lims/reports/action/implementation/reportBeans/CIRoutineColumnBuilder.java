@@ -142,8 +142,8 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
         add("status_id", "STATUT", SAMPLE_STATUS);
        // add("project_id",        "ETUDE",    PROJECT );
        // add("external_id",      "SUJETSIT", NONE);
-        //add("last_name",        "NOM",      NONE);
-        //add("first_name",       "PRENOM",   NONE);
+       //add("last_name",        "NOM",      NONE);
+       //add("first_name",       "PRENOM",   NONE);
         
         
     }

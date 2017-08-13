@@ -4,10 +4,10 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="463"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
+	<import value="java.util.*"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
@@ -68,6 +68,7 @@
 	<field name="hematologyQaEvent" class="java.lang.String"/>
 	<field name="virologyVlQaEvent" class="java.lang.String"/>
 	<field name="receptionQaEvent" class="java.lang.String"/>
+	<field name="compleationdate" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -87,6 +88,9 @@
 				</subreportParameter>
 				<subreportParameter name="orgname">
 					<subreportParameterExpression><![CDATA[$F{orgname}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="compleationdate">
+					<subreportParameterExpression><![CDATA[$F{compleationdate}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="age">
 					<subreportParameterExpression><![CDATA[$F{age}]]></subreportParameterExpression>
@@ -188,22 +192,22 @@
 				<text><![CDATA[VGM(fl)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-6" mode="Opaque" x="4" y="93" width="78" height="18"/>
+				<reportElement key="staticText-6" mode="Opaque" x="0" y="93" width="78" height="18"/>
 				<textElement/>
 				<text><![CDATA[Plaq(10^3/ul)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-8" mode="Opaque" x="312" y="93" width="78" height="18"/>
+				<reportElement key="staticText-8" mode="Opaque" x="372" y="93" width="78" height="18"/>
 				<textElement/>
 				<text><![CDATA[Eo(%)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-9" mode="Opaque" x="389" y="93" width="78" height="18"/>
+				<reportElement key="staticText-9" mode="Opaque" x="465" y="93" width="78" height="18"/>
 				<textElement/>
 				<text><![CDATA[Ba(%)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-1" x="4" y="70" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-1" x="0" y="70" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{gb} == null ? "X" : $F{gb}]]></textFieldExpression>
 			</textField>
@@ -223,52 +227,52 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{hct} == null ? "X" : $F{hct}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-5" x="312" y="70" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-5" x="313" y="70" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{vgm} == null ? "X" : $F{vgm}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-6" x="4" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-6" x="0" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{plq} == null ? "X" : $F{plq}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-7" x="312" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-7" x="372" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{eoper} == null ? "X" : $F{eoper}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-8" x="389" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-8" x="465" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{bper} == null ? "X" : $F{bper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="staticText-10" mode="Opaque" x="81" y="93" width="78" height="18"/>
+				<reportElement key="staticText-10" mode="Opaque" x="93" y="93" width="78" height="18"/>
 				<textElement/>
 				<text><![CDATA[N(%)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-9" x="81" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-9" x="93" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{nper} == null ? "X" : $F{nper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="staticText-11" mode="Opaque" x="158" y="93" width="78" height="18"/>
+				<reportElement key="staticText-11" mode="Opaque" x="186" y="93" width="78" height="18"/>
 				<textElement/>
 				<text><![CDATA[L(%)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-10" x="158" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-10" x="186" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{lper} == null ? "X" : $F{lper}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="staticText-12" mode="Opaque" x="235" y="93" width="78" height="18"/>
+				<reportElement key="staticText-12" mode="Opaque" x="279" y="93" width="78" height="18"/>
 				<textElement/>
 				<text><![CDATA[M(%)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-11" x="235" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-11" x="279" y="114" width="62" height="18" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{mper} == null ? "X" : $F{mper}]]></textFieldExpression>
 			</textField>
@@ -285,8 +289,8 @@
 				<text><![CDATA[Créatinine(mg/l)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-12" x="4" y="255" width="62" height="18" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Left"/>
+				<reportElement key="textField-12" x="0" y="255" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{creatininemie} == null ? "X" : $F{creatininemie}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -318,8 +322,8 @@
 				<text><![CDATA[SGPT(UI/L)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-15" x="101" y="255" width="62" height="18" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Left"/>
+				<reportElement key="textField-15" x="99" y="255" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{sgpt} == null ? "X" : $F{sgpt}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -329,7 +333,7 @@
 			</staticText>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-16" x="198" y="255" width="62" height="18" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Left"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{sgot} == null ? "X" : $F{sgot}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -339,7 +343,7 @@
 			</staticText>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-17" x="297" y="255" width="62" height="18" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Left"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{glyc} == null ? "X" : $F{glyc}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -356,7 +360,7 @@
 			</staticText>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-18" x="0" y="187" width="62" height="18" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Left"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cd4per} == null ? "X" : $F{cd4per}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -365,8 +369,8 @@
 				<text><![CDATA[CD4#(cell/µl)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-19" x="82" y="187" width="62" height="18" isRemoveLineWhenBlank="true"/>
-				<textElement textAlignment="Left"/>
+				<reportElement key="textField-19" x="81" y="187" width="62" height="18" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{cd4} == null ? "X" : $F{cd4}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -394,7 +398,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{ccmh} == null ? "X" : $F{ccmh}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="staticText-7" mode="Opaque" x="467" y="52" width="78" height="18"/>
+				<reportElement key="staticText-7" mode="Opaque" x="465" y="52" width="78" height="18"/>
 				<textElement/>
 				<text><![CDATA[TCMH(pg)]]></text>
 			</staticText>

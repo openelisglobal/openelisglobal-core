@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="us.mn.state.health.lims.receivercodeelement.valueholder">
+    <class name="ReceiverCodeElement" table="RECEIVER_CODE_ELEMENT" optimistic-lock="version" dynamic-update="true">
+        <id name="id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
+            <column name="ID" precision="10" scale="0" />
+            <generator class="sequence">
+               <param name="sequence">receiver_code_element_seq</param>
+            </generator>   
+        </id>                                            
+        <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field" />
+         <many-to-one name="messageOrganization" class="us.mn.state.health.lims.messageorganization.valueholder.MessageOrganization" fetch="select">
+            <column name="MESSAGE_ORG_ID" precision="10" scale="0" />
+        </many-to-one>
+        <many-to-one name="codeElementType" class="us.mn.state.health.lims.codeelementtype.valueholder.CodeElementType" fetch="select">
+            <column name="CODE_ELEMENT_TYPE_ID" precision="10" scale="0" />
+        </many-to-one>
+        <property name="identifier" type="java.lang.String">
+            <column name="IDENTIFIER" length="20" />
+        </property>
+        <property name="text" type="java.lang.String">
+            <column name="TEXT" length="60" />
+        </property>
+        <property name="codeSystem" type="java.lang.String">
+            <column name="CODE_SYSTEM" length="20" />
+        </property>
+     </class>
+      <query name="receivercodeelement.getNext">
+         from ReceiverCodeElement rce order by rce.messageOrganization.organization.organizationName, rce.codeElementType.text, rce.text
+      </query>
+      <query name="receivercodeelement.getPrevious">
+         from ReceiverCodeElement rce order by rce.messageOrganization.organization.organizationName desc, rce.codeElementType.text desc, rce.text desc 
+      </query>
+</hibernate-mapping>

@@ -25,6 +25,7 @@
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="localization" class="java.util.Map" isForPrompting="false"/>
+	<parameter name="imagesPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -43,7 +44,7 @@
 	<detail>
 		<band height="94" splitType="Stretch">
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-1" x="2" y="79" width="568" height="13">
+				<reportElement key="textField-1" x="2" y="80" width="568" height="13">
 					<printWhenExpression><![CDATA[$P{directorName} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -51,16 +52,7 @@
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.labManager} + ": " + $P{directorName}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement key="textField" x="80" y="51" width="412" height="17">
-					<printWhenExpression><![CDATA[$P{orderFinishDate} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[($P{localization} == null ?  "Date d'achèvement" : $P{localization}.get("collectionDate") ) + ": " + $P{orderFinishDate}]]></textFieldExpression>
-			</textField>
-			<image isUsingCache="true">
+			<image isUsingCache="true" onErrorType="Blank">
 				<reportElement x="2" y="2" width="100" height="88"/>
 				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
 			</image>
@@ -72,25 +64,33 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName1}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="131" y="31" width="310" height="16"/>
+				<reportElement positionType="Float" x="126" y="42" width="310" height="16"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="2" y="16" width="568" height="13" backcolor="#FFFFFF"/>
+				<reportElement mode="Transparent" x="2" y="21" width="568" height="13" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName2}]]></textFieldExpression>
 			</textField>
 			<elementGroup>
-				<image hAlign="Right" isUsingCache="true">
+				<image hAlign="Right" isUsingCache="true" onErrorType="Blank">
 					<reportElement x="470" y="3" width="100" height="88"/>
 					<imageExpression class="java.io.InputStream"><![CDATA[$P{rightHeaderImage}]]></imageExpression>
 				</image>
+				<image hAlign="Right" isUsingCache="false">
+					<reportElement x="470" y="3" width="100" height="88"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
+				</image>
 			</elementGroup>
+			<image isUsingCache="false">
+				<reportElement x="2" y="2" width="100" height="88"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 	<columnFooter>
