@@ -17,9 +17,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # forward postgres
   config.vm.network "forwarded_port", host: 5432, guest: 5432
   
-  config.vm.provision :shell, :inline => "sudo apt-get update -y", run: "once"
+  config.vm.provision :shell, :inline => "sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" upgrade", run: "once"
   config.vm.provision :shell, :inline => "sudo apt-get install -y puppet python python-yaml", run: "once"
   config.vm.provision :shell, :inline => "sudo git clone --recursive https://github.com/I-TECH-UW/appliance-setup.git /opt/appliance-setup", run: "once"
+#  config.vm.provision :shell, :inline => "echo \"sudo APPLIANCE_COMPONENTS=\"openelis\" /vagrant/appliance-setup/bin/appliance-setup apply\" >setupcmd.sh", run: "once"
+#  config.vm.provision :shell, :inline => "echo \"sudo APPLIANCE_COMPONENTS=\"openelis\" /opt/appliance-setup/bin/appliance-setup apply\" >>setupcmd.sh", run: "once"
   config.vm.provision :shell, :inline => "sudo APPLIANCE_COMPONENTS=\"openelis\" /opt/appliance-setup/bin/appliance-setup apply", run: "once"
 
   config.vm.provider "virtualbox" do |v|
