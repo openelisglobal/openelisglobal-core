@@ -184,6 +184,11 @@ public class LoginValidateAction extends LoginBaseAction {
 					saveErrors(request, errors);
 					return mapping.findForward(FWD_FAIL);					
 				} else {
+					
+					//request a new session (session fixation protection)
+					request.getSession(false).invalidate();
+					request.getSession();
+					
 					SystemUserDAO systemUserDAO = new SystemUserDAOImpl();
 					SystemUser su = new SystemUser();
 					su.setId(String.valueOf(loginInfo.getSystemUserId()));
@@ -234,6 +239,7 @@ public class LoginValidateAction extends LoginBaseAction {
 				}
 			}	
 		}
+		
 		return mapping.findForward(forward);
 	}
 	
