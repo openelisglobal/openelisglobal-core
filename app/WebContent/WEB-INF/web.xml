@@ -40,16 +40,25 @@
 
 <filter>
    <filter-name>HttpSecurityHeadersFilter</filter-name>
-   <filter-class>us.mn.state.health.lims.common.util.HttpSecurityHeadersFilter</filter-class>
+   <filter-class>us.mn.state.health.lims.security.HttpSecurityHeadersFilter</filter-class>
   </filter>
   <filter-mapping>
    <filter-name>HttpSecurityHeadersFilter</filter-name>
    <url-pattern>/*</url-pattern>
-  </filter-mapping>   
+  </filter-mapping>  
+
+<filter>
+   <filter-name>CSRFRefererCheckFilter</filter-name>
+   <filter-class>us.mn.state.health.lims.security.CSRFRefererCheckFilter</filter-class>
+  </filter>
+  <filter-mapping>
+   <filter-name>CSRFRefererCheckFilter</filter-name>
+   <url-pattern>/*</url-pattern>
+  </filter-mapping>    
   
 <filter>
    <filter-name>URLParamFilter</filter-name>
-   <filter-class>us.mn.state.health.lims.common.util.URLParamFilter</filter-class>
+   <filter-class>us.mn.state.health.lims.security.URLParamFilter</filter-class>
   </filter>
   <filter-mapping>
    <filter-name>URLParamFilter</filter-name>

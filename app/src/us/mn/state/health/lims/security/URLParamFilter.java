@@ -1,4 +1,4 @@
-package us.mn.state.health.lims.common.util;
+package us.mn.state.health.lims.security;
 
 import java.io.IOException;
 
