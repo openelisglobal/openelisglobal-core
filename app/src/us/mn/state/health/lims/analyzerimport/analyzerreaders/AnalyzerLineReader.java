@@ -84,6 +84,7 @@ public class AnalyzerLineReader extends AnalyzerReader {
 	}
 
 	private void setInserter() {
+		
         for( AnalyzerImporterPlugin plugin : analyzerPlugins){
             if( plugin.isTargetAnalyzer(lines)){
                 inserter = plugin.getAnalyzerLineInserter();

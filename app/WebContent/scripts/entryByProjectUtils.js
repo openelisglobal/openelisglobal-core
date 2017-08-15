@@ -682,6 +682,8 @@ function ObservationHistoryLoader() {
 		this.clearFieldInAllStudies("demandcd4Percent"  );
 		this.clearFieldInAllStudies("demandcd4Date"  );
 		this.clearFieldInAllStudies("vlBenefit"  );
+		this.clearFieldInAllStudies("vlPregnancy"  );
+		this.clearFieldInAllStudies("vlSuckle"  );
 		this.clearFieldInAllStudies("priorVLLab"  );
 		this.clearFieldInAllStudies("priorVLValue"  );
 		this.clearFieldInAllStudies("priorVLDate"  );
@@ -1204,6 +1206,8 @@ function compareAllObservationHistoryFields(isBlankAllowed, fieldPrefix) {
 	compareFieldToExisting(idPre + "demandcd4Percent", false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "demandcd4Date", false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "vlBenefit", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlPregnancy", false, observationHistoryLoader, isBlankAllowed);
+	compareFieldToExisting(idPre + "vlSuckle", false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "priorVLLab", false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "priorVLValue", false, observationHistoryLoader, isBlankAllowed);
 	compareFieldToExisting(idPre + "priorVLDate", false, observationHistoryLoader, isBlankAllowed);

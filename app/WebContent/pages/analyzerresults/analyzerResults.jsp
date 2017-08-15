@@ -7,6 +7,7 @@
 				us.mn.state.health.lims.common.util.IdValuePair,
                 us.mn.state.health.lims.common.util.Versioning,
 				us.mn.state.health.lims.common.util.StringUtil" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 
 
@@ -51,7 +52,7 @@
 
 var dirty = false;
 
-var pager = new OEPager('<%=formName%>', '<%= analyzerType == "" ? "" : "&type=" + analyzerType  %>');
+var pager = new OEPager('<%=formName%>', '<%= analyzerType == "" ? "" : "&type=" + Encode.forJavaScript((String) analyzerType)  %>');
 pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.currentPage"/>');
 
 var pageSearch; //assigned in post load function
@@ -66,7 +67,7 @@ var pagingSearch = new Object();
 
 
 $jq(document).ready( function() {
-			var searchTerm = '<%=searchTerm%>';
+			var searchTerm = '<%=Encode.forJavaScript(searchTerm)%>';
 
 			pageSearch = new OEPageSearch( $("searchNotFound"), "td", pager );
 
@@ -103,7 +104,7 @@ function  /*void*/ savePage()
 {
 	window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
-	form.action = "AnalyzerResultsSave.do"  + '<%= analyzerType == "" ? "" : "?type=" + analyzerType  %>';
+	form.action = "AnalyzerResultsSave.do"  + '<%= analyzerType == "" ? "" : "?type=" + Encode.forJavaScript((String) analyzerType)  %>';
 	form.submit();
 
 }
