@@ -39,15 +39,6 @@
 </security-constraint>
 
 <filter>
-   <filter-name>SecurityFilter</filter-name>
-   <filter-class>us.mn.state.health.lims.security.SecurityFilter</filter-class>
-  </filter>
-  <filter-mapping>
-   <filter-name>SecurityFilter</filter-name>
-   <url-pattern>/*</url-pattern>
-  </filter-mapping>  
-
-<filter>
    <filter-name>UTF8Filter</filter-name>
    <filter-class>us.mn.state.health.lims.common.util.UTF8Filter</filter-class>
   </filter>
@@ -55,6 +46,15 @@
    <filter-name>UTF8Filter</filter-name>
    <url-pattern>/*</url-pattern>
   </filter-mapping>   
+
+<filter>
+   <filter-name>SecurityFilter</filter-name>
+   <filter-class>us.mn.state.health.lims.security.SecurityFilter</filter-class>
+  </filter>
+  <filter-mapping>
+   <filter-name>SecurityFilter</filter-name>
+   <url-pattern>/*</url-pattern>
+  </filter-mapping>  
 
   <listener>
     <listener-class>
