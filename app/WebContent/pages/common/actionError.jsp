@@ -80,7 +80,7 @@ myActionForm = document.forms["<%= (String)request.getAttribute(IActionConstants
                 error.getKey(),
                 error.getValues());
         
-      		if( message == null ){
+      		if( message == null ) {
        			message = error.getKey();
        		}
         
