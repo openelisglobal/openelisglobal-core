@@ -75,7 +75,8 @@ public class SecurityFilter implements Filter {
 		}
 			
 		//XSS check 
-		if (httpRequest.getMethod().equals("POST")) {
+		if (httpRequest.getMethod().equals("POST") || httpRequest.getRequestURI().contains("Update")
+				|| httpRequest.getRequestURI().contains("Save")) {
 			Enumeration<String> parameterNames = httpRequest.getParameterNames();
 			 while (parameterNames.hasMoreElements()) {
 				 String param = httpRequest.getParameter(parameterNames.nextElement());
