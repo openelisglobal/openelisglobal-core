@@ -65,6 +65,7 @@ public class SecurityFilter implements Filter {
 				if (urlParamName.contains(".")) {
 					urlParamName = urlParamName.split(".")[0];
 				}
+
 				//if (!getParamWhiteList.contains(urlParamName)) {
 				if (getParamBlackList.contains(urlParamName)) {
 					suspectedAttack = true;
