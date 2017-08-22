@@ -20,7 +20,12 @@ package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.NONE;
 import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
+import us.mn.state.health.lims.test.valueholder.Test;
+
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.TEST_RESULT;
+
+import us.mn.state.health.lims.common.services.StatusService;
 
 /**
  * @author pahill (pahill@uw.edu)
@@ -46,7 +51,7 @@ public class EIDColumnBuilder extends CIColumnBuilder {
         add("started_date"     ,"STARTED_DATE", NONE);
         add("completed_date"     ,"COMPLETED_DATE", NONE);
         add("released_date"     ,"RELEASED_DATE", NONE);
-   //     add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);// a means to check unknown patient with id=1
+   //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);// a means to check unknown patient with id=1
         
         add("nameOfSampler"     ,"NOMPREV", NONE);
         add("nameOfRequestor"   ,"NOMMED",  NONE);
@@ -67,7 +72,7 @@ public class EIDColumnBuilder extends CIColumnBuilder {
     /**
      * @return the SQL for (nearly) one big row for each sample in the date range for the particular project.
      */
-    public void makeSQL1() {
+    public void makeSQL_original() {// without analysis completed date ......
         query = new StringBuilder();
         String lowDatePostgres =  postgresDateFormat.format(dateRange.getLowDate());
         String highDatePostgres = postgresDateFormat.format(dateRange.getHighDate());
@@ -95,13 +100,11 @@ public class EIDColumnBuilder extends CIColumnBuilder {
 
         return;
     }
-    public void makeSQL(){
-    	//makeSQL1(); old one without analysis.released_date
-    	makeSQL2();// new one with analysis.released_date
-    }
-	public void makeSQL2() {
-	
-	    query = new StringBuilder();
+   
+	public void makeSQL() {
+		String validStatusId = StatusService.getInstance().getStatusID(StatusService.AnalysisStatus.Finalized);
+		Test test = (Test)new TestDAOImpl().getActiveTestByName("DNA PCR").get(0);
+		query = new StringBuilder();
 	    String lowDatePostgres =  postgresDateFormat.format(dateRange.getLowDate());
 	    String highDatePostgres = postgresDateFormat.format(dateRange.getHighDate());
 	    query.append( SELECT_SAMPLE_PATIENT_ORGANIZATION );
@@ -121,8 +124,9 @@ public class EIDColumnBuilder extends CIColumnBuilder {
 	
 	    // and finally the join that puts these all together. Each cross table should be listed here otherwise it's not in the result and you'll get a full join
 	    query.append( " WHERE "             
-	    + "\n a.test_id = 175" 
-	    + "\n AND a.status_id = 18" 
+	    + "\n a.test_id =" + test.getId()
+	    + (( validStatusId == null )?"":
+            " AND a.status_id = " + validStatusId) 
 	    + "\n AND a.id=r.analysis_id"
 	    + "\n AND a.sampitem_id = si.id" 
 	    + "\n AND s.id = si.samp_id"
@@ -140,7 +144,7 @@ public class EIDColumnBuilder extends CIColumnBuilder {
 	    + "\n ORDER BY s.accession_number;");
 	    /////////
 	    // no don't insert another crosstab or table here, go up before the main WHERE clause
-
+    
 	    return;
 	}    
 }

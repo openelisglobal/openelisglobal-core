@@ -10,15 +10,24 @@ function OEPager(formName, sufix) {
 
 	this.pageFoward = function() {
 		window.onbeforeunload = null;
-		this.form.action = this.formName.sub('Form', '') + ".do?page=" + (this.currentPageNumber + 1) + this.sufix;
-		
+		//this.form.action = this.formName.sub('Form', '') +".do?page=" + (this.currentPageNumber + 1) + this.sufix;
+		var url = window.location.href;
+		if (url.indexOf("RetroC")!==-1){
+			this.form.action = this.formName.sub('Form', '') +"RetroC.do?page=" + (this.currentPageNumber + 1) + this.sufix;
+		}
+		else { this.form.action = this.formName.sub('Form', '') +".do?page=" + (this.currentPageNumber + 1) + this.sufix;}
 		//'<%= logbookType == "" ? "" : "&type=" + logbookType  %>';
 		this.form.submit();
 	};
 
 	this.pageBack = function() {
 		window.onbeforeunload = null;
-		this.form.action = this.formName.sub('Form', '') + ".do?page=" + ( this.currentPageNumber - 1) + this.sufix;
+		//this.form.action = this.formName.sub('Form', '') +"RetroC.do?page=" + (this.currentPageNumber - 1) + this.sufix;
+		var url = window.location.href;
+		if (url.indexOf("RetroC")!==-1){
+			this.form.action = this.formName.sub('Form', '') +"RetroC.do?page=" + (this.currentPageNumber - 1) + this.sufix;
+		}
+		else { this.form.action = this.formName.sub('Form', '') +".do?page=" + (this.currentPageNumber - 1) + this.sufix;}
 		//		+ '<%= logbookType == "" ? "" : "&type=" + logbookType  %>';
 		this.form.submit();
 	};

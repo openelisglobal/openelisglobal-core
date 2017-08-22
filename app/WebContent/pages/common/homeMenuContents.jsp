@@ -26,10 +26,11 @@
 		<img src="images/mainResults.jpg" /><br/>
 		<h1 class="txtHeader"><bean:message key="banner.menu.results"/></h1>
 	</td>
-	<td align="center" width="139" valign="top">
+ <!--    <td align="center" width="139" valign="top">
 		<img src="images/mainInventory.jpg" /><br/>
 		<h1 class="txtHeader"><bean:message key="banner.menu.inventory"/></h1>
-	</td>
+	</td> --> 
+	
 	<td align="center" width="139" valign="top">
 		<img src="images/mainReports.jpg" /><br/>
 		<h1 class="txtHeader"><bean:message key="banner.menu.reports"/></h1>

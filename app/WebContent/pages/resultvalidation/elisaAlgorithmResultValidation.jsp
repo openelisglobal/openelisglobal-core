@@ -12,6 +12,7 @@
 	us.mn.state.health.lims.common.util.IdValuePair,
 	us.mn.state.health.lims.common.util.Versioning,
 	us.mn.state.health.lims.common.util.StringUtil" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -50,7 +51,7 @@
 <script type="text/javascript" language="JavaScript1.2">
 
 <% if( formName.equals("ResultValidationForm") ){ %>
-var pager = new OEPager('<%=formName%>', '<%= testSection == "" ? "" : "&type=" + testSection  %>');
+var pager = new OEPager('<%=formName%>', '<%= testSection == "" ? "" : "&type=" + Encode.forJavaScript(testSection)  %>');
 pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.currentPage"/>');
 
 var pageSearch; //assigned in post load function
@@ -65,7 +66,7 @@ var pagingSearch = new Object();
 %>
 
 $jq(document).ready( function() {
-			var searchTerm = '<%=searchTerm%>';
+			var searchTerm = '<%=Encode.forJavaScript(searchTerm)%>';
 			pageSearch = new OEPageSearch( $("searchNotFound"), "td", pager );
 			
 			if( searchTerm != "null" ){
@@ -207,7 +208,7 @@ function /*boolean*/ handleEnterEvent(){
 </logic:notEqual>
 <% }  %>
 
-<html:hidden name="<%=formName%>"  property="testSection" value="<%=testSection%>" />
+<html:hidden name="<%=formName%>"  property="testSection" value="<%=Encode.forHtml(testSection)%>" />
 <Table width="80%" >
 	<logic:notEqual name="resultCount" value="0">
 	<% if( formName.equals("WorkplanForm") ){ %>

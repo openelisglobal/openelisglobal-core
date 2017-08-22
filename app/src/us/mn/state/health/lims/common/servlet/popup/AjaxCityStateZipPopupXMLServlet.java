@@ -26,6 +26,7 @@ import us.mn.state.health.lims.citystatezip.valueholder.CityStateZip;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.provider.popup.BasePopupProvider;
 import us.mn.state.health.lims.common.provider.popup.PopupProviderFactory;
+import us.mn.state.health.lims.security.SecureXmlHttpServletRequest;
 
 public class AjaxCityStateZipPopupXMLServlet extends AjaxXMLServlet {
 
@@ -66,7 +67,7 @@ public class AjaxCityStateZipPopupXMLServlet extends AjaxXMLServlet {
 		BasePopupProvider provider = (BasePopupProvider) PopupProviderFactory
 				.getInstance().getPopupProvider(popupProvider);
 		provider.setServlet(this);
-		provider.processRequest(request, response);
+		provider.processRequest(new SecureXmlHttpServletRequest(request), response);
 	}
 
 }
