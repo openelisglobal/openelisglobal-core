@@ -4,10 +4,10 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="448"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
@@ -85,11 +85,11 @@
 				<subreportParameter name="gender">
 					<subreportParameterExpression><![CDATA[$F{gender}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="subjectno">
-					<subreportParameterExpression><![CDATA[$F{subjectno}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="collectiondate">
 					<subreportParameterExpression><![CDATA[$F{collectiondate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="subjectno">
+					<subreportParameterExpression><![CDATA[$F{subjectno}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="sitesubjectno">
 					<subreportParameterExpression><![CDATA[$F{sitesubjectno}]]></subreportParameterExpression>
@@ -105,17 +105,17 @@
 			</line>
 			<subreport>
 				<reportElement x="0" y="1" width="552" height="146"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="leftHeaderImage">
 					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="status">
-					<subreportParameterExpression><![CDATA[$F{status}]]></subreportParameterExpression>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="duplicateReport">
 					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="status">
+					<subreportParameterExpression><![CDATA[$F{status}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="studyName">
 					<subreportParameterExpression><![CDATA[$P{studyName}]]></subreportParameterExpression>

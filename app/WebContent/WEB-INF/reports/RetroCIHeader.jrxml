@@ -3,7 +3,7 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="36"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -45,7 +45,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[INSTITUT PASTEUR DE COTE D'IVOIRE]]></text>
+				<text><![CDATA[LABORATOIRE HOPITAL GENERAL DE GAGNOA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="5" y="79" width="63" height="20">
@@ -82,7 +82,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 22 44 91 00 / FAX: 22 48 53 05]]></text>
+				<text><![CDATA[TEL: 32 77 13 75 / 32 77 13 86  FAX: 32 77 13 73   BP 102 GAGNOA]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="109" y="0" width="331" height="20"/>
@@ -108,11 +108,11 @@
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="78" width="548" height="20"/>
+				<reportElement x="92" y="78" width="359" height="38"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable : Prof. KAKOU Solange]]></text>
+				<text><![CDATA[Chef de Service : BAMBA Amara   /   Chef de Service Adjoint : AMANI N'Guessan]]></text>
 			</staticText>
 		</band>
 	</detail>
