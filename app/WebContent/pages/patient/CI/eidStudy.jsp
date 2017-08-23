@@ -30,8 +30,9 @@ function EidProjectChecker() {
         this.refreshBase();         
         this.displayTypeOfClinicOther();
         var s = $("eid.subjectNumber").value;
-        $("eid.infantID").value   = s.slice(-4);     // last 4 chars
-        $("eid.codeSiteID").value = s.slice(-7, -4); // and the three before that
+        //$("eid.infantID").value   = s.slice(-4);     // last 4 chars
+        //$("eid.codeSiteID").value = s.slice(-7, -4); // and the three before that
+        
     }
 
     this.checkAllSampleItemFields = function () {
@@ -158,9 +159,9 @@ eid = new EidProjectChecker();
         <td><bean:message key="sample.entry.project.EID.infantNumber"/></td>
         <td>
             <div class="blank">DBS</div>
-            <INPUT type="text" name="eid.codeSiteId" id="eid.codeSiteID" size="3" class="text"
+            <INPUT type="text" name="eid.codeSiteId" id="eid.codeSiteID" size="4" class="text"
                 onchange="handleDBSSubjectId(); makeDirty();"
-                maxlength="3" />
+                maxlength="4" />
             <INPUT type="text" name="eid.infantID" id="eid.infantID" size="4" class="text"
                 onchange="handleDBSSubjectId(); makeDirty();"
                 maxlength="4" />
