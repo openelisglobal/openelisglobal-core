@@ -65,6 +65,9 @@ public class SecurityFilter implements Filter {
 				if (urlParamName.contains(".")) {
 					urlParamName = urlParamName.split(".")[0];
 				}
+				if (urlParamName.contains("[")) {
+					urlParamName = urlParamName.split("[")[0];
+				}
 
 				//if (!getParamWhiteList.contains(urlParamName)) {
 				if (getParamBlackList.contains(urlParamName)) {
@@ -131,12 +134,17 @@ public class SecurityFilter implements Filter {
 		getParamBlackList.add("englishValue");
 		getParamBlackList.add("frenchValue");
 		getParamBlackList.add("loginName");
+		getParamBlackList.add("observations");
 		getParamBlackList.add("password");
 		getParamBlackList.add("patientProperties");
+		getParamBlackList.add("ProjectData");
 		getParamBlackList.add("qaEvents");
+		getParamBlackList.add("referralItems");
+		getParamBlackList.add("resultList");
 		getParamBlackList.add("sampleOrderItems");
 		getParamBlackList.add("selectedIDs");
 		getParamBlackList.add("selectedRoles");
+		getParamBlackList.add("testResult");
 	}
 
 	//more restrictive, more likely to stop valid traffic
