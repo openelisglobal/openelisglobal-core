@@ -19,6 +19,6 @@
 
   <include file="OE7.0/MetaData.xml" />
   <include file="OE7.0/dict.xml" />
-  
+  <include file="OE7.0/systemrolemodule.xml" />
   
   </databaseChangeLog> 
