@@ -30,8 +30,8 @@ function EidProjectChecker() {
         this.refreshBase();         
         this.displayTypeOfClinicOther();
         var s = $("eid.subjectNumber").value;
-        //$("eid.infantID").value   = s.slice(-4);     // last 4 chars
-        //$("eid.codeSiteID").value = s.slice(-7, -4); // and the three before that
+        $("eid.infantID").value   = s.slice(-4);     // last 4 chars
+        $("eid.codeSiteID").value = s.slice(3,-4); // and the numbers before that, without DBS
         
     }
 
