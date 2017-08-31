@@ -3,6 +3,7 @@
 	import="java.util.Date,
 	us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -147,10 +148,10 @@ function saveItToParentForm(form) {
   
     //now update parent form sectionA resultGroup
     if (resultGroupNumber != null) {
-     var rgForAnalyte = window.opener.document.getElementById("rgForAnalyte" + '<%=aID%>');
+     var rgForAnalyte = window.opener.document.getElementById("rgForAnalyte" + '<%=Encode.forJavaScript(aID)%>');
      rgForAnalyte.value = resultGroupNumber;
     } else {
-     var rgForAnalyte = window.opener.document.getElementById("rgForAnalyte" + '<%=aID%>');
+     var rgForAnalyte = window.opener.document.getElementById("rgForAnalyte" + '<%=Encode.forJavaScript(aID)%>');
      rgForAnalyte.value = '';
     }
 

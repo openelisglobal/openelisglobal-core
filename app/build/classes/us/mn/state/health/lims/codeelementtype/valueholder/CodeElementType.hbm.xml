@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="us.mn.state.health.lims.codeelementtype.valueholder">
+    <class name="CodeElementType" table="CODE_ELEMENT_TYPE" optimistic-lock="version" dynamic-update="true">
+        <id name="id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
+            <column name="ID" precision="10" scale="0" />
+            <generator class="sequence">
+               <param name="sequence">code_element_type_seq</param>
+            </generator>   
+        </id>                                            
+        <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field" />
+        
+        <property name="text" type="java.lang.String">
+            <column name="TEXT" length="60" />
+        </property>
+        <!--bugzilla 2571-->
+        <many-to-one name="referenceTables" class="us.mn.state.health.lims.referencetables.valueholder.ReferenceTables" fetch="select">
+            <column name="LOCAL_REFERENCE_TABLE" precision="10" scale="0" />
+        </many-to-one>
+      </class>
+</hibernate-mapping>

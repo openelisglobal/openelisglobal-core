@@ -8,7 +8,7 @@
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new menu study</comment>
-    <sql>ALTER SEQUENCE clinlims.menu_seq restart WITH 85;
+    <sql>ALTER SEQUENCE clinlims.menu_seq restart WITH 75;
 
 UPDATE clinlims.menu
    SET presentation_order=2

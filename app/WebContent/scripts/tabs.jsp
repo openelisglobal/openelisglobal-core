@@ -1,4 +1,6 @@
-
+<%@ page language="java"
+	contentType="application/javascript; charset=utf-8"
+ %>
 
 
 if (!document.getElementById) {

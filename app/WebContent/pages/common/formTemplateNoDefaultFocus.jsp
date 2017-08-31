@@ -4,6 +4,7 @@
 	contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.services.LocalizationService,us.mn.state.health.lims.common.util.ConfigurationProperties"
         %>
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
@@ -66,9 +67,9 @@ function setAction(form, action, validate, parameters) {
 	var parsedFormName = formName.substring(1, formName.length - 4);
 	parsedFormName = formName.substring(0,1).toUpperCase() + parsedFormName;
     //alert("parsedFormName " + parsedFormName);
-    
-    var idParameter =  '<%= (String)request.getParameter("ID") %>';
-    var startingRecNoParameter = <%= (String)request.getParameter("startingRecNo")%>;
+
+    var idParameter = '<%= Encode.forJavaScript((String)request.getParameter("ID")) %>';
+    var startingRecNoParameter = '<%= Encode.forJavaScript((String)request.getParameter("startingRecNo")) %>';
     //alert("This is idParameter " + idParameter);   
     if (!idParameter) {
        idParameter = '0';

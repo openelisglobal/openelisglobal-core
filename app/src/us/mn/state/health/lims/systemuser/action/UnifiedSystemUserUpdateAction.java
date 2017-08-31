@@ -132,7 +132,7 @@ public class UnifiedSystemUserUpdateAction extends BaseAction {
 			if (loginUserNew) {
 				loginDAO.insertData(loginUser);
 			} else {
-				loginDAO.updateData(loginUser);
+				loginDAO.updateData(loginUser, passwordUpdated);
 			}
 
 			if (systemUserNew) {

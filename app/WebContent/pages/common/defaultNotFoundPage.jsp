@@ -98,7 +98,7 @@ $(document).ready(function () {
     // jquery functions for details on error
     // Currently not localized.
     var pathname = location.href;
-    $("#error-path").html(pathname);
+    $("#error-path").text(pathname);
     var referrerPath = document.referrer;
     var referrer = '<bean:message key="errorpage.previous"/><br /><span class="troubleshooting">' + referrerPath + '"</span>"';
     if (referrerPath != '') {

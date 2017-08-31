@@ -27,11 +27,15 @@ WHERE id=136;
 
 UPDATE clinlims.test_section
 SET is_active='Y'
-WHERE id=137;
+WHERE description='Virologie_EID';
+
 
 UPDATE clinlims.test_section
 SET is_active='Y'
-WHERE id=138;
+WHERE description='Virologie_VL';
+
+
+
 
 </sql>
   </changeSet>

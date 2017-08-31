@@ -42,9 +42,6 @@ public class ProjectFormMapperFactory {
        	else if (projectFormId.equals(EID)){
        		return new EIDFormMapper(projectFormId, dynaForm);
        	}
-       	else if (projectFormId.equals(VL)){
-       		return new ARVFormMapper(projectFormId, dynaForm);
-       	}
        	else if (projectFormId.equals(RTN)){
        		return new RTNFormMapper(projectFormId, dynaForm);
        	}
