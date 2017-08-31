@@ -25,11 +25,20 @@ import org.ajaxtags.servlets.BaseAjaxServlet;
 
 import us.mn.state.health.lims.common.provider.selectdropdown.BaseSelectDropDownProvider;
 import us.mn.state.health.lims.common.provider.selectdropdown.SelectDropDownProviderFactory;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 
 public class AjaxXMLServlet extends BaseAjaxServlet {
 
 	public String getXmlContent(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		//check for authentication
+		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+		if (userModuleDAO.isSessionExpired(request)) {
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			System.out.println("Invalid request - no active session found");
+			return new AjaxXmlBuilderForSortableTests().toString();
+		}
 
 		String selectDropDownProvider = request.getParameter("provider");
 		String selectDropDownFieldName = request.getParameter("fieldName");

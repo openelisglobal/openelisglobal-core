@@ -23,11 +23,14 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
 import org.hibernate.lob.BlobImpl;
+
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.image.dao.ImageDAO;
 import us.mn.state.health.lims.image.daoimpl.ImageDAOImpl;
 import us.mn.state.health.lims.image.valueholder.Image;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
@@ -36,6 +39,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,6 +57,13 @@ public class LogoUploadServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+		//check for authentication
+		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+		if (userModuleDAO.isSessionExpired(request)) {
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			System.out.println("Invalid request - no active session found");
+			return;
+		}
 
         String whichLogo = request.getParameter( "logo" );
         boolean removeImage = "true".equals( request.getParameter( "removeImage" ) );

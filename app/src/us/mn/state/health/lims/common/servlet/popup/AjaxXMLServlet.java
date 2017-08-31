@@ -26,6 +26,8 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.provider.popup.BasePopupProvider;
 import us.mn.state.health.lims.common.provider.popup.PopupProviderFactory;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 
 public class AjaxXMLServlet extends AjaxServlet {
 
@@ -65,6 +67,13 @@ public class AjaxXMLServlet extends AjaxServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, LIMSRuntimeException {
+		//check for authentication
+		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+		if (userModuleDAO.isSessionExpired(request)) {
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			System.out.println("Invalid request - no active session found");
+			return;
+		}
 
 		String popupProvider = request.getParameter("provider");
 		BasePopupProvider provider = (BasePopupProvider) PopupProviderFactory
