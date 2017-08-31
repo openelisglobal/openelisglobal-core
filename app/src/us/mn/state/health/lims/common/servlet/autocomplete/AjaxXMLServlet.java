@@ -25,11 +25,18 @@ import org.ajaxtags.servlets.BaseAjaxServlet;
 
 import us.mn.state.health.lims.common.provider.autocomplete.AutocompleteProviderFactory;
 import us.mn.state.health.lims.common.provider.autocomplete.BaseAutocompleteProvider;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 
 public class AjaxXMLServlet extends BaseAjaxServlet {
 
 	public String getXmlContent(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		//check for authentication
+		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+		if (userModuleDAO.isSessionExpired(request)) {
+			return new AjaxXmlBuilder().toString();
+		}
 
 		String autocompleteProvider = request.getParameter("provider");
 		String autocompleteFieldName = request.getParameter("fieldName");
