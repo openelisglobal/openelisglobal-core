@@ -207,6 +207,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 	//	if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI"))
 		if (url.contains("RetroC"))
 			forward = "successRetroC";
+			
 
 		if( isBlankOrNull( testSectionName )){
 			return mapping.findForward(forward);

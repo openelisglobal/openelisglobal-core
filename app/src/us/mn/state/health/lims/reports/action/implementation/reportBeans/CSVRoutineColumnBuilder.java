@@ -389,6 +389,7 @@ abstract public class CSVRoutineColumnBuilder {
 		public String translateAge(Strategy strategy, String end) throws Exception {
 			Date birthday = resultSet.getDate("birth_date");
 			Date endDate = postgresDateTime.parse(end);
+		if ((birthday!=null)&&(endDate!=null)){
 			switch (strategy) {
 			case AGE_YEARS:
 				return String.valueOf(DateUtil.getAgeInYears(birthday, endDate));
@@ -399,6 +400,7 @@ abstract public class CSVRoutineColumnBuilder {
 			}
 			return "";
 		}
+		return "";}
 
 		/**
 		 * @param value

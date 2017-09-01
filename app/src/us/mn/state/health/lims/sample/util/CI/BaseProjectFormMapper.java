@@ -249,6 +249,8 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
         addHistory(histories ,"demandcd4Percent", od.getDemandcd4Percent(), ValueType.LITERAL);
         addHistory(histories ,"demandcd4Date", od.getDemandcd4Date(), ValueType.LITERAL);   
         addHistory(histories ,"vlBenefit", od.getVlBenefit(), ValueType.DICTIONARY);  
+        addHistory(histories ,"vlPregnancy", od.getVlPregnancy(), ValueType.DICTIONARY); 
+        addHistory(histories ,"vlSuckle", od.getVlSuckle(), ValueType.DICTIONARY); 
         addHistory(histories ,"priorVLLab", od.getPriorVLLab(), ValueType.LITERAL);
         addHistory(histories ,"priorVLValue", od.getPriorVLValue(), ValueType.LITERAL);
         addHistory(histories ,"priorVLDate", od.getPriorVLDate(), ValueType.LITERAL);
