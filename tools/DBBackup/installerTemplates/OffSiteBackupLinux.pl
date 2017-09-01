@@ -68,13 +68,13 @@ sub sendOffsite{
     	}
 	}           
 }
-
 my $postgres_pwd  = '[% postgres_password %]';
 my $keepFileDays  = 30;
 my $siteId = '[% siteId %]';
-my $upLoadtargetURL = 'https://openelis-recv.cirg.washington.edu/receive-file/receive-file.pl';
-my $upLoadUserName = 'receive-file';
-my $upLoadPassword = 'ac5pxvkn2';
+#my $upLoadtargetURL = 'https://openelis-recv.cirg.washington.edu/receive-file/receive-file.pl';
+my $upLoadtargetURL ='ftp://192.168.1.1/EFI/backup';
+my $upLoadUserName = 'backup';
+my $upLoadPassword = 'backupoe';
 
 my $snapShotFileBase     = 'lastSnapshot_' . $siteId; 
 my $snapShotFileName     = $snapShotFileBase . '.backup'; 
@@ -83,12 +83,14 @@ my $cmd = 'pg_dump -h localhost  -U clinlims -f "' . $snapShotFileName . '" -n \
 my $zipCmd = 'gzip -f ' .  $snapShotFileName;
 my $backBaseDir          = cwd();
 my $baseFileName         = '[% installName %]';
+my $mountedBackup        = "";
 my $dailyDir             = "$backBaseDir/daily";
 my $cumulativeDir        = "$backBaseDir/cumulative";
 my $queueDir             = "$backBaseDir/transmissionQueue";
 my $timeStamp            = getTimeStamp();
 my $todaysCummlativeFile = "$siteId$baseFileName$timeStamp.backup.gz";
 my $maxTimeSpan = 60 * 60 * 24 * $keepFileDays;
+
 
 $ENV{'PGPASSWORD'} = "$postgres_pwd";
 
@@ -98,18 +100,10 @@ system("$zipCmd")  and warn "Error while running: $! \n";
 
 copy( $snapShotFileNameZipped, "$cumulativeDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
 copy( $snapShotFileNameZipped, "$queueDir/$todaysCummlativeFile" ) or die "File cannot be copied.";
+if (-d $mountedBackup) {
+    copy( $snapShotFileNameZipped, "$mountedBackup/$todaysCummlativeFile" ) or die "File cannot be copied.";
+}
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 
 sendOffsite($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword);
-
-   
-
-
-
-
-
-
-
-
-
