@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import us.mn.state.health.lims.common.provider.validation.BaseValidationProvider;
 import us.mn.state.health.lims.common.provider.validation.ValidationProviderFactory;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.security.SecureXmlHttpServletRequest;
 
 public class AjaxTextServlet extends AjaxServlet {
 
@@ -48,7 +49,7 @@ public class AjaxTextServlet extends AjaxServlet {
 		BaseValidationProvider provider = (BaseValidationProvider) ValidationProviderFactory
 				.getInstance().getValidationProvider(valProvider);
 		provider.setServlet(this);
-		provider.processRequest(request, response);
+		provider.processRequest(new SecureXmlHttpServletRequest(request), response);
 	}
 
 }

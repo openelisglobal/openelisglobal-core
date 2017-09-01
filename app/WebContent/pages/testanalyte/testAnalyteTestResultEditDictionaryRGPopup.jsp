@@ -4,6 +4,7 @@
 	us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.security.IAuthorizationActionConstants,
 	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -83,7 +84,7 @@ function customOnLoad() {
   var category = $("selectedCategory");
   category.focus();
   
-  var testNotLocked = '<%= request.getParameter(IAuthorizationActionConstants.UPDATE_TESTCOMPONENT_TESTRESULT) %>';
+  var testNotLocked = '<%= Encode.forJavaScript(request.getParameter(IAuthorizationActionConstants.UPDATE_TESTCOMPONENT_TESTRESULT)) %>';
   var parentSection = window.opener.getSectionB();
   tbody = parentSection.getElementsByTagName("TBODY")[0];
   var trs = tbody.getElementsByTagName("tr");
@@ -101,7 +102,7 @@ function customOnLoad() {
        
        var rg = inputs[0].value;
        
-       if (rg == '<%=rgNum%>') { //this is matching result group
+       if (rg == '<%=Encode.forJavaScript(rgNum)%>') { //this is matching result group
  
     
 //recreate rows from parent form for this result group
@@ -434,7 +435,7 @@ function saveItToParentForm(form) {
        var section = getRGSection();
        tbody = section.getElementsByTagName("TBODY")[0];
        var trs = tbody.getElementsByTagName("tr");
-       window.opener.replaceResultGroup('<%=rgType%>', '<%=rgNum%>', trs);
+       window.opener.replaceResultGroup('<%=Encode.forJavaScript(rgType)%>', '<%=Encode.forJavaScript(rgNum)%>', trs);
        window.close();
    }
    

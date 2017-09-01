@@ -2,6 +2,7 @@
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
                  us.mn.state.health.lims.common.util.Versioning" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -29,7 +30,7 @@
 
 function doShowTests(element){
 	
-	window.location.href = '<%=responseAction%>' + "?type=" + '<%=workplanType %>' + "&selectedSearchID=" + element.value;
+	window.location.href = '<%=responseAction%>' + "?type=" + '<%=Encode.forJavaScript((String) workplanType) %>' + "&selectedSearchID=" + element.value;
 	
 }
 
