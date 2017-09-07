@@ -22,6 +22,80 @@
             <form-property name="initialSampleConditionList" type="java.util.Collection" />
             <form-property name="testSectionList"  type="java.util.Collection" />
         </form-bean>
+        
+<!-- caleb addition -->
+		<form-bean name="sampleBatchEntrySetupForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="patientProcessingStatus" type="java.lang.String" initial="Add" />
+            <form-property name="patientPK" type="java.lang.String" initial="" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+            <form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+            
+            <form-property name="method" type="java.lang.String" />
+            <form-property name="numberLabels" type="java.lang.String" />
+            <form-property name="facilityID" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="facilityIDNo" type="java.lang.String" />
+            <form-property name="lastName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="firstName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+        </form-bean>
+        
+		<form-bean name="sampleBatchEntryOnDemandForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="patientProcessingStatus" type="java.lang.String" initial="Add" />
+            <form-property name="patientPK" type="java.lang.String" initial="" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+            <form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+            
+            <form-property name="method" type="java.lang.String" />
+            <form-property name="numberLabels" type="java.lang.String" />
+            <form-property name="facilityID" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="facilityIDNo" type="java.lang.String" />
+            <form-property name="lastName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="firstName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+        </form-bean>
+        
+		<form-bean name="sampleBatchEntryPrePrintedForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="patientProcessingStatus" type="java.lang.String" initial="Add" />
+            <form-property name="patientPK" type="java.lang.String" initial="" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+            <form-property name="patientClinicalProperties" type="us.mn.state.health.lims.patient.action.bean.PatientClinicalInfo" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+            
+            <form-property name="method" type="java.lang.String" />
+            <form-property name="numberLabels" type="java.lang.String" />
+            <form-property name="facilityID" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="facilityIDNo" type="java.lang.String" />
+            <form-property name="lastName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="firstName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+        </form-bean>
+<!-- caleb addition -->
 
 		<form-bean name="SampleConfirmationEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
@@ -1091,7 +1165,23 @@
 		</action>
 
 
-
+ <!-- caleb addition -->
+       <action path="/SampleBatchEntrySetup" name="sampleBatchEntrySetupForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntrySetupAction" validate="false">
+          <forward name="success" path="sampleBatchEntrySetupDefinition"/>
+          <forward name="fail" path="homePageDefinition"/> 
+       </action>
+       
+       <action path="/SampleBatchEntryOnDemand" name="sampleBatchEntryOnDemandForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryOnDemandAction" validate="false">
+          <forward name="success" path="sampleBatchEntryOnDemandDefinition"/>
+          <forward name="fail" path="sampleBatchEntrySetupDefinition"/> 
+       </action>
+       
+       <action path="/SampleBatchEntryPrePrinted" name="sampleBatchEntryPrePrintedForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryPrePrintedAction" validate="false">
+          <forward name="success" path="sampleBatchEntryPrePrintedDefinition"/>
+          <forward name="fail" path="sampleBatchEntrySetupDefinition"/> 
+       </action>
+  <!-- caleb addition -->
+       
 		<action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"
 		>

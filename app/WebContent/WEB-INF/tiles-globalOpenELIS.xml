@@ -14,6 +14,39 @@
          <put name="body" value="samplePatientEntryCore"/>
          <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>
+    
+<!-- caleb addition -->
+    <definition name="sampleBatchEntrySetupDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleBatchEntrySetupCore"/>
+         <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
+    </definition> 
+    
+    <definition name="sampleBatchEntryOnDemandDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleBatchEntryOnDemandCore"/>
+         <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
+    </definition> 
+    
+    <definition name="sampleBatchEntryPrePrintedDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleBatchEntryPrePrintedCore"/>
+         <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
+    </definition> 
+
+    <definition name="sampleBatchEntrySetupCore" path="/pages/samplebatchentry/sampleBatchEntrySetup.jsp">
+        <put name="sampleOrder" value="/pages/sample/sampleOrder.jsp" />
+		<put name="addSample" value="/pages/sample/sampleAdd.jsp"/>
+		<put name="configureLabels" value="/pages/samplebatchentry/configureBarcode.jsp"/>
+	</definition>
+
+    <definition name="sampleBatchEntryOnDemandCore" path="/pages/samplebatchentry/sampleBatchEntryOnDemand.jsp">
+	</definition>
+
+    <definition name="sampleBatchEntryPrePrintedCore" path="/pages/samplebatchentry/sampleBatchEntryPrePrinted.jsp">
+	</definition>
+    
+<!-- caleb addition --> 
 
   <definition name="sampleConfirmationCore" path="/pages/sample/sampleConfirmationAdd.jsp">
         <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
@@ -34,7 +67,8 @@
 	</definition>
 
     <definition name="sampleEntryByProjectDefinition" extends="baseDefinition">
-         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp"
+          />
          <put name="body" value="/pages/sample/sampleAddByProject.jsp"/>
          <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>

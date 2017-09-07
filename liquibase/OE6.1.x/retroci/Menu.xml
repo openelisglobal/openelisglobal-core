@@ -32,7 +32,11 @@ UPDATE clinlims.menu
    
  INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
             display_key, tool_tip_key, new_window, is_active)
-    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_sample'),1,'menu_sample_add','/SamplePatientEntry.do',default,'banner.menu.sampleAdd','banner.menu.SampleAdd',default,default);
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_sample'),1,'menu_sample_add','/SamplePatientEntry.do',default,'banner.menu.sampleAdd','banner.menu.SampleAdd',default,default);     
+   
+ INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_sample'),1,'menu_sample_batch_entry','/SampleBatchEntry.do',default,'banner.menu.sampleBatchEntry','banner.menu.sampleBatchEntry',default,default);
   
 
 UPDATE clinlims.menu

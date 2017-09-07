@@ -45,6 +45,8 @@
        <put name="body" value="/pages/common/emptyPlaceHolder.jsp" /> 
        <put name="footer" value="/pages/common/formFooterButtons.jsp" />
      </definition>
+    
+    
      
     <definition name="baseDefinitionNoDefaultFocus" path="/pages/common/formTemplateNoDefaultFocus.jsp">
        <put name="banner" value="/pages/common/banner.jsp" /> 
