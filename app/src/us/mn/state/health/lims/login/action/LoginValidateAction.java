@@ -57,6 +57,8 @@ import us.mn.state.health.lims.userrole.daoimpl.UserRoleDAOImpl;
  *                 added lock/lock user account after number of failed attempts
  */
 public class LoginValidateAction extends LoginBaseAction {
+	
+	static int WARNING_THRESHOLD = 3;
 
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
@@ -151,16 +153,28 @@ public class LoginValidateAction extends LoginBaseAction {
 					lockUnlockUserAccount(errors,request,userInfo);					
 					request.getSession().removeAttribute(LOGIN_FAILED_CNT);
 					return mapping.findForward(FWD_FAIL);
+				//notify user of lockout when approaching max attempts
+				} else if ( loginUserFailAttemptCount >= WARNING_THRESHOLD ) {
+					errors = new ActionMessages();		
+					ActionError error = new ActionError("login.error.attempt.message",
+														String.valueOf(loginUserFailAttemptCount),
+														String.valueOf(loginUserFailAttemptCountDefault), 
+														SystemConfiguration.getInstance().getLoginUserAccountUnlockMinute(), null);			
+					errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+					saveErrors(request, errors);
+					return mapping.findForward(FWD_FAIL);
+				//give same invalid message as when account not found
+				} else {
+					errors = new ActionMessages();
+					ActionError error = new ActionError("login.error.message", null, null);
+					errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+					saveErrors(request, errors);
+					return mapping.findForward(FWD_FAIL);
 				}
 				
-				errors = new ActionMessages();		
-				ActionError error = new ActionError("login.error.attempt.message",
-													String.valueOf(loginUserFailAttemptCount),
-													String.valueOf(loginUserFailAttemptCountDefault), 
-													SystemConfiguration.getInstance().getLoginUserAccountUnlockMinute(), null);			
-				errors.add(ActionMessages.GLOBAL_MESSAGE, error);
-				saveErrors(request, errors);
-				return mapping.findForward(FWD_FAIL);
+				
+				
+				
 			} else {
 				if ( (loginInfo.getPasswordExpiredDayNo() <= Integer.parseInt(SystemConfiguration.getInstance().getLoginUserPasswordExpiredReminderDay())) 
 					&&
@@ -184,6 +198,11 @@ public class LoginValidateAction extends LoginBaseAction {
 					saveErrors(request, errors);
 					return mapping.findForward(FWD_FAIL);					
 				} else {
+					
+					//request a new session (session fixation protection)
+					request.getSession(false).invalidate();
+					request.getSession();
+					
 					SystemUserDAO systemUserDAO = new SystemUserDAOImpl();
 					SystemUser su = new SystemUser();
 					su.setId(String.valueOf(loginInfo.getSystemUserId()));
@@ -234,6 +253,7 @@ public class LoginValidateAction extends LoginBaseAction {
 				}
 			}	
 		}
+		
 		return mapping.findForward(forward);
 	}
 	
