@@ -188,6 +188,7 @@ abstract public class CSVRoutineColumnBuilder {
         GEND_CD4,
         SAMPLE_STATUS,
         PROJECT,
+        PROGRAM,
         LOG,        // results is a real number, but display the log of it.
         AGE_YEARS,
         AGE_MONTHS,
@@ -317,6 +318,8 @@ abstract public class CSVRoutineColumnBuilder {
 			case DICT_PLUS:
 				return isBlankOrNull(value) ? "" : ResourceTranslator.DictionaryTranslator.getInstance().translateOrNot(value);
 			case DICT:
+				return isBlankOrNull(value) ? "" : ResourceTranslator.DictionaryTranslator.getInstance().translate(value);
+			case PROGRAM:
 				return isBlankOrNull(value) ? "" : ResourceTranslator.DictionaryTranslator.getInstance().translate(value);
 			case DATE:
 				return isBlankOrNull(value) ? "" : datetimeToLocalDate(value);
