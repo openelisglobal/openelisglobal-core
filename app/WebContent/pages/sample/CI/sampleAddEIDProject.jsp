@@ -243,7 +243,7 @@ function /*void*/ setSaveButton() {
 		<td width="38%"><bean:message key="sample.entry.project.ARV.dryTubeTaken" /></td>
 		<td width="60%">
 
-			<html:checkbox name="<%=formName%>" styleId="ARVDryTube"
+			<html:checkbox name="<%=formName%>"
 				   property="ProjectData.dryTubeTaken"
 				   styleId="eid.dryTubeTaken"
 				   onchange="eid.checkSampleItem($('eid.dryTubeTaken'));"/>
