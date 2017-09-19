@@ -31,25 +31,33 @@ sub sendOffsite{
 	my $upLoadtargetURL    = shift;
 	my $upLoadUserName = shift;
 	my $upLoadPassword = shift;
-	
+	my $useFTP = shift
+
 	my $maxRetryCount = 1;
 	my $curlExe = 'curl';
 
 	chdir "$queueDir";
 
-	my @files = <$queueDir/*.backup.gz>; 
+	my @files = <$queueDir/*.backup.gz>;
 
 	foreach $file (@files) {
-	    my $command = $curlExe . ' -T ' . $file . ' --user ' .$upLoadUserName . ':' . $upLoadPassword . ' ' . $upLoadtargetURL . basename($file);
-        #print basename($file) . "\n";
+        if( $useFTP){
+            my $command = $curlExe . ' -T ' . $file . ' --user ' .$upLoadUserName . ':' . $upLoadPassword . ' ' . $upLoadtargetURL . basename($file);
+            #print basename($file) . "\n";
+        }else{
+        my $command = $curlExe . ' -k --user ' . $upLoadUserName . ':' . $upLoadPassword
+           					. ' --url ' . $upLoadtargetURL
+           					. ' --form "dataFileName=@' . $file . '"';
+        		#print $command . "\n";
+        }
+
   		my $retryCount = 0;
    		my $sendSuccess = 0; #false
-	    
-           
+
    		while ($retryCount < $maxRetryCount) {
    			my $curlReturn = `$command`;
         	my $returnStatus = $?;
-			
+
         	if (($returnStatus != 0) ) {
         		print "Curl had an error. Curl said \n$curlReturn\n"
         				. "Return status $returnStatus\n";
@@ -58,27 +66,28 @@ sub sendOffsite{
         		$sendSuccess = 1; #true
         		last;
         	}
-        	
+
         	sleep 7;
 		}
-           
+
 		if ($sendSuccess) {
     		#remove file from system
     		unlink( $file );
     	}
-	}           
+	}
 }
+
 my $postgres_pwd  = '[% postgres_password %]';
 my $keepFileDays  = 30;
 my $siteId = '[% siteId %]';
-#my $upLoadtargetURL = 'https://openelis-recv.cirg.washington.edu/receive-file/receive-file.pl';
-my $upLoadtargetURL ='ftp://192.168.1.1/EFI/backup';
-my $upLoadUserName = 'backup';
-my $upLoadPassword = 'backupoe';
+my $useFTP = 1;
+my $upLoadtargetURL = $useFTP ? 'ftp://192.168.1.1/EFI/backup' : 'https://openelis-recv.cirg.washington.edu/receive-file/receive-file.pl';
+my $upLoadUserName = 'receive-file';
+my $upLoadPassword = 'ac5pxvkn2';
 
-my $snapShotFileBase     = 'lastSnapshot_' . $siteId; 
-my $snapShotFileName     = $snapShotFileBase . '.backup'; 
-my $snapShotFileNameZipped     = $snapShotFileName . '.gz'; 
+my $snapShotFileBase     = 'lastSnapshot_' . $siteId;
+my $snapShotFileName     = $snapShotFileBase . '.backup';
+my $snapShotFileNameZipped     = $snapShotFileName . '.gz';
 my $cmd = 'pg_dump -h localhost  -U clinlims -f "' . $snapShotFileName . '" -n \"clinlims\" clinlims';
 my $zipCmd = 'gzip -f ' .  $snapShotFileName;
 my $backBaseDir          = cwd();
@@ -90,7 +99,6 @@ my $queueDir             = "$backBaseDir/transmissionQueue";
 my $timeStamp            = getTimeStamp();
 my $todaysCummlativeFile = "$siteId$baseFileName$timeStamp.backup.gz";
 my $maxTimeSpan = 60 * 60 * 24 * $keepFileDays;
-
 
 $ENV{'PGPASSWORD'} = "$postgres_pwd";
 
@@ -106,4 +114,15 @@ if (-d $mountedBackup) {
 
 deleteOverAgedBackups ($maxTimeSpan, $cumulativeDir);
 
-sendOffsite($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword);
+sendOffsite($queueDir, $upLoadtargetURL, $upLoadUserName, $upLoadPassword, $useFTP);
+
+
+
+
+
+
+
+
+
+
+

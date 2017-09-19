@@ -147,6 +147,7 @@ public abstract class PatientEIDReport extends RetroCIPatientReport {
 		sampleOrg.setSample(reportSample);
 		orgDAO.getDataBySample(sampleOrg);
 		data.setServicename(sampleOrg.getId() == null ? "" : sampleOrg.getOrganization().getOrganizationName());
+		data.setDoctor(getObservationValues(OBSERVATION_REQUESTOR_ID));
 		data.setAccession_number(reportSample.getAccessionNumber());
 		data.setReceptiondate( DateUtil.convertTimestampToStringDateAndTime(reportSample.getReceivedTimestamp()));           
 
