@@ -450,7 +450,7 @@ function /*void*/ setSaveButton() {
                       maxlength="10"
                       onkeyup="addDateSlashes(this, event);"
                       onchange="iarv.checkDateOfBirth(false)"
-                      styleId="iarv.dateOfBirth" maxlength="10"/>
+                      styleId="iarv.dateOfBirth" />
                 <div id="iarv.dateOfBirthMessage" class="blank" ></div>
             </td>
         </tr>
