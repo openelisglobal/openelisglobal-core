@@ -49,6 +49,16 @@
         
 		<form-bean name="sampleBatchEntryOnDemandForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
             <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="currentTime" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+            
             <form-property name="numberLabels" type="java.lang.String" />
             <form-property name="facilityID" type="java.lang.String" />
             <form-property name="lastName" type="java.lang.String" />
@@ -59,8 +69,18 @@
             <form-property name="labNo" type="java.lang.String" />
         </form-bean>
         
-		<form-bean name="sampleBatchEntryPrePrintedForm" type="us.mn.state.health.lims.common.action.BaseActionForm">   
-            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />         
+		<form-bean name="sampleBatchEntryPrePrintedForm" type="us.mn.state.health.lims.common.action.BaseActionForm"> 
+			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="currentTime" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+                      
             <form-property name="method" type="java.lang.String" />
             <form-property name="numberLabels" type="java.lang.String" />
             <form-property name="facilityID" type="java.lang.Boolean"  initial="Boolean.FALSE" />

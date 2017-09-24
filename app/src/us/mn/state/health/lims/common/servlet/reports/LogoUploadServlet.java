@@ -60,7 +60,7 @@ public class LogoUploadServlet extends HttpServlet {
 		//check for authentication
 		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
 		if (userModuleDAO.isSessionExpired(request)) {
-			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			System.out.println("Invalid request - no active session found");
 			return;
 		}

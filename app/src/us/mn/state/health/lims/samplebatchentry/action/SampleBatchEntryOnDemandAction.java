@@ -28,6 +28,19 @@ public class SampleBatchEntryOnDemandAction extends BaseSampleEntryAction {
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String forward = "success";
+		
+		BaseActionForm dynaForm = (BaseActionForm) form;
+
+		dynaForm.initialize(mapping);
+
+        SampleOrderService sampleOrderService = new SampleOrderService();
+        PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
+		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
+		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
+        PropertyUtils.setProperty( dynaForm, "currentDate", request.getParameter("currentDate"));
+        PropertyUtils.setProperty( dynaForm, "currentTime", request.getParameter("currentTime"));
+        PropertyUtils.setProperty( dynaForm, "sampleOrderItems.receivedTime", request.getParameter("sampleOrderItems.receivedTime"));
+
 
 		String facilityIDString = request.getParameter("facilityID"); 
 		String facilityIDNoString = request.getParameter("facilityIDNo"); 

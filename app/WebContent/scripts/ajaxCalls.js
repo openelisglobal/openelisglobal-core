@@ -264,4 +264,17 @@ function getPendingAnalysisForTest( testId, success, failure){
     );
 }
 
+function postBatchSample(success, failure){
+    if( !failure){failure = defaultFailure;	}
+	new Ajax.Request(
+		'ajaxSubmit',  //url
+		{//options
+			method: 'POST', //http method
+			parameters: $(window.document.forms[0]).serialize(),
+		    onSuccess: success,
+		    onFailure: failure
+		}
+	);
+}
+
 

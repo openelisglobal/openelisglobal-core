@@ -44,6 +44,38 @@ function /*bool*/ sampleOrderValid() {
     return true;
 }
 
+
+
+function checkValidTime(time, blankAllowed)
+{
+    var lowRangeRegEx = new RegExp("^[0-1]{0,1}\\d:[0-5]\\d$");
+    var highRangeRegEx = new RegExp("^2[0-3]:[0-5]\\d$");
+
+    if (time.value.blank() && blankAllowed == true) {
+        clearFieldErrorDisplay(time);
+        setSampleFieldValid(time.name);
+        checkValidSubPages();
+        return;        
+    }
+
+    if( lowRangeRegEx.test(time.value) ||
+        highRangeRegEx.test(time.value) )
+    {
+        if( time.value.length == 4 )
+        {
+            time.value = "0" + time.value;
+        }
+        clearFieldErrorDisplay(time);
+        setSampleFieldValid(time.name);
+    }
+    else
+    {
+        setFieldErrorDisplay(time);
+        setSampleFieldInvalid(time.name);
+    }
+
+    checkValidSubPages();
+}
 </script>
 
 
@@ -70,7 +102,9 @@ function /*bool*/ sampleOrderValid() {
                    styleClass="required"
                    readonly="true"
                    maxlength="10"/>
-	     	<%= StringUtil.getContextualMessageForKey("sample.batchentry.order.currenttime") %>:
+	     	<%= StringUtil.getContextualMessageForKey("sample.batchentry.order.currenttime") %>
+	     	:
+	        <span style="font-size: xx-small; "><%=DateUtil.getTimeUserPrompt()%></span> 
 	        <html:text name="<%=formName %>"
                    onkeyup="filterTimeKeys(this, event);"
                    property="currentTime"
@@ -92,7 +126,9 @@ function /*bool*/ sampleOrderValid() {
                   maxlength="10"
                   styleClass="text required"
                   styleId="receivedDateForDisplay"/>
-	        <bean:message key="sample.receptionTime"/>:
+	        <bean:message key="sample.batchentry.order.receptiontime"/>
+	        :
+	        <span style="font-size: xx-small; "><%=DateUtil.getTimeUserPrompt()%></span>
 	        <html:text name="<%=formName %>"
                    onkeyup="filterTimeKeys(this, event);"
                    property="sampleOrderItems.receivedTime"

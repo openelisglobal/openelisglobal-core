@@ -1,25 +1,33 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
                  us.mn.state.health.lims.common.util.Versioning,
+                 us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
+                 us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
                  us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"      prefix="html" %>
+<%@ taglib uri="/tags/labdev-view" 		prefix="app" %>
 
 <%!
 String path = "";
 String basePath = "";
+IAccessionNumberValidator accessionNumberValidator;
 %>
 
 <%
 path = request.getContextPath();
 basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 %>
 
 <script type="text/javascript" src="scripts/utilities.js"></script>
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
 function nextLabel() {
-	
+	postBatchSample(alertSuccess, defaultFailure);
+	document.getElementById("labNo").value = "";
+	document.getElementById("next").disabled= "true";
 }
 
 function reenterLabel() {
@@ -30,14 +38,18 @@ function doneLabelling() {
 	
 }
 
+function alertSuccess() {
+	//alert("success");
+}
+
 function checkAccessionNumber(accessionNumber) {
     //check if empty
-    if (!fieldIsEmptyById("labNo")) {
+  //  if (!fieldIsEmptyById("#labNo")) {
         validateAccessionNumberOnServer(false, false, accessionNumber.id, accessionNumber.value, processAccessionSuccess, null);
-    }
-    else {
-         selectFieldErrorDisplay(false, $("labNo"));
-    }
+   // }
+   // else {
+    //     selectFieldErrorDisplay(false, $("labNo"));
+   // }
 }
 
 function processScanSuccess(xhr) {
@@ -70,6 +82,7 @@ function processAccessionSuccess(xhr) {
 
     if (message.firstChild.nodeValue == "valid") {
         success = true;
+        document.getElementById("next").disabled = false;
     }
     var labElement = formField.firstChild.nodeValue;
     selectFieldErrorDisplay(success, $(labElement));
@@ -81,6 +94,18 @@ function processAccessionSuccess(xhr) {
 </script>
 
 <bean:define id="formName"      value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
+
+<div id="hidden-fields">
+<html:hidden name='<%=formName %>'
+	property="currentDate"/>
+<html:hidden name='<%=formName %>'
+	property="currentTime"/>
+<html:hidden name='<%=formName %>'
+	property="sampleOrderItems.receivedDateForDisplay"/>
+<html:hidden name='<%=formName %>'
+	property="sampleOrderItems.receivedTime"/>
+</div>
+
 <div>
 <table>
 	<tr>
@@ -90,19 +115,25 @@ function processAccessionSuccess(xhr) {
 	</tr>
 	<tr>
 		<td>
-			<html:text name="<%=formName%>" 
-				property="labNo" >
-			</html:text>
+			<app:text name="<%=formName%>" property="sampleOrderItems.labNo"
+                      maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>'
+                      onchange="checkAccessionNumber(this);"
+                      styleClass="text"
+                      styleId="labNo"/>
 			<html:button onclick="nextLabel();"
-				property="next">
+				property="next"
+				styleId="next" 
+				disabled="true">
 			<bean:message key="sample.batchentry.preprinted.next" />
 			</html:button>
 			<html:button onclick="reenterLabel();"
-				property="reenter">
+				property="reenter"
+				styleId="reenter" >
 			<bean:message key="sample.batchentry.preprinted.reenter" />
 			</html:button>
 			<html:button onclick="doneLabelling();"
-				property="done">
+				property="done"
+				styleId="done" >
 			<bean:message key="sample.batchentry.preprinted.done" />
 			</html:button>
 		</td>

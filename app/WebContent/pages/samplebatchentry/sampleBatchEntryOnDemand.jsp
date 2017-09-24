@@ -17,11 +17,12 @@
 <bean:parameter id="patientNumberCheck" name="patientNumberCheck" value="false" />
 <bean:parameter id="nationalIDCheck" name="nationalIDCheck" value="false" />
 <bean:parameter id="subjectNoCheck" name="subjectNoCheck" value="false" />
+<bean:parameter id="sampleXML" name="sampleXML" value="none"/>
 
 <script type="text/javascript" src="scripts/utilities.js"></script>
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-
 var lineSeparator = "";
 
 //Adds warning when leaving page
@@ -34,11 +35,13 @@ function formWarning(){
 function printLabel() {
 	document.getElementById("printButtonId").disabled = true;
 	document.getElementById("reprintButtonId").disabled = false;
+	document.getElementById("nextButtonId").disabled = false;
 }
 
 function nextLabel() {
 	document.getElementById("printButtonId").disabled = false;
 	document.getElementById("reprintButtonId").disabled = true;
+	document.getElementById("nextButtonId").disabled = true;
 	//move current accession number into the summary space (max 3)
 	var recentTextArea = document.getElementById("recentSummary");
 	var newRecent = document.getElementById("labNo").value + lineSeparator + recentTextArea.value;
@@ -49,13 +52,9 @@ function nextLabel() {
 	recentTextArea.value = newRecent;
 }
 
-function finish() {
-    window.location = "SampleBatchEntrySetup.do"
-}
-
 //functions for generating and checking accession number
 function getNextAccessionNumber() {
-    generateNextScanNumber(processScanSuccess);
+    generateNextScanNumber(processScanSuccess, defaultFailure);
 }
 
 function checkAccessionNumber(accessionNumber) {
@@ -67,6 +66,7 @@ function checkAccessionNumber(accessionNumber) {
     }
 }
 
+//function that processes return from getNextAccessionNumber (calls submit and print)
 function processScanSuccess(xhr) {
     //alert(xhr.responseText);
     var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
@@ -74,10 +74,12 @@ function processScanSuccess(xhr) {
     var message = xhr.responseXML.getElementsByTagName("message").item(0);
     var success = message.firstChild.nodeValue == "valid";
     if (success) {
-        $("labNo").value = returnedData;
+        document.getElementById("labNo").value = returnedData;
+        postBatchSample(alertSuccess, defaultFailure);
+        printLabel();
     } else {
         alert("<%= StringUtil.getMessageForKey("error.accession.no.next") %>");
-        $("labNo").value = "";
+        document.getElementById("labNo").value = "";
     }
     selectFieldErrorDisplay(success, $("labNo"));
     setValidIndicaterOnField(success, "labNo");
@@ -97,9 +99,30 @@ function processAccessionSuccess(xhr) {
         alert(message.firstChild.nodeValue);
     }
 }
+
+function alertSuccess(){
+	//alert("success");
+}
+
+function finish() {
+    window.location = "SampleBatchEntrySetup.do";
+}
 </script>
 
+<div id="hidden-fields">
+<html:hidden name='<%=formName %>'
+	property="currentDate"/>
+<html:hidden name='<%=formName %>'
+	property="currentTime"/>
+<html:hidden name='<%=formName %>'
+	property="sampleOrderItems.receivedDateForDisplay"/>
+<html:hidden name='<%=formName %>'
+	property="sampleOrderItems.receivedTime"/>
+</div>
 <div>
+<table width="100%">
+<tr>
+<td width="50%">
 <table>
 	<tr>
 		<td>
@@ -185,20 +208,24 @@ function processAccessionSuccess(xhr) {
 	</tr>
 	<tr>
 		<td>
-			<html:button onclick="printLabel();getNextAccessionNumber();"
+			<!-- gets next accession, and calls submit and print if success -->
+			<html:button onclick="getNextAccessionNumber();"
 				property="print"
 				styleId="printButtonId">
 				<bean:message key="sample.batchentry.ondemand.saveprint" />
 			</html:button>
+			<!-- just prints last label -->
 			<html:button onclick="printLabel();"
 				property="reprint"
 				styleId="reprintButtonId"
 				disabled="true">
 				<bean:message key="sample.batchentry.ondemand.reprint" />
 			</html:button>
+			<!-- sets up for next label to be printed -->
 			<html:button onclick="nextLabel();"
 				property="next"
-				styleId="nextButtonId">
+				styleId="nextButtonId"
+				disabled="true">
 				<bean:message key="sample.batchentry.ondemand.next" />
 			</html:button>
 		</td>
@@ -241,5 +268,19 @@ function processAccessionSuccess(xhr) {
 	</td>
 		
 	</tr>		
+</table>
+</td>
+<td width="50%" style="vertical-align:top">
+<table>
+	<tr>
+		<td>
+			<textarea rows="5" 
+				cols="50"
+				readonly="true"><%=sampleXML%></textarea>
+		</td>
+	</tr>
+</table>
+</td>
+</tr>
 </table>
 </div>

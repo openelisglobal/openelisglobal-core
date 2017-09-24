@@ -403,6 +403,12 @@ public class DateUtil {
 		return format.format(new Date());
 
 	}
+	
+	public static String getCurrentTimeAsText() {
+		int hour =  getCurrentHour();
+		int minute = getCurrentMinute();
+		return String.format("%02d:%02d", hour, minute);
+	}
 
 	public static int getAgeInWeeks(Date startDate, Date endDate) {
 		long duration = endDate.getTime() - startDate.getTime();
@@ -635,5 +641,9 @@ public class DateUtil {
 
     public static Locale getDateFormatLocale(){
         return SystemConfiguration.getInstance().getLocaleByLocalString( ConfigurationProperties.getInstance().getPropertyValue( Property.DEFAULT_DATE_LOCALE ) );
+    }
+    
+    public static String getTimeUserPrompt(){
+    	return "(hh:mm)";
     }
 }

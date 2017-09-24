@@ -39,6 +39,8 @@ public class SampleBatchEntrySetupAction extends BaseSampleEntryAction {
 		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
 		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
         PropertyUtils.setProperty( dynaForm, "currentDate", DateUtil.getCurrentDateAsText());
+        PropertyUtils.setProperty( dynaForm, "currentTime", DateUtil.getCurrentTimeAsText());
+        PropertyUtils.setProperty( dynaForm, "sampleOrderItems.receivedTime", DateUtil.getCurrentTimeAsText());
 
 		addProjectList( dynaForm );
 
