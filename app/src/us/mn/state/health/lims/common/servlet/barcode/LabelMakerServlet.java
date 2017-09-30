@@ -2,38 +2,37 @@ package us.mn.state.health.lims.common.servlet.barcode;
 
 import javax.servlet.ServletException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.apache.commons.lang.StringUtils;
 
-import us.mn.state.health.lims.barcode.LabelMaker;
+import us.mn.state.health.lims.barcode.BarcodeLabelMaker;
+import us.mn.state.health.lims.barcode.labeltype.OrderLabel;
+import us.mn.state.health.lims.barcode.labeltype.BlankLabel;
+import us.mn.state.health.lims.barcode.labeltype.SpecimenLabel;
 
 
 public class LabelMakerServlet extends HttpServlet {
 	
-	
-
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
-		
 		String barcode = request.getParameter("barcode");
-		LabelMaker labelMaker = new LabelMaker();
-		File pdfFile = labelMaker.createLabel(barcode);
-
-		response.setContentType("application/pdf");
-		response.addHeader("Content-Disposition", "inline; filename=" + "sample.pdf");
-		response.setContentLength((int) pdfFile.length()); 
-		FileInputStream fileInputStream = new FileInputStream(pdfFile);
-		OutputStream responseOutputStream = response.getOutputStream();
-		int bytes;
-		while ((bytes = fileInputStream.read()) != -1) {
-			responseOutputStream.write(bytes);
+		if (StringUtils.isNotEmpty(barcode)) {
+			BarcodeLabelMaker labelMaker = new BarcodeLabelMaker(barcode);
+			ByteArrayOutputStream labelAsOutputStream = labelMaker.createLabelAsStream();
+			response.setContentType("application/pdf");
+			response.addHeader("Content-Disposition", "inline; filename=" + "sample.pdf");
+			response.setContentLength((int) labelAsOutputStream.size()); 
+			labelAsOutputStream.writeTo(response.getOutputStream());
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		} else {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
+		
 	}
+	
 }
