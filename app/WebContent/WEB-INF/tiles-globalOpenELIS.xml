@@ -438,5 +438,10 @@
 	 <definition name="ListPluginsPageDefinition" extends="masterListsPageDefinition">
     	<put name="body" value="/pages/plugin/listPlugin.jsp"/>
     </definition>
+    
+    <definition name="PrintBarcodeDefinition" extends="baseDefinition">
+    	<put name="body" value="/pages/barcode/printBarcode.jsp" />
+    	<put name="footer" value="/pages/common/emptyPlaceHolder.jsp" />
+    </definition>
 
 </tiles-definitions>

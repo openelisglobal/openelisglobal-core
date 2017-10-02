@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.lowagie.text.Font;
 
-import us.mn.state.health.lims.barcode.BarcodeLabelField;
+import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelField;
 
 public class BlankLabel implements Label {
 
@@ -15,7 +15,7 @@ public class BlankLabel implements Label {
 	private static int WIDTH = 3;
 	private static int MARGIN = 5;
 	
-	private static int BARCODE_SPACE = MED_BARCODE;
+	private static int BARCODE_SPACE = LARGE_BARCODE;
 	
 	private ArrayList<BarcodeLabelField> fields;
 	private String code;
@@ -30,6 +30,9 @@ public class BlankLabel implements Label {
 		this.code = code;
 	}
 	
+	public ArrayList<BarcodeLabelField> getBelowFields() {
+		return null;
+	}
 	
 	public ArrayList<BarcodeLabelField> getFields() {
 		return fields;
@@ -61,6 +64,10 @@ public class BlankLabel implements Label {
 	
 	public int getBarcodeSpace() {
 		return BARCODE_SPACE * 2;
+	}
+
+	public int getNumLabels() {
+		return 1;
 	}
 
 }

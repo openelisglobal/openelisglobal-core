@@ -2,7 +2,7 @@ package us.mn.state.health.lims.barcode.labeltype;
 
 import com.lowagie.text.Font;
 
-import us.mn.state.health.lims.barcode.BarcodeLabelField;
+import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelField;
 
 public interface Label {
 	
@@ -18,5 +18,67 @@ public interface Label {
 	int getWidth();
 	int getMargin();
 	int getBarcodeSpace();
+	int getNumLabels();
+	Iterable<BarcodeLabelField> getBelowFields();
+	
+	default int getNumTextRowsBefore() {
+		int numRows = 0;
+		int curColumns = 0;
+		boolean completeRow = true;
+		Iterable<BarcodeLabelField> fields = getFields();
+		for (BarcodeLabelField field : fields) {
+			
+			if (field.isStartNewline() && !completeRow) {
+				++numRows;
+				curColumns = 0;
+			}
+			curColumns += field.getColspan();
+			if (curColumns > 10) {
+				//throw error
+			} else if (curColumns == 10) {
+				completeRow = true;
+				curColumns = 0;
+				++numRows;
+			} else {
+				completeRow = false;
+			}
+		}
+		if (!completeRow) {
+			++numRows;
+		}
+		
+		return numRows;
+	}
+	
+	default int getNumTextRowsAfter() {
+		int numRows = 0;
+		int curColumns = 0;
+		boolean completeRow = true;
+		Iterable<BarcodeLabelField> fields = getBelowFields();
+		if (fields == null) 
+			return 0;
+		for (BarcodeLabelField field : fields) {
+			
+			if (field.isStartNewline() && !completeRow) {
+				++numRows;
+				curColumns = 0;
+			}
+			curColumns += field.getColspan();
+			if (curColumns > 10) {
+				//throw error
+			} else if (curColumns == 10) {
+				completeRow = true;
+				curColumns = 0;
+				++numRows;
+			} else {
+				completeRow = false;
+			}
+		}
+		if (!completeRow) {
+			++numRows;
+		}
+		
+		return numRows;
+	}
 	
 }

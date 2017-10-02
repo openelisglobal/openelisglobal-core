@@ -2,6 +2,7 @@ package us.mn.state.health.lims.barcode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
@@ -22,6 +23,7 @@ import com.lowagie.text.pdf.draw.LineSeparator;
 import us.mn.state.health.lims.barcode.labeltype.OrderLabel;
 import us.mn.state.health.lims.barcode.labeltype.BlankLabel;
 import us.mn.state.health.lims.barcode.labeltype.SpecimenLabel;
+import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelField;
 import us.mn.state.health.lims.barcode.labeltype.Label;
 
 public class BarcodeLabelMaker {
@@ -30,29 +32,32 @@ public class BarcodeLabelMaker {
 	private static int SCALE = 100;
 	private static int NUM_COLUMNS = 10;
 	
-	private Label label;
+	private Label curLabel;
+	private ArrayList<Label> labels = new ArrayList<Label>();
 	private int labelWidth;
 	private int labelHeight;
 
 	//defaults to making blank label
 	public BarcodeLabelMaker() {
-		label = new BlankLabel(DEFAULT_CODE);
-		labelWidth = label.getWidth() * SCALE;
-		labelHeight = label.getHeight() * SCALE;
+		labels.add(new BlankLabel(DEFAULT_CODE));
 	}
 
 	//defaults to making blank label
 	public BarcodeLabelMaker(String code) {
-		label = new BlankLabel(code);
-		labelWidth = label.getWidth() * SCALE;
-		labelHeight = label.getHeight() * SCALE;
+		labels.add(new BlankLabel(code));
 	}
 	
 	//make specified type of label
 	public BarcodeLabelMaker(Label label) {
-		this.label = label;
-		labelWidth = label.getWidth() * SCALE;
-		labelHeight = label.getHeight() * SCALE;
+		labels.add(label);
+	}
+	
+	public BarcodeLabelMaker(ArrayList<Label> labels) {
+		this.labels = labels;
+	}
+	
+	public void addLabelToQueue(Label label) {
+		labels.add(label);
 	}
 	
 	//create stream for sending pdf to client
@@ -62,7 +67,14 @@ public class BarcodeLabelMaker {
 			Document document = new Document();
 			PdfWriter writer = PdfWriter.getInstance(document, stream);
 	        document.open();
-			drawLabel(writer, document);
+	        for (Label label : labels) {
+	        	for (int i = 0; i < label.getNumLabels(); ++i) {
+		        	curLabel = label;
+		    		labelWidth = curLabel.getWidth() * SCALE;
+		    		labelHeight = curLabel.getHeight() * SCALE;
+		        	drawLabel(writer, document);
+	        	};
+	        }
 			document.close();
 	        writer.close();
 		} catch(Exception e) {
@@ -80,23 +92,33 @@ public class BarcodeLabelMaker {
 		document.newPage();
 		PdfPTable table = new PdfPTable(NUM_COLUMNS);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		table.setTotalWidth(labelWidth - (2 * label.getMargin()));
+		table.setTotalWidth(labelWidth - (2 * curLabel.getMargin()));
 	    table.setLockedWidth(true);
 		//add fields
-		Iterable<BarcodeLabelField> fields = label.getFields();
+		Iterable<BarcodeLabelField> fields = curLabel.getFields();
 		for (BarcodeLabelField field : fields) {
 			if (field.isStartNewline()) 
 				table.completeRow();
             table.addCell(createField(field.getName(), field.getValue(), field.getColspan()));
-        }
+        } 
 	    table.completeRow();
 	    //add barcode
-	    if (label.getBarcodeSpace() != NUM_COLUMNS) {
-	    	table.addCell(createSpacerCell((NUM_COLUMNS - label.getBarcodeSpace()) / 2));
-		    table.addCell(create128BarcodeNoText(writer, label.getBarcodeSpace()));
-	    	table.addCell(createSpacerCell((NUM_COLUMNS - label.getBarcodeSpace()) / 2));
+	    if (curLabel.getBarcodeSpace() != NUM_COLUMNS) {
+	    	table.addCell(createSpacerCell((NUM_COLUMNS - curLabel.getBarcodeSpace()) / 2));
+		    table.addCell(create128Barcode(writer, curLabel.getBarcodeSpace()));
+	    	table.addCell(createSpacerCell((NUM_COLUMNS - curLabel.getBarcodeSpace()) / 2));
 	    } else {
-	    	table.addCell(create128BarcodeNoText(writer, label.getBarcodeSpace()));
+	    	table.addCell(create128Barcode(writer, curLabel.getBarcodeSpace()));
+	    } 
+	    //add fields below barcode
+		Iterable<BarcodeLabelField> belowFields = curLabel.getBelowFields();
+	    if (belowFields != null) {
+	    	for (BarcodeLabelField field : belowFields) {
+				if (field.isStartNewline()) 
+					table.completeRow();
+	            table.addCell(createField(field.getName(), field.getValue(), field.getColspan()));
+	        } 
+		    table.completeRow();   	
 	    }
         //finish document
         document.add(scaleCentreTableAsImage(writer, document, table));
@@ -109,7 +131,7 @@ public class BarcodeLabelMaker {
         PdfTemplate template = cb.createTemplate(table.getTotalWidth(), table.getTotalHeight());
         table.writeSelectedRows(0, -1, 0, table.getTotalHeight(), template);
         Image labelAsImage = Image.getInstance(template);
-        labelAsImage.scaleAbsoluteHeight(labelHeight - (2 * label.getMargin()));
+        labelAsImage.scaleAbsoluteHeight(labelHeight - (2 * curLabel.getMargin()));
         labelAsImage.setAbsolutePosition(((labelWidth) - labelAsImage.getScaledWidth()) / 2, 
         		((labelHeight) - labelAsImage.getScaledHeight()) / 2);
         return labelAsImage;
@@ -120,8 +142,8 @@ public class BarcodeLabelMaker {
 			throws DocumentException, IOException {
         Barcode128 barcode = new Barcode128();
         barcode.setCodeType(Barcode.CODE128);
-        barcode.setCode(label.getCode());
-        barcode.setBarHeight(10);
+        barcode.setCode(curLabel.getCode());
+        barcode.setBarHeight((10 - (curLabel.getNumTextRowsBefore() + curLabel.getNumTextRowsAfter())) * 30 / 10);
         PdfPCell cell = new PdfPCell(barcode.createImageWithBarcode(writer.getDirectContent(), null, null), true);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setColspan(colspan);
@@ -134,9 +156,9 @@ public class BarcodeLabelMaker {
 			throws DocumentException, IOException {
         Barcode128 barcode = new Barcode128();
         barcode.setCodeType(Barcode.CODE128);
-        barcode.setCode(label.getCode());
+        barcode.setCode(curLabel.getCode());
         barcode.setFont(null);
-        barcode.setBarHeight(10);
+        barcode.setBarHeight((10 - (curLabel.getNumTextRowsBefore() + curLabel.getNumTextRowsAfter())) * 30 / 10);
         PdfPCell cell = new PdfPCell(barcode.createImageWithBarcode(writer.getDirectContent(), null, null), true);
         cell.setBorder(Rectangle.NO_BORDER);
         cell.setColspan(colspan);
@@ -149,8 +171,8 @@ public class BarcodeLabelMaker {
 		Chunk name = new Chunk(fieldName + ": ");
 		Chunk value = new Chunk(fieldValue);
 		Chunk underline = new Chunk(new LineSeparator(0.5f, 100, null, 0, -1));
-		name.setFont(label.getValueFont());
-		value.setFont(label.getValueFont());
+		name.setFont(curLabel.getValueFont());
+		value.setFont(curLabel.getValueFont());
 		value.setUnderline(0.5f, -1);
 		Paragraph field = new Paragraph();
 		field.add(name);

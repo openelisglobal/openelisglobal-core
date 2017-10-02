@@ -899,6 +899,13 @@
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
 			<form-property name="pluginList" type="java.util.List" />
 		</form-bean>
+		
+		<form-bean name="PrintBarcodeForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+			<form-property name="lastupdated" type="java.lang.String" />
+			<form-property name="barcode" type="java.lang.String" />
+            <form-property name="searchCriteria" type="java.lang.String" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+		</form-bean>
 
 	</form-beans>
 
@@ -2009,6 +2016,10 @@
 		<action path="/ListPlugins" name="listPluginForm" type="us.mn.state.health.lims.analyzer.action.ListPluginAction">
 			<forward name="success" path="ListPluginsPageDefinition" />
 		</action>
+		
+		<action path="/PrintBarcode" name="PrintBarcodeForm" type="us.mn.state.health.lims.barcode.action.PrintBarcodeAction">
+			<forward name="success" path="PrintBarcodeDefinition" />
+		</action> 
 		
 	</action-mappings>
 </struts-config>
