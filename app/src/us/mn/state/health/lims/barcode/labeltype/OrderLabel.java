@@ -24,6 +24,8 @@ public class OrderLabel implements Label {
 	private ArrayList<BarcodeLabelField> fields;
 	private String code;
 	
+	private int numLabels = 1;
+	
 	public OrderLabel(String patientId, String patientName, String referringFacility, String dob, String code) {
 		fields = new ArrayList<BarcodeLabelField>();
 		fields.add(new BarcodeLabelField("Patient Id", StringUtils.substring(patientId, 0, 25), 6));
@@ -98,6 +100,10 @@ public class OrderLabel implements Label {
 	}
 
 	public int getNumLabels() {
-		return 2;
+		return numLabels;
+	}
+
+	public void setNumLabels(int num) {
+		numLabels = num;
 	}
 }

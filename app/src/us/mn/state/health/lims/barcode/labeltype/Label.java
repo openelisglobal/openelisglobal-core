@@ -19,6 +19,7 @@ public interface Label {
 	int getMargin();
 	int getBarcodeSpace();
 	int getNumLabels();
+	void setNumLabels(int num);
 	Iterable<BarcodeLabelField> getBelowFields();
 	
 	default int getNumTextRowsBefore() {

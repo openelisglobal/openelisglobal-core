@@ -17,6 +17,7 @@
  */
 package us.mn.state.health.lims.sample.action;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
@@ -37,9 +38,11 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.TableIdService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -159,6 +162,9 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 			persistObservations(updateData);
 
 			tx.commit();
+
+			request.getSession().setAttribute("lastAccessionNumber", sampleOrder.getLabNo());
+			request.getSession().setAttribute("lastPatientId", patientInfo.getPatientPK());
 
 		} catch (LIMSRuntimeException lre) {
 			tx.rollback();

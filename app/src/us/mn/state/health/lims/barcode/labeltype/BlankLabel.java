@@ -20,6 +20,8 @@ public class BlankLabel implements Label {
 	private ArrayList<BarcodeLabelField> fields;
 	private String code;
 	
+	private int numLabels = 1;
+	
 	public BlankLabel(String code) {
 		fields = new ArrayList<BarcodeLabelField>();
 		fields.add(new BarcodeLabelField("Patient Id", "", 5));
@@ -67,7 +69,11 @@ public class BlankLabel implements Label {
 	}
 
 	public int getNumLabels() {
-		return 1;
+		return numLabels;
+	}
+
+	public void setNumLabels(int num) {
+		numLabels = num;
 	}
 
 }

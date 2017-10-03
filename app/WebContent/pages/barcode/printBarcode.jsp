@@ -347,7 +347,7 @@ function setCaretPosition(ctrl, pos){
 function printBarcode(success, failure) {
 	var labNo = document.getElementById('searchValue').value;
 	document.getElementById('getBarcodePDF').href = "LabelMakerServlet?barcode=" + labNo 
-			+ "&patientId=" + patientSelectID + "&copies=" + 2;
+			+ "&patientId=" + patientSelectID;
 	document.getElementById('getBarcodePDF').click();
 }
 </script>

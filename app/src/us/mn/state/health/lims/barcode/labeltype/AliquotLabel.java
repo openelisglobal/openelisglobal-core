@@ -26,6 +26,8 @@ public class AliquotLabel implements Label {
 	private ArrayList<BarcodeLabelField> belowFields;
 	private String code;
 	
+	private int numLabels = 1;
+	
 	public AliquotLabel(String patientId, String patientName, String referringFacility, String dob, String code) {
 		fields = new ArrayList<BarcodeLabelField>();
 		fields.add(new BarcodeLabelField("Patient Id", StringUtils.substring(patientId, 0, 25), 6));
@@ -112,7 +114,11 @@ public class AliquotLabel implements Label {
 	}
 
 	public int getNumLabels() {
-		return 1;
+		return numLabels;
+	}
+
+	public void setNumLabels(int num) {
+		numLabels = num;
 	}
 	
 }
