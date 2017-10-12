@@ -1,4 +1,4 @@
-package us.mn.state.health.lims.barcode.valueholder;
+package us.mn.state.health.lims.barcode;
 
 public class BarcodeLabelField {
 	

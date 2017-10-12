@@ -163,8 +163,8 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 
 			tx.commit();
 
-			request.getSession().setAttribute("lastAccessionNumber", sampleOrder.getLabNo());
-			request.getSession().setAttribute("lastPatientId", patientInfo.getPatientPK());
+			request.getSession().setAttribute("lastAccessionNumber", updateData.getAccessionNumber());
+			request.getSession().setAttribute("lastPatientId", updateData.getPatientId());
 
 		} catch (LIMSRuntimeException lre) {
 			tx.rollback();

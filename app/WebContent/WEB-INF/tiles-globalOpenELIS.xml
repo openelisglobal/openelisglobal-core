@@ -60,7 +60,7 @@
     </definition>
 
    <definition name="sampleEditDefinition" extends="baseDefinition">
-        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+        <put name="preSelectionHeader" value="/pages/common/actionSuccessPrint.jsp" />
 		<put name="body" value="accessionSampleEditCore"/>
 		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
 	</definition>

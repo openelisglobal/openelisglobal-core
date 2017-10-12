@@ -16,8 +16,7 @@ function /*void*/ showSuccessMessage( show ){
 
 function printBarcode(success, failure) {
 	var labNo = document.getElementById('searchValue').value;
-	document.getElementById('getBarcodePDF').href = "LabelMakerServlet?barcode=" + document.getElementById("lastAccessionNumber").value
-			+ "&patientId=" + document.getElementById("lastPatientId").value;
+	document.getElementById('getBarcodePDF').href = "LabelMakerServlet";
 	document.getElementById('getBarcodePDF').click();
 }
 

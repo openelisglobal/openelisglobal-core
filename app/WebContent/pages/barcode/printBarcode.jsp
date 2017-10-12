@@ -344,11 +344,39 @@ function setCaretPosition(ctrl, pos){
     }
 }
 
-function printBarcode(success, failure) {
-	var labNo = document.getElementById('searchValue').value;
-	document.getElementById('getBarcodePDF').href = "LabelMakerServlet?barcode=" + labNo 
-			+ "&patientId=" + patientSelectID;
-	document.getElementById('getBarcodePDF').click();
+function printBarcode(button) {
+	if (button.id == "printBarcodeButton") {
+		if (confirm("This label has already been printed. Do you really want to print more labels?")) {
+			var labNo = document.getElementById('searchValue').value;
+			var typeSelect = document.getElementById('labelType');
+			var type = typeSelect.options[typeSelect.selectedIndex].value;
+			var quantity = document.getElementById('quantity').value;
+			document.getElementById('getBarcodePDF').href = "LabelMakerServlet?labNo=" + labNo 
+					+ "&patientId=" + patientSelectID + "&type=" + type + "&quantity=" + quantity;
+			document.getElementById('getBarcodePDF').click();
+		}
+	} else if (button.id == "printBlankBarcodeButton") {
+		var labNo = document.getElementById('searchValue').value;
+		document.getElementById('getBarcodePDF').href = "LabelMakerServlet?labNo=" + labNo 
+				+ "&type=blank";
+		document.getElementById('getBarcodePDF').click();
+	}
+}
+
+function checkPrint() {
+	var disableButton = false;
+	if (document.getElementById('labelType').selectedIndex == 0) {
+		disableButton = true;
+	} else if (!document.getElementById('quantity').value) {
+		disableButton = true;
+	}
+	document.getElementById('printBarcodeButton').disabled = disableButton;
+}
+
+function makeFieldNumber(field) {
+	if (isNaN(field.value)) {
+		field.value = field.value.replace(/\D/g,'');
+	}
 }
 </script>
 
@@ -388,6 +416,10 @@ function printBarcode(success, failure) {
 
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>
+		<input type="button"
+        	value="Print Blank Barcode"
+        	id="printBlankBarcodeButton"
+        	onclick="printBarcode(this);">
 	</div>
 	<div id="searchResultsDiv" class="colorFill" style="display: none;" >
 		<% if( localDBOnly.equals("false")){ %>
@@ -442,10 +474,40 @@ function printBarcode(success, failure) {
                    id="selectPatientButtonID"
                    onclick="handleSelectedPatient()">
         <% }%>
-        <input type="button"
-        	value="Print Barcode"
-        	id="printBarcodeButton"
-        	onclick="printBarcode();">
+        <table>
+        	<tr>
+        		<td>
+        			Type of label: 
+        		</td>
+        		<td>
+        			<select name="labelType" 
+        				id="labelType"
+        				onchange="checkPrint()" >
+			        	<option value=""></option>
+			        	<option value="order">Order - Max 10</option>
+			        	<option value="specimen">Specimen - Max 1</option>
+			        	<option value="aliquot">Aliquot - Max 1</option>
+			        </select>
+        		</td>
+        	</tr>
+        	<tr>
+        		<td>
+        			Number of Labels:
+        		</td>
+        		<td>
+        			<input type="text"
+        				id="quantity"
+        				onkeyup="makeFieldNumber(this);checkPrint()" > 
+        		</td>
+        		<td>
+	        		<input type="button"
+	        			disabled="true"
+			        	value="Print Barcode"
+			        	id="printBarcodeButton"
+			        	onclick="printBarcode(this);">
+				</td>
+        	</tr>
+        </table>
         <a href="" id="getBarcodePDF" target="_blank"></a>
 		</div>
 	</div>

@@ -2,78 +2,35 @@ package us.mn.state.health.lims.barcode.labeltype;
 
 import java.util.ArrayList;
 
-import com.lowagie.text.Font;
+import us.mn.state.health.lims.barcode.BarcodeLabelField;
 
-import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelField;
-
-public class BlankLabel implements Label {
-
-	private static Font VALUE_FONT =  new Font(Font.HELVETICA, 8, Font.NORMAL);
-	private static Font NAME_FONT =  new Font(Font.HELVETICA, 8, Font.BOLD);
-	//height width only define ratio
-	private static int HEIGHT = 1;
-	private static int WIDTH = 3;
-	private static int MARGIN = 5;
+public class BlankLabel extends Label {
 	
-	private static int BARCODE_SPACE = LARGE_BARCODE;
-	
-	private ArrayList<BarcodeLabelField> fields;
-	private String code;
-	
-	private int numLabels = 1;
 	
 	public BlankLabel(String code) {
-		fields = new ArrayList<BarcodeLabelField>();
-		fields.add(new BarcodeLabelField("Patient Id", "", 5));
-		fields.add(new BarcodeLabelField("Site", "", 5));
-		fields.add(new BarcodeLabelField("Patient Name", "", 6));
-		fields.add(new BarcodeLabelField("DOB", "", 4));
+		aboveFields = new ArrayList<BarcodeLabelField>();
+		aboveFields.add(new BarcodeLabelField("Patient Id", "", 5));
+		aboveFields.add(new BarcodeLabelField("Site", "", 5));
+		aboveFields.add(new BarcodeLabelField("Patient Name", "", 6));
+		aboveFields.add(new BarcodeLabelField("DOB", "", 4));
 		
-		this.code = code;
-	}
-	
-	public ArrayList<BarcodeLabelField> getBelowFields() {
-		return null;
-	}
-	
-	public ArrayList<BarcodeLabelField> getFields() {
-		return fields;
-	}
-	
-	public String getCode() {
-		return code;
+		setCode(code);
 	}
 
-	public Font getValueFont() {
-		return VALUE_FONT;
+	@Override
+	public int getNumTextRowsBefore() {
+		Iterable<BarcodeLabelField> fields = getAboveFields();
+		return getNumRows(fields);
+	}		
+
+	@Override
+	public int getNumTextRowsAfter() {
+		return 0;
 	}
 
-	public Font getNameFont() {
-		return NAME_FONT;
+	@Override
+	public int getMaxNumLabels() {
+		return 10;
 	}
 	
-	public int getHeight() {
-		return HEIGHT;
-	}
-	
-	public int getWidth() {
-		return WIDTH;
-	}
-	
-	public int getMargin() {
-		return MARGIN;
-	}
-	
-	public int getBarcodeSpace() {
-		return BARCODE_SPACE * 2;
-	}
-
-	public int getNumLabels() {
-		return numLabels;
-	}
-
-	public void setNumLabels(int num) {
-		numLabels = num;
-	}
-
 }

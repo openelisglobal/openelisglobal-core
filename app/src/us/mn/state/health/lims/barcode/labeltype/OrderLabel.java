@@ -4,38 +4,16 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.lowagie.text.Font;
-
-import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelField;
+import us.mn.state.health.lims.barcode.BarcodeLabelField;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.person.valueholder.Person;
 
-public class OrderLabel implements Label {
-
-	private static Font VALUE_FONT =  new Font(Font.HELVETICA, 8, Font.NORMAL);
-	private static Font NAME_FONT =  new Font(Font.HELVETICA, 8, Font.BOLD);
-	//height width only define ratio
-	private static int HEIGHT = 1;
-	private static int WIDTH = 3;
-	private static int MARGIN = 5;
-	private static int BARCODE_SPACE = LARGE_BARCODE;
+public class OrderLabel extends Label {
 	
-	private ArrayList<BarcodeLabelField> fields;
-	private String code;
 	
-	private int numLabels = 1;
-	
-	public OrderLabel(String patientId, String patientName, String referringFacility, String dob, String code) {
-		fields = new ArrayList<BarcodeLabelField>();
-		fields.add(new BarcodeLabelField("Patient Id", StringUtils.substring(patientId, 0, 25), 6));
-		fields.add(new BarcodeLabelField("Site", StringUtils.substring(referringFacility, 0, 20), 4));
-		fields.add(new BarcodeLabelField("Patient Name", StringUtils.substring(patientName, 0, 30), 7));
-		fields.add(new BarcodeLabelField("DOB", dob, 3));
-		this.code = code;
-	}
-	
-	public OrderLabel(Patient patient, String code) {
+	public OrderLabel(Patient patient, String labNo) {
+		//get information for above barcode
 		Person person = patient.getPerson();
 		BarcodeLabelField patientIdField = getAvailableId(patient);
 		String referringFacility = ""; //unsure where info is stored or how to get
@@ -44,16 +22,19 @@ public class OrderLabel implements Label {
 				+ StringUtil.replaceNullWithEmptyString(person.getLastName());
 		patientName = patientName.replaceAll("( )+", " ");
 		String dob = StringUtil.replaceNullWithEmptyString(patient.getBirthDateForDisplay());
+		//adding fields above barcode
+		aboveFields = new ArrayList<BarcodeLabelField>();
+		aboveFields.add(patientIdField);
+		aboveFields.add(new BarcodeLabelField("Site", StringUtils.substring(referringFacility, 0, 20), 4));
+		aboveFields.add(new BarcodeLabelField("Patient Name", StringUtils.substring(patientName, 0, 30), 7));
+		aboveFields.add(new BarcodeLabelField("DOB", dob, 3));
 		
-		fields = new ArrayList<BarcodeLabelField>();
-		fields.add(patientIdField);
-		fields.add(new BarcodeLabelField("Site", StringUtils.substring(referringFacility, 0, 20), 4));
-		fields.add(new BarcodeLabelField("Patient Name", StringUtils.substring(patientName, 0, 30), 7));
-		fields.add(new BarcodeLabelField("DOB", dob, 3));
-		this.code = code;
+		//adding code
+		setCode(labNo);
 	}
 	
-	public BarcodeLabelField getAvailableId(Patient patient) {
+	//get first available id for patient
+	private BarcodeLabelField getAvailableId(Patient patient) {
 		String patientId = patient.getId();
 		if (!StringUtil.isNullorNill(patientId))
 			return new BarcodeLabelField("Patient Id", StringUtils.substring(patientId, 0, 25), 6);
@@ -62,48 +43,47 @@ public class OrderLabel implements Label {
 			return new BarcodeLabelField("Patient Id", StringUtils.substring(patientId, 0, 25), 6);
 		return new BarcodeLabelField("Patient Id", "", 6);
 	}
-	
-	public ArrayList<BarcodeLabelField> getBelowFields() {
-		return null;
-	}
-	
-	public ArrayList<BarcodeLabelField> getFields() {
-		return fields;
-	}
-	
-	public String getCode() {
-		return code;
+
+	@Override
+	public int getNumTextRowsBefore() {
+		int numRows = 0;
+		int curColumns = 0;
+		boolean completeRow = true;
+		Iterable<BarcodeLabelField> fields = getAboveFields();
+		for (BarcodeLabelField field : fields) {
+			//add to num row if start on newline
+			if (field.isStartNewline() && !completeRow) {
+				++numRows;
+				curColumns = 0;
+			}
+			curColumns += field.getColspan();
+			if (curColumns > 10) {
+				//throw error
+				//row is completed, add to num row
+			} else if (curColumns == 10) {
+				completeRow = true;
+				curColumns = 0;
+				++numRows;
+			} else {
+				completeRow = false;
+			}
+		}
+		//add to num row if last row was incomplete
+		if (!completeRow) {
+			++numRows;
+		}
+		
+		return numRows;
 	}
 
-	public Font getValueFont() {
-		return VALUE_FONT;
+	@Override
+	public int getNumTextRowsAfter() {
+		return 0;
 	}
 
-	public Font getNameFont() {
-		return NAME_FONT;
-	}
-	
-	public int getHeight() {
-		return HEIGHT;
-	}
-	
-	public int getWidth() {
-		return WIDTH;
-	}
-	
-	public int getMargin() {
-		return MARGIN;
-	}
-	
-	public int getBarcodeSpace() {
-		return BARCODE_SPACE * 2;
+	@Override
+	public int getMaxNumLabels() {
+		return 10;
 	}
 
-	public int getNumLabels() {
-		return numLabels;
-	}
-
-	public void setNumLabels(int num) {
-		numLabels = num;
-	}
 }

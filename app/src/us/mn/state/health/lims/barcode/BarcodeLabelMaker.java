@@ -23,7 +23,6 @@ import com.lowagie.text.pdf.draw.LineSeparator;
 import us.mn.state.health.lims.barcode.labeltype.OrderLabel;
 import us.mn.state.health.lims.barcode.labeltype.BlankLabel;
 import us.mn.state.health.lims.barcode.labeltype.SpecimenLabel;
-import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelField;
 import us.mn.state.health.lims.barcode.labeltype.Label;
 
 public class BarcodeLabelMaker {
@@ -61,7 +60,7 @@ public class BarcodeLabelMaker {
 	}
 	
 	//create stream for sending pdf to client
-	public ByteArrayOutputStream createLabelAsStream() {
+	public ByteArrayOutputStream createLabelsAsStream() {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
 			Document document = new Document();
@@ -69,11 +68,18 @@ public class BarcodeLabelMaker {
 	        document.open();
 	        for (Label label : labels) {
 	        	for (int i = 0; i < label.getNumLabels(); ++i) {
-		        	curLabel = label;
-		    		labelWidth = curLabel.getWidth() * SCALE;
-		    		labelHeight = curLabel.getHeight() * SCALE;
-		        	drawLabel(writer, document);
-	        	};
+	        		if (label.checkIfPrintable()) {
+	        			curLabel = label;
+	        			labelWidth = curLabel.getWidth() * SCALE;
+	        			labelHeight = curLabel.getHeight() * SCALE;
+	        			drawLabel(writer, document);
+	        			curLabel.incrementNumPrinted();
+	        		}
+	        		else {
+	        			//print limit reached
+	        		}
+	        		
+	        	}
 	        }
 			document.close();
 	        writer.close();
@@ -95,7 +101,7 @@ public class BarcodeLabelMaker {
 		table.setTotalWidth(labelWidth - (2 * curLabel.getMargin()));
 	    table.setLockedWidth(true);
 		//add fields
-		Iterable<BarcodeLabelField> fields = curLabel.getFields();
+		Iterable<BarcodeLabelField> fields = curLabel.getAboveFields();
 		for (BarcodeLabelField field : fields) {
 			if (field.isStartNewline()) 
 				table.completeRow();
@@ -103,12 +109,12 @@ public class BarcodeLabelMaker {
         } 
 	    table.completeRow();
 	    //add barcode
-	    if (curLabel.getBarcodeSpace() != NUM_COLUMNS) {
-	    	table.addCell(createSpacerCell((NUM_COLUMNS - curLabel.getBarcodeSpace()) / 2));
-		    table.addCell(create128Barcode(writer, curLabel.getBarcodeSpace()));
-	    	table.addCell(createSpacerCell((NUM_COLUMNS - curLabel.getBarcodeSpace()) / 2));
+	    if (curLabel.getScaledBarcodeSpace() != NUM_COLUMNS) {
+	    	table.addCell(createSpacerCell((NUM_COLUMNS - curLabel.getScaledBarcodeSpace()) / 2));
+		    table.addCell(create128Barcode(writer, curLabel.getScaledBarcodeSpace()));
+	    	table.addCell(createSpacerCell((NUM_COLUMNS - curLabel.getScaledBarcodeSpace()) / 2));
 	    } else {
-	    	table.addCell(create128Barcode(writer, curLabel.getBarcodeSpace()));
+	    	table.addCell(create128Barcode(writer, curLabel.getScaledBarcodeSpace()));
 	    } 
 	    //add fields below barcode
 		Iterable<BarcodeLabelField> belowFields = curLabel.getBelowFields();
@@ -152,6 +158,7 @@ public class BarcodeLabelMaker {
     }
 	
 	//create code 128 barcode without text Recommended for large fonts
+	@SuppressWarnings("unused")
 	private PdfPCell create128BarcodeNoText(PdfWriter writer, int colspan) 
 			throws DocumentException, IOException {
         Barcode128 barcode = new Barcode128();
