@@ -33,8 +33,8 @@ public class BarcodeLabelMaker {
 	
 	private Label curLabel;
 	private ArrayList<Label> labels = new ArrayList<Label>();
-	private int labelWidth;
-	private int labelHeight;
+	private float labelWidth;
+	private float labelHeight;
 
 	//defaults to making blank label
 	public BarcodeLabelMaker() {
@@ -62,6 +62,8 @@ public class BarcodeLabelMaker {
 	//create stream for sending pdf to client
 	public ByteArrayOutputStream createLabelsAsStream() {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		if (labels.isEmpty()) 
+			return stream;
 		try {
 			Document document = new Document();
 			PdfWriter writer = PdfWriter.getInstance(document, stream);
@@ -74,11 +76,7 @@ public class BarcodeLabelMaker {
 	        			labelHeight = curLabel.getHeight() * SCALE;
 	        			drawLabel(writer, document);
 	        			curLabel.incrementNumPrinted();
-	        		}
-	        		else {
-	        			//print limit reached
-	        		}
-	        		
+	        		}	        		
 	        	}
 	        }
 			document.close();

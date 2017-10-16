@@ -1,6 +1,7 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="us.mn.state.health.lims.common.action.IActionConstants"
+	import="us.mn.state.health.lims.common.action.IActionConstants,
+					us.mn.state.health.lims.common.util.StringUtil"
 %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -28,7 +29,7 @@ function printBarcode(success, failure) {
 	<bean:message key="save.success"/>
 	<div>
 		<input type="button"
-        	value="Print Barcode"
+        	value="<%= StringUtil.getMessageForKey("barcode.button.print")%>"
         	id="printBarcodeButton"
         	onclick="printBarcode();">
         <a href="" id="getBarcodePDF" target="_blank"></a>

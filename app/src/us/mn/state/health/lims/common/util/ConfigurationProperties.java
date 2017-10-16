@@ -115,7 +115,13 @@ public abstract class ConfigurationProperties {
         PATIENT_NATIONALITY, //True if patient nationality should be collected with patient information
         PATIENT_ID_REQUIRED, //True if patient id is required for new patient
         PATIENT_SUBJECT_NUMBER_REQUIRED, //True if patient subject number is required for new patient
-        QA_SAMPLE_ID_REQUIRED  //True if sample id required from referring lab
+        QA_SAMPLE_ID_REQUIRED,  //True if sample id required from referring lab
+        MAX_ORDER_PRINTED,	//Max number of order labels that can be printed
+        MAX_SPECIMEN_PRINTED,	//Max number of specimen labels that can be printed
+        ORDER_BARCODE_HEIGHT,	//Height of the order barcode
+        ORDER_BARCODE_WIDTH,	//Width of the order barcode
+        SPECIMEN_BARCODE_HEIGHT,	//Height of the specimen barcode
+        SPECIMEN_BARCODE_WIDTH	//Width of the specimen barcode
     }
 
 	

@@ -20,8 +20,8 @@ public abstract class Label {
 	
 	private Font valueFont =  new Font(Font.HELVETICA, 8, Font.NORMAL);
 	private Font nameFont =  new Font(Font.HELVETICA, 8, Font.BOLD);
-	private int height = 1;
-	private int width = 3;
+	protected float height = 1;
+	protected float width = 3;
 	private int margin = 5;
 
 	//min 1 max 5
@@ -64,19 +64,19 @@ public abstract class Label {
 		this.nameFont = nameFont;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(float height) {
 		this.height = height;
 	}
 
-	public int getWidth() {
+	public float getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(float width) {
 		this.width = width;
 	}
 

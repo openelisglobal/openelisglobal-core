@@ -5,7 +5,8 @@
 			     us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
 			     us.mn.state.health.lims.common.provider.validation.ProgramAccessionValidator,
 			     us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-			     us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
+			     us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+			     us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.*" %>
 
 
@@ -346,7 +347,7 @@ function setCaretPosition(ctrl, pos){
 
 function printBarcode(button) {
 	if (button.id == "printBarcodeButton") {
-		if (confirm("This label has already been printed. Do you really want to print more labels?")) {
+		if (confirm("<%= StringUtil.getMessageForKey("barcode.message.reprint.confirmation") %>")) {
 			var labNo = document.getElementById('searchValue').value;
 			var typeSelect = document.getElementById('labelType');
 			var type = typeSelect.options[typeSelect.selectedIndex].value;
@@ -417,7 +418,7 @@ function makeFieldNumber(field) {
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>
 		<input type="button"
-        	value="Print Blank Barcode"
+        	value="<%= StringUtil.getMessageForKey("barcode.button.printblank") %>"
         	id="printBlankBarcodeButton"
         	onclick="printBarcode(this);">
 	</div>
@@ -477,22 +478,22 @@ function makeFieldNumber(field) {
         <table>
         	<tr>
         		<td>
-        			Type of label: 
+        			<%= StringUtil.getMessageForKey("barcode.label.print.type") %>
         		</td>
         		<td>
         			<select name="labelType" 
         				id="labelType"
         				onchange="checkPrint()" >
 			        	<option value=""></option>
-			        	<option value="order">Order - Max 10</option>
-			        	<option value="specimen">Specimen - Max 1</option>
-			        	<option value="aliquot">Aliquot - Max 1</option>
+			        	<option value="order"><%=StringUtil.getContextualMessageForKey("barcode.label.order") %> - Max <%=ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_ORDER_PRINTED) %></option>
+			        	<option value="specimen"><%=StringUtil.getContextualMessageForKey("barcode.label.specimen") %> - Max <%=ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_SPECIMEN_PRINTED) %></option>
+			        	<option value="aliquot"><%=StringUtil.getContextualMessageForKey("barcode.label.aliquot") %> - Max 1</option>
 			        </select>
         		</td>
         	</tr>
         	<tr>
         		<td>
-        			Number of Labels:
+        			<%= StringUtil.getMessageForKey("barcode.label.print.number") %>
         		</td>
         		<td>
         			<input type="text"
@@ -502,7 +503,7 @@ function makeFieldNumber(field) {
         		<td>
 	        		<input type="button"
 	        			disabled="true"
-			        	value="Print Barcode"
+			        	value="<%= StringUtil.getMessageForKey("barcode.button.printmore") %>"
 			        	id="printBarcodeButton"
 			        	onclick="printBarcode(this);">
 				</td>
