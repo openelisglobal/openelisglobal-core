@@ -7,6 +7,7 @@
 <%@ taglib uri="/tags/struts-html"      prefix="html" %>
 <%@ taglib uri="/tags/struts-logic"     prefix="logic" %>
 <%@ taglib uri="/tags/labdev-view"      prefix="app" %>
+<%@ taglib uri="/tags/struts-tiles"     prefix="tiles" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
 
 <bean:define id="formName"      value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
@@ -17,7 +18,6 @@
 <bean:parameter id="patientNumberCheck" name="patientNumberCheck" value="false" />
 <bean:parameter id="nationalIDCheck" name="nationalIDCheck" value="false" />
 <bean:parameter id="subjectNoCheck" name="subjectNoCheck" value="false" />
-<bean:parameter id="sampleXML" name="sampleXML" value="none"/>
 
 <script type="text/javascript" src="scripts/utilities.js"></script>
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
@@ -36,6 +36,9 @@ function printLabel() {
 	document.getElementById("printButtonId").disabled = true;
 	document.getElementById("reprintButtonId").disabled = false;
 	document.getElementById("nextButtonId").disabled = false;
+	
+	document.getElementById("ifbarcode").src = 'LabelMakerServlet';
+	document.getElementById("barcodeArea").show();
 }
 
 function nextLabel() {
@@ -50,6 +53,7 @@ function nextLabel() {
 		newRecent = newRecent.slice(0,newRecent.lastIndexOf("\n"));
 	}
 	recentTextArea.value = newRecent;
+	document.getElementById("labNo").value = "";
 }
 
 //functions for generating and checking accession number
@@ -75,8 +79,7 @@ function processScanSuccess(xhr) {
     var success = message.firstChild.nodeValue == "valid";
     if (success) {
         document.getElementById("labNo").value = returnedData;
-        postBatchSample(alertSuccess, defaultFailure);
-        printLabel();
+        postBatchSample(printLabel, defaultFailure);
     } else {
         alert("<%= StringUtil.getMessageForKey("error.accession.no.next") %>");
         document.getElementById("labNo").value = "";
@@ -104,21 +107,15 @@ function alertSuccess(){
 	//alert("success");
 }
 
+function alertFailure() {
+	alert("failure");
+}
+
 function finish() {
     window.location = "SampleBatchEntrySetup.do";
 }
 </script>
 
-<div id="hidden-fields">
-<html:hidden name='<%=formName %>'
-	property="currentDate"/>
-<html:hidden name='<%=formName %>'
-	property="currentTime"/>
-<html:hidden name='<%=formName %>'
-	property="sampleOrderItems.receivedDateForDisplay"/>
-<html:hidden name='<%=formName %>'
-	property="sampleOrderItems.receivedTime"/>
-</div>
 <div>
 <table width="100%">
 <tr>
@@ -126,13 +123,7 @@ function finish() {
 <table>
 	<tr>
 		<td>
-			<hr>
-		</td>
-	</tr>
-	<tr>
-		<td> 
-			<bean:message key="sample.batchentry.ondemand.fields" />
-			:
+			<h2> Sample Specific Fields</h2>
 		</td>
 	</tr>
 <logic:equal name="facilityIDCheck" value="true">
@@ -144,8 +135,8 @@ function finish() {
 					property="facilityID" 
 					readonly="true"/>
 			</td>
-		</tr>		
-	</logic:notEqual>		
+		</tr>
+	</logic:notEqual>
 	<logic:equal name="facilityID" value="">
 		<tr>
 			<td>
@@ -156,54 +147,14 @@ function finish() {
 		</tr>
 	</logic:equal>
 </logic:equal>
-<logic:equal name="firstNameCheck" value="true">
 	<tr>
 		<td>
-			<bean:message key="sample.batchentry.barcode.label.firstname" /> 
-			: <html:text name="<%=formName %>"
-				property="firstName" />
+			<tiles:insert attribute="patientInfo" />
 		</td>
 	</tr>
-</logic:equal>
-<logic:equal name="lastNameCheck" value="true">
 	<tr>
 		<td>
-			<bean:message key="sample.batchentry.barcode.label.lastname" /> 
-			: <html:text name="<%=formName %>"
-				property="lastName" />
-		</td>
-	</tr>
-</logic:equal>
-<logic:equal name="patientNumberCheck" value="true">
-	<tr>
-		<td>
-			<bean:message key="sample.batchentry.barcode.label.patientno" /> 
-			: <html:text name="<%=formName %>"
-				property="patientNumber" />
-		</td>
-	</tr>
-</logic:equal>
-<logic:equal name="nationalIDCheck" value="true">
-	<tr>
-		<td>
-			<bean:message key="sample.batchentry.barcode.label.nationalid" /> 
-			: <html:text name="<%=formName %>"
-				property="nationalID" />
-		</td>
-	</tr>
-</logic:equal>
-<logic:equal name="subjectNoCheck" value="true">
-	<tr>
-		<td>
-			<bean:message key="sample.batchentry.barcode.label.subjectno" /> 
-			: <html:text name="<%=formName %>"
-				property="subjectNo" />
-		</td>
-	</tr>
-</logic:equal>
-	<tr>
-		<td>
-			<hr>
+			<h2> Print Barcodes</h2>
 		</td>
 	</tr>
 	<tr>
@@ -240,7 +191,7 @@ function finish() {
 		</tr>
 	<tr>
 		<td>
-			<app:text name="<%=formName%>" property="labNo"
+			<app:text name='<%= formName%>' property="sampleOrderItems.labNo"
             	onchange="checkAccessionNumber(this);"
                 styleClass="text"
                 styleId="labNo"
@@ -265,18 +216,64 @@ function finish() {
 			</td>
 		</tr>
 	</table>
+	<div style="display:none;" id="barcodeArea">
+		<h2>Barcode(s)</h2>
+		<iframe  src="about:blank" id="ifbarcode" width="100%" height="300px"></iframe>
+	</div>
 	</td>
 		
 	</tr>		
 </table>
 </td>
 <td width="50%" style="vertical-align:top">
-<table>
+<table id="summary">
 	<tr>
 		<td>
-			<textarea rows="5" 
-				cols="50"
-				readonly="true"><%=sampleXML%></textarea>
+			<h2> Common Fields</h2>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<bean:message key="sample.batchentry.order.currentdate" />: 
+			<html:text name='<%=formName %>'
+				property="currentDate"
+				readonly="true"></html:text>
+		</td>
+		<td>
+			<bean:message key="sample.batchentry.order.currenttime" />: 
+			<html:text name='<%=formName %>'
+				property="currentTime"
+				readonly="true"></html:text>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<bean:message key="sample.batchentry.datereceived" />:
+			<html:text name='<%=formName %>'
+				property="sampleOrderItems.receivedDateForDisplay"
+				readonly="true"></html:text>
+		</td>
+		<td>
+			<bean:message key="sample.batchentry.timereceived" />:
+			<html:text name='<%=formName %>'
+				property="sampleOrderItems.receivedTime"
+				readonly="true"></html:text>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table style="width:100%">
+				<tr>
+					<th><bean:message key="sample.entry.sample.type"/></th>
+					<th><bean:message key="test.testName"/></th>
+				</tr>
+				<tr>
+					<td><%= request.getAttribute("sampleType") %></td>
+					<td><%= request.getAttribute("testNames") %></td>
+				</tr>
+			</table>
+			<html:hidden name='<%=formName %>'
+				property="sampleXML"/>	
 		</td>
 	</tr>
 </table>

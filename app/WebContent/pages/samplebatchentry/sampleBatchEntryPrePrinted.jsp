@@ -7,6 +7,7 @@
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"      prefix="html" %>
 <%@ taglib uri="/tags/labdev-view" 		prefix="app" %>
+<%@ taglib uri="/tags/struts-tiles"     prefix="tiles" %>
 
 <%!
 String path = "";
@@ -24,8 +25,17 @@ accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
+var lineSeparator = "";
+
 function nextLabel() {
 	postBatchSample(alertSuccess, defaultFailure);
+	var recentTextArea = document.getElementById("previous");
+	var newRecent = document.getElementById("labNo").value + lineSeparator + recentTextArea.value;
+	lineSeparator = "\n";
+	if ((newRecent.match(/\n/g)||[]).length >= 3) {
+		newRecent = newRecent.slice(0,newRecent.lastIndexOf("\n"));
+	}
+	recentTextArea.value = newRecent;
 	document.getElementById("labNo").value = "";
 	document.getElementById("next").disabled= "true";
 }
@@ -107,7 +117,25 @@ function processAccessionSuccess(xhr) {
 </div>
 
 <div>
+<table width="100%">
+<tr>
+<td width="50%">
 <table>
+	<tr>
+		<td>
+			<h2> Sample Specific Fields</h2>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<tiles:insert attribute="patientInfo" />
+		</td>
+	</tr>	
+	<tr>
+		<td>
+			<h2>Accession Entry</h2>
+		</td>
+	</tr>	
 	<tr>
 		<td>
 			<bean:message key="sample.batchentry.preprinted.labno" />:
@@ -151,7 +179,7 @@ function processAccessionSuccess(xhr) {
 		</tr>
 		<tr>
 			<td>
-				<textarea name="previous" rows="10" cols="50"></textarea>
+				<textarea  id="previous" rows="10" cols="50"></textarea>
 			</td>
 		</tr>
 	</table>
@@ -159,4 +187,61 @@ function processAccessionSuccess(xhr) {
 		
 	</tr>		
 </table>
+</td>
+<td width="50%" style="vertical-align:top">
+<table id="summary">
+	<tr>
+		<td>
+			<h2> Common Fields</h2>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<bean:message key="sample.batchentry.order.currentdate" />: 
+			<html:text name='<%=formName %>'
+				property="currentDate"
+				readonly="true"></html:text>
+		</td>
+		<td>
+			<bean:message key="sample.batchentry.order.currenttime" />: 
+			<html:text name='<%=formName %>'
+				property="currentTime"
+				readonly="true"></html:text>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<bean:message key="sample.batchentry.datereceived" />:
+			<html:text name='<%=formName %>'
+				property="sampleOrderItems.receivedDateForDisplay"
+				readonly="true"></html:text>
+		</td>
+		<td>
+			<bean:message key="sample.batchentry.timereceived" />:
+			<html:text name='<%=formName %>'
+				property="sampleOrderItems.receivedTime"
+				readonly="true"></html:text>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table style="width:100%">
+				<tr>
+					<th><bean:message key="sample.entry.sample.type"/></th>
+					<th><bean:message key="test.testName"/></th>
+				</tr>
+				<tr>
+					<td><%= request.getAttribute("sampleType") %></td>
+					<td><%= request.getAttribute("testNames") %></td>
+				</tr>
+			</table>
+			<html:hidden name='<%=formName %>'
+				property="sampleXML"/>	
+		</td>
+	</tr>
+</table>
+</td>
+</tr>
+</table>
+<a href="" id="getBarcodePDF" target="_blank"></a>
 </div>

@@ -65,10 +65,12 @@
             <form-property name="nationalID" type="java.lang.String" />
             <form-property name="subjectNo" type="java.lang.String" />
             <form-property name="labNo" type="java.lang.String" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
         </form-bean>
         
 		<form-bean name="sampleBatchEntryPrePrintedForm" type="us.mn.state.health.lims.common.action.BaseActionForm"> 
-			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
             <form-property name="currentDate" type="java.lang.String" initial="" />
             <form-property name="currentTime" type="java.lang.String" initial="" />
             <form-property name="project" type="java.lang.String" initial="" />
@@ -78,14 +80,17 @@
             <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
             <form-property name="initialSampleConditionList" type="java.util.Collection" />
             <form-property name="testSectionList"  type="java.util.Collection" />
-                      
-            <form-property name="method" type="java.lang.String" />
+            
             <form-property name="numberLabels" type="java.lang.String" />
-            <form-property name="facilityID" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-            <form-property name="facilityIDNo" type="java.lang.String" />
-            <form-property name="lastName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-            <form-property name="firstName" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="facilityID" type="java.lang.String" />
+            <form-property name="lastName" type="java.lang.String" />
+            <form-property name="firstName" type="java.lang.String" />
+            <form-property name="patientNumber" type="java.lang.String" />
+            <form-property name="nationalID" type="java.lang.String" />
+            <form-property name="subjectNo" type="java.lang.String" />
             <form-property name="labNo" type="java.lang.String" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
         </form-bean>
 
 		<form-bean name="SampleConfirmationEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">

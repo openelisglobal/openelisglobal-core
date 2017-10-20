@@ -56,8 +56,7 @@ var patientChangeListeners = [];
 var localDB = '<%=localDBOnly%>' == "true";
 var newSearchInfo = false;
 
-function searchPatients()
-{
+function searchPatients() {
     var criteria = $jq("#searchCriteria").val();
     var value = $jq("#searchValue").val();
     var splitName;
@@ -68,33 +67,18 @@ function searchPatients()
     var nationalID = "";
     var labNumber = "";
 
-
 	newSearchInfo = false;
     $jq("#resultsDiv").hide();
+    $jq("#barcodeArea").hide();
     $jq("#searchLabNumber").val('');
-    if( criteria == 1){
-        firstName =  value.trim();
-    }else if(criteria == 2){
-        lastName = value.trim();
-    }else if(criteria == 3){
-        splitName = value.split(",");
-        lastName = splitName[0].trim();
-        firstName = splitName.size() == 2 ? splitName[1].trim() : "";
-    }else if(criteria == 4){
-        STNumber = value.trim();
-        subjectNumber = value.trim();
-        nationalID = value.trim();
-    }else if(criteria == 5){
-        labNumber = value;
-        $jq("#searchLabNumber").val(value);
-    }
+    labNumber = value;
+    $jq("#searchLabNumber").val(value);
 
 	patientSearch(lastName, firstName, STNumber, subjectNumber, nationalID, labNumber, "", false, processSearchSuccess);
 
 }
 
-function processSearchSuccess(xhr)
-{
+function processSearchSuccess(xhr) {
 	//alert( xhr.responseText );
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
@@ -103,23 +87,17 @@ function processSearchSuccess(xhr)
 	clearTable(table);
 	clearPatientInfoCache();
 
-	if( message.firstChild.nodeValue == "valid" )
-	{
+	if( message.firstChild.nodeValue == "valid" ) {
 		$("noPatientFound").hide();
 		$("searchResultsDiv").show();
-
 		var resultNodes = formField.getElementsByTagName("result");
-
-		for( var i = 0; i < resultNodes.length; i++ )
-		{
+		for( var i = 0; i < resultNodes.length; i++ ) {
 			addPatientToSearch( table, resultNodes.item(i) );
 		}
-		
 		if( resultNodes.length == 1 && <%= String.valueOf(patientSearch.isLoadFromServerWithPatient()) %>  ){
 			handleSelectedPatient();
 		}
-	}else
-	{
+	} else {
 		$("searchResultsDiv").hide();
 		$("noPatientFound").show();
 		selectPatient( null );
@@ -130,7 +108,6 @@ function clearSearchResultTable() {
 	var table = $("searchResultTable");
 	clearTable(table);
 	clearPatientInfoCache();
-	
 }
 
 function clearTable(table){
@@ -146,7 +123,6 @@ function clearPatientInfoCache(){
 
 function addPatientToSearch(table, result ){
 	var patient = result.getElementsByTagName("patient")[0];
-
 	var firstName = getValueFromXmlElement( patient, "first");
 	var lastName = getValueFromXmlElement( patient, "last");
 	var gender = getValueFromXmlElement( patient, "gender");
@@ -160,7 +136,6 @@ function addPatientToSearch(table, result ){
 
 	var row = createRow( table, firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk, dataSourceName );
 	addToPatientInfo( firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk );
-
 	if( row == 1 ){
 		patientSelectID = pk;
 		$("sel_1").checked = "true";
@@ -170,20 +145,14 @@ function addPatientToSearch(table, result ){
 
 function getValueFromXmlElement( parent, tag ){
 	var element = parent.getElementsByTagName( tag ).item(0);
-
 	return element ? element.firstChild.nodeValue : "";
 }
 
 function createRow(table, firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk,  dataSourceName){
-
 		var row = table.rows.length;
-
 		var newRow = table.insertRow(row);
-
 		newRow.id = "_" + row;
-
 		var cellCounter = -1;
-
 		var selectionCell = newRow.insertCell(++cellCounter);
 		if( !localDB){
 			var dataSourceCell = newRow.insertCell(++cellCounter);
@@ -238,14 +207,11 @@ function selectPatient( patientID ){
     var i;
 	if( patientID ){
 		patientSelectID = patientID;
-
 		var info = patientInfoHash[patientID];
-
 		for(i = 0; i < patientChangeListeners.length; i++){
 			patientChangeListeners[i](info["first"],info["last"],info["gender"],info["DOB"],info["ST"],info["subjectNumber"],info["national"],info["mother"], patientID);
 		}
-
-	}else{
+	} else {
 		for(i = 0; i < patientChangeListeners.length; i++){
 			patientChangeListeners[i]("","","","","","","","", null);
 		}
@@ -258,7 +224,6 @@ function /*void*/ addPatientChangedListener( listener ){
 
 
 function /*void*/ handleEnterEvent( ){
-		
 		if( newSearchInfo ){
 			searchPatients();
 		}
@@ -271,9 +236,10 @@ function /*void*/ dirtySearchInfo(e){
 		newSearchInfo = true; 
 	}
 }
+
 function /*void*/ doNothing(){ 
-	
 }
+
 function enableSearchButton(eventCode){
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
@@ -283,13 +249,12 @@ function enableSearchButton(eventCode){
         if( eventCode == 13 ){
             searchButton.click();
         }
-    }else{
+    } else {
         searchButton.attr("disabled", "disabled");
     }
-
     if(criteriaElem.val() == "5" ){
         valueElem.attr("maxlength","<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>");
-    }else{
+    } else {
         valueElem.attr("maxlength","120");
     }
 }
@@ -317,7 +282,7 @@ function firstClick(){
 }
 
 function messageRestore(element ){
-    if( !element.value  ){
+    if( !element.value ){
         element.maxlength = 120;
         element.value = '<%=StringUtil.getMessageForKey("label.select.search.here")%>';
         element.onkeydown = firstClick;
@@ -346,22 +311,23 @@ function setCaretPosition(ctrl, pos){
 }
 
 function printBarcode(button) {
+	var labNo = document.getElementById('searchValue').value;
+	var type = "";
+	var quantity = "";
 	if (button.id == "printBarcodeButton") {
 		if (confirm("<%= StringUtil.getMessageForKey("barcode.message.reprint.confirmation") %>")) {
-			var labNo = document.getElementById('searchValue').value;
 			var typeSelect = document.getElementById('labelType');
-			var type = typeSelect.options[typeSelect.selectedIndex].value;
-			var quantity = document.getElementById('quantity').value;
-			document.getElementById('getBarcodePDF').href = "LabelMakerServlet?labNo=" + labNo 
-					+ "&patientId=" + patientSelectID + "&type=" + type + "&quantity=" + quantity;
-			document.getElementById('getBarcodePDF').click();
+			type = typeSelect.options[typeSelect.selectedIndex].value;
+			quantity = document.getElementById('quantity').value;
+		    $jq("#searchResultsDiv").hide();
+		    $jq("#searchLabNumber").val('');
 		}
 	} else if (button.id == "printBlankBarcodeButton") {
-		var labNo = document.getElementById('searchValue').value;
-		document.getElementById('getBarcodePDF').href = "LabelMakerServlet?labNo=" + labNo 
-				+ "&type=blank";
-		document.getElementById('getBarcodePDF').click();
+		type="blank";
 	}
+	document.getElementById("ifbarcode").src = 'LabelMakerServlet?labNo=' + labNo + '&type=' + type + 
+		'&patientId=' +  patientSelectID + '&quantity=' + quantity;
+	document.getElementById("barcodeArea").show();
 }
 
 function checkPrint() {
@@ -509,7 +475,9 @@ function makeFieldNumber(field) {
 				</td>
         	</tr>
         </table>
-        <a href="" id="getBarcodePDF" target="_blank"></a>
 		</div>
 	</div>
-
+	<div style="display:none;" id="barcodeArea">
+		<h2>Barcode(s)</h2>
+		<iframe  src="about:blank" id="ifbarcode" width="50%" height="300px"></iframe>
+	</div>

@@ -186,13 +186,6 @@
   	<load-on-startup>16</load-on-startup>
   </servlet>
   
-   <servlet>
-    <servlet-name>ajaxSubmit</servlet-name>
-    <display-name>ajaxSubmit</display-name> 
-    <servlet-class>us.mn.state.health.lims.common.servlet.submit.AjaxSubmitServlet</servlet-class>
-    <load-on-startup>17</load-on-startup>
-  </servlet> 
-  
   <servlet-mapping>
    <servlet-name>action</servlet-name> 
    <url-pattern>*.do</url-pattern> 
@@ -269,14 +262,9 @@
   </servlet-mapping>
   
   <servlet-mapping>
-<<<<<<< HEAD
   	<servlet-name>LabelMakerServlet</servlet-name>
   	<url-pattern>/LabelMakerServlet</url-pattern>	
-=======
-    <servlet-name>ajaxSubmit</servlet-name>
-    <url-pattern>/ajaxSubmit</url-pattern>
->>>>>>> batch-entry
-  </servlet-mapping>
+ </servlet-mapping>
 
   <!-- The Usual Welcome File List -->
   <welcome-file-list>

@@ -40,9 +40,11 @@
 	</definition>
 
     <definition name="sampleBatchEntryOnDemandCore" path="/pages/samplebatchentry/sampleBatchEntryOnDemand.jsp">
+		<put name="patientInfo"  value="patientManagementCore" />
 	</definition>
 
     <definition name="sampleBatchEntryPrePrintedCore" path="/pages/samplebatchentry/sampleBatchEntryPrePrinted.jsp">
+		<put name="patientInfo"  value="patientManagementCore" />
 	</definition>
     
 
