@@ -38,7 +38,7 @@ import us.mn.state.health.lims.observationhistorytype.ObservationHistoryTypeMap;
 import us.mn.state.health.lims.patient.valueholder.AdverseEffect;
 import us.mn.state.health.lims.patient.valueholder.ObservationData;
 import us.mn.state.health.lims.sample.form.ProjectData;
-import us.mn.state.health.lims.test.dao.TestDAO;
+//import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
@@ -241,7 +241,7 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
         //Viral Load study
         addHistory(histories ,"arvTreatmentInitDate", od.getArvTreatmentInitDate(), ValueType.LITERAL);
         addHistory(histories ,"vlReasonForRequest", od.getVlReasonForRequest(), ValueType.DICTIONARY);
-        addHistory(histories ,"vlOtherReasonForRequest", od.getVlReasonForRequest(), ValueType.LITERAL);
+        addHistory(histories ,"vlOtherReasonForRequest", od.getVlOtherReasonForRequest(), ValueType.LITERAL);
         addHistory(histories ,"initcd4Count", od.getInitcd4Count(), ValueType.LITERAL);
         addHistory(histories ,"initcd4Percent", od.getInitcd4Percent(), ValueType.LITERAL);
         addHistory(histories ,"initcd4Date", od.getInitcd4Date(), ValueType.LITERAL);       

@@ -153,6 +153,6 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
     @Override
     protected void addAllResultsColumns() {
         super.addAllResultsColumns();
-        //add("Viral Load", "Viral Load log", LOG );
+        
     }
 }
