@@ -11,6 +11,7 @@ import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelInfo;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
+import us.mn.state.health.lims.login.valueholder.UserSessionData;
 
 public abstract class Label {
 	
@@ -18,18 +19,19 @@ public abstract class Label {
 	static int MED_BARCODE = 4;
 	static int LARGE_BARCODE = 5;
 	
-	private Font valueFont =  new Font(Font.HELVETICA, 8, Font.NORMAL);
-	private Font nameFont =  new Font(Font.HELVETICA, 8, Font.BOLD);
+	private Font valueFont =  new Font(Font.HELVETICA, 10, Font.NORMAL);
+	private Font nameFont =  new Font(Font.HELVETICA, 10, Font.BOLD);
 	protected float height = 1;
 	protected float width = 3;
 	private int margin = 5;
 
 	//min 1 max 5
-	private int barcodeSpace = LARGE_BARCODE;
+	private int barcodeSpace = MED_BARCODE;
 
 	protected ArrayList<BarcodeLabelField> aboveFields;
 	protected ArrayList<BarcodeLabelField> belowFields;
 	private String code;
+	private String sysUserId;
 	
 	//default number of copies to print
 	private int numLabels = 1;
@@ -127,7 +129,15 @@ public abstract class Label {
 	public void setNumLabels(int numLabels) {
 		this.numLabels = numLabels;
 	}
+	
+	public String getSysUserId() {
+		return sysUserId;
+	}
 
+	public void setSysUserId(String sysUserId) {
+		this.sysUserId = sysUserId;
+	}
+	
 	protected int getNumRows(Iterable<BarcodeLabelField> fields) {
 		int numRows = 0;
 		int curColumns = 0;
@@ -186,6 +196,7 @@ public abstract class Label {
 	//increment the amount in the database
 	public void incrementNumPrinted() {
 		barcodeLabelInfo.incrementNumPrinted();
+		barcodeLabelInfo.setSysUserId(sysUserId);
 		org.hibernate.Transaction tx = HibernateUtil.getSession().beginTransaction();
 		try {
 			BarcodeLabelInfoDAO barcodeLabelDAO = new BarcodeLabelInfoDAOImpl();

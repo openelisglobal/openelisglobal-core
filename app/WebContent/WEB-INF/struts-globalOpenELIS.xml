@@ -35,59 +35,25 @@
             <form-property name="initialSampleConditionList" type="java.util.Collection" />
             <form-property name="testSectionList"  type="java.util.Collection" />
             <form-property name="method" type="java.lang.String" />
-            <form-property name="numberLabels" type="java.lang.String" />
+            <form-property name="facilityID" type="java.lang.String" />
+            <form-property name="facilityIDCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="patientInfoCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+        </form-bean>
+        
+		<form-bean name="sampleBatchEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="currentTime" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+            <form-property name="patientInfoCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
             <form-property name="facilityIDCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
             <form-property name="facilityID" type="java.lang.String" />
-            <form-property name="lastNameCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-            <form-property name="firstNameCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-            <form-property name="patientNumberCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-            <form-property name="nationalIDCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-            <form-property name="subjectNoCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-        </form-bean>
-        
-		<form-bean name="sampleBatchEntryOnDemandForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
-            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
-            <form-property name="currentDate" type="java.lang.String" initial="" />
-            <form-property name="currentTime" type="java.lang.String" initial="" />
-            <form-property name="project" type="java.lang.String" initial="" />
-            <form-property name="projects" type="java.util.Collection" />
-            <form-property name="sampleTypes" type="java.util.List" />
-            <form-property name="sampleXML" type="java.lang.String" initial="" />
-            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
-            <form-property name="initialSampleConditionList" type="java.util.Collection" />
-            <form-property name="testSectionList"  type="java.util.Collection" />
-            
-            <form-property name="numberLabels" type="java.lang.String" />
-            <form-property name="facilityID" type="java.lang.String" />
-            <form-property name="lastName" type="java.lang.String" />
-            <form-property name="firstName" type="java.lang.String" />
-            <form-property name="patientNumber" type="java.lang.String" />
-            <form-property name="nationalID" type="java.lang.String" />
-            <form-property name="subjectNo" type="java.lang.String" />
-            <form-property name="labNo" type="java.lang.String" />
-            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
-            <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
-        </form-bean>
-        
-		<form-bean name="sampleBatchEntryPrePrintedForm" type="us.mn.state.health.lims.common.action.BaseActionForm"> 
-            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
-            <form-property name="currentDate" type="java.lang.String" initial="" />
-            <form-property name="currentTime" type="java.lang.String" initial="" />
-            <form-property name="project" type="java.lang.String" initial="" />
-            <form-property name="projects" type="java.util.Collection" />
-            <form-property name="sampleTypes" type="java.util.List" />
-            <form-property name="sampleXML" type="java.lang.String" initial="" />
-            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
-            <form-property name="initialSampleConditionList" type="java.util.Collection" />
-            <form-property name="testSectionList"  type="java.util.Collection" />
-            
-            <form-property name="numberLabels" type="java.lang.String" />
-            <form-property name="facilityID" type="java.lang.String" />
-            <form-property name="lastName" type="java.lang.String" />
-            <form-property name="firstName" type="java.lang.String" />
-            <form-property name="patientNumber" type="java.lang.String" />
-            <form-property name="nationalID" type="java.lang.String" />
-            <form-property name="subjectNo" type="java.lang.String" />
             <form-property name="labNo" type="java.lang.String" />
             <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
@@ -972,9 +938,30 @@
 		
 		<form-bean name="PrintBarcodeForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="lastupdated" type="java.lang.String" />
+			<form-property name="accessionNumber" type="java.lang.String" />
+			<form-property name="patientId" type="java.lang.String" />
 			<form-property name="barcode" type="java.lang.String" />
+			<form-property name="patientName" type="java.lang.String" initial="" />
+			<form-property name="dob" type="java.lang.String" initial="" />
+			<form-property name="gender" type="java.lang.String" initial="" />
+			<form-property name="nationalId" type="java.lang.String" initial="" />
             <form-property name="searchCriteria" type="java.lang.String" />
+            <form-property name="existingTests" type="java.util.Collection"/>
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+		</form-bean>
+		
+		<form-bean name="BarcodeConfigurationForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+			<form-property name="lastupdated" type="java.lang.String" />
+			<form-property name="numOrderLabels" type="java.lang.String" />
+			<form-property name="numSpecimenLabels" type="java.lang.String" />
+			<form-property name="numAliquotLabels" type="java.lang.String" />
+			<form-property name="heightOrderLabels" type="java.lang.String" />
+			<form-property name="widthOrderLabels" type="java.lang.String" />
+			<form-property name="heightSpecimenLabels" type="java.lang.String" />
+			<form-property name="widthSpecimenLabels" type="java.lang.String" />
+			<form-property name="collectionDateCheck" type="java.lang.String" />
+			<form-property name="testsCheck" type="java.lang.String" />
+			<form-property name="patientSexCheck" type="java.lang.String" />
 		</form-bean>
 
 	</form-beans>
@@ -1168,20 +1155,19 @@
 		</action>
 
 
- <!-- caleb addition -->
        <action path="/SampleBatchEntrySetup" name="sampleBatchEntrySetupForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntrySetupAction" validate="false">
           <forward name="success" path="sampleBatchEntrySetupDefinition"/>
           <forward name="fail" path="homePageDefinition"/> 
        </action>
        
-       <action path="/SampleBatchEntryOnDemand" name="sampleBatchEntryOnDemandForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryOnDemandAction" validate="false">
+       <action path="/SampleBatchEntryOnDemand" name="sampleBatchEntryForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryAction" validate="false">
           <forward name="success" path="sampleBatchEntryOnDemandDefinition"/>
-          <forward name="fail" path="sampleBatchEntrySetupDefinition"/> 
+          <forward name="fail" path="/SampleBatchEntrySetup.do"/> 
        </action>
        
-       <action path="/SampleBatchEntryPrePrinted" name="sampleBatchEntryPrePrintedForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryPrePrintedAction" validate="false">
+       <action path="/SampleBatchEntryPrePrinted" name="sampleBatchEntryForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryAction" validate="false">
           <forward name="success" path="sampleBatchEntryPrePrintedDefinition"/>
-          <forward name="fail" path="sampleBatchEntrySetupDefinition"/> 
+          <forward name="fail" path="/SampleBatchEntrySetup.do"/> 
        </action>
        
        <action path="/CancelSampleBatchEntrySetup" forward="homePageDefinition">
@@ -1192,7 +1178,6 @@
 		
 		<action path="/CancelSampleBatchEntryPrePrinted" forward="homePageDefinition">
 		</action>
-  <!-- caleb addition -->
        
 		<action path="/SamplePatientEntry" name="samplePatientEntryForm" type="us.mn.state.health.lims.sample.action.SamplePatientEntryAction"
 			validate="false"
@@ -2114,7 +2099,17 @@
 		
 		<action path="/PrintBarcode" name="PrintBarcodeForm" type="us.mn.state.health.lims.barcode.action.PrintBarcodeAction">
 			<forward name="success" path="PrintBarcodeDefinition" />
+			<forward name="fail" path="PrintBarcodeDefinition" />
 		</action> 
+		
+		<action path="/BarcodeConfiguration" name="BarcodeConfigurationForm" type="us.mn.state.health.lims.barcode.action.BarcodeConfigurationAction">
+			<forward name="success" path="BarcodeConfigurationDefinition" />
+		</action>
+		
+		<action path="/BarcodeConfigurationSave" name="BarcodeConfigurationForm" type="us.mn.state.health.lims.barcode.action.BarcodeConfigurationSaveAction">
+			<forward name="success" path="/BarcodeConfiguration.do" />
+			<forward name="fail" path="/BarcodeConfiguration.do" />
+		</action>
 		
 	</action-mappings>
 </struts-config>

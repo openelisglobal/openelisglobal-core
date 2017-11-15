@@ -42,8 +42,12 @@
  	basePath = request.getScheme() + "://" + request.getServerName() + ":"	+ request.getServerPort() + path + "/";
  %>
 
+<script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" language="JavaScript1.2">
+var validator = new FieldValidator();
+validator.setRequiredFields( new Array("quantity") );
+
 
 var supportSTNumber = <%= supportSTNumber %>;
 var supportMothersName = <%= supportMothersName %>;
@@ -55,6 +59,33 @@ var patientInfoHash = [];
 var patientChangeListeners = [];
 var localDB = '<%=localDBOnly%>' == "true";
 var newSearchInfo = false;
+
+
+function checkFieldInt(field) {
+	if (isNaN(field.value) || field.value.indexOf(".") > -1) {
+		validator.setFieldValidity(false, field.id);
+		selectFieldErrorDisplay(false, field);
+		alert("Field must be a whole number");
+	}  else {
+		validator.setFieldValidity(true, field.id);
+		selectFieldErrorDisplay(true, field);
+	}
+	if (validator.isAllValid()) {
+		enablePrint();
+	} else {
+		disablePrint();
+	}
+}
+
+//hardcoded to enable the order print as it is only field
+function enablePrint() {
+	document.getElementById("orderPrintButton").disabled = false;
+}
+
+//hardcoded to disable the order print as it is only field
+function disablePrint() {
+	document.getElementById("orderPrintButton").disabled = true;
+}
 
 function searchPatients() {
     var criteria = $jq("#searchCriteria").val();
@@ -267,7 +298,7 @@ function handleSelectedPatient(){
 
     $("searchResultsDiv").style.display = "none";
     var form = document.forms[0];
-    form.action = '<%=formName%>'.sub('Form','') + ".do?accessionNumber=" + accessionNumber + "&patientID=" + patientSelectID;
+    form.action = '<%=formName%>'.sub('Form','') + ".do?accessionNumber=" + accessionNumber + "&patientId=" + patientSelectID;
     if( !(typeof requestType === 'undefined') ){
         form.action += "&type=" + requestType;
     }
@@ -311,23 +342,28 @@ function setCaretPosition(ctrl, pos){
 }
 
 function printBarcode(button) {
-	var labNo = document.getElementById('searchValue').value;
+	var labNo = document.getElementsByName('accessionNumber')[0].value;
+	var patientId = document.getElementsByName('patientId')[0].value;
 	var type = "";
 	var quantity = "";
-	if (button.id == "printBarcodeButton") {
-		if (confirm("<%= StringUtil.getMessageForKey("barcode.message.reprint.confirmation") %>")) {
-			var typeSelect = document.getElementById('labelType');
-			type = typeSelect.options[typeSelect.selectedIndex].value;
+	if (confirm("<%= StringUtil.getMessageForKey("barcode.message.reprint.confirmation") %>")) {
+		if (button.id == "defaultPrintButton") {
+			type = "default";	
+		} else if (button.id == "orderPrintButton") {
+			type = "order";
 			quantity = document.getElementById('quantity').value;
-		    $jq("#searchResultsDiv").hide();
-		    $jq("#searchLabNumber").val('');
+		} else if (button.id == "printBlankBarcodeButton") {
+			type="blank";
+		} else {
+			type = "specimen";
+			labNo = button.id;
+			quantity = 1;
 		}
-	} else if (button.id == "printBlankBarcodeButton") {
-		type="blank";
+	    $jq("#searchLabNumber").val('');
+		document.getElementById("ifbarcode").src = 'LabelMakerServlet?labNo=' + labNo + '&type=' + type + 
+			'&patientId=' +  patientId + '&quantity=' + quantity;
+		document.getElementById("barcodeArea").show();
 	}
-	document.getElementById("ifbarcode").src = 'LabelMakerServlet?labNo=' + labNo + '&type=' + type + 
-		'&patientId=' +  patientSelectID + '&quantity=' + quantity;
-	document.getElementById("barcodeArea").show();
 }
 
 function checkPrint() {
@@ -340,16 +376,16 @@ function checkPrint() {
 	document.getElementById('printBarcodeButton').disabled = disableButton;
 }
 
-function makeFieldNumber(field) {
-	if (isNaN(field.value)) {
-		field.value = field.value.replace(/\D/g,'');
-	}
+function finish() {
+	window.location = "Dashboard.do";
 }
 </script>
 
 <input type="hidden" id="searchLabNumber">
+<html:hidden name="<%=formName%>" property="accessionNumber"/>
+<html:hidden name="<%=formName%>" property="patientId"/>
 
-<div id="PatientPage" class="colorFill patientSearch" style="display:inline;" >
+<div id="PatientPage" class=" patientSearch" style="display:inline;" >
 
 	<h2><bean:message key="sample.entry.search"/></h2>
     <logic:present property="warning" name="<%=formName%>" >
@@ -360,8 +396,8 @@ function makeFieldNumber(field) {
     		class="patientSearch" 
     		value="5" /> 
     		
-   	<bean:message key="barcode.search.accessionnumber"/>
-	
+   	<bean:message key="barcode.print.search.accessionnumber"/>:
+	<bean:message key="sample.search.scanner.instructions"/>
     <input size="35"
            maxlength="120"
            id="searchValue"
@@ -381,14 +417,14 @@ function makeFieldNumber(field) {
            onclick="searchPatients()"
            disabled="disabled" >
 
-	<div id="noPatientFound" align="center" style="display: none" >
+	<div id="noPatientFound" align="center" style="display:none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>
-		<input type="button"
-        	value="<%= StringUtil.getMessageForKey("barcode.button.printblank") %>"
-        	id="printBlankBarcodeButton"
-        	onclick="printBarcode(this);">
 	</div>
-	<div id="searchResultsDiv" class="colorFill" style="display: none;" >
+	
+
+
+	
+	<div id="searchResultsDiv" style="display:none;">
 		<% if( localDBOnly.equals("false")){ %>
 		<table id="searchResultTable" style="width:90%">
 			<tr>
@@ -434,50 +470,113 @@ function makeFieldNumber(field) {
                 <% } %>
 			</tr>
 		</table>
+		</div>
 		<br/>
-        <% if( patientSearch.getSelectedPatientActionButtonText() != null){ %>
-            <input type="button"
-                   value="<%= patientSearch.getSelectedPatientActionButtonText()%>"
-                   id="selectPatientButtonID"
-                   onclick="handleSelectedPatient()">
-        <% }%>
-        <table>
+		<logic:notEqual name="<%=formName%>" property="accessionNumber" value="">
+		<table  id="patientInfo" width="50%">
+			<tr>
+				<th>
+					<bean:message key="sample.entry.patient"/>
+				</th>
+				<th>
+					<bean:message key="patient.birthDate"/>
+				</th>
+				<th>
+					<bean:message key="patient.gender"/>
+				</th>
+				<th>
+					<bean:message key="patient.NationalID"/>
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<bean:write name="<%=formName%>" property="patientName"/>&nbsp;
+				</td>
+				<td>
+					<bean:write name="<%=formName%>" property="dob"/>&nbsp;
+				</td>
+				<td>
+					<bean:write name="<%=formName%>" property="gender"/>&nbsp;
+				</td>
+				<td>
+					<bean:write name="<%=formName%>" property="nationalId"/>
+				</td>
+			</tr>
+		</table>
+		<h2><bean:message key="barcode.print.section.set"/></h2>
+        <bean:message key="barcode.print.set.instruction"/>
+        
+        <input type="button" 
+        	id="defaultPrintButton"
+        	value="<bean:message key='barcode.print.set.button'/>"
+        	onclick="printBarcode(this);"/>
+        <h2><bean:message key="barcode.print.section.individual"/></h2>
+        <table width="50%">
         	<tr>
+        		<th>
+        			<bean:message key="barcode.print.individual.type"/>
+        		</th>
+        		<th>
+        			<bean:message key="barcode.print.individual.labnumber"/>
+        		</th>
+        		<th>
+        			<bean:message key="barcode.print.individual.info"/>
+        		</th>
+        		<th>
+        			<bean:message key="barcode.print.individual.number"/>
+        		</th>
+        	<tr>
+	        	<td>
+	        		<bean:message key="barcode.label.type.order"/>
+	        	</td>
         		<td>
-        			<%= StringUtil.getMessageForKey("barcode.label.print.type") %>
+        			<bean:write name="<%=formName%>" property="accessionNumber" />
         		</td>
         		<td>
-        			<select name="labelType" 
-        				id="labelType"
-        				onchange="checkPrint()" >
-			        	<option value=""></option>
-			        	<option value="order"><%=StringUtil.getContextualMessageForKey("barcode.label.order") %> - Max <%=ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_ORDER_PRINTED) %></option>
-			        	<option value="specimen"><%=StringUtil.getContextualMessageForKey("barcode.label.specimen") %> - Max <%=ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_SPECIMEN_PRINTED) %></option>
-			        	<option value="aliquot"><%=StringUtil.getContextualMessageForKey("barcode.label.aliquot") %> - Max 1</option>
-			        </select>
-        		</td>
-        	</tr>
-        	<tr>
-        		<td>
-        			<%= StringUtil.getMessageForKey("barcode.label.print.number") %>
         		</td>
         		<td>
         			<input type="text"
         				id="quantity"
-        				onkeyup="makeFieldNumber(this);checkPrint()" > 
+        				value="1"
+        				onchange="checkFieldInt(this)" >
         		</td>
         		<td>
-	        		<input type="button"
-	        			disabled="true"
-			        	value="<%= StringUtil.getMessageForKey("barcode.button.printmore") %>"
-			        	id="printBarcodeButton"
+        			<input type="button" 
+			        	id="orderPrintButton"
+			        	value="<bean:message key='barcode.print.individual.button'/>"
 			        	onclick="printBarcode(this);">
-				</td>
+        		</td>
         	</tr>
+        	<logic:present name="<%=formName%>"  property="existingTests">
+        	<logic:iterate id="existingTests" name="<%=formName%>"  property="existingTests" indexId="index" type="us.mn.state.health.lims.sample.bean.SampleEditItem">
+        		<tr>
+        			<td>
+        				<bean:message key="barcode.label.type.specimen"/>
+        			</td>
+        			<td>
+        				<bean:write name="existingTests" property="accessionNumber"/>
+        			</td>
+        			<td>
+        				<bean:write name="existingTests" property="sampleType"/>
+        			</td>
+        			<td>
+        				1
+        			</td>
+        			<td>
+        				<input type="button"
+        					id='<bean:write name="existingTests" property="accessionNumber"/>'
+        					value="<bean:message key='barcode.print.individual.button'/>"
+        					onclick="printBarcode(this);">
+        			</td>
+        		</tr>
+        	</logic:iterate>
+        	</logic:present>
         </table>
 		</div>
-	</div>
+	
+	</logic:notEqual>
+        
 	<div style="display:none;" id="barcodeArea">
-		<h2>Barcode(s)</h2>
-		<iframe  src="about:blank" id="ifbarcode" width="50%" height="300px"></iframe>
+		<h2><bean:message key="barcode.common.section.barcode.header"/></h2>
+		<iframe  src="about:blank" id="ifbarcode" width="75%" height="300px"></iframe>
 	</div>

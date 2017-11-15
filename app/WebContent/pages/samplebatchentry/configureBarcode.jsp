@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
-<%@ page import="us.mn.state.health.lims.common.action.IActionConstants" %>
+<%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
+                 us.mn.state.health.lims.common.formfields.FormFields,
+                 us.mn.state.health.lims.common.formfields.FormFields.Field" %>
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"      prefix="html" %>
 
@@ -8,42 +10,34 @@
 
 <script type="text/javascript" >
 
-function setBarcodeMethod(method) {
-	if (method === "On Demand")	{
-		$("onDemand").show();
-		$("prePrinted").hide();
-	} else if (method === "Pre-Printed") {
-		$("prePrinted").show();
-		$("onDemand").hide();
-	}
-	checkValidSubPages();
-}
-
-//must use last name if first name is checked
-function toggleNameLock(firstName) {
-	if (firstName.checked == true) {
-		document.getElementById('psuedoLastName').disabled = true;
-		document.getElementById('psuedoLastName').checked = true;
-		checkLastName();
+function togglePatientInfo() {
+	if (document.getElementsByName('patientInfoCheck')[0].disabled == false) {
+		document.getElementsByName('patientInfoCheck')[0].disabled = true;
 	} else {
-		document.getElementById('psuedoLastName').disabled = false;
+		document.getElementsByName('patientInfoCheck')[0].disabled = false;
 	}
 }
 
-//functions for using hidden lastName field
-function checkLastName() {
-	document.getElementsByName('lastNameCheck')[0].disabled = false;
+function checkFacilityID() {
+	document.getElementsByName('facilityIDCheck')[0].disabled = false;
 }
-
-function uncheckLastName() {
-	document.getElementsByName('lastNameCheck')[0].disabled = true;
+function uncheckFacilityID() {
+	document.getElementsByName('facilityIDCheck')[0].disabled = true;
 }
-
-function toggleLastName() {
-	if (document.getElementsByName('lastNameCheck')[0].disabled == false) {
-		uncheckLastName();
+function toggleFacilityID() {
+	if (document.getElementsByName('facilityIDCheck')[0].disabled == false) {
+		uncheckFacilityID();
 	} else {
-		checkLastName();
+		checkFacilityID();
+	}
+}
+function processFacilityIDChange() {
+	if (document.getElementsByName('facilityID')[0].value != '') {
+		checkFacilityID();
+		document.getElementById('psuedoFacilityID').checked = true;
+		document.getElementById('psuedoFacilityID').disabled = true;
+	} else {
+		document.getElementById('psuedoFacilityID').disabled = false;
 	}
 }
 
@@ -62,101 +56,53 @@ function configBarcodeValid() {
 
 Barcode Method : 
 <html:select name="<%=formName%>"
-		property="method"
- 		onchange="setBarcodeMethod(this.value)" >
+		property="method">
 	<option value="On Demand"><bean:message key="sample.batchentry.barcode.ondemand"/></option>
 	<option value="Pre-Printed"><bean:message key="sample.batchentry.barcode.preprinted"/></option>
 </html:select>
 
-<div id=onDemand>
 <table style="width:100%">
 <tr>
 <td>
 <table>
 	<tr>
-		<td style="width:35%;">
-			<bean:message key="sample.batchentry.barcode.label.number"/> :
-		</td>
-		<td>
-			<html:text name="<%=formName %>"
-				property="numberLabels"/>
-		</td>
-	</tr>
-	<tr>
-		<td>
+ 		<td>
 			<bean:message key="sample.batchentry.barcode.label.options"/>
 		</td>
 		<td>
-			<html:checkbox name="<%=formName %>"
+			<input type="checkbox"
+			id="psuedoFacilityID"
+			onchange="toggleFacilityID();">
+			<html:hidden name="<%=formName %>"
 				property="facilityIDCheck"
+				disabled="true"
 				value="true" />
 			<bean:message key="sample.batchentry.barcode.label.facilityid"/>
 		</td>
 		<td>
-						<bean:message key="sample.batchentry.barcode.label.facilityid"/>:
+			<bean:message key="sample.batchentry.barcode.label.facilityid"/>:
 		</td>
 		<td>
 			<html:text name="<%=formName %>"
-				property="facilityID" />
+				property="facilityID"
+				onkeyup="processFacilityIDChange();" />
 		</td>
 	</tr>
 	<tr>
 		<td></td>
 		<td>
-			<input type="checkbox" 
-			id="psuedoLastName"
-				onclick="toggleLastName();"> 
-			
+			<input type="checkbox"
+			id="psuedoPatientInfo"
+			onchange="togglePatientInfo()"
+			/>
 			<html:hidden name="<%=formName %>"
-				property="lastNameCheck"
-				disabled="true" 
-				value="true"/>
-				<bean:message key="sample.batchentry.barcode.label.lastname"/>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td>
-			<html:checkbox name="<%=formName %>"
-				property="firstNameCheck"
-				onchange="toggleNameLock(this);"
+				property="patientInfoCheck"
+				disabled="true"
 				value="true" />
-			<bean:message key="sample.batchentry.barcode.label.firstname"/>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td>
-			<html:checkbox name="<%=formName %>"
-				property="patientNumberCheck"
-				value="true" />
-			<bean:message key="sample.batchentry.barcode.label.patientno"/>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td>
-			<html:checkbox name="<%=formName %>"
-				property="nationalIDCheck"
-				value="true" />
-			<bean:message key="sample.batchentry.barcode.label.nationalid"/>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td>
-			<html:checkbox name="<%=formName %>"
-				property="subjectNoCheck"
-				value="true" />
-			<bean:message key="sample.batchentry.barcode.label.subjectno"/>
+			<bean:message key="sample.batchentry.barcode.label.patientinfo"/>
 		</td>
 	</tr>
 </table>
 </td>
 </tr>
 </table>
-</div>
-
-<div id=prePrinted style="display: none; ">
-			
-</div>

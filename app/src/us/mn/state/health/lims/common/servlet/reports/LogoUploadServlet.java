@@ -25,6 +25,7 @@ import org.hibernate.Transaction;
 import org.hibernate.lob.BlobImpl;
 
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.image.dao.ImageDAO;
 import us.mn.state.health.lims.image.daoimpl.ImageDAOImpl;
@@ -61,7 +62,8 @@ public class LogoUploadServlet extends HttpServlet {
 		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
 		if (userModuleDAO.isSessionExpired(request)) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			System.out.println("Invalid request - no active session found");
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
 			return;
 		}
 

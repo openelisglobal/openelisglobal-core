@@ -379,6 +379,8 @@ function setCaretPosition(ctrl, pos){
            id="searchButton"
            onclick="searchPatients()"
            disabled="disabled" >
+           
+  	<bean:message key="sample.search.scanner.instructions"/>
 
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>

@@ -56,7 +56,8 @@ public class AjaxTextServlet extends AjaxServlet {
 		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
 		if (userModuleDAO.isSessionExpired(request)) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			System.out.println("Invalid request - no active session found");
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
 			return;
 		}
 

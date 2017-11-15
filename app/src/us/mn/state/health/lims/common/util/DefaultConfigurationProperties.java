@@ -113,12 +113,16 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault( Property.PATIENT_ID_REQUIRED, "Patient ID required", "true");
 		setDBPropertyMappingAndDefault( Property.PATIENT_SUBJECT_NUMBER_REQUIRED, "Subject number required", "true");
 		setDBPropertyMappingAndDefault( Property.QA_SAMPLE_ID_REQUIRED, "sample id required", "false");
-		setDBPropertyMappingAndDefault( Property.MAX_ORDER_PRINTED, "maxOrderNumbers", "10");
-		setDBPropertyMappingAndDefault( Property.MAX_SPECIMEN_PRINTED, "maxSpecimenNumbers", "1");
-		setDBPropertyMappingAndDefault( Property.ORDER_BARCODE_HEIGHT, "orderBarcodeHeight", "1");
-		setDBPropertyMappingAndDefault( Property.ORDER_BARCODE_WIDTH, "orderBarcodeWidth", "3");
-		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_HEIGHT, "specimenBarcodeHeight", "1");
-		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_WIDTH, "specimenBarcodeWidth", "3");
+		setDBPropertyMappingAndDefault( Property.MAX_ORDER_PRINTED, "numOrderLabels", "10");
+		setDBPropertyMappingAndDefault( Property.MAX_SPECIMEN_PRINTED, "numSpecimenLabels", "1");
+		setDBPropertyMappingAndDefault( Property.MAX_ALIQUOT_PRINTED, "numAliquotLabels", "1");
+		setDBPropertyMappingAndDefault( Property.ORDER_BARCODE_HEIGHT, "heightOrderLabels", "1");
+		setDBPropertyMappingAndDefault( Property.ORDER_BARCODE_WIDTH, "widthOrderLabels", "3");
+		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_HEIGHT, "heightSpecimenLabels", "1");
+		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_WIDTH, "widthSpecimenLabels", "3");
+		setDBPropertyMappingAndDefault( Property.SPECIMEN_FIELD_DATE, "collectionDateCheck", "true");
+		setDBPropertyMappingAndDefault( Property.SPECIMEN_FIELD_SEX, "patientSexCheck", "true");
+		setDBPropertyMappingAndDefault( Property.SPECIMEN_FIELD_TESTS, "testsCheck", "true");
 	}
 
 	private void setDBPropertyMappingAndDefault(Property property, String dbName, String defaultValue) {

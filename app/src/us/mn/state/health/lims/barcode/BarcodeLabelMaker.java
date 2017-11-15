@@ -72,8 +72,11 @@ public class BarcodeLabelMaker {
 	        	for (int i = 0; i < label.getNumLabels(); ++i) {
 	        		if (label.checkIfPrintable()) {
 	        			curLabel = label;
-	        			labelWidth = curLabel.getWidth() * SCALE;
-	        			labelHeight = curLabel.getHeight() * SCALE;
+	        			//ratio used to prevent width from becoming too narrow 
+	        			//and making single-line fields multilined
+	        			float ratio = curLabel.getWidth() / curLabel.getHeight();
+	        			labelWidth = 350;
+	        			labelHeight = labelWidth / ratio;
 	        			drawLabel(writer, document);
 	        			curLabel.incrementNumPrinted();
 	        		}	        		
@@ -103,7 +106,7 @@ public class BarcodeLabelMaker {
 		for (BarcodeLabelField field : fields) {
 			if (field.isStartNewline()) 
 				table.completeRow();
-            table.addCell(createField(field.getName(), field.getValue(), field.getColspan()));
+			table.addCell(createFieldAsPDFField(field));
         } 
 	    table.completeRow();
 	    //add barcode
@@ -120,7 +123,7 @@ public class BarcodeLabelMaker {
 	    	for (BarcodeLabelField field : belowFields) {
 				if (field.isStartNewline()) 
 					table.completeRow();
-	            table.addCell(createField(field.getName(), field.getValue(), field.getColspan()));
+				table.addCell(createFieldAsPDFField(field));
 	        } 
 		    table.completeRow();   	
 	    }
@@ -172,20 +175,28 @@ public class BarcodeLabelMaker {
     }
 	
 	//create name value field pair
-	private PdfPCell createField(String fieldName, String fieldValue, int colspan) {
-		Chunk name = new Chunk(fieldName + ": ");
-		Chunk value = new Chunk(fieldValue);
-		Chunk underline = new Chunk(new LineSeparator(0.5f, 100, null, 0, -1));
-		name.setFont(curLabel.getValueFont());
+	private PdfPCell createFieldAsPDFField(BarcodeLabelField field) {
+		Paragraph fieldPDF = new Paragraph();
+		//add field name if applicable
+		if (field.isDisplayFieldName()) {
+			Chunk name = new Chunk(field.getName() + ": ");
+			name.setFont(curLabel.getValueFont());
+			fieldPDF.add(name);
+		}
+		Chunk value = new Chunk(field.getValue());
 		value.setFont(curLabel.getValueFont());
-		value.setUnderline(0.5f, -1);
-		Paragraph field = new Paragraph();
-		field.add(name);
-		field.add(value);
-		field.add(underline);
-		PdfPCell cell = new PdfPCell(field);
+		//add underline to value if applicable
+		if (field.isUnderline()) {
+			Chunk underline = new Chunk(new LineSeparator(0.5f, 100, null, 0, -1));
+			value.setUnderline(0.5f, -1);
+			fieldPDF.add(value);
+			fieldPDF.add(underline);
+		} else {
+			fieldPDF.add(value);
+		}
+		PdfPCell cell = new PdfPCell(fieldPDF);
 		cell.setBorder(Rectangle.NO_BORDER);
-		cell.setColspan(colspan);
+		cell.setColspan(field.getColspan());
         cell.setPadding(1);
 		return cell;
 	}

@@ -21,8 +21,13 @@ public class BarcodeLabelInfoDAOImpl extends BaseDAOImpl implements BarcodeLabel
 		try {
 			String id = (String)HibernateUtil.getSession().save(barcodeLabelInfo);
 			barcodeLabelInfo.setId(id);
+
+			// add to audit trail
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
-			//auditDAO.saveNewHistory(barcodeLabelInfo, barcodeLabelInfo.getSysUserId(), "BARCODE_LABEL_INFO");
+			String sysUserId = barcodeLabelInfo.getSysUserId();
+			String tableName = "BARCODE_LABEL_INFO";
+			auditDAO.saveNewHistory(barcodeLabelInfo, sysUserId, tableName);
+			
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
@@ -34,13 +39,21 @@ public class BarcodeLabelInfoDAOImpl extends BaseDAOImpl implements BarcodeLabel
 	
 	public void updateData(BarcodeLabelInfo barcodeLabelInfo) throws LIMSRuntimeException {
 		BarcodeLabelInfo oldData = readBarcodeLabelInfo(barcodeLabelInfo.getId());
+		BarcodeLabelInfo newData = barcodeLabelInfo;
+		
+		// add to audit trail
 		try {
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
-		//	auditDAO.saveHistory(barcodeLabelInfo,oldData, barcodeLabelInfo.getSysUserId(), IActionConstants.AUDIT_TRAIL_UPDATE, "BARCODE_LABEL_INFO");
-		}  catch (Exception e) {
-			LogEvent.logError("BarcodeLabelInfoDAOImpl","AuditTrail updateData()",e.toString());
-			throw new LIMSRuntimeException("Error in BarcodeLabelInfo AuditTrail updateData()", e);
-		}  				
+			String sysUserId = barcodeLabelInfo.getSysUserId();
+			String event = IActionConstants.AUDIT_TRAIL_UPDATE;
+			String tableName = "BARCODE_LABEL_INFO";
+			auditDAO.saveHistory(newData, oldData, sysUserId, event, tableName);
+		} catch (Exception e) {
+			// bugzilla 2154
+			LogEvent.logError("BarcodeLabelInfoDAOImpl", "AuditTrail updateData()", e.toString());
+			throw new LIMSRuntimeException("Error in Login AuditTrail updateData()", e);
+		}
+				
 		try {
 			HibernateUtil.getSession().merge(barcodeLabelInfo);
 			HibernateUtil.getSession().flush();
@@ -65,8 +78,8 @@ public class BarcodeLabelInfoDAOImpl extends BaseDAOImpl implements BarcodeLabel
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
-			LogEvent.logError("BarcodeLabelInfoDAOImpl","getBarcodeLabelInfoByCode()",e.toString());
-			throw new LIMSRuntimeException("Error in getBarcodeLabelInfoByCode()", e);
+			LogEvent.logError("BarcodeLabelInfoDAOImpl","getDataByCode()",e.toString());
+			throw new LIMSRuntimeException("Error in getDataByCode()", e);
 		}
 		return bli;
 	}

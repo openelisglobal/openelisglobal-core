@@ -118,10 +118,14 @@ public abstract class ConfigurationProperties {
         QA_SAMPLE_ID_REQUIRED,  //True if sample id required from referring lab
         MAX_ORDER_PRINTED,	//Max number of order labels that can be printed
         MAX_SPECIMEN_PRINTED,	//Max number of specimen labels that can be printed
+        MAX_ALIQUOT_PRINTED,	//Max number of aliquots that can be printed
         ORDER_BARCODE_HEIGHT,	//Height of the order barcode
         ORDER_BARCODE_WIDTH,	//Width of the order barcode
         SPECIMEN_BARCODE_HEIGHT,	//Height of the specimen barcode
-        SPECIMEN_BARCODE_WIDTH	//Width of the specimen barcode
+        SPECIMEN_BARCODE_WIDTH,	//Width of the specimen barcode
+        SPECIMEN_FIELD_DATE,
+        SPECIMEN_FIELD_SEX,
+        SPECIMEN_FIELD_TESTS
     }
 
 	

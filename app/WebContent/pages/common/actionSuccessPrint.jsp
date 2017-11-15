@@ -29,7 +29,7 @@ function printBarcode(success, failure) {
 	<bean:message key="save.success"/>
 	<div>
 		<input type="button"
-        	value="<%= StringUtil.getMessageForKey("barcode.button.print")%>"
+        	value="<%= StringUtil.getMessageForKey("barcode.common.button.print")%>"
         	id="printBarcodeButton"
         	onclick="printBarcode();">
         <a href="" id="getBarcodePDF" target="_blank"></a>

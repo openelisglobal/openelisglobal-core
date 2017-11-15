@@ -6,6 +6,8 @@ public class BarcodeLabelField {
 	private String value;
 	private int colspan = 5;
 	private boolean startNewline = false;
+	private boolean displayFieldName = false;
+	private boolean underline = false;
 
 	public BarcodeLabelField(String name, String value) {
 		this.name = name;
@@ -15,6 +17,10 @@ public class BarcodeLabelField {
 	public BarcodeLabelField(String name, String value, int colspan) {
 		this.name = name;
 		this.value = value;
+		this.colspan = colspan;
+	}
+	
+	public BarcodeLabelField(int colspan) {
 		this.colspan = colspan;
 	}
 
@@ -48,6 +54,22 @@ public class BarcodeLabelField {
 
 	public void setColspan(int colspan) {
 		this.colspan = colspan;
+	}
+
+	public boolean isDisplayFieldName() {
+		return displayFieldName;
+	}
+
+	public void setDisplayFieldName(boolean displayFieldName) {
+		this.displayFieldName = displayFieldName;
+	}
+
+	public boolean isUnderline() {
+		return underline;
+	}
+
+	public void setUnderline(boolean underline) {
+		this.underline = underline;
 	}
 
 }

@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import us.mn.state.health.lims.barcode.BarcodeLabelField;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -20,32 +21,39 @@ public class OrderLabel extends Label {
 		//set dimensions
 		String strWidth = ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_WIDTH);
 		String strHeight = ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_HEIGHT);
-		width = Float.parseFloat(strWidth);
-		height = Float.parseFloat(strHeight);
+		try {
+			width = Float.parseFloat(strWidth);
+			height = Float.parseFloat(strHeight);
+		} catch (Exception e) {
+			LogEvent.logError("OrderLabel","OrderLabel OrderLabel()",e.toString());
+		}
 		
 		//get information for above barcode
 		Person person = patient.getPerson();
-		BarcodeLabelField patientIdField = getAvailableId(patient);
-		String referringFacility = StringUtil.replaceNullWithEmptyString(sample.getReferringId()); 
-		String patientName = StringUtil.replaceNullWithEmptyString(person.getFirstName()) + " " 
-				+ StringUtil.replaceNullWithEmptyString(person.getMiddleName()) + " " 
-				+ StringUtil.replaceNullWithEmptyString(person.getLastName());
+		String referringFacility = ConfigurationProperties.getInstance().getPropertyValue(Property.SiteCode); 
+		String patientName = StringUtil.replaceNullWithEmptyString(person.getLastName()) + ", " 
+				+ StringUtil.replaceNullWithEmptyString(person.getFirstName());
+		if (patientName.trim().equals(",")) {
+			patientName = " ";
+		}
 		patientName = patientName.replaceAll("( )+", " ");
 		String dob = StringUtil.replaceNullWithEmptyString(patient.getBirthDateForDisplay());
+		BarcodeLabelField field;
 		
 		//adding fields above barcode
 		aboveFields = new ArrayList<BarcodeLabelField>();
-		aboveFields.add(patientIdField);
-		aboveFields.add(new BarcodeLabelField(StringUtil.getMessageForKey("barcode.label.info.site"), StringUtils.substring(referringFacility, 0, 20), 4));
-		aboveFields.add(new BarcodeLabelField(StringUtil.getMessageForKey("barcode.label.info.patientname"), StringUtils.substring(patientName, 0, 30), 7));
-		aboveFields.add(new BarcodeLabelField(StringUtil.getMessageForKey("barcode.label.info.patientdob"), dob, 3));
-		
+		aboveFields.add(new BarcodeLabelField(StringUtil.getMessageForKey("barcode.label.info.patientname"), StringUtils.substring(patientName, 0, 30), 6));
+		aboveFields.add(new BarcodeLabelField(StringUtil.getMessageForKey("barcode.label.info.patientdob"), dob, 4));
+		aboveFields.add(getAvailableIdField(patient));
+		field = new BarcodeLabelField(StringUtil.getMessageForKey("barcode.label.info.site"), StringUtils.substring(referringFacility, 0, 20), 4);
+		field.setDisplayFieldName(true);
+		aboveFields.add(field);
 		//adding code
 		setCode(labNo);
 	}
 	
 	//get first available id for patient
-	private BarcodeLabelField getAvailableId(Patient patient) {
+	private BarcodeLabelField getAvailableIdField(Patient patient) {
 		PatientService service = new PatientService(patient);
 		String patientId = service.getSTNumber();
 		if (!StringUtil.isNullorNill(patientId))
@@ -95,8 +103,14 @@ public class OrderLabel extends Label {
 
 	@Override
 	public int getMaxNumLabels() {
-		String max = ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_ORDER_PRINTED);
-		return Integer.parseInt(max);
+		String strMax = ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_ORDER_PRINTED);
+		int max = 0;
+		try {
+			max = Integer.parseInt(strMax);
+		} catch (Exception e) {
+			LogEvent.logError("OrderLabel","OrderLabel getMaxNumLabels()",e.toString());
+		}
+		return max;
 	}
 
 }
