@@ -42,7 +42,7 @@
  %>
 
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
-<script type="text/javascript" language="JavaScript1.2">
+<script type="text/javascript">
 
 var supportSTNumber = <%= supportSTNumber %>;
 var supportMothersName = <%= supportMothersName %>;
@@ -55,8 +55,7 @@ var patientChangeListeners = [];
 var localDB = '<%=localDBOnly%>' == "true";
 var newSearchInfo = false;
 
-function searchPatients()
-{
+function searchPatients() {
     var criteria = $jq("#searchCriteria").val();
     var value = $jq("#searchValue").val();
     var splitName;
@@ -67,34 +66,31 @@ function searchPatients()
     var nationalID = "";
     var labNumber = "";
 
-
 	newSearchInfo = false;
     $jq("#resultsDiv").hide();
     $jq("#searchLabNumber").val('');
-    if( criteria == 1){
+    if (criteria == 1) {
         firstName =  value.trim();
-    }else if(criteria == 2){
+    } else if (criteria == 2) {
         lastName = value.trim();
-    }else if(criteria == 3){
+    } else if (criteria == 3) {
         splitName = value.split(",");
         lastName = splitName[0].trim();
         firstName = splitName.size() == 2 ? splitName[1].trim() : "";
-    }else if(criteria == 4){
+    } else if (criteria == 4) {
         STNumber = value.trim();
         subjectNumber = value.trim();
         nationalID = value.trim();
-    }else if(criteria == 5){
+    } else if (criteria == 5) {
         labNumber = value;
         $jq("#searchLabNumber").val(value);
     }
 
 	patientSearch(lastName, firstName, STNumber, subjectNumber, nationalID, labNumber, "", false, processSearchSuccess);
-
 }
 
-function processSearchSuccess(xhr)
-{
-	//alert( xhr.responseText );
+function processSearchSuccess(xhr) {
+	//alert(xhr.responseText);
 	var formField = xhr.responseXML.getElementsByTagName("formfield").item(0);
 	var message = xhr.responseXML.getElementsByTagName("message").item(0);
 	var table = $("searchResultTable");
@@ -102,91 +98,79 @@ function processSearchSuccess(xhr)
 	clearTable(table);
 	clearPatientInfoCache();
 
-	if( message.firstChild.nodeValue == "valid" )
-	{
+	if (message.firstChild.nodeValue == "valid") {
 		$("noPatientFound").hide();
 		$("searchResultsDiv").show();
-
 		var resultNodes = formField.getElementsByTagName("result");
-
-		for( var i = 0; i < resultNodes.length; i++ )
-		{
-			addPatientToSearch( table, resultNodes.item(i) );
+		for(var i = 0; i < resultNodes.length; i++) {
+			addPatientToSearch(table, resultNodes.item(i));
 		}
 		
-		if( resultNodes.length == 1 && <%= String.valueOf(patientSearch.isLoadFromServerWithPatient()) %>  ){
+		if (resultNodes.length == 1 && <%= String.valueOf(patientSearch.isLoadFromServerWithPatient()) %>) {
 			handleSelectedPatient();
 		}
-	}else
-	{
+	} else {
 		$("searchResultsDiv").hide();
 		$("noPatientFound").show();
-		selectPatient( null );
+		selectPatient(null);
 	}
 }
 
 function clearSearchResultTable() {
 	var table = $("searchResultTable");
 	clearTable(table);
-	clearPatientInfoCache();
-	
+	clearPatientInfoCache(); 
 }
 
-function clearTable(table){
+function clearTable(table) {
 	var rows = table.rows.length - 1;
-	while( rows > 0 ){
-		table.deleteRow( rows-- );
+	while (rows > 0) {
+		table.deleteRow(rows--);
 	}
 }
 
-function clearPatientInfoCache(){
+function clearPatientInfoCache() {
 	patientInfoHash = [];
 }
 
-function addPatientToSearch(table, result ){
+function addPatientToSearch(table, result) {
 	var patient = result.getElementsByTagName("patient")[0];
 
-	var firstName = getValueFromXmlElement( patient, "first");
-	var lastName = getValueFromXmlElement( patient, "last");
-	var gender = getValueFromXmlElement( patient, "gender");
-	var DOB = getValueFromXmlElement( patient, "dob");
-	var stNumber = getValueFromXmlElement( patient, "ST");
-	var subjectNumber = getValueFromXmlElement( patient, "subjectNumber");
-	var nationalID = getValueFromXmlElement( patient, "nationalID");
-	var mother = getValueFromXmlElement( patient, "mother");
-	var pk = getValueFromXmlElement( result, "id");
-	var dataSourceName = getValueFromXmlElement( result, "dataSourceName");
+	var firstName = getValueFromXmlElement(patient, "first");
+	var lastName = getValueFromXmlElement(patient, "last");
+	var gender = getValueFromXmlElement(patient, "gender");
+	var DOB = getValueFromXmlElement(patient, "dob");
+	var stNumber = getValueFromXmlElement(patient, "ST");
+	var subjectNumber = getValueFromXmlElement(patient, "subjectNumber");
+	var nationalID = getValueFromXmlElement(patient, "nationalID");
+	var mother = getValueFromXmlElement(patient, "mother");
+	var pk = getValueFromXmlElement(result, "id");
+	var dataSourceName = getValueFromXmlElement(result, "dataSourceName");
 
-	var row = createRow( table, firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk, dataSourceName );
-	addToPatientInfo( firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk );
+	var row = createRow(table, firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk, dataSourceName);
+	addToPatientInfo(firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk);
 
-	if( row == 1 ){
+	if (row == 1) {
 		patientSelectID = pk;
 		$("sel_1").checked = "true";
-		selectPatient( pk );
+		selectPatient(pk);
 	}
 }
 
-function getValueFromXmlElement( parent, tag ){
-	var element = parent.getElementsByTagName( tag ).item(0);
-
+function getValueFromXmlElement(parent, tag) {
+	var element = parent.getElementsByTagName(tag).item(0);
 	return element ? element.firstChild.nodeValue : "";
 }
 
-function createRow(table, firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk,  dataSourceName){
-
+function createRow(table, firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk,  dataSourceName) {
 		var row = table.rows.length;
-
 		var newRow = table.insertRow(row);
-
 		newRow.id = "_" + row;
-
 		var cellCounter = -1;
-
 		var selectionCell = newRow.insertCell(++cellCounter);
-		if( !localDB){
+		if (!localDB) {
 			var dataSourceCell = newRow.insertCell(++cellCounter);
-			dataSourceCell.innerHTML = nonNullString( dataSourceName );
+			dataSourceCell.innerHTML = nonNullString(dataSourceName);
 		}
 		var lastNameCell = newRow.insertCell(++cellCounter);
 		var firstNameCell = newRow.insertCell(++cellCounter);
@@ -196,81 +180,80 @@ function createRow(table, firstName, lastName, gender, DOB, stNumber, subjectNum
 		var stCell = supportSTNumber ? newRow.insertCell(++cellCounter) : null;
 		var subjectNumberCell = supportSubjectNumber ? newRow.insertCell(++cellCounter) : null;
 		var nationalCell = supportNationalID ? newRow.insertCell(++cellCounter) : null;
-		selectionCell.innerHTML = getSelectionHtml( row, pk );
-		lastNameCell.innerHTML = nonNullString( lastName );
-		firstNameCell.innerHTML = nonNullString( firstName );
-		genderCell.innerHTML = nonNullString( gender );
-		if( supportSTNumber){stCell.innerHTML = nonNullString( stNumber );}
-		if( supportSubjectNumber){subjectNumberCell.innerHTML = nonNullString( subjectNumber );}
-		if( supportNationalID){nationalCell.innerHTML = nonNullString( nationalID );}
+		selectionCell.innerHTML = getSelectionHtml(row, pk);
+		lastNameCell.innerHTML = nonNullString(lastName);
+		firstNameCell.innerHTML = nonNullString(firstName);
+		genderCell.innerHTML = nonNullString(gender);
+		if (supportSTNumber) {stCell.innerHTML = nonNullString(stNumber);}
+		if (supportSubjectNumber) {subjectNumberCell.innerHTML = nonNullString(subjectNumber);}
+		if (supportNationalID) {nationalCell.innerHTML = nonNullString(nationalID);}
 
-		dobCell.innerHTML = nonNullString( DOB );
-		if(supportMothersName){motherCell.innerHTML = nonNullString( mother );}
+		dobCell.innerHTML = nonNullString(DOB);
+		if (supportMothersName) {motherCell.innerHTML = nonNullString(mother);}
 
 		return row;
 }
 
-function getSelectionHtml( row, key){
+function getSelectionHtml(row, key) {
 	return "<input name='selPatient' id='sel_" + row + "' value='" + key + "' onclick='selectPatient(this.value)' type='radio'>";
 }
 
-function /*String*/ nonNullString( target ){
+function /*String*/ nonNullString(target) {
 	return target == "null" ? "" : target;
 }
 
-function addToPatientInfo( firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk ){
+function addToPatientInfo(firstName, lastName, gender, DOB, stNumber, subjectNumber, nationalID, mother, pk) {
 	var info = [];
-	info["first"] = nonNullString( firstName );
-	info["last"] = nonNullString( lastName );
-	info["gender"] = nonNullString( gender );
-	info["DOB"] = nonNullString( DOB );
-	info["ST"] = nonNullString( stNumber );
-	info["subjectNumber"] = nonNullString( subjectNumber );
-	info["national"] = nonNullString( nationalID );
-	info["mother"] = nonNullString( mother );
+	info["first"] = nonNullString(firstName);
+	info["last"] = nonNullString(lastName);
+	info["gender"] = nonNullString(gender);
+	info["DOB"] = nonNullString(DOB);
+	info["ST"] = nonNullString(stNumber);
+	info["subjectNumber"] = nonNullString(subjectNumber);
+	info["national"] = nonNullString(nationalID);
+	info["mother"] = nonNullString(mother);
 
 	patientInfoHash[pk] = info;
 }
 
 
-function selectPatient( patientID ){
+function selectPatient(patientID) {
     var i;
-	if( patientID ){
+	if (patientID) {
 		patientSelectID = patientID;
 
 		var info = patientInfoHash[patientID];
 
-		for(i = 0; i < patientChangeListeners.length; i++){
+		for(i = 0; i < patientChangeListeners.length; i++) {
 			patientChangeListeners[i](info["first"],info["last"],info["gender"],info["DOB"],info["ST"],info["subjectNumber"],info["national"],info["mother"], patientID);
 		}
 
 	}else{
-		for(i = 0; i < patientChangeListeners.length; i++){
+		for(i = 0; i < patientChangeListeners.length; i++) {
 			patientChangeListeners[i]("","","","","","","","", null);
 		}
 	}
 }
 
-function /*void*/ addPatientChangedListener( listener ){
-	patientChangeListeners.push( listener );
+function /*void*/ addPatientChangedListener(listener) {
+	patientChangeListeners.push(listener);
 }
 
 
-function /*void*/ handleEnterEvent( ){
-		
-		if( newSearchInfo ){
+function /*void*/ handleEnterEvent() {
+		if (newSearchInfo) {
 			searchPatients();
 		}
 		return false;
 }
 
-function /*void*/ dirtySearchInfo(e){ 
+function /*void*/ dirtySearchInfo(e) { 
 	var code = e ? e.which : window.event.keyCode;
-	if( code != 13 ){
+	if (code != 13) {
 		newSearchInfo = true; 
 	}
 }
-function /*void*/ doNothing(){ 
+function /*void*/ doNothing() { 
 	
 }
 
@@ -283,50 +266,50 @@ function checkIndex(select) {
 	}
 }
 
-function enableSearchButton(eventCode){
+function enableSearchButton(eventCode) {
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
     var searchButton = $jq("#searchButton");
-    if( valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '<%=StringUtil.getMessageForKey("label.select.search.here")%>'){
+    if (valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '<%=StringUtil.getMessageForKey("label.select.search.here")%>') {
         searchButton.removeAttr("disabled");
-        if( eventCode == 13 ){
+        if (eventCode == 13) {
             searchButton.click();
         }
-    }else{
+    } else {
         searchButton.attr("disabled", "disabled");
     }
 
-    if(criteriaElem.val() == "5" ){
+    if (criteriaElem.val() == "5") {
         valueElem.attr("maxlength","<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>");
-    }else{
+    } else {
         valueElem.attr("maxlength","120");
     }
 }
 
-function handleSelectedPatient(){
+function handleSelectedPatient() {
     var accessionNumber = "";
-    if($jq("#searchCriteria").val() == 5){//lab number
+    if ($jq("#searchCriteria").val() == 5) {//lab number
         accessionNumber = $jq("#searchValue").val();
     }
 
     $("searchResultsDiv").style.display = "none";
     var form = document.forms[0];
     form.action = '<%=formName%>'.sub('Form','') + ".do?accessionNumber=" + accessionNumber + "&patientID=" + patientSelectID;
-    if( !(typeof requestType === 'undefined') ){
+    if (!(typeof requestType === 'undefined')) {
         form.action += "&type=" + requestType;
     }
     
     form.submit();
 }
 
-function firstClick(){
+function firstClick() {
     var searchValue = $jq("#searchValue");
     searchValue.val("");
     searchValue.removeAttr("onkeydown");
 }
 
-function messageRestore(element ){
-    if( !element.value  ){
+function messageRestore(element) {
+    if (!element.value) {
         element.maxlength = 120;
         element.value = '<%=StringUtil.getMessageForKey("label.select.search.here")%>';
         element.onkeydown = firstClick;
@@ -334,15 +317,14 @@ function messageRestore(element ){
     }
 }
 
-function cursorAtFront(element){
-
-    if( element.onkeydown){
-        setCaretPosition( element, 0);
+function cursorAtFront(element) {
+    if (element.onkeydown) {
+        setCaretPosition(element, 0);
     }
 }
 
-function setCaretPosition(ctrl, pos){
-    if(ctrl.setSelectionRange){
+function setCaretPosition(ctrl, pos) {
+    if (ctrl.setSelectionRange) {
         ctrl.focus();
         ctrl.setSelectionRange(pos,pos);
     } else if (ctrl.createTextRange) {
@@ -359,13 +341,13 @@ function setCaretPosition(ctrl, pos){
 
 <div id="PatientPage" class="colorFill patientSearch" style="display:inline;" >
 
-	<h2><bean:message key="sample.entry.search"/></h2>
+	<h3><bean:message key="sample.entry.search"/></h3>
     <logic:present property="warning" name="<%=formName%>" >
         <h3 class="important-text"><bean:message key="order.modify.search.warning" /></h3>
     </logic:present>
     <select id="searchCriteria"  style="float:left" onchange="checkIndex(this)" tabindex="1" class="patientSearch">
         <%
-            for(IdValuePair pair : patientSearch.getSearchCriteria()){
+            for(IdValuePair pair : patientSearch.getSearchCriteria()) {
                 out.print("<option value=\"" + pair.getId() +"\">" + pair.getValue() + "</option>");
             }
         %>
@@ -396,7 +378,7 @@ function setCaretPosition(ctrl, pos){
 		<h1><bean:message key="patient.search.not.found"/></h1>
 	</div>
 	<div id="searchResultsDiv" class="colorFill" style="display: none;" >
-		<% if( localDBOnly.equals("false")){ %>
+		<% if (localDBOnly.equals("false")) { %>
 		<table id="searchResultTable" style="width:90%">
 			<tr>
 				<th width="2%"></th>
@@ -420,21 +402,21 @@ function setCaretPosition(ctrl, pos){
 				<th width="11%">
 					<bean:message key="patient.birthDate"/>
 				</th>
-				<% if( supportMothersName ){ %>
+				<% if (supportMothersName) { %>
 				<th width="20%">
 					<bean:message key="patient.mother.name"/>
 				</th>
-				<% } if(supportSTNumber){ %>
+				<% } if (supportSTNumber) { %>
 				<th width="12%">
 					<bean:message key="patient.ST.number"/>
 				</th>
 				<% } %>
-				<% if(supportSubjectNumber){ %>
+				<% if (supportSubjectNumber) { %>
 				<th width="12%">
 					<bean:message key="patient.subject.number"/>
 				</th>
 				<% } %>
-				<% if(supportNationalID){ %>
+				<% if (supportNationalID) { %>
 				<th width="12%">
                     <%=StringUtil.getContextualMessageForKey("patient.NationalID") %>
                 </th>
@@ -442,7 +424,7 @@ function setCaretPosition(ctrl, pos){
 			</tr>
 		</table>
 		<br/>
-        <% if( patientSearch.getSelectedPatientActionButtonText() != null){ %>
+        <% if (patientSearch.getSelectedPatientActionButtonText() != null) { %>
             <input type="button"
                    value="<%= patientSearch.getSelectedPatientActionButtonText()%>"
                    id="selectPatientButtonID"

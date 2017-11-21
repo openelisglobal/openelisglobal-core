@@ -42,11 +42,9 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
-import us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
 import us.mn.state.health.lims.common.services.IPatientService;
 import us.mn.state.health.lims.common.services.PatientService;
-import us.mn.state.health.lims.common.services.SampleService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -54,8 +52,6 @@ import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
-import us.mn.state.health.lims.login.dao.UserModuleDAO;
-import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
@@ -89,8 +85,6 @@ public class PrintBarcodeAction extends BaseAction {
         ABLE_TO_CANCEL_ROLE_NAMES.add( "Validation");
         ABLE_TO_CANCEL_ROLE_NAMES.add( "Biologist" );
 	}
-	
-	private String maxAccessionNumber;
 
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
@@ -230,7 +224,6 @@ public class PrintBarcodeAction extends BaseAction {
             firstItem.setCanRemoveSample(canRemove);
             firstItem.setCollectionDate( collectionDate == null ? "" : collectionDate );
             firstItem.setCollectionTime( collectionTime );
-			maxAccessionNumber = analysisSampleItemList.get(0).getAccessionNumber();
 			currentTestList.addAll(analysisSampleItemList);
 		}
 	}

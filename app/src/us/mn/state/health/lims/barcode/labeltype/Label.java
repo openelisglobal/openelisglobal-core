@@ -11,7 +11,6 @@ import us.mn.state.health.lims.barcode.valueholder.BarcodeLabelInfo;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.login.valueholder.UserSessionData;
 
 public abstract class Label {
 	
@@ -19,8 +18,8 @@ public abstract class Label {
 	static int MED_BARCODE = 4;
 	static int LARGE_BARCODE = 5;
 	
-	private Font valueFont =  new Font(Font.HELVETICA, 10, Font.NORMAL);
-	private Font nameFont =  new Font(Font.HELVETICA, 10, Font.BOLD);
+	private Font valueFont =  new Font(Font.HELVETICA, 9, Font.NORMAL);
+	private Font nameFont =  new Font(Font.HELVETICA, 9, Font.BOLD);
 	protected float height = 1;
 	protected float width = 3;
 	private int margin = 5;
@@ -127,7 +126,8 @@ public abstract class Label {
 	}
 
 	public void setNumLabels(int numLabels) {
-		this.numLabels = numLabels;
+		if (numLabels > 0)
+			this.numLabels = numLabels;
 	}
 	
 	public String getSysUserId() {

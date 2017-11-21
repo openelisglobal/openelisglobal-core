@@ -24,20 +24,18 @@ function formWarning(){
 function printLabel() {
 	inPrintState = false;
 	setSave();
-	$jq("#reprintButtonId").prop('disabled', false);
 	$jq("#nextButtonId").prop('disabled', false);
 	var labNo = $jq("#labNo").val();
 	var patientId = $jq("#lastPatientId").val();
+	$jq("#barcodeArea").show();
 	//make request to LabelMakerServlet
 	var src = "LabelMakerServlet?labNo=" + labNo + "&patientId=" + patientId;
 	$jq("#ifbarcode").attr('src', src);
-	$jq("#barcodeArea").show();
 }
 
 function nextLabel() {
 	inPrintState = true;
 	setSave();
-	$jq("#reprintButtonId").prop('disabled', true);
 	$jq("#nextButtonId").prop('disabled', true);
 	moveAccessionToRecentArea();
 	$jq("#labNo").val("");
@@ -148,13 +146,6 @@ function processSearchSuccessPrint(xhr) {
 			property="print"
 			styleId="saveButtonId">
 			<bean:message key="sample.batchentry.ondemand.saveprint" />
-		</html:button>
-		<!-- just prints last label -->
-		<html:button onclick="printLabel();"
-			property="reprint"
-			styleId="reprintButtonId"
-			disabled="true">
-			<bean:message key="sample.batchentry.ondemand.reprint" />
 		</html:button>
 		<!-- sets up for next label to be printed -->
 		<html:button onclick="nextLabel();"

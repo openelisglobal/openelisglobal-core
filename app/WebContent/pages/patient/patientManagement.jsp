@@ -821,33 +821,6 @@ function  processSubjectNumberSuccess(xhr){
 
     pt_setSave();
 }
-
-//check if and "identifying info" has been provided
-//ie. STnumber, SubjectNumber, National ID, or name
-function hasIdentifyingInfo() {
-	<% if( supportSTNumber){ %>
-	    if ($jq("#ST_ID").val()) {
-	    	return true
-	    }            
-    <%} %>
-    <% if( supportSubjectNumber){ %>
-    	if ($jq("#subjectNumberID").val()) {
-    		return true;
-    	}
-    <% } %>
-    <% if( supportNationalID ){ %>
-    	if ($jq("#nationalID").val()) {
-    		return true;
-    	}
-	<%} %>
-	if ($jq("#lastNameID").val()) {
-		return true;
-	} else if ($jq("#firstNameID").val()) {
-		return true;
-	} else {
-		return false;
-	}
-}
 </script>
 <nested:hidden name='<%=formName%>' property="patientProperties.currentDate" styleId="currentDate"/>
 

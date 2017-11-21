@@ -8,6 +8,7 @@ import us.mn.state.health.lims.barcode.BarcodeLabelField;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.patient.valueholder.Patient;
@@ -21,6 +22,7 @@ public class OrderLabel extends Label {
 		//set dimensions
 		String strWidth = ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_WIDTH);
 		String strHeight = ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_HEIGHT);
+		SampleOrderService sampleOrderService = new SampleOrderService( sample );
 		try {
 			width = Float.parseFloat(strWidth);
 			height = Float.parseFloat(strHeight);
@@ -30,7 +32,8 @@ public class OrderLabel extends Label {
 		
 		//get information for above barcode
 		Person person = patient.getPerson();
-		String referringFacility = ConfigurationProperties.getInstance().getPropertyValue(Property.SiteCode); 
+		String referringFacility = StringUtil.replaceNullWithEmptyString(
+				sampleOrderService.getSampleOrderItem().getReferringSiteName()); 
 		String patientName = StringUtil.replaceNullWithEmptyString(person.getLastName()) + ", " 
 				+ StringUtil.replaceNullWithEmptyString(person.getFirstName());
 		if (patientName.trim().equals(",")) {
@@ -55,7 +58,7 @@ public class OrderLabel extends Label {
 	//get first available id for patient
 	private BarcodeLabelField getAvailableIdField(Patient patient) {
 		PatientService service = new PatientService(patient);
-		String patientId = service.getSTNumber();
+		String patientId = service.getSubjectNumber();
 		if (!StringUtil.isNullorNill(patientId))
 			return new BarcodeLabelField(StringUtil.getMessageForKey("barcode.label.info.patientid"), StringUtils.substring(patientId, 0, 25), 6);
 		patientId = service.getNationalId();

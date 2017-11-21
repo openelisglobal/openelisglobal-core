@@ -35,6 +35,7 @@ public class BarcodeLabelMaker {
 	private ArrayList<Label> labels = new ArrayList<Label>();
 	private float labelWidth;
 	private float labelHeight;
+	private String override;
 
 	//defaults to making blank label
 	public BarcodeLabelMaker() {
@@ -70,7 +71,7 @@ public class BarcodeLabelMaker {
 	        document.open();
 	        for (Label label : labels) {
 	        	for (int i = 0; i < label.getNumLabels(); ++i) {
-	        		if (label.checkIfPrintable()) {
+	        		if (label.checkIfPrintable() || "true".equals(override)) {
 	        			curLabel = label;
 	        			//ratio used to prevent width from becoming too narrow 
 	        			//and making single-line fields multilined
@@ -79,7 +80,7 @@ public class BarcodeLabelMaker {
 	        			labelHeight = labelWidth / ratio;
 	        			drawLabel(writer, document);
 	        			curLabel.incrementNumPrinted();
-	        		}	        		
+	        		}     		
 	        	}
 	        }
 			document.close();
@@ -207,6 +208,14 @@ public class BarcodeLabelMaker {
 		cell.setBorder(Rectangle.NO_BORDER);
 		cell.setColspan(colspan);
 		return cell;
+	}
+
+	public String getOverride() {
+		return override;
+	}
+
+	public void setOverride(String override) {
+		this.override = override;
 	}
 
 }

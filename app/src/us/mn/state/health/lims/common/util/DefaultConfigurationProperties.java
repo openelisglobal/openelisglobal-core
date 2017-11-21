@@ -118,8 +118,8 @@ public class DefaultConfigurationProperties extends ConfigurationProperties {
 		setDBPropertyMappingAndDefault( Property.MAX_ALIQUOT_PRINTED, "numAliquotLabels", "1");
 		setDBPropertyMappingAndDefault( Property.ORDER_BARCODE_HEIGHT, "heightOrderLabels", "1");
 		setDBPropertyMappingAndDefault( Property.ORDER_BARCODE_WIDTH, "widthOrderLabels", "3");
-		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_HEIGHT, "heightSpecimenLabels", "1");
-		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_WIDTH, "widthSpecimenLabels", "3");
+		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_HEIGHT, "heightSpecimenLabels", "25.6");
+		setDBPropertyMappingAndDefault( Property.SPECIMEN_BARCODE_WIDTH, "widthSpecimenLabels", "76.2");
 		setDBPropertyMappingAndDefault( Property.SPECIMEN_FIELD_DATE, "collectionDateCheck", "true");
 		setDBPropertyMappingAndDefault( Property.SPECIMEN_FIELD_SEX, "patientSexCheck", "true");
 		setDBPropertyMappingAndDefault( Property.SPECIMEN_FIELD_TESTS, "testsCheck", "true");

@@ -1,12 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
+                 us.mn.state.health.lims.common.util.ConfigurationProperties,
+                 us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
                  us.mn.state.health.lims.common.formfields.FormFields,
                  us.mn.state.health.lims.common.formfields.FormFields.Field" %>
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"      prefix="html" %>
+<%@ taglib uri="/tags/struts-logic" 	prefix="logic" %>
 
 <bean:define id="formName" value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 
+<%!
+boolean restrictNewReferringSiteEntries = false;
+%>
+<%
+restrictNewReferringSiteEntries = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.restrictFreeTextRefSiteEntry, "true");
+%>
 
 <script type="text/javascript" >
 
@@ -32,7 +41,7 @@ function toggleFacilityID() {
 	}
 }
 function processFacilityIDChange() {
-	if (document.getElementsByName('facilityID')[0].value != '') {
+	if (document.getElementById('requesterId').value != '') {
 		checkFacilityID();
 		document.getElementById('psuedoFacilityID').checked = true;
 		document.getElementById('psuedoFacilityID').disabled = true;
@@ -51,6 +60,28 @@ function configBarcodeValid() {
 		return false;
 	}
 }
+
+$jq(document).ready(function () {
+    var dropdown = $jq("select#requesterId");
+    autoCompleteWidth = dropdown.width() + 66 + 'px';
+    <% if(restrictNewReferringSiteEntries) { %>
+   			clearNonMatching = true;
+    <% } else {%>
+    		clearNonMatching = false;
+    <% } %>
+    capitialize = true;
+    // Actually executes autocomplete
+    dropdown.combobox();
+    invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
+    maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
+
+    resultCallBack = function (textValue) {
+    	processFacilityIDChange();
+        //siteListChanged(textValue);
+       // setOrderModified();
+        //setCorrectSave();
+    };
+});
 
 </script>
 
@@ -83,9 +114,21 @@ Barcode Method :
 			<bean:message key="sample.batchentry.barcode.label.facilityid"/>:
 		</td>
 		<td>
-			<html:text name="<%=formName %>"
-				property="facilityID"
-				onkeyup="processFacilityIDChange();" />
+			<logic:equal value="false" name='<%=formName%>' property="sampleOrderItems.readOnly" >
+		        <html:select styleId="requesterId"
+		                     name="<%=formName%>"
+		                     property="facilityID"
+		                     onkeyup="capitalizeValue( this.value );"
+		                     
+		                >
+		            <option value=""></option>
+		            <html:optionsCollection name="<%=formName%>" property="sampleOrderItems.referringSiteList" label="value"
+		                                    value="id"/>
+		        </html:select>
+			</logic:equal>
+		    <logic:equal value="true" name='<%=formName%>' property="sampleOrderItems.readOnly" >
+		            <html:text styleId="requesterId" property="facilityID" name="<%=formName%>" style="width:300px" />
+		    </logic:equal>
 		</td>
 	</tr>
 	<tr>

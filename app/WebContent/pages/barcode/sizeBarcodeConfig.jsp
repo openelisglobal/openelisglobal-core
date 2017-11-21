@@ -12,8 +12,12 @@ function checkFieldFloat(field) {
 	if (isNaN(field.value)) {
 		validator.setFieldValidity(false, field.id);
 		selectFieldErrorDisplay(false, field);
-		alert("Field must be a number");
-	}  else {
+		alert("<bean:message key='siteInfo.size.nonnumber'/>");
+	} else if (parseFloat(field.value) <= 0) {
+		validator.setFieldValidity(false, field.id);
+		selectFieldErrorDisplay(false, field);
+		alert("<bean:message key='siteInfo.size.invalidnumber'/>");
+	} else {
 		validator.setFieldValidity(true, field.id);
 		selectFieldErrorDisplay(true, field);
 	}
@@ -40,6 +44,7 @@ function checkFieldFloat(field) {
 				property="heightOrderLabels"
 				styleId="heightOrderLabels"
 				onchange="checkFieldFloat(this)"></html:text>
+			<bean:message key="siteInfo.size.units"/>
 		</td>
 		<td>
 			<bean:message key="siteInfo.size.height"/>:
@@ -47,6 +52,7 @@ function checkFieldFloat(field) {
 				property="heightSpecimenLabels"
 				styleId="heightSpecimenLabels"
 				onchange="checkFieldFloat(this)"></html:text>
+			<bean:message key="siteInfo.size.units"/>
 		</td>
 	</tr>
 	<tr>
@@ -56,6 +62,7 @@ function checkFieldFloat(field) {
 				property="widthOrderLabels"
 				styleId="widthOrderLabels"
 				onchange="checkFieldFloat(this)"></html:text>
+			<bean:message key="siteInfo.size.units"/>
 		</td>
 		<td>
 			<bean:message key="siteInfo.size.width"/>:
@@ -63,6 +70,7 @@ function checkFieldFloat(field) {
 				property="widthSpecimenLabels"
 				styleId="widthSpecimenLabels"
 				onchange="checkFieldFloat(this)"></html:text>
+			<bean:message key="siteInfo.size.units"/>
 		</td>
 	</tr>
 </table>

@@ -40,15 +40,19 @@
 	</definition>
 
     <definition name="sampleBatchEntryOnDemandCore" path="/pages/samplebatchentry/sampleBatchEntry.jsp">
-		<put name="patientInfo"  value="patientManagementCore" />
+		<put name="patientInfo"  value="batchEntryPatientManagementCore" />
 		<put name="entryMethod" value="OnDemandEntry.jsp" />
 	</definition>
 
     <definition name="sampleBatchEntryPrePrintedCore" path="/pages/samplebatchentry/sampleBatchEntry.jsp">
-		<put name="patientInfo"  value="patientManagementCore" />
+		<put name="patientInfo"  value="batchEntryPatientManagementCore" />
 		<put name="entryMethod" value="PrePrintedEntry.jsp" />
 	</definition>
-    
+
+	<definition name="batchEntryPatientManagementCore" path="/pages/samplebatchentry/patientManagement.jsp">
+		<put name="patientSearch"  value="/pages/samplebatchentry/patientSearch.jsp" />
+	</definition>
+  
 
   <definition name="sampleConfirmationCore" path="/pages/sample/sampleConfirmationAdd.jsp">
         <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />

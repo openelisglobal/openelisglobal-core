@@ -12,8 +12,12 @@ function checkFieldInt(field) {
 	if (isNaN(field.value) || field.value.indexOf(".") > -1) {
 		validator.setFieldValidity(false, field.id);
 		selectFieldErrorDisplay(false, field);
-		alert("Field must be a whole number");
-	}  else {
+		alert("<bean:message key='siteInfo.number.nonnumber'/>");
+	} else if (parseInt(field.value) <= 0) {
+		validator.setFieldValidity(false, field.id);
+		selectFieldErrorDisplay(false, field);
+		alert("<bean:message key='siteInfo.number.invalidnumber'/>");
+	} else {
 		validator.setFieldValidity(true, field.id);
 		selectFieldErrorDisplay(true, field);
 	}

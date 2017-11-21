@@ -44,10 +44,9 @@
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
-<script type="text/javascript" language="JavaScript1.2">
+<script type="text/javascript">
 var validator = new FieldValidator();
 validator.setRequiredFields( new Array("quantity") );
-
 
 var supportSTNumber = <%= supportSTNumber %>;
 var supportMothersName = <%= supportMothersName %>;
@@ -65,8 +64,12 @@ function checkFieldInt(field) {
 	if (isNaN(field.value) || field.value.indexOf(".") > -1) {
 		validator.setFieldValidity(false, field.id);
 		selectFieldErrorDisplay(false, field);
-		alert("Field must be a whole number");
-	}  else {
+		alert("<bean:message key='siteInfo.number.nonnumber'/>");
+	} else if (parseInt(field.value) <= 0) {
+		validator.setFieldValidity(false, field.id);
+		selectFieldErrorDisplay(false, field);
+		alert("<bean:message key='siteInfo.number.invalidnumber'/>");
+	} else {
 		validator.setFieldValidity(true, field.id);
 		selectFieldErrorDisplay(true, field);
 	}
@@ -87,23 +90,21 @@ function disablePrint() {
 	document.getElementById("orderPrintButton").disabled = true;
 }
 
+//search patients using labNo
 function searchPatients() {
     var criteria = $jq("#searchCriteria").val();
-    var value = $jq("#searchValue").val();
-    var splitName;
+    var labNumber = $jq("#searchValue").val();
     var lastName = "";
     var firstName = "";
     var STNumber = "";
     var subjectNumber = "";
     var nationalID = "";
-    var labNumber = "";
 
 	newSearchInfo = false;
     $jq("#resultsDiv").hide();
     $jq("#barcodeArea").hide();
     $jq("#searchLabNumber").val('');
-    labNumber = value;
-    $jq("#searchLabNumber").val(value);
+    $jq("#searchLabNumber").val(labNumber);
 
 	patientSearch(lastName, firstName, STNumber, subjectNumber, nationalID, labNumber, "", false, processSearchSuccess);
 
@@ -420,10 +421,6 @@ function finish() {
 	<div id="noPatientFound" align="center" style="display:none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>
 	</div>
-	
-
-
-	
 	<div id="searchResultsDiv" style="display:none;">
 		<% if( localDBOnly.equals("false")){ %>
 		<table id="searchResultTable" style="width:90%">

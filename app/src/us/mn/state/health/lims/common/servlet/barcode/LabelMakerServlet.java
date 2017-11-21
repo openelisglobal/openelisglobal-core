@@ -27,6 +27,7 @@ import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValida
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.Versioning;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -71,6 +72,7 @@ static {
 		String patientId = request.getParameter("patientId");
 		String type = request.getParameter("type");
 		String quantity = request.getParameter("quantity");
+		String override = request.getParameter("override");
 		if (StringUtils.isEmpty(labNo)) {
 			labNo = (String) request.getSession().getAttribute("lastAccessionNumber");
 			labNo = StringUtil.replaceNullWithEmptyString(labNo);
@@ -83,8 +85,10 @@ static {
 			type = "default";
 		if (StringUtils.isEmpty(quantity))
 			quantity = "1";
+		if (StringUtils.isEmpty(override)) 
+			override = "false";
 		
-		ActionMessages errors = validate(labNo, patientId, type, quantity);
+		ActionMessages errors = validate(labNo, patientId, type, quantity, override);
 		if (!errors.isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setContentType("text/html; charset=utf-8");
@@ -101,14 +105,22 @@ static {
 		}
 		//assemble requested labels
 		ArrayList<Label> labels = new ArrayList<Label>();
-		createLabels(labels, labNo, patientId, type, quantity, request);
+		createLabels(labels, labNo, patientId, type, quantity, override, request);
 		
 		BarcodeLabelMaker labelMaker = new BarcodeLabelMaker(labels);
+		labelMaker.setOverride(override);
 		ByteArrayOutputStream labelAsOutputStream = labelMaker.createLabelsAsStream();
 		
 		if (labelAsOutputStream.size() == 0) {
+			String path = request.getContextPath();
+		 	String basePath = request.getScheme() + "://" + request.getServerName() + ":"	+ request.getServerPort() + path + "/";
+		 	String version = Versioning.getBuildNumber();
 			response.setContentType("text/html; charset=utf-8");
 			response.getWriter().println(StringUtil.getMessageForKey("barcode.message.maxreached"));
+			response.getWriter().println("</br>");
+			response.getWriter().println("<input type='button' id='overrideButton' value='Override' onclick='override();'>");
+			response.getWriter().println("<script type=\"text/javascript\" src=\"" + basePath 
+					+ "scripts/labelMaker.js?ver=" + version + "\" ></script>");
 		} else {
 			response.setContentType("application/pdf");
 			response.addHeader("Content-Disposition", "inline; filename=" + "sample.pdf");
@@ -119,7 +131,7 @@ static {
 		}
 	}
 
-	private ActionMessages validate(String labNo, String patientId, String type, String quantity) {
+	private ActionMessages validate(String labNo, String patientId, String type, String quantity, String override) {
 		ActionMessages errors = new ActionMessages();
 		//Validate quantity
 		if (!GenericValidator.isInt(quantity)) {
@@ -156,11 +168,16 @@ static {
 			ActionError error = new ActionError("barcode.label.error.accession.invalid");
 			errors.add(ActionMessages.GLOBAL_MESSAGE, error);
 		}
+		if (!GenericValidator.isBool(override)) {
+			//ActionError error = new ActionError("barcode.label.error.override.invalid");
+			//errors.add(ActionMessages.GLOBAL_MESSAGE, error);
+			override = "false";
+		}
 		 
 		return errors;
 	}
 	
-	private void createLabels(ArrayList<Label> labels, String labNo, String patientId, String type, String quantity, HttpServletRequest request) {
+	private void createLabels(ArrayList<Label> labels, String labNo, String patientId, String type, String quantity, String override, HttpServletRequest request) {
 		UserSessionData usd = (UserSessionData)request.getSession().getAttribute(USER_SESSION_DATA);
 		if ("default".equals(type)) {
 			//add 2 order label per default
@@ -171,7 +188,7 @@ static {
 			orderLabel.linkBarcodeLabelInfo();
 			//get sysUserId from login module
 			orderLabel.setSysUserId(String.valueOf(usd.getSystemUserId()));
-			if (orderLabel.checkIfPrintable()) {
+			if (orderLabel.checkIfPrintable() || "true".equals(override)) {
 				labels.add(orderLabel);
 			}
 			//1 specimen label per sampleitem
@@ -183,7 +200,7 @@ static {
 				specLabel.linkBarcodeLabelInfo();
 				//get sysUserId from login module
 				specLabel.setSysUserId(String.valueOf(usd.getSystemUserId()));
-				if (specLabel.checkIfPrintable()) {
+				if (specLabel.checkIfPrintable() || "true".equals(override)) {
 					labels.add(specLabel);
 				}
 			}
@@ -195,7 +212,7 @@ static {
 			orderLabel.linkBarcodeLabelInfo();
 			//get sysUserId from login module
 			orderLabel.setSysUserId(String.valueOf(usd.getSystemUserId()));
-			if (orderLabel.checkIfPrintable()) {
+			if (orderLabel.checkIfPrintable() || "true".equals(override)) {
 				labels.add(orderLabel);
 			}
 		} else if ("specimen".equals(type)) {
@@ -212,7 +229,7 @@ static {
 					specLabel.linkBarcodeLabelInfo();
 					//get sysUserId from login module
 					specLabel.setSysUserId(String.valueOf(usd.getSystemUserId()));
-					if (specLabel.checkIfPrintable()) {
+					if (specLabel.checkIfPrintable() || "true".equals(override)) {
 						labels.add(specLabel);
 					}
 				}
@@ -222,11 +239,9 @@ static {
 			blankLabel.linkBarcodeLabelInfo();
 			//get sysUserId from login module
 			blankLabel.setSysUserId(String.valueOf(usd.getSystemUserId()));
-			if (blankLabel.checkIfPrintable()) {
+			if (blankLabel.checkIfPrintable() || "true".equals(override)) {
 				labels.add(blankLabel);
 			}
-		} else if ("aliquot".equals(type)) {
-			//logic for aliquots here
 		}
 	}
 	

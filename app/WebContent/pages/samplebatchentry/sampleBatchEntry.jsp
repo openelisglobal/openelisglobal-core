@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
+                 us.mn.state.health.lims.common.util.ConfigurationProperties,
+                 us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+                 us.mn.state.health.lims.common.formfields.FormFields,
+                 us.mn.state.health.lims.common.formfields.FormFields.Field,
                  us.mn.state.health.lims.common.util.Versioning,
                  us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
@@ -16,14 +20,26 @@
 <%!
 String path = "";
 String basePath = "";
+boolean restrictNewReferringSiteEntries = false;
 %>
 <%
 path = request.getContextPath();
 basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+restrictNewReferringSiteEntries = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.restrictFreeTextRefSiteEntry, "true");
 %>
+
+<link rel="stylesheet" href="css/jquery_ui/jquery.ui.all.css?ver=<%= Versioning.getBuildNumber() %>">
+<link rel="stylesheet" href="css/customAutocomplete.css?ver=<%= Versioning.getBuildNumber() %>">
 
 <script type="text/javascript" src="scripts/utilities.js"></script>
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.core.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.widget.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.button.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.menu.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.position.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/ui/jquery.ui.autocomplete.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script src="scripts/customAutocomplete.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript">
 var inPrintState = true;	//is entryMethod in a print state 
 
@@ -46,35 +62,54 @@ function checkOptionalFields() {
 		}
 	</logic:equal>
 	<logic:equal name="facilityIDCheck" value="true">
-		if (!$jq("#facilityID").val()) {
+		if (!$jq("#requesterId").val()) {
 			return false;
 		}
 	</logic:equal>
 	return fieldsValid;
 }
 
-$jq(document).ready(function() {
-	setSave();
-});
-
 //sets patient PK when identifying information is provided for patientProperties
 //fixes bug where person is added to database again and again
 function setPatient() {
 	var splitName;
-    var lastName = "";
-    var firstName = "";
-    var STNumber = "";
-    var subjectNumber = "";
-    var nationalID = "";
-    var labNumber = "";
+  var lastName = "";
+  var firstName = "";
+  var STNumber = "";
+  var subjectNumber = "";
+  var nationalID = "";
+  var labNumber = "";
 	labNumber = $jq("#labNo").val();
-    $jq("#searchLabNumber").val(labNumber);
+  $jq("#searchLabNumber").val(labNumber);
 	if (window.hasIdentifyingInfo) {
 		if (hasIdentifyingInfo() && !$jq("#patientPK_ID").val()) {
 		    patientSearch(lastName, firstName, STNumber, subjectNumber, nationalID, labNumber, "", false, processSearchSuccess);
 		}
 	}
 }
+
+$jq(document).ready(function() {
+	setSave();
+});
+
+$jq(document).ready(function () {
+    var dropdown = $jq("select#requesterId");
+    autoCompleteWidth = dropdown.width() + 66 + 'px';
+    <% if(restrictNewReferringSiteEntries) { %>
+   			clearNonMatching = true;
+    <% } else {%>
+    		clearNonMatching = false;
+    <% } %>
+    capitialize = true;
+    // Actually executes autocomplete
+    dropdown.combobox();
+    invalidLabID = '<bean:message key="error.site.invalid"/>'; // Alert if value is typed that's not on list. FIX - add bad message icon
+    maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
+
+    resultCallBack = function (textValue) {
+    	setSave();
+    };
+});
 </script>
 <div class="hidden-fields">
 	<input id="lastPatientId" type="hidden">
@@ -92,11 +127,23 @@ function setPatient() {
 		<logic:equal name="facilityID" value="">
 			<tr>
 				<td>
-					<bean:message key="sample.batchentry.barcode.label.facilityid" /> 
-					: <html:text name="<%=formName %>"
-						property="facilityID"
-						styleId="facilityID"
-						onchange="setSave();"/>
+					<bean:message key="sample.batchentry.barcode.label.facilityid" />
+					:  
+					<logic:equal value="false" name='<%=formName%>' property="sampleOrderItems.readOnly" >
+				        <html:select styleId="requesterId"
+				                     name="<%=formName%>"
+				                     property="sampleOrderItems.referringSiteId"
+				                     onkeyup="capitalizeValue( this.value );"
+				                     onchange="setSave();"
+				                >
+				            <option value=""></option>
+				            <html:optionsCollection name="<%=formName%>" property="sampleOrderItems.referringSiteList" label="value"
+				                                    value="id"/>
+				        </html:select>
+					</logic:equal>
+				    <logic:equal value="true" name='<%=formName%>' property="sampleOrderItems.readOnly" >
+				            <html:text property="sampleOrderItems.referringSiteName" name="<%=formName%>" style="width:300px" />
+				    </logic:equal>
 				</td>
 			</tr>
 		</logic:equal>
@@ -171,10 +218,11 @@ function setPatient() {
 			<tr>
 				<td>
 					<bean:message key="sample.batchentry.barcode.label.facilityid" /> 
-					: <html:text name="<%=formName %>"
-						property="facilityID"
-						styleId="facilityID"
-						readonly="true"/>
+					: <%= request.getAttribute("facilityName") %>
+					<html:hidden name="<%=formName %>"
+						property="sampleOrderItems.referringSiteId"
+						styleId="requesterId"/>
+						
 				</td>
 			</tr>
 		</logic:notEqual>

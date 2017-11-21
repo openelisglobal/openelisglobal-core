@@ -18,6 +18,7 @@ import org.dom4j.Element;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.provider.validation.DateValidationProvider;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.TestService;
@@ -26,6 +27,9 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
+import us.mn.state.health.lims.organization.dao.OrganizationDAO;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
+import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
 import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.sample.action.BaseSampleEntryAction;
@@ -63,7 +67,7 @@ public class SampleBatchEntryAction extends BaseSampleEntryAction {
         PropertyUtils.setProperty( dynaForm, "currentTime", request.getParameter("currentTime"));
         PropertyUtils.setProperty( dynaForm, "sampleOrderItems.receivedTime", request.getParameter("sampleOrderItems.receivedTime"));
         PropertyUtils.setProperty( dynaForm, "sampleOrderItems.receivedDateForDisplay", request.getParameter("sampleOrderItems.receivedDateForDisplay"));
-        PropertyUtils.setProperty( dynaForm, "facilityID", request.getParameter("facilityID"));
+        PropertyUtils.setProperty( dynaForm, "sampleOrderItems.referringSiteId", request.getParameter("facilityID"));
         PropertyUtils.setProperty( dynaForm, "sampleXML", sampleXML);
         
         //get summary of tests selected to place in common fields section
@@ -84,13 +88,24 @@ public class SampleBatchEntryAction extends BaseSampleEntryAction {
 		String testNames = sBuilder.toString();
 	    request.setAttribute("sampleType", sampleType);
 	    request.setAttribute("testNames", testNames);
+	    
+	    //get facility name from id
+	    OrganizationDAO organizationDAO = new OrganizationDAOImpl();
+	    Organization organization = new Organization();
+	    organization.setId(request.getParameter("facilityID"));
+	    organizationDAO.getData(organization);
+	    request.setAttribute("facilityName", organization.getOrganizationName());
      
 		return mapping.findForward(forward);
 	}
 	
 	private ActionMessages validate(HttpServletRequest request) {
 		ActionMessages errors = new ActionMessages();
-		if (!GenericValidator.isDate(request.getParameter("currentDate"), getLocale(request))) {
+		DateValidationProvider dateValidationProvider = new DateValidationProvider();
+		String curDateValid = dateValidationProvider.validateDate(dateValidationProvider.getDate(request.getParameter("currentDate")), "past");
+		String recDateValid = dateValidationProvider.validateDate(dateValidationProvider.getDate(request.getParameter("sampleOrderItems.receivedDateForDisplay")), "past");
+		
+		if (!(curDateValid.equals(IActionConstants.VALID))) {
 			ActionError error = new ActionError("batchentry.error.curdate.invalid");
 			errors.add(ActionMessages.GLOBAL_MESSAGE, error);
 		}
@@ -98,7 +113,7 @@ public class SampleBatchEntryAction extends BaseSampleEntryAction {
 			ActionError error = new ActionError("batchentry.error.curtime.invalid");
 			errors.add(ActionMessages.GLOBAL_MESSAGE, error);
 		}
-		if (!GenericValidator.isDate(request.getParameter("sampleOrderItems.receivedDateForDisplay"), getLocale(request))) {
+		if (!(recDateValid.equals(IActionConstants.VALID))) {
 			ActionError error = new ActionError("batchentry.error.recdate.invalid");
 			errors.add(ActionMessages.GLOBAL_MESSAGE, error);
 		}
