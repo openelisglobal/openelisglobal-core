@@ -45,6 +45,10 @@ function processFacilityIDChange() {
 		checkFacilityID();
 		document.getElementById('psuedoFacilityID').checked = true;
 		document.getElementById('psuedoFacilityID').disabled = true;
+	} else if (document.getElementById('newRequesterName').value != '') {
+		checkFacilityID();
+		document.getElementById('psuedoFacilityID').checked = true;
+		document.getElementById('psuedoFacilityID').disabled = true;
 	} else {
 		document.getElementById('psuedoFacilityID').disabled = false;
 	}
@@ -59,6 +63,15 @@ function configBarcodeValid() {
 	} else {
 		return false;
 	}
+}
+
+function siteListChanged(textValue) {
+    var siteList = $("requesterId");
+
+    //if the index is 0 it is a new entry, if it is not then the textValue may include the index value
+    if (siteList.selectedIndex == 0 || siteList.options[siteList.selectedIndex].label != textValue) {
+        $("newRequesterName").value = textValue;
+    }
 }
 
 $jq(document).ready(function () {
@@ -76,14 +89,16 @@ $jq(document).ready(function () {
     maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
 
     resultCallBack = function (textValue) {
+        siteListChanged(textValue);
     	processFacilityIDChange();
-        //siteListChanged(textValue);
        // setOrderModified();
         //setCorrectSave();
     };
 });
 
 </script>
+
+<html:hidden property="sampleOrderItems.newRequesterName" name='<%=formName%>' styleId="newRequesterName"/>
 
 Barcode Method : 
 <html:select name="<%=formName%>"
@@ -118,6 +133,7 @@ Barcode Method :
 		        <html:select styleId="requesterId"
 		                     name="<%=formName%>"
 		                     property="facilityID"
+		                     onchange="siteListChanged(this);processFacilityIDChange();"
 		                     onkeyup="capitalizeValue( this.value );"
 		                     
 		                >

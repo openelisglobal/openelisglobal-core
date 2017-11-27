@@ -48,11 +48,11 @@
 var validator = new FieldValidator();
 validator.setRequiredFields( new Array("quantity") );
 
-var supportSTNumber = <%= supportSTNumber %>;
-var supportMothersName = <%= supportMothersName %>;
-var supportSubjectNumber = <%= supportSubjectNumber %>;
-var supportNationalID = <%= supportNationalID %>;
-var supportLabNumber = <%= supportLabNumber %>;
+var supportSTNumber = <%=supportSTNumber%>;
+var supportMothersName = <%=supportMothersName%>;
+var supportSubjectNumber = <%=supportSubjectNumber%>;
+var supportNationalID = <%=supportNationalID%>;
+var supportLabNumber = <%=supportLabNumber%>;
 var patientSelectID;
 var patientInfoHash = [];
 var patientChangeListeners = [];
@@ -126,7 +126,7 @@ function processSearchSuccess(xhr) {
 		for( var i = 0; i < resultNodes.length; i++ ) {
 			addPatientToSearch( table, resultNodes.item(i) );
 		}
-		if( resultNodes.length == 1 && <%= String.valueOf(patientSearch.isLoadFromServerWithPatient()) %>  ){
+		if( resultNodes.length == 1 && <%=String.valueOf(patientSearch.isLoadFromServerWithPatient())%>  ){
 			handleSelectedPatient();
 		}
 	} else {
@@ -285,7 +285,7 @@ function enableSearchButton(eventCode){
         searchButton.attr("disabled", "disabled");
     }
     if(criteriaElem.val() == "5" ){
-        valueElem.attr("maxlength","<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>");
+        valueElem.attr("maxlength","<%=Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>");
     } else {
         valueElem.attr("maxlength","120");
     }
@@ -347,39 +347,39 @@ function printBarcode(button) {
 	var patientId = document.getElementsByName('patientId')[0].value;
 	var type = "";
 	var quantity = "";
-	if (confirm("<%= StringUtil.getMessageForKey("barcode.message.reprint.confirmation") %>")) {
-		if (button.id == "defaultPrintButton") {
-			type = "default";	
-		} else if (button.id == "orderPrintButton") {
-			type = "order";
-			quantity = document.getElementById('quantity').value;
-		} else if (button.id == "printBlankBarcodeButton") {
-			type="blank";
-		} else {
-			type = "specimen";
-			labNo = button.id;
-			quantity = 1;
-		}
-	    $jq("#searchLabNumber").val('');
-		document.getElementById("ifbarcode").src = 'LabelMakerServlet?labNo=' + labNo + '&type=' + type + 
-			'&patientId=' +  patientId + '&quantity=' + quantity;
-		document.getElementById("barcodeArea").show();
-	}
-}
+	if (confirm("<%=StringUtil.getMessageForKey("barcode.message.reprint.confirmation")%>")) {
+        if (button.id == "defaultPrintButton") {
+        type = "default";
+        } else if (button.id == "orderPrintButton") {
+        type = "order";
+        quantity = document.getElementById('quantity').value;
+        } else if (button.id == "printBlankBarcodeButton") {
+        type = "blank";
+        } else {
+        type = "specimen";
+        labNo = button.id;
+        quantity = 1;
+        }
+        $jq("#searchLabNumber").val('');
+        document.getElementById("ifbarcode").src = 'LabelMakerServlet?labNo=' + labNo + '&type='
+                + type + '&patientId=' + patientId + '&quantity=' + quantity;
+        document.getElementById("barcodeArea").show();
+        }
+    }
 
-function checkPrint() {
-	var disableButton = false;
-	if (document.getElementById('labelType').selectedIndex == 0) {
-		disableButton = true;
-	} else if (!document.getElementById('quantity').value) {
-		disableButton = true;
-	}
-	document.getElementById('printBarcodeButton').disabled = disableButton;
-}
+    function checkPrint() {
+        var disableButton = false;
+        if (document.getElementById('labelType').selectedIndex == 0) {
+        disableButton = true;
+        } else if (!document.getElementById('quantity').value) {
+        disableButton = true;
+        }
+        document.getElementById('printBarcodeButton').disabled = disableButton;
+    }
 
-function finish() {
-	window.location = "Dashboard.do";
-}
+    function finish() {
+        window.location = "Dashboard.do";
+    }
 </script>
 
 <input type="hidden" id="searchLabNumber">

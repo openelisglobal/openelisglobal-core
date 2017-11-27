@@ -17,54 +17,78 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 public class BarcodeConfigurationAction extends BaseAction {
 
-	@Override
-	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+  @Override
+  protected ActionForward performAction(ActionMapping mapping, ActionForm form,
+          HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		String forward = FWD_SUCCESS;
-		
-		BaseActionForm dynaForm = (BaseActionForm) form;
-		dynaForm.initialize(mapping);
-		setFields(dynaForm);
+    String forward = FWD_SUCCESS;
 
-		request.getSession().setAttribute(SAVE_DISABLED, "false");
- 		return mapping.findForward(forward);
-	}
-	
-	private void setFields(BaseActionForm dynaForm) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		String heightOrderLabels = ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_HEIGHT);
-		String widthOrderLabels = ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_WIDTH);
-		String heightSpecimenLabels = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_BARCODE_HEIGHT);
-		String widthSpecimenLabels = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_BARCODE_WIDTH);
-		PropertyUtils.setProperty(dynaForm, "heightOrderLabels", heightOrderLabels);
-		PropertyUtils.setProperty(dynaForm, "widthOrderLabels", widthOrderLabels);
-		PropertyUtils.setProperty(dynaForm, "heightSpecimenLabels", heightSpecimenLabels);
-		PropertyUtils.setProperty(dynaForm, "widthSpecimenLabels", widthSpecimenLabels);
+    BaseActionForm dynaForm = (BaseActionForm) form;
+    dynaForm.initialize(mapping);
+    setFields(dynaForm);
 
-		String numOrderLabels = ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_ORDER_PRINTED);
-		String numSpecimenLabels = ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_SPECIMEN_PRINTED);
-		String numAliquotLabels = ConfigurationProperties.getInstance().getPropertyValue(Property.MAX_ALIQUOT_PRINTED);
-		PropertyUtils.setProperty(dynaForm, "numOrderLabels", numOrderLabels);
-		PropertyUtils.setProperty(dynaForm, "numSpecimenLabels", numSpecimenLabels);
-		PropertyUtils.setProperty(dynaForm, "numAliquotLabels", numAliquotLabels);
+    request.getSession().setAttribute(SAVE_DISABLED, "false");
+    return mapping.findForward(forward);
+  }
 
-		String collectionDateCheck = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_FIELD_DATE);
-		String testsCheck = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_FIELD_TESTS);
-		String patientSexCheck = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_FIELD_SEX);
-		PropertyUtils.setProperty(dynaForm, "collectionDateCheck", collectionDateCheck);
-		PropertyUtils.setProperty(dynaForm, "testsCheck", testsCheck);
-		PropertyUtils.setProperty(dynaForm, "patientSexCheck", patientSexCheck);
-		
-	}
+  /**
+   * Set the form fields with those values stored in the database
+   * @param dynaForm    The form to populate
+   * @throws IllegalAccessException
+   * @throws InvocationTargetException
+   * @throws NoSuchMethodException
+   */
+  private void setFields(BaseActionForm dynaForm)
+          throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    
+    // get the dimension values
+    String heightOrderLabels = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.ORDER_BARCODE_HEIGHT);
+    String widthOrderLabels = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.ORDER_BARCODE_WIDTH);
+    String heightSpecimenLabels = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.SPECIMEN_BARCODE_HEIGHT);
+    String widthSpecimenLabels = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.SPECIMEN_BARCODE_WIDTH);
+    // set the dimension values
+    PropertyUtils.setProperty(dynaForm, "heightOrderLabels", heightOrderLabels);
+    PropertyUtils.setProperty(dynaForm, "widthOrderLabels", widthOrderLabels);
+    PropertyUtils.setProperty(dynaForm, "heightSpecimenLabels", heightSpecimenLabels);
+    PropertyUtils.setProperty(dynaForm, "widthSpecimenLabels", widthSpecimenLabels);
 
-	@Override
-	protected String getPageTitleKey() {
-		return "barcodeconfiguration.browse.title";
-	}
+    // get the maximum print values
+    String numOrderLabels = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.MAX_ORDER_PRINTED);
+    String numSpecimenLabels = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.MAX_SPECIMEN_PRINTED);
+    String numAliquotLabels = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.MAX_ALIQUOT_PRINTED);
+    //set the maximum print values
+    PropertyUtils.setProperty(dynaForm, "numOrderLabels", numOrderLabels);
+    PropertyUtils.setProperty(dynaForm, "numSpecimenLabels", numSpecimenLabels);
+    PropertyUtils.setProperty(dynaForm, "numAliquotLabels", numAliquotLabels);
 
-	@Override
-	protected String getPageSubtitleKey() {
-		return "barcodeconfiguration.browse.title";
-	}
+    // get the optional specimen values
+    String collectionDateCheck = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.SPECIMEN_FIELD_DATE);
+    String testsCheck = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.SPECIMEN_FIELD_TESTS);
+    String patientSexCheck = ConfigurationProperties.getInstance()
+            .getPropertyValue(Property.SPECIMEN_FIELD_SEX);
+    // set the optional specimen values
+    PropertyUtils.setProperty(dynaForm, "collectionDateCheck", collectionDateCheck);
+    PropertyUtils.setProperty(dynaForm, "testsCheck", testsCheck);
+    PropertyUtils.setProperty(dynaForm, "patientSexCheck", patientSexCheck);
+  }
+
+  @Override
+  protected String getPageTitleKey() {
+    return "barcodeconfiguration.browse.title";
+  }
+
+  @Override
+  protected String getPageSubtitleKey() {
+    return "barcodeconfiguration.browse.title";
+  }
 
 }

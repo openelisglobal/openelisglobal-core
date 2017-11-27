@@ -1,26 +1,35 @@
 package us.mn.state.health.lims.barcode;
 
-public class BarcodeLabelField {
+/**
+ * Stores information about a field that appears on a bar code label
+ * examples of how it appears on labels:
+ *   name: value    (displayFieldName = true)
+ *   value          (displayFieldName = false)
+ * 
+ * @author Caleb
+ *
+ */
+public class LabelField {
 	
 	private String name;
 	private String value;
 	private int colspan = 5;
-	private boolean startNewline = false;
-	private boolean displayFieldName = false;
-	private boolean underline = false;
+	private boolean startNewline = false;  // should field start on newline
+	private boolean displayFieldName = false;  // should  field name be displayed
+	private boolean underline = false; // should there be an underline
 
-	public BarcodeLabelField(String name, String value) {
+	public LabelField(String name, String value) {
 		this.name = name;
 		this.value = value;
 	}
 	
-	public BarcodeLabelField(String name, String value, int colspan) {
+	public LabelField(String name, String value, int colspan) {
 		this.name = name;
 		this.value = value;
 		this.colspan = colspan;
 	}
 	
-	public BarcodeLabelField(int colspan) {
+	public LabelField(int colspan) {
 		this.colspan = colspan;
 	}
 
@@ -73,3 +82,4 @@ public class BarcodeLabelField {
 	}
 
 }
+

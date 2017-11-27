@@ -16,6 +16,7 @@
 <bean:parameter id="patientInfoCheck" name="patientInfoCheck" value="false" />
 <bean:parameter id="facilityIDCheck" name="facilityIDCheck" value="false" />
 <bean:parameter id="facilityID" name="facilityID" value="" />
+<bean:parameter id="newRequesterName" name="sampleOrderItems.newRequesterName" value="" />
 
 <%!
 String path = "";
@@ -62,7 +63,7 @@ function checkOptionalFields() {
 		}
 	</logic:equal>
 	<logic:equal name="facilityIDCheck" value="true">
-		if (!$jq("#requesterId").val()) {
+		if (!$jq("#requesterId").val() && !$jq("#newRequesterName").val()) {
 			return false;
 		}
 	</logic:equal>
@@ -88,6 +89,15 @@ function setPatient() {
 	}
 }
 
+function siteListChanged(textValue) {
+    var siteList = $("requesterId");
+
+    //if the index is 0 it is a new entry, if it is not then the textValue may include the index value
+    if (siteList.selectedIndex == 0 || siteList.options[siteList.selectedIndex].label != textValue) {
+        $("newRequesterName").value = textValue;
+    }
+}
+
 $jq(document).ready(function() {
 	setSave();
 });
@@ -107,12 +117,14 @@ $jq(document).ready(function () {
     maxRepMsg = '<bean:message key="sample.entry.project.siteMaxMsg"/>';
 
     resultCallBack = function (textValue) {
+        siteListChanged(textValue);
     	setSave();
     };
 });
 </script>
 <div class="hidden-fields">
 	<input id="lastPatientId" type="hidden">
+	<html:hidden property="sampleOrderItems.newRequesterName" name='<%=formName%>' styleId="newRequesterName"/>
 </div>
 <table style="width:100%;">
 <tr>
@@ -125,6 +137,7 @@ $jq(document).ready(function () {
 	</tr>
 	<logic:equal name="facilityIDCheck" value="true">
 		<logic:equal name="facilityID" value="">
+			<logic:equal name="newRequesterName" value="">
 			<tr>
 				<td>
 					<bean:message key="sample.batchentry.barcode.label.facilityid" />
@@ -134,7 +147,7 @@ $jq(document).ready(function () {
 				                     name="<%=formName%>"
 				                     property="sampleOrderItems.referringSiteId"
 				                     onkeyup="capitalizeValue( this.value );"
-				                     onchange="setSave();"
+				                     onchange="siteListChanged(this);setSave();"
 				                >
 				            <option value=""></option>
 				            <html:optionsCollection name="<%=formName%>" property="sampleOrderItems.referringSiteList" label="value"
@@ -146,6 +159,7 @@ $jq(document).ready(function () {
 				    </logic:equal>
 				</td>
 			</tr>
+			</logic:equal>
 		</logic:equal>
 	</logic:equal>
 	<logic:equal name="patientInfoCheck" value="true">
@@ -226,6 +240,20 @@ $jq(document).ready(function () {
 				</td>
 			</tr>
 		</logic:notEqual>
+		<logic:equal name="facilityID" value="">
+			<logic:notEqual name="newRequesterName" value="">
+			<tr>
+				<td>
+					<bean:message key="sample.batchentry.barcode.label.facilityid" /> 
+					: <%= request.getAttribute("facilityName") %>
+					<html:hidden name="<%=formName %>"
+						property="sampleOrderItems.referringSiteId"
+						styleId="requesterId"/>
+						
+				</td>
+			</tr>
+			</logic:notEqual>
+		</logic:equal>
 	</tr>
 </table>
 </td>

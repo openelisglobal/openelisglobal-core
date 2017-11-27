@@ -22,43 +22,45 @@ import us.mn.state.health.lims.sample.action.BaseSampleEntryAction;
 
 public class SampleBatchEntrySetupAction extends BaseSampleEntryAction {
 
-	@Override
-	protected ActionForward performAction(ActionMapping mapping,
-			ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String forward = "success";
+  @Override
+  protected ActionForward performAction(ActionMapping mapping, ActionForm form,
+          HttpServletRequest request, HttpServletResponse response) throws Exception {
+    
+    String forward = "success";
 
-		request.getSession().setAttribute(IActionConstants.NEXT_DISABLED, IActionConstants.TRUE);
+    request.getSession().setAttribute(IActionConstants.NEXT_DISABLED, IActionConstants.TRUE);
+    BaseActionForm dynaForm = (BaseActionForm) form;
+    dynaForm.initialize(mapping);
 
-		BaseActionForm dynaForm = (BaseActionForm) form;
+    SampleOrderService sampleOrderService = new SampleOrderService();
+    PropertyUtils.setProperty(dynaForm, "sampleOrderItems",
+            sampleOrderService.getSampleOrderItem());
+    PropertyUtils.setProperty(dynaForm, "sampleTypes",
+            DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
+    PropertyUtils.setProperty(dynaForm, "testSectionList",
+            DisplayListService.getList(ListType.TEST_SECTION));
+    PropertyUtils.setProperty(dynaForm, "currentDate", DateUtil.getCurrentDateAsText());
+    PropertyUtils.setProperty(dynaForm, "currentTime", DateUtil.getCurrentTimeAsText());
+    PropertyUtils.setProperty(dynaForm, "sampleOrderItems.receivedTime",
+            DateUtil.getCurrentTimeAsText());
 
-		dynaForm.initialize(mapping);
+    addProjectList(dynaForm);
 
-        SampleOrderService sampleOrderService = new SampleOrderService();
-        PropertyUtils.setProperty( dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem() );
-		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
-		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
-        PropertyUtils.setProperty( dynaForm, "currentDate", DateUtil.getCurrentDateAsText());
-        PropertyUtils.setProperty( dynaForm, "currentTime", DateUtil.getCurrentTimeAsText());
-        PropertyUtils.setProperty( dynaForm, "sampleOrderItems.receivedTime", DateUtil.getCurrentTimeAsText());
+    if (FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition)) {
+      PropertyUtils.setProperty(dynaForm, "initialSampleConditionList",
+              DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
+    }
 
-		addProjectList( dynaForm );
+    return mapping.findForward(forward);
+  }
 
-		if (FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition)) {
-			PropertyUtils.setProperty(dynaForm, "initialSampleConditionList", DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
-		}
+  @Override
+  protected String getPageTitleKey() {
+    return "sample.batchentry.setup.title";
+  }
 
-		return mapping.findForward(forward);
-	}
-	
-	
-	@Override
-	protected String getPageTitleKey() {
-		return "sample.batchentry.setup.title";
-	}
-
-	@Override
-	protected String getPageSubtitleKey() {
-		return "sample.batchentry.setup.title";
-	}
+  @Override
+  protected String getPageSubtitleKey() {
+    return "sample.batchentry.setup.title";
+  }
 }
