@@ -26,6 +26,7 @@ import us.mn.state.health.lims.citystatezip.valueholder.CityStateZip;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.provider.popup.BasePopupProvider;
 import us.mn.state.health.lims.common.provider.popup.PopupProviderFactory;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.login.dao.UserModuleDAO;
 import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 import us.mn.state.health.lims.security.SecureXmlHttpServletRequest;
@@ -67,8 +68,9 @@ public class AjaxCityStateZipPopupXMLServlet extends AjaxXMLServlet {
 		//check for authentication
 		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
 		if (userModuleDAO.isSessionExpired(request)) {
-			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-			System.out.println("Invalid request - no active session found");
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
 			return;
 		}
 

@@ -448,6 +448,11 @@
 		<%
 			}
 		%>
+		
+		<li><html:link action="/BarcodeConfiguration">
+				<bean:message key="barcodeconfiguration.browse.title" />
+		</html:link></li>
+		
 		<li><html:link action="/ListPlugins">
 				<bean:message key="plugin.menu.list.plugins" />
 			</html:link></li>

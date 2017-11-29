@@ -183,7 +183,6 @@ function validateSubjectNumberOnServer( subjectNumber, type, elementId, success,
 }
 function patientSearch(lastName, firstName, STNumber, subjectNumber, nationalId, labNumber, guid, suppressExternalSearch, success, failure){
 	if( !failure){failure = defaultFailure;	}
-	
 	new Ajax.Request (
             'ajaxQueryXML',  //url
              {//options
@@ -262,6 +261,20 @@ function getPendingAnalysisForTest( testId, success, failure){
             onFailure: failure
         }
     );
+}
+
+function postBatchSample(success, failure){
+    if( !failure){failure = defaultFailure;	}
+	new Ajax.Request(
+		'SamplePatientEntrySave.do',  //url
+		{//options
+			method: 'POST', //http method
+			parameters: jQuery(window.document.forms[0]).serialize().replace(/\+/g,'%20'),
+		    onSuccess: success,
+		    onFailure: failure
+		}
+	);
+	
 }
 
 
