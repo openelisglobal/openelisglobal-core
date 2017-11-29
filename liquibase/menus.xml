@@ -38,7 +38,7 @@
                     valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
             <column name="presentation_order" valueNumeric="9" />
             <column name="element_id" value="menu_sample_batch_entry" />
-            <column name="action_url" value="/SampleBatchEntry.do" />
+            <column name="action_url" value="/SampleBatchEntrySetup.do" />
             <column name="display_key" value="banner.menu.sampleBatchEntry" />
             <column name="tool_tip_key" value="banner.menu.sampleBatchEntry" />
         </insert>
