@@ -50,8 +50,9 @@ public class AjaxQueryXMLServlet extends AjaxServlet {
 		//check for authentication
 		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
 		if (userModuleDAO.isSessionExpired(request)) {
-			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-			System.out.println("Invalid request - no active session found");
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
 			return;
 		}
 

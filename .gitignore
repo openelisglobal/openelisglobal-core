@@ -9,6 +9,10 @@
 liqubase.properties
 
 # IDE files #
+app/.classpath/
+app/.settings/
+app/bin/
+app/build/
 .project
 .idea
 app/out/

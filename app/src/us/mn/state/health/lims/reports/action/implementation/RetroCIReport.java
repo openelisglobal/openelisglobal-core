@@ -48,6 +48,7 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 	protected static String SPECIAL_REQUEST_STUDY_ID;
 	protected static String INDETERMINATE_STUDY_ID;
 	protected static String OBSERVATION_DOCTOR_ID;
+	protected static String OBSERVATION_REQUESTOR_ID;
 	protected static String OBSERVATION_HOSPITAL_ID;
 	protected static String OBSERVATION_SERVICE_ID;
 	protected static String OBSERVATION_PROJECT_ID;
@@ -67,6 +68,8 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 		ObservationHistoryType
 		observationType = observationTypeDAO.getByName("nameOfDoctor");
 		OBSERVATION_DOCTOR_ID = observationType.getId();
+		observationType = observationTypeDAO.getByName("nameOfRequestor");
+		OBSERVATION_REQUESTOR_ID = observationType.getId();
 		observationType = observationTypeDAO.getByName("hospital");
 		OBSERVATION_HOSPITAL_ID = observationType.getId();
 		observationType = observationTypeDAO.getByName("service");

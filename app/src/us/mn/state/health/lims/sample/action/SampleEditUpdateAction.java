@@ -245,6 +245,9 @@ public class SampleEditUpdateAction extends BaseAction {
             }
 
             tx.commit();
+
+			request.getSession().setAttribute("lastAccessionNumber", updatedSample.getAccessionNumber());
+			request.getSession().setAttribute("lastPatientId", patient.getId());
         } catch (LIMSRuntimeException lre) {
             tx.rollback();
             errors = new ActionMessages();

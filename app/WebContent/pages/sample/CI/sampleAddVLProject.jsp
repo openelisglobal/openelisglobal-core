@@ -286,7 +286,7 @@ function clearFormElements(fieldIds) {
 		<td width="38%"><bean:message key="sample.entry.project.ARV.dryTubeTaken" /></td>
 		<td width="60%">
 
-			<html:checkbox name="<%=formName%>" styleId="ARVDryTube"
+			<html:checkbox name="<%=formName%>" 
 				   property="ProjectData.dryTubeTaken"
 				   styleId="vl.dryTubeTaken"
 				   onchange="vl.checkSampleItem($('vl.dryTubeTaken'));"/>

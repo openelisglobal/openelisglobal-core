@@ -17,9 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import us.mn.state.health.lims.common.log.LogEvent;
 
 public class SecurityFilter implements Filter {
-
-	HashSet<String> getParamWhiteList;
-	HashSet<String> getParamBlackList;
 	
 	public SecurityFilter() {
 	}
@@ -56,30 +53,10 @@ public class SecurityFilter implements Filter {
 			} 
 		}
 			
-		//Body Parameters in query check currently on blacklist
-		String query = httpRequest.getQueryString();
-		if (query != null) {
-			String[] urlParams = query.split("&");
-			for (int i = 0; i < urlParams.length; i++) {
-				String urlParamName = urlParams[i].split("=")[0];
-				if (urlParamName.contains(".")) {
-					urlParamName = urlParamName.split(".")[0];
-				}
-				if (urlParamName.contains("[")) {
-					urlParamName = urlParamName.split("[")[0];
-				}
-
-				//if (!getParamWhiteList.contains(urlParamName)) {
-				if (getParamBlackList.contains(urlParamName)) {
-					suspectedAttack = true;
-					attackList.add("Body Parameter in query- " + urlParamName);
-				}
-			}
-		}
-			
-		//XSS check 
+		//persistent XSS check 
 		if (httpRequest.getMethod().equals("POST") || httpRequest.getRequestURI().contains("Update")
 				|| httpRequest.getRequestURI().contains("Save")) {
+			@SuppressWarnings("unchecked")
 			Enumeration<String> parameterNames = httpRequest.getParameterNames();
 			 while (parameterNames.hasMoreElements()) {
 				 String param = httpRequest.getParameter(parameterNames.nextElement());
@@ -93,8 +70,8 @@ public class SecurityFilter implements Filter {
 		}
 		
 		//Adding security headers to response
-		httpResponse.addHeader("Content-Security-Policy","default-src 'none'; script-src 'self';" 
-		        + "connect-src 'self'; img-src 'self'; style-src 'self';");//defines where content is allowed to be loaded from
+		httpResponse.addHeader("Content-Security-Policy","default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval';" 
+		        + "connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; child-src 'self';");//defines where content is allowed to be loaded from
 		//httpResponse.addHeader("Strict-Transport-Security", "max-age=31536000"); //enforces communication must be over https
 		httpResponse.addHeader("X-Content-Type-Options","nosniff"); //prevents MIME sniffing errors
 		httpResponse.addHeader("X-Frame-Options", "SAMEORIGIN");//enforces whether page is allowed to be an iframe in another website
@@ -122,68 +99,9 @@ public class SecurityFilter implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		getParamWhiteList = new HashSet<String>();
-		//createWhiteList();
-		getParamBlackList = new HashSet<String>();
-		createBlackList();
-	}
-	
-	//less restrictive, less likely to stop valid traffic
-	private void createBlackList() {
-		getParamBlackList.add("englishValue");
-		getParamBlackList.add("frenchValue");
-		getParamBlackList.add("loginName");
-		getParamBlackList.add("observations");
-		getParamBlackList.add("password");
-		getParamBlackList.add("patientProperties");
-		getParamBlackList.add("ProjectData");
-		getParamBlackList.add("qaEvents");
-		getParamBlackList.add("referralItems");
-		getParamBlackList.add("resultList");
-		getParamBlackList.add("sampleOrderItems");
-		getParamBlackList.add("selectedIDs");
-		getParamBlackList.add("selectedRoles");
-		getParamBlackList.add("testResult");
-	}
-
-	//more restrictive, more likely to stop valid traffic
-	public void createWhiteList() {
-		getParamWhiteList.add("accessionNumber");
-		getParamWhiteList.add("accessionNumberSearch");
-		getParamWhiteList.add("blank");
-		getParamWhiteList.add("cacheBreaker");
-		getParamWhiteList.add("date");
-		getParamWhiteList.add("field");
-		getParamWhiteList.add("fieldId");
-		getParamWhiteList.add("firstName");
-		getParamWhiteList.add("forward");
-		getParamWhiteList.add("guid");
-		getParamWhiteList.add("ID");
-		getParamWhiteList.add("labNo");
-		getParamWhiteList.add("labNumber");
-		getParamWhiteList.add("lang");
-		getParamWhiteList.add("lastName");
-		getParamWhiteList.add("NationalID");
-		getParamWhiteList.add("nationalID");
-		getParamWhiteList.add("patientID");
-		getParamWhiteList.add("personKey");
-		getParamWhiteList.add("provider");
-		getParamWhiteList.add("regionId");
-		getParamWhiteList.add("relativeToNow");
-		getParamWhiteList.add("report");
-		getParamWhiteList.add("sampleType");
-		getParamWhiteList.add("selectedSearchID");
-		getParamWhiteList.add("selectedValue");
-		getParamWhiteList.add("startingRecNo");
-		getParamWhiteList.add("STNumber");
-		getParamWhiteList.add("subjectNumber");
-		getParamWhiteList.add("suppressExternalSearch");
-		getParamWhiteList.add("test");
-		getParamWhiteList.add("testSectionId");
-		getParamWhiteList.add("type");
-		getParamWhiteList.add("value");
-		getParamWhiteList.add("ver");
+	public void init(FilterConfig arg0) throws ServletException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

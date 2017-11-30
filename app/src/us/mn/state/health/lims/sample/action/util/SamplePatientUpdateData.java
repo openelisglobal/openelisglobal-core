@@ -379,13 +379,14 @@ public class SamplePatientUpdateData{
 
         if (!GenericValidator.isBlankOrNull(orgId)) {
             requester = createSiteRequester(orgId);
-
             if( FormFields.getInstance().useField(Field.SampleEntryReferralSiteCode)){
                 updateCurrentOrgIfNeeded( orderItem.getReferringSiteCode(), orgId );
             }
 
         } else if (!GenericValidator.isBlankOrNull(orderItem.getNewRequesterName())) {
-            //will be corrected after newOrg is persisted
+          
+          if (confirmNewRequesterName(orderItem.getNewRequesterName())) {
+          //will be corrected after newOrg is persisted
             requester = createSiteRequester("0");
 
             setNewOrganization( new Organization() );
@@ -398,10 +399,38 @@ public class SamplePatientUpdateData{
             }
 
             initializeNewOrganization( orderItem );
+          } else {
+            Organization organization = new Organization();
+            organization.setOrganizationName(orderItem.getNewRequesterName());
+            organization = orgDAO.getOrganizationByName(organization, true);
+            orgId = organization.getId();
 
+            if (!GenericValidator.isBlankOrNull(orgId)) {
+                requester = createSiteRequester(orgId);
+            } 
+          }
         }
 
         return requester;
+    }
+
+    /**
+     * Check if new requester name is actually a new name
+     * @param requesterName   The name to check 
+     * @return                if the name is not stored in the database
+     */
+    private boolean confirmNewRequesterName(String requesterName) {
+      boolean newName = true;
+      Organization organization = new Organization();
+      organization.setOrganizationName(requesterName);
+      organization = orgDAO.getOrganizationByName(organization, true);
+
+      if (organization == null) {
+        newName = true;
+      } else {
+        newName = false;
+      }
+      return newName;
     }
 
     private SampleRequester createSiteRequester(String orgId) {

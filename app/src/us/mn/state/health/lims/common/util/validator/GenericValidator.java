@@ -55,4 +55,19 @@ public class GenericValidator extends org.apache.commons.validator.GenericValida
          return us.mn.state.health.lims.common.util.validator.DateValidator.getInstance().isValid(value, datePattern, strict); 
      } 
      
+     public static boolean isBool(String value) {
+    	 return "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value);
+     }
+     
+     public static boolean is24HourTime(String value) {
+    	 if (value == null) {
+    		 return false;
+    	 } else if (value.matches("([01]?[0-9]|2[0-3]):[0-5][0-9]")) {
+    		 return true;
+    	 } else {
+    		 return false;
+    	 }
+    	 
+     }
+     
  }

@@ -197,6 +197,14 @@ function onPrint(){
 			           styleClass="input-medium"
 			           maxlength='<%= Integer.toString(accessionValidator.getMaxAccessionLength())%>'/>
 	  </logic:equal>
+	  <logic:equal name='<%=formName%>' property="useAccessionDirect" value="true">
+	  	<bean:message key="sample.search.scanner.instructions"/>
+	  </logic:equal>
+	  <logic:notEqual name='<%=formName%>' property="useAccessionDirect" value="true">
+	  	<logic:equal name='<%=formName%>' property="useHighAccessionDirect" value="true">
+	  		<bean:message key="sample.search.scanner.instructions"/>
+	  	</logic:equal>
+	  </logic:notEqual>
   </div>
   <logic:equal name='<%=formName%>' property="useHighAccessionDirect" value="true">
     <div><span style="padding-left: 10px"><%= StringUtil.getContextualMessageForKey("report.enter.labNumber.detail") %></span></div>
