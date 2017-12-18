@@ -138,10 +138,10 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
         add("received_date",    "DATERECPT",    DATE_TIME );      // reception date
         add("entered_date",  "DATESAISIE",    DATE_TIME );      // interview date
         add("collection_date",  "DATECOLLECT",    DATE_TIME );      // collection date
-       // add("released_date",  "DATEVALIDATION",    DATE_TIME );      // validation date
+        //add("released_date",  "DATEVALIDATION",    DATE_TIME );      // validation date
         add("organization_code", "CODEREFERANT", NONE);
         add("organization_name", "REFERANT",  NONE);
-        add("program",        "Programme", PROGRAM );
+        add("program",        "PROGRAMME", PROGRAM );
         add("status_id", "STATUT", SAMPLE_STATUS);
        // add("external_id",      "SUJETSIT", NONE);
        //add("last_name",        "NOM",      NONE);
