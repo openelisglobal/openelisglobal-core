@@ -82,7 +82,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[HOPITAL GENERAL DE SOUBRE]]></text>
+				<text><![CDATA[HOPITAL GENERAL ABOBO SUD]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="109" y="0" width="331" height="20"/>
@@ -91,20 +91,20 @@
 				</textElement>
 				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<image isUsingCache="true" onErrorType="Blank">
-				<reportElement mode="Transparent" x="484" y="0" width="64" height="57" backcolor="#FFFFFF"/>
-				<imageExpression class="java.io.InputStream"><![CDATA[$P{rightHeaderImage}]]></imageExpression>
-			</image>
 			<staticText>
 				<reportElement x="0" y="79" width="548" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable: ASSE KONAN A. ]]></text>
+				<text><![CDATA[Responsable:  ]]></text>
 			</staticText>
-			<image isUsingCache="true">
-				<reportElement x="2" y="2" width="79" height="72"/>
-				<imageExpression class="java.io.InputStream"><![CDATA[$P{leftHeaderImage}]]></imageExpression>
+			<image isUsingCache="false">
+				<reportElement x="2" y="0" width="75" height="66"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
+			</image>
+			<image hAlign="Right" isUsingCache="false">
+				<reportElement x="478" y="0" width="67" height="59"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</detail>
