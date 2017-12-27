@@ -13,6 +13,7 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties,
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
 
+<%@ page import="org.owasp.encoder.Encode" %>
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
 <%@ taglib uri="/tags/struts-logic"		prefix="logic" %>
@@ -86,7 +87,7 @@ function printWorkplan() {
 <% if( !workplanType.equals("test") && !workplanType.equals("panel") ){ %>
 <div id="searchDiv" class="colorFill"  >
 <div id="PatientPage" class="colorFill" style="display:inline" >
-<input type="hidden" name="testName"	value='<%=workplanType%>' />
+<input type="hidden" name="testName"	value='<%=Encode.forHtml(workplanType)%>' />
 <h2><bean:message key="sample.entry.search"/></h2>
 	<table width="30%">
 		<tr>

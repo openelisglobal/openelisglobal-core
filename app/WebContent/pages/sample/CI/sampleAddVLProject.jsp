@@ -7,6 +7,7 @@
 	        us.mn.state.health.lims.common.util.StringUtil,
             us.mn.state.health.lims.common.util.Versioning,
 	        java.util.HashSet"%>
+<%@page import="org.owasp.encoder.Encode"%>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -45,8 +46,8 @@
 
 <script type="text/javascript" language="JavaScript1.2">
 var dirty = false;
-var type = '<%=requestType%>';
-var requestType = '<%=requestType%>';
+var type = '<%=Encode.forJavaScript(requestType)%>';
+var requestType = '<%=Encode.forJavaScript(requestType)%>';
 var pageType = "Sample";
 birthDateUsageMessage = "<bean:message key='error.dob.complete.less.two.years'/>";
 previousNotMatchedMessage = "<bean:message key='error.2ndEntry.previous.not.matched'/>";

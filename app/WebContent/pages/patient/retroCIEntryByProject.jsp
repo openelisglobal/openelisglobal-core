@@ -5,6 +5,7 @@
 	        us.mn.state.health.lims.common.util.StringUtil,
             us.mn.state.health.lims.common.util.Versioning,
 	        java.util.HashSet"%>
+<%@page import="org.owasp.encoder.Encode"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -40,7 +41,7 @@
 
 var dirty = false;
 /* TODO PAHill the code in retroCIUtilities.js uses the var type, while this page uses requestType.  We should have one. */
-var requestType = '<%=requestType%>';
+var requestType = '<%=Encode.forJavaScript(requestType)%>';
 var type = requestType;
 var pageType = "Patient";
 var formName = '<%=formName%>';

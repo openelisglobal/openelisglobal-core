@@ -3,6 +3,7 @@
 	import="java.util.Date,
 	us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -146,7 +147,7 @@ function validateSignificantDigits() {
 	//AIS - bugzilla 1891
 	//bugzilla 2360 validate for valid digits and length
     var result = true;
-	if ('<%=rgType%>' != '<%=titerType%>') {    
+	if ('<%=Encode.forJavaScript(rgType)%>' != '<%=titerType%>') {    
     	 var significantDigits = document.getElementById("significantDigits").value;
 		 
 		 var strValidChars = "0123";
@@ -201,7 +202,7 @@ function validateTestResultValue(blankCheck) {
          }
       }
  
-      if ((result == true) && ('<%=rgType%>' == '<%=titerType%>')) {              
+      if ((result == true) && ('<%=Encode.forJavaScript(rgType)%>' == '<%=titerType%>')) {              
 		var tempone = testResultValue.substring(0, indexOfComma);
 		var temptwo = testResultValue.substring(indexOfComma + 1); 							
 		var x = Math.max(tempone, temptwo);		
@@ -342,7 +343,7 @@ function saveItToParentForm(form) {
        //var rgType = document.getElementById("selectedResultType").value;
        //alert("sending rgType " + '<%=rgType%>');
        for (var i = 0; i < arrayIndex ; i++) {
-            window.opener.addRowToSectionB('<%=aID%>', null, '<%=rgType%>', testResultValueList[i], '', flagsList[i], sortList[i], significantDigitsList[i], quantLimitList[i], i, arrayIndex, '');
+            window.opener.addRowToSectionB('<%=Encode.forJavaScript(aID)%>', null, '<%=Encode.forJavaScript(rgType)%>', testResultValueList[i], '', flagsList[i], sortList[i], significantDigitsList[i], quantLimitList[i], i, arrayIndex, '');
        }
        window.close();
    }
