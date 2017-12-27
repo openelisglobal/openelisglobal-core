@@ -70,7 +70,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 34 72 20 33 / BP 13 SOUBRE ]]></text>
+				<text><![CDATA[TEL: 24 48 50 06 / 13 BP 969 Abidjan 13]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement key="textField-2" x="440" y="54" width="109" height="30"/>
@@ -96,10 +96,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable:  ]]></text>
+				<text><![CDATA[Responsable: KOUDOUGOU TRAORE M.]]></text>
 			</staticText>
 			<image isUsingCache="false">
-				<reportElement x="2" y="0" width="75" height="66"/>
+				<reportElement x="2" y="0" width="77" height="59"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
 			</image>
 			<image hAlign="Right" isUsingCache="false">
