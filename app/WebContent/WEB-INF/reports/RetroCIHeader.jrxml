@@ -91,14 +91,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 30 64 01 36   FAX: 30 64 01 26]]></text>
+				<text><![CDATA[TEL: 33 79 00 33  /  BP 412 Man]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="87" width="543" height="20"/>
+				<reportElement x="68" y="86" width="371" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="9" isBold="false"/>
+					<font size="7" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable Laboratoire: Dr HOUEDANOU Chantal]]></text>
+				<text><![CDATA[Responsable Laboratoire : Dr TRA BI Joel  /  Responsable Charge Virale :  Dr KOUASSI AFFOUM PIERRE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="5" y="22" width="543" height="20"/>
@@ -112,7 +112,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CHR YAMOUSSOUKRO - BP 1005 YAMOUSSOUKRO]]></text>
+				<text><![CDATA[CENTRE HOSPITALIER REGIONAL DE MAN]]></text>
 			</staticText>
 		</band>
 	</detail>

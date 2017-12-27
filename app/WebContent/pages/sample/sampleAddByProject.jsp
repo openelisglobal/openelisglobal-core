@@ -1074,7 +1074,6 @@ function /*void*/ setSaveButton() {
                       property="birthDateForDisplay"
                       styleClass="text"
                       size="20"
-                      maxlength="10"
                       onkeyup="addDateSlashes(this, event);"
                       onchange="rtn.checkDateOfBirth(true)"
                       styleId="rtn.dateOfBirth" maxlength="10"/>
