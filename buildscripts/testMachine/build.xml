@@ -372,6 +372,12 @@
             <param name="dbName" value="ci_reg_lab"/>
             <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
         </antcall>
+		
+		<antcall target="buildInstaller">
+            <param name="context" value="CI_OpenElis"/>
+            <param name="dbName" value="ci_reg_lab"/>
+            <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
+        </antcall>
 
         <antcall target="buildInstaller">
             <param name="context" value="CI_IPCIOpenElis"/>

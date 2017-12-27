@@ -74,7 +74,7 @@ rtn = new RtnProjectChecker();
 			<app:text name="<%=formName%>" property="receivedDateForDisplay"
 				onkeyup="addDateSlashes(this, event);"
 				onchange="rtn.checkReceivedDate(false); makeDirty();"
-				styleClass="text" maxlength="10"
+				styleClass="text"
 				styleId="rtn.receivedDateForDisplay" maxlength="10" />
 			<div id="rtn.receivedDateForDisplayMessage" class="blank" />
 		</td>

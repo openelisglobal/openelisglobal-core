@@ -56,7 +56,7 @@
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/math-extend.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
-<script type="text/javascript" src="neon/OEPaging.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="scripts/OEPaging.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="scripts/jquery.asmselect.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>" />
 <script type="text/javascript" src="<%=basePath%>scripts/testReflex.js?ver=<%= Versioning.getBuildNumber() %>" ></script>
@@ -573,7 +573,7 @@ function /*boolean*/ handleEnterEvent(){
                     <app:text name="resultList"
                               indexed="true"
                               property="result"
-                              size="6"
+                              size="16"
                               allowEdits='<%= !resultList.isReadOnly() %>'
                               styleId='<%="resultId_" + index %>'
                               onchange='<%="markUpdated(); makeDirty(); updateLogValue(this, " + index + ");" %>'/>
