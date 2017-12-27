@@ -3,6 +3,7 @@
 	import="java.util.Date,
 	us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -57,9 +58,9 @@ function saveItToParentForm(form) {
        }
    }
    if (rgType == '<%=dictType%>') {
-        window.opener.popupAddDictionaryRG(window, '<%=aID%>', rgType);
+        window.opener.popupAddDictionaryRG(window, '<%=Encode.forJavaScript(aID)%>', rgType);
    } else {
-        window.opener.popupAddNonDictionaryRG(window, '<%=aID%>', rgType);
+        window.opener.popupAddNonDictionaryRG(window, '<%=Encode.forJavaScript(aID)%>', rgType);
    }
   }
 }

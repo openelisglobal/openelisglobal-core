@@ -20,6 +20,7 @@ package us.mn.state.health.lims.systemuser.action;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -309,7 +310,10 @@ public class UnifiedSystemUserAction extends BaseAction {
 	}
 
 	private String getProxyPassword(Login login) {
-		return StringUtil.replaceAllChars(login.getPassword(), DEFAULT_PASSWORD_FILLER);
+		char[] chars = new char[9];
+		Arrays.fill(chars,  DEFAULT_PASSWORD_FILLER);
+		return new String(chars);
+		//return StringUtil.replaceAllChars(login.getPassword(), DEFAULT_PASSWORD_FILLER);
 	}
 
 	private Login getLoginFromCombinedId(String id) {

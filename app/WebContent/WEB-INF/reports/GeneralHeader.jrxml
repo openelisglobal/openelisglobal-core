@@ -81,7 +81,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName1}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="97" y="46" width="378" height="24">
+				<reportElement positionType="Float" x="0" y="46" width="570" height="24">
 					<printWhenExpression><![CDATA[$V{hasLogo}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -90,7 +90,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="102" y="26" width="366" height="20" backcolor="#FFFFFF">
+				<reportElement mode="Transparent" x="0" y="26" width="572" height="20" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$V{hasLogo}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
@@ -99,7 +99,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="102" y="5" width="468" height="20">
+				<reportElement x="0" y="5" width="570" height="20">
 					<printWhenExpression><![CDATA[!$V{hasLogo}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -108,7 +108,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName1}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="102" y="27" width="468" height="20" backcolor="#FFFFFF">
+				<reportElement mode="Transparent" x="0" y="25" width="570" height="20" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[!$V{hasLogo}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
@@ -117,7 +117,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName2}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="97" y="47" width="478" height="24">
+				<reportElement positionType="Float" x="0" y="46" width="570" height="24">
 					<printWhenExpression><![CDATA[!$V{hasLogo}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center">

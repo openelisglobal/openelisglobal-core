@@ -1,5 +1,5 @@
 <%@ page language="java"
-	contentType="text/html; charset=utf-8"
+	contentType="application/javascript; charset=utf-8"
 	import="org.apache.struts.util.RequestUtils,org.apache.struts.action.*,org.apache.struts.Globals,java.util.Iterator,javax.servlet.jsp.JspException"
 	import="us.mn.state.health.lims.common.action.IActionConstants"
 	import="us.mn.state.health.lims.common.util.StringUtil"

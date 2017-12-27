@@ -19,6 +19,8 @@
 
 <%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 <%@page import="java.util.HashSet"%>
+<%@page import="org.owasp.encoder.Encode"%>
+
 <%!
     String basePath = "";
     UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
@@ -40,8 +42,8 @@
 <script type="text/javascript" language="JavaScript1.2">
 
 var dirty = false;
-var type = '<%=requestType%>';
-var requestType = '<%=requestType%>';
+var type = '<%=Encode.forJavaScript(requestType)%>';
+var requestType = '<%=Encode.forJavaScript(requestType)%>';
 var pageType = "Sample";
 birthDateUsageMessage = "<bean:message key='error.dob.complete.less.two.years'/>";
 previousNotMatchedMessage = "<bean:message key='error.2ndEntry.previous.not.matched'/>";
@@ -139,7 +141,7 @@ function setDefaultTests( div )
     if (div=="FollowUpARV_Id") {
        // tests = new Array("farv.glycemiaTest", "farv.creatinineTest",
              //  "farv.transaminaseTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
-       tests = new Array("farv.creatinineTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
+       tests = new Array("farv.creatinineTest", "farv.dryTubeTaken") ;
     }
     //if (div=="EID_Id") {
     //  tests = new Array ("eid.dnaPCR", "eid.dbsTaken");
