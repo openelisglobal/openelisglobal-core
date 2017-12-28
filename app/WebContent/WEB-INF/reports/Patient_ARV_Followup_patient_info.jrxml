@@ -42,7 +42,7 @@
 	<detail>
 		<band height="75" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="83" y="18" width="65" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="71" y="18" width="77" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -161,7 +161,7 @@
 				<text><![CDATA[Sujetno: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-3" x="1" y="18" width="82" height="18"/>
+				<reportElement key="staticText-3" x="1" y="18" width="70" height="18"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
