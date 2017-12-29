@@ -87,28 +87,28 @@
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="5" y="62" width="543" height="20"/>
+				<reportElement x="5" y="65" width="543" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[TEL: 33 79 00 33  /  BP 412 Man]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="82" width="371" height="20"/>
+				<reportElement x="68" y="86" width="371" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable Laboratoire : Dr TRA BI Joel  /  Responsable Charge Virale :  Dr KOUASSI AFOUM PIERRE]]></text>
+				<text><![CDATA[Responsable Laboratoire : Dr TRA BI Joel  /  Responsable Charge Virale :  Dr KOUASSI AFFOUM PIERRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="20" width="543" height="20"/>
+				<reportElement x="5" y="22" width="543" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
 				<text><![CDATA[LABORATOIRE DE BIOLOGIE MOLECULAIRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="41" width="543" height="20"/>
+				<reportElement x="5" y="43" width="543" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
