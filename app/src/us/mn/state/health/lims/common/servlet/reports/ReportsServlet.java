@@ -33,6 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import us.mn.state.health.lims.common.provider.reports.BaseReportsProvider;
 import us.mn.state.health.lims.common.provider.reports.ReportsProviderFactory;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 
 /**
  * @author benzd1
@@ -48,6 +51,14 @@ public class ReportsServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException
 	{
+		//check for authentication
+		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+		if (userModuleDAO.isSessionExpired(request)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
+			return;
+		}
 		String reportsProvider = request.getParameter("provider");
 		Map paramMap = request.getParameterMap();
 		

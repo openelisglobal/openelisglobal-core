@@ -285,9 +285,9 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 
 		String status = patientInfo.getPatientProcessingStatus();
 
-		if (status.equals("noAction")) {
+		if ("noAction".equals(status)) {
 			patientUpdateStatus = PatientUpdateStatus.NO_ACTION;
-		} else if (status.equals("update")) {
+		} else if ("update".equals(status)) {
 			patientUpdateStatus = PatientUpdateStatus.UPDATE;
 		} else {
 			patientUpdateStatus = PatientUpdateStatus.ADD;
