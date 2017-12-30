@@ -38,7 +38,6 @@ import us.mn.state.health.lims.observationhistorytype.ObservationHistoryTypeMap;
 import us.mn.state.health.lims.patient.valueholder.AdverseEffect;
 import us.mn.state.health.lims.patient.valueholder.ObservationData;
 import us.mn.state.health.lims.sample.form.ProjectData;
-import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;

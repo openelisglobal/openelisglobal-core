@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.util.SystemConfiguration,
-	us.mn.state.health.lims.common.util.ConfigurationProperties,
-	us.mn.state.health.lims.common.formfields.AdminFormFields,us.mn.state.health.lims.common.formfields.AdminFormFields.Field"%>
+			us.mn.state.health.lims.common.util.ConfigurationProperties,
+			us.mn.state.health.lims.common.formfields.AdminFormFields,
+			us.mn.state.health.lims.common.formfields.AdminFormFields.Field"%>
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
 <%@ taglib uri="/tags/struts-logic" prefix="logic"%>

@@ -15,10 +15,10 @@
 */
 package us.mn.state.health.lims.resultvalidation.bean;
 
-import us.mn.state.health.lims.common.util.IdValuePair;
-
 import java.sql.Timestamp;
 import java.util.List;
+
+import us.mn.state.health.lims.common.util.IdValuePair;
 
 public class AnalysisItem  {
 

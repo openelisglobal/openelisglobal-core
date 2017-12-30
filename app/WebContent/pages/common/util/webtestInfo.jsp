@@ -1,8 +1,6 @@
 <%@ page language="java" pageEncoding="ISO-8859-1"
-	import="org.apache.struts.util.RequestUtils,org.apache.struts.action.*,org.apache.struts.Globals,java.util.Iterator,javax.servlet.jsp.JspException"
-	import="us.mn.state.health.lims.common.action.IActionConstants"
-	import="us.mn.state.health.lims.common.util.StringUtil"
-	import="us.mn.state.health.lims.common.util.resources.ResourceLocator"
+	import="org.apache.struts.action.*,
+		us.mn.state.health.lims.common.action.IActionConstants"
  %>
 
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>

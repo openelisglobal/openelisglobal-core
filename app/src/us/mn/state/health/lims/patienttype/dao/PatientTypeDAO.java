@@ -8,6 +8,7 @@
 package us.mn.state.health.lims.patienttype.dao;
 
 import java.util.List;
+
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.patienttype.valueholder.PatientType;

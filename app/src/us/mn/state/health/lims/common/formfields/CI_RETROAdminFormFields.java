@@ -17,9 +17,9 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import us.mn.state.health.lims.common.formfields.AdminFormFields.Field;
-
 import java.util.HashMap;
+
+import us.mn.state.health.lims.common.formfields.AdminFormFields.Field;
 
 public class CI_RETROAdminFormFields implements IAdminFormFieldsForImplementation {
 

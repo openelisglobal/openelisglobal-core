@@ -17,9 +17,13 @@
 package us.mn.state.health.lims.reports.action.implementation;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.validator.GenericValidator;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
@@ -33,9 +37,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ActivityReportBean;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ActivityReport extends Report implements IReportCreator{
     private int PREFIX_LENGTH = AccessionNumberUtil.getAccessionNumberValidator().getInvarientLength();

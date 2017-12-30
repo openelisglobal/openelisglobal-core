@@ -17,7 +17,14 @@
 */
 package us.mn.state.health.lims.common.provider.validation;
 
+import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.PATIENT_STATUS_FAIL;
+import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.SAMPLE_FOUND;
+import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.SAMPLE_STATUS_FAIL;
+
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
@@ -35,10 +42,6 @@ import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-
-import java.util.List;
-
-import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.*;
 
 public class ProgramAccessionValidator implements IAccessionNumberValidator {
 

@@ -1,13 +1,12 @@
-<%@page import="us.mn.state.health.lims.common.util.ConfigurationProperties.Property"%>
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-%>
+	import="us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+			us.mn.state.health.lims.common.action.IActionConstants,
+			us.mn.state.health.lims.login.valueholder.UserSessionData"%>
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 <%@ taglib uri="/tags/labdev-view" prefix="app" %>
-<%@ page import="us.mn.state.health.lims.common.action.IActionConstants"%>
-<%@ page import="us.mn.state.health.lims.login.valueholder.UserSessionData"%>
 
 <%!
       String path = "";

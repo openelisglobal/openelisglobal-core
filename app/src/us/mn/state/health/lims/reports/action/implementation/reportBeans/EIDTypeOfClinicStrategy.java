@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
+
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;

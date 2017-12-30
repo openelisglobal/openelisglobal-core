@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
-				 us.mn.state.health.lims.common.util.SystemConfiguration,
                  us.mn.state.health.lims.common.util.ConfigurationProperties,
 			     us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
 			     us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,

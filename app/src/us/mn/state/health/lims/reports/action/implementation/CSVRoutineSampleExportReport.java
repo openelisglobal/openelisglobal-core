@@ -23,8 +23,6 @@ import java.util.List;
 
 import javax.xml.ws.Response;
 
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.RoutineColumnBuilder;
 
 public abstract class CSVRoutineSampleExportReport extends CSVRoutineExportReport {

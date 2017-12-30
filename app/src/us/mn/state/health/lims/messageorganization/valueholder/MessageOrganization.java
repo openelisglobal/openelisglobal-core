@@ -15,14 +15,14 @@
 */
 package us.mn.state.health.lims.messageorganization.valueholder;
 
+import java.sql.Date;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.organization.valueholder.Organization;
-
-import java.sql.Date;
 
 public class MessageOrganization extends EnumValueItemImpl {
 

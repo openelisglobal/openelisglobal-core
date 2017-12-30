@@ -17,10 +17,10 @@
 */
 package us.mn.state.health.lims.common.util;
 
-import org.apache.commons.validator.GenericValidator;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.validator.GenericValidator;
 
 /*
  * This is an abstract class which represents the configuration properties of the application.  The derived

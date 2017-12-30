@@ -16,13 +16,14 @@
 
 package us.mn.state.health.lims.reports.action.implementation;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.util.IdValuePair;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+import org.apache.commons.beanutils.PropertyUtils;
+
+import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.util.IdValuePair;
 
 /**
  * Represents a list for report specification

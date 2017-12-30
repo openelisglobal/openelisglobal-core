@@ -16,7 +16,10 @@
 */
 package us.mn.state.health.lims.result.action.util;
 
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -26,8 +29,6 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
 import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
-
-import java.util.List;
 
 public class ResultUtil {
 	private static final DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();

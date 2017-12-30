@@ -17,9 +17,9 @@ package us.mn.state.health.lims.qaevent.valueholder;
 
 import java.util.List;
 
+import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
 import us.mn.state.health.lims.sampleqaeventaction.valueholder.SampleQaEventAction;
-import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 /**
  * @author benzd1

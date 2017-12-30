@@ -18,9 +18,9 @@ package us.mn.state.health.lims.result.valueholder;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
-import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
 public class Result extends EnumValueItemImpl {
 

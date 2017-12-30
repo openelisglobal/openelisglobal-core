@@ -17,8 +17,12 @@
  */
 package us.mn.state.health.lims.resultlimits.daoimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -29,10 +33,6 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
-import us.mn.state.health.lims.test.valueholder.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 

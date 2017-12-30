@@ -17,6 +17,10 @@
 */
 package us.mn.state.health.lims.sample.util;
 
+import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.PATIENT_STATUS_FAIL;
+import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.SAMPLE_FOUND;
+import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.SAMPLE_STATUS_FAIL;
+
 import us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory;
@@ -25,8 +29,6 @@ import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValida
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusSet;
-
-import static us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults.*;
 
 public class AccessionNumberUtil {
 

@@ -16,7 +16,10 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.test.dao.TestDAO;
@@ -24,8 +27,6 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.List;
 
 public class TestIdentityService implements ITestIdentityService{
 	private static String VIRAL_LOAD_TEST_ID = null;

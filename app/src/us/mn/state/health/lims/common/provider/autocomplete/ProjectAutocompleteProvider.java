@@ -22,9 +22,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.project.dao.ProjectDAO;
 import us.mn.state.health.lims.project.daoimpl.ProjectDAOImpl;
-import us.mn.state.health.lims.common.log.LogEvent;
 
 /**
  * @author benzd1

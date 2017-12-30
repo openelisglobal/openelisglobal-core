@@ -1,10 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
                  us.mn.state.health.lims.common.formfields.FormFields,
-                 us.mn.state.health.lims.common.formfields.FormFields.Field" %>
-<%@ page import="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" %>
-<%@ page import="us.mn.state.health.lims.common.util.*" %>
-
+                 us.mn.state.health.lims.common.formfields.FormFields.Field,
+                 us.mn.state.health.lims.patient.action.bean.PatientManagementInfo,
+                 us.mn.state.health.lims.common.util.*" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>

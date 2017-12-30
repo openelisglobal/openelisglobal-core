@@ -17,11 +17,16 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.jfree.util.Log;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.QAService;
@@ -53,10 +58,6 @@ import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements IReportParameterSetter, IReportCreator {
 	

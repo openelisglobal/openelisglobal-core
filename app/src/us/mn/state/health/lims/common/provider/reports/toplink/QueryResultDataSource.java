@@ -19,12 +19,11 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
-
-import org.apache.commons.beanutils.PropertyUtils;
-
 import us.mn.state.health.lims.common.log.LogEvent;
 
 /**

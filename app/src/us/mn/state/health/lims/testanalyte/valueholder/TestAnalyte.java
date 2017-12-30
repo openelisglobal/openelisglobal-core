@@ -18,10 +18,10 @@ package us.mn.state.health.lims.testanalyte.valueholder;
 import java.util.ArrayList;
 import java.util.List;
 
-import us.mn.state.health.lims.common.valueholder.ValueHolder;
-import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
+import us.mn.state.health.lims.common.valueholder.ValueHolder;
+import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 public class TestAnalyte extends EnumValueItemImpl {

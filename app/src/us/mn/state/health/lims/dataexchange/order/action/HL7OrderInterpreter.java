@@ -21,9 +21,6 @@ import java.util.List;
 
 import org.apache.commons.validator.GenericValidator;
 
-import us.mn.state.health.lims.common.services.ITestIdentityService;
-import us.mn.state.health.lims.common.services.TestIdentityService;
-import us.mn.state.health.lims.common.util.DateUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v251.datatype.CX;
@@ -33,6 +30,9 @@ import ca.uhn.hl7v2.model.v251.message.OML_O21;
 import ca.uhn.hl7v2.model.v251.segment.OBR;
 import ca.uhn.hl7v2.model.v251.segment.ORC;
 import ca.uhn.hl7v2.model.v251.segment.PID;
+import us.mn.state.health.lims.common.services.ITestIdentityService;
+import us.mn.state.health.lims.common.services.TestIdentityService;
+import us.mn.state.health.lims.common.util.DateUtil;
 
 public class HL7OrderInterpreter implements IOrderInterpreter{
 

@@ -18,14 +18,12 @@
 package us.mn.state.health.lims.organization.daoimpl;
 
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Session;
 
 import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.organization.dao.OrganizationTypeDAO;
 import us.mn.state.health.lims.organization.valueholder.Organization;

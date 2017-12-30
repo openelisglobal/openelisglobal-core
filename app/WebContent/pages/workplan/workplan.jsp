@@ -1,19 +1,14 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="java.util.Date, java.util.List,
-	org.apache.struts.Globals,
-	us.mn.state.health.lims.common.util.SystemConfiguration,
-	us.mn.state.health.lims.common.action.IActionConstants,
-	java.util.Collection,
-	java.util.ArrayList,
-	us.mn.state.health.lims.inventory.form.InventoryKitItem,
-	us.mn.state.health.lims.test.beanItems.TestResultItem,
-	us.mn.state.health.lims.common.util.IdValuePair,
-	us.mn.state.health.lims.common.util.StringUtil,
-	us.mn.state.health.lims.common.util.ConfigurationProperties,
-	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
-
-<%@ page import="org.owasp.encoder.Encode" %>
+	import="java.util.List,
+			us.mn.state.health.lims.common.action.IActionConstants,
+			java.util.Collection,
+			us.mn.state.health.lims.test.beanItems.TestResultItem,
+			us.mn.state.health.lims.common.util.IdValuePair,
+			us.mn.state.health.lims.common.util.StringUtil,
+			us.mn.state.health.lims.common.util.ConfigurationProperties,
+			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+			org.owasp.encoder.Encode" %>
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
 <%@ taglib uri="/tags/struts-logic"		prefix="logic" %>

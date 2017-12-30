@@ -16,9 +16,13 @@
 
 package us.mn.state.health.lims.sample.action.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessages;
+
 import us.mn.state.health.lims.address.valueholder.OrganizationAddress;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
@@ -53,9 +57,6 @@ import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  */

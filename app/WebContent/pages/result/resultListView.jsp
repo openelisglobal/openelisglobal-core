@@ -1,24 +1,24 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
 	import="java.util.List,
-	us.mn.state.health.lims.common.action.IActionConstants,
-	java.util.ArrayList,
-	java.text.DecimalFormat,
-	org.apache.commons.validator.GenericValidator,
-	us.mn.state.health.lims.inventory.form.InventoryKitItem,
-	us.mn.state.health.lims.test.beanItems.TestResultItem,
-	us.mn.state.health.lims.common.util.IdValuePair,
-	us.mn.state.health.lims.common.formfields.FormFields,
-	us.mn.state.health.lims.common.formfields.FormFields.Field,
-	us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
-	us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-	us.mn.state.health.lims.common.util.ConfigurationProperties,
-	us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	us.mn.state.health.lims.common.util.StringUtil,
-    us.mn.state.health.lims.common.util.Versioning,
-    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException,
-    us.mn.state.health.lims.common.util.DateUtil" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+			us.mn.state.health.lims.common.action.IActionConstants,
+			java.util.ArrayList,
+			java.text.DecimalFormat,
+			org.apache.commons.validator.GenericValidator,
+			us.mn.state.health.lims.inventory.form.InventoryKitItem,
+			us.mn.state.health.lims.test.beanItems.TestResultItem,
+			us.mn.state.health.lims.common.util.IdValuePair,
+			us.mn.state.health.lims.common.formfields.FormFields,
+			us.mn.state.health.lims.common.formfields.FormFields.Field,
+			us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
+			us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
+			us.mn.state.health.lims.common.util.ConfigurationProperties,
+			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+			us.mn.state.health.lims.common.util.StringUtil,
+		    us.mn.state.health.lims.common.util.Versioning,
+		    us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException,
+		    us.mn.state.health.lims.common.util.DateUtil,
+		    org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>

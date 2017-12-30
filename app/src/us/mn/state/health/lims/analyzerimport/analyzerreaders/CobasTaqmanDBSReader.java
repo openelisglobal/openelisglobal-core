@@ -16,7 +16,11 @@
  */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
@@ -30,9 +34,6 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CobasTaqmanDBSReader extends AnalyzerLineInserter {
 

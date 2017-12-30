@@ -17,9 +17,9 @@ package us.mn.state.health.lims.codeelementtype.dao;
 
 import java.util.List;
 
+import us.mn.state.health.lims.codeelementtype.valueholder.CodeElementType;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.codeelementtype.valueholder.CodeElementType;
 
 /**
  * @author diane benz

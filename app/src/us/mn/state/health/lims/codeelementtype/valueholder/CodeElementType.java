@@ -15,10 +15,10 @@
 */
 package us.mn.state.health.lims.codeelementtype.valueholder;
 
-import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.referencetables.valueholder.ReferenceTables;
 
 public class CodeElementType extends EnumValueItemImpl {
 

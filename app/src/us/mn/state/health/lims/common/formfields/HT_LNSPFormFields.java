@@ -17,9 +17,9 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import us.mn.state.health.lims.common.formfields.FormFields.Field;
-
 import java.util.HashMap;
+
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 
 
 public class HT_LNSPFormFields implements IFormFieldsForImplementation {

@@ -1,13 +1,15 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="org.apache.struts.taglib.TagUtils,org.apache.struts.action.*,org.apache.struts.Globals,java.util.Iterator,javax.servlet.jsp.JspException"
-	import="us.mn.state.health.lims.common.action.IActionConstants"
-	import="us.mn.state.health.lims.common.util.StringUtil"
-	import="us.mn.state.health.lims.common.util.resources.ResourceLocator"
-	import="us.mn.state.health.lims.common.util.validator.ActionError"
- %>
-<%@page import="us.mn.state.health.lims.common.util.SystemConfiguration"%>
-<%@page import="org.owasp.encoder.Encode"%>
+	import="org.apache.struts.taglib.TagUtils,
+		org.apache.struts.action.*,
+		org.apache.struts.Globals,
+		java.util.Iterator,
+		javax.servlet.jsp.JspException,
+		us.mn.state.health.lims.common.action.IActionConstants,
+		us.mn.state.health.lims.common.util.resources.ResourceLocator,
+		us.mn.state.health.lims.common.util.validator.ActionError,
+		us.mn.state.health.lims.common.util.SystemConfiguration,
+		org.owasp.encoder.Encode"%>
 <!DOCTYPE html>
 
 <%-- removed deprecated calls to methods in org.apache.struts.util.RequestUtils--%>

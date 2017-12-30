@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 
 /**
  * This class will abstract the ReportsProvider creation. It will read the

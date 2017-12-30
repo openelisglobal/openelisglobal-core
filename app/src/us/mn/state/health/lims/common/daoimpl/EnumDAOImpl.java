@@ -20,8 +20,8 @@ import java.util.Vector;
 
 import us.mn.state.health.lims.common.dao.EnumDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.valueholder.EnumValueItem;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.valueholder.EnumValueItem;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 
 public class EnumDAOImpl extends BaseDAOImpl implements EnumDAO {

@@ -15,9 +15,9 @@
  */
 package us.mn.state.health.lims.test.valueholder;
 
-import us.mn.state.health.lims.common.services.TestService;
-
 import java.util.Comparator;
+
+import us.mn.state.health.lims.common.services.TestService;
 
 public class TestComparator implements Comparable<Test> {
 	String name;

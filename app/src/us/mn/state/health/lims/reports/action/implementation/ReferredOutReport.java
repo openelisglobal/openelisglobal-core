@@ -16,10 +16,16 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.SampleService;
@@ -38,11 +44,6 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Clinica
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.test.valueholder.Test;
-
-import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 /**
  * @author Paul A. Hill (pahill@uw.edu)
  * @since Feb 18, 2011

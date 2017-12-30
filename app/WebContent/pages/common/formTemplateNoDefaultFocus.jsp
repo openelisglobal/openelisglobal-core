@@ -2,10 +2,11 @@
 <%--bugzilla 1426 this version of formTemplate does not force focus on first input field , use this for forms that already handle their focus--%>
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.services.LocalizationService,us.mn.state.health.lims.common.util.ConfigurationProperties"
-        %>
-<%@ page import="org.owasp.encoder.Encode" %>
-<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
+	import="us.mn.state.health.lims.common.action.IActionConstants,
+	us.mn.state.health.lims.common.services.LocalizationService,
+	us.mn.state.health.lims.common.util.ConfigurationProperties,
+	org.owasp.encoder.Encode,
+	us.mn.state.health.lims.common.util.Versioning" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>

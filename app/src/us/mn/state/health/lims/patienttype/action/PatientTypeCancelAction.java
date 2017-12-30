@@ -9,10 +9,12 @@ package us.mn.state.health.lims.patienttype.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 
 public class PatientTypeCancelAction extends BaseAction {

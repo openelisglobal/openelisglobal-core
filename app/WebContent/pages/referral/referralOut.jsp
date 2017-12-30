@@ -3,7 +3,6 @@
                  us.mn.state.health.lims.common.util.DateUtil,
                  us.mn.state.health.lims.common.util.StringUtil,
                  java.util.List,
-                 java.util.ArrayList,
                  us.mn.state.health.lims.common.util.Versioning,
                  us.mn.state.health.lims.referral.action.beanitems.ReferralItem,
                  us.mn.state.health.lims.common.util.IdValuePair,

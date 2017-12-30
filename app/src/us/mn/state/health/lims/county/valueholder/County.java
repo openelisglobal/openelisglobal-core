@@ -18,10 +18,10 @@ package us.mn.state.health.lims.county.valueholder;
 import java.util.HashSet;
 import java.util.Set;
 
-import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
-import us.mn.state.health.lims.region.valueholder.Region;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
+import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.region.valueholder.Region;
 
 public class County extends EnumValueItemImpl {
 

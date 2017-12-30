@@ -25,11 +25,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 
+import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
-import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.action.IActionConstants;
 
 public abstract class LoginBaseAction extends Action implements IActionConstants {
 	String pageSubtitle = null;

@@ -17,8 +17,6 @@ package us.mn.state.health.lims.label.valueholder;
 
 import java.util.Comparator;
 
-import us.mn.state.health.lims.label.valueholder.Label;
-
 
 public class LabelComparator implements Comparable {
    String name;

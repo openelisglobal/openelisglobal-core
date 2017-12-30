@@ -21,7 +21,6 @@ import java.util.List;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.Query;
 
-import us.mn.state.health.lims.analysisqaevent.valueholder.AnalysisQaEvent;
 import us.mn.state.health.lims.analysisqaeventaction.dao.AnalysisQaEventActionDAO;
 import us.mn.state.health.lims.analysisqaeventaction.valueholder.AnalysisQaEventAction;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;

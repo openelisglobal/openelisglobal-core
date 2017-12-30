@@ -16,16 +16,17 @@
  */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.HibernateProxy;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CobasTaqmanReader extends AnalyzerLineInserter{
 

@@ -16,6 +16,8 @@
 
 package us.mn.state.health.lims.common.services;
 
+import java.util.List;
+
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationTypeDAOImpl;
@@ -30,8 +32,6 @@ import us.mn.state.health.lims.requester.daoimpl.RequesterTypeDAOImpl;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.RequesterType;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
-
-import java.util.List;
 
 /**
  */

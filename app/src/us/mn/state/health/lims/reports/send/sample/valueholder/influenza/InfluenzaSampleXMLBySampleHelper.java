@@ -15,6 +15,13 @@
 */
 package us.mn.state.health.lims.reports.send.sample.valueholder.influenza;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -69,9 +76,6 @@ import us.mn.state.health.lims.testtrailer.valueholder.TestTrailer;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 
 /**

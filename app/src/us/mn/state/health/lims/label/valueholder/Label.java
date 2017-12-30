@@ -16,9 +16,9 @@
 package us.mn.state.health.lims.label.valueholder;
 
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
-import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 
 public class Label extends EnumValueItemImpl {
 

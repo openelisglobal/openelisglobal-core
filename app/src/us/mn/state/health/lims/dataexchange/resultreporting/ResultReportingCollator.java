@@ -16,14 +16,35 @@
  */
 package us.mn.state.health.lims.dataexchange.resultreporting;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.IPatientService;
+import us.mn.state.health.lims.common.services.LabIdentificationService;
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.ResultLimitService;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.dataexchange.resultreporting.beans.*;
+import us.mn.state.health.lims.dataexchange.resultreporting.beans.CodedValueXmit;
+import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultReportXmit;
+import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultXmit;
+import us.mn.state.health.lims.dataexchange.resultreporting.beans.TestRangeXmit;
+import us.mn.state.health.lims.dataexchange.resultreporting.beans.TestResultsXmit;
 import us.mn.state.health.lims.dictionary.util.DictionaryUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
@@ -38,8 +59,6 @@ import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
-
-import java.util.*;
 
 public class ResultReportingCollator {
 	private PatientIdentityDAO patientIdentityDAO = new PatientIdentityDAOImpl();

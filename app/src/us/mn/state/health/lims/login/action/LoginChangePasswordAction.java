@@ -18,11 +18,11 @@ package us.mn.state.health.lims.login.action;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
-import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  *  @author     Hung Nguyen (Hung.Nguyen@health.state.mn.us)

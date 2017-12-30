@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
-			us.mn.state.health.lims.common.formfields.FormFields,
-			us.mn.state.health.lims.common.util.*,
-            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	        us.mn.state.health.lims.sample.util.AccessionNumberUtil,
-	        us.mn.state.health.lims.sample.bean.SampleEditItem" %>
+				us.mn.state.health.lims.common.formfields.FormFields,
+				us.mn.state.health.lims.common.util.*,
+	            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+		        us.mn.state.health.lims.sample.util.AccessionNumberUtil,
+		        us.mn.state.health.lims.sample.bean.SampleEditItem" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>

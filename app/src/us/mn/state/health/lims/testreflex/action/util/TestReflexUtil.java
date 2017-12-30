@@ -16,7 +16,17 @@
  */
 package us.mn.state.health.lims.testreflex.action.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -34,17 +44,12 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.scriptlet.dao.ScriptletDAO;
 import us.mn.state.health.lims.scriptlet.daoimpl.ScriptletDAOImpl;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
-import us.mn.state.health.lims.test.dao.TestDAO;
-import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testreflex.dao.TestReflexDAO;
 import us.mn.state.health.lims.testreflex.daoimpl.TestReflexDAOImpl;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.*;
 
 public class TestReflexUtil {
 	private static final String USER_CHOOSE_FLAG = "UC";

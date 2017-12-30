@@ -17,13 +17,13 @@
 */
 package us.mn.state.health.lims.test.beanItems;
 
-import us.mn.state.health.lims.common.util.IdValuePair;
-import us.mn.state.health.lims.result.action.util.ResultItem;
-import us.mn.state.health.lims.result.valueholder.Result;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.result.action.util.ResultItem;
+import us.mn.state.health.lims.result.valueholder.Result;
 
 public class TestResultItem implements ResultItem, Serializable{
 

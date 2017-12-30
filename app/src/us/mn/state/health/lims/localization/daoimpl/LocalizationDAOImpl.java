@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.localization.daoimpl;
 
 import org.hibernate.HibernateException;
+
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;

@@ -16,7 +16,14 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -40,12 +47,6 @@ import us.mn.state.health.lims.samplehuman.valueholder.SampleHuman;
 import us.mn.state.health.lims.statusofsample.dao.StatusOfSampleDAO;
 import us.mn.state.health.lims.statusofsample.daoimpl.StatusOfSampleDAOImpl;
 import us.mn.state.health.lims.statusofsample.valueholder.StatusOfSample;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class StatusService{
 	public enum OrderStatus{

@@ -25,17 +25,17 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 
-import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.provider.validation.PasswordValidationFactory;
+import us.mn.state.health.lims.common.util.SystemConfiguration;
+import us.mn.state.health.lims.common.util.validator.ActionError;
+import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.login.dao.LoginDAO;
 import us.mn.state.health.lims.login.daoimpl.LoginDAOImpl;
 import us.mn.state.health.lims.login.valueholder.Login;
-import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.common.action.IActionConstants;
 
 /**
  * @author Hung Nguyen (Hung.Nguyen@health.state.mn.us)

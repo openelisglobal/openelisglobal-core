@@ -16,11 +16,16 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.apache.commons.validator.GenericValidator;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.services.QAService;
-import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.services.TableIdService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -29,12 +34,13 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
+import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
+import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
+import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.project.valueholder.Project;
-import us.mn.state.health.lims.qaevent.action.retroCI.NonConformityAction;
 import us.mn.state.health.lims.qaevent.valueholder.QaEvent;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ARVReportData;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.NonConformityReportData;
 import us.mn.state.health.lims.reports.action.util.ReportUtil;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
@@ -45,17 +51,6 @@ import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
-import us.mn.state.health.lims.reports.action.implementation.reportBeans.ARVReportData;
-import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
-import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.apache.commons.validator.GenericValidator;
 
 public abstract class NonConformityByLabno extends Report implements IReportCreator {
 	

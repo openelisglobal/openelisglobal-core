@@ -34,14 +34,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.valueholder.tree.Tree;
 import us.mn.state.health.lims.common.valueholder.tree.TreeNode;
 import us.mn.state.health.lims.common.valueholder.tree.TreeStateManager;
-import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.login.dao.UserModuleDAO;
 import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 

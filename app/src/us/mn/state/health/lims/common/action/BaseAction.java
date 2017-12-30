@@ -18,8 +18,24 @@
  */
 package us.mn.state.health.lims.common.action;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.Globals;
-import org.apache.struts.action.*;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.ActionRedirect;
+import org.apache.struts.action.DynaActionForm;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.provider.validation.AccessionNumberValidationProvider;
@@ -32,10 +48,6 @@ import us.mn.state.health.lims.common.valueholder.BaseTestComparator;
 import us.mn.state.health.lims.login.dao.UserModuleDAO;
 import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 import us.mn.state.health.lims.login.valueholder.UserSessionData;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 public abstract class BaseAction extends Action implements IActionConstants {
 	private static final boolean USE_PARAMETERS = true;

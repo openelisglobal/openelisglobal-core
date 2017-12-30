@@ -1,7 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
-            us.mn.state.health.lims.common.util.*,
-            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,us.mn.state.health.lims.login.dao.UserModuleDAO" %>
+	            us.mn.state.health.lims.common.util.*,
+	            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+	            us.mn.state.health.lims.login.dao.UserModuleDAO,
+	            us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl,
+	            java.util.HashSet,
+	            org.owasp.encoder.Encode"%>
 
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"      prefix="html" %>
@@ -17,9 +21,6 @@
 <bean:define id="requestType" value='<%=(String)request.getSession().getAttribute("type")%>' />
 <bean:define id="genericDomain" value='' />
 
-<%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
-<%@page import="java.util.HashSet"%>
-<%@page import="org.owasp.encoder.Encode"%>
 
 <%!
     String basePath = "";

@@ -16,12 +16,12 @@
 */
 package us.mn.state.health.lims.testreflex.action.util;
 
+import java.util.List;
+import java.util.Map;
+
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-
-import java.util.List;
-import java.util.Map;
 
 public class TestReflexBean {
 	private Sample sample;

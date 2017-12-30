@@ -15,7 +15,8 @@
 */
 package us.mn.state.health.lims.test.valueholder;
 
-import us.mn.state.health.lims.common.services.LocalizationService;
+import java.sql.Date;
+
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -29,8 +30,6 @@ import us.mn.state.health.lims.method.valueholder.Method;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 import us.mn.state.health.lims.testtrailer.valueholder.TestTrailer;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
-
-import java.sql.Date;
 
 /**
  * @author benzd1

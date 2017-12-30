@@ -12,12 +12,9 @@ import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.services.DisplayListService;
-import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
-import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.sample.action.BaseSampleEntryAction;
 
 public class SampleBatchEntrySetupAction extends BaseSampleEntryAction {

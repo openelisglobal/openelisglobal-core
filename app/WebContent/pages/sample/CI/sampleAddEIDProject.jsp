@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
-			us.mn.state.health.lims.common.util.SystemConfiguration,
-			us.mn.state.health.lims.common.util.ConfigurationProperties,
-			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	        us.mn.state.health.lims.common.formfields.FormFields,
-	        us.mn.state.health.lims.common.util.StringUtil,
-            us.mn.state.health.lims.common.util.Versioning,
-	        java.util.HashSet"%>
-<%@page import="org.owasp.encoder.Encode"%>
+				us.mn.state.health.lims.common.util.SystemConfiguration,
+				us.mn.state.health.lims.common.util.ConfigurationProperties,
+				us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+	            us.mn.state.health.lims.common.util.Versioning,
+		        java.util.HashSet,
+		        org.owasp.encoder.Encode,
+		        us.mn.state.health.lims.login.dao.UserModuleDAO,
+		        us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -23,9 +23,6 @@
 <bean:define id="requestType" value='<%=(String)request.getSession().getAttribute("type")%>' />
 <bean:define id="genericDomain" value='' />
 
-<!-- sampleAddEIDProject -->
-<%@page import="us.mn.state.health.lims.login.dao.UserModuleDAO"%>
-<%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 <%!
 	String basePath = "";
 	UserModuleDAO userModuleDAO = new UserModuleDAOImpl();

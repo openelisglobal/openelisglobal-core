@@ -17,8 +17,6 @@ package us.mn.state.health.lims.sourceofsample.valueholder;
 
 import java.util.Comparator;
 
-import us.mn.state.health.lims.sourceofsample.valueholder.SourceOfSample;
-
 
 /**
  * @author AIS

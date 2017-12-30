@@ -21,8 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ajaxtags.helpers.AjaxXmlBuilder;
-
 import us.mn.state.health.lims.common.provider.data.BaseDataProvider;
 import us.mn.state.health.lims.common.provider.data.DataProviderFactory;
 import us.mn.state.health.lims.common.util.StringUtil;

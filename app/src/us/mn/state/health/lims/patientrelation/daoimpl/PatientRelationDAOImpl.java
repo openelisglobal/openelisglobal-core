@@ -15,8 +15,8 @@
 */
 package us.mn.state.health.lims.patientrelation.daoimpl;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 

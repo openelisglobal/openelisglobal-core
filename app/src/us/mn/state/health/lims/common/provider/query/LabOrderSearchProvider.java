@@ -28,9 +28,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.validator.GenericValidator;
 
+import ca.uhn.hl7v2.DefaultHapiContext;
+import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.HapiContext;
+import ca.uhn.hl7v2.model.v251.group.OML_O21_OBSERVATION_REQUEST;
+import ca.uhn.hl7v2.model.v251.group.OML_O21_ORDER_PRIOR;
+import ca.uhn.hl7v2.model.v251.message.OML_O21;
+import ca.uhn.hl7v2.model.v251.segment.OBR;
+import ca.uhn.hl7v2.model.v251.segment.OBX;
+import ca.uhn.hl7v2.model.v251.segment.ORC;
+import ca.uhn.hl7v2.parser.Parser;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.ExternalOrderStatus;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.XMLUtil;
 import us.mn.state.health.lims.dataexchange.order.action.HL7OrderInterpreter;
@@ -47,19 +58,8 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
-import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
-import ca.uhn.hl7v2.DefaultHapiContext;
-import ca.uhn.hl7v2.HL7Exception;
-import ca.uhn.hl7v2.HapiContext;
-import ca.uhn.hl7v2.model.v251.group.OML_O21_OBSERVATION_REQUEST;
-import ca.uhn.hl7v2.model.v251.group.OML_O21_ORDER_PRIOR;
-import ca.uhn.hl7v2.model.v251.message.OML_O21;
-import ca.uhn.hl7v2.model.v251.segment.OBR;
-import ca.uhn.hl7v2.model.v251.segment.OBX;
-import ca.uhn.hl7v2.model.v251.segment.ORC;
-import ca.uhn.hl7v2.parser.Parser;
 
 public class LabOrderSearchProvider extends BaseQueryProvider{
 	private TestDAO testDAO = new TestDAOImpl();

@@ -23,13 +23,12 @@ import org.apache.commons.validator.Field;
 import org.apache.commons.validator.Validator;
 import org.apache.commons.validator.ValidatorAction;
 import org.apache.commons.validator.util.ValidatorUtils;
-import us.mn.state.health.lims.common.log.LogEvent;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.validator.Resources;
 import org.apache.struts.validator.validwhen.ValidWhenLexer;
-//import org.apache.struts.validator.validwhen.ValidWhenParser;
-import us.mn.state.health.lims.common.util.validator.ValidWhenParser;
+
+import us.mn.state.health.lims.common.log.LogEvent;
 
 /**
  * This class contains the validwhen validation that is used in the
