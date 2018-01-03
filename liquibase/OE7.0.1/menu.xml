@@ -3,7 +3,7 @@
   <!--system role and module updating-->
   <!-- Data specific to CDIRetroCI -->
   
-   <changeSet author="CI OpenELIS developers group" id="1" >
+   <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT"  >
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="1">select count(*) from clinlims.menu where element_id= 'menu_results_cobasc311';
     		</sqlCheck>

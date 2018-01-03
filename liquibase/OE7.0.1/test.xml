@@ -8,7 +8,7 @@
       <sqlCheck expectedResult="0">select count(*) from clinlims.test where name= 'Hémotocrite';
     		</sqlCheck>
     </preConditions>
-    <commenttest name update in clinlims</comment>
+    <comment>name update in clinlims</comment>
     <sql>
 
 	UPDATE clinlims.test

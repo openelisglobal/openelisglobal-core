@@ -3,15 +3,15 @@
   <!--system role and module updating-->
   <!-- Data specific to CDIRetroCI -->
   
-   <changeSet author="CI OpenELIS developers group" id="1" >
+   <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where id= '1060';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where id= '1701';
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new system role module</comment>
     <sql>
 
-	INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1060,'Y','Y','Y','Y',42,513);
+	INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1701,'Y','Y','Y','Y',42,513);
 
 	</sql>
   </changeSet>
@@ -49,23 +49,7 @@ INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, groupi
 </sql>
   </changeSet>
  
- <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
-    <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where id = 1060;
-    		</sqlCheck>
-    </preConditions>
-    <comment>update in clinlims new site information</comment>
-    <sql>
-	
-	INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1060,'Y','Y','Y','Y',42,513);
-
- </sql>
-  </changeSet>
- 
- 
- 
- 
- 
+  
  
 </databaseChangeLog>
   
