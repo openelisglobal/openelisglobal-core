@@ -1,7 +1,7 @@
 id,name,description,is_grouping_role,grouping_parent,display_key
 nextval( 'system_role_seq' ) ,Maintenance Admin,"Able to add tests, new roles etc",false,NULL,role.maintanceAdmin 
 nextval( 'system_role_seq' ) ,User Admin,Add/remove users and assign roles and passwords,false,NULL,role.userAdmin
-nextval( 'system_role_seq' ) ,Results Admin,Able to access all results forms,true,NULL,role.results.all 
+nextval( 'system_role_seq' ) ,,Able to access all results forms,true,NULL,role.results.all 
 nextval( 'system_role_seq' ) ,Reports Admin,Able to access all reports,true,NULL,role.reports.all 
 nextval( 'system_role_seq' ) ,Test Result Entry,Able to enter initial test request,false,NULL,role.test.request.initial 
 nextval( 'system_role_seq' ) ,Test Request Verify,Able to verify the test request was entered correctly,false,NULL,role.test.request.verify 

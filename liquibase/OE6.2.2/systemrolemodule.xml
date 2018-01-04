@@ -4,7 +4,7 @@
   <!-- Data specific to CDIRetroCI -->
   <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional,ci_general">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.system_role where description= 'Identifying Information Edit';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.system_role where name= 'Results Admin';
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new role</comment>
@@ -13,7 +13,7 @@ ALTER SEQUENCE clinlims.system_role_seq restart WITH 70;
 ALTER TABLE clinlims.system_role  ALTER COLUMN name TYPE character(30);
   
 INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, grouping_parent, display_key, active, editable)
-    VALUES (66, 'Results Admin', 'Able to access all results forms', default,null,'role.results.all', 
+    VALUES (66, '', 'Able to access all results forms', default,null,'role.results.all', 
             default, default);
 			
 INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, grouping_parent, display_key,active, editable)
@@ -51,10 +51,13 @@ INSERT INTO clinlims.system_module(
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where system_role_id= '67';
     		</sqlCheck>
+			
+	<sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where id= '1060';
+    		</sqlCheck>		
+			
     </preConditions>
     <comment>Insert in clinlims new system role module</comment>
     <sql>
-
 
 INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1060,'Y','Y','Y','Y',67,1100);
 INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1061,'Y','Y','Y','Y',67,1101);

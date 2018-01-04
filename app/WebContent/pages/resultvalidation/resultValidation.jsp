@@ -574,7 +574,7 @@ function /*boolean*/ handleEnterEvent(){
                     <app:text name="resultList"
                               indexed="true"
                               property="result"
-                              size="6"
+                              size="16"
                               allowEdits='<%= !resultList.isReadOnly() %>'
                               styleId='<%="resultId_" + index %>'
                               onchange='<%="markUpdated(); makeDirty(); updateLogValue(this, " + index + ");" %>'/>
