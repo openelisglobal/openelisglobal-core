@@ -142,7 +142,7 @@ function setDefaultTests( div )
     if (div=="FollowUpARV_Id") {
        // tests = new Array("farv.glycemiaTest", "farv.creatinineTest",
              //  "farv.transaminaseTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
-       tests = new Array("farv.creatinineTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
+       tests = new Array("farv.creatinineTest", "farv.dryTubeTaken") ;
     }
     //if (div=="EID_Id") {
     //  tests = new Array ("eid.dnaPCR", "eid.dbsTaken");

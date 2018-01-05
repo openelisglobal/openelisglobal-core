@@ -73,7 +73,7 @@ public abstract class ConfigurationProperties {
         configurationName,          //Identifies the configuration i.e. HaitiLNSP or CI IPCI
         testUsageReportingURL,      //URL for test summary reporting
         testUsageReporting,         //If true send test summary report electronically
-        roleRequiredForModifyResults,//If true a separate role is needed to modify reports
+        roleRequiredForModifyResults,//If true a separate role is needed to modify results
         notesRequiredForModifyResults,//If true a note is required when a result is modified
         resultTechnicianName,        //If true the technicians name is needed for results
         allowResultRejection,        //If true then a technician has the ability to reject an individual test and select a reason for rejection

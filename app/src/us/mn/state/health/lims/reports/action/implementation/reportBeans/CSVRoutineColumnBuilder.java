@@ -190,6 +190,7 @@ abstract public class CSVRoutineColumnBuilder {
         GEND_CD4,
         SAMPLE_STATUS,
         PROJECT,
+        PROGRAM,     // program defined in routine order.
         LOG,        // results is a real number, but display the log of it.
         AGE_YEARS,
         AGE_MONTHS,
@@ -320,6 +321,8 @@ abstract public class CSVRoutineColumnBuilder {
 				return isBlankOrNull(value) ? "" : ResourceTranslator.DictionaryTranslator.getInstance().translateOrNot(value);
 			case DICT:
 				return isBlankOrNull(value) ? "" : ResourceTranslator.DictionaryTranslator.getInstance().translate(value);
+			case PROGRAM:
+				return isBlankOrNull(value) ? "" : ResourceTranslator.DictionaryTranslator.getInstance().translate(value);
 			case DATE:
 				return isBlankOrNull(value) ? "" : datetimeToLocalDate(value);
 			case DATE_TIME:
@@ -344,16 +347,15 @@ abstract public class CSVRoutineColumnBuilder {
 					return "?";
 				switch (orderStatus) {
 				case Entered:
-					return "Saisie"; // entered, entr�e
+					return "Saisie"; // entered,
 				case Started:
-					return "En_Cours"; // commenced, commenc�
+					return "En_Cours"; // commenced,
 				case Finished:
-					return "Fini"; // Finished, Finale
+					return "Fini"; // Finished,
 				case NonConforming_depricated:
-					return "N"; // Non-conforming, Non-conformes
+					return "Non-conforme"; // Non-conforming, Non-conformes
 				}
-			//case PROJECT:
-				//return translateProjectId(value);
+			
 			case DEBUG:
 				System.out.println("Processing Column Value: " + this.csvName + " \"" + value + "\"");
 			case BLANK:

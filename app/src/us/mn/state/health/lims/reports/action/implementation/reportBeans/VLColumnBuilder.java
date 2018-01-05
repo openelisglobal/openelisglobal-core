@@ -58,7 +58,10 @@ public class VLColumnBuilder extends CIColumnBuilder {
         add("currentARVTreatmentINNs3", "CURRENT3",NONE );
         add("currentARVTreatmentINNs4", "CURRENT4",NONE );
         
-        add("vlReasonForRequest"         , "VL_REASON" );
+       // add("currentARVTreatment"           , "CURRENT_ART", DICT_RAW );
+     // add("vlReasonForRequest"         , "VL_REASON" );
+        add("currentARVTreatment"           , "CURRENT_ART" );
+        add("vlReasonForRequest"         , "VL_REASON", DICT_RAW );
         add("vlOtherReasonForRequest"         , "REASON_OTHER", NONE );
         
         add("initcd4Count"         , "INITCD4_COUNT", NONE );
@@ -69,13 +72,14 @@ public class VLColumnBuilder extends CIColumnBuilder {
         add("demandcd4Percent"         , "DEMANDCD4_PERCENT", NONE );
         add("demandcd4Date"         , "DEMANDCD4_DATE", NONE );
          
-        add("vlBenefit"         , "PRIOR_VL_BENEFIT",NONE );
+       // add("vlBenefit"         , "PRIOR_VL_BENEFIT",NONE );
+        add("vlBenefit"         , "PRIOR_VL_BENEFIT");
         add("vlPregnancy"         , "VL_PREGNANCY");
         add("vlSuckle"         , "VL_SUCKLE");
         add("priorVLLab"         , "PRIOR_VL_Lab",NONE );
         add("priorVLValue"         , "PRIOR_VL_Value",NONE );
         add("priorVLDate"         , "PRIOR_VL_Date",NONE );
-          
+        
         
        // addAllResultsColumns();
         

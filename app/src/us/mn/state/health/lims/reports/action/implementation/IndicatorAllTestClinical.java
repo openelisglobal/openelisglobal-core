@@ -24,11 +24,13 @@ public class IndicatorAllTestClinical extends IndicatorAllTest implements IRepor
 	@Override
 	protected String getLabNameLine1() {
 		return  ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName);
+		
 	}
 
 	@Override
 	protected String getLabNameLine2() {
-		return "";
+		//return "";
+		return  ConfigurationProperties.getInstance().getPropertyValue(Property.ADDITIONAL_SITE_INFO);
 	}
 
 }
