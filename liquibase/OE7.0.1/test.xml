@@ -13,7 +13,7 @@
 
 	UPDATE clinlims.test
    SET name='Hématocrite',description='Hématocrite(Sang total)'
-   WHERE name='Hémotocrite'';
+   WHERE name='Hémotocrite';
 </sql>
   </changeSet>
   
