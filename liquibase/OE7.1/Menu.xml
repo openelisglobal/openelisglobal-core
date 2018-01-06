@@ -286,7 +286,7 @@ INSERT INTO clinlims.menu (id,parent_id,presentation_order,element_id,action_url
   
   <changeSet author="CI OpenELIS developers group" id="3" runAlways="true" >
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_study' ;
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_sample_batch_entry' ;
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new menu for batch entry</comment>
