@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+  <!--system role and module updating-->
+  
+  <changeSet author="csteele" id="1">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        select count(*) from clinlims.system_role_module where system_module_id= '1800';
+      </sqlCheck>
+    </preConditions>
+    <comment>Insert in clinlims new system role module</comment>
+    <sql>
+      INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+      VALUES (1800,'Y','Y','Y','Y',4,(SELECT id FROM clinlims.system_module WHERE name = 'SampleBatchEntrySetup'));
+      
+      INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+      VALUES (1801,'Y','Y','Y','Y',4,(SELECT id FROM clinlims.system_module WHERE name = 'SampleBatchEntryOnDemand'));
+    
+      INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+      VALUES (1802,'Y','Y','Y','Y',4,(SELECT id FROM clinlims.system_module WHERE name = 'SampleBatchEntryPrePrinted'));
+    
+      INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+      VALUES (1803,'Y','Y','Y','Y',4,(SELECT id FROM clinlims.system_module WHERE name = 'PrintBarcode'));
+    
+    </sql>
+  </changeSet>
+</databaseChangeLog>
