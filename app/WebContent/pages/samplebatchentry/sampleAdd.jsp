@@ -6,6 +6,7 @@
 	        us.mn.state.health.lims.common.action.IActionConstants,
 	        us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
 	        us.mn.state.health.lims.common.util.StringUtil,
+	        us.mn.state.health.lims.common.util.DateUtil,
 	        us.mn.state.health.lims.common.util.Versioning" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>

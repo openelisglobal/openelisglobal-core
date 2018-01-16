@@ -266,8 +266,8 @@ public abstract class NonConformityByLabno extends Report implements IReportCrea
 			return false;
 		}
 	
-		int lowBounds = Integer.parseInt(lowerNumber.substring(lowIndex));
-		int highBounds = Integer.parseInt(upperNumber.substring(highIndex));
+		double lowBounds = Double.parseDouble(lowerNumber.substring(lowIndex));
+		double highBounds = Double.parseDouble(upperNumber.substring(highIndex));
 	
 		if (highBounds < lowBounds) {
 			String temp = upperNumber;
