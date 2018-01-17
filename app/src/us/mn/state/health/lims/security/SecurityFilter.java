@@ -69,8 +69,8 @@ public class SecurityFilter implements Filter {
 		}
 		
 		//Adding security headers to response
-		httpResponse.addHeader("Content-Security-Policy","default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval';" 
-		        + "connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; child-src 'self';");//defines where content is allowed to be loaded from
+		httpResponse.addHeader("Content-Security-Policy","default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval';" 
+		        + "connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; child-src 'self'; object-src 'self';" );//defines where content is allowed to be loaded from
 		//httpResponse.addHeader("Strict-Transport-Security", "max-age=31536000"); //enforces communication must be over https
 		httpResponse.addHeader("X-Content-Type-Options","nosniff"); //prevents MIME sniffing errors
 		httpResponse.addHeader("X-Frame-Options", "SAMEORIGIN");//enforces whether page is allowed to be an iframe in another website
