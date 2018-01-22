@@ -963,6 +963,16 @@
 			<form-property name="testsCheck" type="java.lang.String" />
 			<form-property name="patientSexCheck" type="java.lang.String" />
 		</form-bean>
+		
+		<form-bean name="panelManagementForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+		<!-- blank form to ensure page has a name -->
+		</form-bean>
+		
+		<form-bean name="sampleTypeManagementForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+		<!-- blank form to ensure page has a name -->
+		</form-bean>
+		
+		
 
 	</form-beans>
 
