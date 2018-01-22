@@ -1014,7 +1014,7 @@ public class ObservationData implements Serializable {
         this.vlPregnancy = vlPregnancy;
     }
     public String getVlSuckle() {
-        return vlPregnancy;
+        return vlSuckle;
     }
     public void setVlSuckle(String vlSuckle) {
         this.vlSuckle = vlSuckle;

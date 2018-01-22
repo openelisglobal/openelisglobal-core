@@ -25,6 +25,7 @@ import org.ajaxtags.servlets.BaseAjaxServlet;
 
 import us.mn.state.health.lims.common.provider.selectdropdown.BaseSelectDropDownProvider;
 import us.mn.state.health.lims.common.provider.selectdropdown.SelectDropDownProviderFactory;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.login.dao.UserModuleDAO;
 import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
 
@@ -35,8 +36,9 @@ public class AjaxXMLServlet extends BaseAjaxServlet {
 		//check for authentication
 		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
 		if (userModuleDAO.isSessionExpired(request)) {
-			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-			System.out.println("Invalid request - no active session found");
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
 			return new AjaxXmlBuilderForSortableTests().toString();
 		}
 

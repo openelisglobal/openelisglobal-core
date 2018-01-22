@@ -69,6 +69,8 @@
 
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/ehcache-1.1.jar"/>
 
+        <pathelement location="${projectroot}/WebContent/WEB-INF/lib/encoder-1.2.1.jar"/>
+
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/hamcrest-core-1.1.jar"/>
 
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/hamcrest-library-1.1.jar"/>
@@ -116,6 +118,8 @@
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/xerces.jar"/>
 
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/commons-fileupload-1.2.1.jar"/>
+
+        <pathelement location="${projectroot}/WebContent/WEB-INF/lib/jbcrypt-0.4.jar"/>
 
         <pathelement location="${projectroot}/WebContent/WEB-INF/lib/jcommon-1.0.16.jar"/>
 
@@ -369,6 +373,12 @@
 
         <antcall target="buildInstaller">
             <param name="context" value="CDI_RegLabOpenElis"/>
+            <param name="dbName" value="ci_reg_lab"/>
+            <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
+        </antcall>
+		
+		<antcall target="buildInstaller">
+            <param name="context" value="CI_OpenElis"/>
             <param name="dbName" value="ci_reg_lab"/>
             <param name="backupTemplate" value="OffSiteBackupLinux.pl" />
         </antcall>

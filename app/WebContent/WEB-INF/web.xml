@@ -179,6 +179,13 @@
     <load-on-startup>3</load-on-startup>
   </servlet>
   
+  <servlet>
+  	<servlet-name>LabelMakerServlet</servlet-name>
+  	<display-name>LabelMakerServlet</display-name>
+  	<servlet-class>us.mn.state.health.lims.common.servlet.barcode.LabelMakerServlet</servlet-class>
+  	<load-on-startup>16</load-on-startup>
+  </servlet>
+  
   <servlet-mapping>
    <servlet-name>action</servlet-name> 
    <url-pattern>*.do</url-pattern> 
@@ -253,6 +260,11 @@
     <servlet-name>logoUpload</servlet-name>
     <url-pattern>/logoUpload</url-pattern>
   </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>LabelMakerServlet</servlet-name>
+  	<url-pattern>/LabelMakerServlet</url-pattern>	
+ </servlet-mapping>
 
   <!-- The Usual Welcome File List -->
   <welcome-file-list>

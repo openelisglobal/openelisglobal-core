@@ -14,7 +14,6 @@
 <%@ taglib uri="/tags/struts-tiles" prefix="tiles"%>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
 <%@ taglib uri="/tags/struts-nested" prefix="nested" %>
-
 <bean:define id="formName"	value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 <bean:define id="requestType" value='<%=(String)request.getSession().getAttribute("type")%>' />
 
@@ -36,7 +35,7 @@
 %>
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>scripts/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>neon1/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" src="<%=basePath%>neon/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" language="JavaScript1.2">
 

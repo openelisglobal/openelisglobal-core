@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <!--The common elements of the menu (except for RetroCI) are the first set, followed by individual settings for other sets -->
-    <changeSet id="7" author="paulsc" context="haiti,haitiLNSP,ciLNSP,CI_IPCI,ci_regional,Kenya" runOnChange="true" runAlways="true">
+    <changeSet id="7" author="paulsc" context="haiti,haitiLNSP,ciLNSP,CI_IPCI,ci_regional,Kenya,ci_general_9.6" runOnChange="true" runAlways="true">
         <comment>Menu Items common to all configurations except for RetroCI</comment>
         <delete schemaName="clinlims" tableName="menu" />
         <sql>ALTER SEQUENCE clinlims.menu_seq RESTART 1;</sql>

@@ -141,7 +141,7 @@ function setDefaultTests( div )
     if (div=="FollowUpARV_Id") {
        // tests = new Array("farv.glycemiaTest", "farv.creatinineTest",
              //  "farv.transaminaseTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
-       tests = new Array("farv.creatinineTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
+       tests = new Array("farv.creatinineTest", "farv.dryTubeTaken") ;
     }
     //if (div=="EID_Id") {
     //  tests = new Array ("eid.dnaPCR", "eid.dbsTaken");
@@ -450,7 +450,7 @@ function /*void*/ setSaveButton() {
                       maxlength="10"
                       onkeyup="addDateSlashes(this, event);"
                       onchange="iarv.checkDateOfBirth(false)"
-                      styleId="iarv.dateOfBirth" maxlength="10"/>
+                      styleId="iarv.dateOfBirth" />
                 <div id="iarv.dateOfBirthMessage" class="blank" ></div>
             </td>
         </tr>
@@ -1076,7 +1076,6 @@ function /*void*/ setSaveButton() {
                       property="birthDateForDisplay"
                       styleClass="text"
                       size="20"
-                      maxlength="10"
                       onkeyup="addDateSlashes(this, event);"
                       onchange="rtn.checkDateOfBirth(true)"
                       styleId="rtn.dateOfBirth" maxlength="10"/>
