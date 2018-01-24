@@ -55,4 +55,39 @@
     </sql>
   </changeSet>
   
+  <changeSet author="csteele" id="3">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        select count(*) from clinlims.system_role_module where system_module_id= '1809';
+      </sqlCheck>
+    </preConditions>
+    <comment>Fix more role responsibilities for Test Management Role</comment>
+    <sql>
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1809,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'UomManagement'));
+
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1810,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'UomCreate'));
+ 
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1811,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'SampleTypeCreate'));
+
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1812,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'SampleTypeOrder'));
+ 
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1813,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'SampleTypeTestAssign'));
+    
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1814,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'PanelCreate'));
+
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1815,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'PanelOrder'));
+ 
+    INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) 
+    VALUES (1816,'Y','Y','Y','Y',12,(SELECT id FROM clinlims.system_module WHERE name = 'PanelTestAssign'));
+
+    </sql>
+  </changeSet>
+  
 </databaseChangeLog>

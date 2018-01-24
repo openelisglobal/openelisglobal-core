@@ -631,12 +631,12 @@
 
 <div class="selectShow sortHide confirmHide" style="margin-left:auto; margin-right:auto;width: 40%;">
     <input type="button"
-           value='<%= StringUtil.getMessageForKey("label.button.next") %>'
+           value='<%= StringUtil.getMessageForKey("label.button.save") %>'
            disabled="disabled"
            onclick="nextStepFromSelect();"
            id="nextButtonSelect"/>
 
-    <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>' onclick="navigateBack()" />
+    <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>' onclick="navigateBack()" />
 
 
 </div>
