@@ -126,11 +126,12 @@ if( patientIDRequired){
 	pt_requiredOneOfFields.push("patientGUID_ID") ;
 	if (supportSTNumber) {
 		pt_requiredOneOfFields.push("ST_ID");
-	} else if (supportSubjectNumber && subjectNumberRequired){
-		pt_requiredOneOfFields = new Array("subjectNumberID");
 	}
 }
-
+	
+if (supportSubjectNumber && subjectNumberRequired){
+	pt_requiredOneOfFields = new Array("subjectNumberID");
+}
 var updateStatus = "add";
 var patientInfoChangeListeners = [];
 var dirty = false;
@@ -181,13 +182,12 @@ function /*boolean*/ patientFormValid(){
 
 function pt_patientRequiredFieldsAllEmpty() {
 	var i;
-
 	for(i = 0; i < pt_requiredFields.length; ++i ){
 		if( !$(pt_requiredFields[i]).value.blank() ){
 			return false;
 		}
 	}
-	
+
 	for(i = 0; i < pt_requiredOneOfFields.length; ++i ){
 		if( !($(pt_requiredOneOfFields[i]).value.blank()) ){
 			return false;
@@ -201,7 +201,7 @@ function /*void*/ pt_setSave()
 	if( window.setSave ){
 		setSave();
 	}else{
-		$("saveButtonId").disabled = !patientFormValid();
+		$("saveButtonId").disabled = !pt_requiredFieldsValid();
 	}
 }
 

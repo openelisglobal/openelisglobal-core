@@ -49,11 +49,16 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 		String field = request.getParameter("field");
 		String recordType = request.getParameter("recordType");
 		String isRequired = request.getParameter("isRequired");
-		String projectFormName = request.getParameter("projectFormName");
+    String projectFormName = request.getParameter("projectFormName");
+    boolean parseForProjectFormName = "true".equalsIgnoreCase(request.getParameter("parseForProjectFormName"));
         boolean ignoreYear = "true".equals(request.getParameter("ignoreYear"));
         boolean ignoreUsage = "true".equals(request.getParameter("ignoreUsage"));
 
 		ValidationResults result;
+		
+		if (parseForProjectFormName) {
+		  projectFormName = ProgramAccessionValidator.findStudyFormName(accessionNumber);
+		}
 		boolean projectFormNameUsed = ProjectForm.findProjectFormByFormId(projectFormName)!=null;
 		
 		if( ignoreYear || ignoreUsage ){

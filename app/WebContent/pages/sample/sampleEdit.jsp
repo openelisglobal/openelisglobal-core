@@ -29,6 +29,7 @@
 	int nonEditableAccession = 0;
 	int maxAccessionLength = 0;
     boolean useCollectionDate = true;
+    boolean isProjectAccessionNumber = true;
 %>
 <%
 	String path = request.getContextPath();
@@ -37,6 +38,7 @@
 	nonEditableAccession = AccessionNumberUtil.getInvarientLength();
 	maxAccessionLength = editableAccession + nonEditableAccession;
     useCollectionDate = FormFields.getInstance().useField( FormFields.Field.CollectionDate);
+    isProjectAccessionNumber = AccessionNumberUtil.isProjectAccessionNumber((String) accessionNumber);
 %>
 
 <script src="scripts/ui/jquery.ui.core.js?ver=<%= Versioning.getBuildNumber() %>"></script>
@@ -57,6 +59,7 @@ var checkedCount = 0;
 var currentSampleType;
 var sampleIdStart = 0;
 var orderChanged = false;
+var isProjectAccessionNumber = <%=isProjectAccessionNumber%>;
 
 //This handles the case where sampleAdd.jsp tile is not used.  Will be overridden in sampleAdd.jsp
 function samplesHaveBeenAdded(){ return false;}
@@ -134,13 +137,6 @@ function checkEditedAccessionNumber(changeElement){
 		return;
 	}
 	
-	if( changeElement.value.length != <%= editableAccession%>){
-		setFieldErrorDisplay( changeElement );
-		setSaveButton();
-		alert("<%=StringUtil.getMessageForKey("sample.entry.invalid.accession.number.length")%>");
-		return;
-	}
-	
 	accessionNumber = "<%=((String)accessionNumber).substring(0, nonEditableAccession)%>" + changeElement.value;
 	
 	if( accessionNumber == "<%=accessionNumber%>"){
@@ -148,8 +144,14 @@ function checkEditedAccessionNumber(changeElement){
 		setSaveButton();
 		return;
 	}
-	
-	validateAccessionNumberOnServer(true, false, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
+
+	//needs to check against a different format if a project accession number
+	if (isProjectAccessionNumber) {
+		validateProjectAccessionNumberOnServer(changeElement.id, "orderModify", "true", accessionNumber, processEditAccessionSuccess, null);
+	//else default accession number, proceed normally
+	} else {
+		validateAccessionNumberOnServer(true, false, changeElement.id, accessionNumber, processEditAccessionSuccess, null);
+	}
 }
 
 function processEditAccessionSuccess(xhr)
