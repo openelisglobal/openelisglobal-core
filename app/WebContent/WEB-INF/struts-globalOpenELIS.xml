@@ -972,7 +972,9 @@
 		<!-- blank form to ensure page has a name -->
 		</form-bean>
 		
-		
+		<form-bean name="uomManagementForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+		<!-- blank form to ensure page has a name -->
+		</form-bean>		
 
 	</form-beans>
 

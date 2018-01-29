@@ -78,12 +78,21 @@ public class DateValidationProvider extends BaseValidationProvider {
 		} else if (!GenericValidator.isBlankOrNull(relative)) {
 
 			Calendar calendar = new GregorianCalendar();
-			calendar.set(Calendar.HOUR, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
 			calendar.set(Calendar.MINUTE, 0);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND, 0);
 			Date today = calendar.getTime();
-
+			
+			//time insensitive compare, only year month day
+			Calendar calendarDate = new GregorianCalendar();
+			calendarDate.setTime(date);
+			calendarDate.set(Calendar.HOUR_OF_DAY, 0);
+			calendarDate.set(Calendar.MINUTE, 0);
+			calendarDate.set(Calendar.SECOND, 0);
+			calendarDate.set(Calendar.MILLISECOND, 0);
+			date = calendarDate.getTime();
+			
 			int dateDiff = date.compareTo(today);
 
 			if (relative.equalsIgnoreCase(PAST) && dateDiff > 0) {
