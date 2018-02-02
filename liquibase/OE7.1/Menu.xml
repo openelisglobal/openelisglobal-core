@@ -5,7 +5,7 @@
   
  <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional,ci_general" runAlways="true">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_study';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_sample_create';
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new menu study</comment>

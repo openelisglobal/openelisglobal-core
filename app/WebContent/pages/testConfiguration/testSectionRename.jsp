@@ -206,9 +206,9 @@
         </tr>
     </table>
     <div style="text-align: center" id="editButtons">
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.next")%>'
+        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.save")%>'
                onclick="confirmValues();"/>
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>'
+        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>'
                onclick='cancel()'/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">

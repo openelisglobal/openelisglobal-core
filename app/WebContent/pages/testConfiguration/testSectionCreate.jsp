@@ -176,10 +176,10 @@
         <h4><bean:message key="configuration.testUnit.confirmation.explain" /></h4>
     </div>
     <div style="text-align: center" id="editButtons">
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.next")%>"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.save")%>"
                onclick="confirmValues();"/>
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.previous")%>"
-               onclick="submitAction('TestSectionManagement.do');"/>
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.cancel")%>"
+               onclick="window.onbeforeunload = null; submitAction('TestSectionManagement.do');"/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
         <input type="button" value="<%=StringUtil.getMessageForKey("label.button.accept")%>"

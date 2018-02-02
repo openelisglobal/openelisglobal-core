@@ -179,10 +179,10 @@
         <h4><bean:message key="configuration.uom.confirmation.explain" /></h4>
     </div>
     <div style="text-align: center" id="editButtons">
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.next")%>"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.save")%>"
                onclick="confirmValues();"/>
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.previous")%>"
-               onclick="submitAction('UomManagement.do');"/>
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.cancel")%>"
+               onclick="window.onbeforeunload = null; submitAction('UomManagement.do');"/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
         <input type="button" value="<%=StringUtil.getMessageForKey("label.button.accept")%>"
