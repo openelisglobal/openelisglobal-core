@@ -6,10 +6,10 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties,
 	org.owasp.encoder.Encode,
 	us.mn.state.health.lims.common.util.Versioning" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
+<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 <%--bugzilla 2492--%>
 <html:html>
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>' />

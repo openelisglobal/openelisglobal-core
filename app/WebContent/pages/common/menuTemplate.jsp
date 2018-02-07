@@ -5,10 +5,10 @@
 			us.mn.state.health.lims.common.services.LocalizationService,
 			us.mn.state.health.lims.common.util.ConfigurationProperties,
 			us.mn.state.health.lims.common.util.Versioning" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
+<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 <html:html>
 <%!
 String path = "";

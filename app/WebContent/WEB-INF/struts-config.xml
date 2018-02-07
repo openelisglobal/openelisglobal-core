@@ -300,7 +300,7 @@
 
   <plug-in className="org.apache.struts.tiles.TilesPlugin">
     <!-- Path to XML definition file -->
-    <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml, /WEB-INF/tiles-globalOpenELIS.xml" />
+    <set-property property="definitions-config" value="/WEB-INF/tiles/tiles-defs.xml, /WEB-INF/tiles/tiles-globalOpenELIS.xml" />
     <!-- Set Module-awareness to true -->
     <set-property property="moduleAware" value="true" />
   </plug-in>
@@ -309,7 +309,7 @@
   <!-- =================================================== Validator plugin -->
 
   <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
-    <set-property property="pathnames" value="/WEB-INF/validator-rules.xml, /WEB-INF/validation-globalOpenELIS.xml, /WEB-INF/validation.xml" />
+    <set-property property="pathnames" value="/WEB-INF/validation/validator-rules.xml, /WEB-INF/validation/validation-globalOpenELIS.xml, /WEB-INF/validation/validation.xml" />
   </plug-in>
 
 </struts-config>

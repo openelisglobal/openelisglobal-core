@@ -12,7 +12,6 @@
 <%@ taglib uri="/tags/labdev-view"		prefix="app" %>
 <%@ taglib uri="/tags/struts-tiles"     prefix="tiles" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
-<%@ taglib uri="/tags/globalOpenELIS" 	prefix="global"%>
 
 <bean:define id="formName"		value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 <bean:define id="idSeparator"	value='<%=SystemConfiguration.getInstance().getDefaultIdSeparator()%>' />

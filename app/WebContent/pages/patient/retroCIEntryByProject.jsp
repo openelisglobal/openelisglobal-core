@@ -32,8 +32,8 @@
 %>
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>neon1/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>neon/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>scripts/neon1/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>scripts/neon/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" language="JavaScript1.2">
 
 var dirty = false;

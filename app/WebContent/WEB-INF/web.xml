@@ -284,42 +284,37 @@
   <!-- Struts Tag Library Descriptors -->
   <taglib>
     <taglib-uri>/tags/struts-bean</taglib-uri>
-    <taglib-location>/WEB-INF/struts-bean.tld</taglib-location>
+    <taglib-location>/WEB-INF/taglib/struts-bean.tld</taglib-location>
   </taglib>
 
   <taglib>
     <taglib-uri>/tags/struts-html</taglib-uri>
-    <taglib-location>/WEB-INF/struts-html.tld</taglib-location>
+    <taglib-location>/WEB-INF/taglib/struts-html.tld</taglib-location>
   </taglib>
 
   <taglib>
     <taglib-uri>/tags/struts-logic</taglib-uri>
-    <taglib-location>/WEB-INF/struts-logic.tld</taglib-location>
+    <taglib-location>/WEB-INF/taglib/struts-logic.tld</taglib-location>
   </taglib>
 
   <taglib>
     <taglib-uri>/tags/struts-nested</taglib-uri>
-    <taglib-location>/WEB-INF/struts-nested.tld</taglib-location>
+    <taglib-location>/WEB-INF/taglib/struts-nested.tld</taglib-location>
   </taglib>
 
   <taglib>
     <taglib-uri>/tags/struts-tiles</taglib-uri>
-    <taglib-location>/WEB-INF/struts-tiles.tld</taglib-location>
+    <taglib-location>/WEB-INF/taglib/struts-tiles.tld</taglib-location>
   </taglib>
   
   <taglib>
     <taglib-uri>/tags/labdev-view</taglib-uri>
-    <taglib-location>/WEB-INF/labdev-view.tld</taglib-location>
+    <taglib-location>/WEB-INF/taglib/labdev-view.tld</taglib-location>
   </taglib>
   
   <taglib>
     <taglib-uri>/tags/sourceforge-ajax</taglib-uri>
-    <taglib-location>/WEB-INF/ajaxtags.tld</taglib-location>
-  </taglib>
-  
-  <taglib>
-    <taglib-uri>/tags/globalOpenELIS</taglib-uri>
-    <taglib-location>/WEB-INF/globalOpenELIS.tld</taglib-location>
+    <taglib-location>/WEB-INF/taglib/ajaxtags.tld</taglib-location>
   </taglib>
 
 </web-app>
