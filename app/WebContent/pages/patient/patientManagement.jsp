@@ -127,6 +127,13 @@ if( patientIDRequired){
 	if (supportSTNumber) {
 		pt_requiredOneOfFields.push("ST_ID");
 	}
+	if (supportSubjectNumber){
+		pt_requiredOneOfFields.push("subjectNumberID");
+	}
+}
+
+if (supportSubjectNumber && subjectNumberRequired){
+	pt_requiredFields.push("subjectNumberID");
 }
 	
 if (supportSubjectNumber && subjectNumberRequired){
