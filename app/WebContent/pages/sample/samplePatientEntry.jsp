@@ -89,6 +89,9 @@ if( requesterLastNameRequired ){
 <%  if (requesterLastNameRequired) { %>
     requiredFields.push("providerLastNameID");
 <% } %>
+<% if( FormFields.getInstance().useField( Field.SampleEntryReferralSiteNameRequired ) ){%>
+	requiredFields.push("requesterId");
+<% } %>
 
  
 function isFieldValid(fieldname)

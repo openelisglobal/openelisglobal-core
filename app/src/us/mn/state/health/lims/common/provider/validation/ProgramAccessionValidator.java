@@ -216,61 +216,68 @@ public class ProgramAccessionValidator implements IAccessionNumberValidator {
 	 * @param studyFormName - an additional
 	 * @return
 	 */
-	public ValidationResults checkAccessionNumberValidity(String accessionNumber, String recordType, String isRequired,
-			String studyFormName) {
-		ValidationResults results = validFormat(accessionNumber, true);
-		SampleDAO sampleDAO = new SampleDAOImpl();
+  public ValidationResults checkAccessionNumberValidity(String accessionNumber, String recordType,
+          String isRequired, String studyFormName) {
+    ValidationResults results = validFormat(accessionNumber, true);
+    SampleDAO sampleDAO = new SampleDAOImpl();
 
-        boolean accessionUsed = (sampleDAO.getSampleByAccessionNumber(accessionNumber) != null);
-		if (results == ValidationResults.SUCCESS)  {
+    boolean accessionUsed = (sampleDAO.getSampleByAccessionNumber(accessionNumber) != null);
+    if (results == ValidationResults.SUCCESS) {
 
-			if (IActionConstants.TRUE.equals(isRequired) && !accessionUsed){
-					results = ValidationResults.REQUIRED_FAIL;
-			        return results;
-			} else {
-			    if (recordType == null) {
-			        results = ValidationResults.USED_FAIL;
-			    }
-			    // record Type specified, so work out the detailed response to report
-			    if (accessionUsed) {
-            	    if ( recordType.contains("initial")) {
-            	        if ( recordType.contains("Patient")) {
-                            results = AccessionNumberUtil.isPatientStatusValid(accessionNumber, RecordStatus.NotRegistered);
-                            if (results != PATIENT_STATUS_FAIL) {
-                                results = matchExistingStudyFormName(accessionNumber, studyFormName, false);
-                            }
-                        } else if ( recordType.contains("Sample")) {
-                            results = AccessionNumberUtil.isSampleStatusValid(accessionNumber, RecordStatus.NotRegistered);
-                            if (results != SAMPLE_STATUS_FAIL) {
-                                results = matchExistingStudyFormName(accessionNumber, studyFormName, false);
-                            }
-                        }
-            	    } else {
-                        if (recordType.contains("double")) {
-                	          if ( recordType.contains("Patient")) {
-                	              results = AccessionNumberUtil.isPatientStatusValid(accessionNumber, RecordStatus.InitialRegistration);
-                	              if (results != PATIENT_STATUS_FAIL) {
-                	                  results = matchExistingStudyFormName(accessionNumber, studyFormName, true);
-                	              }
-                	          } else if ( recordType.contains("Sample")) {
-                	              results = AccessionNumberUtil.isSampleStatusValid(accessionNumber, RecordStatus.InitialRegistration);
-                                  if (results != SAMPLE_STATUS_FAIL) {
-                                      results = matchExistingStudyFormName(accessionNumber, studyFormName, true);
-                                  }
-                	          }
-                        }
-            	    }
-			    } else {
-			        if ( recordType.contains("initial")) {
-			            results = ValidationResults.SAMPLE_NOT_FOUND;    // initial entry not used is good
-			        } else if ( recordType.contains("double") ) {
-			            results = ValidationResults.REQUIRED_FAIL;       // double entry not existing is a problem
-			        }
-			    }
-			}
-		}
-		return results;
-	}
+      if (IActionConstants.TRUE.equals(isRequired) && !accessionUsed) {
+        results = ValidationResults.REQUIRED_FAIL;
+        return results;
+      } else {
+        if (recordType == null) {
+          results = ValidationResults.USED_FAIL;
+        }
+        // record Type specified, so work out the detailed response to report
+        if (accessionUsed) {
+          if (recordType.contains("initial")) {
+            if (recordType.contains("Patient")) {
+              results = AccessionNumberUtil.isPatientStatusValid(accessionNumber,
+                      RecordStatus.NotRegistered);
+              if (results != PATIENT_STATUS_FAIL) {
+                results = matchExistingStudyFormName(accessionNumber, studyFormName, false);
+              }
+            } else if (recordType.contains("Sample")) {
+              results = AccessionNumberUtil.isSampleStatusValid(accessionNumber,
+                      RecordStatus.NotRegistered);
+              if (results != SAMPLE_STATUS_FAIL) {
+                results = matchExistingStudyFormName(accessionNumber, studyFormName, false);
+              }
+            }
+          } else if (recordType.contains("double")) {
+            if (recordType.contains("Patient")) {
+              results = AccessionNumberUtil.isPatientStatusValid(accessionNumber,
+                      RecordStatus.InitialRegistration);
+              if (results != PATIENT_STATUS_FAIL) {
+                results = matchExistingStudyFormName(accessionNumber, studyFormName, true);
+              }
+            } else if (recordType.contains("Sample")) {
+              results = AccessionNumberUtil.isSampleStatusValid(accessionNumber,
+                      RecordStatus.InitialRegistration);
+              if (results != SAMPLE_STATUS_FAIL) {
+                results = matchExistingStudyFormName(accessionNumber, studyFormName, true);
+              }
+            }
+          } else if (recordType.contains("orderModify")) {
+            results = ValidationResults.USED_FAIL;
+          }
+        } else {
+          if (recordType.contains("initial")) {
+            results = ValidationResults.SAMPLE_NOT_FOUND;    // initial entry not used is good
+          } else if (recordType.contains("double")) {
+            results = ValidationResults.REQUIRED_FAIL;       // double entry not existing is a
+                                                             // problem
+          } else if (recordType.contains("orderModify")) {
+            results = ValidationResults.SAMPLE_NOT_FOUND;    // modify order page
+          }
+        }
+      }
+    }
+    return results;
+  }
 
 	/**
 	 * Can the existing accession number be used in the given form?
@@ -290,7 +297,7 @@ public class ProgramAccessionValidator implements IAccessionNumberValidator {
         return SAMPLE_STATUS_FAIL;  // the sample was entered on a different form!
     }
 
-    private static String findStudyFormName(String accessionNumber) {
+    public static String findStudyFormName(String accessionNumber) {
         ObservationHistoryDAO ohDAO = new ObservationHistoryDAOImpl();
         StatusSet statusSet = StatusService.getInstance().getStatusSetForAccessionNumber(accessionNumber);
         Patient p = new Patient();

@@ -26,9 +26,11 @@ import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
+import us.mn.state.health.lims.common.provider.validation.ProgramAccessionValidator;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusSet;
+import us.mn.state.health.lims.common.util.StringUtil;
 
 public class AccessionNumberUtil {
 
@@ -116,5 +118,12 @@ public class AccessionNumberUtil {
     public static String getAccessionNumberFromSampleItemAccessionNumber( String accessionNumber){
     	int lastDash = accessionNumber.lastIndexOf('-');
 		return accessionNumber.substring(0, lastDash);
+    }
+    
+    public static boolean isProjectAccessionNumber( String accessionNumber) {
+      if (StringUtil.isNullorNill(ProgramAccessionValidator.findStudyFormName(accessionNumber))) {
+        return false;
+      }
+      return true;
     }
 }

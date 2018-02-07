@@ -336,7 +336,7 @@
         </html:select>
         </logic:equal>
         <logic:equal value="true" name='<%=formName%>' property="sampleOrderItems.readOnly" >
-            <html:text property="sampleOrderItems.referringSiteName" name="<%=formName%>" style="width:300px" />
+            <html:text styleId="requesterId" property="sampleOrderItems.referringSiteName" name="<%=formName%>" style="width:300px" />
         </logic:equal>
     </td>
 </tr>

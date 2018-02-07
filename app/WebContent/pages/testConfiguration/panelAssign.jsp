@@ -206,9 +206,9 @@
     </div>
 
     <div style="text-align: center" id="editButtons">
-        <input id="saveButton" type="button" value='<%=StringUtil.getMessageForKey("label.button.next")%>'
+        <input id="saveButton" type="button" value='<%=StringUtil.getMessageForKey("label.button.save")%>'
                onclick="confirmValues();" disabled="disabled"/>configuration.testUnit.confirmation.move.phrase
-        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.previous")%>'
+        <input type="button" value='<%=StringUtil.getMessageForKey("label.button.cancel")%>'
                onclick='window.onbeforeunload = null; submitAction("PanelTestAssign.do")'/>
     </div>
     <div style="text-align: center; display: none;" class="confirmation-step">

@@ -65,14 +65,11 @@ public class SearchResultsDAOImp implements SearchResultsDAO {
 
 			org.hibernate.Query query = HibernateUtil.getSession().createSQLQuery(sql);
 
-            //The pText stuff is to handle accents in names
 			if (queryFirstName) {
-                byte firstNameBytes[] = firstName.getBytes("ISO-8859-1");
-				query.setString(FIRST_NAME_PARAM, new String(firstNameBytes, UTF_8));
+				query.setString(FIRST_NAME_PARAM, firstName);
 			}
 			if (queryLastName) {
-                byte lastNameBytes[] = lastName.getBytes("ISO-8859-1");
-				query.setText(LAST_NAME_PARAM, new String(lastNameBytes, UTF_8));
+				query.setText(LAST_NAME_PARAM, lastName);
 			}
 			if (queryNationalId) {
 				query.setString(NATIONAL_ID_PARAM, nationalID);

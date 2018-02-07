@@ -196,10 +196,10 @@
         <h4><bean:message key="configuration.panel.confirmation.explain" /></h4>
     </div>
     <div style="text-align: center" id="editButtons">
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.next")%>"
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.save")%>"
                onclick="confirmValues();"/>
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.previous")%>"
-               onclick="submitAction('PanelManagement.do');"/>
+        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.cancel")%>"
+               onclick="window.onbeforeunload = null; submitAction('PanelManagement.do');"/>
     </div>
     <div style="text-align: center; display: none;" id="confirmationButtons">
         <input type="button" value="<%=StringUtil.getMessageForKey("label.button.accept")%>"

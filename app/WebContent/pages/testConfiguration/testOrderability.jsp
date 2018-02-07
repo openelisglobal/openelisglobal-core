@@ -344,7 +344,7 @@
 
 <div class="selectShow confirmHide" style="margin-left:auto; margin-right:auto;width: 40%;">
     <input type="button"
-           value="<%= StringUtil.getMessageForKey("label.button.next") %>"
+           value="<%= StringUtil.getMessageForKey("label.button.save") %>"
            disabled="disabled"
            onclick="nextStepToConfirmation();"
            id="nextButtonSelect"/>
