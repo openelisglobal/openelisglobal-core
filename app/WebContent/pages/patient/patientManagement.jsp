@@ -135,10 +135,6 @@ if( patientIDRequired){
 if (supportSubjectNumber && subjectNumberRequired){
 	pt_requiredFields.push("subjectNumberID");
 }
-	
-if (supportSubjectNumber && subjectNumberRequired){
-	pt_requiredOneOfFields = new Array("subjectNumberID");
-}
 var updateStatus = "add";
 var patientInfoChangeListeners = [];
 var dirty = false;
