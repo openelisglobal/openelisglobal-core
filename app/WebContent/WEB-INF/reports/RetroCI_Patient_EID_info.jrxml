@@ -133,9 +133,9 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{doctor}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-3" x="82" y="0" width="150" height="18"/>
+				<reportElement key="textField-3" x="82" y="0" width="140" height="18"/>
 				<textElement>
-					<font size="9" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{subjectno}]]></textFieldExpression>
 			</textField>
@@ -165,14 +165,14 @@
 				<text><![CDATA[Sexe :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-6" x="232" y="0" width="36" height="18"/>
+				<reportElement key="staticText-6" x="222" y="0" width="46" height="18"/>
 				<textElement/>
 				<text><![CDATA[Labno :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-7" x="385" y="0" width="59" height="18"/>
 				<textElement textAlignment="Right"/>
-				<text><![CDATA[Date Prél :]]></text>
+				<text><![CDATA[Date Prél. :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-8" x="257" y="53" width="56" height="18"/>

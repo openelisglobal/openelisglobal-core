@@ -17,6 +17,7 @@ app/build/
 .idea
 app/out/
 app.iml
+
 liquibase.iml
 liquibase/.ssh/known_hosts
 app/postgresql-9.2-1002.jdbc4.jar
@@ -62,9 +63,3 @@ liquibase/OE3.4/testCatalogCI_IPCI/scripts/testSections.txt
 liquibase/lb.iml
 liquibase/postgresql-9.2-1002.jdbc3.jar
 liquibase/postgresql-driver-license.txt
-app/.settings/org.eclipse.core.resources.prefs
-app/build/classes/build.properties
-app/build/classes/build.properties
-app/build/classes/MessageResources_fr.properties
-app/src/MessageResources_fr.properties
-*.java
