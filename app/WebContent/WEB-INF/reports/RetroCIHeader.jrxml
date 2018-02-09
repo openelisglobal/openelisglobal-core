@@ -59,7 +59,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA["Résultats " + $P{status}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-2" x="439" y="91" width="109" height="30"/>
+				<reportElement key="textField-2" x="439" y="85" width="109" height="36"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
@@ -83,36 +83,36 @@
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
 			</image>
 			<image isUsingCache="true" onErrorType="Blank">
-				<reportElement mode="Transparent" x="451" y="0" width="97" height="90" backcolor="#FFFFFF"/>
+				<reportElement mode="Transparent" x="451" y="0" width="97" height="85" backcolor="#FFFFFF"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="5" y="65" width="543" height="20"/>
+				<reportElement x="5" y="57" width="543" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 34 72 20 33  /  BP 13 SOUBRE]]></text>
+				<text><![CDATA[TEL: 35 91 30 92 / Cel: 06 24 05 94 - 58  70 54 30]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="86" width="371" height="20"/>
+				<reportElement x="13" y="76" width="535" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable Laboratoire : ASSE Konan A.]]></text>
+				<text><![CDATA[Chef de Laboratoire : Dr Kassi Marie Laure]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="22" width="543" height="20"/>
+				<reportElement x="5" y="19" width="543" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CENTRE HOSPITALIER REGIONAL D'ABENGOUROU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="38" width="543" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
 				<text><![CDATA[LABORATOIRE DE BIOLOGIE MOLECULAIRE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="5" y="43" width="543" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="false"/>
-				</textElement>
-				<text><![CDATA[HOPITAL GENERAL DE SOUBRE]]></text>
 			</staticText>
 		</band>
 	</detail>
