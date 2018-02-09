@@ -19,11 +19,9 @@ package us.mn.state.health.lims.sample.util.CI;
 
 import org.apache.commons.collections4.CollectionUtils;
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,27 +40,22 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 			
 	public List<Test> getDryTubeTests(){
 		List<Test> testList = new ArrayList<Test>();
-		try {		
-			if (projectData.getSerologyHIVTest()){
-	            CollectionUtils.addIgnoreNull(testList, createTest("Vironostika", true ));
-				CollectionUtils.addIgnoreNull(testList, createTest("Murex", true ));
-				CollectionUtils.addIgnoreNull(testList, createTest("Integral", true ));
-			}	
-			if (projectData.getCreatinineTest()){
-				CollectionUtils.addIgnoreNull(testList, createTest(new String("Créatininémie".getBytes(), "UTF-8"), true ));
 				
-			}
-			if (projectData.getGlycemiaTest()){
-				CollectionUtils.addIgnoreNull(testList, createTest(new String("Glycémie".getBytes(), "UTF-8"), true ));
-			}
-			
-			if (projectData.getTransaminaseTest()){
-				CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ALTL", true ));
-				CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ASTL", true ));
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			LogEvent.logError("ARVFormMapper", "getDryTubeTests()", e.toString());
+		if (projectData.getSerologyHIVTest()){
+            CollectionUtils.addIgnoreNull(testList, createTest("Vironostika", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Murex", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Integral", true ));
+		}	
+		if (projectData.getCreatinineTest()){
+			CollectionUtils.addIgnoreNull(testList, createTest("Créatininémie", true ));
+		}
+		if (projectData.getGlycemiaTest()){
+			CollectionUtils.addIgnoreNull(testList, createTest("Glycémie", true ));
+		}
+		
+		if (projectData.getTransaminaseTest()){
+			CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ALTL", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("Transaminases ASTL", true ));
 		}
 		return testList;
 	}
@@ -93,12 +86,7 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		    CollectionUtils.addIgnoreNull(testList, createTest("Viral Load", true ));
 		}		
 		if (projectData.getGenotypingTest()){
-		    try {
-				CollectionUtils.addIgnoreNull(testList, createTest(new String("Génotypage".getBytes(), "UTF-8"), true ));
-		    } catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				LogEvent.logError("ARVFormMapper", "getEDTATubeTests()", e.toString());
-			}
+		    CollectionUtils.addIgnoreNull(testList, createTest("Génotypage", true ));
 		}
 		
 		return testList;

@@ -13,7 +13,7 @@ ALTER SEQUENCE clinlims.system_role_seq restart WITH 70;
 ALTER TABLE clinlims.system_role  ALTER COLUMN name TYPE character(30);
   
 INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, grouping_parent, display_key, active, editable)
-    VALUES (66, '', 'Able to access all results forms', default,null,'role.results.all', 
+    VALUES (66, 'Results Admin', 'Able to access all results forms', default,null,'role.results.all', 
             default, default);
 			
 INSERT INTO clinlims.system_role(id, name, description, is_grouping_role, grouping_parent, display_key,active, editable)
