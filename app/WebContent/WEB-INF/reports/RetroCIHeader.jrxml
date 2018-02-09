@@ -41,7 +41,7 @@
 	<detail>
 		<band height="134" splitType="Prevent">
 			<staticText>
-				<reportElement x="5" y="79" width="63" height="20">
+				<reportElement x="5" y="85" width="63" height="20">
 					<printWhenExpression><![CDATA[$P{duplicateReport}]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -50,7 +50,7 @@
 				<text><![CDATA[Duplicata]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement mode="Transparent" x="440" y="106" width="109" height="18" backcolor="#FFFFFF">
+				<reportElement mode="Transparent" x="440" y="114" width="109" height="18" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{status} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
@@ -59,7 +59,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA["Résultats " + $P{status}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-2" x="439" y="81" width="109" height="30"/>
+				<reportElement key="textField-2" x="439" y="85" width="109" height="36"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
@@ -83,36 +83,64 @@
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "leftLabLogo.jpg"]]></imageExpression>
 			</image>
 			<image isUsingCache="true" onErrorType="Blank">
-				<reportElement mode="Transparent" x="451" y="0" width="97" height="90" backcolor="#FFFFFF"/>
+				<reportElement mode="Transparent" x="451" y="0" width="97" height="85" backcolor="#FFFFFF"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="5" y="65" width="543" height="20"/>
+				<reportElement x="5" y="57" width="543" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 33 79 00 33  /  BP 412 Man]]></text>
+				<text><![CDATA[TEL: 31 63 19 82 / Cel: 48 71 32 47  /  FAX: 31 63 19 82]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="86" width="371" height="20"/>
+				<reportElement x="13" y="76" width="535" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Responsable Laboratoire : Dr TRA BI Joel  /  Responsable Charge Virale :  Dr KOUASSI AFFOUM PIERRE]]></text>
+				<text><![CDATA[Chef de Laboratoire : Prof. AKOUA-KOFFI C.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="22" width="543" height="20"/>
+				<reportElement x="5" y="19" width="543" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CENTRE HOSPITALIER UNIVERSITAIRE DE BOUAKE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="38" width="543" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
 				<text><![CDATA[LABORATOIRE DE BIOLOGIE MOLECULAIRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="43" width="543" height="20"/>
+				<reportElement x="13" y="111" width="55" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="false"/>
+					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CENTRE HOSPITALIER REGIONAL DE MAN]]></text>
+				<text><![CDATA[ASSE R.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="110" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DIOMANDE A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="237" y="110" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[KOFFI B.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="353" y="110" width="64" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[N'GUESSAN Y.]]></text>
 			</staticText>
 		</band>
 	</detail>

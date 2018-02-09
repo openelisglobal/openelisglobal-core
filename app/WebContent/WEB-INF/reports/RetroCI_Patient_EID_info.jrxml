@@ -3,7 +3,7 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="102"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -104,10 +104,10 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{accession_number}]]></textFieldExpression>
 			</textField>
 			<rectangle>
-				<reportElement key="rectangle-1" x="245" y="52" width="302" height="36" backcolor="#F8F8F8"/>
+				<reportElement key="rectangle-1" x="257" y="52" width="290" height="36" backcolor="#F8F8F8"/>
 			</rectangle>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="313" y="71" width="234" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="313" y="71" width="228" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -120,7 +120,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{servicename}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="313" y="53" width="234" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="313" y="53" width="228" height="17" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -133,9 +133,9 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{doctor}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-3" x="82" y="0" width="150" height="18"/>
+				<reportElement key="textField-3" x="82" y="0" width="140" height="18"/>
 				<textElement>
-					<font size="9" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{subjectno}]]></textFieldExpression>
 			</textField>
@@ -165,14 +165,14 @@
 				<text><![CDATA[Sexe :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-6" x="232" y="0" width="36" height="18"/>
+				<reportElement key="staticText-6" x="222" y="0" width="46" height="18"/>
 				<textElement/>
 				<text><![CDATA[Labno :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-7" x="385" y="0" width="59" height="18"/>
 				<textElement textAlignment="Right"/>
-				<text><![CDATA[Date Prél :]]></text>
+				<text><![CDATA[Date Prél. :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-8" x="257" y="53" width="56" height="18"/>
@@ -185,7 +185,7 @@
 				<text><![CDATA[Numéro Enfant Site :]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-4" x="124" y="18" width="189" height="18"/>
+				<reportElement key="textField-4" x="124" y="18" width="212" height="18"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
