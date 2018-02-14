@@ -1044,7 +1044,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			closeSession();
 			return test;
 		}catch(HibernateException e){
-			handleException(e, "getTesById");
+			handleException(e, "getTestById");
 		}
 
 		return null;

@@ -57,8 +57,7 @@
 <bean:define id="testUnitList" name='<%=formName%>' property="labUnitList" type="java.util.List<IdValuePair>"/>
 <bean:define id="ageRangeList" name='<%=formName%>' property="ageRangeList" type="java.util.List<IdValuePair>"/>
 <bean:define id="dictionaryList" name='<%=formName%>' property="dictionaryList" type="java.util.List<IdValuePair>"/>
-<bean:define id="groupedDictionaryList" name='<%=formName%>' property="groupedDictionaryList"
-             type="java.util.List<java.util.List<IdValuePair>>"/>
+<bean:define id="groupedDictionaryList" name='<%=formName%>' property="groupedDictionaryList" type="java.util.List<java.util.List<IdValuePair>>"/>
 
 <%!
     int testCount = 0;

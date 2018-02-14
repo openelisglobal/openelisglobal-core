@@ -106,6 +106,10 @@ public class Test extends EnumValueItemImpl {
     private ValueHolder localizedTestName;
 
     private ValueHolder localizedReportingName;
+    
+    private ValueHolder localizedTestSectionName;
+
+    private ValueHolder localizedReportingTestSectionName;
 
     private String guid;
 	
@@ -392,6 +396,22 @@ public class Test extends EnumValueItemImpl {
 	public TestSection getTestSection() {
 		return (TestSection) this.testSection.getValue();
 	}
+	
+	  public Localization getLocalizedTestSectionName(){
+	        return (Localization)localizedTestSectionName.getValue();
+	    }
+
+	    public void setLocalizedTestSectionName( Localization localizedName ){
+	        this.localizedTestSectionName.setValue( localizedName );
+	    }
+
+	    public Localization getLocalizedReportingTestSectionName(){
+	        return (Localization)localizedReportingTestSectionName.getValue();
+	    }
+
+	    public void setLocalizedReportingTestSectionName( Localization localizedReportingName ){
+	        this.localizedReportingTestSectionName.setValue( localizedReportingName );
+	    }
 
 	public void setScriptlet(Scriptlet scriptlet) {
 		this.scriptlet.setValue(scriptlet);

@@ -31,6 +31,7 @@ public class TestCatalogBean {
     private String resultType;
     private String uom = "n/a";
     private String significantDigits = "n/a";
+    private String loinc;
     private String active;
     private String orderable;
     private boolean hasDictionaryValues = false;
@@ -127,6 +128,14 @@ public class TestCatalogBean {
 
     public void setOrderable(String orderable) {
         this.orderable = orderable;
+    }
+    
+    public String getLoinc() {
+        return loinc;
+    }
+    
+    public void setLoinc(String loinc) {
+    	this.loinc = loinc;
     }
 
     public String getSignificantDigits() {

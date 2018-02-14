@@ -91,6 +91,7 @@ public class TestCatalogAction extends BaseAction {
             TypeOfSample typeOfSample = testService.getTypeOfSample();
             bean.setSampleType(typeOfSample != null ? typeOfSample.getLocalizedName() : "n/a");
             bean.setOrderable(test.getOrderable() ? "Orderable" : "Not orderable");
+            bean.setLoinc(test.getLoinc());
             bean.setActive(test.isActive() ? "Active" : "Not active");
             bean.setUom(testService.getUOM(false));
             if( TypeOfTestResultService.ResultType.NUMERIC.matches(resultType)) {

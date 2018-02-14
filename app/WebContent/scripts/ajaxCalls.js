@@ -29,6 +29,19 @@ function getTestNames( testId, success, failure){
         });
 }
 
+function getTestEntities( testId, success, failure){
+    if( !failure ){	failure = defaultFailure;}
+
+    new Ajax.Request('ajaxQueryXML',
+        {
+            method : 'get',
+            parameters : "provider=TestEntitiesProvider&testId=" + testId ,
+            //indicator: 'throbbing',
+            onSuccess : success,
+            onFailure : failure
+        });
+}
+
 /**
  * A generic way to get localized names for a given entity rather than a new call for each type.  Expand and document as needed
  * @param entitiyId
