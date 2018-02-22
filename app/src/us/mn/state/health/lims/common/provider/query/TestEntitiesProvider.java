@@ -82,11 +82,15 @@ public class TestEntitiesProvider extends BaseQueryProvider {
             if(testSection != null) { testSectionId = testSection.getId(); }
             if(uom != null) { uomId = uom.getId(); }
             String loinc = test.getLoinc();
+            String isActive = test.getIsActive();
+            Boolean orderable = test.getOrderable();
             
             JSONObject idObject = new JSONObject();
             idObject.put("testSectionId", testSectionId);
             idObject.put("uomId", uomId);
             idObject.put("loinc", loinc);
+            idObject.put("isActive", isActive);
+            idObject.put("orderable", orderable);
             jsonResult.put("entities", idObject);
      
             return VALID;

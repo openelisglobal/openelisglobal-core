@@ -80,6 +80,7 @@ public class TestCatalogAction extends BaseAction {
             TestCatalogBean bean = new TestCatalogBean();
             TestService testService = new TestService(test);
             String resultType = testService.getResultType();
+            bean.setId(test.getId());
             bean.setEnglishName(test.getLocalizedTestName().getEnglish());
             bean.setFrenchName(test.getLocalizedTestName().getFrench());
             bean.setEnglishReportName(test.getLocalizedReportingName().getEnglish());

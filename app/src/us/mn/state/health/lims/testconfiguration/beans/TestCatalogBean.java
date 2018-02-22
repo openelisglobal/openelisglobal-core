@@ -21,6 +21,7 @@ import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import java.util.List;
 
 public class TestCatalogBean {
+	private String id;
     private String englishName;
     private String frenchName;
     private String englishReportName;
@@ -40,8 +41,15 @@ public class TestCatalogBean {
     private boolean hasLimitValues = false;
     private List<ResultLimitBean> resultLimits;
     private int testSortOrder = Integer.MAX_VALUE;
+    
+    public String getId() {
+        return id;
+    }
 
-
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     public String getEnglishName() {
         return englishName;
     }

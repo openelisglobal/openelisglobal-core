@@ -1294,7 +1294,7 @@
                         <span class="sexRange_0" style="display: none">
                             <bean:message key="sex.male" />
                         </span>
-                </td>ocalization
+                </td>
                 <td><input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
                            onchange="upperAgeRangeChanged('0')" checked><bean:message key="abbreviation.year.single" />
                     <input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"

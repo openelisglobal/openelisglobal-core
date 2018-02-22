@@ -2,10 +2,16 @@
          contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants"
         %>
+<%@ page language="java"
+         contentType="text/html; charset=utf-8"
+         import="java.util.List,
+                 us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean"
+        %>
 <%@ page import="us.mn.state.health.lims.common.util.IdValuePair" %>
 <%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
 <%@ page import="us.mn.state.health.lims.common.provider.query.EntityNamesProvider" %>
+<%@ page import="us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -30,7 +36,7 @@
 <script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
 <bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
-<bean:define id="testList" name='<%=formName%>' property="testList" type="java.util.List"/>
+<bean:define id="testList" name='<%=formName%>' property="testList" type="java.util.List<IdValuePair>"/>
 
 <bean:define id="sampleTypeList" name='<%=formName%>' property="sampleTypeList" type="java.util.List<IdValuePair>"/>
 <bean:define id="panelList" name='<%=formName%>' property="panelList" type="java.util.List<IdValuePair>"/>
@@ -40,6 +46,7 @@
 <bean:define id="ageRangeList" name='<%=formName%>' property="ageRangeList" type="java.util.List<IdValuePair>"/>
 <bean:define id="dictionaryList" name='<%=formName%>' property="dictionaryList" type="java.util.List<IdValuePair>"/>
 <bean:define id="groupedDictionaryList" name='<%=formName%>' property="groupedDictionaryList" type="java.util.List<java.util.List<IdValuePair>>"/>
+<bean:define id="testCatBeanList" name='<%=formName%>' property="testCatBeanList" type="List<TestCatalogBean>"/>
 
 <%!
     int testCount = 0;
@@ -56,7 +63,7 @@
     if (!$jq) {
         var $jq = jQuery.noConflict();
     }
-
+    
     function makeDirty(){
         function formWarning(){
             return "<bean:message key="banner.menu.dataLossWarning"/>";
@@ -70,8 +77,6 @@
         form.submit();
     }
 
-   
-    
     function setForEditing(testId, name) {
         $jq("#editDiv").show();
         $jq("#testName").text(name);
@@ -80,14 +85,26 @@
             $jq(value).removeClass("error");
             $jq(value).removeClass("confirmation");
         });
-        $jq("#testId").val(testId);
+        
         $jq(".test").each(function () {
             var element = $jq(this);
             element.prop("disabled", "disabled");
             element.addClass("disabled-text-button");
         });
+        
+        $jq(".resultClass").each(function (i,elem) {
+        	// console.log("sfe: " + testId + ":" + $jq(elem).attr('fTestId'));
+        	if(testId !== $jq(elem).attr("fTestId")){    		
+        		$jq(elem).remove();
+        	}
+        });
+        
         getTestNames(testId, testNameSuccess);
         getTestEntities(testId, testEntitiesSuccess);
+        
+        // var resultTypeId = getResultTypeId(testId);
+        
+        $jq("#normalRangeDiv").show();
     }
     
    
@@ -107,8 +124,8 @@
             getEntityNames(testSectionId, "<%=EntityNamesProvider.TEST_SECTION%>", testSectionNameSuccess );
             getEntityNames(uomId, "<%=EntityNamesProvider.UNIT_OF_MEASURE%>", uomNameSuccess );
             $jq("#loinc").text(response["entities"]["loinc"]);
-            
-           console.log("tes:" + testSectionId);
+       
+           // console.log("tes: " + testSectionId );
         }
 
         window.onbeforeunload = null;
@@ -235,9 +252,22 @@
         form.action = "TestModifyUpdate.do";
         form.submit();
     }
+    
+    function genderMatersForRange(checked, index) {
+        if (checked) {
+            $jq(".sexRange_" + index).show();
+        } else {
+            $jq(".sexRange_" + index).hide();
+            $jq("#lowNormal_G_" + index).val("-Infinity");
+            $jq("#highNormal_G_" + index).val("Infinity");
+            $jq("#lowNormal_G_" + index).removeClass("error");
+            $jq("#highNormal_G_" + index).removeClass("error");
+        }
+    }
 </script>
 
 <html:hidden property="testId" name="<%=formName%>" styleId="testId"/>
+
 <input type="button" value='<%= StringUtil.getMessageForKey("banner.menu.administration") %>'
        onclick="submitAction('MasterListsPage.do');"
        class="textButton"/> &rarr;
@@ -333,7 +363,140 @@
                                                                onchange="handleInput(this);"/>
             </td>
         </tr>
+
+ 	<% // tr section test result from testCatalog.jsp %>
+ 	
+	<% for (TestCatalogBean bean : testCatBeanList) { %>
+	   
+	   <tbody fTestId='<%= bean.getId() %>' class='resultClass' >
+	   
+       <% if (bean.isHasDictionaryValues()) {
+            boolean top = true;
+            for (String value : bean.getDictionaryValues()) {
+        %>
+        <tr>
+            <td><% if (top) { %><span class="catalog-label"><bean:message key="configuration.test.catalog.select.values" /></span>
+                <% } %></td>
+            <td colspan="2"><b><%=value%></b>
+            </td>
+            <td colspan="2"><% if (top) {
+                top = false;%><span class="catalog-label"><bean:message key="configuration.test.catalog.reference.value" /></span>
+                <b><%=bean.getReferenceValue()%></b>
+            </td>
+            <% 
+            
+            	} 
+             }
+         }
+            %>
+        </tr>
+        
+        <% if (bean.isHasLimitValues()) { %>
+        <tr>
+            <td colspan="5" align="center"><span class="catalog-label"><bean:message key="configuration.test.catalog.result.limits" /></span></td>
+        </tr>
+        <tr>
+            <td><span class="catalog-label"><bean:message key="label.sex" /></span></td>
+            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.age.range.months" /></span></td>
+            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.normal.range" /></span></td>
+            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.valid.range" /></span></td>
+        </tr>
+        <% for (ResultLimitBean limitBean : bean.getResultLimits()) {%>
+        <tr>
+            <td><b><%=limitBean.getGender()%></b>
+            </td>
+            <td><b><%=limitBean.getAgeRange()%></b>
+            </td>
+            <td><b><%=limitBean.getNormalRange()%></b>
+            </td>
+            <td><b><%=limitBean.getValidRange()%></b>
+            </td>
+        </tr>
+        
+				
+		 <% 
+		 	 } 
+		   } 
+         }
+		 %>
+	     
+</tbody>
+
+        
     </table>
+    
+        <div id="normalRangeDiv" style="display:none;">
+        <h3><bean:message key="configuration.test.catalog.normal.range" /></h3>
+        <table style="display:inline-table">
+            <tr>
+                <th></th>
+                <th colspan="8"><bean:message key="configuration.test.catalog.normal.range" /></th>
+                <th colspan="2"><bean:message key="configuration.test.catalog.valid.range" /> </th>
+                <th></th>
+            </tr>
+            <tr>
+                <td><bean:message key="label.sex.dependent" /></td>
+                <td><span class="sexRange" style="display: none"><bean:message key="label.sex" /> </span></td>
+                <td colspan="4" align="center"><bean:message key="label.age.range" /> </td>
+                <td colspan="2" align="center"><bean:message key="label.range" /></td>
+                <td align="center"><bean:message key="label.reporting.range" /></td>
+                <td colspan="2"></td>
+            </tr>
+            <tr class="row_0">
+                <td><input type="hidden" class="rowKey" value="0"/><input id="genderCheck_0" type="checkbox"
+                                                                          onchange="genderMatersForRange(this.checked, '0')">
+                </td>
+                <td>
+                        <span class="sexRange_0" style="display: none">
+                            <bean:message key="sex.male" />
+                        </span>
+                </td>
+                <td><input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
+                           onchange="upperAgeRangeChanged('0')" checked><bean:message key="abbreviation.year.single" />
+                    <input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"
+                           onchange="upperAgeRangeChanged('0')"><bean:message key="abbreviation.month.single" />&nbsp;</td>
+                <td id="lowerAge_0">0&nbsp;</td>
+                <td><input type="text" id="upperAgeSetter_0" value="Infinity" size="10"
+                           onchange="upperAgeRangeChanged('0')"><span id="upperAge_0"></span></td>
+                <td>
+                    <select id="ageRangeSelect_0" onchange="ageRangeSelected( this, '0');">
+                        <option value="0"></option>
+                        <% for (IdValuePair pair : ageRangeList) { %>
+                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
+                        </option>
+                        <% } %>
+                    </select>
+                </td>
+                <td><input type="text" value="-Infinity" size="10" id="lowNormal_0" class="lowNormal"
+                           onchange="normalRangeCheck('0');"></td>
+                <td><input type="text" value="Infinity" size="10" id="highNormal_0" class="highNormal"
+                           onchange="normalRangeCheck('0');"></td>
+                <td><input type="text" value="" size="12" id="reportingRange_0"></td>
+                <td><input type="text" value="-Infinity" size="10" id="lowValid" onchange="validRangeCheck();"></td>
+                <td><input type="text" value="Infinity" size="10" id="highValid" onchange="validRangeCheck();"></td>
+            </tr>
+            <tr class="sexRange_0 row_0" style="display: none">
+                <td></td>
+                <td><bean:message key="sex.female" /></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_0" class="lowNormal"
+                           onchange="normalRangeCheck('0');"></td>
+                <td><input type="text" value="Infinity" size="10" id="highNormal_G_0" class="highNormal"
+                           onchange="normalRangeCheck('0');"></td>
+                <td><input type="text" value="" size="12" id="reportingRange_G_0"></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr id="endRow"></tr>
+        </table>
+        <label for="significantDigits"><bean:message key="label.significant.digits" /></label>
+        <input type="number" min="0" max="10" id="significantDigits">
+    </div>
+    
+    
     <div style="text-align: center" id="editButtons">
         <input type="button" value='<%=StringUtil.getMessageForKey("label.button.next")%>'
                onclick="confirmValues();"/>
@@ -367,13 +530,13 @@
                 testCount++;
                 columnCount++;
             %></td>
-        <% } %>
+       <% } %>
 
     </tr>
     <% } %>
 </table>
 
 <br>
-<input type="button" value='<%= StringUtil.getMessageForKey("label.button.finished") %>'
+<input type="button" value='<%=StringUtil.getMessageForKey("label.button.finished") %>'
        onclick="submitAction('TestManagementConfigMenu.do');"/>
 </form>
