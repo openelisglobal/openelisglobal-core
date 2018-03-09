@@ -3,8 +3,8 @@
   <!--system role and module updating-->
   <!-- Data specific to CDIRetroCI -->
   
-   <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
-    <preConditions onFail="MARK_RAN">
+   <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT" >
+       <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.system_role_module where id= '1701';
     		</sqlCheck>
     </preConditions>
@@ -14,7 +14,7 @@
 	INSERT INTO clinlims.system_role_module(id, has_select, has_add, has_update, has_delete, system_role_id,system_module_id) VALUES (1701,'Y','Y','Y','Y',42,513);
 
 	</sql>
-  </changeSet>
+	</changeSet>
   
  <changeSet author="CI OpenELIS developers group" id="2" context="ci_regional,ci_general">
     <preConditions onFail="MARK_RAN">
