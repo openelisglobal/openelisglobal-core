@@ -205,7 +205,7 @@ function /*void*/ pt_setSave()
 	if( window.setSave ){
 		setSave();
 	}else{
-		$("saveButtonId").disabled = !pt_requiredFieldsValid();
+		$("saveButtonId").disabled = !patientFormValid();
 	}
 }
 
