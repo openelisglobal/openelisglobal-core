@@ -19,6 +19,7 @@
 
   <include file="OE7.1/barcode.xml" />
   <include file="OE7.1/Menu.xml" />
+  <include file="OE7.1/siteinformation.xml" />
   <include file="OE7.1/systemmodule.xml" />
   <include file="OE7.1/systemrolemodule.xml" />
   
