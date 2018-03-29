@@ -16,11 +16,17 @@
  */
 package us.mn.state.health.lims.dataexchange.order.action;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+
 import ca.uhn.hl7v2.AcknowledgmentCode;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.hoh.hapi.server.HohServlet;
 import ca.uhn.hl7v2.model.DataTypeException;
-import ca.uhn.hl7v2.model.Group;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v251.datatype.CWE;
 import ca.uhn.hl7v2.model.v251.message.ACK;
@@ -30,12 +36,6 @@ import ca.uhn.hl7v2.protocol.ReceivingApplication;
 import ca.uhn.hl7v2.protocol.ReceivingApplicationException;
 import us.mn.state.health.lims.dataexchange.order.action.IOrderInterpreter.InterpreterResults;
 import us.mn.state.health.lims.dataexchange.order.action.OrderWorker.OrderResult;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 public class OrderServlet extends HohServlet{
 
@@ -61,10 +61,13 @@ public class OrderServlet extends HohServlet{
 		 *            A map containing additional information about the message,
 		 *            where it came from, etc.
 		 */
-		public Message processMessage(Message message, Map<String, Object> theMetadata) throws ReceivingApplicationException, HL7Exception{
+		@Override
+		public Message processMessage(Message message, Map theMetadata) throws ReceivingApplicationException, HL7Exception{
 			//LogEvent.logFatal("OrderServlet", "processMessage", message.encode());
 			// System.out.println("Received message:\n" + message.printStructure());
 
+			// TO DO add message signature verification for authentication of messages
+			
 			OrderWorker worker = new OrderWorker(message);
 
 			worker.setInterpreter(new HL7OrderInterpreter());
@@ -160,7 +163,7 @@ public class OrderServlet extends HohServlet{
 		}
 
 		private ERR createNewERRSegment(String HL70357Identifier, String HL70357Msg, String detail, ACK response) throws DataTypeException{
-			ERR err = new ERR((Group)response.getParent(), response.getModelClassFactory());
+			ERR err = new ERR(response.getParent(), response.getModelClassFactory());
 			CWE cwe = err.getHL7ErrorCode();
 			cwe.getIdentifier().setValue(HL70357Identifier);
 			cwe.getText().setValue(HL70357Msg);
@@ -172,6 +175,7 @@ public class OrderServlet extends HohServlet{
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public boolean canProcess(Message theMessage){
 			return true;
 		}

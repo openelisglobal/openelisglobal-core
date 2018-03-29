@@ -94,6 +94,7 @@ public class DBOrderPersister implements IOrderPersister{
 		patient.setNationalId(orderPatient.getNationalId());
 		patient.setPerson(person);
 		patient.setSysUserId(SERVICE_USER_ID);
+		patient.setExternalId(orderPatient.getGuid());
 
 		List<PatientIdentity> identities = new ArrayList<PatientIdentity>();
 		addIdentityIfAppropriate(IDENTITY_GUID_ID, orderPatient.getGuid(), identities);
