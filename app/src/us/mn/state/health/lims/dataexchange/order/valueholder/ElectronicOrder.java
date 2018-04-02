@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.statusofsample.valueholder.StatusOfSample;
 
 
 public class ElectronicOrder extends BaseObject{
@@ -32,6 +33,7 @@ public class ElectronicOrder extends BaseObject{
     private String externalId;
     private ValueHolder patient;
     private String statusId;
+    private StatusOfSample status; // not persisted
     private Timestamp orderTimestamp;
     private String data;
     
@@ -62,6 +64,12 @@ public class ElectronicOrder extends BaseObject{
 	}
 	public void setStatusId(String statusId){
 		this.statusId = statusId;
+	}
+	public StatusOfSample getStatus(){
+		return status;
+	}
+	public void setStatus(StatusOfSample status){
+		this.status = status;
 	}
 	public Timestamp getOrderTimestamp(){
 		return orderTimestamp;
