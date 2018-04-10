@@ -84,7 +84,7 @@ public class TestModifyAction extends BaseAction {
         List<TestCatalogBean> testCatBeanList = createTestCatBeanList();
         PropertyUtils.setProperty(form, "testCatBeanList", testCatBeanList);
         
-        System.out.println("TestModifyAction:performAction");
+//        System.out.println("TestModifyAction:performAction");
 
         return mapping.findForward(FWD_SUCCESS);
 	}

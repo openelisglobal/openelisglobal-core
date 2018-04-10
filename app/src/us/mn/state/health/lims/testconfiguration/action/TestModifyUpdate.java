@@ -71,7 +71,7 @@ public class TestModifyUpdate extends BaseAction {
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String currentUserId = getSysUserId(request);
         String jsonString = ((DynaValidatorForm)form).getString("jsonWad");
-        System.out.println(jsonString);
+//        System.out.println(jsonString);
 
         JSONParser parser=new JSONParser();
 
@@ -81,34 +81,55 @@ public class TestModifyUpdate extends BaseAction {
         Localization nameLocalization = createNameLocalization(testAddParams);
         Localization reportingNameLocalization = createReportingNameLocalization(testAddParams);
         
-        
         List<TestSet> testSets = createTestSets(testAddParams);
         TestDAO testDAO = new TestDAOImpl();
         
-//        TypeOfSampleTestDAO typeOfSampleTestDAO = new TypeOfSampleTestDAOImpl();
+        TypeOfSampleTestDAO typeOfSampleTestDAO = new TypeOfSampleTestDAOImpl();
+        PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
         
-//        PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
-//        TestResultDAO testResultDAO = new TestResultDAOImpl();
-//        ResultLimitDAO resultLimitDAO = new ResultLimitDAOImpl();
+        TestResultDAO testResultDAO = new TestResultDAOImpl();
+        ResultLimitDAO resultLimitDAO = new ResultLimitDAOImpl();
 
         Transaction tx = HibernateUtil.getSession().beginTransaction();
         try{
         	updateTestNames(testAddParams.testId, nameLocalization.getEnglish(), nameLocalization.getFrench(), reportingNameLocalization.getEnglish(), reportingNameLocalization.getFrench(), currentUserId);
-           
+        	updateTestEntities(testAddParams.testId, testAddParams.loinc, currentUserId);
+        	
+            List<TypeOfSampleTest> typeOfSampleTest = typeOfSampleTestDAO.getTypeOfSampleTestsForTest(testAddParams.testId);
+            String[] typeOfSamplesTestIDs = new String[typeOfSampleTest.size()];
+            for ( int i = 0; i < typeOfSampleTest.size(); i++) {
+            	typeOfSamplesTestIDs[i] = typeOfSampleTest.get(i).getId();
+            }
+            typeOfSampleTestDAO.deleteData(typeOfSamplesTestIDs, currentUserId);
+            
+            List<PanelItem> panelItems = panelItemDAO.getPanelItemByTestId(testAddParams.testId);
+        	for( PanelItem item : panelItems){
+        		item.setSysUserId(currentUserId);
+        	}
+            panelItemDAO.deleteData(panelItems);
+            
+            List<TestResult> testResultItems = testResultDAO.getActiveTestResultsByTest(testAddParams.testId);
+            for( TestResult item : testResultItems){
+        		item.setSysUserId(currentUserId);
+        	}
+            testResultDAO.deleteData(testResultItems);
+            
+            List<ResultLimit> resultLimitItems = resultLimitDAO.getAllResultLimitsForTest(testAddParams.testId);
+            for( ResultLimit item : resultLimitItems){
+        		item.setSysUserId(currentUserId);
+        	}
+            resultLimitDAO.deleteData(resultLimitItems);
+        	
             for( TestSet set : testSets){
                 set.test.setSysUserId(currentUserId);
                 set.test.setLocalizedTestName(nameLocalization);
                 set.test.setLocalizedReportingName(reportingNameLocalization);
                 
-//	gnr: based on testAddUpdate, added existing testId to process in createTestSets using testAddParams.testId, 
-//                don't need to insert as this is modify
-                
-//                	testDAO.insertData(set.test);
-
+//	gnr: based on testAddUpdate, 
+//  added existing testId to process in createTestSets using testAddParams.testId, delete then insert to modify for most elements
               
                 for( Test test :set.sortedTests){
                     test.setSysUserId(currentUserId);
-                    System.out.println("TestModifyUpdate:sortedTests:" + test.getId() + ":" + set.test.getId());
                     if (!test.getId().equals( set.test.getId() )) {
                     	testDAO.updateData(test);
                     }
@@ -116,19 +137,19 @@ public class TestModifyUpdate extends BaseAction {
 
                 set.sampleTypeTest.setSysUserId(currentUserId);
                 set.sampleTypeTest.setTestId(set.test.getId());
-                
-// gnr: don't need to insert as this is modify              
-//                typeOfSampleTestDAO.insertData(set.sampleTypeTest);
-
-/*                for( PanelItem item : set.panelItems){
+               	typeOfSampleTestDAO.insertData(set.sampleTypeTest);
+               	
+               	for( PanelItem item : set.panelItems){
                     item.setSysUserId(currentUserId);
-                    item.setTest(set.test);
+                    Test nonTransiantTest = testDAO.getTestById(set.test.getId());
+                    item.setTest(nonTransiantTest);
                     panelItemDAO.insertData(item);
                 }
 
                 for( TestResult testResult : set.testResults){
                     testResult.setSysUserId(currentUserId);
-                    testResult.setTest(set.test);
+                    Test nonTransiantTest = testDAO.getTestById(set.test.getId());
+                    testResult.setTest(nonTransiantTest);
                     testResultDAO.insertData(testResult);
                 }
 
@@ -137,7 +158,6 @@ public class TestModifyUpdate extends BaseAction {
                     resultLimit.setTestId(set.test.getId());
                     resultLimitDAO.insertData(resultLimit);
                 }
-*/                
             }
 
             tx.commit();
@@ -152,11 +172,20 @@ public class TestModifyUpdate extends BaseAction {
         return mapping.findForward(FWD_SUCCESS);
     }
     
+    private void updateTestEntities( String testId, String loinc, String userId) {
+    	 Test test = new TestService( testId ).getTest();
+
+         if( test != null ){
+        	 test.setSysUserId(userId);
+        	 test.setLoinc(loinc);
+        	 new TestDAOImpl().updateData ( test );
+         }
+    }
+    
     private void updateTestNames( String testId, String nameEnglish, String nameFrench, String reportNameEnglish, String reportNameFrench, String userId ){
         Test test = new TestService( testId ).getTest();
 
         if( test != null ){
-
             Localization name = test.getLocalizedTestName();
             Localization reportingName = test.getLocalizedReportingName();
             name.setEnglish( nameEnglish.trim() );
@@ -332,6 +361,7 @@ public class TestModifyUpdate extends BaseAction {
             testAddParams.dictionaryReferenceId = (String) obj.get("dictionaryReference");
             extractPanels(obj, parser, testAddParams);
             testAddParams.uomId = (String)obj.get("uom");
+            testAddParams.loinc = (String)obj.get("loinc");
             testAddParams.resultTypeId = (String)obj.get("resultType");
             extractSampleTypes(obj, parser, testAddParams);
             testAddParams.active = (String) obj.get("active");
@@ -437,6 +467,7 @@ public class TestModifyUpdate extends BaseAction {
         String testSectionId;
         ArrayList<String> panelList = new ArrayList<String>();
         String uomId;
+        String loinc;
         String resultTypeId;
         ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<SampleTypeListAndTestOrder>();
         String active;

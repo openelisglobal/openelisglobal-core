@@ -1001,6 +1001,7 @@
         $jq("#panelRO").append(panelNames);
         $jq("#uomRO").empty();
         $jq("#uomRO").append($jq("#uomSelection  option:selected").text());
+        $jq("#loincRO").text($jq("#loinc").val());
         $jq("#resultTypeRO").text($jq("#resultTypeSelection  option:selected").text());
         $jq("#activeRO").text($jq("#active").attr("checked") ? "Y" : "N");
         $jq("#orderableRO").text($jq("#orderable").attr("checked") ? "Y" : "N");
@@ -1017,6 +1018,7 @@
         addJsonPanels(jsonObj);
         $jq("#panelSelection").val();
         jsonObj.uom = $jq("#uomSelection").val();
+        jsonObj.loinc = $jq("#loinc").val();
         jsonObj.resultType = $jq("#resultTypeSelection").val();
         jsonObj.orderable = $jq("#orderable").attr("checked") ? 'Y' : 'N';
         jsonObj.active = $jq("#active").attr("checked") ? 'Y' : 'N';
