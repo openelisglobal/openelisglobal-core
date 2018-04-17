@@ -1,24 +1,24 @@
-<%@ page language="java"
-         contentType="text/html; charset=utf-8"
-         import="us.mn.state.health.lims.common.action.IActionConstants"
-        %>
-<%@ page language="java"
-         contentType="text/html; charset=utf-8"
-         import="java.util.List,
-                 us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean"
-        %>
-<%@ page import="us.mn.state.health.lims.common.util.IdValuePair" %>
-<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
-<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
-<%@ page import="us.mn.state.health.lims.common.util.SystemConfiguration" %>
-<%@ page import="us.mn.state.health.lims.common.services.TypeOfTestResultService" %>
-<%@ page import="us.mn.state.health.lims.common.provider.query.EntityNamesProvider" %>
-<%@ page import="us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean" %>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	import="us.mn.state.health.lims.common.action.IActionConstants"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	import="java.util.List,
+                 us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean"%>
+<%@ page import="us.mn.state.health.lims.common.util.IdValuePair"%>
+<%@ page import="us.mn.state.health.lims.common.util.StringUtil"%>
+<%@ page import="us.mn.state.health.lims.common.util.Versioning"%>
+<%@ page
+	import="us.mn.state.health.lims.common.util.SystemConfiguration"%>
+<%@ page
+	import="us.mn.state.health.lims.common.services.TypeOfTestResultService"%>
+<%@ page
+	import="us.mn.state.health.lims.common.provider.query.EntityNamesProvider"%>
+<%@ page
+	import="us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean"%>
 
-<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
-<%@ taglib uri="/tags/struts-html" prefix="html" %>
-<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
-<%@ taglib uri="/tags/labdev-view" prefix="app" %>
+<%@ taglib uri="/tags/struts-bean" prefix="bean"%>
+<%@ taglib uri="/tags/struts-html" prefix="html"%>
+<%@ taglib uri="/tags/struts-logic" prefix="logic"%>
+<%@ taglib uri="/tags/labdev-view" prefix="app"%>
 <%--
   ~ The contents of this file are subject to the Mozilla Public License
   ~ Version 1.1 (the "License"); you may not use this file except in
@@ -34,56 +34,70 @@
   ~
   ~ Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
   --%>
-  
-<%!
-    String basePath = "";
-    String locale = "en_US";
-%>
+
+<%!String basePath = "";
+	String locale = "en_US";%>
 <%
-    String path = request.getContextPath();
-    basePath = request.getScheme() + "://" + request.getServerName() + ":"
-            + request.getServerPort() + path + "/";
-    locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
+	String path = request.getContextPath();
+	basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path
+			+ "/";
+	locale = SystemConfiguration.getInstance().getDefaultLocale().toString();
 %>
 <!--Do not add jquery.ui.js, it will break the sorting -->
-<script type="text/javascript" src="scripts/jquery.asmselect.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript"
-        src="<%=basePath%>scripts/multiselectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="scripts/jquery-ui.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>"/>
+	src="scripts/jquery.asmselect.js?ver=<%=Versioning.getBuildNumber()%>"></script>
+<script type="text/javascript"
+	src="<%=basePath%>scripts/ajaxCalls.js?ver=<%=Versioning.getBuildNumber()%>"></script>
+<script type="text/javascript"
+	src="<%=basePath%>scripts/multiselectUtils.js?ver=<%=Versioning.getBuildNumber()%>"></script>
+<script type="text/javascript"
+	src="scripts/jquery-ui.js?ver=<%=Versioning.getBuildNumber()%>"></script>
+<link rel="stylesheet" type="text/css"
+	href="css/jquery.asmselect.css?ver=<%=Versioning.getBuildNumber()%>" />
 <link rel="stylesheet" media="screen" type="text/css"
-      href="<%=basePath%>css/jquery_ui/jquery.ui.theme.css?ver=<%= Versioning.getBuildNumber() %>"/>
-<link rel="stylesheet" type="text/css" href="css/openElisCore.css?ver=<%= Versioning.getBuildNumber() %>"/>
-  
+	href="<%=basePath%>css/jquery_ui/jquery.ui.theme.css?ver=<%=Versioning.getBuildNumber()%>" />
+<link rel="stylesheet" type="text/css"
+	href="css/openElisCore.css?ver=<%=Versioning.getBuildNumber()%>" />
 
-<script type="text/javascript" src="scripts/ajaxCalls.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 
-<bean:define id="formName" value='<%= (String)request.getAttribute(IActionConstants.FORM_NAME) %>'/>
-<bean:define id="testList" name='<%=formName%>' property="testList" type="java.util.List<IdValuePair>"/>
+<script type="text/javascript"
+	src="scripts/ajaxCalls.js?ver=<%=Versioning.getBuildNumber()%>"></script>
 
-<bean:define id="sampleTypeList" name='<%=formName%>' property="sampleTypeList" type="java.util.List<IdValuePair>"/>
-<bean:define id="panelList" name='<%=formName%>' property="panelList" type="java.util.List<IdValuePair>"/>
-<bean:define id="uomList" name='<%=formName%>' property="uomList" type="java.util.List<IdValuePair>"/>
-<bean:define id="resultTypeList" name='<%=formName%>' property="resultTypeList" type="java.util.List<IdValuePair>"/>
-<bean:define id="testUnitList" name='<%=formName%>' property="labUnitList" type="java.util.List<IdValuePair>"/>
-<bean:define id="ageRangeList" name='<%=formName%>' property="ageRangeList" type="java.util.List<IdValuePair>"/>
-<bean:define id="dictionaryList" name='<%=formName%>' property="dictionaryList" type="java.util.List<IdValuePair>"/>
-<bean:define id="groupedDictionaryList" name='<%=formName%>' property="groupedDictionaryList" type="java.util.List<java.util.List<IdValuePair>>"/>
-<bean:define id="testCatBeanList" name='<%=formName%>' property="testCatBeanList" type="List<TestCatalogBean>"/>
+<bean:define id="formName"
+	value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
+<bean:define id="testList" name='<%=formName%>' property="testList"
+	type="java.util.List<IdValuePair>" />
 
-<%!
-    int testCount = 0;
-    int columnCount = 0;
-    int columns = 3;
-%>
+<bean:define id="sampleTypeList" name='<%=formName%>'
+	property="sampleTypeList" type="java.util.List<IdValuePair>" />
+<bean:define id="panelList" name='<%=formName%>' property="panelList"
+	type="java.util.List<IdValuePair>" />
+<bean:define id="uomList" name='<%=formName%>' property="uomList"
+	type="java.util.List<IdValuePair>" />
+<bean:define id="resultTypeList" name='<%=formName%>'
+	property="resultTypeList" type="java.util.List<IdValuePair>" />
+<bean:define id="testUnitList" name='<%=formName%>'
+	property="labUnitList" type="java.util.List<IdValuePair>" />
+<bean:define id="ageRangeList" name='<%=formName%>'
+	property="ageRangeList" type="java.util.List<IdValuePair>" />
+<bean:define id="dictionaryList" name='<%=formName%>'
+	property="dictionaryList" type="java.util.List<IdValuePair>" />
+<bean:define id="groupedDictionaryList" name='<%=formName%>'
+	property="groupedDictionaryList"
+	type="java.util.List<java.util.List<IdValuePair>>" />
+<bean:define id="testCatBeanList" name='<%=formName%>'
+	property="testCatBeanList" type="List<TestCatalogBean>" />
+
+<%!int testCount = 0;
+	int columnCount = 0;
+	int columns = 3;%>
 
 <%
-    columnCount = 0;
-    testCount = 0;
+	columnCount = 0;
+	testCount = 0;
 %>
 <form>
-<script type="text/javascript">
+	<script type="text/javascript">
     if (!$jq) {
         var $jq = jQuery.noConflict();
     }
@@ -451,11 +465,11 @@
             ul.append(createLI(id, name, false));
         }
 
-        <% if( locale.equals("en_US")){ %>
+        <%if (locale.equals("en_US")) {%>
         ul.append( createLI(0, $jq("#testNameEnglish").val(), true) );
-        <% } else { %>
+        <%} else {%>
         ul.append( createLI(0, $jq("#testNameFrench").val(), true) );
-        <% } %>
+        <%}%>
 
         $jq("#sort" + sampleTypeId).append(ul);
 
@@ -805,23 +819,23 @@
             $jq("#step2BreadCrumb").hide();
             $jq("#step2Guide").hide();
             makeSortListsReadOnly();
-            if (resultTypeId == '<%= TypeOfTestResultService.ResultType.ALPHA.getId()%>' ||
-                    resultTypeId == '<%= TypeOfTestResultService.ResultType.REMARK.getId()%>') {
+            if (resultTypeId == '<%=TypeOfTestResultService.ResultType.ALPHA.getId()%>' ||
+                    resultTypeId == '<%=TypeOfTestResultService.ResultType.REMARK.getId()%>') {
                 $jq("#sampleTypeSelectionDiv").hide();
                 $jq("#sortTitleDiv").text("Sample type and test sort order");
                 $jq(".confirmShow").show();
                 $jq(".selectShow").hide();
                 $jq("#step2Confirm").show();
                 createJSON();
-            } else if (resultTypeId == '<%= TypeOfTestResultService.ResultType.NUMERIC.getId() %>') {
+            } else if (resultTypeId == '<%=TypeOfTestResultService.ResultType.NUMERIC.getId()%>') {
                 step = "step3Numeric";
                 $jq("#normalRangeDiv").show();
                 $jq("#sampleTypeSelectionDiv").hide();
                 $jq(".resultLimits").show();
                 resetResultLimits();
-            } else if (resultTypeId == '<%= TypeOfTestResultService.ResultType.DICTIONARY.getId()%>' ||
-                    resultTypeId == '<%= TypeOfTestResultService.ResultType.MULTISELECT.getId()%>' ||
-                    resultTypeId == '<%= TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.getId()%>') {
+            } else if (resultTypeId == '<%=TypeOfTestResultService.ResultType.DICTIONARY.getId()%>' ||
+                    resultTypeId == '<%=TypeOfTestResultService.ResultType.MULTISELECT.getId()%>' ||
+                    resultTypeId == '<%=TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.getId()%>') {
                 step = 'step3Dictionary';
                 $jq("#sampleTypeSelectionDiv").hide();
                 $jq(".dictionarySelect").show();
@@ -1136,678 +1150,800 @@
         form.submit();
     }
 
-    
 </script>
 
+	<html:hidden styleId="jsonWad" name='<%=formName%>' property="jsonWad" />
 
-    <html:hidden styleId="jsonWad" name='<%=formName%>' property="jsonWad"/>
+	<input type="button"
+		value="<%=StringUtil.getMessageForKey("banner.menu.administration")%>"
+		onclick="submitAction('MasterListsPage.do');" class="textButton" />
+	&rarr; <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.management")%>"
+		onclick="submitAction('TestManagementConfigMenu.do');"
+		class="textButton" />&rarr; <span class="step1"> <bean:message
+			key="configuration.test.modify" />
+	</span> <span class="step2 notStep1BreadCrumb" id="step2BreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <%=StringUtil.getMessageForKey("label.selectSampleType")%>
+	</span> <span id="step2Confirm notStep1BreadCrumb"
+		class="confirmationBreadCrumb" style="display: none"> <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <bean:message
+			key="label.confirmation" />
+	</span> <span class="dictionarySelect notStep1BreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <bean:message
+			key="label.select.list.values" />
+	</span> <span class="resultLimits notStep1BreadCrumb" style="display: none">
+		<input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <bean:message
+			key="label.set.result.limits" />
+	</span> <span
+		class="selectListConfirm confirmationBreadCrumb notStep1BreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.select.list.values")%>"
+		onclick="goBackToStep3Dictionary();" class="textButton" />&rarr; <bean:message
+			key="label.confirmation" />
+	</span> <span class="resultLimitsConfirm confirmationBreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.set.result.limits")%>"
+		onclick="goBackToResultLimits();" class="textButton" />&rarr; <bean:message
+			key="label.confirmation" />
+	</span>
 
-    <input type="button" value="<%= StringUtil.getMessageForKey("banner.menu.administration") %>"
-           onclick="submitAction('MasterListsPage.do');"
-           class="textButton"/> &rarr;
-    <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.management") %>"
-           onclick="submitAction('TestManagementConfigMenu.do');"
-           class="textButton"/>&rarr;
-    <span class="step1">
-            <bean:message key="configuration.test.add"/>
-    </span>
-    <span class="step2 notStep1BreadCrumb" id="step2BreadCrumb" style="display: none">
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <%=StringUtil.getMessageForKey("label.selectSampleType")%>
-    </span>
-    <span id="step2Confirm notStep1BreadCrumb" class="confirmationBreadCrumb" style="display: none">
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-               onclick="goBackToStep2();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.confirmation" />
-    </span>
-    <span class="dictionarySelect notStep1BreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-               onclick="goBackToStep2();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.select.list.values" />
-    </span>
-     <span class="resultLimits notStep1BreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-         <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-                onclick="goBackToStep2();"
-                class="textButton"/>&rarr;
-         <bean:message key="label.set.result.limits" />
-    </span>
-    <span class="selectListConfirm confirmationBreadCrumb notStep1BreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-           onclick="goBackToStep2();"
-           class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.select.list.values")%>"
-               onclick="goBackToStep3Dictionary();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.confirmation" />
-    </span>
-    <span class="resultLimitsConfirm confirmationBreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-               onclick="goBackToStep2();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.set.result.limits")%>"
-               onclick="goBackToResultLimits();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.confirmation" />
-    </span>
+	<html:hidden property="testId" name="<%=formName%>" styleId="testId" />
 
+	<div id="catDiv" style="display: none">
+		<h1 id="action">
+			<bean:message key="label.button.edit" />
+		</h1>
 
-    <h3><bean:message key="configuration.test.add"/></h3>
-    
-    
-    
-    
-
-<html:hidden property="testId" name="<%=formName%>" styleId="testId"/>
-
-<input type="button" value='<%= StringUtil.getMessageForKey("banner.menu.administration") %>'
-       onclick="submitAction('MasterListsPage.do');"
-       class="textButton"/> &rarr;
-<input type="button" value='<%= StringUtil.getMessageForKey("configuration.test.management") %>'
-       onclick="submitAction('TestManagementConfigMenu.do');"
-       class="textButton"/>&rarr;
-<%=StringUtil.getMessageForKey( "label.testName" )%>
-<br><br>
-
-<div id="catDiv" style="display: none">
-    <h1 id="action"><bean:message key="label.button.edit"/></h1>
-
-    <h2><%=StringUtil.getMessageForKey( "sample.entry.test" )%>:<span id="testName"></span></h2>
-    
-    
-     	<% // tr section test result from testCatalog.jsp %>
-	<% for (TestCatalogBean bean : testCatBeanList) { %>
-	   <table>
-	   <tbody fTestId='<%= bean.getId() %>'  fResultType='<%= bean.getResultType() %>' class='resultClass' >
-	   
-	   <tr>
-            <td colspan="2"><span class="catalog-label"><bean:message key="configuration.test.catalog.name" /></span></td>
-            <td colspan="2"><span class="catalog-label"><bean:message key="configuration.test.catalog.report.name" /></span></td>
-        </tr>
-        <tr>
-            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishName()%></b>
-            </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchName()%></b>
-            </td>
-            <td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishReportName()%></b>
-            </td>
-            <td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchReportName()%></b>
-            </td>
-        </tr>
-        <tr>
-            <td><b><%=bean.getActive()%></b>
-            </td>
-            <td><b><%=bean.getOrderable()%></b>
-            </td>
-        </tr>
-        <tr>
-            <td><span class="catalog-label"><bean:message key="label.test.unit" /></span> <b><%=bean.getTestUnit()%></b>
-            </td>
-            <td><span class="catalog-label"><bean:message key="label.sample.types" /></span> <b><%=bean.getSampleType()%></b>
-            </td>
-            <td><span class="catalog-label"><bean:message key="label.panel" /></span> <b><%=bean.getPanel()%></b>
-            </td>
-            <td><span class="catalog-label"><bean:message key="label.result.type" /></span> <b><%=bean.getResultType()%></b>
-            </td>
-        </tr>
-        <tr>
-            <td><span class="catalog-label"><bean:message key="label.uom" /></span> <b><%=bean.getUom()%></b>
-            </td>
-            <td><span class="catalog-label"><bean:message key="label.significant.digits" /></span> <b><%= bean.getSignificantDigits() %></b>
-            </td>
-            <td><span class="catalog-label"><bean:message key="label.loinc" /></span> <b><%= bean.getLoinc() %></b>
-            </td>
-        </tr>
-	   
-       <% if (bean.isHasDictionaryValues()) {
-            boolean top = true;
-            for (String value : bean.getDictionaryValues()) {
-        %>
-        <tr>
-            <td><% if (top) { %><span class="catalog-label"><bean:message key="configuration.test.catalog.select.values" /></span>
-                <% } %></td>
-            <td colspan="2"><b><%=value%></b>
-            </td>
-            <td colspan="2"><% if (top) {
-                top = false;%><span class="catalog-label"><bean:message key="configuration.test.catalog.reference.value" /></span>
-                <b><%=bean.getReferenceValue()%></b>
-            </td>
-            <% 
-            
-            	} 
-             }
-         }
-            %>
-        </tr>
-        
-        <% if (bean.isHasLimitValues()) { %>
-        <tr>
-            <td colspan="5" align="center"><span class="catalog-label"><bean:message key="configuration.test.catalog.result.limits" /></span></td>
-        </tr>
-        <tr>
-            <td><span class="catalog-label"><bean:message key="label.sex" /></span></td>
-            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.age.range.months" /></span></td>
-            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.normal.range" /></span></td>
-            <td><span class="catalog-label"><bean:message key="configuration.test.catalog.valid.range" /></span></td>
-        </tr>
-        <% for (ResultLimitBean limitBean : bean.getResultLimits()) {%>
-        <tr>
-            <td><b><%=limitBean.getGender()%></b>
-            </td>
-            <td><b><%=limitBean.getAgeRange()%></b>
-            </td>
-            <td><b><%=limitBean.getNormalRange()%></b>
-            </td>
-            <td><b><%=limitBean.getValidRange()%></b>
-            </td>
-        </tr>
-				
-		 <% 
-		 	 } 
-		   } 
-         }
-		 %>
-		</tbody>
-    </table>
-        
-</div>
-    
-    <% // section testAdd %>
-    
-    
-    <span class="step2 notStep1BreadCrumb" id="step2BreadCrumb" style="display: none">
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <%=StringUtil.getMessageForKey("label.selectSampleType")%>
-    </span>
-    <span id="step2Confirm notStep1BreadCrumb" class="confirmationBreadCrumb" style="display: none">
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-               onclick="goBackToStep2();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.confirmation" />
-    </span>
-    <span class="dictionarySelect notStep1BreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-               onclick="goBackToStep2();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.select.list.values" />
-    </span>
-     <span class="resultLimits notStep1BreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-         <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-                onclick="goBackToStep2();"
-                class="textButton"/>&rarr;
-         <bean:message key="label.set.result.limits" />
-    </span>
-    <span class="selectListConfirm confirmationBreadCrumb notStep1BreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-           onclick="goBackToStep2();"
-           class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.select.list.values")%>"
-               onclick="goBackToStep3Dictionary();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.confirmation" />
-    </span>
-    <span class="resultLimitsConfirm confirmationBreadCrumb" style="display : none" >
-        <input type="button" value="<%= StringUtil.getMessageForKey("configuration.test.add") %>"
-               onclick="goBackToStep1();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
-               onclick="goBackToStep2();"
-               class="textButton"/>&rarr;
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.set.result.limits")%>"
-               onclick="goBackToResultLimits();"
-               class="textButton"/>&rarr;
-        <bean:message key="label.confirmation" />
-    </span>
+		<h2><%=StringUtil.getMessageForKey("sample.entry.test")%>:<span
+				id="testName"></span>
+		</h2>
 
 
-    <h3><bean:message key="configuration.test.add"/></h3>
+		<%
+			// tr section test result from testCatalog.jsp
+		%>
+		<%
+			for (TestCatalogBean bean : testCatBeanList) {
+		%>
+		<table>
+			<tbody fTestId='<%=bean.getId()%>'
+				fResultType='<%=bean.getResultType()%>' class='resultClass'>
 
-    <input type="checkbox" onchange="guideSelection(this)"><bean:message key="label.show.guide" /><br/><br/>
+				<tr>
+					<td colspan="2"><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.name" /></span></td>
+					<td colspan="2"><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.report.name" /></span></td>
+				</tr>
+				<tr>
+					<td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishName()%></b>
+					</td>
+					<td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchName()%></b>
+					</td>
+					<td width="25%"><span class="catalog-label">En.</span> <b><%=bean.getEnglishReportName()%></b>
+					</td>
+					<td width="25%"><span class="catalog-label">Fr.</span> <b><%=bean.getFrenchReportName()%></b>
+					</td>
+				</tr>
+				<tr>
+					<td><b><%=bean.getActive()%></b></td>
+					<td><b><%=bean.getOrderable()%></b></td>
+				</tr>
+				<tr>
+					<td><span class="catalog-label"><bean:message
+								key="label.test.unit" /></span> <b><%=bean.getTestUnit()%></b></td>
+					<td><span class="catalog-label"><bean:message
+								key="label.sample.types" /></span> <b><%=bean.getSampleType()%></b></td>
+					<td><span class="catalog-label"><bean:message
+								key="label.panel" /></span> <b><%=bean.getPanel()%></b></td>
+					<td><span class="catalog-label"><bean:message
+								key="label.result.type" /></span> <b><%=bean.getResultType()%></b></td>
+				</tr>
+				<tr>
+					<td><span class="catalog-label"><bean:message
+								key="label.uom" /></span> <b><%=bean.getUom()%></b></td>
+					<td><span class="catalog-label"><bean:message
+								key="label.significant.digits" /></span> <b><%=bean.getSignificantDigits()%></b>
+					</td>
+					<td><span class="catalog-label"><bean:message
+								key="label.loinc" /></span> <b><%=bean.getLoinc()%></b></td>
+				</tr>
 
-    <div id="guide" style="display: none">
-        <span class="requiredlabel">*</span> <bean:message key="label.required.field" /><br/><br/>
-        <span class="step1">
-            <bean:message key="configuration.test.add.guide.test" />
-        </span>
-        <span class="step2" id="step2Guide" style="display: none">
-           <bean:message key="configuration.test.add.guide.sample.type" />
-        </span>
-        <span class="dictionarySelect" style="display: none" >
-           <bean:message key="configuration.test.add.guide.select.list" />
-        </span>
-        <span class="resultLimits" style="display: none;">
-            <bean:message key="configuration.test.add.guide.result.limits" />
-        </span>
-        <span class="confirmShow" style="display: none">
-            <bean:message key="configuration.test.add.guide.verify" />
-        </span>
-        <br/>
-        <hr/>
-    </div>
+				<%
+					if (bean.isHasDictionaryValues()) {
+							boolean top = true;
+							for (String value : bean.getDictionaryValues()) {
+				%>
+				<tr>
+					<td>
+						<%
+							if (top) {
+						%><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.select.values" /></span> <%
+ 	}
+ %>
+					</td>
+					<td colspan="2"><b><%=value%></b></td>
+					<td colspan="2">
+						<%
+							if (top) {
+											top = false;
+						%><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.reference.value" /></span> <b><%=bean.getReferenceValue()%></b>
+					</td>
+					<%
+						}
+								}
+							}
+					%>
+				</tr>
 
+				<%
+					if (bean.isHasLimitValues()) {
+				%>
+				<tr>
+					<td colspan="5" align="center"><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.result.limits" /></span></td>
+				</tr>
+				<tr>
+					<td><span class="catalog-label"><bean:message
+								key="label.sex" /></span></td>
+					<td><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.age.range.months" /></span></td>
+					<td><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.normal.range" /></span></td>
+					<td><span class="catalog-label"><bean:message
+								key="configuration.test.catalog.valid.range" /></span></td>
+				</tr>
+				<%
+					for (ResultLimitBean limitBean : bean.getResultLimits()) {
+				%>
+				<tr>
+					<td><b><%=limitBean.getGender()%></b></td>
+					<td><b><%=limitBean.getAgeRange()%></b></td>
+					<td><b><%=limitBean.getNormalRange()%></b></td>
+					<td><b><%=limitBean.getValidRange()%></b></td>
+				</tr>
 
-    <div id="step1Div" class="step1" style="display: none">
-        <table width="80%">
-            <tr>
-                <td width="25%">
-                    <table>
-                        <tr>
-                            <td colspan="2"><bean:message key="test.testName"/><span class="requiredlabel">*</span></td>
-                        </tr>
-                        <tr>
-                            <td width="25%" align="right"><bean:message key="label.english"/></td>
-                            <td width="75%"><input type="text" id="testNameEnglish" class="required"
-                                                   onchange="checkReadyForNextStep()"/></td>
-                        </tr>
-                        <tr>
-                            <td width="25%" align="right"><bean:message key="label.french"/></td>
-                            <td width="75%"><input type="text" id="testNameFrench" class="required"
-                                                   onchange="checkReadyForNextStep()"/></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><bean:message key="test.testName.reporting"/><span
-                                    class="requiredlabel">*</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><input type="button" onclick="copyFromTestName(); checkReadyForNextStep()"
-                                       value='<%= StringUtil.getMessageForKey("test.add.copy.name")%>'></td>
-                        </tr>
-                        <tr>
-                            <td width="25%" align="right"><bean:message key="label.english"/></td>
-                            <td width="75%"><input type="text" id="testReportNameEnglish" class="required"
-                                                   onchange="checkReadyForNextStep()"/></td>
-                        </tr>
-                        <tr>
-                            <td width="25%" align="right"><bean:message key="label.french"/></td>
-                            <td width="75%"><input type="text" id="testReportNameFrench" class="required"
-                                                   onchange="checkReadyForNextStep()"/></td>
-                        </tr>
-                    </table>
-                </td>
-                
-                <td width="25%" style="vertical-align: top; padding: 4px">
-                    <bean:message key="test.testSectionName"/><span class="requiredlabel">*</span><br/>
-                    <select id="testUnitSelection" class="required" onchange="checkReadyForNextStep()">
-                        <option value="0"></option>
-                        <% for (IdValuePair pair : testUnitList) { %>
-                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                        </option>
-                        <% } %>
-                    </select><br/><br/><br/><br/><br/>
-                    <bean:message key="label.loinc"/><span class="requiredlabel">*</span><br/>
-                    <input type="text" id="loinc" class="required" onchange="checkReadyForNextStep()" />
-                </td>
-                
-                <td width="25%" style="vertical-align: top; padding: 4px" id="panelSelectionCell">
-                    <bean:message key="typeofsample.panel.panel"/><br/>
-                    <select id="panelSelection" multiple="multiple" title="Multiple">
-                        <% for (IdValuePair pair : panelList) { %>
-                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                        </option>
-                        <% } %>
-                    </select><br/><br/><br/>
-                    <bean:message key="label.unitofmeasure"/><br/>
-                    <select id="uomSelection">
-                        <option value='0'></option>
-                        <% for (IdValuePair pair : uomList) { %>
-                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                        </option>
-                        <% } %>
-                    </select>
-                </td>
-                <td width="25%" style="vertical-align: top; padding: 4px">
-                    <bean:message key="result.resultType"/><span class="requiredlabel">*</span><br/>
-                    <select id="resultTypeSelection" class="required" onchange="checkReadyForNextStep()">
-                        <option value="0"></option>
-                        <% for (IdValuePair pair : resultTypeList) { %>
-                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                        </option>
-                        <% } %>
-                    </select><br/><br/><br/><br/><br/>
-                    <label for="orderable"><bean:message key="test.isActive"/></label>
-                    <input type="checkbox" id="active" checked="checked"/><br/>
-                    <label for="orderable"><bean:message key="label.orderable"/></label>
-                    <input type="checkbox" id="orderable" checked="checked"/>
+				<%
+					}
+						}
+					}
+				%>
+			</tbody>
+		</table>
 
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div id="sampleTypeContainer" class="step2" style="width: 100%; overflow: hidden; display : none">
-        <div  style="float:left;  width:20%;">
-            <bean:message key="test.testName"/><br/>
-            <span class="tab"><bean:message key="label.english"/>: <span id="testNameEnglishRO"></span></span><br/>
-            <span class="tab"><bean:message key="label.french"/>: <span id="testNameFrenchRO"></span></span><br/>
-            <br/>
-            <bean:message key="test.testName.reporting"/><br/>
-            <span class="tab"><bean:message key="label.english"/>: <span
-                    id="testReportNameEnglishRO"></span></span><br/>
-                <span class="tab"><bean:message key="label.french"/>: <span
-                        id="testReportNameFrenchRO"></span></span><br/>
-            <br/>
-            <bean:message key="test.testSectionName"/>
-            <div id="testSectionRO" class="tab"></div>
-            <br/>
-            <bean:message key="typeofsample.panel.panel"/>
-            <div class="tab" id="panelRO"><bean:message key="label.none"/></div>
-            <br/>
-            <bean:message key="label.unitofmeasure"/>
-            <div class="tab" id="uomRO"><bean:message key="label.none"/></div>
-            <br/>
-            <bean:message key="result.resultType"/>
-            <div class="tab" id="resultTypeRO"></div>
-            <br/>
-            <bean:message key="test.isActive"/>
-            <div class="tab" id="activeRO"></div>
-            <br/>
-            <bean:message key="label.orderable"/>
-            <div class="tab" id="orderableRO"></div>
-            <br/>
-        </div>
-        <div class="step2" style="float:right;  width:80%; display: none">
-            <div  id="sampleTypeSelectionDiv" class="step2" style="float:left; width:20%;">
-                <bean:message key="label.sampleType"/><span class="requiredlabel">*</span>
-                <select id="sampleTypeSelection" class="required" multiple="multiple" title="Multiple">
-                    <% for (IdValuePair pair : sampleTypeList) { %>
-                    <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                    </option>
-                    <% } %>
-                </select><br/>
-            </div>
-            <div id="testDisplayOrderDiv" style="float:left; width:80%;">
-                <div id="sortTitleDiv" align="center"><bean:message key="label.test.display.order"/></div>
-                <div id="endOrderMarker"></div>
-                <div class="dictionarySelect dictionaryMultiSelect" id="dictionarySelectId"
-                     style="padding:10px; float:left; width:280px; display:none; overflow: hidden ">
-                    <bean:message key="label.select.list.options"/><span class="requiredlabel">*</span><br/>
-                    <select id="dictionarySelection" class="required" multiple="multiple" title="Multiple">
-                        <% for (IdValuePair pair : dictionaryList) { %>
-                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                        </option>
-                        <% } %>
-                    </select><br/><br/><br/>
-                </div>
-                <div id="dictionaryVerifyId"
-                     style="padding:10px; float:left; width:280px; display:none; overflow: hidden;">
-                    <span><span class="half-tab"><bean:message key="label.select.list" /></span><br/>
-                    <ul id="dictionaryVerifyListId">
+	</div>
 
-                    </ul>
-                    </span>
-                    <span><bean:message key="label.reference.value" /><br><ul><li id="referenceValue"></li></ul></span>
-                </div>
-                <div id="sortDictionaryDiv" align="center" class="dictionarySelect"
-                     style="padding:10px;float:left; width:33%; display:none;"><bean:message key="label.result.order" />
-                    <span id="dictionarySortSpan" align="left">
-                        <UL id="dictionaryNameSortUI">
-
-                        </UL>
-                    </span></div>
-                <div class="dictionarySelect" style="padding:10px; float:left; width:280px;display:none">
-                    <div id="dictionaryReference">
-                        <bean:message key="label.reference.value" /><br/>
-                        <select id='referenceSelection'>
-                            <option value="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-                        </select>
-                    </div>
-                    <br>
-
-                    <div id="dictionaryQualify" class="dictionaryMultiSelect">
-                        <bean:message key="label.qualifiers" /><br/>
-                        <select id='qualifierSelection' multiple='multiple' title='Multiple'></select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="dictionaryExistingGroups" class="dictionarySelect" style="display:none; width:100%">
-        <div style="width:100%; text-align:center;"><bean:message key="label.existing.test.sets"/></div>
-        <hr>
-        <table>
-            <% while (testCount < groupedDictionaryList.size()) {%>
-            <tr>
-                <td id='<%= "dictionaryGroup_" + testCount%>' style="padding: 5px 10px; vertical-align: top">
-                    <input type="button" value="<%=StringUtil.getMessageForKey("label.form.select")%>" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"
-                           class="textButton"/>
-                    <ul style="padding-left:0; list-style-type: none">
-                        <% for (IdValuePair pair : groupedDictionaryList.get(testCount)) {%>
-                        <li value="<%=pair.getId()%>"><%=pair.getValue()%>
-                        </li>
-                        <% } %>
-                    </ul>
-                    <%
-                        testCount++;
-                        columnCount = 1;
-                    %></td>
-                <% while (testCount < groupedDictionaryList.size() && (columnCount < columns)) {%>
-                <td id='<%= "dictionaryGroup_" + testCount%>' style="padding: 5px 10px; vertical-align: top">
-                    <input type="button" value="<%=StringUtil.getMessageForKey("label.form.select")%>" onclick="<%="dictionarySetSelected(" + testCount + ");" %>"
-                           class="textButton"/>
-                    <ul style="padding-left:0; list-style-type: none">
-                        <% for (IdValuePair pair : groupedDictionaryList.get(testCount)) {%>
-                        <li value="<%=pair.getId()%>"><%=pair.getValue()%>
-                        </li>
-                        <% } %>
-                    </ul>
-                </td>
-                    <%
-                        testCount++;
-                        columnCount++;
-                    %>
-                <% } %>
-
-            </tr>
-            <% } %>
-        </table>
-    </div>
-    <div id="normalRangeTemplate" style="display:none;">
-        <table>
-            <tr class="row_index createdFromTemplate">
-                <td><input type="hidden" class="rowKey" value="index"/><input id="genderCheck_index" type="checkbox"
-                                                                              onchange="genderMatersForRange(this.checked, 'index')">
-                </td>
-                <td>
-                        <span class="sexRange_index" style="display: none">
-                            <bean:message key="sex.male" />
-                        </span>
-                </td>
-                <td><input class="yearMonthSelect_index" type="radio" name="time_index" value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
-                           onchange="upperAgeRangeChanged( 'index' )" checked><bean:message key="abbreviation.year.single" />
-                    <input class="yearMonthSelect_index" type="radio" name="time_index" value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"
-                           onchange="upperAgeRangeChanged( 'index' )"><bean:message key="abbreviation.month.single" />&nbsp;</td>
-                <td id="lowerAge_index">0</td>
-                <td><input type="text" id="upperAgeSetter_index" value="Infinity" size="10"
-                           onchange="upperAgeRangeChanged( 'index' )"><span id="upperAge_index"></span></td>
-                <td>
-                    <select id="ageRangeSelect_index" onchange="ageRangeSelected( this, 'index');">
-                        <option value="0"></option>
-                        <% for (IdValuePair pair : ageRangeList) { %>
-                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                        </option>
-                        <% } %>
-                    </select>
-                </td>
-                <td><input type="text" value="-Infinity" size="10" id="lowNormal_index" class="lowNormal"
-                           onchange="normalRangeCheck('index');"></td>
-                <td><input type="text" value="Infinity" size="10" id="highNormal_index" class="highNormal"
-                           onchange="normalRangeCheck('index');"></td>
-                <td><input type="text" value="" size="12" id="reportingRange_index"></td>
-                <td></td>
-                <td></td>
-                <td><input id="removeButton_index" type="button" class="textButton" onclick='removeLimitRow( index );'
-                           value="<%=StringUtil.getMessageForKey("label.remove")%>"/></td>
-            </tr>
-            <tr class="sexRange_index row_index createdFromTemplate">
-                <td></td>
-                <td><bean:message key="sex.female" /></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_index" class="lowNormal"
-                           onchange="normalRangeCheck('index');"></td>
-                <td><input type="text" value="Infinity" size="10" id="highNormal_G_index" class="highNormal"
-                           onchange="normalRangeCheck('index');"></td>
-                <td><input type="text" value="" size="12" id="reportingRange_G_index"></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
-    <div id="normalRangeDiv" style="display:none;">
-        <h3><bean:message key="configuration.test.catalog.normal.range" /></h3>
-        <table style="display:inline-table">
-            <tr>
-                <th></th>
-                <th colspan="8"><bean:message key="configuration.test.catalog.normal.range" /></th>
-                <th colspan="2"><bean:message key="configuration.test.catalog.valid.range" /> </th>
-                <th></th>
-            </tr>
-            <tr>
-                <td><bean:message key="label.sex.dependent" /></td>
-                <td><span class="sexRange" style="display: none"><bean:message key="label.sex" /> </span></td>
-                <td colspan="4" align="center"><bean:message key="label.age.range" /> </td>
-                <td colspan="2" align="center"><bean:message key="label.range" /></td>
-                <td align="center"><bean:message key="label.reporting.range" /></td>
-                <td colspan="2"></td>
-            </tr>
-            <tr class="row_0">
-                <td><input type="hidden" class="rowKey" value="0"/><input id="genderCheck_0" type="checkbox"
-                                                                          onchange="genderMatersForRange(this.checked, '0')">
-                </td>
-                <td>
-                        <span class="sexRange_0" style="display: none">
-                            <bean:message key="sex.male" />
-                        </span>
-                </td>
-                <td><input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
-                           onchange="upperAgeRangeChanged('0')" checked><bean:message key="abbreviation.year.single" />
-                    <input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"
-                           onchange="upperAgeRangeChanged('0')"><bean:message key="abbreviation.month.single" />&nbsp;</td>
-                <td id="lowerAge_0">0&nbsp;</td>
-                <td><input type="text" id="upperAgeSetter_0" value="Infinity" size="10"
-                           onchange="upperAgeRangeChanged('0')"><span id="upperAge_0"></span></td>
-                <td>
-                    <select id="ageRangeSelect_0" onchange="ageRangeSelected( this, '0');">
-                        <option value="0"></option>
-                        <% for (IdValuePair pair : ageRangeList) { %>
-                        <option value='<%=pair.getId()%>'><%=pair.getValue()%>
-                        </option>
-                        <% } %>
-                    </select>
-                </td>
-                <td><input type="text" value="-Infinity" size="10" id="lowNormal_0" class="lowNormal"
-                           onchange="normalRangeCheck('0');"></td>
-                <td><input type="text" value="Infinity" size="10" id="highNormal_0" class="highNormal"
-                           onchange="normalRangeCheck('0');"></td>
-                <td><input type="text" value="" size="12" id="reportingRange_0"></td>
-                <td><input type="text" value="-Infinity" size="10" id="lowValid" onchange="validRangeCheck();"></td>
-                <td><input type="text" value="Infinity" size="10" id="highValid" onchange="validRangeCheck();"></td>
-            </tr>
-            <tr class="sexRange_0 row_0" style="display: none">
-                <td></td>
-                <td><bean:message key="sex.female" /></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><input type="text" value="-Infinity" size="10" id="lowNormal_G_0" class="lowNormal"
-                           onchange="normalRangeCheck('0');"></td>
-                <td><input type="text" value="Infinity" size="10" id="highNormal_G_0" class="highNormal"
-                           onchange="normalRangeCheck('0');"></td>
-                <td><input type="text" value="" size="12" id="reportingRange_G_0"></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr id="endRow"></tr>
-        </table>
-        <label for="significantDigits"><bean:message key="label.significant.digits" /></label>
-        <input type="number" min="0" max="10" id="significantDigits">
-    </div>
+	<%
+		// section testAdd
+	%>
 
 
-    <div class="selectShow" style="margin-left:auto; margin-right:auto;width: 40%; ">
-        <input type="button"
-               value="<%= StringUtil.getMessageForKey("label.button.next") %>"
-               disabled="disabled"
-               onclick="nextStep();"
-               id="nextButton"/>
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.back")%>" onclick="navigateBack()"/>
-    </div>
-    <div class="confirmShow" style="margin-left:auto; margin-right:auto;width: 40%; display: none">
-        <input type="button"
-               value="<%= StringUtil.getMessageForKey("label.button.accept") %>"
-               onclick="submitAction('TestModifyUpdate.do');"/>
-        <input type="button" value="<%=StringUtil.getMessageForKey("label.button.back")%>"
-               onclick="navigateBackFromConfirm()"/>
-    </div>  
-    
-    
-        
-        
+	<span class="step2 notStep1BreadCrumb" id="step2BreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <%=StringUtil.getMessageForKey("label.selectSampleType")%>
+	</span> <span id="step2Confirm notStep1BreadCrumb"
+		class="confirmationBreadCrumb" style="display: none"> <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <bean:message
+			key="label.confirmation" />
+	</span> <span class="dictionarySelect notStep1BreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <bean:message
+			key="label.select.list.values" />
+	</span> <span class="resultLimits notStep1BreadCrumb" style="display: none">
+		<input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <bean:message
+			key="label.set.result.limits" />
+	</span> <span
+		class="selectListConfirm confirmationBreadCrumb notStep1BreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.select.list.values")%>"
+		onclick="goBackToStep3Dictionary();" class="textButton" />&rarr; <bean:message
+			key="label.confirmation" />
+	</span> <span class="resultLimitsConfirm confirmationBreadCrumb"
+		style="display: none"> <input type="button"
+		value="<%=StringUtil.getMessageForKey("configuration.test.modify")%>"
+		onclick="goBackToStep1();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.selectSampleType")%>"
+		onclick="goBackToStep2();" class="textButton" />&rarr; <input
+		type="button"
+		value="<%=StringUtil.getMessageForKey("label.set.result.limits")%>"
+		onclick="goBackToResultLimits();" class="textButton" />&rarr; <bean:message
+			key="label.confirmation" />
+	</span>
 
 
-<table>
-    <% while(testCount < testList.size()){%>
-    <tr>
-        <td><input type="button" value='<%= ((IdValuePair)testList.get(testCount)).getValue() %>'
-                   onclick="setForEditing( '<%= ((IdValuePair)testList.get(testCount)).getId() + "', '" + ((IdValuePair)testList.get(testCount)).getValue() %>');"
-                   class="textButton test"/>
-            <%
-                testCount++;
-                columnCount = 1;
-            %></td>
-        <% while(testCount < testList.size() && ( columnCount < columns )){%>
-        <td><input type="button" value='<%= ((IdValuePair)testList.get(testCount)).getValue() %>'
-                   onclick="setForEditing( '<%= ((IdValuePair)testList.get(testCount)).getId() + "', '" + ((IdValuePair)testList.get(testCount)).getValue() %>' );"
-                   class="textButton test"/>
-            <%
-                testCount++;
-                columnCount++;
-            %></td>
-       <% } %>
+	<h3>
+		<bean:message key="configuration.test.modify" />
+	</h3>
 
-    </tr>
-    <% } %>
-</table>
+	<input type="checkbox" onchange="guideSelection(this)">
+	<bean:message key="label.show.guide" />
+	<br />
+	<br />
 
-<br>
-<input type="button" value='<%=StringUtil.getMessageForKey("label.button.finished") %>'
-       onclick="submitAction('TestManagementConfigMenu.do');"/>
+	<div id="guide" style="display: none">
+		<span class="requiredlabel">*</span>
+		<bean:message key="label.required.field" />
+		<br />
+		<br /> <span class="step1"> <bean:message
+				key="configuration.test.modify.guide.test" />
+		</span> <span class="step2" id="step2Guide" style="display: none"> <bean:message
+				key="configuration.test.modify.guide.sample.type" />
+		</span> <span class="dictionarySelect" style="display: none"> <bean:message
+				key="configuration.test.modify.guide.select.list" />
+		</span> <span class="resultLimits" style="display: none;"> <bean:message
+				key="configuration.test.modify.guide.result.limits" />
+		</span> <span class="confirmShow" style="display: none"> <bean:message
+				key="configuration.test.modify.guide.verify" />
+		</span> <br />
+		<hr />
+	</div>
+
+	<div id="step1Div" class="step1" style="display: none">
+		<table width="80%">
+			<tr>
+				<td width="25%">
+					<table>
+						<tr>
+							<td colspan="2"><bean:message key="test.testName" /><span
+								class="requiredlabel">*</span></td>
+						</tr>
+						<tr>
+							<td width="25%" align="right"><bean:message
+									key="label.english" /></td>
+							<td width="75%"><input type="text" id="testNameEnglish"
+								class="required" onchange="checkReadyForNextStep()" /></td>
+						</tr>
+						<tr>
+							<td width="25%" align="right"><bean:message
+									key="label.french" /></td>
+							<td width="75%"><input type="text" id="testNameFrench"
+								class="required" onchange="checkReadyForNextStep()" /></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="2"><bean:message key="test.testName.reporting" /><span
+								class="requiredlabel">*</span></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><input type="button"
+								onclick="copyFromTestName(); checkReadyForNextStep()"
+								value='<%=StringUtil.getMessageForKey("test.add.copy.name")%>'></td>
+						</tr>
+						<tr>
+							<td width="25%" align="right"><bean:message
+									key="label.english" /></td>
+							<td width="75%"><input type="text"
+								id="testReportNameEnglish" class="required"
+								onchange="checkReadyForNextStep()" /></td>
+						</tr>
+						<tr>
+							<td width="25%" align="right"><bean:message
+									key="label.french" /></td>
+							<td width="75%"><input type="text" id="testReportNameFrench"
+								class="required" onchange="checkReadyForNextStep()" /></td>
+						</tr>
+					</table>
+				</td>
+
+				<td width="25%" style="vertical-align: top; padding: 4px"><bean:message
+						key="test.testSectionName" /><span class="requiredlabel">*</span><br />
+					<select id="testUnitSelection" class="required"
+					onchange="checkReadyForNextStep()">
+						<option value="0"></option>
+						<%
+							for (IdValuePair pair : testUnitList) {
+						%>
+						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+						</option>
+						<%
+							}
+						%>
+				</select><br />
+				<br />
+				<br />
+				<br />
+				<br /> <bean:message key="label.loinc" /><span class="requiredlabel">*</span><br />
+					<input type="text" id="loinc" class="required"
+					onchange="checkReadyForNextStep()" /></td>
+
+				<td width="25%" style="vertical-align: top; padding: 4px"
+					id="panelSelectionCell"><bean:message
+						key="typeofsample.panel.panel" /><br /> <select
+					id="panelSelection" multiple="multiple" title="Multiple">
+						<%
+							for (IdValuePair pair : panelList) {
+						%>
+						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+						</option>
+						<%
+							}
+						%>
+				</select><br />
+				<br />
+				<br /> <bean:message key="label.unitofmeasure" /><br /> <select
+					id="uomSelection">
+						<option value='0'></option>
+						<%
+							for (IdValuePair pair : uomList) {
+						%>
+						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+						</option>
+						<%
+							}
+						%>
+				</select></td>
+				<td width="25%" style="vertical-align: top; padding: 4px"><bean:message
+						key="result.resultType" /><span class="requiredlabel">*</span><br />
+					<select id="resultTypeSelection" class="required"
+					onchange="checkReadyForNextStep()">
+						<option value="0"></option>
+						<%
+							for (IdValuePair pair : resultTypeList) {
+						%>
+						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+						</option>
+						<%
+							}
+						%>
+				</select><br />
+				<br />
+				<br />
+				<br />
+				<br /> <label for="orderable"><bean:message
+							key="test.isActive" /></label> <input type="checkbox" id="active"
+					checked="checked" /><br /> <label for="orderable"><bean:message
+							key="label.orderable" /></label> <input type="checkbox" id="orderable"
+					checked="checked" /></td>
+			</tr>
+		</table>
+	</div>
+	<div id="sampleTypeContainer" class="step2"
+		style="width: 100%; overflow: hidden; display: none">
+		<div style="float: left; width: 20%;">
+			<bean:message key="test.testName" />
+			<br /> <span class="tab"><bean:message key="label.english" />:
+				<span id="testNameEnglishRO"></span></span><br /> <span class="tab"><bean:message
+					key="label.french" />: <span id="testNameFrenchRO"></span></span><br /> <br />
+			<bean:message key="test.testName.reporting" />
+			<br /> <span class="tab"><bean:message key="label.english" />:
+				<span id="testReportNameEnglishRO"></span></span><br /> <span class="tab"><bean:message
+					key="label.french" />: <span id="testReportNameFrenchRO"></span></span><br />
+			<br />
+			<bean:message key="test.testSectionName" />
+			<div id="testSectionRO" class="tab"></div>
+			<br />
+			<bean:message key="typeofsample.panel.panel" />
+			<div class="tab" id="panelRO">
+				<bean:message key="label.none" />
+			</div>
+			<br />
+			<bean:message key="label.unitofmeasure" />
+			<div class="tab" id="uomRO">
+				<bean:message key="label.none" />
+			</div>
+			<br />
+			<bean:message key="result.resultType" />
+			<div class="tab" id="resultTypeRO"></div>
+			<br />
+			<bean:message key="test.isActive" />
+			<div class="tab" id="activeRO"></div>
+			<br />
+			<bean:message key="label.orderable" />
+			<div class="tab" id="orderableRO"></div>
+			<br />
+		</div>
+		<div class="step2" style="float: right; width: 80%; display: none">
+			<div id="sampleTypeSelectionDiv" class="step2"
+				style="float: left; width: 20%;">
+				<bean:message key="label.sampleType" />
+				<span class="requiredlabel">*</span> <select
+					id="sampleTypeSelection" class="required" multiple="multiple"
+					title="Multiple">
+					<%
+						for (IdValuePair pair : sampleTypeList) {
+					%>
+					<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+					</option>
+					<%
+						}
+					%>
+				</select><br />
+			</div>
+			<div id="testDisplayOrderDiv" style="float: left; width: 80%;">
+				<div id="sortTitleDiv" align="center">
+					<bean:message key="label.test.display.order" />
+				</div>
+				<div id="endOrderMarker"></div>
+				<div class="dictionarySelect dictionaryMultiSelect"
+					id="dictionarySelectId"
+					style="padding: 10px; float: left; width: 280px; display: none; overflow: hidden">
+					<bean:message key="label.select.list.options" />
+					<span class="requiredlabel">*</span><br /> <select
+						id="dictionarySelection" class="required" multiple="multiple"
+						title="Multiple">
+						<%
+							for (IdValuePair pair : dictionaryList) {
+						%>
+						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+						</option>
+						<%
+							}
+						%>
+					</select><br />
+					<br />
+					<br />
+				</div>
+				<div id="dictionaryVerifyId"
+					style="padding: 10px; float: left; width: 280px; display: none; overflow: hidden;">
+					<span><span class="half-tab"><bean:message
+								key="label.select.list" /></span><br />
+						<ul id="dictionaryVerifyListId">
+
+						</ul> </span> <span><bean:message key="label.reference.value" /><br>
+					<ul>
+							<li id="referenceValue"></li>
+						</ul></span>
+				</div>
+				<div id="sortDictionaryDiv" align="center" class="dictionarySelect"
+					style="padding: 10px; float: left; width: 33%; display: none;">
+					<bean:message key="label.result.order" />
+					<span id="dictionarySortSpan" align="left">
+						<UL id="dictionaryNameSortUI">
+
+						</UL>
+					</span>
+				</div>
+				<div class="dictionarySelect"
+					style="padding: 10px; float: left; width: 280px; display: none">
+					<div id="dictionaryReference">
+						<bean:message key="label.reference.value" />
+						<br /> <select id='referenceSelection'>
+							<option value="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+						</select>
+					</div>
+					<br>
+
+					<div id="dictionaryQualify" class="dictionaryMultiSelect">
+						<bean:message key="label.qualifiers" />
+						<br /> <select id='qualifierSelection' multiple='multiple'
+							title='Multiple'></select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="dictionaryExistingGroups" class="dictionarySelect"
+		style="display: none; width: 100%">
+		<div style="width: 100%; text-align: center;">
+			<bean:message key="label.existing.test.sets" />
+		</div>
+		<hr>
+		<table>
+			<%
+				while (testCount < groupedDictionaryList.size()) {
+			%>
+			<tr>
+				<td id='<%="dictionaryGroup_" + testCount%>'
+					style="padding: 5px 10px; vertical-align: top"><input
+					type="button"
+					value="<%=StringUtil.getMessageForKey("label.form.select")%>"
+					onclick="<%="dictionarySetSelected(" + testCount + ");"%>"
+					class="textButton" />
+					<ul style="padding-left: 0; list-style-type: none">
+						<%
+							for (IdValuePair pair : groupedDictionaryList.get(testCount)) {
+						%>
+						<li value="<%=pair.getId()%>"><%=pair.getValue()%></li>
+						<%
+							}
+						%>
+					</ul> <%
+ 	testCount++;
+ 		columnCount = 1;
+ %></td>
+				<%
+					while (testCount < groupedDictionaryList.size() && (columnCount < columns)) {
+				%>
+				<td id='<%="dictionaryGroup_" + testCount%>'
+					style="padding: 5px 10px; vertical-align: top"><input
+					type="button"
+					value="<%=StringUtil.getMessageForKey("label.form.select")%>"
+					onclick="<%="dictionarySetSelected(" + testCount + ");"%>"
+					class="textButton" />
+					<ul style="padding-left: 0; list-style-type: none">
+						<%
+							for (IdValuePair pair : groupedDictionaryList.get(testCount)) {
+						%>
+						<li value="<%=pair.getId()%>"><%=pair.getValue()%></li>
+						<%
+							}
+						%>
+					</ul></td>
+				<%
+					testCount++;
+							columnCount++;
+				%>
+				<%
+					}
+				%>
+
+			</tr>
+			<%
+				}
+			%>
+		</table>
+	</div>
+	<div id="normalRangeTemplate" style="display: none;">
+		<table>
+			<tr class="row_index createdFromTemplate">
+				<td><input type="hidden" class="rowKey" value="index" /><input
+					id="genderCheck_index" type="checkbox"
+					onchange="genderMatersForRange(this.checked, 'index')"></td>
+				<td><span class="sexRange_index" style="display: none">
+						<bean:message key="sex.male" />
+				</span></td>
+				<td><input class="yearMonthSelect_index" type="radio"
+					name="time_index"
+					value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
+					onchange="upperAgeRangeChanged( 'index' )" checked>
+				<bean:message key="abbreviation.year.single" /> <input
+					class="yearMonthSelect_index" type="radio" name="time_index"
+					value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"
+					onchange="upperAgeRangeChanged( 'index' )">
+				<bean:message key="abbreviation.month.single" />&nbsp;</td>
+				<td id="lowerAge_index">0</td>
+				<td><input type="text" id="upperAgeSetter_index"
+					value="Infinity" size="10"
+					onchange="upperAgeRangeChanged( 'index' )"><span
+					id="upperAge_index"></span></td>
+				<td><select id="ageRangeSelect_index"
+					onchange="ageRangeSelected( this, 'index');">
+						<option value="0"></option>
+						<%
+							for (IdValuePair pair : ageRangeList) {
+						%>
+						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+						</option>
+						<%
+							}
+						%>
+				</select></td>
+				<td><input type="text" value="-Infinity" size="10"
+					id="lowNormal_index" class="lowNormal"
+					onchange="normalRangeCheck('index');"></td>
+				<td><input type="text" value="Infinity" size="10"
+					id="highNormal_index" class="highNormal"
+					onchange="normalRangeCheck('index');"></td>
+				<td><input type="text" value="" size="12"
+					id="reportingRange_index"></td>
+				<td></td>
+				<td></td>
+				<td><input id="removeButton_index" type="button"
+					class="textButton" onclick='removeLimitRow( index );'
+					value="<%=StringUtil.getMessageForKey("label.remove")%>" /></td>
+			</tr>
+			<tr class="sexRange_index row_index createdFromTemplate">
+				<td></td>
+				<td><bean:message key="sex.female" /></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><input type="text" value="-Infinity" size="10"
+					id="lowNormal_G_index" class="lowNormal"
+					onchange="normalRangeCheck('index');"></td>
+				<td><input type="text" value="Infinity" size="10"
+					id="highNormal_G_index" class="highNormal"
+					onchange="normalRangeCheck('index');"></td>
+				<td><input type="text" value="" size="12"
+					id="reportingRange_G_index"></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div id="normalRangeDiv" style="display: none;">
+		<h3>
+			<bean:message key="configuration.test.catalog.normal.range" />
+		</h3>
+		<table style="display: inline-table">
+			<tr>
+				<th></th>
+				<th colspan="8"><bean:message
+						key="configuration.test.catalog.normal.range" /></th>
+				<th colspan="2"><bean:message
+						key="configuration.test.catalog.valid.range" /></th>
+				<th></th>
+			</tr>
+			<tr>
+				<td><bean:message key="label.sex.dependent" /></td>
+				<td><span class="sexRange" style="display: none"><bean:message
+							key="label.sex" /> </span></td>
+				<td colspan="4" align="center"><bean:message
+						key="label.age.range" /></td>
+				<td colspan="2" align="center"><bean:message key="label.range" /></td>
+				<td align="center"><bean:message key="label.reporting.range" /></td>
+				<td colspan="2"></td>
+			</tr>
+			<tr class="row_0">
+				<td><input type="hidden" class="rowKey" value="0" /><input
+					id="genderCheck_0" type="checkbox"
+					onchange="genderMatersForRange(this.checked, '0')"></td>
+				<td><span class="sexRange_0" style="display: none"> <bean:message
+							key="sex.male" />
+				</span></td>
+				<td><input class="yearMonthSelect_0" type="radio" name="time_0"
+					value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
+					onchange="upperAgeRangeChanged('0')" checked>
+				<bean:message key="abbreviation.year.single" /> <input
+					class="yearMonthSelect_0" type="radio" name="time_0"
+					value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"
+					onchange="upperAgeRangeChanged('0')">
+				<bean:message key="abbreviation.month.single" />&nbsp;</td>
+				<td id="lowerAge_0">0&nbsp;</td>
+				<td><input type="text" id="upperAgeSetter_0" value="Infinity"
+					size="10" onchange="upperAgeRangeChanged('0')"><span
+					id="upperAge_0"></span></td>
+				<td><select id="ageRangeSelect_0"
+					onchange="ageRangeSelected( this, '0');">
+						<option value="0"></option>
+						<%
+							for (IdValuePair pair : ageRangeList) {
+						%>
+						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
+						</option>
+						<%
+							}
+						%>
+				</select></td>
+				<td><input type="text" value="-Infinity" size="10"
+					id="lowNormal_0" class="lowNormal"
+					onchange="normalRangeCheck('0');"></td>
+				<td><input type="text" value="Infinity" size="10"
+					id="highNormal_0" class="highNormal"
+					onchange="normalRangeCheck('0');"></td>
+				<td><input type="text" value="" size="12" id="reportingRange_0"></td>
+				<td><input type="text" value="-Infinity" size="10"
+					id="lowValid" onchange="validRangeCheck();"></td>
+				<td><input type="text" value="Infinity" size="10"
+					id="highValid" onchange="validRangeCheck();"></td>
+			</tr>
+			<tr class="sexRange_0 row_0" style="display: none">
+				<td></td>
+				<td><bean:message key="sex.female" /></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><input type="text" value="-Infinity" size="10"
+					id="lowNormal_G_0" class="lowNormal"
+					onchange="normalRangeCheck('0');"></td>
+				<td><input type="text" value="Infinity" size="10"
+					id="highNormal_G_0" class="highNormal"
+					onchange="normalRangeCheck('0');"></td>
+				<td><input type="text" value="" size="12"
+					id="reportingRange_G_0"></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr id="endRow"></tr>
+		</table>
+		<label for="significantDigits"><bean:message
+				key="label.significant.digits" /></label> <input type="number" min="0"
+			max="10" id="significantDigits">
+	</div>
+
+
+	<div class="selectShow"
+		style="margin-left: auto; margin-right: auto; width: 40%;">
+		<input type="button"
+			value="<%=StringUtil.getMessageForKey("label.button.next")%>"
+			disabled="disabled" onclick="nextStep();" id="nextButton" /> <input
+			type="button"
+			value="<%=StringUtil.getMessageForKey("label.button.back")%>"
+			onclick="navigateBack()" />
+	</div>
+	<div class="confirmShow"
+		style="margin-left: auto; margin-right: auto; width: 40%; display: none">
+		<input type="button"
+			value="<%=StringUtil.getMessageForKey("label.button.accept")%>"
+			onclick="submitAction('TestModifyUpdate.do');" /> <input
+			type="button"
+			value="<%=StringUtil.getMessageForKey("label.button.back")%>"
+			onclick="navigateBackFromConfirm()" />
+	</div>
+
+	<table>
+		<%
+			while (testCount < testList.size()) {
+		%>
+		<tr>
+			<td><input type="button"
+				value='<%=((IdValuePair) testList.get(testCount)).getValue()%>'
+				onclick="setForEditing( '<%=((IdValuePair) testList.get(testCount)).getId() + "', '"
+						+ ((IdValuePair) testList.get(testCount)).getValue()%>');"
+				class="textButton test" /> <%
+ 	testCount++;
+ 		columnCount = 1;
+ %></td>
+			<%
+				while (testCount < testList.size() && (columnCount < columns)) {
+			%>
+			<td><input type="button"
+				value='<%=((IdValuePair) testList.get(testCount)).getValue()%>'
+				onclick="setForEditing( '<%=((IdValuePair) testList.get(testCount)).getId() + "', '"
+							+ ((IdValuePair) testList.get(testCount)).getValue()%>' );"
+				class="textButton test" /> <%
+ 	testCount++;
+ 			columnCount++;
+ %></td>
+			<%
+				}
+			%>
+
+		</tr>
+		<%
+			}
+		%>
+	</table>
+
+	<br> <input type="button"
+		value='<%=StringUtil.getMessageForKey("label.button.finished")%>'
+		onclick="submitAction('TestManagementConfigMenu.do');" />
 </form>
