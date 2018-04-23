@@ -34,7 +34,6 @@ import ca.uhn.hl7v2.HapiContext;
 import ca.uhn.hl7v2.model.v251.group.OML_O21_OBSERVATION_REQUEST;
 import ca.uhn.hl7v2.model.v251.group.OML_O21_ORDER_PRIOR;
 import ca.uhn.hl7v2.model.v251.message.OML_O21;
-import ca.uhn.hl7v2.model.v251.segment.OBR;
 import ca.uhn.hl7v2.model.v251.segment.OBX;
 import ca.uhn.hl7v2.model.v251.segment.ORC;
 import ca.uhn.hl7v2.parser.Parser;
@@ -44,7 +43,6 @@ import us.mn.state.health.lims.common.services.StatusService.ExternalOrderStatus
 import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.XMLUtil;
-import us.mn.state.health.lims.dataexchange.order.action.HL7OrderInterpreter;
 import us.mn.state.health.lims.dataexchange.order.daoimpl.ElectronicOrderDAOImpl;
 import us.mn.state.health.lims.dataexchange.order.valueholder.ElectronicOrder;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
@@ -171,25 +169,22 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 			
 			OML_O21_OBSERVATION_REQUEST orderRequest = hapiMsg.getORDER().getOBSERVATION_REQUEST();
 
-			addToTestOrPanel(tests, panels, orderRequest.getOBR(), orderRequest.getOBSERVATION().getOBX());
+			addToTestOrPanel(tests, panels, commonOrderSegment, orderRequest.getOBSERVATION().getOBX());
 
 			List<OML_O21_ORDER_PRIOR> priorOrders = orderRequest.getPRIOR_RESULT().getORDER_PRIORAll();
 			for(OML_O21_ORDER_PRIOR priorOrder : priorOrders){
-				addToTestOrPanel(tests, panels, priorOrder.getOBR(), priorOrder.getOBSERVATION_PRIOR().getOBX());
+				addToTestOrPanel(tests, panels, commonOrderSegment, priorOrder.getOBSERVATION_PRIOR().getOBX());
 			}
 
 		}catch(HL7Exception e){
 			e.printStackTrace();
 		}
 	}
-
-	private void addToTestOrPanel(List<Request> tests, List<Request> panels, OBR obr, OBX obx){
-		if(obr.getUniversalServiceIdentifier().getIdentifier().getValue()
-				.startsWith(HL7OrderInterpreter.ServiceIdentifier.PANEL.getIdentifier() + "-")){
-			panels.add(new Request(obr.getUniversalServiceIdentifier().getText().getValue(), obx.getObservationValue(0).getData().toString()));
-		}else{
-			tests.add(new Request(obr.getUniversalServiceIdentifier().getText().getValue(), obx.getObservationValue(0).getData().toString()));
-		}
+	
+	private void addToTestOrPanel(List<Request> tests, List<Request> panels, ORC orc, OBX obx){
+		String loinc = orc.getOrderType().getIdentifier().toString();
+		String testName = testDAO.getActiveTestsByLoinc(loinc).get(0).getName();
+		tests.add(new Request(testName, loinc, TypeOfSampleService.getTypeOfSampleNameForId(testDAO.getActiveTestsByLoinc(loinc).get(0).getId())));
 	}
 
 	private void createMaps(List<Request> testRequests, List<Request> panelNames){
@@ -210,14 +205,12 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 
 	private void createMapsForTests(List<Request> testRequests){
 		for(Request testRequest : testRequests){
-			List<Test> tests = testDAO.getActiveTestByName(testRequest.getName());
-
-			// If there is only one sample type we don't care what was requested
-			boolean hasSingleSampleType = tests.size() == 1;
+			List<Test> tests = testDAO.getActiveTestsByLoinc(testRequest.getLoinc());
+						
 			Test singleTest = tests.get(0);
 			TypeOfSample singleSampleType = TypeOfSampleService.getTypeOfSampleForTest(singleTest.getId());
+			boolean hasSingleSampleType = tests.size() == 1;
 
-			
 			if(tests.size() > 1){
 				if(!GenericValidator.isBlankOrNull(testRequest.getSampleType())){
 					for(Test test : tests){
@@ -473,15 +466,21 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 
 	private class Request{
 		private String name;
+		private String loinc;
 		private String sampleType;
 
-		public Request(String name, String sampleType){
+		public Request(String name, String loinc, String sampleType){
 			this.name = name;
+			this.loinc = loinc;
 			this.sampleType = sampleType;
 		}
 
 		public String getSampleType(){
 			return sampleType;
+		}
+		
+		public String getLoinc() {
+			return loinc;
 		}
 
 		public String getName(){

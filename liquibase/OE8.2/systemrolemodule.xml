@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <!--system role and module updating-->
   
-    <changeSet author="csteele" id="1">
+    <changeSet author="csteele" id="1" context="ci_general">
         <preConditions onFail="MARK_RAN">
             <not><sequenceExists schemaName="clinlims" sequenceName="system_role_module_seq" /></not>
         </preConditions>
@@ -14,7 +14,7 @@
         </sql>
     </changeSet>
   
-    <changeSet author="csteele" id="2" context="ci_regional,ci_general">
+    <changeSet author="csteele" id="2" context="ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Identifying Information Edit';

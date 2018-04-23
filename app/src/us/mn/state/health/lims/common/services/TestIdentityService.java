@@ -101,11 +101,11 @@ public class TestIdentityService implements ITestIdentityService{
 	
 	@Override
 	public boolean doesTestExistForLoinc(String loincCode) {
-		return testDAO.getTestByLoincCode(loincCode) != null;
+		return testDAO.getTestsByLoincCode(loincCode) != null && testDAO.getTestsByLoincCode(loincCode).size() > 0;
 	}
 
 	@Override
 	public boolean doesActiveTestExistForLoinc(String loincCode) {
-		return testDAO.getActiveTestByLoinc(loincCode) != null;
+		return testDAO.getActiveTestsByLoinc(loincCode) != null && testDAO.getActiveTestsByLoinc(loincCode).size() > 0;
 	}
 }

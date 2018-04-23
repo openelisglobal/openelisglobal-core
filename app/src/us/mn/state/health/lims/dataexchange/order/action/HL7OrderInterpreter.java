@@ -119,7 +119,12 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 	}
 	private void extractOrderInformation() throws HL7Exception{
 		ORC orcSegment = orderMessage.getORDER().getORC();
-		labOrderNumber =  orcSegment.getPlacerOrderNumber().encode();
+		//labOrderNumber =  orcSegment.getPlacerOrderNumber().encode();
+		labOrderNumber = orderMessage.getORDER().getOBSERVATION_REQUEST().getOBR().getObr4_UniversalServiceIdentifier().getCe1_Identifier().getValue();
+		//strip encounter type (if exists) from field for just encounter uuid
+		if (labOrderNumber.contains(";")) {
+			labOrderNumber = labOrderNumber.substring(labOrderNumber.indexOf(";") + 1);
+		}
 		
 		if(OrderType.REQUEST.getIdentifier().equals(orcSegment.getOrderControl().getValue())){
 			orderType = OrderType.REQUEST;
@@ -134,8 +139,12 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 	private Test createTestFromHl7() throws HL7Exception {
 		ORC orcSegment = orderMessage.getORDER().getORC();
 		String loincCode = orcSegment.getOrderType().getIdentifier().encode();
-		TestDAO testDao = new TestDAOImpl();		
-		return testDao.getTestByLoincCode(loincCode);
+		TestDAO testDAO = new TestDAOImpl();		
+		List<Test> tests = testDAO.getTestsByLoincCode(loincCode);
+		if (tests.size() == 0) {
+			return null;
+		}
+		return tests.get(0);
 	}
 
 	private MessagePatient createPatientFromHL7() throws HL7Exception{
@@ -143,7 +152,8 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 		MessagePatient patient = new MessagePatient();
 		
 		PID pid = orderMessage.getPATIENT().getPID();
-		
+		CX patientId = pid.getPatientID();
+		patient.setExternalId(patientId.getIDNumber().getValue());
 		CX[] patientIdentities = pid.getPatientIdentifierList();
 		for(CX identity : patientIdentities){
 			String value = identity.getCx1_IDNumber().getValue();
@@ -216,9 +226,10 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 			}
 
 			if(orderType == OrderType.REQUEST){
-				if(GenericValidator.isBlankOrNull(getMessagePatient().getGuid())){
+				//a GUID is no longer being sent, so no longer requiring it, it is instead generated upon receiving patient
+				/*if(GenericValidator.isBlankOrNull(getMessagePatient().getGuid())){
 					results.add(InterpreterResults.MISSING_PATIENT_GUID);
-				}
+				}*/
 
 //These are being commented out until we get confirmation on the desired policy.  Either the request should be rejected or the user should be required to
 // fill the missing information in at the time of sample entry.  Commenting these out supports the latter				
@@ -233,7 +244,8 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 				if(getMessagePatient().getNationalId() == null &&
 						getMessagePatient().getObNumber() == null &&
 						getMessagePatient().getPcNumber() == null &&
-						getMessagePatient().getStNumber() == null){
+						getMessagePatient().getStNumber() == null &&
+						getMessagePatient().getExternalId() == null){
 					results.add(InterpreterResults.MISSING_PATIENT_IDENTIFIER);
 				}
 				
@@ -266,7 +278,10 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 	private void checkOBR( OBR obr) throws HL7Exception{
 		if( obr.isEmpty() ){
 			results.add(InterpreterResults.MISSING_TESTS);
-		}else{
+		}
+		//moving away from name based testrequet to LOINC based test requests
+		//test request no longer in obr, now appears in orc
+		/*else{
 			String name = obr.getUniversalServiceIdentifier().getText().getValue();
 			String identifier = obr.getUniversalServiceIdentifier().getIdentifier().getValue();
 			if( identifier.startsWith(ServiceIdentifier.TEST.getIdentifier() + "-")){
@@ -286,7 +301,7 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 			}else{
 				results.add(InterpreterResults.OTHER_THAN_PANEL_OR_TEST_REQUESTED);
 			}
-		}
+		}*/
 	}
 
 	@Override

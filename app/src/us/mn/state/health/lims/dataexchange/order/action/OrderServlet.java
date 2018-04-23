@@ -31,6 +31,7 @@ import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v251.datatype.CWE;
 import ca.uhn.hl7v2.model.v251.message.ACK;
 import ca.uhn.hl7v2.model.v251.message.OML_O21;
+import ca.uhn.hl7v2.model.v251.message.ORL_O22;
 import ca.uhn.hl7v2.model.v251.segment.ERR;
 import ca.uhn.hl7v2.protocol.ReceivingApplication;
 import ca.uhn.hl7v2.protocol.ReceivingApplicationException;
@@ -76,24 +77,26 @@ public class OrderServlet extends HohServlet{
 
 			OrderResult orderResult = worker.handleOrderRequest();
 
-			ACK response = null;
+			//ACK response = null;
+			ORL_O22 response = null;
+			OML_O21 omlMessage;
 			try{
-				OML_O21 omlMessage = (OML_O21)message;
+				omlMessage = (OML_O21)message;
 
 				if(orderResult == OrderResult.OK){
-
-					response = (ACK)message.generateACK();
+					
+					response = ackToOrlO22((ACK)message.generateACK());
 
 				}else if(orderResult == OrderResult.NON_CANCELABLE_ORDER || orderResult == OrderResult.DUPLICATE_ORDER){
-					response = (ACK)omlMessage.generateACK(AcknowledgmentCode.CR, null);
+					response = ackToOrlO22((ACK)omlMessage.generateACK(AcknowledgmentCode.CR, null));
 					ERR err = createNewERRSegment("207", "Application internal error", orderResult.toString() + " : "
 							+ worker.getExistanceCheckResult().toString(), response);
 					response.insertERR(err, 0);
 				}else if(orderResult == OrderResult.MESSAGE_ERROR){
-					response = (ACK)omlMessage.generateACK(AcknowledgmentCode.CR, null);
+					response = ackToOrlO22((ACK)omlMessage.generateACK(AcknowledgmentCode.CR, null));
 
 					List<InterpreterResults> interpreterResults = worker.getMessageErrors();
-					int errorCnt = 0;
+					int errorCnt = response.getERRReps();
 					ERR err = null;
 					for(InterpreterResults result : interpreterResults){
 						switch(result){
@@ -152,17 +155,49 @@ public class OrderServlet extends HohServlet{
 
 					}
 				}else{
-					response = (ACK)omlMessage.generateACK(AcknowledgmentCode.AE, new HL7Exception("Unknown result thrown"));
+					response = ackToOrlO22((ACK)omlMessage.generateACK(AcknowledgmentCode.AE, new HL7Exception("Unknown result thrown")));
 				}
 
+				addOrderInfo(response, omlMessage);
 			}catch(IOException e){
 				throw new ReceivingApplicationException(e);
 			}
-		
 			return response;
 		}
 
-		private ERR createNewERRSegment(String HL70357Identifier, String HL70357Msg, String detail, ACK response) throws DataTypeException{
+		// add the order info from the original request into the response message
+		private void addOrderInfo(ORL_O22 response, OML_O21 request) throws HL7Exception {
+			response.getRESPONSE()
+					.getPATIENT()
+					.getPID()
+					.parse((request.getPATIENT().getPID().encode()));
+			response.getRESPONSE()
+					.getPATIENT()
+					.getORDER()
+					.getORC()
+					.parse(request.getORDER().getORC().encode());
+			response.getRESPONSE()
+					.getPATIENT()
+					.getORDER()
+					.getOBSERVATION_REQUEST()
+					.getOBR()
+					.parse(request.getORDER().getOBSERVATION_REQUEST().getOBR().encode());
+		}
+
+		//convert an ACK message to orl_o22 message
+		private ORL_O22 ackToOrlO22(ACK ack) throws HL7Exception, IOException {
+			ORL_O22 orl = new ORL_O22();
+			orl.initQuickstart("ORL", "O22", "P");
+			orl.getMSA().parse(ack.getMSA().encode());
+			int errorCnt = 0;
+			for (ERR err : ack.getERRAll()) {
+				orl.insertERR(err, errorCnt++);;
+			}
+			
+			return orl;
+		}
+
+		private ERR createNewERRSegment(String HL70357Identifier, String HL70357Msg, String detail, ORL_O22 response) throws DataTypeException {
 			ERR err = new ERR(response.getParent(), response.getModelClassFactory());
 			CWE cwe = err.getHL7ErrorCode();
 			cwe.getIdentifier().setValue(HL70357Identifier);
@@ -171,6 +206,16 @@ public class OrderServlet extends HohServlet{
 			err.getSeverity().setValue("E");
 			return err;
 		}
+
+/*		private ERR createNewERRSegment(String HL70357Identifier, String HL70357Msg, String detail, ACK response) throws DataTypeException{
+			ERR err = new ERR(response.getParent(), response.getModelClassFactory());
+			CWE cwe = err.getHL7ErrorCode();
+			cwe.getIdentifier().setValue(HL70357Identifier);
+			cwe.getText().setValue(HL70357Msg);
+			cwe.getOriginalText().setValue(detail);
+			err.getSeverity().setValue("E");
+			return err;
+		}*/
 
 		/**
 		 * {@inheritDoc}

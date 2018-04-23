@@ -28,6 +28,7 @@ public class ElectronicOrderViewAction extends BaseAction {
 		DynaActionForm dynaForm = ( DynaActionForm ) form ;
 		String sortOrder = request.getParameter("sortOrder");
 		String pageNumber = request.getParameter("page");
+		
 		sortOrder = sortOrder == null ? "lastupdated" : sortOrder;
 		pageNumber = pageNumber == null ? "1" : pageNumber;
 		

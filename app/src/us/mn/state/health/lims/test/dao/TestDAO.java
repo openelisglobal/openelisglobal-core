@@ -118,7 +118,7 @@ public interface TestDAO extends BaseDAO {
 
     public Test getTestByGUID( String guid) throws LIMSRuntimeException;
 
-	public Test getTestByLoincCode(String loincCode);
+	public List<Test> getTestsByLoincCode(String loincCode);
 
-	public Test getActiveTestByLoinc(String loincCode);
+	public List<Test> getActiveTestsByLoinc(String loincCode);
 }

@@ -1123,16 +1123,16 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
         return null;
     }
     
-    @Override
-    public Test getTestByLoincCode(String loincCode) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<Test> getTestsByLoincCode(String loincCode) {
     	String sql = "From Test t where t.loinc = :loinc";
     	try {
     		Query query = HibernateUtil.getSession().createQuery(sql);
     		query.setString("loinc", loincCode);
-    		
-    		Test test = (Test) query.uniqueResult();
+    		List<Test> tests = query.list();
     		closeSession();
-    		return test;
+    		return tests;
     	} catch (HibernateException e) {
     		handleException(e, "getTestByLoincCode");
     	}
@@ -1140,15 +1140,16 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
     	return null;
     }
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Test getActiveTestByLoinc(String loincCode) {
+	public List<Test> getActiveTestsByLoinc(String loincCode) {
     	String sql = "From Test t where t.loinc = :loinc and t.isActive='Y'";
     	try {
     		Query query = HibernateUtil.getSession().createQuery(sql);
     		query.setString("loinc", loincCode);
-    		Test test = (Test) query.uniqueResult();
+    		List<Test> tests = query.list();
     		closeSession();
-    		return test;
+    		return tests;
     	} catch (HibernateException e) {
     		handleException(e, "getActiveTestByLoinc");
     	}
