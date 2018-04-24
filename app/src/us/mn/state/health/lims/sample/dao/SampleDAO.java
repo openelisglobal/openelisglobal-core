@@ -49,6 +49,8 @@ public interface SampleDAO extends BaseDAO {
 	public List<Sample> getSamplesWithPendingQaEvents(Sample sample, boolean filterByCategory, String qaEventCategoryId, boolean filterByDomain) throws LIMSRuntimeException;
 
 	public List<Sample> getSamplesReceivedOn(String recievedDate) throws LIMSRuntimeException;
+	
+	public Sample getSampleByReferringId(String referringId) throws LIMSRuntimeException;
 
 	/**
 	 * Find a range of samples INCLUSIVE of the given dates.
