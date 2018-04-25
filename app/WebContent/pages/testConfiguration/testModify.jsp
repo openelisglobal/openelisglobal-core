@@ -88,9 +88,11 @@
 <bean:define id="testCatBeanList" name='<%=formName%>'
 	property="testCatBeanList" type="List<TestCatalogBean>" />
 
+
 <%!int testCount = 0;
 	int columnCount = 0;
-	int columns = 3;%>
+	int columns = 3;
+%>
 
 <%
 	columnCount = 0;
@@ -132,23 +134,52 @@
         
         var resultType = "";
         $jq(".resultClass").each(function (i,elem) {
-            // console.log("sfe: " + testId + ":" + $jq(elem).attr('fTestId') + ":" + $jq(elem).attr('fResultType'));
         	if(testId !== $jq(elem).attr("fTestId")){    		
         		$jq(elem).remove();
         	} else {
-        		console.log("sfe: " + testId + ":" + $jq(elem).attr('fTestId') + ":" + $jq(elem).attr('fResultType'));
+				// from type_of_test_result table, translate to DisplayListService
+        		switch($jq(elem).attr('fresulttype')) {
+        	    case "R": 
+        	    	$jq("#resultTypeSelection").val(1) 
+        	    	break;
+        	    case "D": 
+        	    	$jq("#resultTypeSelection").val(2) 
+        	    	break;
+        	    case "T": 
+        	    	$jq("#resultTypeSelection").val(3) 
+        	    	break;
+        	    case "N": 
+        	    	$jq("#resultTypeSelection").val(4) 
+        	    	break;
+        	    case "A": 
+        	    	$jq("#resultTypeSelection").val(5) 
+        	    	break;
+        	    case "M": 
+        	    	$jq("#resultTypeSelection").val(6) 
+        	    	break;
+        	    case "C": 
+        	    	$jq("#resultTypeSelection").val(7) 
+        	    	break;
+        	    default:
+        		}
+				
+				var panel = $jq(elem).attr('fPanel');
+				var optionsArray = Array.from($jq("#panelSelection")[0]);
+				var panelOption = optionsArray.filter(function(elem) { return elem.label === panel });
+				panelOption.forEach(function(elem) {
+					$jq(elem).attr("selected", true)
+				});
+				
+				$jq("#panelSelection").change();
+							
         	}
         });
         
-//        getTestNames(testId, testNameSuccess);
-//        getTestEntities(testId, testEntitiesSuccess);
-        
-        
-        // console.log("sfe:resultTypeId: "  );
-          $jq("#step1Div").show();
-
+        getTestNames(testId, testNameSuccess);
+		getTestEntities(testId, testEntitiesSuccess);
+		$jq("#nextButton").prop("disabled", false);	
+		$jq("#step1Div").show();
     }
-    
    
     function testEntitiesSuccess(xhr) {
         //alert(xhr.responseText);
@@ -163,14 +194,16 @@
             testSectionId = response["entities"]["testSectionId"];
             uomId = response["entities"]["uomId"];
             
-            getEntityNames(testSectionId, "<%=EntityNamesProvider.TEST_SECTION%>", testSectionNameSuccess );
-            getEntityNames(uomId, "<%=EntityNamesProvider.UNIT_OF_MEASURE%>", uomNameSuccess );
-            $jq("#loinc").text(response["entities"]["loinc"]);
-       
-           // console.log("tes: " + testSectionId );
+         	//getEntityNames(testSectionId, "<%=EntityNamesProvider.TEST_SECTION%>", testSectionNameSuccess );
+         	//getEntityNames(uomId, "<%=EntityNamesProvider.UNIT_OF_MEASURE%>", uomNameSuccess );
+            
+            $jq("#loinc").val(response["entities"]["loinc"]);
+            $jq("#testUnitSelection").val(response["entities"]["testSectionId"]);
+            $jq("#uomSelection").val(response["entities"]["uomId"]);
         }
-
+        
         window.onbeforeunload = null;
+        $jq("#step1Div").show();
     }
     
     function uomNameSuccess(xhr) {
@@ -214,17 +247,21 @@
         var message = xhr.responseXML.getElementsByTagName("message").item(0);
         var response;
 
-
         if (message.firstChild.nodeValue == "valid") {
             response = JSON.parse(formField.firstChild.nodeValue);
-            $jq("#nameEnglish").text(response["name"]["english"]);
-            $jq("#nameFrench").text(response["name"]["french"]);
-            $jq("#reportNameEnglish").text(response["reportingName"]["english"]);
-            $jq("#reportNameFrench").text(response["reportingName"]["french"]);
+            
+            $jq("#testNameEnglish").val(response["name"]["english"]);
+            
+            $jq("#testNameFrench").val(response["name"]["french"]);
+            
+            $jq("#testReportNameEnglish").val(response["reportingName"]["english"]);
+            
+            $jq("#testReportNameFrench").val(response["reportingName"]["french"]);
+            
             //alert(response["reportingName"]["french"]);
-            $jq(".required").each(function () {
-                $jq(this).val("");
-            });
+            //$jq(".required").each(function () {
+              //  $jq(this).val("");
+            //});
         }
 
         window.onbeforeunload = null;
@@ -352,6 +389,7 @@
     }
 
     function createOrderBoxForSampleType(data) {
+    	if(typeof data === 'undefined') return;
         var sampleTypeName = $jq("#sampleTypeSelection option[value=" + data.value + "]").text();
         var divId = data.value;
         if (data.type == 'add') {
@@ -428,18 +466,6 @@
             $jq("#guide").show();
         } else {
             $jq("#guide").hide();
-        }
-    }
-
-    function genderMatersForRange(checked, index) {
-        if (checked) {
-            $jq(".sexRange_" + index).show();
-        } else {
-            $jq(".sexRange_" + index).hide();
-            $jq("#lowNormal_G_" + index).val("-Infinity");
-            $jq("#highNormal_G_" + index).val("Infinity");
-            $jq("#lowNormal_G_" + index).removeClass("error");
-            $jq("#highNormal_G_" + index).removeClass("error");
         }
     }
 
@@ -802,10 +828,16 @@
 
         $jq("#nextButton").prop("disabled", !ready);
     }
+    
+    function editRangeAsk(){
+    	//alert(step);
+    	step = 'step3NumericAsk';
+    	nextStep();
+    }
 
     function nextStep() {
         var resultTypeId;
-
+		//alert(step);
         if (step == 'step1') {
             step = 'step2';
             setStep1ReadOnlyFields();
@@ -813,7 +845,40 @@
             $jq(".step2").show();
             $jq("#nextButton").attr("disabled", "disabled");
             $jq("#sampleTypeContainer").show();
+            
+            var sampleType = null;
+            var sampleTypeId = null;
+            
+            $jq(".resultClass").each(function (i,elem) {
+            	sampleType = $jq(elem).attr("fSampleType")
+            });
+            
+			var optionsArray = Array.from($jq("#sampleTypeSelection")[0]);
+			var sampleTypeOption = optionsArray.filter(function(elem) { return elem.label === sampleType });
+			sampleTypeOption.forEach(function(elem) {
+				$jq(elem).attr("selected", true)
+				sampleTypeId = $jq(elem).attr("value");
+			});
+			
+			var sampleTypeData = {value:sampleTypeId, type:"add"};
+			//Triggered manualy, non-event. Added test for undefined event object in createOrderBoxForSampleType
+			//because "change" triggers extra call
+            createOrderBoxForSampleType(sampleTypeData);
+			$jq("#sampleTypeSelection").change();
+			$jq("#nextButton").prop("disabled", false);	
+
         } else if (step == 'step2') {
+        	//gnr
+        	var significantDigits = null;
+			var dictionaryValues = null;
+			var referenceValue = null;
+
+            $jq(".resultClass").each(function (i,elem) {
+            	significantDigits = $jq(elem).attr("fSignificantDigits")
+            	dictionaryValues = $jq(elem).attr("fDictionaryValues")
+            	referenceValue = $jq(elem).attr("fReferenceValue")
+            });
+            
             resultTypeId = $jq("#resultTypeSelection").val();
             $jq("#sortTitleDiv").attr("align", "left");
             $jq("#step2BreadCrumb").hide();
@@ -828,11 +893,11 @@
                 $jq("#step2Confirm").show();
                 createJSON();
             } else if (resultTypeId == '<%=TypeOfTestResultService.ResultType.NUMERIC.getId()%>') {
-                step = "step3Numeric";
-                $jq("#normalRangeDiv").show();
-                $jq("#sampleTypeSelectionDiv").hide();
-                $jq(".resultLimits").show();
-                resetResultLimits();
+            		step = "step3Numeric";
+            		$jq("#significantDigits").val(significantDigits);
+                    $jq("#normalRangeAskDiv").show();
+                    $jq("#editResultLimitsButton").show();
+                    $jq("#sampleTypeSelectionDiv").hide();
             } else if (resultTypeId == '<%=TypeOfTestResultService.ResultType.DICTIONARY.getId()%>' ||
                     resultTypeId == '<%=TypeOfTestResultService.ResultType.MULTISELECT.getId()%>' ||
                     resultTypeId == '<%=TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.getId()%>') {
@@ -841,6 +906,12 @@
                 $jq(".dictionarySelect").show();
                 $jq("#nextButton").attr("disabled", "disabled");
             }
+        } else if (step == "step3NumericAsk") {
+        	step = "step3Numeric";
+        	$jq("#normalRangeDiv").show();
+            $jq("#sampleTypeSelectionDiv").hide();
+            $jq(".resultLimits").show();
+            resetResultLimits();
         } else if (step == "step3Numeric") {
             $jq("#normalRangeDiv input,select").attr("disabled", "disabled");
             $jq(".confirmShow").show();
@@ -881,7 +952,7 @@
             submitAction('TestManagementConfigMenu.do');
         } else if (step == 'step2') {
             goBackToStep1();
-        } else if ( step == 'step3Dictionary' || step == 'step3Numeric' ){
+        } else if ( step == 'step3Dictionary' || step == 'step3Numeric' || step == 'step3NumericAsk'){
             goBackToStep2();
         }
     }
@@ -931,6 +1002,7 @@
         step = "step2";
         $jq(".step2").show();
         $jq(".resultLimits").hide();
+        $jq("#editResultLimitsButton").hide();
         $jq("#sortTitleDiv").attr("align", "center");
         //The reason for the li is that the sample sortable UL is hardcoded as sortable, even if it has no contents
         if ($jq(".sortable-tag li").length > 0) {
@@ -974,7 +1046,37 @@
         resetResultLimits();
     }
 
+    function doLims(item, index){
+    	//alert(item,index);
+    	var items = item.split(",");
+    	alert(items);
+    	var gender = items[0];
+    	
+    	var age = items[1];
+    	var ages = age.split("-");
+    	var ageLow = ages[0];
+    	var ageHigh = ages[1];
+    	
+    	var normal = items[2];
+    	var normals = normal.split("-");
+    	var normalLow = normals[0];
+    	var normalHigh = normals[1];
+    	
+    	var valid = items[3];
+    	var valids = valid.split("-");
+    	var validLow = valids[0];
+    	var validHigh = valids[1];
+    	
+    	//alert(gender, age, normalLow, normalHigh, )
+    	//ageRangeSelected();
+    }
+    
     function resetResultLimits(){
+    	//gnr1
+    	//var limits = document.getElementById("fLimit").value;
+    	//var limitArray = limits.split("|");
+    	//limitArray.forEach(doLims) 
+    	
         genderMatersForRange(false,'0');
         $jq("#normalRangeDiv .createdFromTemplate").remove();
 
@@ -985,13 +1087,14 @@
         $jq("#lowNormal_0").removeClass("error");
         $jq("#highNormal_0").removeClass("error");
         $jq("#reportingRange_0").val('');
-        $jq("#significantDigits").val('');
+        //$jq("#significantDigits").val('');
         $jq("#lowerAge_0").val('0');
         $jq("#upperAge_0").text('');
         $jq("#upperAgeSetter_0").val('Infinity');
         $jq("#upperAgeSetter_0").show();
         $jq("#ageRangeSelect_0").val(0);
         $jq("#genderCheck_0").prop('checked', false);
+        
     }
     function clearMultiSelectContainer(root) {
         root.find(".asmList li").remove();
@@ -1078,9 +1181,7 @@
             jsonSampleType.tests = [];
             index = 0;
             $jq("#" + sampleTypes[i] + " li").each(function () {
-            	
-            	console.log("addJsonSortingOrder: " + jsonObj.testId + ":" + $jq(this).val());
-            	
+            	//console.log("addJsonSortingOrder: " + jsonObj.testId + ":" + $jq(this).val());
             	if (jsonObj.testId != $jq(this).val()){
                 	test = {};
                 	test.id = $jq(this).val();
@@ -1235,9 +1336,15 @@
 			for (TestCatalogBean bean : testCatBeanList) {
 		%>
 		<table>
-			<tbody fTestId='<%=bean.getId()%>'
-				fResultType='<%=bean.getResultType()%>' class='resultClass'>
-
+			<tbody fTestId='<%=bean.getId()%>' 
+					fResultType='<%=bean.getResultType()%>'
+					fPanel='<%=bean.getPanel()%>' 
+					fSampleType='<%=bean.getSampleType()%>'
+					fSignificantDigits='<%=bean.getSignificantDigits()%>'
+					fDictionaryValues='<%=bean.getDictionaryValues()%>'
+					fReferenceValue='<%=bean.getReferenceValue()%>'
+				class='resultClass'>
+				
 				<tr>
 					<td colspan="2"><span class="catalog-label"><bean:message
 								key="configuration.test.catalog.name" /></span></td>
@@ -1309,6 +1416,7 @@
 
 				<%
 					if (bean.isHasLimitValues()) {
+						 String limitArray = null;
 				%>
 				<tr>
 					<td colspan="5" align="center"><span class="catalog-label"><bean:message
@@ -1325,7 +1433,12 @@
 								key="configuration.test.catalog.valid.range" /></span></td>
 				</tr>
 				<%
+					String fLimitString = "";
 					for (ResultLimitBean limitBean : bean.getResultLimits()) {
+						fLimitString = fLimitString + limitBean.getGender() + ",";
+						fLimitString = fLimitString + limitBean.getAgeRange() + ",";
+						fLimitString = fLimitString + limitBean.getNormalRange() + ",";
+						fLimitString = fLimitString + limitBean.getValidRange() + "|";
 				%>
 				<tr>
 					<td><b><%=limitBean.getGender()%></b></td>
@@ -1333,9 +1446,11 @@
 					<td><b><%=limitBean.getNormalRange()%></b></td>
 					<td><b><%=limitBean.getValidRange()%></b></td>
 				</tr>
-
 				<%
 					}
+					%>
+					<input id="fLimit" type="hidden" value='<%=fLimitString%>' />
+					<%
 						}
 					}
 				%>
@@ -1498,22 +1613,24 @@
 				<br />
 				<br />
 				<br />
-				<br /> <bean:message key="label.loinc" /><span class="requiredlabel">*</span><br />
-					<input type="text" id="loinc" class="required"
+				<br /> <bean:message key="label.loinc" /><br />
+					<input type="text" id="loinc"
 					onchange="checkReadyForNextStep()" /></td>
 
 				<td width="25%" style="vertical-align: top; padding: 4px"
 					id="panelSelectionCell"><bean:message
 						key="typeofsample.panel.panel" /><br /> <select
-					id="panelSelection" multiple="multiple" title="Multiple">
-						<%
+					id="panelSelection" name="panelSelection" multiple="multiple" title="Multiple">
+					
+					 <%
 							for (IdValuePair pair : panelList) {
-						%>
+					 %>
 						<option value='<%=pair.getId()%>'><%=pair.getValue()%>
 						</option>
-						<%
+					 <%
 							}
-						%>
+					 %>
+					   
 				</select><br />
 				<br />
 				<br /> <bean:message key="label.unitofmeasure" /><br /> <select
@@ -1797,6 +1914,11 @@
 				<td></td>
 			</tr>
 		</table>
+	</div>
+	<div id="normalRangeAskDiv" style="display: none;">
+	<input type="button"
+			value="<%=StringUtil.getMessageForKey("label.button.editResultLimits")%>"
+			onclick="editRangeAsk();" id="editResultLimitsButton" /> 
 	</div>
 	<div id="normalRangeDiv" style="display: none;">
 		<h3>
