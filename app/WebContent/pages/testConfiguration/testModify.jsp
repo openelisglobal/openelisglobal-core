@@ -434,6 +434,28 @@
         }
     }
 
+  	/*
+    function dictionarySetDefault(valuesArray) {
+        var dictionaryOption;
+        clearDictionaryLists();
+        var optionArray = Array.from($jq("#dictionarySelection")[0]);
+        
+        for(var i = 0; i < valuesArray.length; i++) {
+        	dictionaryOption = optionArray.filter(function(elem) { return elem.label === valuesArray[i] });
+        	
+        	for(var j=dictionaryOption.length; j>0; j--) {
+        		dictionaryOption.splice(j,1);
+        	}
+        	
+        	dictionaryOption.forEach(function(inner) {
+            	$jq(inner).attr("selected", "selected")
+        	});
+        }
+        $jq("#dictionarySelection").change();
+    }
+  	*/
+  	
+  	
     function dictionarySetSelected(index) {
         var dictionarySelect;
         //clear existing selections
@@ -834,6 +856,12 @@
     	step = 'step3NumericAsk';
     	nextStep();
     }
+    
+    function editDictionaryAsk(){
+    	//alert(step);
+    	step = 'step3DictionaryAsk';
+    	nextStep();
+    }
 
     function nextStep() {
         var resultTypeId;
@@ -868,17 +896,27 @@
 			$jq("#nextButton").prop("disabled", false);	
 
         } else if (step == 'step2') {
-        	//gnr
         	var significantDigits = null;
 			var dictionaryValues = null;
+			var dictionaryIds = null;
 			var referenceValue = null;
+			var referenceId = null;
 
             $jq(".resultClass").each(function (i,elem) {
             	significantDigits = $jq(elem).attr("fSignificantDigits")
-            	dictionaryValues = $jq(elem).attr("fDictionaryValues")
+            	dictionaryValues = $jq(elem).attr("fDictionaryIds")
+            	dictionaryIds = $jq(elem).attr("fDictionaryValues")
             	referenceValue = $jq(elem).attr("fReferenceValue")
+            	referenceId = $jq(elem).attr("fReferenceId")
             });
             
+            // format dictionary values
+            if(!typeof dictionaryValues === 'undefined') {
+            	var tmpArray = dictionaryValues.split("[");
+            	var tmpArray = tmpArray[1].split("]");
+            	var tmpArray = tmpArray[0].split(", ");
+            	var valuesArray = jQuery.makeArray(tmpArray);
+            }
             resultTypeId = $jq("#resultTypeSelection").val();
             $jq("#sortTitleDiv").attr("align", "left");
             $jq("#step2BreadCrumb").hide();
@@ -903,8 +941,7 @@
                     resultTypeId == '<%=TypeOfTestResultService.ResultType.CASCADING_MULTISELECT.getId()%>') {
                 step = 'step3Dictionary';
                 $jq("#sampleTypeSelectionDiv").hide();
-                $jq(".dictionarySelect").show();
-                $jq("#nextButton").attr("disabled", "disabled");
+                $jq("#dictionaryAskDiv").show();
             }
         } else if (step == "step3NumericAsk") {
         	step = "step3Numeric";
@@ -919,10 +956,36 @@
             $jq(".resultLimits").hide();
             $jq(".resultLimitsConfirm").show();
             createJSON();
+        } else if (step == "step3DictionaryAsk") {
+        	step = 'step3Dictionary';
+        	$jq("#dictionaryAskDiv").hide();
+        	$jq("#dictionaryVerifyId").hide();
+        	$jq(".dictionarySelect").show();
+        	
+        	var dictionaryValues = null;
+        	var dictionaryIds = null;
+        	var referenceValue = null;
+        	var referenceId = null;
+            $jq(".resultClass").each(function (i,elem) {
+            	dictionaryValues = $jq(elem).attr("fDictionaryValues")
+            	dictionaryValues = $jq(elem).attr("fDictionaryIds")
+            	referenceValue = $jq(elem).attr("fReferenceValue")
+            	referenceId = $jq(elem).attr("fReferenceId")
+            });
+            
+            var verifyList = $jq("#dictionaryVerifyListId");
+            var qualifyList = $jq("#dictionaryQualify");
+            var li, qualified;
+            verifyList.empty();
+         
+            $jq("#referenceValue").text($jq(referenceValue).text());
+            $jq("#referenceId").text($jq(referenceId).text());
         } else if (step == "step3Dictionary") {
+        	$jq("#dictionaryAskDiv").hide();
             $jq(".dictionarySelect").hide();
             $jq("#sortDictionaryDiv").hide();
             buildVerifyDictionaryList();
+            
             $jq("#dictionaryVerifyId").show();
             $jq("#referenceValue").text($jq("#referenceSelection option:selected").text());
             $jq(".selectListConfirm").show();
@@ -931,6 +994,11 @@
             createJSON();
         }
     }
+    
+    $jq(".dictionarySelect").hide();
+    $jq("#sortDictionaryDiv").hide();
+
+    
 
     function buildVerifyDictionaryList() {
         var verifyList = $jq("#dictionaryVerifyListId");
@@ -952,7 +1020,7 @@
             submitAction('TestManagementConfigMenu.do');
         } else if (step == 'step2') {
             goBackToStep1();
-        } else if ( step == 'step3Dictionary' || step == 'step3Numeric' || step == 'step3NumericAsk'){
+        } else if ( step == 'step3Dictionary' || step == 'step3Numeric' || step == 'step3NumericAsk' || step == 'step3DictionaryAsk'){
             goBackToStep2();
         }
     }
@@ -1023,6 +1091,8 @@
         $jq("#normalRangeDiv").hide();
         $jq("#normalRangeDiv input,select").removeAttr("disabled");
         $jq("#dictionaryVerifyId").hide();
+        $jq("#dictionaryAskDiv").hide();
+        $jq("#dictionaryVerifyId").hide();
     }
 
     function goBackToStep3Dictionary(){
@@ -1072,11 +1142,6 @@
     }
     
     function resetResultLimits(){
-    	//gnr1
-    	//var limits = document.getElementById("fLimit").value;
-    	//var limitArray = limits.split("|");
-    	//limitArray.forEach(doLims) 
-    	
         genderMatersForRange(false,'0');
         $jq("#normalRangeDiv .createdFromTemplate").remove();
 
@@ -1150,13 +1215,52 @@
         if (step == "step3Numeric") {
             addJsonResultLimits(jsonObj);
         } else if (step == "step3Dictionary") {
+        	
             addJsonDictionary(jsonObj);
-        }
         
-        console.log(JSON.stringify(jsonObj));
-        $jq("#jsonWad").val(JSON.stringify(jsonObj));
-    }
+        	//console.log(JSON.stringify(jsonObj.dictionary));
+        	//dictionary from defaults if empty
+        	if(JSON.stringify(jsonObj.dictionary == "[]")) {
+        		console.log(JSON.stringify(jsonObj.dictionaryReference));
+        		var significantDigits = null;
+				var dictionaryValues = null;
+				var referenceValue = null;
+				var dictionaryIds = null;
+				var referenceId = null;
 
+           	 	$jq(".resultClass").each(function (i,elem) {
+            		significantDigits = $jq(elem).attr("fSignificantDigits")
+            		dictionaryValues = $jq(elem).attr("fDictionaryValues")
+            		referenceValue = $jq(elem).attr("fReferenceValue")
+            		dictionaryIds = $jq(elem).attr("fDictionaryIds")
+            		referenceId = $jq(elem).attr("fReferenceId")
+            	});
+            	//console.log("Values:" + dictionaryValues + "::::" + referenceValue);
+            	//console.log("Ids:" + dictionaryIds + "::::" + referenceId);
+            	// gnr: dictionary by id and reference by id required
+            	var valuesArray = dictionaryValues.split("[");
+        		var valuesArray = valuesArray[1].split("]");
+        		var valuesArray = valuesArray[0].split(", ");
+        		
+        		var idsArray = dictionaryIds.split("[");
+        		var idsArray = idsArray[1].split("]");
+        		var idsArray = idsArray[0].split(", ");
+            	
+            	for(var i=0; i < idsArray.length; i++) {
+            		dictionary = {};
+                	dictionary.value = idsArray[i];
+                	dictionary.qualified = "N";
+                	jsonObj.dictionary[i] = dictionary;
+        		}
+            	
+            	jsonObj.dictionaryReference = referenceId;
+        	}
+        }
+        console.log(JSON.stringify(jsonObj));
+        
+		$jq("#jsonWad").val(JSON.stringify(jsonObj));
+    }
+    
     function addJsonPanels(jsonObj) {
         var panelSelections = $jq("#panelSelection").val();
         var jsonPanel;
@@ -1342,7 +1446,9 @@
 					fSampleType='<%=bean.getSampleType()%>'
 					fSignificantDigits='<%=bean.getSignificantDigits()%>'
 					fDictionaryValues='<%=bean.getDictionaryValues()%>'
+					fDictionaryIds='<%=bean.getDictionaryIds()%>'
 					fReferenceValue='<%=bean.getReferenceValue()%>'
+					fReferenceId='<%=bean.getReferenceId()%>'
 				class='resultClass'>
 				
 				<tr>
@@ -1727,6 +1833,13 @@
 					<bean:message key="label.test.display.order" />
 				</div>
 				<div id="endOrderMarker"></div>
+				
+				<div id="dictionaryAskDiv" style="display: none;">
+					<input type="button"
+					value="<%=StringUtil.getMessageForKey("label.button.editResultLimits")%>"
+					onclick="editDictionaryAsk();" id="editDictionaryButton" /> 
+				</div>
+				
 				<div class="dictionarySelect dictionaryMultiSelect"
 					id="dictionarySelectId"
 					style="padding: 10px; float: left; width: 280px; display: none; overflow: hidden">
@@ -1785,6 +1898,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div id="dictionaryExistingGroups" class="dictionarySelect"
 		style="display: none; width: 100%">
 		<div style="width: 100%; text-align: center;">

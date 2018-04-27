@@ -123,6 +123,9 @@ public class TestModifyAction extends BaseAction {
             if( bean.isHasDictionaryValues()){
                 bean.setDictionaryValues(createDictionaryValues(testService));
                 bean.setReferenceValue(createReferenceValueForDictionaryType(test));
+                bean.setDictionaryIds(createDictionaryIds(testService));
+                //bean.setReferenceId(createReferenceIdForDictionaryType(test));
+                bean.setReferenceId(getDictionaryIdByDictEntry(bean.getReferenceValue(), bean.getDictionaryIds(), bean.getDictionaryValues()));
             }
             beanList.add(bean);
         }
@@ -217,6 +220,63 @@ public class TestModifyAction extends BaseAction {
         return null;
     }
 
+    private String createReferenceIdForDictionaryType(Test test) {
+        List<ResultLimit> resultLimits = ResultLimitService.getResultLimits(test);
+
+        if( resultLimits.isEmpty() ){
+            return "n/a";
+        }
+
+        return ResultLimitService.getDisplayReferenceRange(resultLimits.get(0),null, null);
+    }
+
+    private List<String> createDictionaryIds(TestService testService) {
+        List<String> dictionaryList = new ArrayList<String>();
+        List<TestResult> testResultList = testService.getPossibleTestResults();
+        for( TestResult testResult : testResultList){
+            CollectionUtils.addIgnoreNull(dictionaryList, getDictionaryId(testResult));
+        }
+
+        return dictionaryList;
+    }
+
+    private String getDictionaryIdByDictEntry(String dict_entry, List<String> ids, List<String> values) {
+    	
+    	if("n/a".equals(dict_entry)) {
+    		return null;
+    	}
+    	
+    	for (int i = 0; i < ids.size(); i++ ) {
+    		if( values.get(i).equals(dict_entry)) {
+    			return ids.get(i);
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    private String getDictionaryId(TestResult testResult) {
+
+        if (TypeOfTestResultService.ResultType.isDictionaryVariant(testResult.getTestResultType())) {
+            Dictionary dictionary = dictionaryDAO.getDataForId(testResult.getValue());
+            String displayId = dictionary.getId();
+
+            if ("unknown".equals(displayId)) {
+            	displayId = !GenericValidator.isBlankOrNull(dictionary.getDictEntry()) ?
+                        dictionary.getDictEntry() : dictionary.getLocalAbbreviation();
+            }
+
+            if (testResult.getIsQuantifiable()) {
+            	displayId += " Qualifiable";
+            }
+            return displayId;
+        }
+
+        return null;
+    }
+
+    
+    
     private String createPanelList(TestService testService) {
         StringBuilder builder = new StringBuilder();
 

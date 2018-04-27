@@ -37,7 +37,9 @@ public class TestCatalogBean {
     private String orderable;
     private boolean hasDictionaryValues = false;
     private List<String> dictionaryValues;
+    private List<String> dictionaryIds;
     private String referenceValue;
+    private String referenceId;
     private boolean hasLimitValues = false;
     private List<ResultLimitBean> resultLimits;
     private int testSortOrder = Integer.MAX_VALUE;
@@ -161,13 +163,21 @@ public class TestCatalogBean {
     public void setHasDictionaryValues(boolean hasDictionaryValues) {
         this.hasDictionaryValues = hasDictionaryValues;
     }
-
+    
     public List<String> getDictionaryValues() {
         return dictionaryValues;
     }
 
     public void setDictionaryValues(List<String> dictionaryValues) {
         this.dictionaryValues = dictionaryValues;
+    }
+    
+    public List<String> getDictionaryIds() {
+        return dictionaryIds;
+    }
+
+    public void setDictionaryIds(List<String> dictionaryIds) {
+        this.dictionaryIds = dictionaryIds;
     }
 
     public String getReferenceValue() {
@@ -176,6 +186,14 @@ public class TestCatalogBean {
 
     public void setReferenceValue(String referenceValue) {
         this.referenceValue = referenceValue;
+    }
+    
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
     }
 
     public boolean isHasLimitValues() {
