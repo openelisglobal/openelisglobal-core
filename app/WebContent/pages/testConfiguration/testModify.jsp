@@ -973,21 +973,42 @@
             	referenceId = $jq(elem).attr("fReferenceId")
             });
             
-            var verifyList = $jq("#dictionaryVerifyListId");
-            var qualifyList = $jq("#dictionaryQualify");
-            var li, qualified;
-            verifyList.empty();
+            //var verifyList = $jq("#dictionaryVerifyListId");
+            //var qualifyList = $jq("#dictionaryQualify");
+            //var li, qualified;
+            //verifyList.empty();
          
             $jq("#referenceValue").text($jq(referenceValue).text());
             $jq("#referenceId").text($jq(referenceId).text());
+            
         } else if (step == "step3Dictionary") {
         	$jq("#dictionaryAskDiv").hide();
             $jq(".dictionarySelect").hide();
             $jq("#sortDictionaryDiv").hide();
-            buildVerifyDictionaryList();
+           
             
+            var dictionaryValues = null;
+        	var dictionaryIds = null;
+        	var referenceValue = null;
+        	var referenceId = null;
+            $jq(".resultClass").each(function (i,elem) {
+            	dictionaryValues = $jq(elem).attr("fDictionaryValues")
+            	dictionaryIds = $jq(elem).attr("fDictionaryIds")
+            	referenceValue = $jq(elem).attr("fReferenceValue")
+            	referenceId = $jq(elem).attr("fReferenceId")
+            });
+            
+            if($jq("#referenceSelection option").length == 1) {
+            	console.log("dict default:" + dictionaryValues);
+            	$jq("#referenceValue").text(referenceValue);
+            	buildVerifyDictionaryListFromDefault(dictionaryValues);
+            } else {
+            	console.log("dict group:");
+            	$jq("#referenceValue").text($jq("#referenceSelection option:selected").text());
+            	buildVerifyDictionaryList();
+            }
+
             $jq("#dictionaryVerifyId").show();
-            $jq("#referenceValue").text($jq("#referenceSelection option:selected").text());
             $jq(".selectListConfirm").show();
             $jq(".confirmShow").show();
             $jq(".selectShow").hide();
@@ -998,8 +1019,25 @@
     $jq(".dictionarySelect").hide();
     $jq("#sortDictionaryDiv").hide();
 
+    function buildVerifyDictionaryListFromDefault(dictionaryValues) {
+        var verifyList = $jq("#dictionaryVerifyListId");
+        var qualifyList = $jq("#dictionaryQualify");
+        var li, qualified;
+        var tmpArray = dictionaryValues.split("[");
+    	var tmpArray = tmpArray[1].split("]");
+    	var tmpArray = tmpArray[0].split(", ");
+    	dictionaryValues = jQuery.makeArray(tmpArray);
+        verifyList.empty();
+        for(var i=0; i < dictionaryValues.length; i++ ) {
+            li = $jq(document.createElement("li"));
+            li.val(dictionaryValues[i]);
+            //qualified = qualifyList.find("option[value=" + this.value + "]:selected").length == 1;
+            //li.append($jq(this).text() + (qualified ? "-- qualified" : ""));
+            li.append(dictionaryValues[i]);
+            verifyList.append(li);
+        };
+    }
     
-
     function buildVerifyDictionaryList() {
         var verifyList = $jq("#dictionaryVerifyListId");
         var qualifyList = $jq("#dictionaryQualify");
@@ -1834,11 +1872,7 @@
 				</div>
 				<div id="endOrderMarker"></div>
 				
-				<div id="dictionaryAskDiv" style="display: none;">
-					<input type="button"
-					value="<%=StringUtil.getMessageForKey("label.button.editResultLimits")%>"
-					onclick="editDictionaryAsk();" id="editDictionaryButton" /> 
-				</div>
+			
 				
 				<div class="dictionarySelect dictionaryMultiSelect"
 					id="dictionarySelectId"
@@ -1898,6 +1932,13 @@
 			</div>
 		</div>
 	</div>
+	
+		
+				<div id="dictionaryAskDiv" style="display: none;">
+					<input type="button"
+					value="<%=StringUtil.getMessageForKey("label.button.editSelectValues")%>"
+					onclick="editDictionaryAsk();" id="editDictionaryButton" /> 
+				</div>
 
 	<div id="dictionaryExistingGroups" class="dictionarySelect"
 		style="display: none; width: 100%">
@@ -2029,6 +2070,7 @@
 			</tr>
 		</table>
 	</div>
+	
 	<div id="normalRangeAskDiv" style="display: none;">
 	<input type="button"
 			value="<%=StringUtil.getMessageForKey("label.button.editResultLimits")%>"
