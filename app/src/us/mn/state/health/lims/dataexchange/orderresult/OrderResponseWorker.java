@@ -152,21 +152,20 @@ public class OrderResponseWorker {
 		obxSegment.getObx3_ObservationIdentifier()
 				.getCe3_NameOfCodingSystem()
 				.setValue("LN");
-		switch (testResult.getTypeResult()) {
-		case "CE":
+		String typeResult  = testResult.getTypeResult();
+		if ("CE".equals(typeResult)) {
 			String ce = testResult.getResult().getCode() + "^" + testResult.getResult().getText() + "";
 			obxSegment.getObx5_ObservationValue(0)
 			.getData()
 			.parse(ce);
-			break;
-		case "NM":
+		} else if ("NM".equals(typeResult)) {
 			obxSegment.getObx5_ObservationValue(0)
 					.getData()
 					.parse(testResult.getResult().getText());
 			obxSegment.getObx6_Units()
 					.getCe1_Identifier()
 					.setValue(testResults.getValidRange().getUnits());
-		default:
+		} else {
 			obxSegment.getObx5_ObservationValue(0)
 					.getData()
 					.parse(testResult.getResult().getText());

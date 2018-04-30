@@ -49,7 +49,9 @@ public class ReportTransmission {
 		try {
 			orWorker.createReport(resultReport);
 			sendRawReport(orWorker.getHl7Message().encode(), url, true, responseHandler, HTTP_TYPE.POST);
-		} catch (HL7Exception|IOException e) {
+		} catch (HL7Exception e) {
+			LogEvent.logError("ReportTransmission ", "sendHL7Report()", e.toString());
+		} catch (IOException e) {
 			LogEvent.logError("ReportTransmission ", "sendHL7Report()", e.toString());
 		}
 	}
