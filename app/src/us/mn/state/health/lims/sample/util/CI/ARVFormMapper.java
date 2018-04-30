@@ -47,10 +47,10 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 			CollectionUtils.addIgnoreNull(testList, createTest("Integral", true ));
 		}	
 		if (projectData.getCreatinineTest()){
-			CollectionUtils.addIgnoreNull(testList, createTest("Créatininémie", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("CrÃ©atininÃ©mie", true ));
 		}
 		if (projectData.getGlycemiaTest()){
-			CollectionUtils.addIgnoreNull(testList, createTest("Glycémie", true ));
+			CollectionUtils.addIgnoreNull(testList, createTest("GlycÃ©mie", true ));
 		}
 		
 		if (projectData.getTransaminaseTest()){
@@ -86,7 +86,7 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		    CollectionUtils.addIgnoreNull(testList, createTest("Viral Load", true ));
 		}		
 		if (projectData.getGenotypingTest()){
-		    CollectionUtils.addIgnoreNull(testList, createTest("Génotypage", true ));
+		    CollectionUtils.addIgnoreNull(testList, createTest("GÃ©notypage", true ));
 		}
 		
 		return testList;

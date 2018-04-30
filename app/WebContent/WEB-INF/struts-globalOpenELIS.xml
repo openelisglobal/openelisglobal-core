@@ -4,6 +4,12 @@
 <struts-config>
 
 	<form-beans>
+  
+        <form-bean name="ElectronicOrderViewForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="sortBy"  type="java.lang.String"/>
+            <form-property name="eOrders" type="java.util.List" />
+        </form-bean>
 
 		<!-- SAMPLE ENTRY -->
 		<form-bean name="samplePatientEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -986,11 +992,27 @@
 			<form-property name="testsCheck" type="java.lang.String" />
 			<form-property name="patientSexCheck" type="java.lang.String" />
 		</form-bean>
+		
+		<form-bean name="panelManagementForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+		<!-- blank form to ensure page has a name -->
+		</form-bean>
+		
+		<form-bean name="sampleTypeManagementForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+		<!-- blank form to ensure page has a name -->
+		</form-bean>
+		
+		<form-bean name="uomManagementForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+		<!-- blank form to ensure page has a name -->
+		</form-bean>		
 
 	</form-beans>
 
 
 	<action-mappings>
+  
+        <action path="/ElectronicOrders" name="ElectronicOrderViewForm" type="us.mn.state.health.lims.dataexchange.order.action.ElectronicOrderViewAction">
+          <forward name="success" path="electronicOrderViewDefinition" />
+        </action>
 
 		<action path="/Cancel" forward="homePageDefinition" />
 		<action path="/Dashboard" forward="homePageDefinition" />

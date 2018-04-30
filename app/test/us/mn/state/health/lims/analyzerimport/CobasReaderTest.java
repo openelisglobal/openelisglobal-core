@@ -80,8 +80,8 @@ public class CobasReaderTest {
 	
 		when(testDAO.getActiveTestByName("Transaminases ASTL")).thenReturn(createTest("1"));
 		when(testDAO.getActiveTestByName("Transaminases ALTL")).thenReturn(createTest("2"));
-		when(testDAO.getActiveTestByName("Créatininémie")).thenReturn(createTest("3"));
-		when(testDAO.getActiveTestByName("Glycémie")).thenReturn(createTest("4"));
+		when(testDAO.getActiveTestByName("CrÃ©atininÃ©mie")).thenReturn(createTest("3"));
+		when(testDAO.getActiveTestByName("GlycÃ©mie")).thenReturn(createTest("4"));
 	
 		SampleDAO sampleDAO = mock(SampleDAO.class);
 		factory.setSampleDAOImp(sampleDAO);

@@ -16,16 +16,17 @@
 
 package us.mn.state.health.lims.result.action.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.struts.action.ActionMessages;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.IResultSaveService;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.referral.valueholder.Referral;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  */
@@ -55,6 +56,10 @@ public class ResultsUpdateDataSet implements IResultSaveService{
     @Override
     public List<ResultSet> getModifiedResults(){
         return modifiedResults;
+    }
+    
+    public void setModifiedResults(List<ResultSet> modifiedResults) {
+    	this.modifiedResults = modifiedResults;
     }
 
     @Override

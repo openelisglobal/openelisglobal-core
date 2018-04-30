@@ -32,6 +32,9 @@ import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.Repor
 import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.ReportQueueType;
 import us.mn.state.health.lims.dataexchange.common.ITransmissionResponseHandler;
 import us.mn.state.health.lims.dataexchange.common.ReportTransmission;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
+import us.mn.state.health.lims.dataexchange.orderresult.DAO.HL7MessageOutDAOImpl;
+import us.mn.state.health.lims.dataexchange.orderresult.valueholder.HL7MessageOut;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultReportXmit;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
@@ -51,32 +54,24 @@ public class ResultReportingTransfer {
 	
 	static{
 		DOCUMENT_TYPE  = new DocumentTypeDAOImpl().getDocumentTypeByName("resultExport");
-		
-		
 		ReferenceTables  referenceTable = new ReferenceTablesDAOImpl().getReferenceTableByName("RESULT");
 		if( referenceTable != null){
 			RESULT_REFERRANCE_TABLE_ID = referenceTable.getId();
 		}
-		
 		ReportQueueType queueType = new ReportQueueTypeDAOImpl().getReportQueueTypeByName("Results");
 		if( queueType != null){
 			QUEUE_TYPE_ID = queueType.getId();
-		}
-		
-		
+		}	
 	}
+	
 	public void sendResults(ResultReportXmit resultReport, List<Result> reportingResult, String url) {
 
 		if (resultReport.getTestResults() == null || resultReport.getTestResults().isEmpty()) {
 			return;
 		}
 
-		String castorPropertyName = "ResultReportingMapping";
-		boolean sendAsychronously = true;
 		ITransmissionResponseHandler responseHandler = new ResultFailHandler(reportingResult);
-
-		new ReportTransmission().sendReport(resultReport, castorPropertyName, url, sendAsychronously, responseHandler);
-
+		new ReportTransmission().sendHL7Report(resultReport, url, responseHandler);
 	}
 
 	class ResultFailHandler implements ITransmissionResponseHandler {
@@ -89,12 +84,25 @@ public class ResultReportingTransfer {
 
 		@Override
 		public void handleResponse(int httpReturnStatus, List<String> errors, String msg) {
-
 			if (httpReturnStatus == HttpServletResponse.SC_OK) {
-				markResultsAsSent();
+				markFinalResultsAsSent();
+				persistMessage(msg, true);
 			} else {
 				bufferResults(msg);
+				persistMessage(msg, false);
 			}
+		}
+
+		private void persistMessage(String msg, boolean success) {
+			HL7MessageOutDAOImpl messageOutDAO = new HL7MessageOutDAOImpl();
+			HL7MessageOut messageOut = new HL7MessageOut();
+			messageOut.setData(msg);
+			if (success) {
+				messageOut.setStatus(HL7MessageOut.SUCCESS);
+			} else {
+				messageOut.setStatus(HL7MessageOut.FAIL);
+			}
+			messageOutDAO.insertData(messageOut);
 		}
 
 		private void bufferResults(String msg) {
@@ -104,7 +112,7 @@ public class ResultReportingTransfer {
 			report.setEventDate(DateUtil.getNowAsTimestamp());
 			report.setCollectionDate(DateUtil.getNowAsTimestamp());
 			report.setTypeId(QUEUE_TYPE_ID);
-			report.setBookkeepingData(getResultIdListString());
+			report.setBookkeepingData(getResultIdListString() == null ? "" : getResultIdListString());
 			report.setSend(true);
 			
 			Transaction tx = HibernateUtil.getSession().beginTransaction();
@@ -134,19 +142,21 @@ public class ResultReportingTransfer {
 			return builder.toString();
 		}
 
-		private void markResultsAsSent() {
+		private void markFinalResultsAsSent() {
 			Timestamp now = DateUtil.getNowAsTimestamp();
 
 			List<DocumentTrack> documents = new ArrayList<DocumentTrack>();
 			
 			for (Result result : reportingResults) {
-				DocumentTrack document = new DocumentTrack();
-				document.setDocumentTypeId(DOCUMENT_TYPE.getId());
-				document.setRecordId(result.getId());
-				document.setReportTime(now);
-				document.setTableId(RESULT_REFERRANCE_TABLE_ID);
-				document.setSysUserId("1");
-				documents.add(document);
+				if (result.getResultEvent() == Event.FINAL_RESULT || result.getResultEvent() == Event.CORRECTION) {
+					DocumentTrack document = new DocumentTrack();
+					document.setDocumentTypeId(DOCUMENT_TYPE.getId());
+					document.setRecordId(result.getId());
+					document.setReportTime(now);
+					document.setTableId(RESULT_REFERRANCE_TABLE_ID);
+					document.setSysUserId("1");
+					documents.add(document);
+				}
 			}
 
 			DocumentTrackDAO trackDAO = new DocumentTrackDAOImpl();

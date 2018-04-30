@@ -34,26 +34,6 @@
         </insert>
         <insert schemaName="clinlims" tableName="menu">
             <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-            <column name="presentation_order" valueNumeric="9" />
-            <column name="element_id" value="menu_sample_batch_entry" />
-            <column name="action_url" value="/SampleBatchEntrySetup.do" />
-            <column name="display_key" value="banner.menu.sampleBatchEntry" />
-            <column name="tool_tip_key" value="banner.menu.sampleBatchEntry" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
-            <column name="parent_id"
-                    valueNumeric=" ( select id from clinlims.menu where element_id = 'menu_sample' ) " />
-            <column name="presentation_order" valueNumeric="10" />
-            <column name="element_id" value="menu_sample_print_barcode" />
-            <column name="action_url" value="/PrintBarcode.do" />
-            <column name="display_key" value="banner.menu.printBarcode" />
-            <column name="tool_tip_key" value="banner.menu.printBarcode" />
-        </insert>
-        <insert schemaName="clinlims" tableName="menu">
-            <column name="id" valueNumeric=" nextval( 'menu_seq' ) " />
             <column name="presentation_order" valueNumeric="3" />
             <column name="element_id" value="menu_patient" />
             <column name="display_key" value="banner.menu.patient" />

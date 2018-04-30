@@ -17,7 +17,13 @@
  */
 package us.mn.state.health.lims.sample.action;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
@@ -26,6 +32,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.address.dao.OrganizationAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.OrganizationAddressDAOImpl;
 import us.mn.state.health.lims.address.valueholder.OrganizationAddress;
@@ -38,11 +45,11 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
-import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.TableIdService;
-import us.mn.state.health.lims.common.services.DisplayListService.ListType;
+import us.mn.state.health.lims.common.services.registration.ResultUpdateRegister;
+import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -50,6 +57,7 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.dataexchange.order.dao.ElectronicOrderDAO;
 import us.mn.state.health.lims.dataexchange.order.daoimpl.ElectronicOrderDAOImpl;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -63,6 +71,8 @@ import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.patient.action.IPatientUpdate;
 import us.mn.state.health.lims.patient.action.PatientManagementUpdateAction;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
+import us.mn.state.health.lims.patient.dao.PatientDAO;
+import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
 import us.mn.state.health.lims.person.dao.PersonDAO;
 import us.mn.state.health.lims.person.daoimpl.PersonDAOImpl;
 import us.mn.state.health.lims.provider.dao.ProviderDAO;
@@ -70,6 +80,9 @@ import us.mn.state.health.lims.provider.daoimpl.ProviderDAOImpl;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
+import us.mn.state.health.lims.result.action.util.ResultSet;
+import us.mn.state.health.lims.result.action.util.ResultsUpdateDataSet;
+import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.action.util.SamplePatientUpdateData;
 import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -85,11 +98,6 @@ import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
 public class SamplePatientEntrySaveAction extends BaseAction {
 
 	private static final String DEFAULT_ANALYSIS_TYPE = "MANUAL";
@@ -98,6 +106,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 	private OrganizationOrganizationTypeDAO orgOrgTypeDAO = new OrganizationOrganizationTypeDAOImpl();
 	private TestSectionDAO testSectionDAO = new TestSectionDAOImpl();
 	private ElectronicOrderDAO electronicOrderDAO = new ElectronicOrderDAOImpl();
+	private PatientDAO patientDAO = new PatientDAOImpl();
 
 	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -276,6 +285,23 @@ public class SamplePatientEntrySaveAction extends BaseAction {
                                                      sampleTestCollection.testIdToUserSampleTypeMap.get(test.getId()),
                                                      updateData);
 				analysisDAO.insertData(analysis, false); // false--do not check for duplicates
+				if(updateData.getElectronicOrder() != null){
+					List<IResultUpdate> updaters = ResultUpdateRegister.getRegisteredUpdaters();
+					ResultsUpdateDataSet actionDataSet = new ResultsUpdateDataSet( currentUserId );
+		            
+					List<ResultSet> blankResults = new ArrayList<ResultSet>();
+					Result result = new Result();
+					result.setResultEvent(Event.SPEC_RECEIVED);
+			    	result.setAnalysis(analysis);
+			    	result.setMinNormal((double) 0);
+			    	result.setMaxNormal((double) 0);
+			    	result.setValue("empty");
+					blankResults.add(new ResultSet(result, null, null, patientDAO.getData(updateData.getPatientId()), updateData.getSample(), null, false));
+					actionDataSet.setModifiedResults(blankResults);
+		    		for(IResultUpdate updater : updaters){
+		    			updater.postTransactionalCommitUpdate(actionDataSet);
+		    		}
+				}
 			}
 
 		}
@@ -285,7 +311,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		sampleHumanDAO.insertData(updateData.getSampleHuman());
 
 		if(updateData.getElectronicOrder() != null){
-			electronicOrderDAO.updateData(updateData.getElectronicOrder());
+			electronicOrderDAO.updateData(updateData.getElectronicOrder());			
 		}
 	}
 
