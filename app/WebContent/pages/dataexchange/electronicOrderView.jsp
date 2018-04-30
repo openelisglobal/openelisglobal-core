@@ -20,9 +20,9 @@
     String path = request.getContextPath();
     basePath = request.getScheme() + "://" + request.getServerName() + ":"  + request.getServerPort() + path + "/";
     sortOrder = request.getParameter("sortOrder");
-    startIndex = (int) request.getAttribute("startIndex");
-    endIndex = (int) request.getAttribute("endIndex");
-    total = (int) request.getAttribute("total");
+    startIndex = (Integer) request.getAttribute("startIndex");
+    endIndex = (Integer) request.getAttribute("endIndex");
+    total = (Integer) request.getAttribute("total");
     pageNumber = (startIndex / 50) + 1;
     firstPage = pageNumber == 1;
     lastPage = endIndex == total;
