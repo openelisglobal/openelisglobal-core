@@ -13,64 +13,83 @@
  *
  * Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
  */
-
 package us.mn.state.health.lims.testconfiguration.action;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
+
 import us.mn.state.health.lims.common.action.BaseAction;
+import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.services.TypeOfTestResultService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
+import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.common.util.validator.GenericValidator;
+
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
+
 import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean;
 import us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean;
+import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
-public class TestCatalogAction extends BaseAction {
-    private DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+public class TestModifyAction extends BaseAction {
+	private DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 
-    @Override
-    protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        DynaValidatorForm dynaForm = (DynaValidatorForm)form;
-        List<TestCatalogBean> testList = createTestList();
-        PropertyUtils.setProperty(dynaForm, "testList", testList);
+	protected ActionForward performAction(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
-        List<String> testSectionList = new ArrayList<String>();
-        for( TestCatalogBean catalogBean : testList){
-            if( !testSectionList.contains( catalogBean.getTestUnit())){
-                testSectionList.add(catalogBean.getTestUnit());
-            }
-        }
-        PropertyUtils.setProperty(dynaForm, "testSectionList", testSectionList);
-
-
+		((DynaValidatorForm)form).initialize(mapping);
+        
+    	List<IdValuePair> allSampleTypesList = new ArrayList<IdValuePair>();
+        allSampleTypesList.addAll(DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
+        allSampleTypesList.addAll(DisplayListService.getList(ListType.SAMPLE_TYPE_INACTIVE));
+        PropertyUtils.setProperty(form, "sampleTypeList", allSampleTypesList);
+        PropertyUtils.setProperty(form, "panelList", DisplayListService.getList(ListType.PANELS));
+        PropertyUtils.setProperty(form, "resultTypeList", DisplayListService.getList(ListType.RESULT_TYPE_LOCALIZED));
+        PropertyUtils.setProperty(form, "uomList", DisplayListService.getList(ListType.UNIT_OF_MEASURE));
+        PropertyUtils.setProperty(form, "labUnitList", DisplayListService.getList(ListType.TEST_SECTION));
+        PropertyUtils.setProperty(form, "ageRangeList", ResultLimitService.getPredefinedAgeRanges());
+        PropertyUtils.setProperty(form, "dictionaryList", DisplayListService.getList(ListType.DICTIONARY_TEST_RESULTS));
+        PropertyUtils.setProperty(form, "groupedDictionaryList", createGroupedDictionaryList());
+        PropertyUtils.setProperty( form, "testList", DisplayListService.getList( DisplayListService.ListType.ALL_TESTS ) );
+        
+        // gnr: ALL_TESTS calls getActiveTests, this could be a way to enable maintenance of inactive tests
+        // PropertyUtils.setProperty( form, "testListInactive", DisplayListService.getList( DisplayListService.ListType.ALL_TESTS_INACTIVE ) );
+        
+        List<TestCatalogBean> testCatBeanList = createTestCatBeanList();
+        PropertyUtils.setProperty(form, "testCatBeanList", testCatBeanList);
+        
+//        System.out.println("TestModifyAction:performAction");
 
         return mapping.findForward(FWD_SUCCESS);
-    }
-
-    private List<TestCatalogBean> createTestList() {
+	}
+	
+    private List<TestCatalogBean> createTestCatBeanList() {
         List<TestCatalogBean> beanList = new ArrayList<TestCatalogBean>();
 
         List<Test> testList = new TestDAOImpl().getAllTests(false);
@@ -104,6 +123,9 @@ public class TestCatalogAction extends BaseAction {
             if( bean.isHasDictionaryValues()){
                 bean.setDictionaryValues(createDictionaryValues(testService));
                 bean.setReferenceValue(createReferenceValueForDictionaryType(test));
+                bean.setDictionaryIds(createDictionaryIds(testService));
+                //bean.setReferenceId(createReferenceIdForDictionaryType(test));
+                bean.setReferenceId(getDictionaryIdByDictEntry(bean.getReferenceValue(), bean.getDictionaryIds(), bean.getDictionaryValues()));
             }
             beanList.add(bean);
         }
@@ -198,6 +220,63 @@ public class TestCatalogAction extends BaseAction {
         return null;
     }
 
+    private String createReferenceIdForDictionaryType(Test test) {
+        List<ResultLimit> resultLimits = ResultLimitService.getResultLimits(test);
+
+        if( resultLimits.isEmpty() ){
+            return "n/a";
+        }
+
+        return ResultLimitService.getDisplayReferenceRange(resultLimits.get(0),null, null);
+    }
+
+    private List<String> createDictionaryIds(TestService testService) {
+        List<String> dictionaryList = new ArrayList<String>();
+        List<TestResult> testResultList = testService.getPossibleTestResults();
+        for( TestResult testResult : testResultList){
+            CollectionUtils.addIgnoreNull(dictionaryList, getDictionaryId(testResult));
+        }
+
+        return dictionaryList;
+    }
+
+    private String getDictionaryIdByDictEntry(String dict_entry, List<String> ids, List<String> values) {
+    	
+    	if("n/a".equals(dict_entry)) {
+    		return null;
+    	}
+    	
+    	for (int i = 0; i < ids.size(); i++ ) {
+    		if( values.get(i).equals(dict_entry)) {
+    			return ids.get(i);
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    private String getDictionaryId(TestResult testResult) {
+
+        if (TypeOfTestResultService.ResultType.isDictionaryVariant(testResult.getTestResultType())) {
+            Dictionary dictionary = dictionaryDAO.getDataForId(testResult.getValue());
+            String displayId = dictionary.getId();
+
+            if ("unknown".equals(displayId)) {
+            	displayId = !GenericValidator.isBlankOrNull(dictionary.getDictEntry()) ?
+                        dictionary.getDictEntry() : dictionary.getLocalAbbreviation();
+            }
+
+            if (testResult.getIsQuantifiable()) {
+            	displayId += " Qualifiable";
+            }
+            return displayId;
+        }
+
+        return null;
+    }
+
+    
+    
     private String createPanelList(TestService testService) {
         StringBuilder builder = new StringBuilder();
 
@@ -216,15 +295,90 @@ public class TestCatalogAction extends BaseAction {
 
         return panelString;
     }
+	
+    private List<List<IdValuePair>> createGroupedDictionaryList() {
+        List<TestResult> testResults = getSortedTestResults();
 
+        HashSet<String> dictionaryIdGroups = getDictionaryIdGroups(testResults);
 
-    @Override
-    protected String getPageTitleKey() {
-        return null;
+        return getGroupedDictionaryPairs(dictionaryIdGroups);
     }
 
-    @Override
-    protected String getPageSubtitleKey() {
-        return null;
+    @SuppressWarnings("unchecked")
+    private List<TestResult> getSortedTestResults() {
+        List<TestResult> testResults = new TestResultDAOImpl().getAllTestResults();
+
+        Collections.sort(testResults, new Comparator<TestResult>() {
+            @Override
+            public int compare(TestResult o1, TestResult o2) {
+                int result = o1.getTest().getId().compareTo(o2.getTest().getId());
+
+                if (result != 0) {
+                    return result;
+                }
+
+                return GenericValidator.isBlankOrNull(o1.getSortOrder()) ? 0 :Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
+            }
+        });
+        return testResults;
     }
+    private HashSet<String> getDictionaryIdGroups(List<TestResult> testResults) {
+        HashSet< String > dictionaryIdGroups = new HashSet<String>();
+        String currentTestId = null;
+        String dictionaryIdGroup = null;
+        for( TestResult testResult : testResults){
+            if(TypeOfTestResultService.ResultType.isDictionaryVariant(testResult.getTestResultType()) ){
+                if( testResult.getTest().getId().equals(currentTestId) ){
+                    dictionaryIdGroup += "," + testResult.getValue();
+                }else{
+                    currentTestId = testResult.getTest().getId();
+                    if( dictionaryIdGroup != null){
+                        dictionaryIdGroups.add(dictionaryIdGroup);
+                    }
+
+                    dictionaryIdGroup = testResult.getValue();
+                }
+
+            }
+        }
+
+        if( dictionaryIdGroup != null){
+            dictionaryIdGroups.add(dictionaryIdGroup);
+        }
+
+        return dictionaryIdGroups;
+    }
+
+
+    private List<List<IdValuePair>> getGroupedDictionaryPairs( HashSet<String> dictionaryIdGroups) {
+        List<List<IdValuePair>> groups = new ArrayList<List<IdValuePair>>();
+        DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
+        for( String group : dictionaryIdGroups){
+            List<IdValuePair> dictionaryPairs = new ArrayList<IdValuePair>();
+            for( String id : group.split(",")){
+                Dictionary dictionary = dictionaryDAO.getDictionaryById(id);
+                if( dictionary != null){
+                    dictionaryPairs.add(new IdValuePair(id, dictionary.getLocalizedName()));
+                }
+            }
+            groups.add(dictionaryPairs);
+        }
+
+        Collections.sort(groups, new Comparator<List<IdValuePair>>() {
+            @Override
+            public int compare(List<IdValuePair> o1, List<IdValuePair> o2) {
+                return o1.size() - o2.size();
+            }
+        });
+        return groups;
+    }
+
+	protected String getPageTitleKey() {
+		return "";
+	}
+
+	protected String getPageSubtitleKey() {
+		return "";
+	}
+
 }
