@@ -42,7 +42,7 @@
 	<detail>
 		<band height="75" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="83" y="18" width="76" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
+				<reportElement key="textField" x="73" y="18" width="76" height="18" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -81,7 +81,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{gender}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="227" y="36" width="80" height="18" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField" x="229" y="36" width="80" height="18" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{receptiondate}!= ""]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -189,7 +189,7 @@
 				<text><![CDATA[Labno:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-7" x="159" y="18" width="68" height="18"/>
+				<reportElement key="staticText-7" x="149" y="18" width="78" height="18"/>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Date de Prél.:]]></text>
 			</staticText>
@@ -210,7 +210,7 @@
 				<text><![CDATA[Date de Réception:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField" x="227" y="18" width="80" height="18" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField" x="229" y="18" width="80" height="18" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{collectiondate}!= ""]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -232,7 +232,7 @@
 				<text><![CDATA[Adresse:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement key="textField-5" x="227" y="54" width="80" height="18" forecolor="#000000" backcolor="#FFFFFF">
+				<reportElement key="textField-5" x="229" y="54" width="80" height="18" forecolor="#000000" backcolor="#FFFFFF">
 					<printWhenExpression><![CDATA[$P{compleationdate}!= ""]]></printWhenExpression>
 				</reportElement>
 				<box>
