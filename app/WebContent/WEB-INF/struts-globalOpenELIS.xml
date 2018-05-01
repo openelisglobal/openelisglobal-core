@@ -441,6 +441,7 @@
 			<form-property name="locationCode" type="java.lang.String" initial=""/>
 			<form-property name="locationCodeList" type="java.util.Collection"/>
 			<form-property name="useProjectCode" type="java.lang.Boolean" initial="Boolean.FALSE"/>
+			<form-property name="useDashboard" type="java.lang.Boolean" initial="Boolean.FALSE"/>
 			<form-property name="projectCode" type="java.lang.String" initial=""/>
 			<form-property name="usePredefinedDateRanges" type="java.lang.Boolean" initial="Boolean.FALSE"/>
 			<form-property name="datePeriod" type="java.lang.String" initial=""/>
