@@ -32,6 +32,7 @@ public abstract class CIColumnBuilder extends CSVColumnBuilder {
         "SELECT DISTINCT s.id as sample_id, s.accession_number, s.entered_date, s.received_date, s.collection_date, s.status_id " +
              "\n, pat.national_id, pat.external_id, pat.birth_date, per.first_name, per.last_name, pat.gender " +
              "\n, o.short_name as organization_code, o.name AS organization_name, sp.proj_id as project_id " +
+             "\n, o.datim_org_code, o.datim_org_name "+
              "\n ";
     /**
      * The column select which puts all demographic and result columns in the result set.
@@ -108,6 +109,39 @@ public abstract class CIColumnBuilder extends CSVColumnBuilder {
         query.append( " )\n ");
         appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
     }
+    
+ //----------------------------
+    
+    protected void appendRepeatingObservation(String aOhTypeName, int maxCols, String lowDatePostgres,
+            String highDatePostgres, String byDate) {
+appendCrosstabPreamble(aOhTypeName);
+
+query.append( " crosstab( "
+            + "' SELECT s.id as s_id, type, value FROM Sample AS s "
+            + " LEFT JOIN"
+            + " ( SELECT DISTINCT s.id as s_id , oh.observation_history_type_id AS type, oh.value AS value, oh.id "
+            + " FROM Sample as s, Observation_History AS oh, document_track as dt"
+            + " WHERE oh.sample_id = s.id"
+            + " AND dt.row_id = s.id"
+            + " AND "+byDate+" >= date(''" + lowDatePostgres + "'') "
+            + " AND "+byDate+" <= date(''" + highDatePostgres +  "'')"
+            + " AND oh.observation_history_type_id = (select id FROM observation_history_type WHERE type_name = ''" + aOhTypeName + "'')  ORDER by 1,2, oh.id desc ) AS repeatCols"
+            + " ON s.id = repeatCols.s_id"
+            + " WHERE "+byDate+" >= date(''" + lowDatePostgres + "'') "
+            + " AND "+byDate+" <= date(''" + highDatePostgres +  "'')"
+            + "' )"
+        + " AS " + aOhTypeName + " ( s_id NUMERIC(10) "     );
+for (int col = 1; col <= maxCols; col++) {
+    query.append( ", \"").append(aOhTypeName).append( col ).append("\" VARCHAR(100)");
+}
+query.append( " )\n ");
+appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
+}
+    
+    
+    
+    
+ //------------------------------------
 
     protected void appendOtherDiseaseCrosstab(String lowDatePostgres, String highDatePostgres,
                     String diseaseListName, String otherColumnName) {
@@ -134,8 +168,10 @@ public abstract class CIColumnBuilder extends CSVColumnBuilder {
         add("external_id",      "SUJETSIT", NONE);
         add("received_date",    "DRCPT",    DATE_TIME );      // reception date
         add("collection_date",  "DINTV",    DATE_TIME );      // interview date
-        add("organization_code", "SITECODE", NONE);
-        add("organization_name", "SITENOM",  NONE);
+        add("organization_code", "CODE_SITE", NONE);
+        add("organization_name", "NOM_SITE",  NONE);
+        add("datim_org_code", "CODE_SITE_DATIM", NONE);
+        add("datim_org_name", "NOM_SITE_DATIM",  NONE);
         add("last_name",        "NOM",      NONE);
         add("first_name",       "PRENOM",   NONE);
         add("gender",           "SEXE",     GENDER);
