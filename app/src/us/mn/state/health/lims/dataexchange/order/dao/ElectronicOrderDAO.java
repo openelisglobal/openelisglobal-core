@@ -32,4 +32,8 @@ public interface ElectronicOrderDAO extends BaseDAO {
 	
 	public void updateData(ElectronicOrder eOrder) throws LIMSRuntimeException;
 
+	public List<ElectronicOrder> getAllElectronicOrders();
+	
+	List<ElectronicOrder> getAllElectronicOrdersOrderedBy(String order);
+
 }

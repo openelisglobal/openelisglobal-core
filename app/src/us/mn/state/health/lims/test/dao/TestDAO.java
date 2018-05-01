@@ -15,12 +15,13 @@
 */
 package us.mn.state.health.lims.test.dao;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.test.valueholder.Test;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * @author diane benz
@@ -116,4 +117,8 @@ public interface TestDAO extends BaseDAO {
     public List<Test> getTestsByTestSectionId(String id) throws LIMSRuntimeException;
 
     public Test getTestByGUID( String guid) throws LIMSRuntimeException;
+
+	public List<Test> getTestsByLoincCode(String loincCode);
+
+	public List<Test> getActiveTestsByLoinc(String loincCode);
 }

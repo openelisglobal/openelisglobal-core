@@ -422,7 +422,7 @@ function parsePatient(patienttag) {
     if (guidtag) {
         if (guidtag[0].firstChild) {
             guid = guidtag[0].firstChild.nodeValue;
-            patientSearch("", "", "", "", "", "", guid, "true", processSearchSuccess, processSearchFailure );
+            patientSearch("", "", "", "", "", "", guid, "true", processSearchSuccess );
         }       
     }
     
@@ -436,7 +436,7 @@ function clearRequester() {
     $("labNo").value = '';
     $("receivedDateForDisplay").value = '<%=entryDate%>';
     $("receivedTime").value = '';
-    $("referringPatientNumber").value = '';
+ /*    $("referringPatientNumber").value = ''; */
 
 }
 

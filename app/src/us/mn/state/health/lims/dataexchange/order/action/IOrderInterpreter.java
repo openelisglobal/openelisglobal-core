@@ -19,6 +19,7 @@ package us.mn.state.health.lims.dataexchange.order.action;
 import java.util.List;
 
 import ca.uhn.hl7v2.model.Message;
+import us.mn.state.health.lims.test.valueholder.Test;
 
 
 public interface IOrderInterpreter{
@@ -68,4 +69,6 @@ public interface IOrderInterpreter{
 	public List<String> getUnsupportedTests();
 	
 	public List<String> getUnsupportedPanels();
+
+	public Test getTest();
 }

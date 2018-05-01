@@ -4,6 +4,12 @@
 <struts-config>
 
 	<form-beans>
+  
+        <form-bean name="ElectronicOrderViewForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="sortBy"  type="java.lang.String"/>
+            <form-property name="eOrders" type="java.util.List" />
+        </form-bean>
 
 		<!-- SAMPLE ENTRY -->
 		<form-bean name="samplePatientEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -778,6 +784,29 @@
             <form-property name="reportNameFrench" type="java.lang.String" initial="" />
             <form-property name="testId" type="java.lang.String" initial="" />
         </form-bean>
+        
+        <form-bean name="testModifyEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="testList" type="java.util.List" />
+            <form-property name="nameEnglish" type="java.lang.String" initial="" />
+            <form-property name="nameFrench" type="java.lang.String" initial="" />
+            <form-property name="reportNameEnglish" type="java.lang.String" initial="" />
+            <form-property name="reportNameFrench" type="java.lang.String" initial="" />
+            <form-property name="testId" type="java.lang.String" initial="" />
+            <form-property name="loinc" type="java.lang.String" initial="" />
+            
+            
+            <form-property name="jsonWad" type="java.lang.String" initial="" />
+            <form-property name="sampleTypeList" type="java.util.List" />
+            <form-property name="panelList" type="java.util.List" />
+            <form-property name="uomList" type="java.util.List" />
+            <form-property name="resultTypeList" type="java.util.List" />
+            <form-property name="ageRangeList" type="java.util.List" />
+            <form-property name="labUnitList" type="java.util.List" />
+			<form-property name="dictionaryList" type="java.util.List" />
+			<form-property name="groupedDictionaryList" type="java.util.List" />
+			<form-property name="testCatBeanList" type="java.util.List" />
+            
+        </form-bean>
 
 		<form-bean name="testActivationForm" type="org.apache.struts.validator.DynaValidatorForm">
 			<form-property name="activeTestList" type="java.util.List" />
@@ -981,6 +1010,10 @@
 
 
 	<action-mappings>
+  
+        <action path="/ElectronicOrders" name="ElectronicOrderViewForm" type="us.mn.state.health.lims.dataexchange.order.action.ElectronicOrderViewAction">
+          <forward name="success" path="electronicOrderViewDefinition" />
+        </action>
 
 		<action path="/Cancel" forward="homePageDefinition" />
 		<action path="/Dashboard" forward="homePageDefinition" />
@@ -1005,6 +1038,14 @@
 
         <action path="/TestRenameUpdate" name="testRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestRenameUpdate" >
             <forward name="success" path="/TestRenameEntry.do" />
+        </action>
+        
+        <action path="/TestModifyEntry" name="testModifyEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestModifyAction" >
+            <forward name="success" path="testModifyDefinition" />
+        </action>
+
+        <action path="/TestModifyUpdate" name="testModifyEntryForm" type="us.mn.state.health.lims.testconfiguration.action.TestModifyUpdate" >
+            <forward name="success" path="/TestModifyEntry.do" />
         </action>
 
         <action path="/PanelRenameEntry" name="panelRenameEntryForm" type="us.mn.state.health.lims.testconfiguration.action.PanelRenameAction" >

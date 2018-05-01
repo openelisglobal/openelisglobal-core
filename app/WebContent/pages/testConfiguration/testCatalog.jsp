@@ -157,6 +157,8 @@ which closes it the last time through--%>
             </td>
             <td><span class="catalog-label"><bean:message key="label.significant.digits" /></span> <b><%= bean.getSignificantDigits() %></b>
             </td>
+            <td><span class="catalog-label"><bean:message key="label.loinc" /></span> <b><%= bean.getLoinc() %></b>
+            </td>
         </tr>
         <% if (bean.isHasDictionaryValues()) {
             boolean top = true;

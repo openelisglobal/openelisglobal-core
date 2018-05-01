@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Menu Study settings-->
     
@@ -23,7 +23,7 @@ where element_id ='menu_reports_export'
   </changeSet>
   
   
- <changeSet author="csteele" id="1"  context="ci_general">
+ <changeSet author="csteele" id="1"  context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 select count(*) from clinlims.menu where element_id = 'menu_eorders_view';
@@ -36,6 +36,6 @@ where element_id ='menu_reports_export'
             VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_sample'),5,'menu_sample_eorder','/ElectronicOrders.do',default,'banner.menu.eorders','tooltip.bannner.menu.eorders',default,default);
 
         </sql>
-    </changeSet> 
-    
+    </changeSet>
+
 </databaseChangeLog>
