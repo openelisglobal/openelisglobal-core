@@ -347,6 +347,8 @@
     var step = "step1";
     var currentNormalRangeIndex = 1;
     var maxAgeInMonths = 0;
+    var useResultLimitDefault = true;
+    var defaultResultLimits = null;
 
     if (!$jq) {
         var $jq = jQuery.noConflict();
@@ -854,6 +856,7 @@
     function editRangeAsk(){
     	//alert(step);
     	step = 'step3NumericAsk';
+    	useResultLimitDefault = false;
     	nextStep();
     }
     
@@ -950,12 +953,20 @@
             $jq(".resultLimits").show();
             resetResultLimits();
         } else if (step == "step3Numeric") {
+        	
+        	var defaultLimitsString = null;
+        	defaultLimitsString = $jq("#fLimit").val();
+        	//console.log("defaultLimitsString:" + defaultLimitsString);
+        	defaultResultLimits = buildResultLimitesFromDefault(defaultLimitsString);
+        	
             $jq("#normalRangeDiv input,select").attr("disabled", "disabled");
             $jq(".confirmShow").show();
             $jq(".selectShow").hide();
             $jq(".resultLimits").hide();
             $jq(".resultLimitsConfirm").show();
+            
             createJSON();
+            
         } else if (step == "step3DictionaryAsk") {
         	step = 'step3Dictionary';
         	$jq("#dictionaryAskDiv").hide();
@@ -973,11 +984,6 @@
             	referenceId = $jq(elem).attr("fReferenceId")
             });
             
-            //var verifyList = $jq("#dictionaryVerifyListId");
-            //var qualifyList = $jq("#dictionaryQualify");
-            //var li, qualified;
-            //verifyList.empty();
-         
             $jq("#referenceValue").text($jq(referenceValue).text());
             $jq("#referenceId").text($jq(referenceId).text());
             
@@ -999,7 +1005,7 @@
             });
             
             if($jq("#referenceSelection option").length == 1) {
-            	console.log("dict default:" + dictionaryValues);
+            	//console.log("dict default:" + dictionaryValues);
             	$jq("#referenceValue").text(referenceValue);
             	buildVerifyDictionaryListFromDefault(dictionaryValues);
             } else {
@@ -1018,7 +1024,45 @@
     
     $jq(".dictionarySelect").hide();
     $jq("#sortDictionaryDiv").hide();
+    
+    function buildResultLimitesFromDefault(defaultLimitsString) {
+    	var resultLimits = [];
+    	
+    	var gender = null;
+    	var age = [];
+    	var ageLow = null; var ageHigh = null;
+    	var normal = [];
+    	var normalLow = null; var normalHigh = null;
+    	var valid = [];
+    	var validLow = null; var validHigh = null;
+		
+    	var tmpArray = defaultLimitsString.split("|");
+    	
+    	for (var i = 0; i < tmpArray.length-1; i++) {
+    		var tmpRangeArray = tmpArray[i].split(",");
+    			gender = tmpRangeArray[0];
+    			
+    			var lowHigh = tmpRangeArray[1].split("-");
+    			ageLow = lowHigh[0]; 
+    			ageHigh = (lowHigh[1] !== "") ? lowHigh[1] : ""; 
+    			age = [ ageLow, ageHigh];
+    			
+    			var lowHigh = tmpRangeArray[2].split("-");
+    			normalLow = lowHigh[0]; 
+    			normalHigh = (lowHigh[1] !== "") ? lowHigh[1] : ""; 
+    			normal = [normalLow, normalHigh];
+    			
+    			var lowHigh = tmpRangeArray[3].split("-");
+    			validLow = lowHigh[0]; 
+    			validHigh = (lowHigh[1] !== "") ? lowHigh[1] : ""; 
+    			valid = [validLow, validHigh];
+    			
+    			resultLimits.push([gender, age, normal, valid]);
+    	}
 
+        return resultLimits;
+    }
+    
     function buildVerifyDictionaryListFromDefault(dictionaryValues) {
         var verifyList = $jq("#dictionaryVerifyListId");
         var qualifyList = $jq("#dictionaryQualify");
@@ -1245,13 +1289,19 @@
         
         $jq(".resultClass").each(function (i,elem) {
         	jsonObj.testId = $jq(elem).attr('fTestId');
-            console.log("createJSON: " + $jq(elem).attr('fTestId') + ":" + $jq(elem).attr('fResultType'));
+            //console.log("createJSON: " + $jq(elem).attr('fTestId') + ":" + $jq(elem).attr('fResultType'));
         });
         
         jsonObj.sampleTypes = [];
         addJsonSortingOrder(jsonObj);
+        
         if (step == "step3Numeric") {
-            addJsonResultLimits(jsonObj);
+        	if(useResultLimitDefault) {
+            	addJsonResultLimitsFromDefault(jsonObj);
+            	useResultLimitDefault = false;
+        	} else {
+        		addJsonResultLimits(jsonObj);
+        	}
         } else if (step == "step3Dictionary") {
         	
             addJsonDictionary(jsonObj);
@@ -1275,7 +1325,7 @@
             	});
             	//console.log("Values:" + dictionaryValues + "::::" + referenceValue);
             	//console.log("Ids:" + dictionaryIds + "::::" + referenceId);
-            	// gnr: dictionary by id and reference by id required
+            	//dictionary by id and reference by id required
             	var valuesArray = dictionaryValues.split("[");
         		var valuesArray = valuesArray[1].split("]");
         		var valuesArray = valuesArray[0].split(", ");
@@ -1334,6 +1384,56 @@
         }
     }
     
+    function addJsonResultLimitsFromDefault(jsonObj) {
+    	//gnr, global defaultResultLimits
+    	
+    	for (var i = 0; i < defaultResultLimits.length; i++) {
+        		console.log("addJsonResultLimitsFromDefault:defaultResultLimits:" + i + ":" + defaultResultLimits[i]);
+        }
+        var rowIndex, limit, gender, yearMonth, upperAge;
+        var countIndex = 0;
+
+        jsonObj.lowValid = defaultResultsLimits[0][5];
+        jsonObj.highValid = defaultResultsLimits[0][6];;
+        jsonObj.significantDigits = $jq("#significantDigits").val();
+        var significantDigits = null;
+        $jq(".resultClass").each(function (i,elem) {
+        	jsonObj.significantDigits = $jq(elem).attr("fSignificantDigits")
+        });
+        jsonObj.resultLimits = [];
+
+        for (var rowIndex = 0; rowIndex < defaultResultLimits.length; rowIndex++) {
+            gender = defaultResultsLimits[rowIndex][0];
+            
+            //LOA
+            //yearMonth = monthYear = $jq(".yearMonthSelect_" + rowIndex + ":checked").val();
+            limit = {};
+
+            upperAge = defaultResultsLimits[rowIndex][0];
+            if (upperAge != "Infinity") {
+                limit.highAgeRange = yearMonth == "<%=StringUtil.getMessageForKey("abbreviation.year.single")%>" ? (upperAge * 12).toString() : upperAge;
+            } else {
+                limit.highAgeRange = upperAge;
+            }
+
+            limit.gender = gender;
+            limit.lowNormal = $jq("#lowNormal_" + rowIndex).val();
+            limit.highNormal = $jq("#highNormal_" + rowIndex).val();
+            limit.reportingRange = $jq("#reportingRange_" + rowIndex).val();
+
+            if (gender) {
+                limit.lowNormalFemale = $jq("#lowNormal_G_" + rowIndex).val();
+                limit.highNormalFemale = $jq("#highNormal_G_" + rowIndex).val();
+                limit.reportingRangeFemale = $jq("#reportingRange_G_" + rowIndex).val();
+            }
+*/
+            jsonObj.resultLimits[countIndex++] = limit;
+        });
+
+    }
+    	
+    }
+    
     function addJsonResultLimits(jsonObj) {
         var rowIndex, limit, gender, yearMonth, upperAge;
         var countIndex = 0;
@@ -1342,7 +1442,6 @@
         jsonObj.highValid = $jq("#highValid").val();
         jsonObj.significantDigits = $jq("#significantDigits").val();
         jsonObj.resultLimits = [];
-
 
         $jq("#normalRangeDiv .rowKey").each(function () {
             rowIndex = $jq(this).val();
