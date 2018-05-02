@@ -17,10 +17,18 @@
 */
 package us.mn.state.health.lims.sample.daoimpl;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.Vector;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -33,9 +41,6 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 
-import java.sql.Date;
-import java.util.*;
-
 /**
  * @author diane benz
  */
@@ -43,6 +48,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 
 	private static final String ACC_NUMBER_SEQ_BEGIN = "000001";
 
+	@Override
 	public void deleteData(List samples) throws LIMSRuntimeException {
 		// add to audit trail
 		try {
@@ -50,7 +56,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 			for (int i = 0; i < samples.size(); i++) {
 				Sample data = (Sample) samples.get(i);
 
-				Sample oldData = (Sample) readSample(data.getId());
+				Sample oldData = readSample(data.getId());
 				Sample newData = new Sample();
 
 				String sysUserId = data.getSysUserId();
@@ -68,7 +74,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 			for (int i = 0; i < samples.size(); i++) {
 				Sample data = (Sample) samples.get(i);
 				//bugzilla 2206
-				data = (Sample)readSample(data.getId());
+				data = readSample(data.getId());
 				HibernateUtil.getSession().delete(data);
 				HibernateUtil.getSession().flush();
 				HibernateUtil.getSession().clear();
@@ -81,6 +87,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	}
 
 	//Note: the accession number is a business rule and should be externalized
+	@Override
 	public boolean insertData(Sample sample) throws LIMSRuntimeException {
 
 		try {
@@ -112,6 +119,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	 *
 	 * @return boolean True if the insert was successful.
 	 */
+	@Override
 	public boolean insertDataWithAccessionNumber(Sample sample)
 		throws LIMSRuntimeException
 	{
@@ -137,9 +145,10 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return true;
 	}
 
+	@Override
 	public void updateData(Sample sample) throws LIMSRuntimeException {
 
-		Sample oldData = (Sample) readSample(sample.getId());
+		Sample oldData = readSample(sample.getId());
 		Sample newData = sample;
 
 		// add to audit trail
@@ -168,6 +177,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		}
 	}
 
+	@Override
 	public void getData(Sample sample) throws LIMSRuntimeException {
 		try {
 			Sample samp = (Sample) HibernateUtil.getSession().get(Sample.class, sample.getId());
@@ -195,7 +205,8 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		}
 	}
 
-    public List getPageOfSamples(int startingRecNo) throws LIMSRuntimeException {
+    @Override
+	public List getPageOfSamples(int startingRecNo) throws LIMSRuntimeException {
         List samples = new Vector();
         try {
 
@@ -230,6 +241,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
         return samples;
     }	
 	
+	@Override
 	public void getSampleByAccessionNumber(Sample sample) throws LIMSRuntimeException {
 		try {
 			String sql = "from Sample s where s.accessionNumber = :param";
@@ -355,12 +367,14 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	}
 
 
+	@Override
 	public List getNextSampleRecord(String id) throws LIMSRuntimeException {
 
 		return getNextRecord(id, "Sample", Sample.class);
 
 	}
 
+	@Override
 	public List getPreviousSampleRecord(String id) throws LIMSRuntimeException {
 
 		return getPreviousRecord(id, "Sample", Sample.class);
@@ -374,6 +388,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	 * @return	Sample		The Sample for the specified accession number, or
 	 * 						null if the accession number does not exist.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Sample getSampleByAccessionNumber(String accessionNumber)
 		throws LIMSRuntimeException
@@ -397,6 +412,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	//==============================================================
 
 
+	@Override
 	public List getSamplesByStatusAndDomain(List statuses, String domain) throws LIMSRuntimeException {
 		List list = new Vector();
 		try {
@@ -418,6 +434,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return list;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesWithPendingQaEvents(Sample sample, boolean filterByQaEventCategory, String qaEventCategoryId, boolean filterByDomain) throws LIMSRuntimeException {
 		List<Sample> list;
@@ -500,6 +517,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return list;
 	}
 
+	@Override
 	public List<Sample> getSamplesReceivedOn(String receivedDate) throws LIMSRuntimeException {
 		//covers full day so handles time stamps
 		return getSamplesReceivedInDateRange(receivedDate, receivedDate);
@@ -539,7 +557,8 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
     }
 
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesCollectedOn(String collectionDate) throws LIMSRuntimeException {
 		List<Sample> list = null;
 
@@ -573,6 +592,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		calendar.setTime(date);
 		return calendar;
 	}
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(List<Integer> inclusiveProjectIdList, List<Integer> inclusiveStatusIdList, String minAccession,
 			String maxAccession) throws LIMSRuntimeException {
@@ -598,6 +618,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 
 		return null;
 	}
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(String projectId, List<Integer> inclusiveStatusIdList, String minAccession,
 			String maxAccession) throws LIMSRuntimeException {
@@ -624,6 +645,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return null;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByAccessionRange(String minAccession,	String maxAccession) throws LIMSRuntimeException {
 
@@ -645,7 +667,8 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return null;
 	}
 
-    public String getLargestAccessionNumber() throws LIMSRuntimeException {
+    @Override
+	public String getLargestAccessionNumber() throws LIMSRuntimeException {
         String greatestAccessionNumber = null;
 
         try {
@@ -662,7 +685,8 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
         return greatestAccessionNumber;
     }
 
-    public String getLargestAccessionNumberWithPrefix(String prefix) throws LIMSRuntimeException {
+    @Override
+	public String getLargestAccessionNumberWithPrefix(String prefix) throws LIMSRuntimeException {
         String greatestAccessionNumber = null;
 
         try {
@@ -745,6 +769,25 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 			return sampleList;
 		}catch(HibernateException e){
 			handleException(e, "getSamplesBySampleItem");
+		}
+	
+		return null;
+	}
+
+	@Override
+	public Sample getSampleByReferringId(String referringId) throws LIMSRuntimeException {
+		
+		String sql = "from Sample s where s.referringId = :referringId";
+		try{
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setParameter("referringId", referringId);
+			Sample sample = (Sample) query.uniqueResult();
+	
+			closeSession();
+	
+			return sample;
+		}catch(HibernateException e){
+			handleException(e, "getSampleByReferringId");
 		}
 	
 		return null;

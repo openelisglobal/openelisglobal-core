@@ -17,6 +17,16 @@
 package us.mn.state.health.lims.dataexchange.resultreporting.beans;
 
 public class ResultXmit {
+	
+	private String loinc;
+	public String getLoinc() {
+		return loinc;
+	}
+
+	public void setLoinc(String loinc) {
+		this.loinc = loinc;
+	}
+
 
 	/*
 	 * should be one of "new","update" or "deleted"

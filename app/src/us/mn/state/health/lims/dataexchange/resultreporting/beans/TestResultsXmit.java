@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
+
 public class TestResultsXmit {
 
 	/**
@@ -286,4 +288,14 @@ public class TestResultsXmit {
 	/**
 	 * End malaria case report elements
 	 */
+	
+	private Event resultsEvent;
+
+	public void setResultsEvent(Event resultsEvent) {
+		this.resultsEvent = resultsEvent;		
+	}
+
+	public Event getResultsEvent() {
+		return resultsEvent;		
+	}
 }

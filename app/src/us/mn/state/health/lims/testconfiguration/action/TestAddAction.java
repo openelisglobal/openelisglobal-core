@@ -42,8 +42,10 @@ public class TestAddAction extends BaseAction {
 
     @Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ((DynaValidatorForm)form).initialize(mapping);
-        List<IdValuePair> allSampleTypesList = new ArrayList<IdValuePair>();
+        
+    	((DynaValidatorForm)form).initialize(mapping);
+        
+    	List<IdValuePair> allSampleTypesList = new ArrayList<IdValuePair>();
         allSampleTypesList.addAll(DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
         allSampleTypesList.addAll(DisplayListService.getList(ListType.SAMPLE_TYPE_INACTIVE));
         PropertyUtils.setProperty(form, "sampleTypeList", allSampleTypesList);
@@ -55,6 +57,7 @@ public class TestAddAction extends BaseAction {
         PropertyUtils.setProperty(form, "dictionaryList", DisplayListService.getList(ListType.DICTIONARY_TEST_RESULTS));
         PropertyUtils.setProperty(form, "groupedDictionaryList", createGroupedDictionaryList());
 
+//        System.out.println("TestAddAction:performAction");
 
         return mapping.findForward(FWD_SUCCESS);
     }

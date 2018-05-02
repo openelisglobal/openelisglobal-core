@@ -18,7 +18,7 @@ package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.*;
 
-import us.mn.state.health.lims.common.services.StatusService;
+
 
 //import org.apache.commons.validator.GenericValidator;
 
@@ -87,7 +87,6 @@ public class ForDashboardVLColumnBuilder extends CIColumnBuilder {
 	 */
 
 	public void makeSQL() {
-		//String validStatusId = StatusService.getInstance().getStatusID(StatusService.AnalysisStatus.Finalized);
 		Test test = (Test)new TestDAOImpl().getActiveTestByName("Viral Load").get(0);
 		query = new StringBuilder();
 	    String lowDatePostgres =  postgresDateFormat.format(dateRange.getLowDate());
@@ -113,7 +112,6 @@ public class ForDashboardVLColumnBuilder extends CIColumnBuilder {
 	    + "\n AND dt.report_generation_time <= date('" + highDatePostgres + "')"
 	    + "\n AND dt.name = 'patientVL1'"
 	    + "\n AND a.test_id =" + test.getId()
-	     + "\n AND a.id=r.analysis_id"
 	    + "\n AND dt.row_id=s.id"
 	    + "\n AND si.samp_id=s.id"	   
 	    + "\n AND a.sampitem_id = si.id" 

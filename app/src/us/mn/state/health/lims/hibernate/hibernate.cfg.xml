@@ -272,6 +272,8 @@
             resource="us/mn/state/health/lims/referral/valueholder/ReferringTestResult.hbm.xml" />
     <mapping
             resource="us/mn/state/health/lims/barcode/valueholder/BarcodeLabelInfo.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/dataexchange/orderresult/valueholder/HL7MessageOut.hbm.xml" />
 
 </session-factory>
 

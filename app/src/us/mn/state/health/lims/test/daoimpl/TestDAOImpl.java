@@ -17,9 +17,17 @@
  */
 package us.mn.state.health.lims.test.daoimpl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -44,14 +52,12 @@ import us.mn.state.health.lims.testanalyte.dao.TestAnalyteDAO;
 import us.mn.state.health.lims.testanalyte.daoimpl.TestAnalyteDAOImpl;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-
 /**
  * @author diane benz
  */
 public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
+	@Override
 	public void deleteData(List tests) throws LIMSRuntimeException{
 		// add to audit trail
 		try{
@@ -92,6 +98,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		}
 	}
 
+	@Override
 	public boolean insertData(Test test) throws LIMSRuntimeException{
 
 		try{
@@ -118,6 +125,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return true;
 	}
 
+	@Override
 	public void updateData(Test test) throws LIMSRuntimeException{
 
 		try{
@@ -154,6 +162,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		}
 	}
 
+	@Override
 	public void getData(Test test) throws LIMSRuntimeException{
 		try{
 			Test testClone = (Test)HibernateUtil.getSession().get(Test.class, test.getId());
@@ -171,6 +180,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Test> getAllTests(boolean onlyTestsFullySetup) throws LIMSRuntimeException{
 		List<Test> list = new Vector<Test>();
@@ -189,6 +199,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return list;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Test> getAllActiveTests(boolean onlyTestsFullySetup) throws LIMSRuntimeException{
 		List<Test> list = new Vector<Test>();
@@ -245,6 +256,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	 *            the user system id
 	 * @return list of test section bugzilla 2291 added onlyTestsFullySetup
 	 */
+	@Override
 	public List getAllTestsBySysUserId(int sysUserId, boolean onlyTestsFullySetup) throws LIMSRuntimeException{
 		List list = new Vector();
 		String sectionIdList = "";
@@ -280,6 +292,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return list;
 	}
 
+	@Override
 	public List getPageOfTests(int startingRecNo) throws LIMSRuntimeException{
 		List list;
 		try{
@@ -305,6 +318,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// bugzilla 2371
+	@Override
 	public List getPageOfSearchedTests(int startingRecNo, String searchString) throws LIMSRuntimeException{
 		List list;
 		String wildCard = "*";
@@ -350,6 +364,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	 *            is the user system id
 	 * @return list of test section
 	 */
+	@Override
 	public List getPageOfTestsBySysUserId(int startingRecNo, int sysUserId) throws LIMSRuntimeException{
 		List list = new Vector();
 		try{
@@ -398,6 +413,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	 *            is the user system id
 	 * @return list of test section
 	 */
+	@Override
 	public List<Test> getPageOfSearchedTestsBySysUserId(int startingRecNo, int sysUserId, String searchString) throws LIMSRuntimeException{
 		String wildCard = "*";
 		String newSearchStr;
@@ -465,12 +481,14 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return test;
 	}
 
+	@Override
 	public List getNextTestRecord(String id) throws LIMSRuntimeException{
 
 		return getNextRecord(id, "Test", Test.class);
 
 	}
 
+	@Override
 	public List getPreviousTestRecord(String id) throws LIMSRuntimeException{
 
 		return getPreviousRecord(id, "Test", Test.class);
@@ -478,6 +496,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
 	// this is for autocomplete
 	// bugzilla 2291 added onlyTestsFullySetup
+	@Override
 	public List getTests(String filter, boolean onlyTestsFullySetup) throws LIMSRuntimeException{
 		List list;
 		try{
@@ -497,11 +516,13 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return list;
 	}
 
+	@Override
 	public Test getTestByName(Test test) throws LIMSRuntimeException{
        return getTestByName( test.getTestName() );
 	}
 
-    public Test getTestByName(String testName) throws LIMSRuntimeException{
+    @Override
+	public Test getTestByName(String testName) throws LIMSRuntimeException{
         try{
             String sql = "from Test t where t.testName = :testName";
             org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
@@ -524,6 +545,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
             throw new LIMSRuntimeException("Error in Test getTestByName()", e);
         }
     }
+	@Override
 	public Test getTestByUserLocalizedName(String testName) throws LIMSRuntimeException{
 		try{
 			String sql = "from Test t where (t.localizedTestName.english = :testName or t.localizedTestName.french = :testName) and t.isActive='Y'";
@@ -549,6 +571,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Test> getActiveTestByName(String testName) throws LIMSRuntimeException{
 		try{
@@ -566,6 +589,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return new ArrayList<Test>();
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Test getActiveTestById(Integer testId) throws LIMSRuntimeException{
 		List<Test> list = null;
@@ -585,6 +609,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		return list.size() > 0 ? list.get(0) : null;
 	}
 
+	@Override
 	public Test getTestById(Test test) throws LIMSRuntimeException{
 		Test returnTest;
 		try{
@@ -601,6 +626,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// this is for selectdropdown
+	@Override
 	public List getMethodsByTestSection(String filter) throws LIMSRuntimeException{
 		try{
 			String sql = "from Test t where t.testSection = :param";
@@ -638,6 +664,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// this is for selectdropdown
+	@Override
 	public List getTestsByTestSection(String filter) throws LIMSRuntimeException{
 		try{
 			String sql = "from Test t where t.testSection = :param";
@@ -656,7 +683,8 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 		}
 	}
 
-    public List<Test> getTestsByTestSectionId(String id) throws LIMSRuntimeException{
+    @Override
+	public List<Test> getTestsByTestSectionId(String id) throws LIMSRuntimeException{
         try{
             String sql = "from Test t where t.testSection.id = :id";
             Query query = HibernateUtil.getSession().createQuery(sql);
@@ -674,6 +702,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
     }
 
 	// this is for selectdropdown
+	@Override
 	public List getTestsByMethod(String filter) throws LIMSRuntimeException{
 		try{
 			String sql = "from Test t where t.method = :param";
@@ -693,6 +722,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// this is for selectdropdown
+	@Override
 	public List getTestsByTestSectionAndMethod(String filter, String filter2) throws LIMSRuntimeException{
 		try{
 			String sql = "from Test t where t.testSection = :param1 and t.method = :param2";
@@ -713,11 +743,13 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// bugzilla 1411
+	@Override
 	public Integer getTotalTestCount() throws LIMSRuntimeException{
 		return getTotalCount("Test", Test.class);
 	}
 
 	// bugzilla 2371
+	@Override
 	public Integer getTotalSearchedTestCount(String searchString) throws LIMSRuntimeException{
 		String wildCard = "*";
 		String newSearchStr;
@@ -759,6 +791,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	// end bugzilla 2371
 
 	// bugzilla 2371
+	@Override
 	public Integer getTotalSearchedTestCountBySysUserId(int sysUserId, String searchString) throws LIMSRuntimeException{
 		String wildCard = "*";
 		String newSearchStr;
@@ -817,6 +850,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	// end bugzilla 2371
 
 	// bugzilla 2371
+	@Override
 	public Integer getAllSearchedTotalTestCount(HttpServletRequest request, String searchString) throws LIMSRuntimeException{
 		Integer count;
 		TestDAO testDAO = new TestDAOImpl();
@@ -845,6 +879,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	// end if bugzilla 2371
 
 	// bugzilla 1427
+	@Override
 	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException{
 		int currentId = Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
@@ -877,6 +912,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// bugzilla 1427
+	@Override
 	public List getPreviousRecord(String id, String table, Class clazz) throws LIMSRuntimeException{
 		int currentId = Integer.valueOf( id );
 		String tablePrefix = getTablePrefix(table);
@@ -943,6 +979,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// bugzilla 2236
+	@Override
 	public boolean isTestFullySetup(Test test) throws LIMSRuntimeException{
 		try{
 			TestAnalyteDAO testAnalyteDAO = new TestAnalyteDAOImpl();
@@ -974,6 +1011,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	}
 
 	// bugzilla 2443
+	@Override
 	public Integer getNextAvailableSortOrderByTestSection(Test test) throws LIMSRuntimeException{
 		Integer result = null;
 
@@ -1010,6 +1048,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 	 *      Read all entities from the database sorted by an appropriate
 	 *      property
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Test> getAllOrderBy(String columnName) throws LIMSRuntimeException{
 		List<Test> entities;
@@ -1044,7 +1083,7 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 			closeSession();
 			return test;
 		}catch(HibernateException e){
-			handleException(e, "getTesById");
+			handleException(e, "getTestById");
 		}
 
 		return null;
@@ -1083,4 +1122,38 @@ public class TestDAOImpl extends BaseDAOImpl implements TestDAO{
 
         return null;
     }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<Test> getTestsByLoincCode(String loincCode) {
+    	String sql = "From Test t where t.loinc = :loinc";
+    	try {
+    		Query query = HibernateUtil.getSession().createQuery(sql);
+    		query.setString("loinc", loincCode);
+    		List<Test> tests = query.list();
+    		closeSession();
+    		return tests;
+    	} catch (HibernateException e) {
+    		handleException(e, "getTestByLoincCode");
+    	}
+    	
+    	return null;
+    }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Test> getActiveTestsByLoinc(String loincCode) {
+    	String sql = "From Test t where t.loinc = :loinc and t.isActive='Y'";
+    	try {
+    		Query query = HibernateUtil.getSession().createQuery(sql);
+    		query.setString("loinc", loincCode);
+    		List<Test> tests = query.list();
+    		closeSession();
+    		return tests;
+    	} catch (HibernateException e) {
+    		handleException(e, "getActiveTestByLoinc");
+    	}
+    	
+    	return null;
+	}
 }

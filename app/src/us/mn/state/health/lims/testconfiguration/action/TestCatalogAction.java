@@ -80,6 +80,7 @@ public class TestCatalogAction extends BaseAction {
             TestCatalogBean bean = new TestCatalogBean();
             TestService testService = new TestService(test);
             String resultType = testService.getResultType();
+            bean.setId(test.getId());
             bean.setEnglishName(test.getLocalizedTestName().getEnglish());
             bean.setFrenchName(test.getLocalizedTestName().getFrench());
             bean.setEnglishReportName(test.getLocalizedReportingName().getEnglish());
@@ -91,6 +92,7 @@ public class TestCatalogAction extends BaseAction {
             TypeOfSample typeOfSample = testService.getTypeOfSample();
             bean.setSampleType(typeOfSample != null ? typeOfSample.getLocalizedName() : "n/a");
             bean.setOrderable(test.getOrderable() ? "Orderable" : "Not orderable");
+            bean.setLoinc(test.getLoinc());
             bean.setActive(test.isActive() ? "Active" : "Not active");
             bean.setUom(testService.getUOM(false));
             if( TypeOfTestResultService.ResultType.NUMERIC.matches(resultType)) {

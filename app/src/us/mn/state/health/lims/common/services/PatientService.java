@@ -16,10 +16,18 @@
 */
 package us.mn.state.health.lims.common.services;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
 import us.mn.state.health.lims.address.valueholder.AddressPart;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.dataexchange.order.action.MessagePatient;
 import us.mn.state.health.lims.gender.dao.GenderDAO;
 import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
 import us.mn.state.health.lims.gender.valueholder.Gender;
@@ -36,12 +44,6 @@ import us.mn.state.health.lims.person.valueholder.Person;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PatientService implements IPatientService {
 
@@ -200,6 +202,10 @@ public class PatientService implements IPatientService {
 	 */
 	public PatientService(String guid){
 		this(getPatientForGuid( guid));
+	}
+	
+	public PatientService(MessagePatient mPatient) {
+		this(patientDAO.getPatientByExternalId(mPatient.getExternalId()));
 	}
 
 	private static Patient getPatientForGuid(String guid){

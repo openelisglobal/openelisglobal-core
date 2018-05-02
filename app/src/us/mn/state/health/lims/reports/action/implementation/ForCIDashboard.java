@@ -46,7 +46,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 	private Project project;
 	private String indicStr;
 	protected static final SimpleDateFormat postgresDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	//private String indicLabel;
+	private String indicLabel;
 	
 	@Override
 	protected String reportFileName(){
@@ -157,7 +157,6 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
                 }
                 splitBase = splitLine;
                 currentAccessionNumber = splitBase[0];
-                //System.out.println("resultat="+splitBase[18].trim());
             }
         }
         if (writeAble(splitBase[18].trim()))
@@ -211,7 +210,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 	}
 
 	private CSVColumnBuilder getColumnBuilder(String projectId) {
-		//String projectTag = CIColumnBuilder.translateProjectId(projectId);
+		String projectTag = CIColumnBuilder.translateProjectId(projectId);
 		return new ForDashboardVLColumnBuilder(dateRange, projectStr);
 		
 	}

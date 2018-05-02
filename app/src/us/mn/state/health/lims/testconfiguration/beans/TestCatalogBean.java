@@ -21,6 +21,7 @@ import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import java.util.List;
 
 public class TestCatalogBean {
+	private String id;
     private String englishName;
     private String frenchName;
     private String englishReportName;
@@ -31,16 +32,26 @@ public class TestCatalogBean {
     private String resultType;
     private String uom = "n/a";
     private String significantDigits = "n/a";
+    private String loinc;
     private String active;
     private String orderable;
     private boolean hasDictionaryValues = false;
     private List<String> dictionaryValues;
+    private List<String> dictionaryIds;
     private String referenceValue;
+    private String referenceId;
     private boolean hasLimitValues = false;
     private List<ResultLimitBean> resultLimits;
     private int testSortOrder = Integer.MAX_VALUE;
+    
+    public String getId() {
+        return id;
+    }
 
-
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     public String getEnglishName() {
         return englishName;
     }
@@ -128,6 +139,14 @@ public class TestCatalogBean {
     public void setOrderable(String orderable) {
         this.orderable = orderable;
     }
+    
+    public String getLoinc() {
+        return loinc;
+    }
+    
+    public void setLoinc(String loinc) {
+    	this.loinc = loinc;
+    }
 
     public String getSignificantDigits() {
         return significantDigits;
@@ -144,13 +163,21 @@ public class TestCatalogBean {
     public void setHasDictionaryValues(boolean hasDictionaryValues) {
         this.hasDictionaryValues = hasDictionaryValues;
     }
-
+    
     public List<String> getDictionaryValues() {
         return dictionaryValues;
     }
 
     public void setDictionaryValues(List<String> dictionaryValues) {
         this.dictionaryValues = dictionaryValues;
+    }
+    
+    public List<String> getDictionaryIds() {
+        return dictionaryIds;
+    }
+
+    public void setDictionaryIds(List<String> dictionaryIds) {
+        this.dictionaryIds = dictionaryIds;
     }
 
     public String getReferenceValue() {
@@ -159,6 +186,14 @@ public class TestCatalogBean {
 
     public void setReferenceValue(String referenceValue) {
         this.referenceValue = referenceValue;
+    }
+    
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
     }
 
     public boolean isHasLimitValues() {
