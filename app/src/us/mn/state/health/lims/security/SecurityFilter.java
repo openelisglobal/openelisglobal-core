@@ -34,7 +34,6 @@ public class SecurityFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		boolean suspectedAttack = false;
-		boolean csrfSuspectedAttack = false;
 		ArrayList<String> attackList = new ArrayList<String>();
 		
 		//CSRF check for any "action" pages
@@ -48,10 +47,10 @@ public class SecurityFilter implements Filter {
 
       if (!hasCSRFExceptionRule(httpRequest.getRequestURI())) {
   			if  (referer == null) {
-  			  csrfSuspectedAttack = true;
+  				suspectedAttack = true;
   				attackList.add("CSRF- null referer");
   			} else if (!referer.startsWith(baseURL)) {
-  			  csrfSuspectedAttack = true;
+  				suspectedAttack = true;
   				attackList.add("CSRF- " + referer);
   			} 
       }
@@ -81,38 +80,24 @@ public class SecurityFilter implements Filter {
 		httpResponse.addHeader("X-Frame-Options", "SAMEORIGIN");//enforces whether page is allowed to be an iframe in another website
 		httpResponse.addHeader("X-XSS-Protection","1"); //provides browser xss protection. attempts to cleanse.
 	
-		if (suspectedAttack) {
-      StringBuilder attackMessage = new StringBuilder();
-      String separator = "";
-      attackMessage.append(httpRequest.getRequestURI());
-      attackMessage.append(" suspected attack(s) of type: ");
-      for (String attack : attackList) {
-        attackMessage.append(separator);
-        separator = ",";
-        attackMessage.append(attack);
-      }
-      //should log suspected attempt
-      LogEvent.logWarn("SecurityFilter", "doFilter()", attackMessage.toString());
-      System.out.println(attackMessage.toString());
-      //send to safe page
-      httpResponse.sendRedirect("Dashboard.do");
-		} else if (csrfSuspectedAttack) {
-      StringBuilder attackMessage = new StringBuilder();
-      String separator = "";
-      attackMessage.append(httpRequest.getRequestURI());
-      attackMessage.append(" suspected attack(s) of type: ");
-      for (String attack : attackList) {
-        attackMessage.append(separator);
-        separator = ",";
-        attackMessage.append(attack);
-      }
-      //should log suspected attempt
-      LogEvent.logWarn("SecurityFilter", "doFilter()", attackMessage.toString());
-      System.out.println(attackMessage.toString());
-      //continue as this is not a perfect solution and may intercept correct requests
-      chain.doFilter(request, httpResponse);
+		if (!suspectedAttack) {
+			chain.doFilter(request, httpResponse);
 		} else {
-      chain.doFilter(request, httpResponse);
+			StringBuilder attackMessage = new StringBuilder();
+			String separator = "";
+			attackMessage.append(httpRequest.getRequestURI());
+			attackMessage.append(" suspected attack(s) of type: ");
+			for (String attack : attackList) {
+				attackMessage.append(separator);
+				separator = ",";
+				attackMessage.append(attack);
+			}
+			
+			//should log suspected attempt
+			LogEvent.logWarn("SecurityFilter", "doFilter()", attackMessage.toString());
+			System.out.println(attackMessage.toString());
+			//send to safe page
+			httpResponse.sendRedirect("Dashboard.do");
 		}
 	}
 	
@@ -124,10 +109,6 @@ public class SecurityFilter implements Filter {
 	  }
 	  
 	  return false;
-	}
-	
-	public void addException(String exception) {
-	  exceptions.add(exception);
 	}
 	
 	private void addExceptions() {
