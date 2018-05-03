@@ -17,14 +17,13 @@
 */
 package us.mn.state.health.lims.common.formfields;
 
-import java.util.HashMap;
-
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
+
+import java.util.HashMap;
 
 
 public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 
-	@Override
 	public HashMap<FormFields.Field, Boolean> getImplementationAttributes() {
 		HashMap<FormFields.Field, Boolean> settings = new HashMap<FormFields.Field, Boolean>();
 		settings.put(Field.StNumber,Boolean.FALSE);
@@ -46,7 +45,7 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
 		settings.put(Field.ADDRESS_CITY, Boolean.FALSE);
-		settings.put(Field.PatientRequired, Boolean.TRUE);
+		settings.put(Field.PatientRequired, Boolean.FALSE);
 		settings.put(Field.SampleCondition, Boolean.TRUE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE, Boolean.FALSE);
