@@ -8,19 +8,14 @@
       </not>
     </preConditions>
     <comment>Adds datim columns to organization</comment>
-    <addColumn tableName="analyzer_results">
+    <addColumn tableName="organization">
       <column name="datim_org_code" type="character varying(25)"></column>
 	  <column name="datim_org_name" type="character varying(100)"></column>
     </addColumn>
-    <sql>
-	       COMMENT ON COLUMN clinlims.organization.datim_org_code IS 'datim_org_code from datim';
-    </sql>
+    
   </changeSet>
   
-  
-  
-  
-  
+ 
   <changeSet author="CI OpenELIS developers group" id="2">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization where datim_org_code='K2QNrcfgpnv';
