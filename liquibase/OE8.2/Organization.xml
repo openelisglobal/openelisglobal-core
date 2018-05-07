@@ -1,19 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Organization settings-->
-  
- <changeSet author="CI OpenELIS developers group" id="1">
-    <comment>Insert in clinlims organization new column </comment>
-	<preConditions onFail="MARK_RAN">
+  <changeSet id="1" author="CI OpenELIS developers group" >
+    <preConditions onFail="MARK_RAN">
       <not>
         <columnExists columnName="datim_org_code" schemaName="clinlims" tableName="organization" />
       </not>
     </preConditions>
+    <comment>Adds datim columns to organization</comment>
+    <addColumn tableName="analyzer_results">
+      <column name="datim_org_code" type="character varying(25)"></column>
+	  <column name="datim_org_name" type="character varying(100)"></column>
+    </addColumn>
     <sql>
-		alter table clinlims.organization add column datim_org_code character varying(15);
-		alter table clinlims.organization add column datim_org_name character varying(100);
- </sql>
+	       COMMENT ON COLUMN clinlims.organization.datim_org_code IS 'datim_org_code from datim';
+    </sql>
   </changeSet>
+  
+  
+  
   
   
   <changeSet author="CI OpenELIS developers group" id="2">
