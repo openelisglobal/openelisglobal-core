@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Organization settings-->
   
- <changeSet author="CI OpenELIS developers group" id="1" context="ci_regional,ci_general">
+ <changeSet author="CI OpenELIS developers group" id="1">
     <comment>Insert in clinlims organization new column </comment>
     <sql>
 		alter table clinlims.organization add column datim_org_code character varying(15);
