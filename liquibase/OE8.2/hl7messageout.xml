@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   <!--Me-->
   
-    <changeSet author="csteele" id="1"  context="ci_general">
+    <changeSet author="csteele" id="1"  context="ci_general,ci_regional">
         <comment>create hl7 message out table</comment>
         <sql>
  
@@ -25,7 +25,7 @@
         </sql>
     </changeSet>
     
-    <changeSet author="csteele" id="2"  context="ci_general">
+    <changeSet author="csteele" id="2"  context="ci_general,ci_regional">
         <comment>Enable audit trail to track changes to hl7 messages out</comment>
         <sql>
             INSERT INTO clinlims.reference_tables (id, name, keep_history, is_hl7_encoded)
