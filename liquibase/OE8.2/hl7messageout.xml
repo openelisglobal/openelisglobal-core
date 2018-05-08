@@ -8,11 +8,11 @@
  
             CREATE TABLE clinlims.hl7_message_out
             (
-                id numeric(10,0) NOT NULL,
-                data text COLLATE pg_catalog."default" NOT NULL,
-                lastupdated timestamp without time zone NOT NULL,
-                status character varying COLLATE pg_catalog."default" NOT NULL,
-                CONSTRAINT hl7_message_out_pk PRIMARY KEY (id)
+                "id" NUMERIC (20) NOT NULL,
+                "data" text NOT NULL,
+                "lastupdated" timestamp without time zone NOT NULL,
+                "status" VARCHAR (20) NOT NULL,
+                PRIMARY KEY ("id")
             );
             ALTER TABLE clinlims.hl7_message_out OWNER to clinlims;
         
