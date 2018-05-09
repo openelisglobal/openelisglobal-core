@@ -1044,17 +1044,17 @@
     			
     			var lowHigh = tmpRangeArray[1].split("-");
     			ageLow = lowHigh[0]; 
-    			ageHigh = (lowHigh[1] !== "") ? lowHigh[1] : ""; 
+    			ageHigh = (lowHigh.length == 2) ? lowHigh[1] : "Infinity";
     			age = [ ageLow, ageHigh];
     			
     			var lowHigh = tmpRangeArray[2].split("-");
     			normalLow = lowHigh[0]; 
-    			normalHigh = (lowHigh[1] !== "") ? lowHigh[1] : ""; 
+    			normalHigh = (lowHigh.length == 2) ? lowHigh[1] : "Infinity"; 
     			normal = [normalLow, normalHigh];
     			
     			var lowHigh = tmpRangeArray[3].split("-");
     			validLow = lowHigh[0]; 
-    			validHigh = (lowHigh[1] !== "") ? lowHigh[1] : ""; 
+    			validHigh = (lowHigh.length == 2) ? lowHigh[1] : "Infinity"; 
     			valid = [validLow, validHigh];
     			
     			resultLimits.push([gender, age, normal, valid]);
@@ -1393,9 +1393,9 @@
         var rowIndex, limit, gender, yearMonth, upperAge;
         var countIndex = 0;
 
-        jsonObj.lowValid = defaultResultsLimits[0][5];
-        jsonObj.highValid = defaultResultsLimits[0][6];;
-        jsonObj.significantDigits = $jq("#significantDigits").val();
+        jsonObj.lowValid = defaultResultLimits[0][3][0];
+        jsonObj.highValid = defaultResultLimits[0][3][1];
+        //jsonObj.significantDigits = $jq("#significantDigits").val(); //redundant
         var significantDigits = null;
         $jq(".resultClass").each(function (i,elem) {
         	jsonObj.significantDigits = $jq(elem).attr("fSignificantDigits")
@@ -1403,35 +1403,39 @@
         jsonObj.resultLimits = [];
 
         for (var rowIndex = 0; rowIndex < defaultResultLimits.length; rowIndex++) {
-            gender = defaultResultsLimits[rowIndex][0];
             
-            //LOA
             //yearMonth = monthYear = $jq(".yearMonthSelect_" + rowIndex + ":checked").val();
+            yearMonth = 'M'; // always month regardless
             limit = {};
 
-            upperAge = defaultResultsLimits[rowIndex][0];
+            upperAge = defaultResultLimits[rowIndex][1][1];
             if (upperAge != "Infinity") {
-                limit.highAgeRange = yearMonth == "<%=StringUtil.getMessageForKey("abbreviation.year.single")%>" ? (upperAge * 12).toString() : upperAge;
+                //limit.highAgeRange = yearMonth == "<%=StringUtil.getMessageForKey("abbreviation.year.single")%>" ? (upperAge * 12).toString() : upperAge;
+            	limit.highAgeRange = upperAge;
             } else {
-                limit.highAgeRange = upperAge;
+                limit.highAgeRange = "Infinity";
+            }
+            
+            if( defaultResultLimits[rowIndex][0] == "n/a" ){
+            	limit.gender = false;
+            } else {
+            	limit.gender = true;
+            }
+            
+            limit.lowNormal = defaultResultLimits[rowIndex][2][0];
+            limit.highNormal = defaultResultLimits[rowIndex][2][1];
+            //limit.reportingRange = not used
+
+            if (limit.gender) {
+                limit.lowNormalFemale = defaultResultLimits[rowIndex][2][0];
+                limit.highNormalFemale = defaultResultLimits[rowIndex][2][1];
+                //limit.reportingRangeFemale = not used
+                rowIndex++; // m/f in same json object so skip row
             }
 
-            limit.gender = gender;
-            limit.lowNormal = $jq("#lowNormal_" + rowIndex).val();
-            limit.highNormal = $jq("#highNormal_" + rowIndex).val();
-            limit.reportingRange = $jq("#reportingRange_" + rowIndex).val();
-
-            if (gender) {
-                limit.lowNormalFemale = $jq("#lowNormal_G_" + rowIndex).val();
-                limit.highNormalFemale = $jq("#highNormal_G_" + rowIndex).val();
-                limit.reportingRangeFemale = $jq("#reportingRange_G_" + rowIndex).val();
-            }
-*/
             jsonObj.resultLimits[countIndex++] = limit;
-        });
+        }
 
-    }
-    	
     }
     
     function addJsonResultLimits(jsonObj) {
