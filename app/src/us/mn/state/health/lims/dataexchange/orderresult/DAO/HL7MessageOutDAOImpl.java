@@ -16,7 +16,7 @@ public class HL7MessageOutDAOImpl extends BaseDAOImpl {
 		try {
 			String sql = "select is_called from clinlims.hl7_message_out_seq";
 			Query query = HibernateUtil.getSession().createSQLQuery(sql);
-			boolean isCalled = (boolean) query.uniqueResult();
+			boolean isCalled = (Boolean) query.uniqueResult();
 			if (!isCalled) {// first time called
 				return 1;
 			}

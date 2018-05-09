@@ -253,6 +253,17 @@ function onPrint(){
 	</div>
   </logic:equal>
   
+  
+  <logic:equal name='<%=formName%>' property="useDashboard" value="true">
+   	<div>
+	  <bean:message key="report.select.project"/>
+	  <html:select name="<%=formName%>"  property="projectCode" styleClass="text" >
+		<app:optionsCollection  name="<%=formName%>" property="projectCodeList" label="localizedName" value="id" />
+	  </html:select>
+	</div>
+  </logic:equal>
+  
+  
   <logic:equal name='<%=formName%>' property="usePredefinedDateRanges" value="true">
    	<div>
 	   <bean:message key="report.select.date.period"/>
