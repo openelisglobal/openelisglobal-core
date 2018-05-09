@@ -16,7 +16,7 @@
   </changeSet>
   
  
-  <changeSet author="CI OpenELIS developers group" id="2">
+  <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization where datim_org_code='K2QNrcfgpnv';
     		</sqlCheck>
@@ -480,7 +480,7 @@
    </sql>
   </changeSet>
   
-    <changeSet author="CI OpenELIS developers group" id="3">
+    <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">select count(*) from clinlims.organization where datim_org_name='Association Rurale de Napié';
     		</sqlCheck>
