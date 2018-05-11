@@ -4,7 +4,9 @@
                  us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
                  us.mn.state.health.lims.common.util.StringUtil,
                  us.mn.state.health.lims.common.util.Versioning,
-                 us.mn.state.health.lims.common.util.DateUtil" %>
+                 us.mn.state.health.lims.common.util.DateUtil,
+                 us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO,
+                 us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl" %>
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/labdev-view" prefix="app" %>
@@ -15,11 +17,13 @@
     String path = "";
     String basePath = "";
     boolean acceptExternalOrders = false;
+    SiteInformationDAO siteInfoDAO = new SiteInformationDAOImpl();
 %>
 <%
     path = request.getContextPath();
     basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
     acceptExternalOrders = ConfigurationProperties.getInstance().isPropertyValueEqual( Property.ACCEPT_EXTERNAL_ORDERS, "true" );
+    String siteInfo = siteInfoDAO.getSiteInformationByName("Study Management tab").getValue();
 %>
 
 <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css?ver=<%= Versioning.getBuildNumber() %>"/>
@@ -76,6 +80,35 @@ function checkValidTime(time, blankAllowed)
 
     checkValidSubPages();
 }
+
+function studyChanged(studyElement) {
+	var study = studyElement.value;
+	if (study == "routine") {
+		$jq("#psuedoPatientInfo").removeAttr("disabled");
+		$jq("#facility-combobox").show();
+		$jq("#routineSampleAdd").show();
+		$jq("#viralLoadSampleAdd").hide();
+		$jq("#EIDSampleAdd").hide();
+	} else if (study == "viralLoad"){
+		$jq("#psuedoPatientInfo").attr('checked', false);
+		$jq("#psuedoPatientInfo").attr('disabled', 'disabled');
+		document.getElementsByName('patientInfoCheck')[0].disabled = true;
+		$jq("select#requesterId").prop("selectedIndex", 0);
+		$jq("#facility-combobox").hide();
+		$jq("#routineSampleAdd").hide();
+		$jq("#viralLoadSampleAdd").show();
+		$jq("#EIDSampleAdd").hide();
+	} else if (study == "EID"){
+		$jq("#psuedoPatientInfo").attr('checked', false);
+		$jq("#psuedoPatientInfo").attr('disabled', 'disabled');
+		document.getElementsByName('patientInfoCheck')[0].disabled = true;
+		$jq("select#requesterId").prop("selectedIndex", 0);
+		$jq("#facility-combobox").hide();
+		$jq("#routineSampleAdd").hide();
+		$jq("#viralLoadSampleAdd").hide();
+		$jq("#EIDSampleAdd").show();
+	}
+}
 </script>
 
 
@@ -83,7 +116,7 @@ function checkValidTime(time, blankAllowed)
 <!--bean:define id="orderTypeList" name='<%=formName%>' property="sampleOrderItems.orderTypes"  type="java.util.Collection"/> -->
 <bean:define id="sampleOrderItem" name='<%=formName%>' property="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
 
-<div id=orderDisplay <%= acceptExternalOrders && sampleOrderItem.getLabNo() == null ? "style='display:none'" : ""  %> >
+<div id=orderDisplay >
 <table style="width:100%">
 
 <tr>
@@ -95,17 +128,21 @@ function checkValidTime(time, blankAllowed)
 	        <span class="requiredlabel">*</span>
 	        <span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>
    	 	</td>
-    	<td colspan="2">
+    	<td>
 	        <html:text name='<%=formName %>'
                    property="currentDate"
                    styleId="currentDate"
                    styleClass="required"
                    readonly="true"
                    maxlength="10"/>
+     	</td>
+     	<td>
 	     	<%= StringUtil.getContextualMessageForKey("sample.batchentry.order.currenttime") %>
 	     	:
 	        <span style="font-size: xx-small; "><%=DateUtil.getTimeUserPrompt()%></span> 
-	        <html:text name="<%=formName %>"
+		</td>
+	   	<td>
+	    	<html:text name="<%=formName %>"
                    onkeyup="filterTimeKeys(this, event);"
                    property="currentTime"
                    styleId="currentTime"
@@ -113,28 +150,48 @@ function checkValidTime(time, blankAllowed)
    		</td>
 	</tr>
 	<tr>
-    	<td><%= StringUtil.getContextualMessageForKey( "quick.entry.received.date" ) %>
+    	<td>
+    		<%= StringUtil.getContextualMessageForKey( "quick.entry.received.date" ) %>
         	:
 	        <span class="requiredlabel">*</span>
 	        <span style="font-size: xx-small; "><%=DateUtil.getDateUserPrompt()%></span>
     	</td>
-    	<td colspan="2">
-    		<app:text name="<%=formName%>"
+    	<td>
+    		<html:text name="<%=formName%>"
                   property="sampleOrderItems.receivedDateForDisplay"
                   onchange="checkValidSubPages();checkValidEntryDate(this, 'past');"
                   onkeyup="addDateSlashes(this, event);"
                   maxlength="10"
                   styleClass="text required"
                   styleId="receivedDateForDisplay"/>
+     	</td>
+     	<td>
 	        <bean:message key="sample.batchentry.order.receptiontime"/>
 	        :
 	        <span style="font-size: xx-small; "><%=DateUtil.getTimeUserPrompt()%></span>
-	        <html:text name="<%=formName %>"
+		</td>
+		<td>
+			<html:text name="<%=formName %>"
                    onkeyup="filterTimeKeys(this, event);"
                    property="sampleOrderItems.receivedTime"
                    styleId="receivedTime"
                    maxlength="5"
                    onblur="checkValidSubPages(); checkValidTime(this, true);"/>
+    	</td>
+	</tr>
+	<tr <%= "false".equals(siteInfo) ? "style='display:none'" : ""  %>>
+    	<td>
+    		<bean:message key="sample.entry.project.form"/>: 
+    	</td>
+    	<td>
+    		<html:select name="<%=formName %>"
+    				property="study"
+    				styleId="study" 
+    				onchange="studyChanged(this);checkValidSubPages();">
+    			<option value="routine"><bean:message key="dictionary.program.routine" /></option>
+    			<option value="viralLoad"><bean:message key="sample.entry.project.VL.simple.title" /></option>
+    			<option value="EID"><bean:message key="sample.entry.project.EID.title" /></option>
+    		</html:select>
     	</td>
 	</tr>
 	<tr class="spacerRow">

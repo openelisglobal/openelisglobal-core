@@ -18,21 +18,17 @@ import org.dom4j.Element;
 
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
-import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.provider.validation.DateValidationProvider;
 import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.TestService;
-import us.mn.state.health.lims.common.services.DisplayListService.ListType;
-import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
-import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
-import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 import us.mn.state.health.lims.sample.action.BaseSampleEntryAction;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
@@ -113,8 +109,18 @@ public class SampleBatchEntryAction extends BaseSampleEntryAction {
     }
     request.setAttribute("facilityName", facilityName);
 
-    return mapping.findForward(forward);
+    return mapping.findForward(findForward(request));
   }
+
+	private String findForward(HttpServletRequest request) {
+		String method = request.getParameter("method");
+		if ("On Demand".equals(method)) {
+			return "ondemand";
+		} else if ("Pre-Printed".equals(method)) {
+			return "preprinted";
+		}
+		return "fail";
+	}
 
   private ActionMessages validate(HttpServletRequest request) {
     ActionMessages errors = new ActionMessages();

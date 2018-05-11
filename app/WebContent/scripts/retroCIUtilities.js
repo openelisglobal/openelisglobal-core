@@ -191,8 +191,11 @@ function handleLabNoChange( displayField, prefix, isWanted ) {
     validateAccessionNumberOnServer( idField, recordType, isWanted );
 }
 
-function validateAccessionNumberOnServer( field, recordType, isWanted )
+function validateAccessionNumberOnServer( field, recordType, isWanted, successCallback )
 {
+	if (!successCallback) {
+		successCallback = processAccessionSuccess;
+	}
     var projectFormName = "";
     var pfnFld = document.getElementById("projectFormName");
     // when verifying (second entry) the sample had to have been entered on the same type of form.
@@ -206,7 +209,7 @@ function validateAccessionNumberOnServer( field, recordType, isWanted )
                       parameters: 'provider=SampleEntryAccessionNumberValidationProvider&field=' + field.id + '&accessionNumber=' + field.value + '&recordType=' + recordType + '&isRequired=' + isWanted +"&projectFormName=" + projectFormName,
                       indicator: 'throbbing',
                       onSuccess:  function (xhr) {
-                          processAccessionSuccess(xhr, field, isWanted);
+                          successCallback(xhr, field, isWanted);
                       },
                       onFailure:  processAccessionFailure
                       }

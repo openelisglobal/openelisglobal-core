@@ -677,6 +677,29 @@ function panelSelected(checkBox, tests ){
 
 //validation logic for this 'page'
 function /*boolean*/ sampleAddValid( sampleRequired ) {
+	if ($jq("#study").val() == "routine") {
+		return routineSampleValid(sampleRequired);
+	} else if ($jq("#study").val() == "viralLoad") {
+		return viralSampleValid(sampleRequired);
+	} else if ($jq("#study").val() == "EID") {
+		return eidSampleValid(sampleRequired);
+	}
+	return true;
+	
+}
+
+//TO DO place logic for validating whether next page should be allowed
+function viralSampleValid(sampleRequired) {
+	return true;
+}
+
+//TO DO place logic for validating whether next page should be allowed
+function eidSampleValid(sampleRequired) {
+	return true;
+}
+
+//validates page under normal operating rules
+function routineSampleValid(sampleRequired) {
 	var testBoxes = document.getElementsByName("tests");
 	var enable = true;
 	var i;
@@ -746,149 +769,248 @@ function sampleTypeQualifierChanged(element){
     checkValidSubPages();
 }
 </script>
-<% if(useInitialSampleCondition){ %>
-<div id="sampleConditionPrototype" style="display: none" >
-<html:select name='<%=formName%>'
-			 property="initialSampleConditionList"
-			 multiple="true"
-			 title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
-			 styleId = 'prototypeID'>
-			<logic:iterate id="optionValue" name='<%=formName%>' property="initialSampleConditionList" type="IdValuePair" >
-						<option value='<%=optionValue.getId()%>' >
-							<bean:write name="optionValue" property="value"/>
-						</option>
-					</logic:iterate>
-				</html:select>
-</div>
-<% } %>
-<div id="sectionPrototype" style="display:none;" >
-	<span class="requiredlabel" style="visibility:hidden;">*</span>
-	<select id="testSectionPrototypeID" disabled  onchange="sectionSelectionChanged( this );" class="testSectionSelector" >
-				<option value='0'></option>
-			<logic:iterate id="optionValue" name='<%=formName%>' property="testSectionList" type="IdValuePair" >
-				<option value='<%=optionValue.getId()%>' >
-					<bean:write name="optionValue" property="value"/>
-				</option>
-			</logic:iterate>
-	</select>
-</div>
-<div id="userSampleTypePrototype" style="display:none;" >
-    <span class="requiredlabel" style="visibility:hidden;">*</span>
-    <select id="userSampleTypePrototypeID" disabled="disabled"  >
-        <option value='0'></option>
-
-    </select>
-</div>
-<div id="userSampleTypeQualifierPrototype" style="display:none;" >
-    <span class="requiredlabel" >*</span>
-    <input id="userSampleTypeQualifierPrototypeID"  size="12" value=""  disabled="disabled" onchange="sampleTypeQualifierChanged(this)" type="text">
-    <input id="userSampleTypeQualifierPrototypeValueID" value="" type="hidden" >
-</div>
-
-
-
-<div id="crossPanels">
-</div>
-
-<html:hidden name="<%=formName%>" property="sampleXML"  styleId="sampleXML"/>
-	<Table style="width:100%">
-		<tr>
-			<td>
-                <bean:message  key="sample.entry.sample.type"/>
-			</td>
-		</tr>
-
-		<tr>
-			<td>
-				<html:select name="<%=formName%>" property="sampleTypeSelect"  onchange="sampleTypeSelected(this);" styleId="sampleTypeSelect"
-					value="0">
-					<app:optionsCollection name="<%=formName%>" property="sampleTypes" label="value" value="id" />
-				</html:select>
-                 
-			</td>
-		</tr>
-	</Table>
-
-	<br />
-	<div id="samplesAdded" style="display: none; ">
-		<table id="samplesAddedTable" style="display: none;width: <%=useCollectionDate ? "100%" : "80%" %>" >
+<div id="routineSampleAdd" >
+	<% if(useInitialSampleCondition){ %>
+	<div id="sampleConditionPrototype" style="display: none" >
+	<html:select name='<%=formName%>'
+				 property="initialSampleConditionList"
+				 multiple="true"
+				 title='<%= StringUtil.getMessageForKey("result.multiple_select")%>'
+				 styleId = 'prototypeID'>
+				<logic:iterate id="optionValue" name='<%=formName%>' property="initialSampleConditionList" type="IdValuePair" >
+							<option value='<%=optionValue.getId()%>' >
+								<bean:write name="optionValue" property="value"/>
+							</option>
+						</logic:iterate>
+					</html:select>
+	</div>
+	<% } %>
+	<div id="sectionPrototype" style="display:none;" >
+		<span class="requiredlabel" style="visibility:hidden;">*</span>
+		<select id="testSectionPrototypeID" disabled  onchange="sectionSelectionChanged( this );" class="testSectionSelector" >
+					<option value='0'></option>
+				<logic:iterate id="optionValue" name='<%=formName%>' property="testSectionList" type="IdValuePair" >
+					<option value='<%=optionValue.getId()%>' >
+						<bean:write name="optionValue" property="value"/>
+					</option>
+				</logic:iterate>
+		</select>
+	</div>
+	<div id="userSampleTypePrototype" style="display:none;" >
+	    <span class="requiredlabel" style="visibility:hidden;">*</span>
+	    <select id="userSampleTypePrototypeID" disabled="disabled"  >
+	        <option value='0'></option>
+	
+	    </select>
+	</div>
+	<div id="userSampleTypeQualifierPrototype" style="display:none;" >
+	    <span class="requiredlabel" >*</span>
+	    <input id="userSampleTypeQualifierPrototypeID"  size="12" value=""  disabled="disabled" onchange="sampleTypeQualifierChanged(this)" type="text">
+	    <input id="userSampleTypeQualifierPrototypeValueID" value="" type="hidden" >
+	</div>
+	
+	
+	
+	<div id="crossPanels">
+	</div>
+	
+	<html:hidden name="<%=formName%>" property="sampleXML"  styleId="sampleXML"/>
+		<Table style="width:100%">
 			<tr>
-				<th style="width:5%"></th>
-				<th style="width:10%">
-					<bean:message key="sample.entry.id"/>
-				</th>
-				<th style="width:10%">
-					<bean:message key="sample.entry.sample.type"/>
-				</th>
-				<% if(useInitialSampleCondition){ %>
-				<th style="width:15%">
-					<bean:message key="sample.entry.sample.condition"/>
-				</th>
-				<% } %>
-				<% if( useCollectionDate ){ %>
-				<th >
-					<bean:message key="sample.collectionDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
-				</th>
-				<th >
-					<bean:message key="sample.collectionTime"/>
-				</th>
-				<% } %>
-				<% if( useCollector ){ %>
-				<th>
-					<bean:message key="sample.entry.collector" />
-				</th>	
-				<% } %>
-				<th style="width:35%">
-					<span class='requiredlabel'>*</span>&nbsp;<bean:message key="sample.entry.sample.tests"/>
-				</th>
-				<th style="width:10%"></th>
+				<td>
+	                <bean:message  key="sample.entry.sample.type"/>
+				</td>
 			</tr>
-		</table >
-		<div id="testSelections" style="display:none;" >
-		<table style="margin-left: 1%;width:60%;" id="addTables">
-		<tr>
-			<td  style="width:30%;vertical-align:top;">
-				<table style="width:97%" id="addPanelTable" >
-					<caption>
-						<bean:message key="sample.entry.panels"/>
-					</caption>
-					<tr>
-						<th style="width:20%">&nbsp;
-							
-						</th>
-						<th style="width:80%">
-							<bean:message key="sample.entry.panel.name"/>
-						</th>
-					</tr>
+	
+			<tr>
+				<td>
+					<html:select name="<%=formName%>" property="sampleTypeSelect"  onchange="sampleTypeSelected(this);" styleId="sampleTypeSelect"
+						value="0">
+						<app:optionsCollection name="<%=formName%>" property="sampleTypes" label="value" value="id" />
+					</html:select>
+	                 
+				</td>
+			</tr>
+		</Table>
+	
+		<br />
+		<div id="samplesAdded" style="display: none; ">
+			<table id="samplesAddedTable" style="display: none;width: <%=useCollectionDate ? "100%" : "80%" %>" >
+				<tr>
+					<th style="width:5%"></th>
+					<th style="width:10%">
+						<bean:message key="sample.entry.id"/>
+					</th>
+					<th style="width:10%">
+						<bean:message key="sample.entry.sample.type"/>
+					</th>
+					<% if(useInitialSampleCondition){ %>
+					<th style="width:15%">
+						<bean:message key="sample.entry.sample.condition"/>
+					</th>
+					<% } %>
+					<% if( useCollectionDate ){ %>
+					<th >
+						<bean:message key="sample.collectionDate"/>&nbsp;<%=DateUtil.getDateUserPrompt()%>
+					</th>
+					<th >
+						<bean:message key="sample.collectionTime"/>
+					</th>
+					<% } %>
+					<% if( useCollector ){ %>
+					<th>
+						<bean:message key="sample.entry.collector" />
+					</th>	
+					<% } %>
+					<th style="width:35%">
+						<span class='requiredlabel'>*</span>&nbsp;<bean:message key="sample.entry.sample.tests"/>
+					</th>
+					<th style="width:10%"></th>
+				</tr>
+			</table >
+			<div id="testSelections" style="display:none;" >
+			<table style="margin-left: 1%;width:60%;" id="addTables">
+			<tr>
+				<td  style="width:30%;vertical-align:top;">
+					<table style="width:97%" id="addPanelTable" >
+						<caption>
+							<bean:message key="sample.entry.panels"/>
+						</caption>
+						<tr>
+							<th style="width:20%">&nbsp;
+								
+							</th>
+							<th style="width:80%">
+								<bean:message key="sample.entry.panel.name"/>
+							</th>
+						</tr>
+	
+					</table>
+				</td>
+				<td  style="width:70%;vertical-align:top;">
+					<table style="margin-left: 3%;width:97%;" id="addTestTable">
+						<caption>
+							<bean:message key="sample.entry.available.tests"/>
+						</caption>
+						<tr>
+							<th style="width:5%">&nbsp;
+								
+							</th>
+							<th style="width:50%">
+								<bean:message key="sample.entry.available.test.names"/>
+							</th>
+							<th style="width:40%;display:none;" id="sectionHead">
+								Section
+							</th>
+	                        <th style="width:25%" style="display:none" id="userSampleTypeHead">
+	                            <bean:message  key="sample.entry.sample.type"/>
+	                        </th>
+	                        <th style="width:20%">
+	                              &nbsp;
+	                        </th>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		</div>
+		</div>
+	<br/>
+</div>
 
-				</table>
+<div id="viralLoadSampleAdd" style='display:none'>
+	<table width="100%">
+		<tr>
+			<td ></td>
+			<td colspan="3" class="sectionTitle">
+				<bean:message  key="sample.entry.project.title.specimen" />
 			</td>
-			<td  style="width:70%;vertical-align:top;">
-				<table style="margin-left: 3%;width:97%;" id="addTestTable">
-					<caption>
-						<bean:message key="sample.entry.available.tests"/>
-					</caption>
-					<tr>
-						<th style="width:5%">&nbsp;
-							
-						</th>
-						<th style="width:50%">
-							<bean:message key="sample.entry.available.test.names"/>
-						</th>
-						<th style="width:40%;display:none;" id="sectionHead">
-							Section
-						</th>
-                        <th style="width:25%" style="display:none" id="userSampleTypeHead">
-                            <bean:message  key="sample.entry.sample.type"/>
-                        </th>
-                        <th style="width:20%">
-                              &nbsp;
-                        </th>
-					</tr>
-				</table>
+		</tr>
+		<tr>
+			<td width="2%"></td>
+			<td width="38%"><bean:message key="sample.entry.project.ARV.dryTubeTaken" /></td>
+			<td width="60%">
+	
+				<html:checkbox name="<%=formName%>" 
+						value="true"
+					   property="ProjectDataVL.dryTubeTaken"
+					   styleId="vl.dryTubeTaken"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><bean:message key="sample.entry.project.ARV.edtaTubeTaken" /></td>
+			<td>
+				<html:checkbox name="<%=formName%>"
+						value="true"
+					   property="ProjectDataVL.edtaTubeTaken"
+					   styleId="vl.edtaTubeTaken"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="3" class="sectionTitle">
+				<bean:message  key="sample.entry.project.title.tests" />
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><bean:message key="sample.entry.project.ARV.viralLoadTest" /></td>
+			<td>
+				<html:checkbox name="<%=formName%>"
+						value="true"
+					   property="ProjectDataVL.viralLoadTest"
+					   styleId="vl.viralLoadTest"/>
+			</td>
+		</tr>
+		
+	</table>
+</div>
+
+<div id="EIDSampleAdd" style='display:none'>
+	<table width="100%">
+		<tr>
+			<td ></td>
+			<td colspan="3" class="sectionTitle">
+				<bean:message  key="sample.entry.project.title.specimen" />
+			</td>
+		</tr>
+		<tr>
+			<td width="2%"></td>
+			<td width="38%"><bean:message key="sample.entry.project.ARV.dryTubeTaken" /></td>
+			<td width="60%">
+	
+				<html:checkbox name="<%=formName%>"
+						value="true"
+					   property="ProjectDataEID.dryTubeTaken"
+					   styleId="eid.dryTubeTaken"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><bean:message key="sample.entry.project.title.dryBloodSpot" /></td>
+			<td>
+				<html:checkbox name="<%=formName%>"
+						value="true"
+					   property="ProjectDataEID.dbsTaken"
+					   styleId="eid.dbsTaken"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="3" class="sectionTitle">
+				<bean:message  key="sample.entry.project.title.tests" />
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><bean:message key="sample.entry.project.dnaPCR" /></td>
+			<td>
+				<html:checkbox name="<%=formName%>"
+						value="true"
+					   property="ProjectDataEID.dnaPCR"
+					   styleId="eid.dnaPCR"/>
 			</td>
 		</tr>
 	</table>
-	</div>
-	</div>
-<br/>
+</div>
