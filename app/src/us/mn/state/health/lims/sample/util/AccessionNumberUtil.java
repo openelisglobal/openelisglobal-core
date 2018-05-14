@@ -31,6 +31,7 @@ import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusSet;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.validator.GenericValidator;
 
 public class AccessionNumberUtil {
 
@@ -48,8 +49,21 @@ public class AccessionNumberUtil {
 		return accessionNumberValidator;
 	}
 
+	public static IAccessionNumberValidator getAccessionNumberValidator(String prefix) {
+		if( GenericValidator.isBlankOrNull(prefix)) {
+			return getAccessionNumberValidator();
+		}
+		try {
+			return new AccessionNumberValidatorFactory().getValidator("PROGRAMNUM");
+		} catch (LIMSInvalidConfigurationException e) {
+			LogEvent.logFatal("AccessionNumberUtil", "getAccessionNumberValidator", e.toString());
+		}
+
+		return accessionNumberValidator;
+	}
+
 	public static String getNextAccessionNumber(String optionalPrefix) throws IllegalStateException{
-		return getAccessionNumberValidator().getNextAvailableAccessionNumber(optionalPrefix);
+		return getAccessionNumberValidator(optionalPrefix).getNextAvailableAccessionNumber(optionalPrefix);
 	}
 
 	public static String getInvalidMessage(ValidationResults result){

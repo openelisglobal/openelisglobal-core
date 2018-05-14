@@ -57,6 +57,10 @@ public class ResultsUpdateDataSet implements IResultSaveService{
     public List<ResultSet> getModifiedResults(){
         return modifiedResults;
     }
+    
+    public void setModifiedResults(List<ResultSet> modifiedResults) {
+    	this.modifiedResults = modifiedResults;
+    }
 
     @Override
     public String getCurrentUserId(){

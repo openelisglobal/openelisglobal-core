@@ -36,6 +36,8 @@ import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.Repor
 import us.mn.state.health.lims.dataexchange.common.ITransmissionResponseHandler;
 import us.mn.state.health.lims.dataexchange.common.ReportTransmission;
 import us.mn.state.health.lims.dataexchange.common.ReportTransmission.HTTP_TYPE;
+import us.mn.state.health.lims.dataexchange.orderresult.DAO.HL7MessageOutDAOImpl;
+import us.mn.state.health.lims.dataexchange.orderresult.valueholder.HL7MessageOut;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
 import us.mn.state.health.lims.reports.dao.DocumentTrackDAO;
@@ -112,6 +114,12 @@ public class ResultExporter extends Thread {
 				Transaction tx = HibernateUtil.getSession().beginTransaction();
 
 				try {
+					HL7MessageOutDAOImpl hl7MessageDAO = new HL7MessageOutDAOImpl();
+					HL7MessageOut hl7Message = hl7MessageDAO.getByData(msg); 
+					if (hl7Message != null) {
+						hl7Message.setStatus(HL7MessageOut.SUCCESS);
+						hl7MessageDAO.update(hl7Message);
+					}
 					for (DocumentTrack document : documents) {
 						trackDAO.insertData(document);
 					}
@@ -133,7 +141,7 @@ public class ResultExporter extends Thread {
 			DocumentType type = getResultType();
 			Timestamp now = DateUtil.getNowAsTimestamp();
 			
-			if (!GenericValidator.isBlankOrNull(bookkeepingData)) {
+			if (!GenericValidator.isBlankOrNull(bookkeepingData) && !"null".equals(bookkeepingData)) {
 				String[] resultIdList = bookkeepingData.split(",");
 				
 				for( int i = 0; i < resultIdList.length; i++){

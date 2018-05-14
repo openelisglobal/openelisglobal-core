@@ -62,6 +62,7 @@ import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
 import us.mn.state.health.lims.common.util.StringUtil;
 //import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.validator.ActionError;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
@@ -352,12 +353,19 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
     private void addResultSets(Analysis analysis, Result result){
 		Sample sample = analysis.getSampleItem().getSample();
 		Patient patient = sampleHumanDAO.getPatientForSample(sample);
-		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
-		if( documents.isEmpty()){
-			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
-		}else{
+		if (finalResultAlreadySent(result)) {
+        	result.setResultEvent(Event.CORRECTION);
 			modifiedResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
+		} else {
+        	result.setResultEvent(Event.FINAL_RESULT);
+			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
 		}
+	}
+
+    // TO DO bug falsely triggered when preliminary result is sent, fails, retries and succeeds
+	private boolean finalResultAlreadySent(Result result) {
+		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
+		return documents.size() > 0;
 	}
 
 	private boolean analysisItemWillBeUpdated(AnalysisItem analysisItem){

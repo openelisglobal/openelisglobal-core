@@ -40,6 +40,7 @@ import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.CodedValueXmit;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultReportXmit;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultXmit;
@@ -130,6 +131,7 @@ public class ResultReportingCollator {
 		}
 		resultBean.setTypeResult(hl7type);
 		resultBean.setUpdateStatus(isUpdate ? "update" : "new");
+		resultBean.setLoinc(new ResultService(result).getLOINCCode());
 		results.add(resultBean);
 
 		SampleItem sampleItemForResult = result.getAnalysis().getSampleItem();
@@ -148,14 +150,14 @@ public class ResultReportingCollator {
 		testResult.setSampleType(codedSampleType);
 
 		CodedValueXmit codedTest = new CodedValueXmit();
-		if (forMalaria) {
+/*		if (forMalaria) {*/
 			ResultService resultService = new ResultService(result);
 			codedTest.setCode(resultService.getLOINCCode() == null ? "34" : resultService.getLOINCCode());
-		} else {
+/*		} else {
 			codedTest.setCode("34");
-		}
+		}*/
 		codedTest.setText(TestService.getUserLocalizedTestName( result.getAnalysis().getTest() ));
-		codedTest.setCodeName("LOINC");
+		codedTest.setCodeName("LN");
 		codedTest.setCodeSystem("2.16.840.1.113883.6.1");
 		testResult.setTest(codedTest);
 		if (forMalaria) {
@@ -234,9 +236,26 @@ public class ResultReportingCollator {
 			testResult.setPatientCountry(addressParts.get("Country"));
 		}
 		
+		testResult.setResultsEvent(result.getResultEvent());
+		
 		return true;
 	}
 	
+	//is this a result update (ie Final_Result) as opposed to a non-result update (Cancelled)
+	private boolean isResultUpdate(Result result) {
+		Event event = result.getResultEvent();
+		if (event == null) {
+			return true;
+		} else if (result.getResultEvent() == Event.FINAL_RESULT) {
+			return true;
+		} else if (result.getResultEvent() == Event.RESULT) {
+			return true;
+		} else if (result.getResultEvent() == Event.PRELIMINARY_RESULT) {
+			return true;
+		} 		
+		return false;
+	}
+
 	protected String getResultNote(Result result) {
 		if (result != null) {
             Analysis analysis = new Analysis();
@@ -257,8 +276,8 @@ public class ResultReportingCollator {
 	private boolean hasNoReportableResults(Result result, Patient patient) {
 		return noGUIDPatients.contains(patient.getId()) ||
 			   GenericValidator.isBlankOrNull(result.getValue()) ||
-			   (TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() ) && "0".equals(result.getValue()) ||
-				!VALIDATED_RESULT_STATUS_ID.equals(result.getAnalysis().getStatusId()) );
+			   (TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() ) && "0".equals(result.getValue()) /*||
+				!VALIDATED_RESULT_STATUS_ID.equals(result.getAnalysis().getStatusId())*/ );
 	}
 
 	public ResultReportXmit getResultReport() {

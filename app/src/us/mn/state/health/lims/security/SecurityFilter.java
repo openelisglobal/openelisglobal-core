@@ -17,6 +17,8 @@ import us.mn.state.health.lims.common.log.LogEvent;
 
 public class SecurityFilter implements Filter {
 	
+  private ArrayList<String> exceptions = new ArrayList<String>();
+  
 	public SecurityFilter() {
 	}
 
@@ -33,6 +35,7 @@ public class SecurityFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		boolean suspectedAttack = false;
+		boolean csrfSuspectedAttack = false;
 		ArrayList<String> attackList = new ArrayList<String>();
 		
 		//CSRF check for any "action" pages
@@ -42,14 +45,17 @@ public class SecurityFilter implements Filter {
 			String scheme = httpRequest.getScheme();
 			String host = httpRequest.getHeader("Host");
 			String contextPath = httpRequest.getContextPath();
-			String baseURL = scheme + "://" + host + contextPath;			
-			if  (referer == null) {
-				suspectedAttack = true;
-				attackList.add("CSRF- null referer");
-			} else if (!referer.startsWith(baseURL)) {
-				suspectedAttack = true;
-				attackList.add("CSRF- " + referer);
-			} 
+			String baseURL = scheme + "://" + host + contextPath;	
+
+      if (!hasCSRFExceptionRule(httpRequest.getRequestURI())) {
+  			if  (referer == null) {
+  			  csrfSuspectedAttack = true;
+  				attackList.add("CSRF- null referer");
+  			} else if (!referer.startsWith(baseURL)) {
+  			  csrfSuspectedAttack = true;
+  				attackList.add("CSRF- " + referer);
+  			} 
+      }
 		}
 			
 		//persistent XSS check 
@@ -76,31 +82,63 @@ public class SecurityFilter implements Filter {
 		httpResponse.addHeader("X-Frame-Options", "SAMEORIGIN");//enforces whether page is allowed to be an iframe in another website
 		httpResponse.addHeader("X-XSS-Protection","1"); //provides browser xss protection. attempts to cleanse.
 	
-		if (!suspectedAttack) {
-			chain.doFilter(request, httpResponse);
+		if (suspectedAttack) {
+      StringBuilder attackMessage = new StringBuilder();
+      String separator = "";
+      attackMessage.append(httpRequest.getRequestURI());
+      attackMessage.append(" suspected attack(s) of type: ");
+      for (String attack : attackList) {
+        attackMessage.append(separator);
+        separator = ",";
+        attackMessage.append(attack);
+      }
+      //should log suspected attempt
+      LogEvent.logWarn("SecurityFilter", "doFilter()", attackMessage.toString());
+      System.out.println(attackMessage.toString());
+      //send to safe page
+      httpResponse.sendRedirect("Dashboard.do");
+		} else if (csrfSuspectedAttack) {
+      StringBuilder attackMessage = new StringBuilder();
+      String separator = "";
+      attackMessage.append(httpRequest.getRequestURI());
+      attackMessage.append(" suspected attack(s) of type: ");
+      for (String attack : attackList) {
+        attackMessage.append(separator);
+        separator = ",";
+        attackMessage.append(attack);
+      }
+      //should log suspected attempt
+      LogEvent.logWarn("SecurityFilter", "doFilter()", attackMessage.toString());
+      System.out.println(attackMessage.toString());
+      //continue as this is not a perfect solution and may intercept correct requests
+      chain.doFilter(request, httpResponse);
 		} else {
-			StringBuilder attackMessage = new StringBuilder();
-			String separator = "";
-			attackMessage.append(httpRequest.getRequestURI());
-			attackMessage.append(" suspected attack(s) of type: ");
-			for (String attack : attackList) {
-				attackMessage.append(separator);
-				separator = ",";
-				attackMessage.append(attack);
-			}
-			
-			//should log suspected attempt
-			LogEvent.logWarn("SecurityFilter", "doFilter()", attackMessage.toString());
-			System.out.println(attackMessage.toString());
-			//send to safe page
-			httpResponse.sendRedirect("Dashboard.do");
+      chain.doFilter(request, httpResponse);
 		}
+	}
+	
+	private boolean hasCSRFExceptionRule(String contextPath) {
+	  for (String exception : exceptions) {
+  	  if (contextPath.contains(exception)) {
+  	    return true;
+  	  }
+	  }
+	  
+	  return false;
+	}
+	
+	public void addException(String exception) {
+	  exceptions.add(exception);
+	}
+	
+	private void addExceptions() {
+    exceptions.add("importAnalyzer");
 	}
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 		// TODO Auto-generated method stub
-		
+	  addExceptions();
 	}
 
 }

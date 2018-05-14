@@ -19,6 +19,7 @@ import java.util.List;
 
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 /**
@@ -70,4 +71,6 @@ public interface TypeOfSampleDAO extends BaseDAO {
 	public List<TypeOfSample> getTypesForDomainBySortOrder(SampleDomain human) throws LIMSRuntimeException;
 
     public TypeOfSample getTypeOfSampleByLocalAbbrevAndDomain( String localAbbrev, String domain) throws LIMSRuntimeException;
+
+	public TypeOfSample getSampleTypeFromTest(Test test);
 }

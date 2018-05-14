@@ -27,6 +27,7 @@ import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
 import us.mn.state.health.lims.address.valueholder.AddressPart;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.dataexchange.order.action.MessagePatient;
 import us.mn.state.health.lims.gender.dao.GenderDAO;
 import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
 import us.mn.state.health.lims.gender.valueholder.Gender;
@@ -201,6 +202,10 @@ public class PatientService implements IPatientService {
 	 */
 	public PatientService(String guid){
 		this(getPatientForGuid( guid));
+	}
+	
+	public PatientService(MessagePatient mPatient) {
+		this(patientDAO.getPatientByExternalId(mPatient.getExternalId()));
 	}
 
 	private static Patient getPatientForGuid(String guid){

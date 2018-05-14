@@ -83,6 +83,11 @@ public class TestIdentityService implements ITestIdentityService{
 	 */
 	@Override
 	public boolean doesTestExist(String name){
+		return testDAO.getTestByName(name) != null;
+	}
+	
+	@Override
+	public boolean doesActiveTestExist(String name){
 		return !testDAO.getActiveTestByName(name).isEmpty();
 	}
 
@@ -92,5 +97,15 @@ public class TestIdentityService implements ITestIdentityService{
 	@Override
 	public boolean doesPanelExist(String name){
 		return panelDAO.getIdForPanelName(name) != null;
+	}
+	
+	@Override
+	public boolean doesTestExistForLoinc(String loincCode) {
+		return testDAO.getTestsByLoincCode(loincCode) != null && testDAO.getTestsByLoincCode(loincCode).size() > 0;
+	}
+
+	@Override
+	public boolean doesActiveTestExistForLoinc(String loincCode) {
+		return testDAO.getActiveTestsByLoinc(loincCode) != null && testDAO.getActiveTestsByLoinc(loincCode).size() > 0;
 	}
 }

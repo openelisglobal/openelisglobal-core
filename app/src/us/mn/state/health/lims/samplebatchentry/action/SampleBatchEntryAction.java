@@ -109,8 +109,18 @@ public class SampleBatchEntryAction extends BaseSampleEntryAction {
     }
     request.setAttribute("facilityName", facilityName);
 
-    return mapping.findForward(forward);
+    return mapping.findForward(findForward(request));
   }
+
+	private String findForward(HttpServletRequest request) {
+		String method = request.getParameter("method");
+		if ("On Demand".equals(method)) {
+			return "ondemand";
+		} else if ("Pre-Printed".equals(method)) {
+			return "preprinted";
+		}
+		return "fail";
+	}
 
   private ActionMessages validate(HttpServletRequest request) {
     ActionMessages errors = new ActionMessages();

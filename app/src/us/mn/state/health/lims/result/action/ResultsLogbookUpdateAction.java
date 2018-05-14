@@ -72,6 +72,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
@@ -138,6 +139,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 		}
 	}
 
+	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception{
 
@@ -174,9 +176,8 @@ public class ResultsLogbookUpdateAction extends BaseAction {
             }
 
 			for(ResultSet resultSet : actionDataSet.getNewResults()){
-
+				resultSet.result.setResultEvent(Event.PRELIMINARY_RESULT);
 				resultDAO.insertData(resultSet.result);
-
 				if(resultSet.signature != null){
 					resultSet.signature.setResultId(resultSet.result.getId());
 					resultSigDAO.insertData(resultSet.signature);
@@ -195,6 +196,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
             }
 
 			for(ResultSet resultSet : actionDataSet.getModifiedResults()){
+				resultSet.result.setResultEvent(Event.RESULT);
 				resultDAO.updateData(resultSet.result);
 
 				if(resultSet.signature != null){
@@ -602,6 +604,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
 	}
 
+	@Override
 	protected ActionForward getForward(ActionForward forward, String accessionNumber, String analysisId){
 		ActionRedirect redirect = new ActionRedirect(forward);
 		if(!StringUtil.isNullorNill(accessionNumber))

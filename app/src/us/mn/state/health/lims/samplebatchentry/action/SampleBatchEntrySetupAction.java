@@ -16,6 +16,7 @@ import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.sample.action.BaseSampleEntryAction;
+import us.mn.state.health.lims.sample.form.ProjectData;
 
 public class SampleBatchEntrySetupAction extends BaseSampleEntryAction {
 
@@ -40,7 +41,9 @@ public class SampleBatchEntrySetupAction extends BaseSampleEntryAction {
     PropertyUtils.setProperty(dynaForm, "currentTime", DateUtil.getCurrentTimeAsText());
     PropertyUtils.setProperty(dynaForm, "sampleOrderItems.receivedTime",
             DateUtil.getCurrentTimeAsText());
-
+    PropertyUtils.setProperty(dynaForm, "ProjectDataVL", new ProjectData());
+    PropertyUtils.setProperty(dynaForm, "ProjectDataEID", new ProjectData());
+    
     addProjectList(dynaForm);
 
     if (FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition)) {

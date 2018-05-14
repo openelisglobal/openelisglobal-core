@@ -18,7 +18,7 @@
 		<many-to-one name="parentAnalysis" class="us.mn.state.health.lims.analysis.valueholder.Analysis" fetch="select">
             <column name="PARENT_ANALYSIS_ID" precision="10" scale="0" />
         </many-to-one>
-        <many-to-one name="test" class="us.mn.state.health.lims.test.valueholder.Test" fetch="select">
+        <many-to-one name="test" class="us.mn.state.health.lims.test.valueholder.Test" fetch="select" lazy="false">
             <column name="TEST_ID" precision="10" scale="0" />
         </many-to-one>
         <many-to-one name="sampleItem" class="us.mn.state.health.lims.sampleitem.valueholder.SampleItem" fetch="select">
