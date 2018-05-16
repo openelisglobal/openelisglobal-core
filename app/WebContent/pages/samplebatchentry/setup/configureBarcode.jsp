@@ -125,10 +125,7 @@ Barcode Method :
 				value="true" />
 			<bean:message key="sample.batchentry.barcode.label.facilityid"/>
 		</td>
-		<td>
-			<bean:message key="sample.batchentry.barcode.label.facilityid"/>:
-		</td>
-		<td>
+		<td><div id="facility-combobox">
 			<logic:equal value="false" name='<%=formName%>' property="sampleOrderItems.readOnly" >
 		        <html:select styleId="requesterId"
 		                     name="<%=formName%>"
@@ -145,7 +142,7 @@ Barcode Method :
 		    <logic:equal value="true" name='<%=formName%>' property="sampleOrderItems.readOnly" >
 		            <html:text styleId="requesterId" property="facilityID" name="<%=formName%>" style="width:300px" />
 		    </logic:equal>
-		</td>
+		</div></td>
 	</tr>
 	<tr>
 		<td></td>
