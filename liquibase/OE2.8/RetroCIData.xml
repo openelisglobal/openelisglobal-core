@@ -190,14 +190,14 @@
        </insert>
      </changeSet>  
      <changeSet author="paulsc" id="7"  context="CDIRetroCI" >
-     	<comment>Results admin missing access to tacqman DNA</comment>
+     	<comment> missing access to tacqman DNA</comment>
         <insert tableName="system_role_module">
              <column name="id" valueNumeric=" nextval( 'system_user_module_seq' ) "/>
              <column name="has_select" value="Y"/>
              <column name="has_add" value="Y"/>
              <column name="has_update"  value="Y"/>
              <column name="has_delete"  value="Y"/>
-             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = 'Results Admin' ) "/>
+             <column name="system_role_id" valueNumeric=" ( select id from system_role where name = '' ) "/>
              <column name="system_module_id" valueNumeric=" ( select id from system_module where name = 'AnalyzerResults:cobasDBS' ) " />
         </insert>
      </changeSet>

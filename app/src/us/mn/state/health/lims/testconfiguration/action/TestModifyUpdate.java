@@ -407,7 +407,7 @@ public class TestModifyUpdate extends BaseAction {
             params.highAge = highAge;
             testAddParams.limits.add(params);
 
-            if( gender){
+            if( gender ){
                 params = new ResultLimitParams();
                 params.gender = "F";
                 params.displayRange = (String)(((JSONObject) limitArray.get(i)).get("reportingRangeFemale"));

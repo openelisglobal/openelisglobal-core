@@ -54,17 +54,19 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
         boolean ignoreUsage = "true".equals(request.getParameter("ignoreUsage"));
 
 		ValidationResults result;
+		boolean projectFormNameUsed = ProjectForm.findProjectFormByFormId(projectFormName)!=null;
 		
 		if( ignoreYear || ignoreUsage ){
-			result = ProjectForm.findProjectFormByFormId(projectFormName)!=null? new ProgramAccessionValidator().validFormat(accessionNumber, !ignoreYear):
+			result = projectFormNameUsed ? new ProgramAccessionValidator().validFormat(accessionNumber, !ignoreYear):
 			AccessionNumberUtil.correctFormat(accessionNumber, !ignoreYear);			
 			if( result == ValidationResults.SUCCESS && !ignoreUsage){
 				result = AccessionNumberUtil.isUsed(accessionNumber) ? ValidationResults.SAMPLE_FOUND : ValidationResults.SAMPLE_NOT_FOUND;
 			}
 		}else{
             //year matters and number must not be used
-			result=ProjectForm.findProjectFormByFormId(projectFormName)!=null? new ProgramAccessionValidator().checkAccessionNumberValidity(accessionNumber, recordType, isRequired, projectFormName):
+			result = projectFormNameUsed ? new ProgramAccessionValidator().checkAccessionNumberValidity(accessionNumber, recordType, isRequired, projectFormName):
 			AccessionNumberUtil.checkAccessionNumberValidity(accessionNumber, recordType, isRequired, projectFormName);		
+			
 		}
 		
 
@@ -79,7 +81,11 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 			    returnData = result.name();
 			    break;
 			default:
+			  if (projectFormNameUsed) {
+			    returnData = !ignoreUsage ? new ProgramAccessionValidator().getInvalidMessage(result) : new ProgramAccessionValidator().getInvalidFormatMessage( result );
+			  } else {
 			    returnData = !ignoreUsage ? AccessionNumberUtil.getInvalidMessage(result) : AccessionNumberUtil.getInvalidFormatMessage( result );
+			  }
 		}
 
 		response.setCharacterEncoding("UTF-8");

@@ -18,9 +18,10 @@ package us.mn.state.health.lims.result.valueholder;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
-import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
+import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
 public class Result extends EnumValueItemImpl {
 
@@ -40,6 +41,8 @@ public class Result extends EnumValueItemImpl {
     private int significantDigits;
 	private ValueHolder parentResult;
     private int grouping;
+    
+    private Event resultEvent;
 
 	public Result() {
 		super();
@@ -81,10 +84,12 @@ public class Result extends EnumValueItemImpl {
 		this.resultType = resultType;
 	}
 
+	@Override
 	public String getSortOrder() {
 		return sortOrder;
 	}
 
+	@Override
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
@@ -153,4 +158,12 @@ public class Result extends EnumValueItemImpl {
     public void setGrouping( int grouping ){
         this.grouping = grouping;
     }
+
+	public Event getResultEvent() {
+		return resultEvent;
+	}
+
+	public void setResultEvent(Event resultEvent) {
+		this.resultEvent = resultEvent;
+	}
 }

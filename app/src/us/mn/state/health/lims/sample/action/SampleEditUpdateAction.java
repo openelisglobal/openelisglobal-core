@@ -16,11 +16,24 @@
  */
 package us.mn.state.health.lims.sample.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.DynaActionForm;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -30,13 +43,20 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.RequesterService;
+import us.mn.state.health.lims.common.services.SampleAddService;
 import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
+import us.mn.state.health.lims.common.services.SampleOrderService;
+import us.mn.state.health.lims.common.services.SampleService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
+import us.mn.state.health.lims.common.services.registration.ResultUpdateRegister;
+import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.ActionError;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
@@ -53,6 +73,11 @@ import us.mn.state.health.lims.person.valueholder.Person;
 import us.mn.state.health.lims.requester.dao.SampleRequesterDAO;
 import us.mn.state.health.lims.requester.daoimpl.SampleRequesterDAOImpl;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
+import us.mn.state.health.lims.result.action.util.ResultSet;
+import us.mn.state.health.lims.result.action.util.ResultsUpdateDataSet;
+import us.mn.state.health.lims.result.dao.ResultDAO;
+import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
+import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
 import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -69,14 +94,7 @@ import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class SampleEditUpdateAction extends BaseAction {
+public class SampleEditUpdateAction extends BaseAction{
 
 	private static final String DEFAULT_ANALYSIS_TYPE = "MANUAL";
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
@@ -98,6 +116,7 @@ public class SampleEditUpdateAction extends BaseAction {
 		CANCELED_SAMPLE_STATUS_ID = StatusService.getInstance().getStatusID(SampleStatus.Canceled);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -126,6 +145,9 @@ public class SampleEditUpdateAction extends BaseAction {
         List<SampleItem> updateSampleItemList = createSampleItemUpdateList( existingTests );
         List<SampleItem> cancelSampleItemList = createCancelSampleList(existingTests, cancelAnalysisList);
         List<Analysis> addAnalysisList = createAddAanlysisList((List<SampleEditItem>) dynaForm.get("possibleTests"));
+        
+		List<IResultUpdate> updaters = ResultUpdateRegister.getRegisteredUpdaters();
+		ResultsUpdateDataSet actionDataSet = new ResultsUpdateDataSet( currentUserId );
 
         if( updatedSample == null){
             updatedSample = sampleDAO.getSampleByAccessionNumber(dynaForm.getString("accessionNumber"));
@@ -163,7 +185,12 @@ public class SampleEditUpdateAction extends BaseAction {
 
             for (Analysis analysis : cancelAnalysisList) {
                 analysisDAO.updateData(analysis);
+                addExternalResultsToDeleteList(analysis, patient, updatedSample, actionDataSet);
             }
+            
+    		for(IResultUpdate updater : updaters){
+    			updater.postTransactionalCommitUpdate(actionDataSet);
+    		}
 
             for (Analysis analysis : addAnalysisList) {
                 if (analysis.getId() == null) {
@@ -266,8 +293,7 @@ public class SampleEditUpdateAction extends BaseAction {
         } finally {
             HibernateUtil.closeSession();
         }
-
-
+		
 		String sampleEditWritable = (String) request.getSession().getAttribute(IActionConstants.SAMPLE_EDIT_WRITABLE);
 
 		if (GenericValidator.isBlankOrNull(sampleEditWritable)) {
@@ -277,10 +303,39 @@ public class SampleEditUpdateAction extends BaseAction {
 			params.put("type", sampleEditWritable);
 			return getForwardWithParameters(mapping.findForward(FWD_SUCCESS), params);
 		}
+		
 
 	}
 
-    private List<SampleItem> createSampleItemUpdateList( List<SampleEditItem> existingTests ){
+    private void addExternalResultsToDeleteList(Analysis analysis, Patient patient, Sample updatedSample, ResultsUpdateDataSet actionDataSet) {
+    	List<ResultSet> deletedResults = new ArrayList<ResultSet>();
+    	if (!GenericValidator.isBlankOrNull(analysis.getSampleItem().getSample().getReferringId())) {
+	    	ResultDAO resultDAO = new ResultDAOImpl();
+	        List<Result> results = resultDAO.getResultsByAnalysis(analysis);
+	        if (results.size() == 0) {
+	        	Result result = createCancelResult(analysis);
+	        	results.add(result);
+	        }
+	        for (Result result : results) {
+	            result.setResultEvent(Event.TESTING_NOT_DONE);
+	            
+	            deletedResults.add(new ResultSet(result, null, null, patient, updatedSample, null, false));
+	        }
+    	}
+    	actionDataSet.setModifiedResults(deletedResults);
+		
+	}
+
+	private Result createCancelResult(Analysis analysis) {
+		Result result = new Result();
+    	result.setAnalysis(analysis);
+    	result.setMinNormal((double) 0);
+    	result.setMaxNormal((double) 0);
+    	result.setValue("cancel");
+		return result;
+	}
+
+	private List<SampleItem> createSampleItemUpdateList( List<SampleEditItem> existingTests ){
         List<SampleItem> modifyList = new ArrayList<SampleItem>(  );
 
         for( SampleEditItem editItem : existingTests){
@@ -496,10 +551,12 @@ public class SampleEditUpdateAction extends BaseAction {
 		return new Analysis();
 	}
 
+	@Override
 	protected String getPageTitleKey() {
 		return StringUtil.getContextualKeyForKey("sample.edit.title");
 	}
 
+	@Override
 	protected String getPageSubtitleKey() {
 		return StringUtil.getContextualKeyForKey("sample.edit.subtitle");
 	}

@@ -16,7 +16,7 @@
     CREATE SEQUENCE clinlims.barcode_label_info_seq START 1; 
   </sql>
 </changeSet>
-<changeSet author="csteele" id="2" context="ci_regional,ci_general">
+<changeSet author="csteele" id="2">
 	<comment>Enable audit trail to track changes to barcode</comment>
   <sql>
     INSERT INTO clinlims.reference_tables (id, name, keep_history, is_hl7_encoded)

@@ -17,19 +17,43 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
+import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.Globals;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.IResultSaveService;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
+import us.mn.state.health.lims.common.services.ResultSaveService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.services.beanAdapters.ResultSaveBeanAdapter;
 import us.mn.state.health.lims.common.services.registration.ValidationUpdateRegister;
 import us.mn.state.health.lims.common.services.registration.interfaces.IResultUpdate;
@@ -38,6 +62,7 @@ import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
 import us.mn.state.health.lims.common.util.StringUtil;
 //import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.validator.ActionError;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker.Event;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.daoimpl.NoteDAOImpl;
@@ -65,12 +90,6 @@ import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
-import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
 
 public class ResultValidationSaveAction extends BaseResultValidationAction implements IResultSaveService  {
 
@@ -334,12 +353,19 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
     private void addResultSets(Analysis analysis, Result result){
 		Sample sample = analysis.getSampleItem().getSample();
 		Patient patient = sampleHumanDAO.getPatientForSample(sample);
-		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
-		if( documents.isEmpty()){
-			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
-		}else{
+		if (finalResultAlreadySent(result)) {
+        	result.setResultEvent(Event.CORRECTION);
 			modifiedResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
+		} else {
+        	result.setResultEvent(Event.FINAL_RESULT);
+			newResultSet.add(new ResultSet(result, null,null, patient, sample, null, false));
 		}
+	}
+
+    // TO DO bug falsely triggered when preliminary result is sent, fails, retries and succeeds
+	private boolean finalResultAlreadySent(Result result) {
+		List<DocumentTrack> documents =  documentTrackDAO.getByTypeRecordAndTable(RESULT_REPORT_ID, RESULT_TABLE_ID, result.getId());
+		return documents.size() > 0;
 	}
 
 	private boolean analysisItemWillBeUpdated(AnalysisItem analysisItem){

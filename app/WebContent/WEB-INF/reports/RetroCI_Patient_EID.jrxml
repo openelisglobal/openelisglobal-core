@@ -4,10 +4,10 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="448"/>
+	<property name="ireport.y" value="205"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
@@ -139,55 +139,162 @@
 	</columnHeader>
 	<detail>
 		<band height="448" splitType="Stretch">
-			<staticText>
-				<reportElement key="staticText-1" x="1" y="7" width="317" height="16" isPrintInFirstWholeBand="true"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Résultats PCR – dépistage Précoce Enfant VIH :]]></text>
-			</staticText>
+			<rectangle>
+				<reportElement x="167" y="210" width="174" height="20"/>
+			</rectangle>
+			<image>
+				<reportElement x="10" y="168" width="114" height="20"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "RESULTATS.jpg"]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement x="167" y="230" width="174" height="20"/>
+			</rectangle>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-1" x="163" y="70" width="172" height="17"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{hiv_status} == null ? "Négatif" : $F{hiv_status}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement key="staticText-3" x="1" y="70" width="144" height="17"/>
-				<textElement/>
-				<text><![CDATA[Résultat du diagnostic PCR :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement key="staticText-4" x="1" y="134" width="206" height="25"/>
+				<reportElement key="textField-2" x="175" y="232" width="94" height="17"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Commentaire Laboratoire:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement key="staticText-5" x="1" y="89" width="144" height="17"/>
-				<textElement/>
-				<text><![CDATA[Rang de la PCR:]]></text>
-			</staticText>
-			<textField isBlankWhenNull="false">
-				<reportElement key="textField-2" x="163" y="89" width="172" height="17"/>
-				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{pcr_type} == null ? "Inconnu" : $F{pcr_type}.equals("First PCR") ? "1" : $F{pcr_type}.equals("Second PCR") ? "2" : $F{pcr_type}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-190" x="47" y="37" width="473" height="19" isRemoveLineWhenBlank="true"/>
+				<reportElement key="textField-190" x="130" y="102" width="339" height="15" isRemoveLineWhenBlank="true"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{virologyEidQaEvent} == null ? "Etat de l'échantillon:Normal" :  "Etat de l'échantillon:"+$F{virologyEidQaEvent}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{virologyEidQaEvent} == null ? "Normal (3 spots de sang collectés selon les procédures nationales)" : $F{virologyEidQaEvent}+" (3 spots de sang collectés selon les procédures nationales)"]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="351" y="344" width="191" height="102"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "EIDSign.jpg"]]></imageExpression>
+			</image>
+			<image onErrorType="Blank">
+				<reportElement x="257" y="2" width="260" height="24"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "EID_LaboRef.jpg"]]></imageExpression>
+			</image>
 			<staticText>
-				<reportElement x="19" y="19" width="366" height="16"/>
-				<textElement verticalAlignment="Bottom">
-					<font size="8" isItalic="true"/>
+				<reportElement x="130" y="86" width="301" height="15"/>
+				<textElement/>
+				<text><![CDATA[Sang total sur EDTA  ou sur  Papier Buvard Type Whatman 903]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="86" width="115" height="15"/>
+				<textElement>
+					<font isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[(Analyseur : COBAS AmpliPrep/COBAS TaqMan- Roche) Echantillon : DBS]]></text>
+				<text><![CDATA[Type de prélèvement :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="118" width="115" height="15"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Analyseur :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="102" width="115" height="15"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Etat de l’échantillon :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="137" width="416" height="15"/>
+				<textElement/>
+				<text><![CDATA[Cobas Ampliprep/Cobas Taqman HIV 1 Qualitative (HI2QCAP)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="137" width="115" height="15"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Trousse commerciale:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="118" width="356" height="15"/>
+				<textElement/>
+				<text><![CDATA[Cobas Ampliprep/Cobas Taqman]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="70" width="431" height="15"/>
+				<textElement/>
+				<text><![CDATA[Recherche de l’ADN du virus HIV-1 par amplification génétique (PCR) ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="12" y="70" width="89" height="15"/>
+				<textElement>
+					<font isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Type d’Examen : ]]></text>
 			</staticText>
 			<image>
-				<reportElement x="274" y="273" width="267" height="102"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "EIDSign.jpg"]]></imageExpression>
+				<reportElement x="10" y="29" width="476" height="35"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "EXAMEN_EID.jpg"]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement x="10" y="210" width="157" height="20"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="10" y="190" width="157" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="19" y="211" width="100" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[HIV-1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="192" width="100" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Virologie]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-1" x="175" y="211" width="105" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{hiv_status} == null ? "Négatif" : $F{hiv_status}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="10" y="272" width="189" height="20"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "INTERPRETATIONS.jpg"]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement x="10" y="230" width="157" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement key="staticText-5" x="19" y="232" width="106" height="18"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Rang de la PCR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="297" width="401" height="151"/>
+				<textElement/>
+				<text><![CDATA[1-	Si la PCR sur ADN est positive sur le premier prélèvement (PCR1),  refaire un deuxième prélèvement (PCR2) pour une deuxième PCR dont le but est de confirmer le premier résultat. Et commencer immédiatement le traitement antirétroviral
+
+2-	Si la PCR sur ADN est négative, l’enfant n’est pas infecté par le VIH
+a.	Prélever l’enfant pour un autre test VIH à l’âge de trois mois si le premier test a été fait chez un enfant âgé de moins de trois mois
+b.	Si l’enfant est sous allaitement maternel, répéter la PCR  6 semaines après l’arrêt de l’allaitement pour avoir le statut définitif de l’enfant
+
+3-	En cas de résultats discordants entre la PCR1 et la PCR2, faire un troisième prélèvement pour avoir le statut définitif de l’enfant
+
+]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="167" y="190" width="174" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="175" y="190" width="99" height="17"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Résultats]]></text>
+			</staticText>
+			<image onErrorType="Blank">
+				<reportElement x="365" y="189" width="169" height="60"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "ciphiaLogo.jpg"]]></imageExpression>
 			</image>
 		</band>
 		<band height="448">
@@ -647,12 +754,14 @@
 	<columnFooter>
 		<band height="100" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText-2" x="1" y="8" width="551" height="92"/>
-				<textElement/>
-				<text><![CDATA[LEXIQUE
-Si Résultat PCR = Positif              Faire un second prélèvement pour confirmation,
-                                                     s’il s’agit d’une première PCR
-Si Résultat PCR = indéterminé     Faire un second prélèvement pour confirmation
+				<reportElement key="staticText-2" x="4" y="23" width="551" height="77"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[
+Les tests sont réalisés en présence de contrôles internes positif et négatif  qui permettent de valider le résultat
+Le test est validé sur DBS ou sang total prélevé sur EDTA. L’utilisation d’autres types de support peut engendrer des faux positifs ou faux négatifs ; par exemple l’héparine inhibe la PCR
+La performance de ce test a été évaluée uniquement sur HIV-1 group O et N, et non sur HIV-2
 ]]></text>
 			</staticText>
 			<line>
@@ -664,6 +773,10 @@ Si Résultat PCR = indéterminé     Faire un second prélèvement pour confirma
 					<pen lineStyle="Dashed"/>
 				</graphicElement>
 			</line>
+			<image onErrorType="Blank">
+				<reportElement x="4" y="5" width="337" height="12"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+"PRECAUTIONS.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</columnFooter>
 	<pageFooter>

@@ -247,9 +247,9 @@ vl = new VLProjectChecker();
 			<bean:message key="patient.project.labNo" />
 		</td>
 		<td>
-			<div class="blank"><bean:message key="sample.entry.project.LART"/></div>
+			<div class="blank"><bean:message key="sample.entry.project.LVL"/></div>
 			<INPUT type="text" name="vl.labNoForDisplay" id="vl.labNoForDisplay" size="5" class="text"
-			   	onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LART"/>', false ); makeDirty();"
+			   	onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LVL"/>', false ); makeDirty();"
 			   	maxlength="5" />
 		  	<app:text name="<%=formName%>" property="labNo"
 				styleClass="text" style="display: none;"
