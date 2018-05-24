@@ -33,27 +33,47 @@
          <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
     </definition> 
     
+    <definition name="sampleStudyBatchEntryOnDemandDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleStudyBatchEntryOnDemandCore"/>
+         <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
+    </definition> 
+    
     <definition name="sampleBatchEntryPrePrintedDefinition" extends="baseDefinition">
          <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
          <put name="body" value="sampleBatchEntryPrePrintedCore"/>
          <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
     </definition> 
+    
+    <definition name="sampleStudyBatchEntryPrePrintedDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleStudyBatchEntryPrePrintedCore"/>
+         <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
+    </definition> 
 
-    <definition name="sampleBatchEntrySetupCore" path="/pages/samplebatchentry/sampleBatchEntrySetup.jsp">
-        <put name="sampleOrder" value="/pages/samplebatchentry/sampleOrder.jsp" />
-		<put name="addSample" value="/pages/samplebatchentry/sampleAdd.jsp"/>
-		<put name="configureLabels" value="/pages/samplebatchentry/configureBarcode.jsp"/>
+    <definition name="sampleBatchEntrySetupCore" path="/pages/samplebatchentry/setup/sampleBatchEntrySetup.jsp">
+        <put name="sampleOrder" value="/pages/samplebatchentry/setup/sampleOrder.jsp" />
+		<put name="addSample" value="/pages/samplebatchentry/setup/sampleAdd.jsp"/>
+		<put name="configureLabels" value="/pages/samplebatchentry/setup/configureBarcode.jsp"/>
 	</definition>
 
-    <definition name="sampleBatchEntryOnDemandCore" path="/pages/samplebatchentry/sampleBatchEntry.jsp">
+    <definition name="sampleBatchEntryOnDemandCore" path="/pages/samplebatchentry/routine/sampleBatchEntry.jsp">
 		<put name="patientInfo"  value="batchEntryPatientManagementCore" />
-		<put name="entryMethod" value="OnDemandEntry.jsp" />
+		<put name="entryMethod" value="/pages/samplebatchentry/routine/OnDemandEntry.jsp" />
 	</definition>
 
-    <definition name="sampleBatchEntryPrePrintedCore" path="/pages/samplebatchentry/sampleBatchEntry.jsp">
+    <definition name="sampleBatchEntryPrePrintedCore" path="/pages/samplebatchentry/routine/sampleBatchEntry.jsp">
 		<put name="patientInfo"  value="batchEntryPatientManagementCore" />
-		<put name="entryMethod" value="PrePrintedEntry.jsp" />
+		<put name="entryMethod" value="/pages/samplebatchentry/routine/PrePrintedEntry.jsp" />
 	</definition>
+
+    <definition name="sampleStudyBatchEntryOnDemandCore" path="/pages/samplebatchentry/study/sampleBatchEntry.jsp">
+    <put name="entryMethod" value="/pages/samplebatchentry/study/OnDemandEntry.jsp" />
+  </definition>
+
+    <definition name="sampleStudyBatchEntryPrePrintedCore" path="/pages/samplebatchentry/study/sampleBatchEntry.jsp">
+    <put name="entryMethod" value="/pages/samplebatchentry/study/PrePrintedEntry.jsp" />
+  </definition>
 
 	<definition name="batchEntryPatientManagementCore" path="/pages/samplebatchentry/patientManagement.jsp">
 		<put name="patientSearch"  value="/pages/samplebatchentry/patientSearch.jsp" />

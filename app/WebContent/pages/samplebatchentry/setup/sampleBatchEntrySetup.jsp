@@ -126,11 +126,11 @@ function /*void*/ nextPage() {
     window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
     var form = window.document.forms[0];
     //decide page to navigate to based on method of labels
-	if (document.getElementsByName('method')[0].value == 'On Demand') {
-		form.action = "SampleBatchEntryOnDemand.do";
-	} else if (document.getElementsByName('method')[0].value == 'Pre-Printed'){
-		form.action = "SampleBatchEntryPrePrinted.do";
-	}
+    if (document.getElementById('study').value == "routine") {
+		form.action = "SampleBatchEntry.do";
+    } else {
+    	form.action = "SampleBatchEntryByProject.do";
+    }
     form.submit();
 }
 
