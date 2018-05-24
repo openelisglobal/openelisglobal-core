@@ -1,12 +1,13 @@
 package us.mn.state.health.lims.common.servlet.barcode;
 
-import javax.servlet.ServletException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionMessage;
@@ -51,6 +52,7 @@ public class LabelMakerServlet extends HttpServlet implements IActionConstants{
     }
     // get parameters
     String labNo = request.getParameter("labNo");
+    String programCode = request.getParameter("programCode");
     String patientId = request.getParameter("patientId");
     String type = request.getParameter("type");
     String quantity = request.getParameter("quantity");
@@ -75,7 +77,7 @@ public class LabelMakerServlet extends HttpServlet implements IActionConstants{
       labNo = labNo.replace('-', '.');
 
     // validate the given parameters
-    ActionMessages errors = validate(labNo, patientId, type, quantity, override);
+    ActionMessages errors = validate(labNo, programCode,  patientId, type, quantity, override);
     if (!errors.isEmpty()) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       response.setContentType("text/html; charset=utf-8");
@@ -117,7 +119,7 @@ public class LabelMakerServlet extends HttpServlet implements IActionConstants{
     } else {
       response.setContentType("application/pdf");
       response.addHeader("Content-Disposition", "inline; filename=" + "sample.pdf");
-      response.setContentLength((int) labelAsOutputStream.size());
+      response.setContentLength(labelAsOutputStream.size());
       labelAsOutputStream.writeTo(response.getOutputStream());
       response.getOutputStream().flush();
       response.getOutputStream().close();
@@ -127,13 +129,14 @@ public class LabelMakerServlet extends HttpServlet implements IActionConstants{
   /**
    * Validate the given parameters
    * @param labNo     Make sure it is properly formatted
+   * @param programCode	  Optional variable to tell what accessionNumberUtil to get
    * @param patientId Ensure is int
    * @param type      Ensure is default, specimen, order, or blank
    * @param quantity  Ensure is int
    * @param override  Ensure is bool 
    * @return          any errors that were generated along the way
    */
-  private ActionMessages validate(String labNo, String patientId, String type, String quantity,
+  private ActionMessages validate(String labNo, String programCode, String patientId, String type, String quantity,
           String override) {
     
     ActionMessages errors = new ActionMessages();
@@ -155,7 +158,7 @@ public class LabelMakerServlet extends HttpServlet implements IActionConstants{
     }
     // Validate "labNo" (either labNo, labNo.itemNo)
     IAccessionNumberValidator accessionNumberValidator = AccessionNumberUtil
-            .getAccessionNumberValidator();
+            .getAccessionNumberValidator(programCode);
     String accessionNumber;
     String sampleItemNumber;
     if (labNo.indexOf(".") > 0) {
@@ -166,7 +169,7 @@ public class LabelMakerServlet extends HttpServlet implements IActionConstants{
       sampleItemNumber = "0";
     }
     if (!(IAccessionNumberValidator.ValidationResults.SUCCESS == accessionNumberValidator
-            .validFormat(accessionNumber, false)) || !GenericValidator.isInt(sampleItemNumber)) {
+            .validFormat(accessionNumber, false))) {
       ActionError error = new ActionError("barcode.label.error.accession.invalid");
       errors.add(ActionMessages.GLOBAL_MESSAGE, error);
     }
