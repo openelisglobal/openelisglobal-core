@@ -10,6 +10,14 @@
             <form-property name="sortBy"  type="java.lang.String"/>
             <form-property name="eOrders" type="java.util.List" />
         </form-bean>
+        
+        <form-bean name="DataSubmissionForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="dataSubUrl" type="us.mn.state.health.lims.siteinformation.valueholder.SiteInformation" />
+            <form-property name="indicators" type="java.util.List" />
+            <form-property name="month" type="java.lang.Integer" />
+            <form-property name="year" type="java.lang.Integer" />
+        </form-bean>
 
 		<!-- SAMPLE ENTRY -->
 		<form-bean name="samplePatientEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -1009,6 +1017,14 @@
         <action path="/ElectronicOrders" name="ElectronicOrderViewForm" type="us.mn.state.health.lims.dataexchange.order.action.ElectronicOrderViewAction">
           <forward name="success" path="electronicOrderViewDefinition" />
         </action>
+        
+        <action path="/DataSubmission" name="DataSubmissionForm" type="us.mn.state.health.lims.datasubmission.action.DataSubmissionAction" >
+            <forward name="success" path="dataSubmissionDefinition" />
+        </action>
+        
+        <action path="/DataSubmissionSave" name="DataSubmissionForm" type="us.mn.state.health.lims.datasubmission.action.DataSubmissionSaveAction" >
+            <forward name="success" path="/DataSubmission.do" />
+        </action>
 
 		<action path="/Cancel" forward="homePageDefinition" />
 		<action path="/Dashboard" forward="homePageDefinition" />
@@ -1022,7 +1038,7 @@
 		   <forward name="success" path="masterListsPageDefinition" />
 	    </action>
 
-
+        
         <action path="/TestManagementConfigMenu" name="testManagementConfigForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
                 <forward name="success" path="testManagementConfigDefinition"  />
         </action>
