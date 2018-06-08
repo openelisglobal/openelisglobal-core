@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.util.SystemConfiguration,
 	us.mn.state.health.lims.common.util.ConfigurationProperties,
-	us.mn.state.health.lims.common.formfields.AdminFormFields,us.mn.state.health.lims.common.formfields.AdminFormFields.Field"%>
+	us.mn.state.health.lims.common.formfields.AdminFormFields,us.mn.state.health.lims.common.formfields.AdminFormFields.Field,
+	us.mn.state.health.lims.siteinformation.valueholder.SiteInformation,
+	us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl"%>
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
 <%@ taglib uri="/tags/struts-logic" prefix="logic"%>
@@ -11,7 +13,8 @@
 
 <%!String permissionBase = SystemConfiguration.getInstance()
 			.getPermissionAgent();
-	AdminFormFields adminFields = AdminFormFields.getInstance();%>
+	AdminFormFields adminFields = AdminFormFields.getInstance();
+	SiteInformation dataSubmission = (new SiteInformationDAOImpl()).getSiteInformationByName("Data Submission");%>
 <table cellpadding="0" cellspacing="1" width="100%" align="left">
 	<%--id is important for activating the menu tabs: see tabs.jsp from struts-menu for how masterListsSubMenu is used--%>
 	<%-- similar code will need to be added in the left panel and in tabs.jsp for any menu tab that has the submenu on the left hand side--%>
@@ -452,6 +455,16 @@
 		<li><html:link action="/BarcodeConfiguration">
 				<bean:message key="barcodeconfiguration.browse.title" />
 		</html:link></li>
+		
+		<%
+			if ("true".equalsIgnoreCase((new SiteInformationDAOImpl()).getSiteInformationByName("Data Submission").getValue())) {
+		%>
+		<li><html:link action="/DataSubmission">
+				<bean:message key="datasubmission.browse.title" />
+		</html:link></li>
+		<%
+			}
+		%>
 		
 		<li><html:link action="/ListPlugins">
 				<bean:message key="plugin.menu.list.plugins" />

@@ -21,5 +21,7 @@
   <include file="OE8.2/systemmodule.xml" />
   <include file="OE8.2/systemrolemodule.xml" />
   <include file="OE8.2/Organization.xml" />
+  <include file="OE8.2/dataindicator.xml" />
+  <include file="OE8.2/siteinformation.xml" />
  
   </databaseChangeLog> 
