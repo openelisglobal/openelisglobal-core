@@ -150,7 +150,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
             if (splitLine[0].equals(currentAccessionNumber)) {
                 merge(splitBase, splitLine);
             } else {
-                if (currentAccessionNumber != null && writeAble(splitBase[18].trim())) {
+                if (currentAccessionNumber != null && writeAble(splitBase[16].trim())) {
                     
                                    
                     writeConsolidatedBaseToBuffer(buffer, splitBase);
@@ -159,7 +159,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
                 currentAccessionNumber = splitBase[0];
                 }
         }
-        if (writeAble(splitBase[18].trim()))
+        if (writeAble(splitBase[16].trim()))
             writeConsolidatedBaseToBuffer(buffer, splitBase);
            }
 
