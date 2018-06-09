@@ -40,6 +40,7 @@ public class VLColumnBuilder extends CIColumnBuilder {
         defineBasicColumns();
         add("Viral Load", "Viral Load", NONE );
         add("Viral Load", "Viral Load log", LOG );
+        add("type_of_sample_name", "Type_of_sample", NONE );
         add("started_date"     ,"STARTED_DATE", NONE);
         add("completed_date"     ,"COMPLETED_DATE", NONE);
         add("released_date"     ,"RELEASED_DATE", NONE);
@@ -97,7 +98,7 @@ public class VLColumnBuilder extends CIColumnBuilder {
 	    String highDatePostgres = postgresDateFormat.format(dateRange.getHighDate());
 	    query.append( SELECT_SAMPLE_PATIENT_ORGANIZATION );
 	    // all crosstab generated tables need to be listed in the following list and in the WHERE clause at the bottom
-	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, r.value as \"Viral Load\", demo.*, currentARVTreatmentINNs.* ");
+	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, r.value as \"Viral Load\",a.type_of_sample_name, demo.*, currentARVTreatmentINNs.* ");
 	
 	    // ordinary lab (sample and patient) tables
 	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +

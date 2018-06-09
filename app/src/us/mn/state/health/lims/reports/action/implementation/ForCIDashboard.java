@@ -157,11 +157,11 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
                 }
                 splitBase = splitLine;
                 currentAccessionNumber = splitBase[0];
-            }
+                }
         }
         if (writeAble(splitBase[18].trim()))
             writeConsolidatedBaseToBuffer(buffer, splitBase);
-    }
+           }
 
 	
 	
@@ -169,7 +169,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 		
 		       
         String workingResult = result.split("\\(")[0].trim();
-        //System.out.println("result=" + result + " / workingResult= " + workingResult);
+       // System.out.println("result=" + result + " / workingResult= " + workingResult);
         String[] splitLine = indicStr.split(":");
         String indic = splitLine[1];
         if (indic.equals("Unsuppressed VL"))
@@ -211,7 +211,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 
 	private CSVColumnBuilder getColumnBuilder(String projectId) {
 		String projectTag = CIColumnBuilder.translateProjectId(projectId);
-		return new ForDashboardVLColumnBuilder(dateRange, projectStr);
+		return new ForCIDashboardColumnBuilder(dateRange, projectStr);
 		
 	}
 		

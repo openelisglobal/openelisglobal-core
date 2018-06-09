@@ -113,7 +113,7 @@ function setDefaultTests( div ) {
 		return;
 	}
 	var tests = new Array();
-	tests = new Array ("vl.viralLoadTest", "vl.edtaTubeTaken");
+	tests = new Array ("vl.viralLoadTest");
 	
 	for( var i = 0; i < tests.length; i++ ){
 		var testId = tests[i];
@@ -302,6 +302,19 @@ function clearFormElements(fieldIds) {
 				   onchange="vl.checkSampleItem($('vl.edtaTubeTaken'));" />
 		</td>
 	</tr>
+	
+	<tr>
+			<td></td>
+			<td><bean:message key="sample.entry.project.title.dryBloodSpot" /></td>
+			<td>
+				<html:checkbox name="<%=formName%>"
+					   property="ProjectData.dbsvlTaken"
+					   styleId="vl.dbsvlTaken"
+					   onchange="vl.checkSampleItem($('vl.dbsvlTaken'));" />
+			</td>
+		</tr>	
+	
+	
 	<tr>
 		<td></td>
 		<td colspan="3" class="sectionTitle">
