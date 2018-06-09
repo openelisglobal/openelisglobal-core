@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="us.mn.state.health.lims.datasubmission.valueholder.DataValue" table="DATA_VALUE" optimistic-lock="version" dynamic-update="true">
+        <id name="id" type="us.mn.state.health.lims.hibernate.resources.usertype.LIMSStringNumberUserType">
+            <column name="ID" precision="10" scale="0" />
+            <generator class="sequence">
+              <param name="sequence">data_value_seq</param>
+            </generator> 
+        </id>
+        <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field"/>
+        <property name="name" type="java.lang.String">
+          <column name="name" />
+        </property>
+        <property name="nameKey" type="java.lang.String">
+          <column name="name_key" />
+        </property>
+        <property name="foreignColumnName" type="java.lang.String">
+          <column name="foreign_column_name" />
+        </property>
+        <property name="foreignTableName" type="java.lang.String">
+          <column name="foreign_table_name" />
+        </property>
+        <property name="foreignId" type="java.lang.String">
+          <column name="foreign_table_id" />
+        </property>
+        <many-to-one name="indicator" class="us.mn.state.health.lims.datasubmission.valueholder.DataIndicator"  fetch="select" lazy="false">
+          <column name="indicator_id" precision="10" scale="0"  />
+        </many-to-one>
+        <many-to-one name="parentValue" class="us.mn.state.health.lims.datasubmission.valueholder.DataValue"  fetch="select" lazy="false" cascade="save-update">
+          <column name="parent_data_value_id" precision="10" scale="0"  />
+        </many-to-one>
+        <property name="value" type="java.lang.String">
+          <column name="value" length="20"/>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -108,12 +108,6 @@ public class TestModifyUpdate extends BaseAction {
         	}
             panelItemDAO.deleteData(panelItems);
             
-            List<TestResult> testResultItems = testResultDAO.getActiveTestResultsByTest(testAddParams.testId);
-            for( TestResult item : testResultItems){
-        		item.setSysUserId(currentUserId);
-        	}
-            testResultDAO.deleteData(testResultItems);
-            
             List<ResultLimit> resultLimitItems = resultLimitDAO.getAllResultLimitsForTest(testAddParams.testId);
             for( ResultLimit item : resultLimitItems){
         		item.setSysUserId(currentUserId);

@@ -6,6 +6,11 @@
 
 <tiles-definitions>
 
+    <definition name="dataSubmissionDefinition" extends="baseDefinition"> 
+        <put name="body" value="/pages/datasubmission/dataSubmissionView.jsp" />
+        <put name="footer" value="/pages/common/emptyPlaceHolder.jsp" />
+    </definition>
+    
     <definition name="electronicOrderViewDefinition" extends="baseDefinition">
         <put name="body" value="/pages/dataexchange/electronicOrderView.jsp"/>
         <put name="footer" value="/pages/common/emptyPlaceHolder.jsp" />
