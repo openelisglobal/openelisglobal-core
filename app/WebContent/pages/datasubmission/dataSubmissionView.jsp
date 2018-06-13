@@ -134,12 +134,15 @@ function confirmSentWarning() {
 </tr>
 <logic:iterate property="dataValues" name="indicators" id="dataValues" indexId="dataValueIndex">
 <bean:define name="dataValues" property="nameKey" id="dataNameKey" />
+<bean:define name="dataValues" property="groupKey" id="groupKey" />
 <tr>
 	<td style="width:60%;" colspan="4">
 		
 	</td>
 	<td style="width:40%;">
-		<html:text  name="<%=formName%>" property='<%="indicators["+indicatorIndex+"].dataValues["+dataValueIndex+"].value"%>'/> <bean:message key="<%=(String)dataNameKey%>"/>
+		<html:text  name="<%=formName%>" property='<%="indicators["+indicatorIndex+"].dataValues["+dataValueIndex+"].value"%>'/> 
+		<logic:notEqual value="default" name="dataValues" property="groupKey" > <bean:message key="<%=(String)groupKey%>" /> </logic:notEqual>
+		<logic:notEqual value="" name="dataValues" property="nameKey" ><bean:message key="<%=(String)dataNameKey%>"/> </logic:notEqual>
 	</td>
 </tr>
 </logic:iterate>

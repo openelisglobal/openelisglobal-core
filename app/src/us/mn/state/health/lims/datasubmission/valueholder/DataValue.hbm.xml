@@ -17,6 +17,9 @@
         <property name="nameKey" type="java.lang.String">
           <column name="name_key" />
         </property>
+        <property name="groupKey" type="java.lang.String">
+          <column name="group_key" />
+        </property>
         <property name="foreignColumnName" type="java.lang.String">
           <column name="foreign_column_name" />
         </property>

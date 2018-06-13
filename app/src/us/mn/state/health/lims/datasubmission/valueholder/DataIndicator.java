@@ -85,14 +85,23 @@ public class DataIndicator extends BaseObject {
 		return tableNames;
 	}
 	
-	public List<DataValue> getDataValuesByTable(String tableName) {
+	public List<DataValue> getDataValuesByTableAndGroup(String tableName, String group) {
 		List<DataValue> values = new ArrayList<DataValue>();
 		for (DataValue value : getAllDataValues()) {
-			if (tableName.equals(value.getForeignTableName())) {
+			if (tableName.equals(value.getForeignTableName()) && group.equals(value.getGroupKey())) {
 				values.add(value);
 			}
 		}
 		return values;
+	}
+	public List<String> getGroups() {
+		List<String> groups = new ArrayList<String>();
+		for (DataValue value : getAllDataValues()) {
+			if (!GenericValidator.isBlankOrNull(value.getGroupKey()) && !groups.contains(value.getGroupKey())) {
+				groups.add(value.getGroupKey());
+			}
+		}
+		return groups;
 	}
 
 }

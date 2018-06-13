@@ -4,6 +4,7 @@ import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 public class DataValue extends BaseObject {
 	private String id;
+	private String groupKey = "default";
 	private String name;
 	private String value;
 	private DataValue parentValue;
@@ -16,6 +17,12 @@ public class DataValue extends BaseObject {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getGroupKey() {
+		return groupKey;
+	}
+	public void setGroupKey(String groupKey) {
+		this.groupKey = groupKey;
 	}
 	public String getName() {
 		return name;

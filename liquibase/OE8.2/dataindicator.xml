@@ -38,6 +38,7 @@
       "name" VARCHAR (20) NOT NULL,
       "value" VARCHAR (20),
       "name_key" VARCHAR (40),
+      "group_key" VARCHAR (40),
       "indicator_id" NUMERIC (20),
       "parent_data_value_id" NUMERIC (20),
 	  "foreign_column_name" VARCHAR (20),
@@ -89,6 +90,15 @@
 	
 	INSERT INTO clinlims.type_of_data_indicator (id, name, name_key, description, description_key, lastupdated)
 	VALUES (nextval('clinlims.type_of_data_indicator_seq'), 'Testing Trends', 'datasubmission.testtrends', 'number of tests done', 'datasubmission.testtrends.desc', current_timestamp);
+	
+	INSERT INTO clinlims.type_of_data_indicator (id, name, name_key, description, description_key, lastupdated)
+	VALUES (nextval('clinlims.type_of_data_indicator_seq'), 'Gender Trends', 'datasubmission.gendertrend', 'number of tests done by gender', 'datasubmission.gendertrend.desc', current_timestamp);
+	
+	INSERT INTO clinlims.type_of_data_indicator (id, name, name_key, description, description_key, lastupdated)
+	VALUES (nextval('clinlims.type_of_data_indicator_seq'), 'Age Trends', 'datasubmission.agetrends', 'number of tests done by age', 'datasubmission.agetrend.desc', current_timestamp);
+	
+	INSERT INTO clinlims.type_of_data_indicator (id, name, name_key, description, description_key, lastupdated)
+	VALUES (nextval('clinlims.type_of_data_indicator_seq'), 'Justification', 'datasubmission.reason', 'number of tests done by reason', 'datasubmission.reason.desc', current_timestamp);
 	
   </sql>
 </changeSet>

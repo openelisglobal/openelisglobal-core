@@ -26,29 +26,31 @@ import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 public class DataSubmitter {
 	
 	public static boolean sendDataIndicator(DataIndicator indicator) throws IOException, ParseException {
-		for (String tableName : indicator.getDataValueTableNames()) {
-			Map<String, String> values = new HashMap<String, String>();
-			addKeyValuesForTable(tableName, values, indicator);
-			String id = checkForIdOnVLDash(tableName, values);
-			
-			for (DataValue value : indicator.getDataValuesByTable(tableName)) {
-				values.put(value.getForeignColumnName(), value.getValue());
-			}
-			String result;
-			JSONObject jsonResult;
-			if (!GenericValidator.isBlankOrNull(id)) {
-				result = sendJSONPut(tableName, id, values);
-				jsonResult = (JSONObject) (new JSONParser()).parse(result);
-			} else {
-				result = sendJSONPost(tableName, values);
-				jsonResult = (JSONObject) (new JSONParser()).parse(result);
-				id = (String) ((JSONObject) jsonResult.get("message")).get("id");
-				for (DataValue value : indicator.getDataValuesByTable(tableName)) {
-					value.setForeignId(id);
+		for (String group : indicator.getGroups()) {
+			for (String tableName : indicator.getDataValueTableNames()) {
+				Map<String, String> values = new HashMap<String, String>();
+				addKeyValuesForTable(tableName, values, indicator, group);
+				String id = checkForIdOnVLDash(tableName, values);
+				
+				for (DataValue value : indicator.getDataValuesByTableAndGroup(tableName, group)) {
+					values.put(value.getForeignColumnName(), value.getValue());
 				}
-			}
-			if ("0".equals(jsonResult.get("success"))) {
-				return false;
+				String result;
+				JSONObject jsonResult;
+				if (!GenericValidator.isBlankOrNull(id)) {
+					result = sendJSONPut(tableName, id, values);
+					jsonResult = (JSONObject) (new JSONParser()).parse(result);
+				} else {
+					result = sendJSONPost(tableName, values);
+					jsonResult = (JSONObject) (new JSONParser()).parse(result);
+					id = (String) ((JSONObject) jsonResult.get("message")).get("id");
+					for (DataValue value : indicator.getDataValuesByTableAndGroup(tableName, group)) {
+						value.setForeignId(id);
+					}
+				}
+				if ("0".equals(jsonResult.get("success"))) {
+					return false;
+				}
 			}
 		}
 		
@@ -57,11 +59,46 @@ public class DataSubmitter {
 	
 	//add values to provide enough information to identify an entry without knowing the foreign id value
 	//TO DO verify that all entries work as a uniquely identifying foreign key 
-	private static void addKeyValuesForTable(String tableName, Map<String, String> values, DataIndicator indicator) {
+	private static void addKeyValuesForTable(String tableName, Map<String, String> values, DataIndicator indicator, String group) {
 		switch (tableName) {
 		case "facilitys":
 			//TO DO add correct facility code
 			values.put("facilitycode", "1");
+			break;
+		case "vl_national_age":
+			values.put("month", Integer.toString(indicator.getMonth() + 1));
+			values.put("year", Integer.toString(indicator.getYear()));
+			if (group.equals("label.less9")) {
+				values.put("age", "54");
+			} else if (group.equals("label.less19")) {
+				values.put("age", "55");
+			} else if (group.equals("label.less24")) {
+				values.put("age", "56");
+			} else if (group.equals("label.over25")) {
+				values.put("age", "57");
+			}
+			break;
+		case "vl_national_gender":
+			values.put("month", Integer.toString(indicator.getMonth() + 1));
+			values.put("year", Integer.toString(indicator.getYear()));
+			if (group.equals("datasubmission.women")) {
+				values.put("gender", "2");
+			} else if (group.equals("datasubmission.men")) {
+				values.put("gender", "1");
+			}
+			break;
+		case "vl_national_justification":
+			values.put("month", Integer.toString(indicator.getMonth() + 1));
+			values.put("year", Integer.toString(indicator.getYear()));
+			if (group.equals("datasubmission.reason.arv")) {
+				values.put("justification", "11");
+			} else if (group.equals("datasubmission.reason.virologicalfail")) {
+				values.put("justification", "12");
+			} else if (group.equals("datasubmission.reason.clinicalfail")) {
+				values.put("justification", "13");
+			} else if (group.equals("datasubmission.reason.immunologicalfail")) {
+				values.put("justification", "14");
+			}
 			break;
 		case "vl_national_summary":
 			values.put("month", Integer.toString(indicator.getMonth() + 1));
