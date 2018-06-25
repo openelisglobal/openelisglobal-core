@@ -15,7 +15,7 @@ public class DataIndicatorFactory {
 		String indicatorName = typeOfIndicator.getName();
 		//switch (typeOfIndicator.getName()) {
 		//case "Turnaround Time": 
-		if (indicatorName.equals("Turnaround Time")) {
+		if (indicatorName.equals("Turnaround Time")) { 
 			indicator.setTypeOfIndicator(typeOfIndicator);
 			indicator.setStatus(DataIndicator.UNSAVED);
 			
