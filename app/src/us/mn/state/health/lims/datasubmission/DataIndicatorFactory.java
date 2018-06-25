@@ -63,9 +63,9 @@ public class DataIndicatorFactory {
 			subValue.setForeignColumnName("totalartmar");
 			subValue.setForeignTableName("facilitys");
 			indicator.getDataValues().add(subValue);
-			
-			break;
-		case "Testing Trends": 
+		} else if (indicatorName.equals("Testing Trends")) {
+		//	break;
+		//case "Testing Trends": 
 			indicator.setTypeOfIndicator(typeOfIndicator);
 			indicator.setStatus(DataIndicator.UNSAVED);
 			
