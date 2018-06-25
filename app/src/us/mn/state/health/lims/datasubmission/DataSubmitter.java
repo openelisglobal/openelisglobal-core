@@ -58,7 +58,7 @@ public class DataSubmitter {
 	//add values to provide enough information to identify an entry without knowing the foreign id value
 	//TO DO verify that all entries work as a uniquely identifying foreign key 
 	private static void addKeyValuesForTable(String tableName, Map<String, String> values, DataIndicator indicator) {
-		switch (tableName) {
+		/*switch (tableName) {
 		case "facilitys":
 			//TO DO add correct facility code
 			values.put("facilitycode", "1");
@@ -79,7 +79,7 @@ public class DataSubmitter {
 			break;
 		default:
 			break;
-		}
+		}*/
 	}
 	
 	//returns the id of an entry that matches the specified column-value pairs
