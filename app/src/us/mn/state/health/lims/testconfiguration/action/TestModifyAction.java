@@ -76,13 +76,14 @@ public class TestModifyAction extends BaseAction {
         PropertyUtils.setProperty(form, "ageRangeList", ResultLimitService.getPredefinedAgeRanges());
         PropertyUtils.setProperty(form, "dictionaryList", DisplayListService.getList(ListType.DICTIONARY_TEST_RESULTS));
         PropertyUtils.setProperty(form, "groupedDictionaryList", createGroupedDictionaryList());
-        PropertyUtils.setProperty( form, "testList", DisplayListService.getList( DisplayListService.ListType.ALL_TESTS ) );
+        PropertyUtils.setProperty( form, "testList", DisplayListService.getFreshList( DisplayListService.ListType.ALL_TESTS ) );
         
         // gnr: ALL_TESTS calls getActiveTests, this could be a way to enable maintenance of inactive tests
         // PropertyUtils.setProperty( form, "testListInactive", DisplayListService.getList( DisplayListService.ListType.ALL_TESTS_INACTIVE ) );
         
         List<TestCatalogBean> testCatBeanList = createTestCatBeanList();
         PropertyUtils.setProperty(form, "testCatBeanList", testCatBeanList);
+        
         
 //        System.out.println("TestModifyAction:performAction");
 
@@ -123,9 +124,9 @@ public class TestModifyAction extends BaseAction {
             if( bean.isHasDictionaryValues()){
                 bean.setDictionaryValues(createDictionaryValues(testService));
                 bean.setReferenceValue(createReferenceValueForDictionaryType(test));
-                bean.setDictionaryIds(createDictionaryIds(testService));
+                //bean.setDictionaryIds(createDictionaryIds(testService));
                 //bean.setReferenceId(createReferenceIdForDictionaryType(test));
-                bean.setReferenceId(getDictionaryIdByDictEntry(bean.getReferenceValue(), bean.getDictionaryIds(), bean.getDictionaryValues()));
+                //bean.setReferenceId(getDictionaryIdByDictEntry(bean.getReferenceValue(), bean.getDictionaryIds(), bean.getDictionaryValues()));
             }
             beanList.add(bean);
         }
