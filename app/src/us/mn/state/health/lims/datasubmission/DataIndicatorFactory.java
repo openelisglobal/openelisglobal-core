@@ -12,8 +12,10 @@ public class DataIndicatorFactory {
 		DataValue mainValue = new DataValue();
 		DataValue subValue = new DataValue();
 		
-		switch (typeOfIndicator.getName()) {
-		case "Turnaround Time": 
+		String indicatorName = typeOfIndicator.getName();
+		//switch (typeOfIndicator.getName()) {
+		//case "Turnaround Time": 
+		if (indicatorName.equals("Turnaround Time")) { 
 			indicator.setTypeOfIndicator(typeOfIndicator);
 			indicator.setStatus(DataIndicator.UNSAVED);
 			
@@ -23,9 +25,9 @@ public class DataIndicatorFactory {
 			mainValue.setForeignColumnName("tat4");
 			mainValue.setForeignTableName("vl_national_summary");
 			indicator.setDataValue(mainValue);
-			
-			break;
-		case "VL Coverage": 
+		} else if (indicatorName.equals("VL Coverage")) {
+		//	break;
+		//case "VL Coverage": 
 			indicator.setTypeOfIndicator(typeOfIndicator);
 			indicator.setStatus(DataIndicator.UNSAVED);
 			
@@ -161,10 +163,11 @@ public class DataIndicatorFactory {
 			subValue.setForeignTableName("vl_national_summary");
 			indicator.getDataValues().add(subValue);
 			
-			break;
-		default:
-			break;
 		}
+		//	break;
+		//default:
+		//	break;
+		//}
 		return indicator;
 	}
 
