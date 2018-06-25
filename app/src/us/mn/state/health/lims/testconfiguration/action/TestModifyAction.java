@@ -124,9 +124,9 @@ public class TestModifyAction extends BaseAction {
             if( bean.isHasDictionaryValues()){
                 bean.setDictionaryValues(createDictionaryValues(testService));
                 bean.setReferenceValue(createReferenceValueForDictionaryType(test));
-                //bean.setDictionaryIds(createDictionaryIds(testService));
-                //bean.setReferenceId(createReferenceIdForDictionaryType(test));
-                //bean.setReferenceId(getDictionaryIdByDictEntry(bean.getReferenceValue(), bean.getDictionaryIds(), bean.getDictionaryValues()));
+                bean.setDictionaryIds(createDictionaryIds(testService));
+                bean.setReferenceId(createReferenceIdForDictionaryType(test));
+                bean.setReferenceId(getDictionaryIdByDictEntry(bean.getReferenceValue(), bean.getDictionaryIds(), bean.getDictionaryValues()));
             }
             beanList.add(bean);
         }
