@@ -4,6 +4,7 @@
 	us.mn.state.health.lims.common.action.IActionConstants,
     us.mn.state.health.lims.common.security.IAuthorizationActionConstants,
 	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -94,7 +95,7 @@ function customOnLoad() {
   var testResultValue = document.getElementById("testResultValue");
   testResultValue.focus();
   
-  var testNotLocked = '<%= request.getParameter(IAuthorizationActionConstants.UPDATE_TESTCOMPONENT_TESTRESULT) %>';
+  var testNotLocked = '<%= Encode.forJavaScript(request.getParameter(IAuthorizationActionConstants.UPDATE_TESTCOMPONENT_TESTRESULT)) %>';
    
   var parentSection = window.opener.getSectionB();
   tbody = parentSection.getElementsByTagName("TBODY")[0];
@@ -114,7 +115,7 @@ function customOnLoad() {
        
        var rg = inputs[0].value;
        
-       if (rg == '<%=rgNum%>') { //this is matching result group
+       if (rg == '<%=Encode.forJavaScript(rgNum)%>') { //this is matching result group
  
  
  
@@ -443,7 +444,7 @@ function saveItToParentForm(form) {
        var section = document.getElementById('resultSection');
        tbody = section.getElementsByTagName("TBODY")[0];
        var trs = tbody.getElementsByTagName("tr");
-       window.opener.replaceResultGroup('<%=rgType%>', '<%=rgNum%>', trs);
+       window.opener.replaceResultGroup('<%=Encode.forJavaScript(rgType)%>', '<%=Encode.forJavaScript(rgNum)%>', trs);
        window.close();
    }
    
@@ -508,7 +509,7 @@ function validateTestResultValue(blankCheck) {
            alert('<%=errorTestResultValue%>');
          }
       }
-      if ((result == true) && ('<%=rgType%>' == '<%=titerType%>')) {              
+      if ((result == true) && ('<%=Encode.forJavaScript(rgType)%>' == '<%=titerType%>')) {              
 		var tempone = testResultValue.substring(0, indexOfComma);
 		var temptwo = testResultValue.substring(indexOfComma + 1); 							
 		var x = Math.max(tempone, temptwo);		
@@ -560,7 +561,7 @@ function validateSignificantDigits() {
 	//AIS - bugzilla 1891
 	//bugzilla 2360 validate for valid digits and length
     var result = true;
-	if ('<%=rgType%>' != '<%=titerType%>') {    
+	if ('<%=Encode.forJavaScript(rgType)%>' != '<%=titerType%>') {    
     	 var significantDigits = document.getElementById("significantDigits").value;
 		 
 		 var strValidChars = "0123";

@@ -108,7 +108,6 @@ public class SampleEditAction extends BaseAction {
 				|| "readwrite".equals(request.getParameter("type"));
 		PropertyUtils.setProperty(dynaForm, "isEditable", isEditable);
 		if (!GenericValidator.isBlankOrNull(accessionNumber)) {
-
 			PropertyUtils.setProperty(dynaForm, "accessionNumber", accessionNumber);
 			PropertyUtils.setProperty(dynaForm, "searchFinished", Boolean.TRUE);
 

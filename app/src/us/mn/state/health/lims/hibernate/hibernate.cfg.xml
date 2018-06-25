@@ -270,6 +270,16 @@
             resource="us/mn/state/health/lims/image/valueholder/Image.hbm.xml" />
     <mapping
             resource="us/mn/state/health/lims/referral/valueholder/ReferringTestResult.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/barcode/valueholder/BarcodeLabelInfo.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/dataexchange/orderresult/valueholder/HL7MessageOut.hbm.xml" />
+    <mapping
+            resource="us/mn/state/health/lims/datasubmission/valueholder/DataIndicator.hbm.xml"/>
+    <mapping
+            resource="us/mn/state/health/lims/datasubmission/valueholder/DataValue.hbm.xml"/>
+    <mapping
+            resource="us/mn/state/health/lims/datasubmission/valueholder/TypeOfDataIndicator.hbm.xml"/>
 
 </session-factory>
 

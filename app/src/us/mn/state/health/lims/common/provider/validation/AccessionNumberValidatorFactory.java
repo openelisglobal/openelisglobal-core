@@ -44,6 +44,25 @@ public class AccessionNumberValidatorFactory {
 
 		throw new LIMSInvalidConfigurationException("AccessionNumberValidatorFactory: Unable to find validator for " + accessionFormat);
 	}
+	
+	public IAccessionNumberValidator getValidator(String accessionFormat) throws LIMSInvalidConfigurationException{
+
+		if( accessionFormat.equals("SITEYEARNUM")){
+			return getSiteYearValidator();
+		}else if( accessionFormat.equals("PROGRAMNUM")){
+			return getProgramValidator();
+		}if( accessionFormat.equals("YEARNUM_SIX")){
+			return getYearNumValidator(6, null);
+		}if( accessionFormat.equals("YEARNUM_DASH_SEVEN")){
+			return getYearNumValidator(7, '-');
+		}if( accessionFormat.equals("YEARNUM_SEVEN")){
+			return getYearNumValidator(7, null);
+		}
+
+		throw new LIMSInvalidConfigurationException("AccessionNumberValidatorFactory: Unable to find validator for " + accessionFormat);
+	}
+	
+	
 
 	@SuppressWarnings("unused")
 	private IAccessionNumberValidator getDigitAccessionValidator(int length) {

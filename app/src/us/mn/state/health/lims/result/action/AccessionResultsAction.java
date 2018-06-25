@@ -89,7 +89,7 @@ public class AccessionResultsAction extends BaseAction {
 				ResultsLoadUtility resultsUtility = new ResultsLoadUtility(currentUserId);
 				//This is for Haiti_LNSP if it gets more complicated use the status set stuff
 				resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.Canceled);
-
+				//resultsUtility.addExcludedAnalysisStatus(AnalysisStatus.Finalized);
 				resultsUtility.setLockCurrentResults(modifyResultsRoleBased() && userNotInRole(request));
 				ActionMessages errors = new ActionMessages();
 				errors = validateAll(request, errors, dynaForm);

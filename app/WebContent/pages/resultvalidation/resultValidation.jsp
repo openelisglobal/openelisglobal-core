@@ -13,6 +13,7 @@
 	us.mn.state.health.lims.common.util.ConfigurationProperties,
 	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
 <%@ page import="us.mn.state.health.lims.common.services.TypeOfTestResultService" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -46,7 +47,7 @@
 	accessionNumberValidator = new AccessionNumberValidatorFactory().getValidator();
 	searchTerm = request.getParameter("searchTerm");
 	String url = request.getAttribute("javax.servlet.forward.servlet_path").toString();	
-	/*	showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");*/
+	//showTestSectionSelect = !ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI RetroCI");
 	
 		
 %>
@@ -64,7 +65,7 @@
 
 <script type="text/javascript" >
 var dirty = false;
-var pager = new OEPager('<%=formName%>', '<%= testSection == "" ? "" : "&type=" + testSection  %>' + '<%= "&test=" + testName  %>');
+var pager = new OEPager('<%=formName%>', '<%= testSection == "" ? "" : "&type=" + Encode.forJavaScript(testSection)  %>' + '<%= "&test=" + Encode.forJavaScript(testName)  %>');
 pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.currentPage"/>');
 
 var pageSearch; //assigned in post load function
@@ -78,7 +79,7 @@ var pagingSearch = {};
 %>
 
 $jq(document).ready( function() {
-			var searchTerm = '<%=searchTerm%>';
+			var searchTerm = '<%=Encode.forJavaScript(searchTerm)%>';
             loadMultiSelects();
             $jq("select[multiple]").asmSelect({
                 removeLabel: "X"
@@ -173,7 +174,7 @@ function savePage() {
 
   window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
-	form.action = "ResultValidationSave.do" + '<%= "?type=" + testSection + "&test=" + testName %>';
+	form.action = "ResultValidationSave.do" + '<%= "?type=" + Encode.forJavaScript(testSection) + "&test=" + Encode.forJavaScript(testName) %>';
 	form.submit();
 }
 
@@ -306,7 +307,7 @@ function /*boolean*/ handleEnterEvent(){
 
 </script>
 
-<% if( !(url.contains("RetroC") )){ %>
+<% if( !(url.contains("RetroC"))){ %>
 <div id="searchDiv" class="colorFill"  >
 <div id="PatientPage" class="colorFill" style="display:inline" >
 <h2><bean:message key="sample.entry.search"/></h2>
@@ -356,13 +357,14 @@ function /*boolean*/ handleEnterEvent(){
 	<%=StringUtil.getContextualMessageForKey("result.sample.id")%> : &nbsp;
 	<input type="text"
 	       id="labnoSearch"
+	       placeholder='<bean:message key="sample.search.scanner.instructions"/>'
 	       maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>' />
 	<input type="button" onclick="pageSearch.doLabNoSearch($(labnoSearch))" value='<%= StringUtil.getMessageForKey("label.button.search") %>'>
 	</span>
 </div>
 </logic:notEqual>
-<html:hidden name="<%=formName%>"  property="testSection" value="<%=testSection%>" />
-<html:hidden name="<%=formName%>"  property="testName" value="<%=testName%>" />
+<html:hidden name="<%=formName%>"  property="testSection" value="<%=Encode.forHtml(testSection)%>" />
+<html:hidden name="<%=formName%>"  property="testName" value="<%=Encode.forHtml(testName)%>" />
 <logic:notEqual name="resultCount" value="0">
 <Table style="width:80%" >
     <tr>
@@ -572,7 +574,7 @@ function /*boolean*/ handleEnterEvent(){
                     <app:text name="resultList"
                               indexed="true"
                               property="result"
-                              size="6"
+                              size="16"
                               allowEdits='<%= !resultList.isReadOnly() %>'
                               styleId='<%="resultId_" + index %>'
                               onchange='<%="markUpdated(); makeDirty(); updateLogValue(this, " + index + ");" %>'/>

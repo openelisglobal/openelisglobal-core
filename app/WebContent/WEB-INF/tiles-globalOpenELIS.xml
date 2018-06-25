@@ -5,15 +5,85 @@
 
 
 <tiles-definitions>
+
+    <definition name="dataSubmissionDefinition" extends="baseDefinition"> 
+        <put name="body" value="/pages/datasubmission/dataSubmissionView.jsp" />
+        <put name="footer" value="/pages/common/emptyPlaceHolder.jsp" />
+    </definition>
+    
+    <definition name="electronicOrderViewDefinition" extends="baseDefinition">
+        <put name="body" value="/pages/dataexchange/electronicOrderView.jsp"/>
+        <put name="footer" value="/pages/common/emptyPlaceHolder.jsp" />
+    </definition>
+    
     <definition name="databaseCleaningDefinition" extends="baseMenuDefinition">
 		<put name="body" value="/pages/common/databaseCleaner.jsp"/>
     </definition>
 
     <definition name="samplePatientEntryDefinition" extends="baseDefinition">
-         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="preSelectionHeader" value="/pages/common/actionSuccessPrint.jsp" />
          <put name="body" value="samplePatientEntryCore"/>
          <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>
+    
+    <definition name="sampleBatchEntrySetupDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleBatchEntrySetupCore"/>
+         <put name="footer" value="/pages/common/nextCancelFooterButtons.jsp"/>
+    </definition> 
+    
+    <definition name="sampleBatchEntryOnDemandDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleBatchEntryOnDemandCore"/>
+         <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
+    </definition> 
+    
+    <definition name="sampleStudyBatchEntryOnDemandDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleStudyBatchEntryOnDemandCore"/>
+         <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
+    </definition> 
+    
+    <definition name="sampleBatchEntryPrePrintedDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleBatchEntryPrePrintedCore"/>
+         <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
+    </definition> 
+    
+    <definition name="sampleStudyBatchEntryPrePrintedDefinition" extends="baseDefinition">
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="body" value="sampleStudyBatchEntryPrePrintedCore"/>
+         <put name="footer" value="/pages/common/finishFooterButton.jsp"/>
+    </definition> 
+
+    <definition name="sampleBatchEntrySetupCore" path="/pages/samplebatchentry/setup/sampleBatchEntrySetup.jsp">
+        <put name="sampleOrder" value="/pages/samplebatchentry/setup/sampleOrder.jsp" />
+		<put name="addSample" value="/pages/samplebatchentry/setup/sampleAdd.jsp"/>
+		<put name="configureLabels" value="/pages/samplebatchentry/setup/configureBarcode.jsp"/>
+	</definition>
+
+    <definition name="sampleBatchEntryOnDemandCore" path="/pages/samplebatchentry/routine/sampleBatchEntry.jsp">
+		<put name="patientInfo"  value="batchEntryPatientManagementCore" />
+		<put name="entryMethod" value="/pages/samplebatchentry/routine/OnDemandEntry.jsp" />
+	</definition>
+
+    <definition name="sampleBatchEntryPrePrintedCore" path="/pages/samplebatchentry/routine/sampleBatchEntry.jsp">
+		<put name="patientInfo"  value="batchEntryPatientManagementCore" />
+		<put name="entryMethod" value="/pages/samplebatchentry/routine/PrePrintedEntry.jsp" />
+	</definition>
+
+    <definition name="sampleStudyBatchEntryOnDemandCore" path="/pages/samplebatchentry/study/sampleBatchEntry.jsp">
+    <put name="entryMethod" value="/pages/samplebatchentry/study/OnDemandEntry.jsp" />
+  </definition>
+
+    <definition name="sampleStudyBatchEntryPrePrintedCore" path="/pages/samplebatchentry/study/sampleBatchEntry.jsp">
+    <put name="entryMethod" value="/pages/samplebatchentry/study/PrePrintedEntry.jsp" />
+  </definition>
+
+	<definition name="batchEntryPatientManagementCore" path="/pages/samplebatchentry/patientManagement.jsp">
+		<put name="patientSearch"  value="/pages/samplebatchentry/patientSearch.jsp" />
+	</definition>
+  
 
   <definition name="sampleConfirmationCore" path="/pages/sample/sampleConfirmationAdd.jsp">
         <put name="sampleConfirmationOrder" value="sampleConfirmationOrder.jsp" />
@@ -34,7 +104,8 @@
 	</definition>
 
     <definition name="sampleEntryByProjectDefinition" extends="baseDefinition">
-         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp"
+          />
          <put name="body" value="/pages/sample/sampleAddByProject.jsp"/>
          <put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
     </definition>
@@ -60,7 +131,7 @@
     </definition>
 
    <definition name="sampleEditDefinition" extends="baseDefinition">
-        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+        <put name="preSelectionHeader" value="/pages/common/actionSuccessPrint.jsp" />
 		<put name="body" value="accessionSampleEditCore"/>
 		<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp"/>
 	</definition>
@@ -299,6 +370,10 @@
     <definition name="testRenameDefinition" extends="baseMenuDefinition">
         <put name="body" value="/pages/testConfiguration/testRename.jsp"/>
     </definition>
+    
+     <definition name="testModifyDefinition" extends="baseMenuDefinition">
+        <put name="body" value="/pages/testConfiguration/testModify.jsp"/>
+    </definition>
 
     <definition name="panelRenameDefinition" extends="baseMenuDefinition">
         <put name="body" value="/pages/testConfiguration/panelRename.jsp"/>
@@ -437,6 +512,23 @@
     
 	 <definition name="ListPluginsPageDefinition" extends="masterListsPageDefinition">
     	<put name="body" value="/pages/plugin/listPlugin.jsp"/>
+    </definition>
+    
+    <definition name="PrintBarcodeDefinition" extends="baseDefinition">
+    	<put name="body" value="/pages/barcode/printBarcode.jsp" />
+    	<put name="footer" value="/pages/common/finishFooterButton.jsp" />
+    </definition>
+    
+    <definition name="BarcodeConfigurationDefinition" extends="baseDefinition">
+        <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
+    	<put name="body" value="BarcodeConfigurationCore" />
+    	<put name="footer" value="/pages/common/saveCancelFooterButtons.jsp" />
+    </definition>
+    
+    <definition name="BarcodeConfigurationCore" path="/pages/barcode/barcodeConfiguration.jsp">
+    	<put name="numberBarCodes" value="/pages/barcode/numberBarcodeConfig.jsp"/>
+    	<put name="elementsBarCodes" value="/pages/barcode/elementsBarcodeConfig.jsp"/>
+    	<put name="sizeBarCodes" value="/pages/barcode/sizeBarcodeConfig.jsp"/>
     </definition>
 
 </tiles-definitions>

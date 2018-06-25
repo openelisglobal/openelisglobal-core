@@ -16,7 +16,10 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.test.dao.TestDAO;
@@ -24,8 +27,6 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.List;
 
 public class TestIdentityService implements ITestIdentityService{
 	private static String VIRAL_LOAD_TEST_ID = null;
@@ -82,6 +83,11 @@ public class TestIdentityService implements ITestIdentityService{
 	 */
 	@Override
 	public boolean doesTestExist(String name){
+		return testDAO.getTestByName(name) != null;
+	}
+	
+	@Override
+	public boolean doesActiveTestExist(String name){
 		return !testDAO.getActiveTestByName(name).isEmpty();
 	}
 
@@ -91,5 +97,15 @@ public class TestIdentityService implements ITestIdentityService{
 	@Override
 	public boolean doesPanelExist(String name){
 		return panelDAO.getIdForPanelName(name) != null;
+	}
+	
+	@Override
+	public boolean doesTestExistForLoinc(String loincCode) {
+		return testDAO.getTestsByLoincCode(loincCode) != null && testDAO.getTestsByLoincCode(loincCode).size() > 0;
+	}
+
+	@Override
+	public boolean doesActiveTestExistForLoinc(String loincCode) {
+		return testDAO.getActiveTestsByLoinc(loincCode) != null && testDAO.getActiveTestsByLoinc(loincCode).size() > 0;
 	}
 }

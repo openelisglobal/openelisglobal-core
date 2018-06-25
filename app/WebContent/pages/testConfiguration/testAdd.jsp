@@ -57,8 +57,7 @@
 <bean:define id="testUnitList" name='<%=formName%>' property="labUnitList" type="java.util.List<IdValuePair>"/>
 <bean:define id="ageRangeList" name='<%=formName%>' property="ageRangeList" type="java.util.List<IdValuePair>"/>
 <bean:define id="dictionaryList" name='<%=formName%>' property="dictionaryList" type="java.util.List<IdValuePair>"/>
-<bean:define id="groupedDictionaryList" name='<%=formName%>' property="groupedDictionaryList"
-             type="java.util.List<java.util.List<IdValuePair>>"/>
+<bean:define id="groupedDictionaryList" name='<%=formName%>' property="groupedDictionaryList" type="java.util.List<java.util.List<IdValuePair>>"/>
 
 <%!
     int testCount = 0;
@@ -1295,7 +1294,7 @@
                         <span class="sexRange_0" style="display: none">
                             <bean:message key="sex.male" />
                         </span>
-                </td>ocalization
+                </td>
                 <td><input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.year.single")%>"
                            onchange="upperAgeRangeChanged('0')" checked><bean:message key="abbreviation.year.single" />
                     <input class="yearMonthSelect_0" type="radio" name="time_0" value="<%=StringUtil.getMessageForKey("abbreviation.month.single")%>"

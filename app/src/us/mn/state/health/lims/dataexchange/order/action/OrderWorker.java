@@ -18,6 +18,7 @@ package us.mn.state.health.lims.dataexchange.order.action;
 
 import java.util.List;
 
+import ca.uhn.hl7v2.model.Message;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.ExternalOrderStatus;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -25,7 +26,6 @@ import us.mn.state.health.lims.dataexchange.order.action.IOrderExistanceChecker.
 import us.mn.state.health.lims.dataexchange.order.action.IOrderInterpreter.InterpreterResults;
 import us.mn.state.health.lims.dataexchange.order.action.IOrderInterpreter.OrderType;
 import us.mn.state.health.lims.dataexchange.order.valueholder.ElectronicOrder;
-import ca.uhn.hl7v2.model.Message;
 
 public class OrderWorker{
 	public enum OrderResult{

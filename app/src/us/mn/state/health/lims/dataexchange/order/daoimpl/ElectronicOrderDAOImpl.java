@@ -17,9 +17,11 @@
 package us.mn.state.health.lims.dataexchange.order.daoimpl;
 
 import java.util.List;
+import java.util.Vector;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
@@ -82,6 +84,7 @@ public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrd
 		}
 	}
 
+	@Override
 	public void updateData(ElectronicOrder eOrder) throws LIMSRuntimeException {
 
 		ElectronicOrder oldOrder = readOrder(eOrder.getId());
@@ -110,6 +113,48 @@ public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrd
 		}
 		
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ElectronicOrder> getAllElectronicOrders() {
+		List<ElectronicOrder> list = new Vector<ElectronicOrder>();
+		try {
+			String sql = "from ElectronicOrder";
+			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
+			list = query.list();
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+		} catch (Exception e) {
+			handleException(e, "getAllElectronicOrders");
+		}
+
+		return list;
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ElectronicOrder> getAllElectronicOrdersOrderedBy(String order) {
+		List<ElectronicOrder> list = new Vector<ElectronicOrder>();
+		try {
+			if (order.equals("lastupdated")) {
+				list = HibernateUtil.getSession().createCriteria(ElectronicOrder.class)
+						.addOrder(Order.desc("lastupdated"))
+						.list();
+			} else {
+				list = HibernateUtil.getSession().createCriteria(ElectronicOrder.class)
+						.addOrder(Order.asc(order))
+						.addOrder(Order.desc("lastupdated"))
+						.list();
+			}
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+		} catch (Exception e) {
+			handleException(e, "getAllElectronicOrdersOrderedBy");
+		}
+
+		return list;
 	}
 
 }

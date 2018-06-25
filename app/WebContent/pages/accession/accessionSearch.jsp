@@ -92,6 +92,7 @@ function /*void*/ handleEnterEvent(  ){
 			       onblur="validateEntrySize( this.value );"
 			       class="text"
 			       type="text">
+			<bean:message key="sample.search.scanner.instructions"/>
 		</td>
 	</tr>
 

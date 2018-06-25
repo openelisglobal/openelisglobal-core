@@ -10,6 +10,7 @@ import static us.mn.state.health.lims.reports.action.implementation.reportBeans.
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.NONE;
 //import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.PROJECT;
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.SAMPLE_STATUS;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.PROGRAM;
 
 //import org.apache.commons.validator.GenericValidator;
 
@@ -137,13 +138,14 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
         add("received_date",    "DATERECPT",    DATE_TIME );      // reception date
         add("entered_date",  "DATESAISIE",    DATE_TIME );      // interview date
         add("collection_date",  "DATECOLLECT",    DATE_TIME );      // collection date
+        //add("released_date",  "DATEVALIDATION",    DATE_TIME );      // validation date
         add("organization_code", "CODEREFERANT", NONE);
         add("organization_name", "REFERANT",  NONE);
+        add("program",        "PROGRAMME", PROGRAM );
         add("status_id", "STATUT", SAMPLE_STATUS);
-       // add("project_id",        "ETUDE",    PROJECT );
        // add("external_id",      "SUJETSIT", NONE);
-        //add("last_name",        "NOM",      NONE);
-        //add("first_name",       "PRENOM",   NONE);
+       //add("last_name",        "NOM",      NONE);
+       //add("first_name",       "PRENOM",   NONE);
         
         
     }
@@ -151,6 +153,6 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
     @Override
     protected void addAllResultsColumns() {
         super.addAllResultsColumns();
-        //add("Viral Load", "Viral Load log", LOG );
+        
     }
 }

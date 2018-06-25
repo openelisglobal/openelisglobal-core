@@ -191,8 +191,11 @@ function handleLabNoChange( displayField, prefix, isWanted ) {
     validateAccessionNumberOnServer( idField, recordType, isWanted );
 }
 
-function validateAccessionNumberOnServer( field, recordType, isWanted )
+function validateAccessionNumberOnServer( field, recordType, isWanted, successCallback )
 {
+	if (!successCallback) {
+		successCallback = processAccessionSuccess;
+	}
     var projectFormName = "";
     var pfnFld = document.getElementById("projectFormName");
     // when verifying (second entry) the sample had to have been entered on the same type of form.
@@ -206,7 +209,7 @@ function validateAccessionNumberOnServer( field, recordType, isWanted )
                       parameters: 'provider=SampleEntryAccessionNumberValidationProvider&field=' + field.id + '&accessionNumber=' + field.value + '&recordType=' + recordType + '&isRequired=' + isWanted +"&projectFormName=" + projectFormName,
                       indicator: 'throbbing',
                       onSuccess:  function (xhr) {
-                          processAccessionSuccess(xhr, field, isWanted);
+                          successCallback(xhr, field, isWanted);
                       },
                       onFailure:  processAccessionFailure
                       }
@@ -240,12 +243,12 @@ function handleDBSSubjectId(blanksAllowed) {
     var dbsSubjectNumber = document.getElementById("eid.subjectNumber");
     var codeSite = document.getElementById("eid.codeSiteID");
     var infant = document.getElementById("eid.infantID");
-    if ( 3 > codeSite.value.length || 3 < codeSite.value.length ||
+   /* if ( 3 > codeSite.value.length || 3 < codeSite.value.length ||
          4 > infant.value.length   || 4 < infant.value.length ) {
         dbsSubjectNumber.value = "";
-    } else {
+    } else {*/
         dbsSubjectNumber.value = "DBS" + codeSite.value + infant.value;
-    }
+          //}
     projectChecker.checkSubjectNumber(blanksAllowed);
 }
 

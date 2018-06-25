@@ -38,7 +38,7 @@ import us.mn.state.health.lims.observationhistorytype.ObservationHistoryTypeMap;
 import us.mn.state.health.lims.patient.valueholder.AdverseEffect;
 import us.mn.state.health.lims.patient.valueholder.ObservationData;
 import us.mn.state.health.lims.sample.form.ProjectData;
-import us.mn.state.health.lims.test.dao.TestDAO;
+//import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
@@ -241,7 +241,7 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
         //Viral Load study
         addHistory(histories ,"arvTreatmentInitDate", od.getArvTreatmentInitDate(), ValueType.LITERAL);
         addHistory(histories ,"vlReasonForRequest", od.getVlReasonForRequest(), ValueType.DICTIONARY);
-        addHistory(histories ,"vlOtherReasonForRequest", od.getVlReasonForRequest(), ValueType.LITERAL);
+        addHistory(histories ,"vlOtherReasonForRequest", od.getVlOtherReasonForRequest(), ValueType.LITERAL);
         addHistory(histories ,"initcd4Count", od.getInitcd4Count(), ValueType.LITERAL);
         addHistory(histories ,"initcd4Percent", od.getInitcd4Percent(), ValueType.LITERAL);
         addHistory(histories ,"initcd4Date", od.getInitcd4Date(), ValueType.LITERAL);       
@@ -249,6 +249,8 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
         addHistory(histories ,"demandcd4Percent", od.getDemandcd4Percent(), ValueType.LITERAL);
         addHistory(histories ,"demandcd4Date", od.getDemandcd4Date(), ValueType.LITERAL);   
         addHistory(histories ,"vlBenefit", od.getVlBenefit(), ValueType.DICTIONARY);  
+        addHistory(histories ,"vlPregnancy", od.getVlPregnancy(), ValueType.DICTIONARY); 
+        addHistory(histories ,"vlSuckle", od.getVlSuckle(), ValueType.DICTIONARY); 
         addHistory(histories ,"priorVLLab", od.getPriorVLLab(), ValueType.LITERAL);
         addHistory(histories ,"priorVLValue", od.getPriorVLValue(), ValueType.LITERAL);
         addHistory(histories ,"priorVLDate", od.getPriorVLDate(), ValueType.LITERAL);
@@ -406,6 +408,9 @@ public abstract class BaseProjectFormMapper implements IProjectFormMapper {
     // the forms have the organization ID in "centerCode", but sample forms have them in various projectData property.  
     public String getOrganizationId() {
         if (patientForm) {
+           if(getProjectForm().equals(ProjectForm.VL))
+        	return getSampleCenterCode();
+           else
             return dynaForm.get("centerCode").toString();
         } else {
             return getSampleCenterCode();

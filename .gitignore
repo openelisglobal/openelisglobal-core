@@ -9,10 +9,15 @@
 liqubase.properties
 
 # IDE files #
+app/.classpath/
+app/.settings/
+app/bin/
+app/build/
 .project
 .idea
 app/out/
 app.iml
+
 liquibase.iml
 liquibase/.ssh/known_hosts
 app/postgresql-9.2-1002.jdbc4.jar

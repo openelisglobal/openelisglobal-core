@@ -21,9 +21,6 @@ import java.util.List;
 
 import org.apache.commons.validator.GenericValidator;
 
-import us.mn.state.health.lims.common.services.ITestIdentityService;
-import us.mn.state.health.lims.common.services.TestIdentityService;
-import us.mn.state.health.lims.common.util.DateUtil;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v251.datatype.CX;
@@ -33,6 +30,12 @@ import ca.uhn.hl7v2.model.v251.message.OML_O21;
 import ca.uhn.hl7v2.model.v251.segment.OBR;
 import ca.uhn.hl7v2.model.v251.segment.ORC;
 import ca.uhn.hl7v2.model.v251.segment.PID;
+import us.mn.state.health.lims.common.services.ITestIdentityService;
+import us.mn.state.health.lims.common.services.TestIdentityService;
+import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.test.dao.TestDAO;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
+import us.mn.state.health.lims.test.valueholder.Test;
 
 public class HL7OrderInterpreter implements IOrderInterpreter{
 
@@ -88,6 +91,7 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 	private OrderType orderType;
 	private OML_O21 orderMessage;
 	private MessagePatient patient;
+	private Test test;
 	private List<InterpreterResults> results = new ArrayList<InterpreterResults>();
 	private List<String> unsupportedTests = new ArrayList<String>();
 	private List<String> unsupportedPanels = new ArrayList<String>();
@@ -105,6 +109,7 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 //		}
 		try{
 			patient = createPatientFromHL7();
+			test = createTestFromHl7();
 			extractOrderInformation();
 		}catch(HL7Exception e){
 			e.printStackTrace();
@@ -112,11 +117,14 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 		}
 		return buildResultList(false);
 	}
-
 	private void extractOrderInformation() throws HL7Exception{
-		ORC orcSegment = (ORC)orderMessage.getORDER().get("ORC");
-
-		labOrderNumber =  orcSegment.getPlacerOrderNumber().encode();
+		ORC orcSegment = orderMessage.getORDER().getORC();
+		//labOrderNumber =  orcSegment.getPlacerOrderNumber().encode();
+		labOrderNumber = orderMessage.getORDER().getOBSERVATION_REQUEST().getOBR().getObr4_UniversalServiceIdentifier().getCe1_Identifier().getValue();
+		//strip encounter type (if exists) from field for just encounter uuid
+		if (labOrderNumber.contains(";")) {
+			labOrderNumber = labOrderNumber.substring(labOrderNumber.indexOf(";") + 1);
+		}
 		
 		if(OrderType.REQUEST.getIdentifier().equals(orcSegment.getOrderControl().getValue())){
 			orderType = OrderType.REQUEST;
@@ -128,12 +136,24 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 
 	}
 
+	private Test createTestFromHl7() throws HL7Exception {
+		ORC orcSegment = orderMessage.getORDER().getORC();
+		String loincCode = orcSegment.getOrderType().getIdentifier().encode();
+		TestDAO testDAO = new TestDAOImpl();		
+		List<Test> tests = testDAO.getTestsByLoincCode(loincCode);
+		if (tests.size() == 0) {
+			return null;
+		}
+		return tests.get(0);
+	}
+
 	private MessagePatient createPatientFromHL7() throws HL7Exception{
 
 		MessagePatient patient = new MessagePatient();
 		
-		PID pid = (PID)orderMessage.getPATIENT().get("PID");
-		
+		PID pid = orderMessage.getPATIENT().getPID();
+		CX patientId = pid.getPatientID();
+		patient.setExternalId(patientId.getIDNumber().getValue());
 		CX[] patientIdentities = pid.getPatientIdentifierList();
 		for(CX identity : patientIdentities){
 			String value = identity.getCx1_IDNumber().getValue();
@@ -206,9 +226,10 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 			}
 
 			if(orderType == OrderType.REQUEST){
-				if(GenericValidator.isBlankOrNull(getMessagePatient().getGuid())){
+				//a GUID is no longer being sent, so no longer requiring it, it is instead generated upon receiving patient
+				/*if(GenericValidator.isBlankOrNull(getMessagePatient().getGuid())){
 					results.add(InterpreterResults.MISSING_PATIENT_GUID);
-				}
+				}*/
 
 //These are being commented out until we get confirmation on the desired policy.  Either the request should be rejected or the user should be required to
 // fill the missing information in at the time of sample entry.  Commenting these out supports the latter				
@@ -223,8 +244,13 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 				if(getMessagePatient().getNationalId() == null &&
 						getMessagePatient().getObNumber() == null &&
 						getMessagePatient().getPcNumber() == null &&
-						getMessagePatient().getStNumber() == null){
+						getMessagePatient().getStNumber() == null &&
+						getMessagePatient().getExternalId() == null){
 					results.add(InterpreterResults.MISSING_PATIENT_IDENTIFIER);
+				}
+				
+				if(test == null || !getTestIdentityService().doesActiveTestExistForLoinc(test.getLoinc())) {
+					results.add(InterpreterResults.UNSUPPORTED_TESTS);
 				}
 
 				try{
@@ -252,11 +278,14 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 	private void checkOBR( OBR obr) throws HL7Exception{
 		if( obr.isEmpty() ){
 			results.add(InterpreterResults.MISSING_TESTS);
-		}else{
+		}
+		//moving away from name based testrequet to LOINC based test requests
+		//test request no longer in obr, now appears in orc
+		/*else{
 			String name = obr.getUniversalServiceIdentifier().getText().getValue();
 			String identifier = obr.getUniversalServiceIdentifier().getIdentifier().getValue();
 			if( identifier.startsWith(ServiceIdentifier.TEST.getIdentifier() + "-")){
-				if(!getTestIdentityService().doesTestExist(name)){
+				if(!getTestIdentityService().doesActiveTestExist(name)){
 					if( !results.contains(InterpreterResults.UNSUPPORTED_TESTS)){
 						results.add(InterpreterResults.UNSUPPORTED_TESTS);
 					}
@@ -272,7 +301,7 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 			}else{
 				results.add(InterpreterResults.OTHER_THAN_PANEL_OR_TEST_REQUESTED);
 			}
-		}
+		}*/
 	}
 
 	@Override
@@ -330,6 +359,11 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 
 	public void setTestIdentityService(ITestIdentityService testIdentityService){
 		this.testIdentityService = testIdentityService;
+	}
+	
+	@Override
+	public Test getTest() {
+		return test;
 	}
 
 }

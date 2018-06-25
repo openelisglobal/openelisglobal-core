@@ -18,6 +18,7 @@
 package us.mn.state.health.lims.login.daoimpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -36,6 +37,8 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.login.dao.LoginDAO;
 import us.mn.state.health.lims.login.valueholder.Login;
+import us.mn.state.health.lims.security.PasswordUtil;
+import us.mn.state.health.lims.systemuser.action.UnifiedSystemUserAction;
 
 /**
  * @author Hung Nguyen (Hung.Nguyen@health.state.mn.us)
@@ -86,10 +89,12 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 				throw new LIMSDuplicateRecordException("Duplicate record exists for " + login.getLoginName());
 			}
 
-			Crypto crypto = new Crypto();
+			//Crypto crypto = new Crypto();
+			PasswordUtil passUtil = new PasswordUtil();
 			String id = (String) HibernateUtil.getSession().save(login);
 			login.setId(id);
-			login.setPassword(crypto.getEncrypt(login.getPassword()));
+			//login.setPassword(crypto.getEncrypt(login.getPassword()));
+			login.setPassword(passUtil.hashPassword(login.getPassword()));
 
 			// add to audit trail
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
@@ -108,7 +113,8 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 		return true;
 	}
 
-	public void updateData(Login login) throws LIMSRuntimeException {
+	//Update login data, keep old password unless flag set
+	public void updateData(Login login, boolean passwordUpdated) throws LIMSRuntimeException {
 		try {
 			if (duplicateLoginNameExists(login)) {
 				throw new LIMSDuplicateRecordException("Duplicate record exists for " + login.getLoginName());
@@ -120,9 +126,14 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 		}
 
 		Login oldData = readLoginUser(login.getId());
-		Crypto crypto = new Crypto();
+		//Crypto crypto = new Crypto();
+		
 		Login newData = login;
-		newData.setPassword(crypto.getEncrypt(login.getPassword()));
+		//newData.setPassword(crypto.getEncrypt(login.getPassword()));
+		if (passwordUpdated) {
+			PasswordUtil passUtil = new PasswordUtil();
+			newData.setPassword(passUtil.hashPassword(login.getPassword()));
+		}
 
 		// add to audit trail
 		try {
@@ -156,8 +167,8 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 			if (l != null) {
-				Crypto crypto = new Crypto();
-				l.setPassword(crypto.getDecrypt(l.getPassword()));
+				//Crypto crypto = new Crypto();
+				//l.setPassword(crypto.getDecrypt(l.getPassword()));
 				PropertyUtils.copyProperties(login, l);
 			} else {
 				login.setId(null);
@@ -213,8 +224,8 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 		Login l = null;
 		try {
 			l = (Login) HibernateUtil.getSession().get(Login.class, idString);
-			Crypto crypto = new Crypto();
-			l.setPassword(crypto.getDecrypt(l.getPassword()));
+			//Crypto crypto = new Crypto();
+			//l.setPassword(crypto.getDecrypt(l.getPassword()));
 			HibernateUtil.getSession().flush();
 			HibernateUtil.getSession().clear();
 		} catch (Exception e) {
@@ -333,14 +344,15 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 	public Login getValidateLogin(Login login) throws LIMSRuntimeException {
 
 		Crypto crypto = new Crypto();
+		PasswordUtil passUtil = new PasswordUtil();
 		Login loginData = null;
 
 		try {
 			List list = new ArrayList();
-			String sql = "from Login l where l.loginName = :param1 and l.password = :param2";
+			String sql = "from Login l where l.loginName = :param1";
 			org.hibernate.Query query = HibernateUtil.getSession().createQuery(sql);
 			query.setParameter("param1", login.getLoginName());
-			query.setParameter("param2", crypto.getEncrypt(login.getPassword()));
+			//query.setParameter("param2", crypto.getEncrypt(login.getPassword()));
 
 			list = query.list();
 			HibernateUtil.getSession().flush();
@@ -352,6 +364,20 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 				int systemUserId = getSystemUserId(login);
 				loginData.setPasswordExpiredDayNo(passwordExpiredDayNo);
 				loginData.setSystemUserId(systemUserId);
+				try {
+					//null login if incorrect password is entered
+					if ( !passUtil.checkPassword(login.getPassword(), loginData.getPassword()) ) {
+						loginData = null;
+					}
+				//error when no salt present, must be old password	
+				} catch (IllegalArgumentException e) {
+					//move passwords from encryption to salted hashing
+					if (loginData.getPassword().equals(crypto.getEncrypt(login.getPassword()))) {
+						updateCryptoPasswordToHash(loginData);
+					} else {
+						loginData = null;
+					}
+				}
 			}
 
 		} catch (Exception e) {
@@ -457,6 +483,37 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 
 		return retVal;
 	}
+	
+	/**
+	 * Update the user passsword
+	 * 
+	 * @param login
+	 *            the login object
+	 * @return true if success, false otherwise
+	 */
+	public boolean updateCryptoPasswordToHash(Login login) throws LIMSRuntimeException {
+
+		Crypto crypto = new Crypto();
+		PasswordUtil passUtil = new PasswordUtil();
+
+		try {
+			login.setPassword(crypto.getDecrypt(login.getPassword()));
+			login.setPassword(passUtil.hashPassword(login.getPassword()));
+
+			HibernateUtil.getSession().merge(login);
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+			HibernateUtil.getSession().evict(login);
+			HibernateUtil.getSession().refresh(login);
+
+		} catch (Exception e) {
+			// bugzilla 2154
+			LogEvent.logError("LoginDAOImpl", "updateCryptoPasswordToHash()", e.toString());
+			throw new LIMSRuntimeException("Error in Login updateCryptoPasswordToHash()", e);
+		}
+
+		return true;
+	}
 
 	/**
 	 * Update the user passsword
@@ -467,10 +524,13 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 	 */
 	public boolean updatePassword(Login login) throws LIMSRuntimeException {
 
-		Crypto crypto = new Crypto();
+		//Crypto crypto = new Crypto();
+		PasswordUtil passUtil = new PasswordUtil();
 
 		try {
-			login.setPassword(crypto.getEncrypt(login.getPassword()));
+			String password = login.getPassword();
+			//login.setPassword(crypto.getEncrypt(login.getPassword()));
+			login.setPassword(passUtil.hashPassword(login.getPassword()));
 			
 			AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 			auditDAO.saveHistory(login, readLoginUser(login.getId()), login.getSysUserId(), IActionConstants.AUDIT_TRAIL_UPDATE, "LOGIN_USER");

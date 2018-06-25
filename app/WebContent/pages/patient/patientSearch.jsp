@@ -273,6 +273,16 @@ function /*void*/ dirtySearchInfo(e){
 function /*void*/ doNothing(){ 
 	
 }
+
+function checkIndex(select) {
+	var indexVal = select.options[select.selectedIndex].value;
+	if (indexVal == "5") {
+		$jq("#scanInstruction").show();
+	} else {
+		$jq("#scanInstruction").hide();
+	}
+}
+
 function enableSearchButton(eventCode){
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
@@ -353,7 +363,7 @@ function setCaretPosition(ctrl, pos){
     <logic:present property="warning" name="<%=formName%>" >
         <h3 class="important-text"><bean:message key="order.modify.search.warning" /></h3>
     </logic:present>
-    <select id="searchCriteria"  style="float:left" onchange="doNothing()" tabindex="1" class="patientSearch">
+    <select id="searchCriteria"  style="float:left" onchange="checkIndex(this)" tabindex="1" class="patientSearch">
         <%
             for(IdValuePair pair : patientSearch.getSearchCriteria()){
                 out.print("<option value=\"" + pair.getId() +"\">" + pair.getValue() + "</option>");
@@ -379,6 +389,8 @@ function setCaretPosition(ctrl, pos){
            id="searchButton"
            onclick="searchPatients()"
            disabled="disabled" >
+           
+  	<span id="scanInstruction" style="display: none;"><bean:message key="sample.search.scanner.instructions"/> </span>
 
 	<div id="noPatientFound" align="center" style="display: none" >
 		<h1><bean:message key="patient.search.not.found"/></h1>

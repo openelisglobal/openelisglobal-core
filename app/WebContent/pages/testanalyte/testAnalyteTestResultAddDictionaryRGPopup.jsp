@@ -3,6 +3,7 @@
 	import="java.util.Date,
 	us.mn.state.health.lims.common.action.IActionConstants,
 	us.mn.state.health.lims.common.util.SystemConfiguration" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -211,7 +212,7 @@ function saveItToParentForm(form) {
    if (window.opener && !window.opener.closed && window.opener.document.forms[0]) {
        //var rgType = $F("selectedResultType");
        for (var i = 0; i < arrayIndex ; i++) {
-            window.opener.addRowToSectionB('<%=aID%>', null, '<%=rgType%>', dictionaryEntryList[i], dictionaryEntryIdList[i], flagsList[i], sortList[i], '', '', i, arrayIndex, '');
+            window.opener.addRowToSectionB('<%=Encode.forJavaScript(aID)%>', null, '<%=Encode.forJavaScript(rgType)%>', dictionaryEntryList[i], dictionaryEntryIdList[i], flagsList[i], sortList[i], '', '', i, arrayIndex, '');
        }
       window.close();
    }

@@ -94,7 +94,7 @@ public class LoginUserUpdateAction extends BaseAction {
 
 			if (!isNew) {
 				// UPDATE
-				loginDAO.updateData(login);
+				loginDAO.updateData(login, true);
 			} else {
 				// INSERT
 				loginDAO.insertData(login);

@@ -73,7 +73,7 @@ public abstract class ConfigurationProperties {
         configurationName,          //Identifies the configuration i.e. HaitiLNSP or CI IPCI
         testUsageReportingURL,      //URL for test summary reporting
         testUsageReporting,         //If true send test summary report electronically
-        roleRequiredForModifyResults,//If true a separate role is needed to modify reports
+        roleRequiredForModifyResults,//If true a separate role is needed to modify results
         notesRequiredForModifyResults,//If true a note is required when a result is modified
         resultTechnicianName,        //If true the technicians name is needed for results
         allowResultRejection,        //If true then a technician has the ability to reject an individual test and select a reason for rejection
@@ -115,7 +115,17 @@ public abstract class ConfigurationProperties {
         PATIENT_NATIONALITY, //True if patient nationality should be collected with patient information
         PATIENT_ID_REQUIRED, //True if patient id is required for new patient
         PATIENT_SUBJECT_NUMBER_REQUIRED, //True if patient subject number is required for new patient
-        QA_SAMPLE_ID_REQUIRED  //True if sample id required from referring lab
+        QA_SAMPLE_ID_REQUIRED,  //True if sample id required from referring lab
+        MAX_ORDER_PRINTED,	//Max number of order labels that can be printed
+        MAX_SPECIMEN_PRINTED,	//Max number of specimen labels that can be printed
+        MAX_ALIQUOT_PRINTED,	//Max number of aliquots that can be printed
+        ORDER_BARCODE_HEIGHT,	//Height of the order barcode
+        ORDER_BARCODE_WIDTH,	//Width of the order barcode
+        SPECIMEN_BARCODE_HEIGHT,	//Height of the specimen barcode
+        SPECIMEN_BARCODE_WIDTH,	//Width of the specimen barcode
+        SPECIMEN_FIELD_DATE,
+        SPECIMEN_FIELD_SEX,
+        SPECIMEN_FIELD_TESTS
     }
 
 	

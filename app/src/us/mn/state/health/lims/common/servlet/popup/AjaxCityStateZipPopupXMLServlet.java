@@ -26,6 +26,10 @@ import us.mn.state.health.lims.citystatezip.valueholder.CityStateZip;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.provider.popup.BasePopupProvider;
 import us.mn.state.health.lims.common.provider.popup.PopupProviderFactory;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
+import us.mn.state.health.lims.security.SecureXmlHttpServletRequest;
 
 public class AjaxCityStateZipPopupXMLServlet extends AjaxXMLServlet {
 
@@ -61,12 +65,20 @@ public class AjaxCityStateZipPopupXMLServlet extends AjaxXMLServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException, LIMSRuntimeException {
+		//check for authentication
+		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+		if (userModuleDAO.isSessionExpired(request)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
+			return;
+		}
 
 		String popupProvider = request.getParameter("provider");
 		BasePopupProvider provider = (BasePopupProvider) PopupProviderFactory
 				.getInstance().getPopupProvider(popupProvider);
 		provider.setServlet(this);
-		provider.processRequest(request, response);
+		provider.processRequest(new SecureXmlHttpServletRequest(request), response);
 	}
 
 }

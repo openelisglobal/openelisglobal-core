@@ -19,6 +19,8 @@
 
 <%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 <%@page import="java.util.HashSet"%>
+<%@page import="org.owasp.encoder.Encode"%>
+
 <%!
     String basePath = "";
     UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
@@ -40,8 +42,8 @@
 <script type="text/javascript" language="JavaScript1.2">
 
 var dirty = false;
-var type = '<%=requestType%>';
-var requestType = '<%=requestType%>';
+var type = '<%=Encode.forJavaScript(requestType)%>';
+var requestType = '<%=Encode.forJavaScript(requestType)%>';
 var pageType = "Sample";
 birthDateUsageMessage = "<bean:message key='error.dob.complete.less.two.years'/>";
 previousNotMatchedMessage = "<bean:message key='error.2ndEntry.previous.not.matched'/>";
@@ -127,14 +129,19 @@ function setDefaultTests( div )
     }
     var tests = new Array();
     if (div=="InitialARV_Id") {
-        tests = new Array("iarv.serologyHIVTest", "iarv.glycemiaTest", "iarv.creatinineTest",
+       /* tests = new Array("iarv.serologyHIVTest", "iarv.glycemiaTest", "iarv.creatinineTest",
                 "iarv.transaminaseTest", "iarv.edtaTubeTaken", "iarv.dryTubeTaken",
-                "iarv.nfsTest", "iarv.cd4cd8Test") ;
-    }
+                "iarv.nfsTest", "iarv.cd4cd8Test") ;*/
+                
+    	tests = new Array("iarv.serologyHIVTest", "iarv.creatinineTest",
+                "iarv.edtaTubeTaken", "iarv.dryTubeTaken",
+                "iarv.nfsTest", "iarv.cd4cd8Test") ;      
+      }
+    
     if (div=="FollowUpARV_Id") {
-        tests = new Array("farv.glycemiaTest", "farv.creatinineTest",
-               "farv.transaminaseTest", "farv.edtaTubeTaken", "farv.dryTubeTaken",
-               "farv.nfsTest", "farv.cd4cd8Test") ;
+       // tests = new Array("farv.glycemiaTest", "farv.creatinineTest",
+             //  "farv.transaminaseTest", "farv.edtaTubeTaken", "farv.dryTubeTaken") ;
+       tests = new Array("farv.creatinineTest", "farv.dryTubeTaken") ;
     }
     //if (div=="EID_Id") {
     //  tests = new Array ("eid.dnaPCR", "eid.dbsTaken");
@@ -443,7 +450,7 @@ function /*void*/ setSaveButton() {
                       maxlength="10"
                       onkeyup="addDateSlashes(this, event);"
                       onchange="iarv.checkDateOfBirth(false)"
-                      styleId="iarv.dateOfBirth" maxlength="10"/>
+                      styleId="iarv.dateOfBirth" />
                 <div id="iarv.dateOfBirthMessage" class="blank" ></div>
             </td>
         </tr>
@@ -1069,7 +1076,6 @@ function /*void*/ setSaveButton() {
                       property="birthDateForDisplay"
                       styleClass="text"
                       size="20"
-                      maxlength="10"
                       onkeyup="addDateSlashes(this, event);"
                       onchange="rtn.checkDateOfBirth(true)"
                       styleId="rtn.dateOfBirth" maxlength="10"/>

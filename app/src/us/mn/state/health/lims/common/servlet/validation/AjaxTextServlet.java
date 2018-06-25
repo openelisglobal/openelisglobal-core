@@ -24,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import us.mn.state.health.lims.common.provider.validation.BaseValidationProvider;
 import us.mn.state.health.lims.common.provider.validation.ValidationProviderFactory;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.login.dao.UserModuleDAO;
+import us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl;
+import us.mn.state.health.lims.security.SecureXmlHttpServletRequest;
 
 public class AjaxTextServlet extends AjaxServlet {
 
@@ -43,12 +46,20 @@ public class AjaxTextServlet extends AjaxServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
+		//check for authentication
+		UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
+		if (userModuleDAO.isSessionExpired(request)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("text/html; charset=utf-8");
+			response.getWriter().println(StringUtil.getMessageForKey("message.error.unauthorized"));
+			return;
+		}
 
 		String valProvider = request.getParameter("provider");
 		BaseValidationProvider provider = (BaseValidationProvider) ValidationProviderFactory
 				.getInstance().getValidationProvider(valProvider);
 		provider.setServlet(this);
-		provider.processRequest(request, response);
+		provider.processRequest(new SecureXmlHttpServletRequest(request), response);
 	}
 
 }

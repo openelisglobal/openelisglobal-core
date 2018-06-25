@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+  <!--Menu Study settings-->
+    
+ <changeSet author="CI OpenELIS developers group" id="1" runAlways="true">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_reports_export_specific';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Insert in clinlims new menu reports elements</comment>
+    <sql>INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_reports_export'),10,'menu_reports_export_general','/Report.do?type=patient&amp;report=CISampleExport',default,'reports.export.general','tooltip.export.generale',default,default);
+
+	INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
+            display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_reports_export'),20,'menu_reports_export_specific','/Report.do?type=patient&amp;report=ForCIDashboard',default,'reports.export.specific','tooltip.export.cpecific',default,default);
+
+update clinlims.menu
+set action_url=null
+where element_id ='menu_reports_export';
+ </sql>
+  </changeSet>
+  
+  
+ <changeSet author="csteele" id="2"  context="ci_regional,ci_general">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from clinlims.menu where element_id = 'menu_sample_eorder';
+    		</sqlCheck>
+        </preConditions>
+        <comment>Insert in clinlims new menu electronic orders</comment>
+        <sql>
+ 
+            INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, display_key, tool_tip_key, new_window, is_active)
+            VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_sample'),5,'menu_sample_eorder','/ElectronicOrders.do',default,'banner.menu.eorders','tooltip.bannner.menu.eorders',default,default);
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

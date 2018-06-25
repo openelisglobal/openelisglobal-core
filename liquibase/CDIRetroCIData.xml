@@ -2204,7 +2204,7 @@
                        <column name="has_add" value="Y"/>
                        <column name="has_update" value="Y"/>
                        <column name="has_delete" value="Y"/>
-                       <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = 'Results Admin') "/>
+                       <column name="system_role_id" valueNumeric=" ( select id from clinlims.system_role where name = '') "/>
                        <column name="system_module_id" valueNumeric=" (select id from clinlims.system_module where name = 'AnalyzerResults:cobas_taqman' ) "/>
                </insert>
                 <insert schemaName="clinlims" tableName="system_role_module">

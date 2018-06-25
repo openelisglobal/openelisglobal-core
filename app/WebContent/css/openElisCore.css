@@ -1089,3 +1089,7 @@ input[type=radio] + label {
 
 
 /* End experimental CSS for use on updated OE forms */
+
+tr.border_top td {
+  border-top:1pt solid black;
+}

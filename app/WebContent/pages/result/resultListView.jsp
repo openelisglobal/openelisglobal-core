@@ -18,6 +18,7 @@
     us.mn.state.health.lims.common.util.Versioning,
     us.mn.state.health.lims.common.exception.LIMSInvalidConfigurationException,
     us.mn.state.health.lims.common.util.DateUtil" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -130,7 +131,7 @@
 var compactHozSpace = '<%=compactHozSpace%>';
 var dirty = false;
 
-var pager = new OEPager('<%=formName%>', '<%= logbookType == "" ? "" : "&type=" + logbookType  %>');
+var pager = new OEPager('<%=formName%>', '<%= logbookType == "" ? "" : "&type=" + Encode.forJavaScript((String) logbookType)  %>');
 pager.setCurrentPageNumber('<bean:write name="<%=formName%>" property="paging.currentPage"/>');
 
 var pageSearch; //assigned in post load function
@@ -144,7 +145,7 @@ var pagingSearch = {};
 %>
 
 $jq(document).ready( function() {
-			var searchTerm = '<%=searchTerm%>';
+			var searchTerm = '<%=Encode.forJavaScript(searchTerm)%>';
             loadMultiSelects();
 			$jq("select[multiple]").asmSelect({
 					removeLabel: "X"
@@ -269,7 +270,7 @@ function  /*void*/ savePage()
 	$jq( "#saveButtonId" ).prop("disabled",true);
 	window.onbeforeunload = null; // Added to flag that formWarning alert isn't needed.
 	var form = window.document.forms[0];
-	form.action = '<%=formName%>'.sub('Form','') + "Update.do"  + '<%= logbookType == "" ? "" : "?type=" + logbookType  %>';
+	form.action = '<%=formName%>'.sub('Form','') + "Update.do"  + '<%= logbookType == "" ? "" : "?type=" + Encode.forJavaScript((String) logbookType)  %>';
 	form.submit();
 }
 
@@ -525,6 +526,7 @@ function updateShadowResult(source, index){
 	<%=StringUtil.getContextualMessageForKey("result.sample.id")%> : &nbsp;
 	<input type="text"
 	       id="labnoSearch"
+	       placeholder='<bean:message key="sample.search.scanner.instructions"/>'
 	       maxlength='<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>' />
 	<input type="button" onclick="pageSearch.doLabNoSearch($(labnoSearch))" value='<%= StringUtil.getMessageForKey("label.button.search") %>'>
 	</div>

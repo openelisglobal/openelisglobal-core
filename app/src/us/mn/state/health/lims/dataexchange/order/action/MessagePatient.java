@@ -23,6 +23,7 @@ public class MessagePatient{
 	private String nationalId;
 	private String pcNumber;
 	private String stNumber;
+	private String externalId;
 	
 	private String gender;
 	private String displayDOB;
@@ -63,6 +64,12 @@ public class MessagePatient{
 	}
 	public void setStNumber(String stNumber){
 		this.stNumber = stNumber;
+	}
+	public String getExternalId() {
+		return externalId;
+	}
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 	public String getGender(){
 		return gender;

@@ -100,7 +100,7 @@ vl = new VLProjectChecker();
 			<html:select name="<%=formName%>" 
 			    property="ProjectData.ARVcenterName"
 				styleId="vl.centerName" 
-				onchange="vl.checkCenterName(false)">
+				onchange="vl.checkCenterName(true)">
 				<app:optionsCollection name="<%=formName%>"
 					property="organizationTypeLists.ARV_ORGS_BY_NAME.list" 
 					label="organizationName"
@@ -118,12 +118,13 @@ vl = new VLProjectChecker();
 			<html:select name="<%=formName%>" 
 			property="ProjectData.ARVcenterCode" 
 			styleId="vl.centerCode"
-			onchange="vl.checkCenterCode(false)" >
+			onchange="vl.checkCenterCode(true)" >
 			<app:optionsCollection name="<%=formName%>" 
 			property="organizationTypeLists.ARV_ORGS.list" 
 			label="doubleName" 
 			value="id" />
 			</html:select>
+			<div id="vl.centerCodeMessage" class="blank"></div>
 		</td>
 	</tr>
 		<tr> 
@@ -246,9 +247,9 @@ vl = new VLProjectChecker();
 			<bean:message key="patient.project.labNo" />
 		</td>
 		<td>
-			<div class="blank"><bean:message key="sample.entry.project.LART"/></div>
+			<div class="blank"><bean:message key="sample.entry.project.LVL"/></div>
 			<INPUT type="text" name="vl.labNoForDisplay" id="vl.labNoForDisplay" size="5" class="text"
-			   	onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LART"/>', false ); makeDirty();"
+			   	onchange="handleLabNoChange( this, '<bean:message key="sample.entry.project.LVL"/>', false ); makeDirty();"
 			   	maxlength="5" />
 		  	<app:text name="<%=formName%>" property="labNo"
 				styleClass="text" style="display: none;"
@@ -302,6 +303,40 @@ vl = new VLProjectChecker();
 			<div id="vl.genderMessage" class="blank"></div>
 		</td>
 	</tr>
+	
+	<tr> 
+		<td></td>
+		<td class="observationsQuestion">
+            <bean:message key="sample.project.vlPregnancy" />
+        </td>
+        <td>
+            <html:select name="<%=formName%>"
+            property="observations.vlPregnancy" onchange="makeDirty();compareAllObservationHistoryFields(true)"
+            styleId="vl.vlPregnancy">
+            <app:optionsCollection name="<%=formName%>"
+                property="dictionaryLists.YES_NO.list" label="localizedName"
+                value="id" />
+            </html:select>
+        </td>
+    </tr>  
+    
+    <tr> 
+		<td></td>
+		<td class="observationsQuestion">
+            <bean:message key="sample.project.vlSuckle" />
+        </td>
+        <td>
+            <html:select name="<%=formName%>"
+            property="observations.vlSuckle" onchange="makeDirty();compareAllObservationHistoryFields(true)"
+            styleId="vl.vlSuckle">
+            <app:optionsCollection name="<%=formName%>"
+                property="dictionaryLists.YES_NO.list" label="localizedName"
+                value="id" />
+            </html:select>
+        </td>
+    </tr>   
+     
+	
 	<tr > 
 		<td></td>
 		<td>
@@ -322,6 +357,8 @@ vl = new VLProjectChecker();
 		</td>
 	</tr>
 	
+	
+    	
 	<tr><td colspan="5"><hr/></td></tr><!-- _________________________________________________ -->
 
 	<tr> 
@@ -649,5 +686,6 @@ vl = new VLProjectChecker();
                 onchange="makeDirty();" styleId="vl.underInvestigationComment" />
         </td>
     </tr>
+	
 	
 </table>

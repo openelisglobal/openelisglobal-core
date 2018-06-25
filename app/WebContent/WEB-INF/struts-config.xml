@@ -2100,7 +2100,7 @@
     
     
 
-<!--ACTION-->       
+<!--ACTION-->              
        <action path="/Action" name="actionForm" type="us.mn.state.health.lims.action.action.ActionAction" validate="false">
           <forward name="success" path="actionDefinition"/> 
           <forward name="fail" path="masterListsPageDefinition"/> 

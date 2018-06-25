@@ -113,6 +113,21 @@ then
 
    sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/CI_IPCIOpenElis.war
 #end marker
+#CI_General version
+echo "installing CI_OpenElis"
+
+   if [ -d /usr/share/tomcat6/webapps/CI_OpenElis ]
+   then
+       sudo rm -r /usr/share/tomcat6/webapps/CI_OpenElis
+   fi		
+
+   sudo cp warRoot/openElis.war /usr/share/tomcat6/webapps/CI_OpenElis.war
+
+
+
+
+
+
 else
    echo "missing openElis.war file" 
 fi

@@ -31,14 +31,29 @@ import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Marshaller;
 import org.xml.sax.InputSource;
 
+import ca.uhn.hl7v2.HL7Exception;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
+import us.mn.state.health.lims.dataexchange.orderresult.OrderResponseWorker;
+import us.mn.state.health.lims.dataexchange.resultreporting.beans.ResultReportXmit;
 
 public class ReportTransmission {
 	public enum HTTP_TYPE{
 		GET,
 		POST
+	}
+	
+	public void sendHL7Report(ResultReportXmit resultReport, String url, ITransmissionResponseHandler responseHandler) {
+		OrderResponseWorker orWorker = new OrderResponseWorker();
+		try {
+			orWorker.createReport(resultReport);
+			sendRawReport(orWorker.getHl7Message().encode(), url, true, responseHandler, HTTP_TYPE.POST);
+		} catch (HL7Exception e) {
+			LogEvent.logError("ReportTransmission ", "sendHL7Report()", e.toString());
+		} catch (IOException e) {
+			LogEvent.logError("ReportTransmission ", "sendHL7Report()", e.toString());
+		}
 	}
 	
 	public void sendReport(Object reportObject, String castorPropertyName, String url, boolean sendAsychronously,

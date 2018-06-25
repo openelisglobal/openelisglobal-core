@@ -134,6 +134,8 @@ public class ObservationData implements Serializable {
 	private String initcd4Date;
 	private String demandcd4Date;
 	private String vlBenefit;
+	private String vlPregnancy;
+	private String vlSuckle;
 	private String priorVLLab;
 	private String priorVLValue;
 	private String priorVLDate;
@@ -1003,6 +1005,22 @@ public class ObservationData implements Serializable {
     public void setVlBenefit(String vlBenefit) {
         this.vlBenefit = vlBenefit;
     }
+
+ //-----------   
+    public String getVlPregnancy() {
+        return vlPregnancy;
+    }
+    public void setVlPregnancy(String vlPregnancy) {
+        this.vlPregnancy = vlPregnancy;
+    }
+    public String getVlSuckle() {
+        return vlSuckle;
+    }
+    public void setVlSuckle(String vlSuckle) {
+        this.vlSuckle = vlSuckle;
+    }
+//-------------    
+    
     public String getPriorVLLab() {
         return priorVLLab;
     }

@@ -12,7 +12,7 @@ import re
 from time import gmtime, strftime
 from random import Random
 
-VERSION = "5.2"
+VERSION = "8.1"
 TEMPLATE_DIR = "./templates/"
 WAR_DIR = "./warFiles/"
 STAGING_DIR = "./stagingFiles/"

@@ -7,6 +7,7 @@
 	us.mn.state.health.lims.common.util.StringUtil"
 %>
 <%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
+<%@ page import="org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -152,7 +153,7 @@ function onCancel(){
 function onPrint(){
 	if( formCorrect()){
 		var form = window.document.forms[0];
-		form.action = "ReportPrint.do?type=" + '<%= reportType %>' + "&report=" + '<%=reportRequest%>' + "&cacheBreaker=" + Math.random();
+		form.action = "ReportPrint.do?type=" + '<%= Encode.forJavaScript((String) reportType) %>' + "&report=" + '<%=Encode.forJavaScript((String) reportRequest)%>' + "&cacheBreaker=" + Math.random();
 		form.target = "_blank";
 		form.submit();
 		return false;
@@ -196,6 +197,14 @@ function onPrint(){
 			           styleClass="input-medium"
 			           maxlength='<%= Integer.toString(accessionValidator.getMaxAccessionLength())%>'/>
 	  </logic:equal>
+	  <logic:equal name='<%=formName%>' property="useAccessionDirect" value="true">
+	  	<bean:message key="sample.search.scanner.instructions"/>
+	  </logic:equal>
+	  <logic:notEqual name='<%=formName%>' property="useAccessionDirect" value="true">
+	  	<logic:equal name='<%=formName%>' property="useHighAccessionDirect" value="true">
+	  		<bean:message key="sample.search.scanner.instructions"/>
+	  	</logic:equal>
+	  </logic:notEqual>
   </div>
   <logic:equal name='<%=formName%>' property="useHighAccessionDirect" value="true">
     <div><span style="padding-left: 10px"><%= StringUtil.getContextualMessageForKey("report.enter.labNumber.detail") %></span></div>
@@ -243,6 +252,17 @@ function onPrint(){
 	  </html:select>
 	</div>
   </logic:equal>
+  
+  
+  <logic:equal name='<%=formName%>' property="useDashboard" value="true">
+   	<div>
+	  <bean:message key="report.select.project"/>
+	  <html:select name="<%=formName%>"  property="projectCode" styleClass="text" >
+		<app:optionsCollection  name="<%=formName%>" property="projectCodeList" label="localizedName" value="id" />
+	  </html:select>
+	</div>
+  </logic:equal>
+  
   
   <logic:equal name='<%=formName%>' property="usePredefinedDateRanges" value="true">
    	<div>

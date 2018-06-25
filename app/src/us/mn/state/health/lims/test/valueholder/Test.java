@@ -15,7 +15,8 @@
 */
 package us.mn.state.health.lims.test.valueholder;
 
-import us.mn.state.health.lims.common.services.LocalizationService;
+import java.sql.Date;
+
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -29,8 +30,6 @@ import us.mn.state.health.lims.method.valueholder.Method;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 import us.mn.state.health.lims.testtrailer.valueholder.TestTrailer;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
-
-import java.sql.Date;
 
 /**
  * @author benzd1
@@ -106,13 +105,19 @@ public class Test extends EnumValueItemImpl {
     private ValueHolder localizedTestName;
 
     private ValueHolder localizedReportingName;
+    
+    private ValueHolder localizedTestSectionName;
+
+    private ValueHolder localizedReportingTestSectionName;
 
     private String guid;
 	
+	@Override
 	public String getSortOrder() {
 		return sortOrder;
 	}
 
+	@Override
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
@@ -126,6 +131,8 @@ public class Test extends EnumValueItemImpl {
 		this.scriptlet = new ValueHolder();
         localizedTestName = new ValueHolder( );
         localizedReportingName = new ValueHolder( );
+        localizedTestSectionName = new ValueHolder();
+        localizedReportingTestSectionName = new ValueHolder();
 	}
 
 	public void setId(String id) {
@@ -197,6 +204,7 @@ public class Test extends EnumValueItemImpl {
 		this.description = description;
 	}
 
+	@Override
 	public String getIsActive() {
 		return isActive;
 	}
@@ -204,6 +212,7 @@ public class Test extends EnumValueItemImpl {
 	public boolean isActive(){
 		return "Y".equals(isActive);
 	}
+	@Override
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}
@@ -392,6 +401,22 @@ public class Test extends EnumValueItemImpl {
 	public TestSection getTestSection() {
 		return (TestSection) this.testSection.getValue();
 	}
+	
+	  public Localization getLocalizedTestSectionName(){
+	        return (Localization)localizedTestSectionName.getValue();
+	    }
+
+	    public void setLocalizedTestSectionName( Localization localizedName ){
+	        this.localizedTestSectionName.setValue( localizedName );
+	    }
+
+	    public Localization getLocalizedReportingTestSectionName(){
+	        return (Localization)localizedReportingTestSectionName.getValue();
+	    }
+
+	    public void setLocalizedReportingTestSectionName( Localization localizedReportingName ){
+	        this.localizedReportingTestSectionName.setValue( localizedReportingName );
+	    }
 
 	public void setScriptlet(Scriptlet scriptlet) {
 		this.scriptlet.setValue(scriptlet);
