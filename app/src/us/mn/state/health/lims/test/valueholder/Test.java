@@ -15,7 +15,8 @@
 */
 package us.mn.state.health.lims.test.valueholder;
 
-import us.mn.state.health.lims.common.services.LocalizationService;
+import java.sql.Date;
+
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -29,8 +30,6 @@ import us.mn.state.health.lims.method.valueholder.Method;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 import us.mn.state.health.lims.testtrailer.valueholder.TestTrailer;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
-
-import java.sql.Date;
 
 /**
  * @author benzd1
@@ -113,10 +112,12 @@ public class Test extends EnumValueItemImpl {
 
     private String guid;
 	
+	@Override
 	public String getSortOrder() {
 		return sortOrder;
 	}
 
+	@Override
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
@@ -130,6 +131,8 @@ public class Test extends EnumValueItemImpl {
 		this.scriptlet = new ValueHolder();
         localizedTestName = new ValueHolder( );
         localizedReportingName = new ValueHolder( );
+        localizedTestSectionName = new ValueHolder();
+        localizedReportingTestSectionName = new ValueHolder();
 	}
 
 	public void setId(String id) {
@@ -201,6 +204,7 @@ public class Test extends EnumValueItemImpl {
 		this.description = description;
 	}
 
+	@Override
 	public String getIsActive() {
 		return isActive;
 	}
@@ -208,6 +212,7 @@ public class Test extends EnumValueItemImpl {
 	public boolean isActive(){
 		return "Y".equals(isActive);
 	}
+	@Override
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}

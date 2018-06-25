@@ -10,6 +10,14 @@
             <form-property name="sortBy"  type="java.lang.String"/>
             <form-property name="eOrders" type="java.util.List" />
         </form-bean>
+        
+        <form-bean name="DataSubmissionForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
+            <form-property name="dataSubUrl" type="us.mn.state.health.lims.siteinformation.valueholder.SiteInformation" />
+            <form-property name="indicators" type="java.util.List" />
+            <form-property name="month" type="java.lang.Integer" />
+            <form-property name="year" type="java.lang.Integer" />
+        </form-bean>
 
 		<!-- SAMPLE ENTRY -->
 		<form-bean name="samplePatientEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -29,23 +37,6 @@
             <form-property name="testSectionList"  type="java.util.Collection" />
         </form-bean>
         
-		<form-bean name="sampleBatchEntrySetupForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
-            <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
-            <form-property name="currentDate" type="java.lang.String" initial="" />
-            <form-property name="currentTime" type="java.lang.String" initial="" />
-            <form-property name="project" type="java.lang.String" initial="" />
-            <form-property name="projects" type="java.util.Collection" />
-            <form-property name="sampleTypes" type="java.util.List" />
-            <form-property name="sampleXML" type="java.lang.String" initial="" />
-            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
-            <form-property name="initialSampleConditionList" type="java.util.Collection" />
-            <form-property name="testSectionList"  type="java.util.Collection" />
-            <form-property name="method" type="java.lang.String" />
-            <form-property name="facilityID" type="java.lang.String" />
-            <form-property name="facilityIDCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-            <form-property name="patientInfoCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
-        </form-bean>
-        
 		<form-bean name="sampleBatchEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
             <form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
             <form-property name="currentDate" type="java.lang.String" initial="" />
@@ -60,10 +51,22 @@
             <form-property name="patientInfoCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
             <form-property name="facilityIDCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
             <form-property name="facilityID" type="java.lang.String" />
+            <form-property name="method" type="java.lang.String" />
+            <form-property name="study" type="java.lang.String" />
+            
             <form-property name="labNo" type="java.lang.String" />
             <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
-        </form-bean>
+            
+            <form-property name="programCode" type="java.lang.String" />
+            <form-property name="ProjectDataVL" type="us.mn.state.health.lims.sample.form.ProjectData" />
+            <form-property name="ProjectDataEID" type="us.mn.state.health.lims.sample.form.ProjectData" />  
+            <form-property name="ProjectData" type="us.mn.state.health.lims.sample.form.ProjectData" />  
+            <form-property name="observations" type="us.mn.state.health.lims.patient.valueholder.ObservationData"/>
+            <form-property name="organizationTypeLists" type="java.util.Map"/>
+            <form-property name="receivedDateForDisplay" type="java.lang.String" />
+            <form-property name="receivedTimeForDisplay" type="java.lang.String"/>
+        </form-bean>        
 
 		<form-bean name="SampleConfirmationEntryForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 			<form-property name="lastupdated" type="java.sql.Timestamp" initial="" />
@@ -1014,6 +1017,14 @@
         <action path="/ElectronicOrders" name="ElectronicOrderViewForm" type="us.mn.state.health.lims.dataexchange.order.action.ElectronicOrderViewAction">
           <forward name="success" path="electronicOrderViewDefinition" />
         </action>
+        
+        <action path="/DataSubmission" name="DataSubmissionForm" type="us.mn.state.health.lims.datasubmission.action.DataSubmissionAction" >
+            <forward name="success" path="dataSubmissionDefinition" />
+        </action>
+        
+        <action path="/DataSubmissionSave" name="DataSubmissionForm" type="us.mn.state.health.lims.datasubmission.action.DataSubmissionSaveAction" >
+            <forward name="success" path="/DataSubmission.do" />
+        </action>
 
 		<action path="/Cancel" forward="homePageDefinition" />
 		<action path="/Dashboard" forward="homePageDefinition" />
@@ -1027,7 +1038,7 @@
 		   <forward name="success" path="masterListsPageDefinition" />
 	    </action>
 
-
+        
         <action path="/TestManagementConfigMenu" name="testManagementConfigForm" type="us.mn.state.health.lims.common.action.PermissionAction"      >
                 <forward name="success" path="testManagementConfigDefinition"  />
         </action>
@@ -1209,18 +1220,20 @@
 		</action>
 
 
-       <action path="/SampleBatchEntrySetup" name="sampleBatchEntrySetupForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntrySetupAction" validate="false">
+       <action path="/SampleBatchEntrySetup" name="sampleBatchEntryForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntrySetupAction" validate="false">
           <forward name="success" path="sampleBatchEntrySetupDefinition"/>
           <forward name="fail" path="homePageDefinition"/> 
        </action>
        
-       <action path="/SampleBatchEntryOnDemand" name="sampleBatchEntryForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryAction" validate="false">
-          <forward name="success" path="sampleBatchEntryOnDemandDefinition"/>
+       <action path="/SampleBatchEntry" name="sampleBatchEntryForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryAction" validate="false">
+          <forward name="ondemand" path="sampleBatchEntryOnDemandDefinition"/>
+          <forward name="preprinted" path="sampleBatchEntryPrePrintedDefinition"/>
           <forward name="fail" path="/SampleBatchEntrySetup.do"/> 
        </action>
        
-       <action path="/SampleBatchEntryPrePrinted" name="sampleBatchEntryForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryAction" validate="false">
-          <forward name="success" path="sampleBatchEntryPrePrintedDefinition"/>
+       <action path="/SampleBatchEntryByProject" name="sampleBatchEntryForm" type="us.mn.state.health.lims.samplebatchentry.action.SampleBatchEntryByProjectAction" validate="false">
+          <forward name="ondemand" path="sampleStudyBatchEntryOnDemandDefinition"/>
+          <forward name="preprinted" path="sampleStudyBatchEntryPrePrintedDefinition"/>
           <forward name="fail" path="/SampleBatchEntrySetup.do"/> 
        </action>
        
