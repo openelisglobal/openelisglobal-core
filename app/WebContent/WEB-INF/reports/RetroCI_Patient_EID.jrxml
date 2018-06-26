@@ -4,10 +4,10 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="971"/>
+	<property name="ireport.y" value="205"/>
 	<import value="net.sf.jasperreports.engine.*"/>
-	<import value="net.sf.jasperreports.engine.data.*"/>
 	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["../reports/"]]></defaultValueExpression>
 	</parameter>
@@ -105,17 +105,17 @@
 			</line>
 			<subreport>
 				<reportElement x="0" y="1" width="552" height="146"/>
-				<subreportParameter name="leftHeaderImage">
-					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="duplicateReport">
-					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
+				<subreportParameter name="leftHeaderImage">
+					<subreportParameterExpression><![CDATA[$P{leftHeaderImage}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="status">
 					<subreportParameterExpression><![CDATA[$F{status}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="duplicateReport">
+					<subreportParameterExpression><![CDATA[$F{duplicateReport}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="studyName">
 					<subreportParameterExpression><![CDATA[$P{studyName}]]></subreportParameterExpression>
@@ -292,6 +292,10 @@ b.	Si l’enfant est sous allaitement maternel, répéter la PCR  6 semaines apr
 				</textElement>
 				<text><![CDATA[Résultats]]></text>
 			</staticText>
+			<image onErrorType="Blank">
+				<reportElement x="365" y="189" width="169" height="60"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "ciphiaLogo.jpg"]]></imageExpression>
+			</image>
 		</band>
 		<band height="448">
 			<printWhenExpression><![CDATA[$F{virologyEidQaEvent}!=null]]></printWhenExpression>
