@@ -283,19 +283,8 @@ function clearFormElements(fieldIds) {
 	</tr>
 	<tr>
 		<td width="2%"></td>
-		<td width="38%"><bean:message key="sample.entry.project.ARV.dryTubeTaken" /></td>
+		<td width="38%"><bean:message key="sample.entry.project.ARV.edtaTubeTaken" /></td>
 		<td width="60%">
-
-			<html:checkbox name="<%=formName%>" 
-				   property="ProjectData.dryTubeTaken"
-				   styleId="vl.dryTubeTaken"
-				   onchange="vl.checkSampleItem($('vl.dryTubeTaken'));"/>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td><bean:message key="sample.entry.project.ARV.edtaTubeTaken" /></td>
-		<td>
 			<html:checkbox name="<%=formName%>"
 				   property="ProjectData.edtaTubeTaken"
 				   styleId="vl.edtaTubeTaken"
@@ -304,9 +293,9 @@ function clearFormElements(fieldIds) {
 	</tr>
 	
 	<tr>
-			<td></td>
-			<td><bean:message key="sample.entry.project.title.dryBloodSpot" /></td>
-			<td>
+			<td width="2%"></td>
+			<td width="38%"><bean:message key="sample.entry.project.title.dryBloodSpot" /></td>
+			<td width="60%">
 				<html:checkbox name="<%=formName%>"
 					   property="ProjectData.dbsvlTaken"
 					   styleId="vl.dbsvlTaken"

@@ -39,9 +39,9 @@ public class ForCIDashboardColumnBuilder extends CIColumnBuilder {
         add("Viral Load", "Viral Load", NONE );
         add("Viral Load", "Viral Load log", LOG );
         add("type_of_sample_name", "Type_of_sample", NONE );
-        add("started_date"     ,"STARTED_DATE", NONE);
-        add("completed_date"     ,"COMPLETED_DATE", NONE);
-        add("released_date"     ,"RELEASED_DATE", NONE);
+        add("started_date"     ,"STARTED_DATE", DATE_TIME);
+        add("completed_date"     ,"COMPLETED_DATE", DATE_TIME);
+        add("released_date"     ,"RELEASED_DATE", DATE_TIME);
    //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
              
         /*  add("hivStatus"            , "STATVIH", DICT_RAW );
@@ -77,7 +77,7 @@ public class ForCIDashboardColumnBuilder extends CIColumnBuilder {
         add("priorVLValue"         , "PRIOR_VL_Value",NONE );
         add("priorVLDate"         , "PRIOR_VL_Date",NONE );*/
         add("report_name"         , "report_name",NONE );
-        add("report_generation_time"         , "report_generation_time",NONE );
+        add("report_generation_time"         , "report_generation_time",DATE_TIME );
        // addAllResultsColumns();
         
         

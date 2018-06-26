@@ -517,7 +517,7 @@ abstract public class CSVColumnBuilder {
 	/**
 	 * @return
 	 */
-	private String getExcludedAnalytesSet() {
+/*	private String getExcludedAnalytesSet() {
 		String[] excludedAnalytes = new String[] { getGendCD4CountAnalyteId() };
 		StringBuilder sb = new StringBuilder();
 		for (String a : excludedAnalytes) {
@@ -525,7 +525,7 @@ abstract public class CSVColumnBuilder {
 		}
 		sb.setLength(sb.length() - 1);
 		return sb.toString();
-	}
+	} */
 
 	protected void appendObservationHistoryCrosstab(String lowDatePostgres, String highDatePostgres) {
 		String listName = "demo";

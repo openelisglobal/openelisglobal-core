@@ -46,7 +46,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 	private Project project;
 	private String indicStr;
 	protected static final SimpleDateFormat postgresDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private String indicLabel;
+	//private String indicLabel;
 	
 	@Override
 	protected String reportFileName(){
@@ -173,7 +173,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
         String[] splitLine = indicStr.split(":");
         String indic = splitLine[1];
         if (indic.equals("Unsuppressed VL"))
-            return !workingResult.contains("L") && !workingResult.contains("X") && !workingResult.contains("<") && workingResult.length()>0 
+            return workingResult.contains("Log7")|| !workingResult.contains("L") && !workingResult.contains("X") && !workingResult.contains("<") && workingResult.length()>0 
                     && Double.parseDouble(workingResult) >= 1000;// workingResult.length()>=4 &&
                                                                     // !workingResult.contains("L") &&
                                                                     // !workingResult.contains("X") ;
@@ -210,7 +210,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 	}
 
 	private CSVColumnBuilder getColumnBuilder(String projectId) {
-		String projectTag = CIColumnBuilder.translateProjectId(projectId);
+		//String projectTag = CIColumnBuilder.translateProjectId(projectId);
 		return new ForCIDashboardColumnBuilder(dateRange, projectStr);
 		
 	}
