@@ -11,16 +11,12 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 
 import us.mn.state.health.lims.common.action.BaseAction;
-import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.datasubmission.DataSubmitter;
 import us.mn.state.health.lims.datasubmission.dao.DataIndicatorDAO;
-import us.mn.state.health.lims.datasubmission.dao.DataValueDAO;
 import us.mn.state.health.lims.datasubmission.daoimpl.DataIndicatorDAOImpl;
-import us.mn.state.health.lims.datasubmission.daoimpl.DataValueDAOImpl;
 import us.mn.state.health.lims.datasubmission.valueholder.DataIndicator;
-import us.mn.state.health.lims.datasubmission.valueholder.DataValue;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
@@ -47,14 +43,9 @@ public class DataSubmissionSaveAction extends BaseAction {
 		for (DataIndicator indicator : indicators) {
 			if (submit) {
 				boolean success;
-				try {
-					success = DataSubmitter.sendDataIndicator(indicator);
-				} catch (Exception e) {
-					success = false;
-					LogEvent.logError("DataSubmissionSaveAction", "performAction()", e.toString());
-					e.printStackTrace();
-				}
+				success = DataSubmitter.sendDataIndicator(indicator);
 				indicator.setStatus(DataIndicator.SENT);
+				
 				if (success) {
 					indicator.setStatus(DataIndicator.RECEIVED);
 				} else {
@@ -65,12 +56,7 @@ public class DataSubmissionSaveAction extends BaseAction {
 			DataIndicator databaseIndicator = indicatorDAO.getIndicatorByTypeYearMonth(indicator.getTypeOfIndicator(), year, month);
 			if (databaseIndicator == null) {
 				indicatorDAO.insertData(indicator);
-			} else {				
-				DataValueDAO dataValueDAO = new DataValueDAOImpl();
-				for (DataValue value : indicator.getDataValues()) {
-					dataValueDAO.updateData(value);
-				}
-				dataValueDAO.updateData(indicator.getDataValue());
+			} else {
 				indicator.setId(databaseIndicator.getId());
 				indicatorDAO.updateData(indicator);
 			}

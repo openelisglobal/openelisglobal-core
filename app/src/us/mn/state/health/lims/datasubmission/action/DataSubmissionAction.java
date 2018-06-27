@@ -12,6 +12,8 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 
 import us.mn.state.health.lims.common.action.BaseAction;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
@@ -35,7 +37,7 @@ public class DataSubmissionAction extends BaseAction {
 		dynaForm.initialize(mapping);
 
 		int month = GenericValidator.isBlankOrNull(request.getParameter("month")) ? 
-				DateUtil.getCurrentMonth() : Integer.parseInt(request.getParameter("month"));
+				DateUtil.getCurrentMonth() + 1 : Integer.parseInt(request.getParameter("month"));
 		int year = GenericValidator.isBlankOrNull(request.getParameter("year")) ? 
 				DateUtil.getCurrentYear() : Integer.parseInt(request.getParameter("year"));
 				
@@ -49,7 +51,7 @@ public class DataSubmissionAction extends BaseAction {
 			DataIndicator indicator = indicatorDAO.getIndicatorByTypeYearMonth(typeOfIndicator, year, month);
 			if (indicator == null) {
 				indicator = DataIndicatorFactory.createBlankDataIndicatorForType(typeOfIndicator);
-			} 
+			}
 			indicator.setYear(year);
 			indicator.setMonth(month);
 			indicators.add(indicator);
@@ -59,6 +61,7 @@ public class DataSubmissionAction extends BaseAction {
 		dynaForm.set("indicators", indicators);
 		dynaForm.set("month", month);
 		dynaForm.set("year", year);
+		dynaForm.set("siteId", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteCode));
 		return mapping.findForward(forward);
 	}
 

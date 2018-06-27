@@ -13,7 +13,6 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.datasubmission.dao.DataIndicatorDAO;
 import us.mn.state.health.lims.datasubmission.valueholder.DataIndicator;
-import us.mn.state.health.lims.datasubmission.valueholder.DataValue;
 import us.mn.state.health.lims.datasubmission.valueholder.TypeOfDataIndicator;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 
@@ -65,13 +64,6 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 			if (indicator == null) {
 				return null;
 			}
-			for (DataValue dataValue : indicator.getDataValues()) {
-				if (dataValue.getParentValue() == null) {
-					indicator.setDataValue(dataValue);
-					indicator.getDataValues().remove(dataValue);
-					break;
-				}
-			}
 			return indicator;
 		}catch (HibernateException e){
 			LogEvent.logError("DataIndicatorDAOImpl", "getIndicatorByTypeYearMonth()", e.toString());
@@ -80,8 +72,23 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 	}
 	
 	@Override
+	public List<DataIndicator> getIndicatorsByStatus(String status) throws LIMSRuntimeException {
+		String sql = "From DataIndicator di where di.status = :status";
+		try{
+			Query query = HibernateUtil.getSession().createQuery(sql);
+			query.setString("status", status);
+			List<DataIndicator> indicators = query.list();
+			HibernateUtil.getSession().flush();
+			HibernateUtil.getSession().clear();
+			return indicators;
+		}catch (HibernateException e){
+			LogEvent.logError("DataIndicatorDAOImpl", "getIndicatorByStatus()", e.toString());
+			throw new LIMSRuntimeException("Error in DataIndicator getIndicatorByStatus()", e);
+		}
+	}
+	
+	@Override
 	public boolean insertData(DataIndicator dataIndicator) throws LIMSRuntimeException{
-		dataIndicator.getDataValues().add(dataIndicator.getDataValue());
 		try{ 
 			String id = (String)HibernateUtil.getSession().save(dataIndicator);
 			dataIndicator.setId(id);
@@ -99,7 +106,6 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 			LogEvent.logError("DataIndicatorDAOImpl", "insertData()", e.toString());
 			throw new LIMSRuntimeException("Error in DataIndicator insertData()", e);
 		}
-		dataIndicator.getDataValues().remove(dataIndicator.getDataValue());
 
 		return true;
 	}
@@ -107,7 +113,6 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 	@Override
 	public void updateData(DataIndicator dataIndicator) throws LIMSRuntimeException{
 
-		dataIndicator.getDataValues().add(dataIndicator.getDataValue());
 		DataIndicator oldData = getIndicator(dataIndicator.getId());
 
 		try{
@@ -132,7 +137,6 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 			LogEvent.logError("DataIndicatorDAOImpl", "updateData()", e.toString());
 			throw new LIMSRuntimeException("Error in DataIndicator updateData()", e);
 		}
-		dataIndicator.getDataValues().remove(dataIndicator.getDataValue());
 	}
 	
 

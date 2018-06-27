@@ -1,7 +1,9 @@
 package us.mn.state.health.lims.datasubmission;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -17,8 +19,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import us.mn.state.health.lims.common.util.validator.GenericValidator;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.datasubmission.valueholder.DataIndicator;
+import us.mn.state.health.lims.datasubmission.valueholder.DataResource;
 import us.mn.state.health.lims.datasubmission.valueholder.DataValue;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
@@ -26,125 +29,191 @@ import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 public class DataSubmitter {
 	
 	public static boolean sendDataIndicator(DataIndicator indicator) throws IOException, ParseException {
-		for (String group : indicator.getGroups()) {
-			for (String tableName : indicator.getDataValueTableNames()) {
-				Map<String, String> values = new HashMap<String, String>();
-				addKeyValuesForTable(tableName, values, indicator, group);
-				String id = checkForIdOnVLDash(tableName, values);
-				
-				for (DataValue value : indicator.getDataValuesByTableAndGroup(tableName, group)) {
-					values.put(value.getForeignColumnName(), value.getValue());
-				}
-				String result;
-				JSONObject jsonResult;
-				if (!GenericValidator.isBlankOrNull(id)) {
-					result = sendJSONPut(tableName, id, values);
+		boolean success = true;
+		for (DataResource resource : indicator.getResources()) {
+			String result;
+			JSONObject jsonResult;
+			
+			//expand levels if level is ALL
+			List<String> levels = new ArrayList<String>();
+			if (resource.getLevel().equals(DataResource.ALL)) {
+				levels = DataResource.getAllNamedLevels();
+			} else {
+				levels.add(resource.getLevel());
+			}
+			
+			Map<String,DataValue> columnValuePairs = resource.getColumnValues();
+			//put in extra data that is often used
+			columnValuePairs.put("month", new DataValue(Integer.toString(indicator.getMonth()), false));
+			columnValuePairs.put("year", new DataValue(Integer.toString(indicator.getYear()), false));
+			columnValuePairs.put("facility", new DataValue(indicator.getFacilityCode(), false));
+			//trust OE side has correct information
+			Map<String,String> idsByLevel = resource.getLevelIdMap();
+			//check for resource on server instead of trusting info is correct on OE side
+			//Map<String,String> idsByLevel = getIdsBySearchKeys(resource, columnValuePairs);			
+			try {
+				//resource doesn't exist in any capacity on server. Send as normal
+				if (idsByLevel.isEmpty()) {
+					result = sendJSONPost(resource);
 					jsonResult = (JSONObject) (new JSONParser()).parse(result);
+					for (String level : levels) {
+						if (jsonResult.containsKey(level)) {
+							String id = Long.toString((long) ((JSONObject) jsonResult.get(level)).get("id"));
+							resource.getLevelIdMap().put(level, id);
+						}
+					}
+				//resource fully, or partially exists on server, send as sub resources
 				} else {
-					result = sendJSONPost(tableName, values);
-					jsonResult = (JSONObject) (new JSONParser()).parse(result);
-					id = (String) ((JSONObject) jsonResult.get("message")).get("id");
-					for (DataValue value : indicator.getDataValuesByTableAndGroup(tableName, group)) {
-						value.setForeignId(id);
+					resource.setLevelIdMap(idsByLevel);
+					for (String level : levels) {
+						if (idsByLevel.containsKey(level)) {
+							result = sendJSONPut(resource, level);
+							jsonResult = (JSONObject) (new JSONParser()).parse(result);
+						} else {
+							result = sendJSONPost(resource, level);
+							jsonResult = (JSONObject) (new JSONParser()).parse(result);
+							if (jsonResult.containsKey(level)) {
+								String id = Long.toString((long) ((JSONObject) jsonResult.get(level.toString().toLowerCase())).get("id"));
+								resource.getLevelIdMap().put(level, id);
+							}
+						}
 					}
 				}
-				if ("0".equals(jsonResult.get("success"))) {
-					return false;
+			} catch (Exception e) {
+				success = false;
+				LogEvent.logError("DataSubmitter", "performAction()", e.toString());
+				e.printStackTrace();
+			} finally {
+				//remove extra information as it does not need to be saved to database
+				columnValuePairs.remove("month");
+				columnValuePairs.remove("year");
+				columnValuePairs.remove("facility");
+			}
+		}
+		return success;
+	}
+	
+	private static Map<String,String> getIdsBySearchKeys(DataResource resource, Map<String, DataValue> searchKeys) throws ClientProtocolException, IOException, ParseException {
+		Map<String, String> ids = new HashMap<String,String>();
+		if (searchKeys.isEmpty()) {
+			return null;
+		}
+		String result = sendGet(resource, resource.getLevel(), searchKeys);
+		JSONObject jsonResult = (JSONObject) (new JSONParser()).parse(result);
+		List<String> levels = new ArrayList<String>();
+		if (resource.getLevel().equals(DataResource.ALL)) {
+			levels = DataResource.getAllNamedLevels();
+		} else {
+			levels.add(resource.getLevel());
+		}
+		for (String level : levels) {
+			JSONArray message = (JSONArray) jsonResult.get(level);
+			if (message.size() > 0) {
+				JSONObject obj = (JSONObject) message.get(0);
+				if (obj.containsKey("id")) {
+					ids.put(level, (String) obj.get("id"));
+				} else if (obj.containsKey("ID")) {
+					ids.put(level, (String) obj.get("ID"));
 				}
 			}
 		}
 		
-		return true;
+		return ids;
 	}
-	
-	//add values to provide enough information to identify an entry without knowing the foreign id value
-	//TO DO verify that all entries work as a uniquely identifying foreign key 
-	private static void addKeyValuesForTable(String tableName, Map<String, String> values, DataIndicator indicator, String group) {
-		switch (tableName) {
-		case "facilitys":
-			//TO DO add correct facility code
-			values.put("facilitycode", "1");
-			break;
-		case "vl_national_age":
-			values.put("month", Integer.toString(indicator.getMonth() + 1));
-			values.put("year", Integer.toString(indicator.getYear()));
-			if (group.equals("label.less9")) {
-				values.put("age", "54");
-			} else if (group.equals("label.less19")) {
-				values.put("age", "55");
-			} else if (group.equals("label.less24")) {
-				values.put("age", "56");
-			} else if (group.equals("label.over25")) {
-				values.put("age", "57");
-			}
-			break;
-		case "vl_national_gender":
-			values.put("month", Integer.toString(indicator.getMonth() + 1));
-			values.put("year", Integer.toString(indicator.getYear()));
-			if (group.equals("datasubmission.women")) {
-				values.put("gender", "2");
-			} else if (group.equals("datasubmission.men")) {
-				values.put("gender", "1");
-			}
-			break;
-		case "vl_national_justification":
-			values.put("month", Integer.toString(indicator.getMonth() + 1));
-			values.put("year", Integer.toString(indicator.getYear()));
-			if (group.equals("datasubmission.reason.arv")) {
-				values.put("justification", "11");
-			} else if (group.equals("datasubmission.reason.virologicalfail")) {
-				values.put("justification", "12");
-			} else if (group.equals("datasubmission.reason.clinicalfail")) {
-				values.put("justification", "13");
-			} else if (group.equals("datasubmission.reason.immunologicalfail")) {
-				values.put("justification", "14");
-			}
-			break;
-		case "vl_national_summary":
-			values.put("month", Integer.toString(indicator.getMonth() + 1));
-			values.put("year", Integer.toString(indicator.getYear()));
-			break;
-		case "vl_site_summary":
-			values.put("month", Integer.toString(indicator.getMonth() + 1));
-			values.put("year", Integer.toString(indicator.getYear()));
-			//temporary
-			values.put("facility", "1");
-			break;
-		case "vl_site_suppression":
-			//temporary
-			values.put("facility", "1");
-			break;
-		default:
-			break;
-		}
-	}
-	
-	//returns the id of an entry that matches the specified column-value pairs
-	public static String checkForIdOnVLDash(String table, Map<String, String> columnValues) throws ClientProtocolException, IOException, ParseException {
-		if (columnValues.isEmpty()) {
-			return null;
-		}
-		String result = sendGet(table, columnValues);
-		JSONObject jsonResult = (JSONObject) (new JSONParser()).parse(result);
-		JSONArray message = (JSONArray) jsonResult.get("message");
-		if (message.size() == 0) {
-			return null;
-		} else {
-			JSONObject obj = (JSONObject) message.get(0);
-			if (obj.containsKey("id")) {
-				return (String) obj.get("id");
-			} else if (obj.containsKey("ID")) {
-				return (String) obj.get("ID");
-			} 
-			return null;
-		}
-	}
-	
+
 	//get a resource based on its column-value pairs.
-	public static String sendGet(String table, Map<String, String> columnValues) throws ClientProtocolException, IOException {
+	public static String sendGet(DataResource resource, String level, Map<String, DataValue> searchKeys) throws ClientProtocolException, IOException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		StringBuilder url = new StringBuilder();
 		url.append(getBaseURL());
+		url.append("/");
+		url.append(resource.getCollectionName());
+		url.append("/");
+		url.append(resource.getLevel());
+		url.append("?");
+		String prefix = "";
+		for (String keyName : searchKeys.keySet()) {
+			url.append(prefix);
+			url.append(keyName);
+			url.append("=");
+			url.append(searchKeys.get(keyName).getValue());
+			prefix = "&";
+		}
+		HttpGet request = new HttpGet(url.toString());
+		request.setHeader("Accept", "application/json");
+		System.out.println("GET: " + request.getURI());
+
+		HttpResponse response = client.execute(request);
+		if (response.getStatusLine().getStatusCode() != 201 && response.getStatusLine().getStatusCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+				+ response.getStatusLine().getStatusCode());
+		}
+		
+		String body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+		System.out.println("Server returned: " + body);
+		return body;
+	}
+	
+	private static String sendJSONPost(DataResource resource) throws ClientProtocolException, IOException {
+		return sendJSONPost(resource, resource.getLevel());
+	}
+
+	private static String sendJSONPost(DataResource resource, String level) throws ClientProtocolException, IOException {
+		DefaultHttpClient client = new DefaultHttpClient();
+		String url = getBaseURL() + "/" + resource.getCollectionName();
+		url += "/" + resource.getLevel();
+		
+		HttpPost request = new HttpPost(url);
+		StringEntity entity = new StringEntity(createJSONString(resource.getColumnValues()));
+		entity.setContentType("application/json");
+		request.setHeader("Accept", "application/json");
+		request.setHeader("Content-type", "application/json");
+		request.setEntity(entity);
+		System.out.println("POST: " + request.getURI() + " " + createJSONString(resource.getColumnValues()));
+		
+		HttpResponse response = client.execute(request);
+		if (response.getStatusLine().getStatusCode() != 201 && response.getStatusLine().getStatusCode() != 200) {
+			System.out.println(IOUtils.toString(response.getEntity().getContent(), "UTF-8"));
+			throw new RuntimeException("Failed : HTTP error code : "
+				+ response.getStatusLine().getStatusCode());
+		}
+		
+		String body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+		System.out.println("Server returned: " + body);
+		return body;
+	}
+	
+	private static String sendJSONPut(DataResource resource, String level) throws ClientProtocolException, IOException {
+		DefaultHttpClient client = new DefaultHttpClient();
+		String url = getBaseURL() + "/" + resource.getName();
+		url += "/" + level + "/" + resource.getLevelIdMap().get(level);
+		HttpPut request = new HttpPut(url);
+		StringEntity entity = new StringEntity(createJSONString(resource.getColumnValues()));
+		entity.setContentType("application/json");
+		request.setHeader("Accept", "application/json");
+		request.setHeader("Content-type", "application/json");
+		request.setEntity(entity);
+		System.out.println("PUT: " + request.getURI() + " " + createJSONString(resource.getColumnValues()));
+		
+		HttpResponse response = client.execute(request);
+		if (response.getStatusLine().getStatusCode() != 201 && response.getStatusLine().getStatusCode() != 200) {
+			System.out.println(IOUtils.toString(response.getEntity().getContent(), "UTF-8"));
+			throw new RuntimeException("Failed : HTTP error code : "
+				+ response.getStatusLine().getStatusCode());
+		}
+		
+		String body = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
+		System.out.println("Server returned: " + body);
+		
+		return body;
+	}
+	
+	//get a resource based on its column-value pairs.
+	public static String sendGet(String table, Map<String, DataValue> columnValues) throws ClientProtocolException, IOException {
+		DefaultHttpClient client = new DefaultHttpClient();
+		StringBuilder url = new StringBuilder();
+		url.append(getBaseURL());
+		url.append("/");
 		url.append(table);
 		url.append("?");
 		String prefix = "";
@@ -152,12 +221,13 @@ public class DataSubmitter {
 			url.append(prefix);
 			url.append(keyName);
 			url.append("=");
-			url.append(columnValues.get(keyName));
+			url.append(columnValues.get(keyName).getValue());
 			prefix = "&";
 		}
 		HttpGet request = new HttpGet(url.toString());
 		request.setHeader("Accept", "application/json");
-		
+
+		url.append("/");
 		HttpResponse response = client.execute(request);
 		if (response.getStatusLine().getStatusCode() != 201 && response.getStatusLine().getStatusCode() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : "
@@ -174,6 +244,7 @@ public class DataSubmitter {
 		DefaultHttpClient client = new DefaultHttpClient();
 		StringBuilder url = new StringBuilder();
 		url.append(getBaseURL());
+		url.append("/");
 		url.append(table);
 		url.append("/");
 		url.append(id);
@@ -192,7 +263,7 @@ public class DataSubmitter {
 	}
 	
 	//used for talking to VL-DASHBOARD api to update an old entry
-	public static String sendJSONPut(String table, String foreignKey, Map<String, String> values) throws IOException { 
+	public static String sendJSONPut(String table, String foreignKey, Map<String, DataValue> values) throws IOException { 
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpPut request = new HttpPut(getBaseURL() + "/" + table + "/" + foreignKey);
 		StringEntity entity = new StringEntity(createJSONString(values));
@@ -213,7 +284,7 @@ public class DataSubmitter {
 	}
 
 	//used for talking to VL-DASHBOARD api to insert a new entry
-	public static String sendJSONPost(String table, Map<String, String> values) throws ClientProtocolException, IOException {
+	public static String sendJSONPost(String table, Map<String, DataValue> values) throws ClientProtocolException, IOException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpPost request = new HttpPost(getBaseURL() + "/" + table);
 		StringEntity entity = new StringEntity(createJSONString(values));
@@ -221,6 +292,8 @@ public class DataSubmitter {
 		request.setHeader("Accept", "application/json");
 		request.setHeader("Content-type", "application/json");
 		request.setEntity(entity);
+		
+		System.out.println(getBaseURL() + "/" + table);
 		
 		HttpResponse response = client.execute(request);
 		if (response.getStatusLine().getStatusCode() != 201 && response.getStatusLine().getStatusCode() != 200) {
@@ -233,11 +306,12 @@ public class DataSubmitter {
 		return body;
 	}
 
-	private static String createJSONString(Map<String, String> values) {
+	@SuppressWarnings("unchecked")
+	private static String createJSONString(Map<String, DataValue> values) {
 		JSONObject json = new JSONObject();
-		json.putAll(values);
-		
-		// TODO Auto-generated method stub
+		for (String key : values.keySet()) {
+			json.put(key, values.get(key).getValue());
+		}
 		return json.toString();
 	}
 	
