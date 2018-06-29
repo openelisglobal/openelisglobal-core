@@ -18,7 +18,7 @@
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
 
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.NONE;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.*;
 import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
@@ -48,9 +48,9 @@ public class EIDColumnBuilder extends CIColumnBuilder {
         defineBasicColumns();
         
         add("DNA PCR"     ,"DNA PCR", TEST_RESULT);
-        add("started_date"     ,"STARTED_DATE", NONE);
-        add("completed_date"     ,"COMPLETED_DATE", NONE);
-        add("released_date"     ,"RELEASED_DATE", NONE);
+        add("started_date"     ,"STARTED_DATE", DATE_TIME);
+        add("completed_date"     ,"COMPLETED_DATE", DATE_TIME);
+        add("released_date"     ,"RELEASED_DATE", DATE_TIME);
    //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);// a means to check unknown patient with id=1
         
         add("nameOfSampler"     ,"NOMPREV", NONE);

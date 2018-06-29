@@ -28,10 +28,10 @@
           <index column="level" type="java.lang.String"></index>
           <element column="id_for_level" type="java.lang.String"></element>
         </map>
-        <map name="columnValues" cascade="all" lazy="false">
-          <key column="data_resource_id" />
-          <index column="column_name" type="java.lang.String"/>
-          <one-to-many class="us.mn.state.health.lims.datasubmission.valueholder.DataValue" />
-        </map>
+        <list name="columnValues" cascade="all" lazy="false">
+          <key column="data_resource_id"/>
+          <index column="index"/>
+          <one-to-many class="us.mn.state.health.lims.datasubmission.valueholder.DataValue"/>
+        </list>
     </class>
 </hibernate-mapping>

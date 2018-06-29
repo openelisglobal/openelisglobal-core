@@ -5,13 +5,18 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.Globals;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
 import org.apache.struts.action.DynaActionForm;
 
 import us.mn.state.health.lims.common.action.BaseAction;
+import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.util.DateUtil;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.datasubmission.DataSubmitter;
 import us.mn.state.health.lims.datasubmission.dao.DataIndicatorDAO;
@@ -40,16 +45,20 @@ public class DataSubmissionSaveAction extends BaseAction {
 		SiteInformationDAO siteInfoDAO = new SiteInformationDAOImpl();
 		siteInfoDAO.updateData(dataSubUrl);
 		DataIndicatorDAO indicatorDAO = new DataIndicatorDAOImpl();
+		boolean allSuccess = true;
+		ActionMessages errors = new ActionMessages();
 		for (DataIndicator indicator : indicators) {
-			if (submit) {
+			if (submit && indicator.isSendIndicator()) {
 				boolean success;
 				success = DataSubmitter.sendDataIndicator(indicator);
 				indicator.setStatus(DataIndicator.SENT);
-				
 				if (success) {
 					indicator.setStatus(DataIndicator.RECEIVED);
 				} else {
+					allSuccess = false;
 					indicator.setStatus(DataIndicator.FAILED);
+					ActionError error = new ActionError("errors.IndicatorCommunicationException", StringUtil.getMessageForKey(indicator.getTypeOfIndicator().getNameKey()), null);
+					errors.add(ActionMessages.GLOBAL_MESSAGE, error);
 				}
 			}
 			
@@ -61,6 +70,12 @@ public class DataSubmissionSaveAction extends BaseAction {
 				indicatorDAO.updateData(indicator);
 			}
 		}
+
+		if (!allSuccess) {
+			saveErrors(request, errors);
+			request.setAttribute(Globals.ERROR_KEY, errors);
+		}
+		request.setAttribute(IActionConstants.FWD_SUCCESS, allSuccess);
 		
 		return mapping.findForward(forward);
 	}

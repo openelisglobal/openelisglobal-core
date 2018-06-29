@@ -7,6 +7,7 @@
 <tiles-definitions>
 
     <definition name="dataSubmissionDefinition" extends="baseDefinition"> 
+         <put name="preSelectionHeader" value="/pages/common/actionSuccess.jsp" />
         <put name="body" value="/pages/datasubmission/dataSubmissionView.jsp" />
         <put name="footer" value="/pages/common/emptyPlaceHolder.jsp" />
     </definition>

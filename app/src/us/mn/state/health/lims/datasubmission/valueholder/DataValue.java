@@ -4,24 +4,29 @@ import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 public class DataValue extends BaseObject {
 	private String id;
+	private String columnName;
 	private String value;
 	private String displayKey;
 	private boolean visible;
 	
 	public DataValue() {
+		this.columnName = "";
 		this.value = "";
 		visible = true;
 	}
-	public DataValue(String displayKey) {
+	public DataValue(String columnName, String displayKey) {
+		this.columnName = columnName;
 		this.value = "";
 		this.displayKey = displayKey;
 		visible = true;
 	}
 	public DataValue(boolean visible) {
+		this.columnName = "";
 		this.value = "";
 		this.visible = visible;
 	}
-	public DataValue(String value, boolean visible) {
+	public DataValue(String columnName, String value, boolean visible) {
+		this.columnName = columnName;
 		this.value = value;
 		this.visible = visible;
 	}
@@ -30,6 +35,12 @@ public class DataValue extends BaseObject {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getColumnName() {
+		return columnName;
+	}
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
 	}
 	public String getValue() {
 		return value;

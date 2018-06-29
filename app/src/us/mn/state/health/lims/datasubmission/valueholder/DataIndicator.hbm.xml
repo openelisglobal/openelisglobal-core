@@ -15,7 +15,7 @@
           <key column="indicator_id"/>
           <one-to-many class="us.mn.state.health.lims.datasubmission.valueholder.DataResource"/>
         </bag>
-        <many-to-one name="dataValue" class="us.mn.state.health.lims.datasubmission.valueholder.DataValue" fetch="select" lazy="false">
+        <many-to-one name="dataValue" class="us.mn.state.health.lims.datasubmission.valueholder.DataValue"  lazy="false" cascade="all">
           <column name="data_value_id" precision="10" scale="0"  />
         </many-to-one>
         <property name="year" type="java.lang.Integer">

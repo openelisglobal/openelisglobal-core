@@ -42,11 +42,13 @@ public class DataSubmitter {
 				levels.add(resource.getLevel());
 			}
 			
-			Map<String,DataValue> columnValuePairs = resource.getColumnValues();
+			List<DataValue> columnValues = resource.getColumnValues();
+			List<DataValue> commonValues = new ArrayList<DataValue>();
 			//put in extra data that is often used
-			columnValuePairs.put("month", new DataValue(Integer.toString(indicator.getMonth()), false));
-			columnValuePairs.put("year", new DataValue(Integer.toString(indicator.getYear()), false));
-			columnValuePairs.put("facility", new DataValue(indicator.getFacilityCode(), false));
+			commonValues.add(new DataValue("month", Integer.toString(indicator.getMonth()), false));
+			commonValues.add(new DataValue("year", Integer.toString(indicator.getYear()), false));
+			commonValues.add(new DataValue("facility", indicator.getFacilityCode(), false));
+			columnValues.addAll(commonValues);
 			//trust OE side has correct information
 			Map<String,String> idsByLevel = resource.getLevelIdMap();
 			//check for resource on server instead of trusting info is correct on OE side
@@ -56,6 +58,9 @@ public class DataSubmitter {
 				if (idsByLevel.isEmpty()) {
 					result = sendJSONPost(resource);
 					jsonResult = (JSONObject) (new JSONParser()).parse(result);
+					if (jsonResult.get("error") != null) {
+						success = false;
+					}
 					for (String level : levels) {
 						if (jsonResult.containsKey(level)) {
 							String id = Long.toString((long) ((JSONObject) jsonResult.get(level)).get("id"));
@@ -69,9 +74,15 @@ public class DataSubmitter {
 						if (idsByLevel.containsKey(level)) {
 							result = sendJSONPut(resource, level);
 							jsonResult = (JSONObject) (new JSONParser()).parse(result);
+							if (jsonResult.get("error") != null) {
+								success = false;
+							}
 						} else {
 							result = sendJSONPost(resource, level);
 							jsonResult = (JSONObject) (new JSONParser()).parse(result);
+							if (jsonResult.get("error") != null) {
+								success = false;
+							}
 							if (jsonResult.containsKey(level)) {
 								String id = Long.toString((long) ((JSONObject) jsonResult.get(level.toString().toLowerCase())).get("id"));
 								resource.getLevelIdMap().put(level, id);
@@ -85,15 +96,13 @@ public class DataSubmitter {
 				e.printStackTrace();
 			} finally {
 				//remove extra information as it does not need to be saved to database
-				columnValuePairs.remove("month");
-				columnValuePairs.remove("year");
-				columnValuePairs.remove("facility");
+				columnValues.removeAll(commonValues);
 			}
 		}
 		return success;
 	}
 	
-	private static Map<String,String> getIdsBySearchKeys(DataResource resource, Map<String, DataValue> searchKeys) throws ClientProtocolException, IOException, ParseException {
+	private static Map<String,String> getIdsBySearchKeys(DataResource resource, List<DataValue> searchKeys) throws ClientProtocolException, IOException, ParseException {
 		Map<String, String> ids = new HashMap<String,String>();
 		if (searchKeys.isEmpty()) {
 			return null;
@@ -122,7 +131,7 @@ public class DataSubmitter {
 	}
 
 	//get a resource based on its column-value pairs.
-	public static String sendGet(DataResource resource, String level, Map<String, DataValue> searchKeys) throws ClientProtocolException, IOException {
+	public static String sendGet(DataResource resource, String level, List<DataValue> searchKeys) throws ClientProtocolException, IOException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		StringBuilder url = new StringBuilder();
 		url.append(getBaseURL());
@@ -132,11 +141,11 @@ public class DataSubmitter {
 		url.append(resource.getLevel());
 		url.append("?");
 		String prefix = "";
-		for (String keyName : searchKeys.keySet()) {
+		for (DataValue value : searchKeys) {
 			url.append(prefix);
-			url.append(keyName);
+			url.append(value.getColumnName());
 			url.append("=");
-			url.append(searchKeys.get(keyName).getValue());
+			url.append(value.getValue());
 			prefix = "&";
 		}
 		HttpGet request = new HttpGet(url.toString());
@@ -209,7 +218,7 @@ public class DataSubmitter {
 	}
 	
 	//get a resource based on its column-value pairs.
-	public static String sendGet(String table, Map<String, DataValue> columnValues) throws ClientProtocolException, IOException {
+	public static String sendGet(String table, List<DataValue> columnValues) throws ClientProtocolException, IOException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		StringBuilder url = new StringBuilder();
 		url.append(getBaseURL());
@@ -217,11 +226,11 @@ public class DataSubmitter {
 		url.append(table);
 		url.append("?");
 		String prefix = "";
-		for (String keyName : columnValues.keySet()) {
+		for (DataValue value : columnValues) {
 			url.append(prefix);
-			url.append(keyName);
+			url.append(value.getColumnName());
 			url.append("=");
-			url.append(columnValues.get(keyName).getValue());
+			url.append(value.getValue());
 			prefix = "&";
 		}
 		HttpGet request = new HttpGet(url.toString());
@@ -263,7 +272,7 @@ public class DataSubmitter {
 	}
 	
 	//used for talking to VL-DASHBOARD api to update an old entry
-	public static String sendJSONPut(String table, String foreignKey, Map<String, DataValue> values) throws IOException { 
+	public static String sendJSONPut(String table, String foreignKey, List<DataValue> values) throws IOException { 
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpPut request = new HttpPut(getBaseURL() + "/" + table + "/" + foreignKey);
 		StringEntity entity = new StringEntity(createJSONString(values));
@@ -284,7 +293,7 @@ public class DataSubmitter {
 	}
 
 	//used for talking to VL-DASHBOARD api to insert a new entry
-	public static String sendJSONPost(String table, Map<String, DataValue> values) throws ClientProtocolException, IOException {
+	public static String sendJSONPost(String table, List<DataValue> values) throws ClientProtocolException, IOException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpPost request = new HttpPost(getBaseURL() + "/" + table);
 		StringEntity entity = new StringEntity(createJSONString(values));
@@ -307,10 +316,10 @@ public class DataSubmitter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static String createJSONString(Map<String, DataValue> values) {
+	private static String createJSONString(List<DataValue> values) {
 		JSONObject json = new JSONObject();
-		for (String key : values.keySet()) {
-			json.put(key, values.get(key).getValue());
+		for (DataValue value : values) {
+			json.put(value.getColumnName(), value.getValue());
 		}
 		return json.toString();
 	}

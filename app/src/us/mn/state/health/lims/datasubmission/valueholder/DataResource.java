@@ -39,7 +39,7 @@ public class DataResource extends BaseObject {
 	private String level;
 	//id of entries on VLDASH database by level
 	private Map<String,String> levelIdMap = new HashMap<String,String>();
-	private Map<String,DataValue> columnValues = new HashMap<String,DataValue>();
+	private List<DataValue> columnValues = new ArrayList<DataValue>();
 	
 	
 	public static List<String> getAllLevels() {
@@ -84,19 +84,19 @@ public class DataResource extends BaseObject {
 	public void setLevelIdMap(Map<String, String> levelIdMap) {
 		this.levelIdMap = levelIdMap;
 	}
-	public Map<String, DataValue> getColumnValues() {
+	public List<DataValue> getColumnValues() {
 		return columnValues;
 	}
-	public void setColumnValues(Map<String, DataValue> columnValues) {
+	public void setColumnValues(List<DataValue> columnValues) {
 		this.columnValues = columnValues;
 	}
 	
-	public String getValue(String key) {
-		return columnValues.get(key).getValue();
+	public String getValue(int index) {
+		return columnValues.get(index).getValue();
 	}
-	public void setValue(String key, String value) {
-		DataValue valueWrapper = columnValues.get(key);
+	public void setValue(int index, String value) {
+		DataValue valueWrapper = columnValues.get(index);
 		valueWrapper.setValue(value);
-		columnValues.put(key, valueWrapper);
+		columnValues.set(index, valueWrapper);
 	}
 }

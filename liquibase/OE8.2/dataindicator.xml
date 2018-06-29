@@ -95,6 +95,7 @@
     CREATE TABLE clinlims.data_value (
       "id" NUMERIC (20),
 	  "data_resource_id" NUMERIC (20),
+	  "index" NUMERIC (20),
 	  "column_name" VARCHAR (20),
       "value" VARCHAR (20),
       "display_key" VARCHAR (40),

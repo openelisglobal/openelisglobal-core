@@ -20,6 +20,7 @@ public class DataIndicator extends BaseObject {
 	private int month;
 	private TypeOfDataIndicator typeOfIndicator;
 	private String status;
+	private boolean sendIndicator = true;
 	public String getId() {
 		return id;
 	}
@@ -67,6 +68,12 @@ public class DataIndicator extends BaseObject {
 	}
 	public String getFacilityCode() {
 		return ConfigurationProperties.getInstance().getPropertyValue(Property.SiteCode);
+	}
+	public boolean isSendIndicator() {
+		return sendIndicator;
+	}
+	public void setSendIndicator(boolean sendIndicator) {
+		this.sendIndicator = sendIndicator;
 	}
 
 }
