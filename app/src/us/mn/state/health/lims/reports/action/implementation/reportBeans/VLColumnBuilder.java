@@ -23,7 +23,7 @@ import us.mn.state.health.lims.common.services.StatusService;
 //import org.apache.commons.validator.GenericValidator;
 
 //import us.mn.state.health.lims.common.services.TestService;
-import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
+//import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
 import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
 //import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
@@ -40,9 +40,10 @@ public class VLColumnBuilder extends CIColumnBuilder {
         defineBasicColumns();
         add("Viral Load", "Viral Load", NONE );
         add("Viral Load", "Viral Load log", LOG );
-        add("started_date"     ,"STARTED_DATE", NONE);
-        add("completed_date"     ,"COMPLETED_DATE", NONE);
-        add("released_date"     ,"RELEASED_DATE", NONE);
+        add("type_of_sample_name", "Type_of_sample", NONE );
+        add("started_date"     ,"STARTED_DATE", DATE_TIME);
+        add("completed_date"     ,"COMPLETED_DATE", DATE_TIME);
+        add("released_date"     ,"RELEASED_DATE", DATE_TIME);
    //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
              
         add("hivStatus"            , "STATVIH", DICT_RAW );
@@ -97,7 +98,7 @@ public class VLColumnBuilder extends CIColumnBuilder {
 	    String highDatePostgres = postgresDateFormat.format(dateRange.getHighDate());
 	    query.append( SELECT_SAMPLE_PATIENT_ORGANIZATION );
 	    // all crosstab generated tables need to be listed in the following list and in the WHERE clause at the bottom
-	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, r.value as \"Viral Load\", demo.*, currentARVTreatmentINNs.* ");
+	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, r.value as \"Viral Load\",a.type_of_sample_name, demo.*, currentARVTreatmentINNs.* ");
 	
 	    // ordinary lab (sample and patient) tables
 	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +

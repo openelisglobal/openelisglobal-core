@@ -46,7 +46,7 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 	private Project project;
 	private String indicStr;
 	protected static final SimpleDateFormat postgresDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private String indicLabel;
+	//private String indicLabel;
 	
 	@Override
 	protected String reportFileName(){
@@ -150,18 +150,18 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
             if (splitLine[0].equals(currentAccessionNumber)) {
                 merge(splitBase, splitLine);
             } else {
-                if (currentAccessionNumber != null && writeAble(splitBase[18].trim())) {
+                if (currentAccessionNumber != null && writeAble(splitBase[16].trim())) {
                     
                                    
                     writeConsolidatedBaseToBuffer(buffer, splitBase);
                 }
                 splitBase = splitLine;
                 currentAccessionNumber = splitBase[0];
-            }
+                }
         }
-        if (writeAble(splitBase[18].trim()))
+        if (writeAble(splitBase[16].trim()))
             writeConsolidatedBaseToBuffer(buffer, splitBase);
-    }
+           }
 
 	
 	
@@ -169,11 +169,11 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 		
 		       
         String workingResult = result.split("\\(")[0].trim();
-        //System.out.println("result=" + result + " / workingResult= " + workingResult);
+       // System.out.println("result=" + result + " / workingResult= " + workingResult);
         String[] splitLine = indicStr.split(":");
         String indic = splitLine[1];
         if (indic.equals("Unsuppressed VL"))
-            return !workingResult.contains("L") && !workingResult.contains("X") && !workingResult.contains("<") && workingResult.length()>0 
+            return workingResult.contains("Log7")|| !workingResult.contains("L") && !workingResult.contains("X") && !workingResult.contains("<") && workingResult.length()>0 
                     && Double.parseDouble(workingResult) >= 1000;// workingResult.length()>=4 &&
                                                                     // !workingResult.contains("L") &&
                                                                     // !workingResult.contains("X") ;
@@ -210,8 +210,8 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 	}
 
 	private CSVColumnBuilder getColumnBuilder(String projectId) {
-		String projectTag = CIColumnBuilder.translateProjectId(projectId);
-		return new ForDashboardVLColumnBuilder(dateRange, projectStr);
+		//String projectTag = CIColumnBuilder.translateProjectId(projectId);
+		return new ForCIDashboardColumnBuilder(dateRange, projectStr);
 		
 	}
 		
