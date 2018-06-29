@@ -17,6 +17,7 @@
             <form-property name="indicators" type="java.util.List" />
             <form-property name="month" type="java.lang.Integer" />
             <form-property name="year" type="java.lang.Integer" />
+            <form-property name="siteId" type="java.lang.String" />
         </form-bean>
 
 		<!-- SAMPLE ENTRY -->

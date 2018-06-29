@@ -275,7 +275,9 @@
     <mapping
             resource="us/mn/state/health/lims/dataexchange/orderresult/valueholder/HL7MessageOut.hbm.xml" />
     <mapping
-            resource="us/mn/state/health/lims/datasubmission/valueholder/DataIndicator.hbm.xml"/>
+            resource="us/mn/state/health/lims/datasubmission/valueholder/DataIndicator.hbm.xml"/>    
+    <mapping
+            resource="us/mn/state/health/lims/datasubmission/valueholder/DataResource.hbm.xml"/>
     <mapping
             resource="us/mn/state/health/lims/datasubmission/valueholder/DataValue.hbm.xml"/>
     <mapping

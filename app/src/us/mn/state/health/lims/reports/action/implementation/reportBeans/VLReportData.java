@@ -55,6 +55,7 @@ public class VLReportData {
 	private String clinicDistrict;
 	private String clinic;
 	private String status;
+	private String vih;
 	private Boolean duplicateReport = Boolean.FALSE;
 	
 	private List<SampleQaEvent> sampleQAEventList;
@@ -193,6 +194,14 @@ public class VLReportData {
 	}
 	public void setsuckle(String suckle) {
 		this.suckle = suckle;
+	}
+	
+	
+	public String getvih() {
+		return vih;
+	}
+	public void setvih(String vih) {
+		this.vih = vih;
 	}
 	
 	public Boolean getDuplicateReport() {

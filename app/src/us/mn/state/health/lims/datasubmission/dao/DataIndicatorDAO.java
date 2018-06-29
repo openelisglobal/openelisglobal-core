@@ -1,5 +1,7 @@
 package us.mn.state.health.lims.datasubmission.dao;
 
+import java.util.List;
+
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.datasubmission.valueholder.DataIndicator;
@@ -12,6 +14,8 @@ public interface DataIndicatorDAO extends BaseDAO {
 	public DataIndicator getIndicator(String id) throws LIMSRuntimeException;
 	
 	public DataIndicator getIndicatorByTypeYearMonth(TypeOfDataIndicator type, int year, int month) throws LIMSRuntimeException;
+
+	public List<DataIndicator> getIndicatorsByStatus(String status) throws LIMSRuntimeException;
 	
 	public boolean insertData(DataIndicator dataIndicator) throws LIMSRuntimeException;
 	
