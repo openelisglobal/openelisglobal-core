@@ -503,7 +503,7 @@
         var response = xhr.responseXML.getElementsByTagName("formfield").item(0);
         var tests = response.getElementsByTagName("test");
         var sampleTypeId = getValueFromXmlElement(response, "sampleTypeId");
-        var test, name, id;
+        var test, name, modName, id, modId;
         var ul = $jq(document.createElement("ul"));
         var length = tests.length;
         ul.addClass("sortable sortable-tag");
@@ -511,14 +511,25 @@
         for (var i = 0; i < length; ++i) {
             test = tests[i];
             name = getValueFromXmlElement(test, "name");
+            
+            <%if (locale.equals("en_US")) {%>
+            modName = $jq("#testNameEnglish").val();
+            <%} else {%>
+            modName = $jq("#testNameFrench").val();
+            <%}%>
+            
             id = getValueFromXmlElement(test, "id");
-            ul.append(createLI(id, name, false));
+            if (name != modName ) {
+            	ul.append(createLI(id, name, false));
+            } else {
+            	ul.append(createLI(id, name, true));
+            }
         }
 
         <%if (locale.equals("en_US")) {%>
-        ul.append( createLI(0, $jq("#testNameEnglish").val(), true) );
+        //ul.append( createLI(modId, $jq("#testNameEnglish").val(), true) );
         <%} else {%>
-        ul.append( createLI(0, $jq("#testNameFrench").val(), true) );
+        //ul.append( createLI(modId, $jq("#testNameFrench").val(), true) );
         <%}%>
 
         $jq("#sort" + sampleTypeId).append(ul);
@@ -1047,14 +1058,12 @@
     			ageHigh = (lowHigh.length == 2) ? lowHigh[1] : "Infinity";
     			age = [ ageLow, ageHigh];
     			
-    			var lowHigh = tmpRangeArray[2].split("-");
-    			normalLow = lowHigh[0]; 
-    			normalHigh = (lowHigh.length == 2) ? lowHigh[1] : "Infinity"; 
+    			normalLow = "-Infinity"; 
+    			normalHigh = "Infinity"; 
     			normal = [normalLow, normalHigh];
     			
-    			var lowHigh = tmpRangeArray[3].split("-");
-    			validLow = lowHigh[0]; 
-    			validHigh = (lowHigh.length == 2) ? lowHigh[1] : "Infinity"; 
+    			validLow = "-Infinity"; 
+    			validHigh = "Infinity"; 
     			valid = [validLow, validHigh];
     			
     			resultLimits.push([gender, age, normal, valid]);
@@ -1374,7 +1383,8 @@
             index = 0;
             $jq("#" + sampleTypes[i] + " li").each(function () {
             	//console.log("addJsonSortingOrder: " + jsonObj.testId + ":" + $jq(this).val());
-            	if (jsonObj.testId != $jq(this).val()){
+            	//if (jsonObj.testId != $jq(this).val()){
+            	if (true){
                 	test = {};
                 	test.id = $jq(this).val();
                 	jsonSampleType.tests[index++] = test;
@@ -1395,11 +1405,6 @@
 
         jsonObj.lowValid = defaultResultLimits[0][3][0];
         jsonObj.highValid = defaultResultLimits[0][3][1];
-        //jsonObj.significantDigits = $jq("#significantDigits").val(); //redundant
-        var significantDigits = null;
-        $jq(".resultClass").each(function (i,elem) {
-        	jsonObj.significantDigits = $jq(elem).attr("fSignificantDigits")
-        });
         jsonObj.resultLimits = [];
 
         for (var rowIndex = 0; rowIndex < defaultResultLimits.length; rowIndex++) {
