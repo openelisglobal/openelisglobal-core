@@ -84,7 +84,8 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		}
 		if (projectData.getViralLoadTest()){
 		    CollectionUtils.addIgnoreNull(testList, createTest("Viral Load", true ));
-		}		
+		}
+		
 		if (projectData.getGenotypingTest()){
 		    CollectionUtils.addIgnoreNull(testList, createTest("Génotypage", true ));
 		}
@@ -112,8 +113,17 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 		    if (projectData.getDnaPCR()) {
                 testList = getDBSTests();
                 sItemTests.add( new TypeOfSampleTests(getTypeOfSample("DBS"), testList));
-            }
-        }		
+            } 
+       }
+		
+		//Check for DBS Tubes Tests for Viral Load
+		if (projectData.getdbsvlTaken()){
+			testList = getEDTATubeTests(dynaForm);		
+			sItemTests.add( new TypeOfSampleTests(getTypeOfSample("DBS"), testList));
+           }	
+		
+		
+		
 		return sItemTests;
 	}	
 
@@ -123,6 +133,8 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
 	        if (projectData.getDnaPCR()){
 	            CollectionUtils.addIgnoreNull(testList, createTest("DNA PCR", true ));
 	        }
+	        
+	         
 	        return testList;
 	    }
 

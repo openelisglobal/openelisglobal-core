@@ -58,6 +58,7 @@ public class ProjectData implements Serializable {
 	private boolean genotypingTest;
 	private boolean dnaPCR;
 	private boolean dbsTaken;
+	private boolean dbsvlTaken;
 
 	// ARV
 	private String doctor;
@@ -382,6 +383,16 @@ public class ProjectData implements Serializable {
 		this.viralLoadTest = viralLoadTest;
 	}
 
+	// -------
+	public boolean getdbsvlTaken() {
+		return dbsvlTaken;
+	}
+
+	public void setdbsvlTaken(boolean dbsvlTaken) {
+		this.dbsvlTaken = dbsvlTaken;
+	}
+	
+	//------
 	public boolean getGenotypingTest() {
 		return genotypingTest;
 	}

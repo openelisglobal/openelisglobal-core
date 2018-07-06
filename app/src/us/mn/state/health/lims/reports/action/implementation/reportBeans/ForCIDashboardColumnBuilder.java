@@ -27,9 +27,9 @@ import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 
-public class ForDashboardVLColumnBuilder extends CIColumnBuilder {
+public class ForCIDashboardColumnBuilder extends CIColumnBuilder {
 
-	public ForDashboardVLColumnBuilder(DateRange dateRange, String projectStr) {
+	public ForCIDashboardColumnBuilder(DateRange dateRange, String projectStr) {
 		super(dateRange, projectStr);
 	}
 
@@ -38,9 +38,10 @@ public class ForDashboardVLColumnBuilder extends CIColumnBuilder {
         defineBasicColumns();
         add("Viral Load", "Viral Load", NONE );
         add("Viral Load", "Viral Load log", LOG );
-        add("started_date"     ,"STARTED_DATE", NONE);
-        add("completed_date"     ,"COMPLETED_DATE", NONE);
-        add("released_date"     ,"RELEASED_DATE", NONE);
+        add("type_of_sample_name", "Type_of_sample", NONE );
+        add("started_date"     ,"STARTED_DATE", DATE_TIME);
+        add("completed_date"     ,"COMPLETED_DATE", DATE_TIME);
+        add("released_date"     ,"RELEASED_DATE", DATE_TIME);
    //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
              
         /*  add("hivStatus"            , "STATVIH", DICT_RAW );
@@ -76,7 +77,7 @@ public class ForDashboardVLColumnBuilder extends CIColumnBuilder {
         add("priorVLValue"         , "PRIOR_VL_Value",NONE );
         add("priorVLDate"         , "PRIOR_VL_Date",NONE );*/
         add("report_name"         , "report_name",NONE );
-        add("report_generation_time"         , "report_generation_time",NONE );
+        add("report_generation_time"         , "report_generation_time",DATE_TIME );
        // addAllResultsColumns();
         
         
@@ -93,7 +94,7 @@ public class ForDashboardVLColumnBuilder extends CIColumnBuilder {
 	    String highDatePostgres = postgresDateFormat.format(dateRange.getHighDate());
 	    query.append( SELECT_SAMPLE_PATIENT_ORGANIZATION );
 	    // all crosstab generated tables need to be listed in the following list and in the WHERE clause at the bottom
-	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, r.value as \"Viral Load\", dt.name as report_name,dt.report_generation_time ");
+	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, r.value as \"Viral Load\", a.type_of_sample_name, dt.name as report_name,dt.report_generation_time ");
 	
 	    // ordinary lab (sample and patient) tables
 	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +

@@ -61,6 +61,9 @@
             <column name="LOCAL_ABBREV" length="10" />
         </property>
         <property name="code" column="code" type="java.lang.String" length="20"/>
+        
+        
+        
 		<set name="organizationTypes" table="organization_organization_type" cascade="all" lazy="true" inverse="true">
             <key column="org_id" />
             <many-to-many column="org_type_id"  class="us.mn.state.health.lims.organization.valueholder.OrganizationType" />
