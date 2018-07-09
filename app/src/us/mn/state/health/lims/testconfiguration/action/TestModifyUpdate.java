@@ -92,8 +92,7 @@ public class TestModifyUpdate extends BaseAction {
 
         Transaction tx = HibernateUtil.getSession().beginTransaction();
         try{
-        	updateTestNames(testAddParams.testId, nameLocalization.getEnglish(), nameLocalization.getFrench(), reportingNameLocalization.getEnglish(), reportingNameLocalization.getFrench(), currentUserId);
-        	updateTestEntities(testAddParams.testId, testAddParams.loinc, currentUserId);
+        
         	
             List<TypeOfSampleTest> typeOfSampleTest = typeOfSampleTestDAO.getTypeOfSampleTestsForTest(testAddParams.testId);
             String[] typeOfSamplesTestIDs = new String[typeOfSampleTest.size()];
@@ -124,10 +123,13 @@ public class TestModifyUpdate extends BaseAction {
               
                 for( Test test :set.sortedTests){
                     test.setSysUserId(currentUserId);
-                    if (!test.getId().equals( set.test.getId() )) {
+                    //if (!test.getId().equals( set.test.getId() )) {
                     	testDAO.updateData(test);
-                    }
+                    //}
                 }
+                
+            	updateTestNames(testAddParams.testId, nameLocalization.getEnglish(), nameLocalization.getFrench(), reportingNameLocalization.getEnglish(), reportingNameLocalization.getFrench(), currentUserId);
+            	updateTestEntities(testAddParams.testId, testAddParams.loinc, currentUserId);
 
                 set.sampleTypeTest.setSysUserId(currentUserId);
                 set.sampleTypeTest.setTestId(set.test.getId());
