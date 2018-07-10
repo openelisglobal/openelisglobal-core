@@ -3,6 +3,7 @@
 
 import glob
 import os
+import platform
 import sys
 import string
 import shutil
@@ -13,6 +14,7 @@ from time import gmtime, strftime
 from random import Random
 
 VERSION = "8.1"
+OS_VERSION = ''
 TEMPLATE_DIR = "./templates/"
 WAR_DIR = "./warFiles/"
 STAGING_DIR = "./stagingFiles/"
@@ -623,9 +625,14 @@ def do_install():
 
     stop_tomcat()
 
-
-    # copy postgres jar file
-    postgres_file = glob.glob(BIN_DIR + 'postgres*')
+    # copy postgres jar file 
+    split_version = OS_VERSION[1].split('.')
+    major = int(split_version[0])
+    minor = int(split_version[1])
+    if major < 16:
+        postgres_file = glob.glob(BIN_DIR + 'postgresql*3*')
+    if major >= 16:
+        postgres_file = glob.glob(BIN_DIR + 'postgresql*4*')
     if TOMCAT_VERSION == "tomcat5.5":
         cmd = 'cp ' + postgres_file[0] + ' ' + TOMCAT_DIR + '/common/lib/'
     else:
@@ -957,6 +964,22 @@ def log(message, to_console):
     if to_console:
         print message
 
+def get_os_tomcat_dir():
+    global TOMCAT_BASE
+    global TOMCAT_INSTALL_DIR
+    global OS_VERSION
+    OS_VERSION = platform.linux_distribution()
+    print("Release detected: " + OS_VERSION[1])
+    split_version = OS_VERSION[1].split('.')
+    major = int(split_version[0])
+    minor = int(split_version[1])
+
+    if major < 16:
+        TOMCAT_BASE = "/usr/share/tomcat"
+        TOMCAT_INSTALL_DIR = "/usr/share/"
+    if major >= 16:
+        TOMCAT_BASE = "/var/lib/tomcat"
+        TOMCAT_INSTALL_DIR = "/var/lib/"
 # Main entry point
 
 
@@ -971,6 +994,7 @@ if len(sys.argv) > 1:
     ensure_dir_exists(ROLLBACK_DIR)
     open_log_file()
     write_version()
+    get_os_tomcat_dir()
 
     arg = sys.argv[1]
 
