@@ -23,7 +23,7 @@ INSERT INTO clinlims.dictionary_category(id,description,lastupdated,local_abbrev
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.dictionary where dictionary_category_id= '402';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.dictionary_category where id= '402';
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new dictionaries</comment>

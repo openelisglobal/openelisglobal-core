@@ -18,7 +18,7 @@ VALUES (nextval('clinlims.project_seq'),'Viral Load Results',null,'Viral Load Re
   <changeSet author="CI OpenELIS developers group" id="2" context="CDIRetroCI" runOnChange="true">
     <preConditions onFail="MARK_RAN">
       
-        <sqlCheck expectedResult="0">select count(*) from clinlims.dictionary_category where local_abbrev = 'Reason for Viral Load Request';
+        <sqlCheck expectedResult="0">select count(*) from clinlims.dictionary_category where local_abbrev = 'vlReason';
     		</sqlCheck>
       
     </preConditions>
