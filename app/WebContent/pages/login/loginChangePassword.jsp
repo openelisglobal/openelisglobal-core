@@ -1,7 +1,7 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.common.provider.validation.PasswordValidationFactory" %>   
+			us.mn.state.health.lims.common.provider.validation.PasswordValidationFactory" %>   
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>

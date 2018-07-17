@@ -17,7 +17,8 @@
 */
 package us.mn.state.health.lims.patient.saving;
 
-import static us.mn.state.health.lims.common.services.StatusService.RecordStatus.*;
+import static us.mn.state.health.lims.common.services.StatusService.RecordStatus.InitialRegistration;
+import static us.mn.state.health.lims.common.services.StatusService.RecordStatus.ValidationRegistration;
 
 import java.lang.reflect.InvocationTargetException;
 

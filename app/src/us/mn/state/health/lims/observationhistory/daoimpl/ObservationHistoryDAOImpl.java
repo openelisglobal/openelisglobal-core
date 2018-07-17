@@ -1,7 +1,11 @@
 package us.mn.state.health.lims.observationhistory.daoimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+
 import us.mn.state.health.lims.common.daoimpl.GenericDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -9,9 +13,6 @@ import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, ObservationHistory> implements ObservationHistoryDAO {
 

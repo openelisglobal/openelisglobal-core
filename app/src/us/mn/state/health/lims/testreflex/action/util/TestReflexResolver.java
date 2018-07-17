@@ -17,6 +17,9 @@
  */
 package us.mn.state.health.lims.testreflex.action.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -29,9 +32,6 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.testreflex.dao.TestReflexDAO;
 import us.mn.state.health.lims.testreflex.daoimpl.TestReflexDAOImpl;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * The purpose of this class is to resolve whether a new test should be created for

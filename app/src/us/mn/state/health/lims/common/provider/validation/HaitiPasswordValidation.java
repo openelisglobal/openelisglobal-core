@@ -17,10 +17,11 @@
 */
 package us.mn.state.health.lims.common.provider.validation;
 
-import org.apache.commons.validator.GenericValidator;
-import us.mn.state.health.lims.common.util.StringUtil;
-
 import java.util.regex.Pattern;
+
+import org.apache.commons.validator.GenericValidator;
+
+import us.mn.state.health.lims.common.util.StringUtil;
 
 public class HaitiPasswordValidation implements ILoginPasswordValidation {
 

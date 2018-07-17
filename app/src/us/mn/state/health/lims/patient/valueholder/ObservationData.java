@@ -18,7 +18,9 @@ package us.mn.state.health.lims.patient.valueholder;
 
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.httpclient.NameValuePair;
 

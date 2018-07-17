@@ -16,6 +16,11 @@
 
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.AnalysisService;
@@ -24,11 +29,6 @@ import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.note.valueholder.Note;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.RejectionReportBean;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  */

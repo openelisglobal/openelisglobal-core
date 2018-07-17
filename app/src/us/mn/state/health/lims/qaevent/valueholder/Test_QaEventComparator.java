@@ -15,9 +15,9 @@
 */
 package us.mn.state.health.lims.qaevent.valueholder;
 
-import us.mn.state.health.lims.common.services.TestService;
-
 import java.util.Comparator;
+
+import us.mn.state.health.lims.common.services.TestService;
 
 /**
  * @author benzd1

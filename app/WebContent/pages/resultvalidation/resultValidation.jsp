@@ -1,19 +1,20 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="org.apache.commons.validator.GenericValidator, us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
-	us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-	us.mn.state.health.lims.common.util.IdValuePair,
-	us.mn.state.health.lims.common.util.StringUtil,
-	us.mn.state.health.lims.common.util.Versioning,
-	us.mn.state.health.lims.common.services.TypeOfTestResultService.ResultType,
-    java.text.DecimalFormat,
-	java.util.List,
-	us.mn.state.health.lims.resultvalidation.bean.AnalysisItem,
-	us.mn.state.health.lims.common.util.ConfigurationProperties,
-	us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
-<%@ page import="us.mn.state.health.lims.common.services.TypeOfTestResultService" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+	import="org.apache.commons.validator.GenericValidator, 
+			us.mn.state.health.lims.common.action.IActionConstants,
+			us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
+			us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
+			us.mn.state.health.lims.common.util.IdValuePair,
+			us.mn.state.health.lims.common.util.StringUtil,
+			us.mn.state.health.lims.common.util.Versioning,
+			us.mn.state.health.lims.common.services.TypeOfTestResultService.ResultType,
+		    java.text.DecimalFormat,
+			java.util.List,
+			us.mn.state.health.lims.resultvalidation.bean.AnalysisItem,
+			us.mn.state.health.lims.common.util.ConfigurationProperties,
+			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+			us.mn.state.health.lims.common.services.TypeOfTestResultService,
+			org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>

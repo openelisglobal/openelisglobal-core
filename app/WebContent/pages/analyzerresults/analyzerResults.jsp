@@ -6,8 +6,8 @@
 				us.mn.state.health.lims.analyzerresults.action.beanitems.AnalyzerResultItem,
 				us.mn.state.health.lims.common.util.IdValuePair,
                 us.mn.state.health.lims.common.util.Versioning,
-				us.mn.state.health.lims.common.util.StringUtil" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+				us.mn.state.health.lims.common.util.StringUtil,
+				org.owasp.encoder.Encode" %>
 
 
 

@@ -17,16 +17,16 @@
 */
 package us.mn.state.health.lims.workplan.reports;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class TestSectionWorkplanReport implements IWorkplanReport {
     private static int PREFIX_LENGTH = AccessionNumberUtil.getAccessionNumberValidator().getInvarientLength();

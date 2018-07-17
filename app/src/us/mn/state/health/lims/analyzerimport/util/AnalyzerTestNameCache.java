@@ -17,6 +17,11 @@
  */
 package us.mn.state.health.lims.analyzerimport.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import us.mn.state.health.lims.analyzer.dao.AnalyzerDAO;
 import us.mn.state.health.lims.analyzer.daoimpl.AnalyzerDAOImpl;
 import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
@@ -28,11 +33,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AnalyzerTestNameCache {
     public static final String SYSMEX_XT2000_NAME = "Sysmex XT 2000";

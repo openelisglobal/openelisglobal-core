@@ -18,7 +18,6 @@ cd /ucd u	* The contents of this file are subject to the Mozilla Public License
 package us.mn.state.health.lims.patient.saving;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,9 +25,6 @@ import org.apache.commons.beanutils.DynaBean;
 
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.patient.valueholder.Patient;
-import us.mn.state.health.lims.sample.valueholder.Sample;
-import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 
 /**
  * @author Paul A. Hill (pahill@uw.edu)

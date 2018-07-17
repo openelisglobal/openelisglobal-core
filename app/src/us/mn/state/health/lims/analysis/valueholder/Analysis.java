@@ -18,7 +18,12 @@
 */
 package us.mn.state.health.lims.analysis.valueholder;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
@@ -29,10 +34,6 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
 
 public class Analysis extends BaseObject {
 

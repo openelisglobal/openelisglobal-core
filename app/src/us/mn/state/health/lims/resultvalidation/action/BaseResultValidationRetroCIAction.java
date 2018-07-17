@@ -17,11 +17,12 @@
 */
 package us.mn.state.health.lims.resultvalidation.action;
 
-import org.apache.commons.validator.GenericValidator;
-import us.mn.state.health.lims.common.action.BaseAction;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.validator.GenericValidator;
+
+import us.mn.state.health.lims.common.action.BaseAction;
 
 
 public abstract class BaseResultValidationRetroCIAction extends BaseAction {

@@ -16,14 +16,16 @@
 */
 package us.mn.state.health.lims.common.provider.validation;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator.ValidationResults;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sample.util.CI.ProjectForm;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * The QuickEntryAccessionNumberValidationProvider class is used to validate,
@@ -49,11 +51,16 @@ public class SampleEntryAccessionNumberValidationProvider extends	BaseValidation
 		String field = request.getParameter("field");
 		String recordType = request.getParameter("recordType");
 		String isRequired = request.getParameter("isRequired");
-		String projectFormName = request.getParameter("projectFormName");
+    String projectFormName = request.getParameter("projectFormName");
+    boolean parseForProjectFormName = "true".equalsIgnoreCase(request.getParameter("parseForProjectFormName"));
         boolean ignoreYear = "true".equals(request.getParameter("ignoreYear"));
         boolean ignoreUsage = "true".equals(request.getParameter("ignoreUsage"));
 
 		ValidationResults result;
+		
+		if (parseForProjectFormName) {
+		  projectFormName = ProgramAccessionValidator.findStudyFormName(accessionNumber);
+		}
 		boolean projectFormNameUsed = ProjectForm.findProjectFormByFormId(projectFormName)!=null;
 		
 		if( ignoreYear || ignoreUsage ){

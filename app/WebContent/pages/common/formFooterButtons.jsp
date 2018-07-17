@@ -1,7 +1,8 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="us.mn.state.health.lims.common.action.IActionConstants,org.apache.struts.Globals"
-    import="us.mn.state.health.lims.common.util.Versioning"
+	import="us.mn.state.health.lims.common.action.IActionConstants,
+			org.apache.struts.Globals, 
+			us.mn.state.health.lims.common.util.Versioning"
 %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>

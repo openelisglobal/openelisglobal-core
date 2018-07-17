@@ -17,7 +17,12 @@
 */
 package us.mn.state.health.lims.common.provider.query.workerObjects;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.provider.query.PatientSearchResults;
 import us.mn.state.health.lims.common.util.XMLUtil;
 import us.mn.state.health.lims.patient.util.PatientUtil;
@@ -25,10 +30,6 @@ import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
 import us.mn.state.health.lims.patientidentity.daoimpl.PatientIdentityDAOImpl;
 import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
 import us.mn.state.health.lims.patientidentitytype.util.PatientIdentityTypeMap;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 abstract public class PatientSearchWorker {
 

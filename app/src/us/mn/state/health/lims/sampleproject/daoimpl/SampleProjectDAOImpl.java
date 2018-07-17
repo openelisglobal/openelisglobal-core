@@ -31,7 +31,6 @@ import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
 import us.mn.state.health.lims.sampleproject.dao.SampleProjectDAO;
 import us.mn.state.health.lims.sampleproject.valueholder.SampleProject;
 

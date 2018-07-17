@@ -16,9 +16,9 @@
 
 package us.mn.state.health.lims.testconfiguration.beans;
 
-import us.mn.state.health.lims.common.util.validator.GenericValidator;
-
 import java.util.List;
+
+import us.mn.state.health.lims.common.util.validator.GenericValidator;
 
 public class TestCatalogBean {
 	private String id;

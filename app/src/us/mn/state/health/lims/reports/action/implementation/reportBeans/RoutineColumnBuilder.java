@@ -17,13 +17,6 @@
 */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import us.mn.state.health.lims.dictionary.ObservationHistoryList;
-import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
 
 /**

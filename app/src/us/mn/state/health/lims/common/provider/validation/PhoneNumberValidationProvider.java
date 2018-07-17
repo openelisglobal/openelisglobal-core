@@ -16,14 +16,15 @@
  */
 package us.mn.state.health.lims.common.provider.validation;
 
-import us.mn.state.health.lims.common.services.PhoneNumberService;
-import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
-import us.mn.state.health.lims.common.util.StringUtil;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import us.mn.state.health.lims.common.services.PhoneNumberService;
+import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
+import us.mn.state.health.lims.common.util.StringUtil;
 
 /**
  * The QuickEntryAccessionNumberValidationProvider class is used to validate,

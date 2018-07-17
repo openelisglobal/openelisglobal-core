@@ -15,10 +15,15 @@
 */
 package us.mn.state.health.lims.project.daoimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -32,10 +37,6 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.project.dao.ProjectDAO;
 import us.mn.state.health.lims.project.valueholder.Project;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * @author diane benz

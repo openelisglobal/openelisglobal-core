@@ -3,14 +3,15 @@
 
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="us.mn.state.health.lims.common.action.IActionConstants,us.mn.state.health.lims.common.services.LocalizationService,us.mn.state.health.lims.common.util.ConfigurationProperties"
-        %>
-<%@ page import="org.owasp.encoder.Encode" %>
-<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
+	import="us.mn.state.health.lims.common.action.IActionConstants,
+			us.mn.state.health.lims.common.services.LocalizationService,
+			us.mn.state.health.lims.common.util.ConfigurationProperties,
+			org.owasp.encoder.Encode,
+			us.mn.state.health.lims.common.util.Versioning" %>
+<%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
+<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <html:html>
 

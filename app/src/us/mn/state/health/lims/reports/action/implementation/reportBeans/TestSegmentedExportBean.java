@@ -16,9 +16,6 @@
  */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
-import us.mn.state.health.lims.common.services.NoteService;
-import us.mn.state.health.lims.common.util.StringUtil;
-
 public class TestSegmentedExportBean{
 
 	private String siteCode = "";

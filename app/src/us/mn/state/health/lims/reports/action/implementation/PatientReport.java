@@ -16,10 +16,23 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Date;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.IllegalFormatException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.address.dao.PersonAddressDAO;
 import us.mn.state.health.lims.address.daoimpl.AddressPartDAOImpl;
 import us.mn.state.health.lims.address.daoimpl.PersonAddressDAOImpl;
@@ -33,10 +46,21 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.IPatientService;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
+import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.PersonService;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.SampleService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestIdentityService;
+import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -81,11 +105,6 @@ import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
-
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Date;
-import java.text.DecimalFormat;
-import java.util.*;
 
 public abstract class PatientReport extends Report {
 

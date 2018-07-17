@@ -16,7 +16,12 @@
 */
 package us.mn.state.health.lims.testreflex.action.util;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
@@ -25,10 +30,6 @@ import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DefaultReflexActions extends ReflexAction {
 

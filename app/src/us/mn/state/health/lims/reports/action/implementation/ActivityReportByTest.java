@@ -16,15 +16,15 @@
 
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ActivityReportBean;
 import us.mn.state.health.lims.result.valueholder.Result;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  */

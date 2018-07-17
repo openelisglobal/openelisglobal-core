@@ -61,6 +61,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 	}
 
 
+	@Override
 	public void initializeReport(BaseActionForm dynaForm) {
 		super.initializeReport();
 		errorFound = false;
@@ -132,8 +133,8 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 			return false;
 		}
 
-		int lowBounds = Integer.parseInt(lowerNumber.substring(lowIndex));
-		int highBounds = Integer.parseInt(upperNumber.substring(highIndex));
+		double lowBounds = Double.parseDouble(lowerNumber.substring(lowIndex));
+		double highBounds = Double.parseDouble(upperNumber.substring(highIndex));
 
 		if (highBounds < lowBounds) {
 			String temp = upperNumber;
@@ -168,6 +169,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 		reportPatient = sampleHumanDAO.getPatientForSample(reportSample);
 	}
 
+	@Override
 	protected void createReportParameters() {
 	    super.createReportParameters();
 		reportParameters.put("studyName", getReportNameForReport());

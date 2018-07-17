@@ -22,9 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.samplepdf.dao.SamplePdfDAO;
 import us.mn.state.health.lims.samplepdf.daoimpl.SamplePdfDAOImpl;
 

@@ -4,8 +4,6 @@
 <%@ taglib uri="/tags/struts-logic" prefix="logic"%>
 <%@ taglib uri="/tags/labdev-view" prefix="app"%>
 
-<%@ page import="us.mn.state.health.lims.common.util.SystemConfiguration"%>
-
 
 <div  id="IEWarning" style="display:none;background-color:#b0c4de"  ><b>
 <bean:message  key="banner.menu.ie.warning"/><br/>

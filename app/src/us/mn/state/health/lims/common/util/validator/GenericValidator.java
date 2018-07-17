@@ -15,10 +15,8 @@
 */
 package us.mn.state.health.lims.common.util.validator;
  
-import java.io.Serializable; 
-import java.util.Locale; 
-import org.apache.oro.text.perl.Perl5Util;
-import org.apache.commons.validator.*;
+import java.io.Serializable;
+import java.util.Locale;
  
 /** 
  * This class contains basic methods for performing validations. 

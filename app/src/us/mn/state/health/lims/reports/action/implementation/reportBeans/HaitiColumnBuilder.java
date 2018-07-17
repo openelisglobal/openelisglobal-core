@@ -1,6 +1,10 @@
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.*;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.DATE;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.DROP_ZERO;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.NONE;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVColumnBuilder.Strategy.SAMPLE_STATUS;
+
 import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
 
 /**

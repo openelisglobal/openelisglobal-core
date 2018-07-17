@@ -16,13 +16,6 @@
 
 package us.mn.state.health.lims.plugin;
 
-import org.apache.commons.io.IOUtils;
-import org.dom4j.*;
-import us.mn.state.health.lims.common.exception.LIMSException;
-import us.mn.state.health.lims.common.log.LogEvent;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +28,19 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
+import org.apache.commons.io.IOUtils;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import us.mn.state.health.lims.common.exception.LIMSException;
+import us.mn.state.health.lims.common.log.LogEvent;
 
 public class PluginLoader {
     private static final String PLUGIN_ANALYZER = "plugin" + File.separator;

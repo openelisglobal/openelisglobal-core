@@ -15,9 +15,9 @@
 */
 package us.mn.state.health.lims.analyte.valueholder;
 
+import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
-import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 
 public class Analyte extends EnumValueItemImpl {
 

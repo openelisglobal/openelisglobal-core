@@ -15,12 +15,12 @@
 */
 package us.mn.state.health.lims.note.dao;
 
+import java.sql.Date;
+import java.util.List;
+
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.note.valueholder.Note;
-
-import java.sql.Date;
-import java.util.List;
 
 /**
 * @author diane benz

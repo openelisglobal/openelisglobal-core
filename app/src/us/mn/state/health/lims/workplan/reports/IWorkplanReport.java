@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import us.mn.state.health.lims.common.action.BaseActionForm;
-import us.mn.state.health.lims.test.beanItems.TestResultItem;
 
 public interface IWorkplanReport {
 			

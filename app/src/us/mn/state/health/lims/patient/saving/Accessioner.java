@@ -23,6 +23,21 @@
  **/
 package us.mn.state.health.lims.patient.saving;
 
+import static us.mn.state.health.lims.sample.util.CI.ProjectForm.EID;
+import static us.mn.state.health.lims.sample.util.CI.ProjectForm.SPECIAL_REQUEST;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
@@ -33,6 +48,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -50,7 +66,6 @@ import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
 import us.mn.state.health.lims.common.services.StatusSet;
-import us.mn.state.health.lims.common.services.SampleAddService.SampleTestCollection;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
@@ -85,7 +100,6 @@ import us.mn.state.health.lims.project.dao.ProjectDAO;
 import us.mn.state.health.lims.project.daoimpl.ProjectDAOImpl;
 import us.mn.state.health.lims.project.valueholder.Project;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-import us.mn.state.health.lims.sample.action.util.SamplePatientUpdateData;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.form.ProjectData;
@@ -111,16 +125,6 @@ import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.Map.Entry;
-
-import static us.mn.state.health.lims.sample.util.CI.ProjectForm.EID;
-import static us.mn.state.health.lims.sample.util.CI.ProjectForm.SPECIAL_REQUEST;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Update/Creates, as needed, a Sample and Patient and all associated parts in

@@ -16,8 +16,11 @@
 
 package us.mn.state.health.lims.common.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Transaction;
-import org.jfree.util.Log;
+
 import us.mn.state.health.lims.analyzer.dao.AnalyzerDAO;
 import us.mn.state.health.lims.analyzer.daoimpl.AnalyzerDAOImpl;
 import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
@@ -32,9 +35,6 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.plugin.AnalyzerImporterPlugin;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PluginAnalyzerService {
     private List<AnalyzerTestMapping> existingMappings;

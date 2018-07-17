@@ -17,6 +17,7 @@
 package us.mn.state.health.lims.common.services;
 
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.LocaleChangeListener;
 import us.mn.state.health.lims.common.util.SystemConfiguration;

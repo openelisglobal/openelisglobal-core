@@ -16,11 +16,23 @@
  */
 package us.mn.state.health.lims.dataexchange.MalariaSurveilance;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -49,10 +61,6 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import javax.servlet.http.HttpServletResponse;
-import java.sql.Timestamp;
-import java.util.*;
 
 public class MalariaSurveilanceJob implements Job {
 	private static final String CRON_MALARIA_SCHEDULER = "sendMalariaSurviellanceReport";
