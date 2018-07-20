@@ -16,12 +16,18 @@
   -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-  <include file="OE8.2/Menu.xml" />
-  <include file="OE8.2/hl7messageout.xml" />
-  <include file="OE8.2/systemmodule.xml" />
-  <include file="OE8.2/systemrolemodule.xml" />
-  <include file="OE8.2/Organization.xml" />
-  <include file="OE8.2/dataindicator.xml" />
-  <include file="OE8.2/siteinformation.xml" />
+  <include file="OE8.2/regional/Menu.xml" />
+  <include file="OE8.2/regional/hl7messageout.xml" />
+  <include file="OE8.2/regional/systemmodule.xml" />
+  <include file="OE8.2/regional/systemrolemodule.xml" />
+  <include file="OE8.2/regional/Organization.xml" />
+  <include file="OE8.2/regional/dataindicator.xml" />
+  <include file="OE8.2/regional/siteinformation.xml" />
+  <include file="OE8.2/retroci/Menu.xml" />
+  <include file="OE8.2/retroci/hl7messageout.xml" />
+  <include file="OE8.2/retroci/systemmodule.xml" />
+  <include file="OE8.2/retroci/systemrolemodule.xml" />
+  <include file="OE8.2/retroci/Organization.xml" />
+  <include file="OE8.2/retroci/dataindicator.xml" />
  
   </databaseChangeLog> 
