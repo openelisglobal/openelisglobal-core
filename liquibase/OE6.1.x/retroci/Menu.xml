@@ -4,7 +4,7 @@
   <!-- Data specific to CDIRetroCI -->
   <changeSet author="CI OpenELIS developers group" id="1" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_study';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_resultvalidation_study';
     		</sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new menu study</comment>

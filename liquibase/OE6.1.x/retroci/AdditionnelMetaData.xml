@@ -44,7 +44,7 @@ INSERT INTO clinlims.qa_event( id, name, description, is_billable, reporting_seq
   
   <changeSet author="CI OpenELIS developers group" id="3" context="CDIRetroCI,CDIRetroCI_CT">
     <preConditions onFail="MARK_RAN">
-      <sqlCheck expectedResult="0">select count(*) from clinlims.type_of_sample where display_key = 'Sample.type.Plasma';
+      <sqlCheck expectedResult="0">select count(*) from clinlims.type_of_sample where display_key = 'sample.type.Plasma';
     		</sqlCheck>
     </preConditions>
     <comment>update on type_of_sample</comment>
@@ -88,6 +88,10 @@ INSERT INTO clinlims.type_of_sample (id,description,domain,lastupdated,local_abb
 </sql>
   </changeSet>
   <changeSet author="CI OpenELIS developers group" id="5" context="CDIRetroCI,CDIRetroCI_CT">
+  <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.organization_type where description = 'SEV-CI';
+    		</sqlCheck>
+    </preConditions>
     <comment>update on type_of_sample</comment>
     <sql>
     UPDATE clinlims.type_of_sample
@@ -142,6 +146,10 @@ INSERT INTO clinlims.site_information(
 </changeSet> 
 
 <changeSet author="CI OpenELIS developers group" id="7" context="CDIRetroCI,CDIRetroCI_CT">
+<preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where action_url = '/documentation/CI_IPCI_fr.pdf';
+    		</sqlCheck>
+    </preConditions>
     <comment>update on menu</comment>
     <sql>
     INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
