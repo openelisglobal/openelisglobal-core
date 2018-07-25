@@ -41,9 +41,9 @@ public class VLColumnBuilder extends CIColumnBuilder {
         add("Viral Load", "Viral Load", NONE );
         add("Viral Load", "Viral Load log", LOG );
         add("type_of_sample_name", "Type_of_sample", NONE );
-        add("started_date"     ,"STARTED_DATE", DATE_TIME);
-        add("completed_date"     ,"COMPLETED_DATE", DATE_TIME);
-        add("released_date"     ,"RELEASED_DATE", DATE_TIME);
+        add("started_date"     ,"STARTED_DATE",    DATE_TIME );
+        add("completed_date"     ,"COMPLETED_DATE",    DATE_TIME );
+        add("released_date"     ,"RELEASED_DATE",    DATE_TIME );
    //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
              
         add("hivStatus"            , "STATVIH", DICT_RAW );
