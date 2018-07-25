@@ -16,7 +16,7 @@
   
     <changeSet author="csteele" id="2" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
+            <sqlCheck expectedResult="0">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Identifying Information Edit';
             </sqlCheck>
         </preConditions>
@@ -29,7 +29,7 @@
   
     <changeSet author="csteele" id="3" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
+            <sqlCheck expectedResult="0">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Audit Trail';
             </sqlCheck>
         </preConditions>
@@ -42,7 +42,7 @@
   
     <changeSet author="csteele" id="4" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
+            <sqlCheck expectedResult="0">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Intake';
             </sqlCheck>
         </preConditions>
@@ -55,7 +55,7 @@
   
     <changeSet author="csteele" id="5" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
+            <sqlCheck expectedResult="0">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Maintenance Admin';
             </sqlCheck>
         </preConditions>
@@ -68,7 +68,7 @@
   
     <changeSet author="csteele" id="6" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
+            <sqlCheck expectedResult="0">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Results entry';
             </sqlCheck>
         </preConditions>
@@ -81,7 +81,7 @@
   
     <changeSet author="csteele" id="7" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
+            <sqlCheck expectedResult="0">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Validator';
             </sqlCheck>
         </preConditions>
@@ -94,7 +94,7 @@
   
     <changeSet author="csteele" id="8" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
+            <sqlCheck expectedResult="0">
                 SELECT count(*) FROM clinlims.system_role WHERE name = 'Results Admin';
             </sqlCheck>
         </preConditions>
