@@ -15,14 +15,14 @@
 */
 package us.mn.state.health.lims.patient.valueholder;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.person.valueholder.Person;
-
-import java.sql.Date;
-import java.sql.Timestamp;
 
 public class Patient extends BaseObject {
 

@@ -1,15 +1,12 @@
 <%@ page language="java"
          contentType="text/html; charset=utf-8"
-         import="us.mn.state.health.lims.common.action.IActionConstants"
-        %>
-<%@ page import="java.util.List" %>
-<%@ page import="us.mn.state.health.lims.panel.valueholder.Panel" %>
-<%@ page import="us.mn.state.health.lims.common.util.IdValuePair" %>
-<%@ page import="us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample" %>
-<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
-<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
-<%@ page import="us.mn.state.health.lims.testconfiguration.action.TestSectionCreateAction" %>
-<%@ page import="us.mn.state.health.lims.testconfiguration.action.SampleTypePanel" %>
+         import="us.mn.state.health.lims.common.action.IActionConstants,
+         		java.util.List,
+         		us.mn.state.health.lims.panel.valueholder.Panel,
+         		us.mn.state.health.lims.common.util.StringUtil,
+         		us.mn.state.health.lims.common.util.Versioning,
+         		us.mn.state.health.lims.testconfiguration.action.TestSectionCreateAction,
+         		us.mn.state.health.lims.testconfiguration.action.SampleTypePanel" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>

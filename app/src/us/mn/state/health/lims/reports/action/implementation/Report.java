@@ -16,9 +16,18 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.validator.GenericValidator;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperRunManager;
-import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -34,14 +43,6 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMe
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
 
 public abstract class Report implements IReportCreator {
 

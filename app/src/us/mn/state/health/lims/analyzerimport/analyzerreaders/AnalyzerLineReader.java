@@ -16,13 +16,13 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
-import us.mn.state.health.lims.plugin.AnalyzerImporterPlugin;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import us.mn.state.health.lims.plugin.AnalyzerImporterPlugin;
 
 public class AnalyzerLineReader extends AnalyzerReader {
 

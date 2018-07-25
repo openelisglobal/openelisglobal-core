@@ -1,11 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,
-			us.mn.state.health.lims.common.util.SystemConfiguration,
-	        us.mn.state.health.lims.common.formfields.FormFields,
-	        us.mn.state.health.lims.common.util.StringUtil,
             us.mn.state.health.lims.common.util.Versioning,
-	        java.util.HashSet"%>
-<%@page import="org.owasp.encoder.Encode"%>
+            us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl,
+            us.mn.state.health.lims.login.dao.UserModuleDAO,
+	        java.util.HashSet,
+	        org.owasp.encoder.Encode"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>
@@ -17,8 +16,6 @@
 <bean:define id="formName"	value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 <bean:define id="requestType" value='<%=(String)request.getSession().getAttribute("type")%>' />
 
-<%@page import="us.mn.state.health.lims.login.dao.UserModuleDAO"%>
-<%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 <%!
 	String basePath = "";
 	UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
@@ -35,8 +32,8 @@
 %>
 
 <script type="text/javascript" src="<%=basePath%>scripts/utilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>neon2/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
-<script type="text/javascript" src="<%=basePath%>neon/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>scripts/neon2/retroCIUtilities.js?ver=<%= Versioning.getBuildNumber() %>"></script>
+<script type="text/javascript" src="<%=basePath%>scripts/neon/entryByProjectUtils.js?ver=<%= Versioning.getBuildNumber() %>"></script>
 <script type="text/javascript" language="JavaScript1.2">
 
 var dirty = false;

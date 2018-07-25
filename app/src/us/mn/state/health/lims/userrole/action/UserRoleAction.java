@@ -17,9 +17,7 @@
  */
 package us.mn.state.health.lims.userrole.action;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,24 +29,11 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 
 import us.mn.state.health.lims.common.action.BaseAction;
-import us.mn.state.health.lims.gender.dao.GenderDAO;
-import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
-import us.mn.state.health.lims.resultlimits.dao.ResultLimitDAO;
-import us.mn.state.health.lims.resultlimits.daoimpl.ResultLimitDAOImpl;
-import us.mn.state.health.lims.resultlimits.form.ResultLimitsLink;
-import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.role.dao.RoleDAO;
 import us.mn.state.health.lims.role.daoimpl.RoleDAOImpl;
 import us.mn.state.health.lims.role.valueholder.Role;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
-import us.mn.state.health.lims.test.dao.TestDAO;
-import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-import us.mn.state.health.lims.typeoftestresult.dao.TypeOfTestResultDAO;
-import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
-import us.mn.state.health.lims.unitofmeasure.dao.UnitOfMeasureDAO;
-import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
 
 public class UserRoleAction extends BaseAction {
 

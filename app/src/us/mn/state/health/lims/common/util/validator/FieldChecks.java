@@ -22,15 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.GenericTypeValidator;
-import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import org.apache.commons.validator.Validator;
 import org.apache.commons.validator.ValidatorAction;
 import org.apache.commons.validator.util.ValidatorUtils;
-import us.mn.state.health.lims.common.log.LogEvent;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.util.RequestUtils;
 import org.apache.struts.validator.Resources;
 
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 
 /**

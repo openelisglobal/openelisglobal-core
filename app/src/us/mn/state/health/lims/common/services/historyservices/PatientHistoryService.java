@@ -16,16 +16,16 @@
  */
 package us.mn.state.health.lims.common.services.historyservices;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.referencetables.dao.ReferenceTablesDAO;
 import us.mn.state.health.lims.referencetables.daoimpl.ReferenceTablesDAOImpl;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PatientHistoryService extends HistoryService {
 	private static String PATIENT_TABLE_ID;

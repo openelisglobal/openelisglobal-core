@@ -18,7 +18,6 @@
 package us.mn.state.health.lims.login.daoimpl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,7 +37,6 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.login.dao.LoginDAO;
 import us.mn.state.health.lims.login.valueholder.Login;
 import us.mn.state.health.lims.security.PasswordUtil;
-import us.mn.state.health.lims.systemuser.action.UnifiedSystemUserAction;
 
 /**
  * @author Hung Nguyen (Hung.Nguyen@health.state.mn.us)

@@ -17,6 +17,9 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -26,9 +29,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public abstract class NonConformityBySectionReason extends NonConformityBy {

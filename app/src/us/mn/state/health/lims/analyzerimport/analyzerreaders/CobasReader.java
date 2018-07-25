@@ -16,8 +16,14 @@
 */
 package us.mn.state.health.lims.analyzerimport.analyzerreaders;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.analyzerimport.util.AnalyzerTestNameCache;
 import us.mn.state.health.lims.analyzerimport.util.MappedTestName;
 import us.mn.state.health.lims.analyzerresults.valueholder.AnalyzerResults;
@@ -26,11 +32,6 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.HibernateProxy;
 import us.mn.state.health.lims.test.dao.TestDAO;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CobasReader extends AnalyzerLineInserter {
     private static final String COBAS_INTEGRA400_NAME = "Cobas Integra";

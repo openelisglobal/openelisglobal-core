@@ -1,9 +1,9 @@
 package us.mn.state.health.lims.datasubmission.valueholder;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import us.mn.state.health.lims.common.util.validator.GenericValidator;
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 public class DataIndicator extends BaseObject {
@@ -12,18 +12,26 @@ public class DataIndicator extends BaseObject {
 	public static String FAILED = "failed";
 	public static String UNSAVED = "unsaved";
 	
+
 	private String id;
+	private List<DataResource> resources;
 	private DataValue dataValue;
 	private int year;
 	private int month;
-	private List<DataValue> dataValues = new ArrayList<DataValue>();
 	private TypeOfDataIndicator typeOfIndicator;
 	private String status;
+	private boolean sendIndicator = true;
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public List<DataResource> getResources() {
+		return resources;
+	}
+	public void setResources(List<DataResource> resources) {
+		this.resources = resources;
 	}
 	public DataValue getDataValue() {
 		return dataValue;
@@ -43,18 +51,6 @@ public class DataIndicator extends BaseObject {
 	public void setMonth(int month) {
 		this.month = month;
 	}
-	public List<DataValue> getDataValues() {
-		return dataValues;
-	}
-	public void setDataValues(List<DataValue> dataValues) {
-		this.dataValues = dataValues;
-	}
-	public DataValue getDataValue(int index) {
-		return dataValues.get(index);
-	}
-	public void setDataValue(int index, DataValue dataValue) {
-		this.dataValues.set(index, dataValue);
-	}
 	public TypeOfDataIndicator getTypeOfIndicator() {
 		return typeOfIndicator;
 	}
@@ -67,32 +63,17 @@ public class DataIndicator extends BaseObject {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	public List<DataValue> getAllDataValues() {
-		List<DataValue> allValues = new ArrayList<DataValue>();
-		allValues.addAll(getDataValues());
-		allValues.add(dataValue);
-		return allValues;
+	public String getFacilityName() {
+		return ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName);
 	}
-	
-	public List<String> getDataValueTableNames() {
-		List<String> tableNames = new ArrayList<String>();
-		for (DataValue value : getAllDataValues()) {
-			if (!GenericValidator.isBlankOrNull(value.getForeignTableName()) && !tableNames.contains(value.getForeignTableName())) {
-				tableNames.add(value.getForeignTableName());
-			}
-		}
-		return tableNames;
+	public String getFacilityCode() {
+		return ConfigurationProperties.getInstance().getPropertyValue(Property.SiteCode);
 	}
-	
-	public List<DataValue> getDataValuesByTable(String tableName) {
-		List<DataValue> values = new ArrayList<DataValue>();
-		for (DataValue value : getAllDataValues()) {
-			if (tableName.equals(value.getForeignTableName())) {
-				values.add(value);
-			}
-		}
-		return values;
+	public boolean isSendIndicator() {
+		return sendIndicator;
+	}
+	public void setSendIndicator(boolean sendIndicator) {
+		this.sendIndicator = sendIndicator;
 	}
 
 }

@@ -16,8 +16,16 @@
  */
 package us.mn.state.health.lims.scheduler.independentthreads;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -33,13 +41,6 @@ import us.mn.state.health.lims.dataexchange.aggregatereporting.daoimpl.ReportQue
 import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.ReportExternalExport;
 import us.mn.state.health.lims.dataexchange.aggregatereporting.valueholder.ReportQueueType;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TestUsageBacklog extends Thread {
 

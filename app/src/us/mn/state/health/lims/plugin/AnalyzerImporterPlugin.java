@@ -16,9 +16,9 @@
 
 package us.mn.state.health.lims.plugin;
 
-import us.mn.state.health.lims.analyzerimport.analyzerreaders.AnalyzerLineInserter;
-
 import java.util.List;
+
+import us.mn.state.health.lims.analyzerimport.analyzerreaders.AnalyzerLineInserter;
 
 public interface AnalyzerImporterPlugin extends APlugin {
     public boolean isTargetAnalyzer( List<String> lines);

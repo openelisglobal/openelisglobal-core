@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
-	import="java.util.Date,us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.userrole.action.UserRoleAction,
-	us.mn.state.health.lims.common.util.StringUtil,
-	us.mn.state.health.lims.dataexchange.resultreporting.beans.ReportingConfiguration,
-	us.mn.state.health.lims.common.util.Versioning"%>
+	import="us.mn.state.health.lims.common.action.IActionConstants,
+			us.mn.state.health.lims.common.util.StringUtil,
+			us.mn.state.health.lims.dataexchange.resultreporting.beans.ReportingConfiguration,
+			us.mn.state.health.lims.common.util.Versioning"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>

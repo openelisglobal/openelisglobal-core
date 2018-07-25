@@ -16,13 +16,29 @@
  */
 package us.mn.state.health.lims.audittrail.action.workers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.SampleOrderService;
-import us.mn.state.health.lims.common.services.historyservices.*;
+import us.mn.state.health.lims.common.services.historyservices.AnalysisHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.HistoryService;
+import us.mn.state.health.lims.common.services.historyservices.NoteHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.OrderHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.PatientHistoryHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.PatientHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.QaHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.ReportHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.ResultHistoryService;
+import us.mn.state.health.lims.common.services.historyservices.SampleHistoryService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementBridge;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
@@ -34,8 +50,6 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-
-import java.util.*;
 
 public class AuditTrailViewWorker {
 

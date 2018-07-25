@@ -15,9 +15,9 @@
 */
 package us.mn.state.health.lims.projectorganization.valueholder;
 
+import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
-import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.project.valueholder.Project;
 

@@ -1,11 +1,9 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="java.util.Date,
-	java.util.Hashtable,
-	us.mn.state.health.lims.organization.valueholder.Organization,
-	us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.common.formfields.FormFields,
-	us.mn.state.health.lims.common.util.StringUtil" %>
+	import="us.mn.state.health.lims.organization.valueholder.Organization,
+			us.mn.state.health.lims.common.action.IActionConstants,
+			us.mn.state.health.lims.common.formfields.FormFields,
+			us.mn.state.health.lims.common.util.StringUtil" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
@@ -77,10 +75,10 @@
 	   <% } %>
 
 	</tr>
-	<logic:iterate id="org" indexId="ctr" name="<%=formName%>" property="menuList" type="us.mn.state.health.lims.organization.valueholder.Organization">
-	<bean:define id="orgID" name="org" property="id"/>
-	<logic:notEmpty name="org" property="organization">
-	 <bean:define id="parentOrgID" name="org" property="organization.id"/>
+	<logic:iterate id="org1" indexId="ctr" name="<%=formName%>" property="menuList" type="us.mn.state.health.lims.organization.valueholder.Organization">
+	<bean:define id="orgID" name="org1" property="id"/>
+	<logic:notEmpty name="org1" property="organization">
+	 <bean:define id="parentOrgID" name="org1" property="organization.id"/>
 	</logic:notEmpty>
 
 	  <tr>
@@ -92,56 +90,56 @@
    	   </td>
 		<% if( useOrgLocalAbbrev ){ %>
 	   <td class="textcontent">
-	   	  <bean:write name="org" property="organizationLocalAbbreviation"/>
+	   	  <bean:write name="org1" property="organizationLocalAbbreviation"/>
 	   </td>
 	   <% } %>
 	   <td class="textcontent">
-	   	  <bean:write name="org" property="organizationName"/>
+	   	  <bean:write name="org1" property="organizationName"/>
 	   </td>
 	   <td class="textcontent">
-	    <logic:notEmpty name="org" property="organization">
-	        <bean:write name="org" property="organization.organizationName"/>
+	    <logic:notEmpty name="org1" property="organization">
+	        <bean:write name="org1" property="organization.organizationName"/>
 	    </logic:notEmpty>
 	      &nbsp;
 	   </td>
 	   <td class="textcontent">
-	      <logic:notEmpty name="org" property="shortName">
-	   	  <bean:write name="org" property="shortName"/>
+	      <logic:notEmpty name="org1" property="shortName">
+	   	  <bean:write name="org1" property="shortName"/>
 	   	  </logic:notEmpty>
-	   	  <logic:empty name="org" property="shortName">
+	   	  <logic:empty name="org1" property="shortName">
 	   	   &nbsp;
 	   	  </logic:empty>
 	   </td>
 	   <td class="textcontent">
-	   	  <bean:write name="org" property="isActive"/>
+	   	  <bean:write name="org1" property="isActive"/>
 	   </td>
 	   <td class="textcontent">
-	   	  <bean:write name="org" property="streetAddress"/>
+	   	  <bean:write name="org1" property="streetAddress"/>
 	   	  &nbsp;
 	   </td>
 	   <td class="textcontent">
-	   	  <bean:write name="org" property="city"/>
+	   	  <bean:write name="org1" property="city"/>
 	   	  &nbsp;
 	   </td>
 	   <% if( useOrgState ){ %>
 	  <td class="textcontent">
-	   	  <bean:write name="org" property="state"/>
+	   	  <bean:write name="org1" property="state"/>
 	   	  &nbsp;
 	   </td>
 	   <% } %>
 	   <% if( useZipCode ){ %>
 	   <td class="textcontent">
-	   	  <bean:write name="org" property="zipCode"/>
+	   	  <bean:write name="org1" property="zipCode"/>
 	   	  &nbsp;
 	   </td>
 	   <% } %>
 	   <td class="textcontent">
-	   	  <bean:write name="org" property="cliaNum"/>
+	   	  <bean:write name="org1" property="cliaNum"/>
 	   	  &nbsp;
 	   </td>
 	   <% if( useMLS ){ %>
 	   <td class="textcontent">
-	     <bean:write name="org" property="mlsLabFlag"/>
+	     <bean:write name="org1" property="mlsLabFlag"/>
 	   	  &nbsp;
 	    </td>
 	   <% } %>

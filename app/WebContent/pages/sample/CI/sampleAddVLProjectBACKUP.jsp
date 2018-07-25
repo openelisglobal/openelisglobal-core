@@ -1,28 +1,19 @@
-<%@ page import="us.mn.state.health.lims.common.formfields.FormFields.Field"%>
-<%@ page language="java" contentType="text/html; charset=utf-8" %>
-<%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
-                 us.mn.state.health.lims.common.util.SystemConfiguration,
-                 us.mn.state.health.lims.common.util.ConfigurationProperties,
-                 us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-                 us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-                 us.mn.state.health.lims.common.formfields.FormFields,
-                 us.mn.state.health.lims.common.util.Versioning,
-                 us.mn.state.health.lims.common.util.StringUtil,
-                 us.mn.state.health.lims.common.util.IdValuePair,
-                 us.mn.state.health.lims.common.services.PhoneNumberService,
-                 us.mn.state.health.lims.sample.bean.SampleOrderItem" %>
-<%@ page import="us.mn.state.health.lims.sample.util.AccessionNumberUtil" %>
-<%@page import="org.owasp.encoder.Encode"%>
-
 <%@ page language="java" contentType="text/html; charset=utf-8"
-         import="us.mn.state.health.lims.common.action.IActionConstants,
-			us.mn.state.health.lims.common.util.SystemConfiguration,
-			us.mn.state.health.lims.common.util.ConfigurationProperties,
-			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	        us.mn.state.health.lims.common.formfields.FormFields,
-	        us.mn.state.health.lims.common.util.StringUtil,
-            us.mn.state.health.lims.common.util.Versioning,
-	        java.util.HashSet"%>
+		import="us.mn.state.health.lims.common.formfields.FormFields,
+				us.mn.state.health.lims.common.formfields.FormFields.Field,
+				us.mn.state.health.lims.common.action.IActionConstants,
+	            us.mn.state.health.lims.common.util.SystemConfiguration,
+	            us.mn.state.health.lims.common.util.ConfigurationProperties,
+	            us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+	            us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
+	            us.mn.state.health.lims.common.util.Versioning,
+	            us.mn.state.health.lims.common.util.StringUtil,
+	            us.mn.state.health.lims.sample.bean.SampleOrderItem,
+	            us.mn.state.health.lims.sample.util.AccessionNumberUtil,
+	            org.owasp.encoder.Encode,
+	        	java.util.HashSet,
+	        	us.mn.state.health.lims.login.dao.UserModuleDAO,
+	        	us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 
 
 <%@ taglib uri="/tags/struts-bean"      prefix="bean" %>
@@ -32,9 +23,6 @@
 <%@ taglib uri="/tags/struts-tiles"     prefix="tiles" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
 
-<!-- sampleAddVLProject -->
-<%@page import="us.mn.state.health.lims.login.dao.UserModuleDAO"%>
-<%@page import="us.mn.state.health.lims.login.daoimpl.UserModuleDAOImpl"%>
 <%!
 	UserModuleDAO userModuleDAO = new UserModuleDAOImpl();
 %>

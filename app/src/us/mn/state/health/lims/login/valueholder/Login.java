@@ -15,11 +15,11 @@
 */
 package us.mn.state.health.lims.login.valueholder;
 
+import java.sql.Date;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
-
-import java.sql.Date;
 
 /**
  *  @author     Hung Nguyen (Hung.Nguyen@health.state.mn.us)

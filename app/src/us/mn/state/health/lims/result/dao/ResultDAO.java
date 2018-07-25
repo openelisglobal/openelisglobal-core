@@ -15,6 +15,9 @@
 */
 package us.mn.state.health.lims.result.dao;
 
+import java.sql.Date;
+import java.util.List;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
@@ -22,9 +25,6 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.sql.Date;
-import java.util.List;
 
 /**
  * @author diane benz

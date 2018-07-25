@@ -16,8 +16,6 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
 
 public class IndicatorAllTestLNSP extends IndicatorAllTest implements IReportCreator, IReportParameterSetter {

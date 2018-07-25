@@ -1,13 +1,12 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
 	import="us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
-	us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
-    us.mn.state.health.lims.common.util.DateUtil,
-	us.mn.state.health.lims.common.util.StringUtil"
-%>
-<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
-<%@ page import="org.owasp.encoder.Encode" %>
+			us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
+			us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
+		    us.mn.state.health.lims.common.util.DateUtil,
+			us.mn.state.health.lims.common.util.StringUtil,
+			us.mn.state.health.lims.common.util.Versioning,
+			org.owasp.encoder.Encode" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>

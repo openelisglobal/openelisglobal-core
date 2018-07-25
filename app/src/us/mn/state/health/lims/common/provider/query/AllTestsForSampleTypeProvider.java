@@ -15,22 +15,22 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
-import org.apache.commons.validator.GenericValidator;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import us.mn.state.health.lims.common.services.LocalizationService;
-import us.mn.state.health.lims.common.services.TestService;
-import us.mn.state.health.lims.common.services.TypeOfSampleService;
-import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
-import us.mn.state.health.lims.localization.valueholder.Localization;
-import us.mn.state.health.lims.test.valueholder.Test;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.List;
+
+import org.apache.commons.validator.GenericValidator;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
+import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
+import us.mn.state.health.lims.test.valueholder.Test;
 
 public class AllTestsForSampleTypeProvider extends BaseQueryProvider {
 

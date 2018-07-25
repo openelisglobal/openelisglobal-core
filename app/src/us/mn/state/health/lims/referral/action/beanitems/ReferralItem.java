@@ -16,11 +16,11 @@
 */
 package us.mn.state.health.lims.referral.action.beanitems;
 
-import us.mn.state.health.lims.common.util.IdValuePair;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import us.mn.state.health.lims.common.util.IdValuePair;
 
 public class ReferralItem implements IReferralResultTest, Serializable {
 

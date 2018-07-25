@@ -17,7 +17,9 @@
 */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.SimpleBaseEntity;

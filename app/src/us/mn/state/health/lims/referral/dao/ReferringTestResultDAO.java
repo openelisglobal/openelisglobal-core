@@ -15,11 +15,11 @@
  */
 package us.mn.state.health.lims.referral.dao;
 
-import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.referral.valueholder.ReferringTestResult;
-
 import java.sql.Date;
 import java.util.List;
+
+import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.referral.valueholder.ReferringTestResult;
 
 
 public interface ReferringTestResultDAO {

@@ -16,12 +16,18 @@
 
 package us.mn.state.health.lims.common.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
+import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory.ValueType;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
@@ -31,12 +37,6 @@ import us.mn.state.health.lims.sample.bean.SampleOrderItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
-import static us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory.ValueType;
 
 /**
  */

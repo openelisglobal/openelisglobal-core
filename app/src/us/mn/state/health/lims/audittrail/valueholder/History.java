@@ -16,7 +16,8 @@
 package us.mn.state.health.lims.audittrail.valueholder;
 
 import java.sql.Timestamp;
-import us.mn.state.health.lims.common.valueholder.*;
+
+import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 /**
  *  @author         Hung Nguyen

@@ -17,14 +17,20 @@
 */
 package us.mn.state.health.lims.common.util;
 
-import org.apache.commons.validator.GenericValidator;
-import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-
 import java.io.InputStream;
 import java.sql.Date;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.validator.GenericValidator;
+
+import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 /**
  * This class represents the configuration properties of the application

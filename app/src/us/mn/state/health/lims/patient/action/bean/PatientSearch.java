@@ -16,10 +16,10 @@
 
 package us.mn.state.health.lims.patient.action.bean;
 
+import java.util.List;
+
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.util.IdValuePair;
-
-import java.util.List;
 
 /**
  */

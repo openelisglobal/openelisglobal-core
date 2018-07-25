@@ -25,8 +25,8 @@ import org.apache.struts.taglib.TagUtils;
 import org.apache.struts.taglib.html.Constants;
 import org.apache.struts.taglib.html.SelectTag;
 
-import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.util.StringUtil;
 
 /**
  * @author diane benz

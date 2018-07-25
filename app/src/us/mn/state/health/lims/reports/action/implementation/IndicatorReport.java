@@ -16,7 +16,10 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.sql.Date;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
@@ -24,8 +27,6 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMessages;
-
-import java.sql.Date;
 
 public abstract class IndicatorReport extends Report {
 

@@ -15,9 +15,14 @@
  */
 package us.mn.state.health.lims.testreflex.daoimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.hibernate.Query;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
@@ -34,10 +39,6 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testreflex.dao.TestReflexDAO;
 import us.mn.state.health.lims.testreflex.valueholder.TestReflex;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * @author diane benz 11/17/2007 instead of printing StackTrace log error

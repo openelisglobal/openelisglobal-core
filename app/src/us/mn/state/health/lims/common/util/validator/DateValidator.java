@@ -15,11 +15,11 @@
 */
 package us.mn.state.health.lims.common.util.validator;
   
-import java.text.DateFormat; 
-import java.text.ParseException; 
-import java.text.SimpleDateFormat; 
-import java.util.Locale; 
-  
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import us.mn.state.health.lims.common.log.LogEvent;
 
 /** 

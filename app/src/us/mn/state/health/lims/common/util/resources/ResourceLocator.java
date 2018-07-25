@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.apache.struts.config.MessageResourcesConfig;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.MessageResourcesFactory;
+
 import us.mn.state.health.lims.common.log.LogEvent;
 
 /**

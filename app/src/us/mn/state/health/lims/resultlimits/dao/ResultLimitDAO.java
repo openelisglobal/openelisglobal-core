@@ -20,7 +20,6 @@ import java.util.List;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
-import us.mn.state.health.lims.test.valueholder.Test;
 
 public interface ResultLimitDAO extends BaseDAO {
 

@@ -94,7 +94,7 @@ import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 
-public class SampleEditUpdateAction extends BaseAction{
+public class SampleEditUpdateAction extends BaseAction {
 
 	private static final String DEFAULT_ANALYSIS_TYPE = "MANUAL";
 	private static final AnalysisDAO analysisDAO = new AnalysisDAOImpl();

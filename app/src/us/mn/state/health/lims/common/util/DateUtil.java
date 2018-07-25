@@ -16,17 +16,23 @@
  */
 package us.mn.state.health.lims.common.util;
 
-import org.apache.commons.validator.GenericValidator;
-import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
-
 import java.sql.Timestamp;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
+
+import org.apache.commons.validator.GenericValidator;
+
+import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 public class DateUtil {
 
@@ -645,5 +651,13 @@ public class DateUtil {
     
     public static String getTimeUserPrompt(){
     	return "(hh:mm)";
+    }
+    
+    public static String getMonthFromInt(int month, boolean zeroIndexed) {
+    	if (zeroIndexed) {
+    		return new DateFormatSymbols().getMonths()[month];
+    	} else {
+    		return new DateFormatSymbols().getMonths()[month-1];
+    	}
     }
 }

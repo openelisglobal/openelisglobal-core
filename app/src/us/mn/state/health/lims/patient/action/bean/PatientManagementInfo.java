@@ -16,6 +16,9 @@
  */
 package us.mn.state.health.lims.patient.action.bean;
 
+import java.io.Serializable;
+import java.util.List;
+
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.util.IdValuePair;
@@ -24,9 +27,6 @@ import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.patienttype.dao.PatientTypeDAO;
 import us.mn.state.health.lims.patienttype.daoimpl.PatientTypeDAOImpl;
 import us.mn.state.health.lims.patienttype.valueholder.PatientType;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class PatientManagementInfo implements Serializable {
 

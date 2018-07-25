@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 
 import us.mn.state.health.lims.barcode.LabelField;
-import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.person.valueholder.Person;
 import us.mn.state.health.lims.sample.valueholder.Sample;

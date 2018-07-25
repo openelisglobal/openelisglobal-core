@@ -16,10 +16,10 @@
 
 package us.mn.state.health.lims.test.beanItems;
 
-import us.mn.state.health.lims.common.util.IdValuePair;
-
 import java.io.Serializable;
 import java.util.List;
+
+import us.mn.state.health.lims.common.util.IdValuePair;
 
 
 public class TestActivationBean implements Serializable{
