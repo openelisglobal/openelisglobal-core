@@ -63,7 +63,7 @@ public class DataSubmitter {
 					}
 					for (String level : levels) {
 						if (jsonResult.containsKey(level)) {
-							String id = Long.toString((long) ((JSONObject) jsonResult.get(level)).get("id"));
+							String id = Long.toString((Long) ((JSONObject) jsonResult.get(level)).get("id"));
 							resource.getLevelIdMap().put(level, id);
 						}
 					}
@@ -84,7 +84,7 @@ public class DataSubmitter {
 								success = false;
 							}
 							if (jsonResult.containsKey(level)) {
-								String id = Long.toString((long) ((JSONObject) jsonResult.get(level.toString().toLowerCase())).get("id"));
+								String id = Long.toString((Long) ((JSONObject) jsonResult.get(level.toString().toLowerCase())).get("id"));
 								resource.getLevelIdMap().put(level, id);
 							}
 						}
