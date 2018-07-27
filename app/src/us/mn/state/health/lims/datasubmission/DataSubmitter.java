@@ -58,27 +58,20 @@ public class DataSubmitter {
 	//add values to provide enough information to identify an entry without knowing the foreign id value
 	//TO DO verify that all entries work as a uniquely identifying foreign key 
 	private static void addKeyValuesForTable(String tableName, Map<String, String> values, DataIndicator indicator) {
-		switch (tableName) {
-		case "facilitys":
+		if (tableName.equals("facilitys")) {
 			//TO DO add correct facility code
 			values.put("facilitycode", "1");
-			break;
-		case "vl_national_summary":
+		} else if (tableName.equals("vl_national_summary")) {
 			values.put("month", Integer.toString(indicator.getMonth() + 1));
 			values.put("year", Integer.toString(indicator.getYear()));
-			break;
-		case "vl_site_summary":
+		} else if (tableName.equals("vl_site_summary")) {
 			values.put("month", Integer.toString(indicator.getMonth() + 1));
 			values.put("year", Integer.toString(indicator.getYear()));
 			//temporary
 			values.put("facility", "1");
-			break;
-		case "vl_site_suppression":
+		} else if (tableName.equals("vl_site_suppression")) {
 			//temporary
 			values.put("facility", "1");
-			break;
-		default:
-			break;
 		}
 	}
 	
