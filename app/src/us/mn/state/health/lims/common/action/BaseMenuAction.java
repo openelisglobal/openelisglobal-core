@@ -29,6 +29,7 @@ import org.apache.struts.action.DynaActionForm;
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 
 public abstract class BaseMenuAction extends BaseAction implements IActionConstants {
@@ -43,6 +44,7 @@ public abstract class BaseMenuAction extends BaseAction implements IActionConsta
 		return SystemConfiguration.getInstance().getDefaultPageSize();
 	}
 
+	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -51,8 +53,8 @@ public abstract class BaseMenuAction extends BaseAction implements IActionConsta
 		DynaActionForm dynaForm = (DynaActionForm) form;
 
 		int action = -1;
-		if (request.getParameter("paging") != null) {
-			action = Integer.parseInt((String) request.getParameter("paging"));
+		if (!StringUtil.isNullorNill(request.getParameter("paging"))) {
+			action = Integer.parseInt(request.getParameter("paging"));
 		}
 		List menuList = null;
 
@@ -176,10 +178,10 @@ public abstract class BaseMenuAction extends BaseAction implements IActionConsta
 
 		String stringStartingRecNo = "1";
 
-		if (request.getAttribute("startingRecNo") != null) {
+		if (!StringUtil.isNullorNill((String) request.getAttribute("startingRecNo"))) {
 			stringStartingRecNo = (String) request.getAttribute("startingRecNo");
-		} else if (request.getParameter("startingRecNo") != null) {
-			stringStartingRecNo = (String) request.getParameter("startingRecNo");
+		} else if (!StringUtil.isNullorNill(request.getParameter("startingRecNo"))) {
+			stringStartingRecNo = request.getParameter("startingRecNo");
 		}
 
 		int startingRecNo = Integer.parseInt(stringStartingRecNo);

@@ -15,8 +15,15 @@
 */
 package us.mn.state.health.lims.typeofsample.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
+
 import us.mn.state.health.lims.common.action.BaseMenuAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.TestService;
@@ -29,11 +36,6 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.formbean.TypeOfSampleLink;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class TypeOfSampleTestMenuAction extends BaseMenuAction {

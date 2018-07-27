@@ -17,12 +17,20 @@
  */
 package us.mn.state.health.lims.result.action;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.services.DisplayListService;
@@ -39,12 +47,6 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.result.action.util.ResultsLoadUtility;
 import us.mn.state.health.lims.result.action.util.ResultsPaging;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PatientResultsAction extends BaseAction {
 

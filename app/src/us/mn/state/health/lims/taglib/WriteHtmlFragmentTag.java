@@ -19,9 +19,6 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.struts.taglib.TagUtils;
 
-import us.mn.state.health.lims.common.log.LogEvent;
-import us.mn.state.health.lims.common.util.StringUtil;
-
 /**
  * @author Benzd1 
  * bugzilla 2569

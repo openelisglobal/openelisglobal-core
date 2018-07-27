@@ -15,7 +15,6 @@
 */
 package us.mn.state.health.lims.typeoftestresult.valueholder;
 
-import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 public class TypeOfTestResult extends BaseObject {

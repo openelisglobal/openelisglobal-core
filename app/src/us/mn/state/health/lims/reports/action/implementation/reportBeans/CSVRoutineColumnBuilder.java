@@ -17,7 +17,22 @@
  */
 package us.mn.state.health.lims.reports.action.implementation.reportBeans;
 
+import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.DICT;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.TEST_RESULT;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.hibernate.Session;
+
 import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
@@ -31,9 +46,6 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
 import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
-import us.mn.state.health.lims.project.dao.ProjectDAO;
-import us.mn.state.health.lims.project.daoimpl.ProjectDAOImpl;
-import us.mn.state.health.lims.project.valueholder.Project;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -41,16 +53,6 @@ import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.apache.commons.validator.GenericValidator.isBlankOrNull;
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.DICT;
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.TEST_RESULT;
 
 /**
  * @author pahill (pahill@uw.edu)

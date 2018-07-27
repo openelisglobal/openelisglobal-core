@@ -1,11 +1,10 @@
 <%@ page language="java"
          contentType="text/html; charset=utf-8"
          import="java.util.List,
-                 us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean"
-        %>
-<%@ page import="us.mn.state.health.lims.common.action.IActionConstants" %>
-<%@ page import="us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean" %>
-<%@ page import="us.mn.state.health.lims.common.util.StringUtil" %>
+                 us.mn.state.health.lims.testconfiguration.beans.TestCatalogBean,
+                 us.mn.state.health.lims.common.action.IActionConstants,
+                 us.mn.state.health.lims.testconfiguration.beans.ResultLimitBean,
+                 us.mn.state.health.lims.common.util.StringUtil" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>

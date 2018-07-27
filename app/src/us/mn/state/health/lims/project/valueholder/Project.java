@@ -17,6 +17,9 @@
 */
 package us.mn.state.health.lims.project.valueholder;
 
+import java.sql.Date;
+import java.util.Set;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
@@ -25,9 +28,6 @@ import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.scriptlet.valueholder.Scriptlet;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-
-import java.sql.Date;
-import java.util.Set;
 
 public class Project extends BaseObject {
 

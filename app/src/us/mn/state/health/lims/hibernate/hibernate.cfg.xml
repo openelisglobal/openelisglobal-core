@@ -59,10 +59,6 @@
 	<mapping
 		resource="us/mn/state/health/lims/citystatezip/valueholder/StateView.hbm.xml"/>
 	<mapping
-		resource="us/mn/state/health/lims/codeelementtype/valueholder/CodeElementType.hbm.xml"/>
-	<mapping
-		resource="us/mn/state/health/lims/codeelementxref/valueholder/CodeElementXref.hbm.xml"/>
-	<mapping
 		resource="us/mn/state/health/lims/county/valueholder/County.hbm.xml"/>
 	<mapping
 		resource="us/mn/state/health/lims/dictionary/valueholder/Dictionary.hbm.xml"/>
@@ -72,8 +68,6 @@
 		resource="us/mn/state/health/lims/gender/valueholder/Gender.hbm.xml"/>
 	<mapping
 		resource="us/mn/state/health/lims/label/valueholder/Label.hbm.xml"/>
-	<mapping
-		resource="us/mn/state/health/lims/messageorganization/valueholder/MessageOrganization.hbm.xml"/>
 	<mapping
 		resource="us/mn/state/health/lims/method/valueholder/Method.hbm.xml"/>
 	<mapping
@@ -98,8 +92,6 @@
 		resource="us/mn/state/health/lims/provider/valueholder/Provider.hbm.xml"/>
 	<mapping
 		resource="us/mn/state/health/lims/qaevent/valueholder/QaEvent.hbm.xml"/>
-	<mapping
-		resource="us/mn/state/health/lims/receivercodeelement/valueholder/ReceiverCodeElement.hbm.xml"/>
 	<mapping
 		resource="us/mn/state/health/lims/referencetables/valueholder/ReferenceTables.hbm.xml"/>
 	<mapping
@@ -275,7 +267,9 @@
     <mapping
             resource="us/mn/state/health/lims/dataexchange/orderresult/valueholder/HL7MessageOut.hbm.xml" />
     <mapping
-            resource="us/mn/state/health/lims/datasubmission/valueholder/DataIndicator.hbm.xml"/>
+            resource="us/mn/state/health/lims/datasubmission/valueholder/DataIndicator.hbm.xml"/>    
+    <mapping
+            resource="us/mn/state/health/lims/datasubmission/valueholder/DataResource.hbm.xml"/>
     <mapping
             resource="us/mn/state/health/lims/datasubmission/valueholder/DataValue.hbm.xml"/>
     <mapping

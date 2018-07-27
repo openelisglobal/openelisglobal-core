@@ -16,7 +16,11 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
@@ -27,9 +31,6 @@ import us.mn.state.health.lims.reports.daoimpl.DocumentTrackDAOImpl;
 import us.mn.state.health.lims.reports.daoimpl.DocumentTypeDAOImpl;
 import us.mn.state.health.lims.reports.valueholder.DocumentTrack;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-
-import java.sql.Timestamp;
-import java.util.List;
 
 public class ReportTrackingService {
 	private static DocumentTrackDAO docTrackDAO = new DocumentTrackDAOImpl();

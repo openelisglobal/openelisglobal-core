@@ -16,22 +16,31 @@
  */
 package us.mn.state.health.lims.workplan.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseActionForm;
+import us.mn.state.health.lims.common.formfields.FormFields;
+import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.DisplayListService;
-import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.DisplayListService.ListType;
+import us.mn.state.health.lims.common.services.ObservationHistoryService;
 import us.mn.state.health.lims.common.services.ObservationHistoryService.ObservationType;
-import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.QAService.QAObservationType;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 //import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -45,14 +54,6 @@ import us.mn.state.health.lims.test.beanItems.TestResultItem;
 import us.mn.state.health.lims.test.dao.TestSectionDAO;
 import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.TestSection;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-
-import us.mn.state.health.lims.common.formfields.FormFields;
-import us.mn.state.health.lims.common.formfields.FormFields.Field;
 
 public class WorkplanByTestSectionAction extends BaseWorkplanAction {
 

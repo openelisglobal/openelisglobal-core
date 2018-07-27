@@ -17,9 +17,13 @@
 */
 package us.mn.state.health.lims.note.daoimpl;
 
+import java.sql.Date;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
 import us.mn.state.health.lims.common.action.IActionConstants;
@@ -32,9 +36,6 @@ import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.note.dao.NoteDAO;
 import us.mn.state.health.lims.note.valueholder.Note;
-
-import java.sql.Date;
-import java.util.List;
 
 /**
 * @author diane benz

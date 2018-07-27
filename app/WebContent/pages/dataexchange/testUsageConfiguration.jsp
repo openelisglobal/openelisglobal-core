@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
-	import="java.util.Date,us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.userrole.action.UserRoleAction"%>
+	import="us.mn.state.health.lims.common.action.IActionConstants"%>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
 <%@ taglib uri="/tags/struts-html" prefix="html"%>

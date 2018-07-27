@@ -16,18 +16,20 @@
  */
 package us.mn.state.health.lims.siteinformation.action;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+
 import us.mn.state.health.lims.common.action.BaseMenuAction;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 public class SiteInformationMenuAction extends BaseMenuAction {
 	private String titleKey = null;

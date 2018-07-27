@@ -3,8 +3,8 @@
 				us.mn.state.health.lims.inventory.form.InventoryKitItem,
 				us.mn.state.health.lims.common.util.DateUtil,
 				us.mn.state.health.lims.common.util.IdValuePair,
-				us.mn.state.health.lims.common.util.StringUtil" %>
-<%@ page import="java.util.List" %>
+				us.mn.state.health.lims.common.util.StringUtil,
+				java.util.List" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>

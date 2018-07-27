@@ -17,14 +17,19 @@
  */
 package us.mn.state.health.lims.common.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
-
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * @author diane benz

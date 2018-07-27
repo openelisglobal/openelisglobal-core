@@ -15,11 +15,12 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.util.ArrayList;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
-import us.mn.state.health.lims.common.action.BaseActionForm;
 
-import java.util.ArrayList;
+import us.mn.state.health.lims.common.action.BaseActionForm;
 
 public class ReportSpecificationParameters implements IReportParameterSetter {
     public enum Parameter{

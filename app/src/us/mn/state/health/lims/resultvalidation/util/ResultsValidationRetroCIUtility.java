@@ -16,7 +16,16 @@
  */
 package us.mn.state.health.lims.resultvalidation.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -26,11 +35,18 @@ import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
+import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.RecordStatus;
+import us.mn.state.health.lims.common.services.TestIdentityService;
+import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.tools.StopWatch;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
@@ -67,8 +83,6 @@ import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.*;
 
 public class ResultsValidationRetroCIUtility {
 

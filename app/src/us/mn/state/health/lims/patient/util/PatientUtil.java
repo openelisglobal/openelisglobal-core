@@ -17,6 +17,9 @@
  */
 package us.mn.state.health.lims.patient.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
 import us.mn.state.health.lims.gender.valueholder.Gender;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
@@ -33,9 +36,6 @@ import us.mn.state.health.lims.provider.daoimpl.ProviderDAOImpl;
 import us.mn.state.health.lims.provider.valueholder.Provider;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PatientUtil {
 

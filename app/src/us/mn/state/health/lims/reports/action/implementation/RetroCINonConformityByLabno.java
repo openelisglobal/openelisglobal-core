@@ -16,11 +16,6 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
-import java.util.List;
-
-import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
-
 public class RetroCINonConformityByLabno extends NonConformityByLabno implements IReportCreator {
 
 	@Override

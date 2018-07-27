@@ -15,18 +15,19 @@
 */
 package us.mn.state.health.lims.sample.valueholder;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Sample extends EnumValueItemImpl {
 

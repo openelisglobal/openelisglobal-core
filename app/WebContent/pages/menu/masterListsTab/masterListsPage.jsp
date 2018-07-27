@@ -1,8 +1,8 @@
 <%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
-<%@ page import="us.mn.state.health.lims.common.util.ConfigurationProperties" %>
-<%@ page import="us.mn.state.health.lims.common.util.Versioning" %>
-<%@ page import="us.mn.state.health.lims.common.util.ConfigurationProperties.Property" %>
+<%@ page import="us.mn.state.health.lims.common.util.ConfigurationProperties,
+				us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+				us.mn.state.health.lims.common.util.Versioning" %>
 
 
 Build number: <%= Versioning.getBuildNumber() %>&nbsp;&nbsp;&nbsp;&nbsp;<bean:message key="ellis.configuration" />:&nbsp;

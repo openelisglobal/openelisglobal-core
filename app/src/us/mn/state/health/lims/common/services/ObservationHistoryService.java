@@ -16,7 +16,12 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
@@ -26,10 +31,6 @@ import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory
 import us.mn.state.health.lims.observationhistorytype.dao.ObservationHistoryTypeDAO;
 import us.mn.state.health.lims.observationhistorytype.daoImpl.ObservationHistoryTypeDAOImpl;
 import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHistoryType;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ObservationHistoryService{
 

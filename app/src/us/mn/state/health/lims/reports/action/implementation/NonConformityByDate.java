@@ -16,6 +16,11 @@
 */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.common.action.BaseActionForm;
@@ -41,11 +46,6 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public abstract class NonConformityByDate extends Report implements IReportCreator {
 	private String lowDateStr;

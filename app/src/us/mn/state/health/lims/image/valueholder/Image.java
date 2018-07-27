@@ -16,9 +16,9 @@
 
 package us.mn.state.health.lims.image.valueholder;
 
-import us.mn.state.health.lims.common.valueholder.BaseObject;
-
 import java.sql.Blob;
+
+import us.mn.state.health.lims.common.valueholder.BaseObject;
 
 /**
  */

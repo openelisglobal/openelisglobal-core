@@ -38,7 +38,6 @@ import org.apache.struts.action.DynaActionForm;
 
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.util.DateUtil;
-import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.login.dao.LoginDAO;
 import us.mn.state.health.lims.login.dao.UserModuleDAO;
 import us.mn.state.health.lims.login.daoimpl.LoginDAOImpl;

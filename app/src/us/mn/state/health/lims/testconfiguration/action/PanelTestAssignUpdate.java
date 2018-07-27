@@ -18,27 +18,27 @@ package us.mn.state.health.lims.testconfiguration.action;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.util.validator.GenericValidator;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.test.dao.TestDAO;
-import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panelitem.dao.PanelItemDAO;
 import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
-import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import us.mn.state.health.lims.test.dao.TestDAO;
+import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 
 
 public class PanelTestAssignUpdate extends BaseAction {

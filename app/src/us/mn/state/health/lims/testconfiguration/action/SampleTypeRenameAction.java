@@ -15,24 +15,24 @@
  */
 package us.mn.state.health.lims.testconfiguration.action;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.DisplayListService;
-import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Locale;
 
 public class SampleTypeRenameAction extends BaseAction {
 

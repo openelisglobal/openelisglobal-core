@@ -77,7 +77,7 @@ public class Tree
     public Tree(String name, TreeNode rootNode, boolean isLocal)
     {
         this.name = name;
-        this.baseDirectory = "tree_images/";
+        this.baseDirectory = "images/tree_images/";
         this.useCookies = true;
         this.isLocal = isLocal;
         this.rootNode = rootNode;
@@ -108,7 +108,7 @@ public class Tree
 
     /**
      * @return Returns the baseDirectory from where the tree images whill be loaded. 
-     * This defaults to "tree_images/" which will look for the tree_images directory inside your current directory.
+     * This defaults to "images/tree_images/" which will look for the images/tree_images directory inside your current directory.
      */
     public String getBaseDirectory()
     {
@@ -117,7 +117,7 @@ public class Tree
 
     /**
      * @param baseDirectory Set the base directory where the tree generator will look for images of the tree.
-     * Defaults to "tree_images/" if not set
+     * Defaults to "images/tree_images/" if not set
      */
     public void setBaseDirectory(String baseDirectory)
     {

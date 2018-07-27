@@ -25,7 +25,6 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.resources.ResourceLocator;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.login.valueholder.UserSessionData;
 import us.mn.state.health.lims.patienttype.dao.PatientTypeDAO;
 import us.mn.state.health.lims.patienttype.daoimpl.PatientTypeDAOImpl;
 import us.mn.state.health.lims.patienttype.valueholder.PatientType;

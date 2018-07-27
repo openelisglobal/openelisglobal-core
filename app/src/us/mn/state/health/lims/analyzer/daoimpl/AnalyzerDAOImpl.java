@@ -18,9 +18,9 @@ package us.mn.state.health.lims.analyzer.daoimpl;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+
 import us.mn.state.health.lims.analyzer.dao.AnalyzerDAO;
 import us.mn.state.health.lims.analyzer.valueholder.Analyzer;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;

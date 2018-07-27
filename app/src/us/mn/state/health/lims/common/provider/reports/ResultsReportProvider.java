@@ -15,13 +15,34 @@
 */
 package us.mn.state.health.lims.common.provider.reports;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts.Globals;
+import org.apache.struts.action.ActionMessages;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.util.JRLoader;
-import org.apache.struts.Globals;
-import org.apache.struts.action.ActionMessages;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -50,7 +71,12 @@ import us.mn.state.health.lims.provider.dao.ProviderDAO;
 import us.mn.state.health.lims.provider.daoimpl.ProviderDAOImpl;
 import us.mn.state.health.lims.provider.valueholder.Provider;
 import us.mn.state.health.lims.reports.valueholder.common.JRHibernateDataSource;
-import us.mn.state.health.lims.reports.valueholder.resultsreport.*;
+import us.mn.state.health.lims.reports.valueholder.resultsreport.ResultsReportAnalyteResult;
+import us.mn.state.health.lims.reports.valueholder.resultsreport.ResultsReportAnalyteResultComparator;
+import us.mn.state.health.lims.reports.valueholder.resultsreport.ResultsReportLabProject;
+import us.mn.state.health.lims.reports.valueholder.resultsreport.ResultsReportSample;
+import us.mn.state.health.lims.reports.valueholder.resultsreport.ResultsReportSampleComparator;
+import us.mn.state.health.lims.reports.valueholder.resultsreport.ResultsReportTest;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
@@ -69,16 +95,6 @@ import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization
 import us.mn.state.health.lims.sampleproject.valueholder.SampleProject;
 import us.mn.state.health.lims.sourceofsample.valueholder.SourceOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @author benzd1

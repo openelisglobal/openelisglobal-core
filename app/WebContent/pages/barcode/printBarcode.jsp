@@ -3,11 +3,10 @@
 			     us.mn.state.health.lims.common.formfields.FormFields,
 			     us.mn.state.health.lims.common.formfields.FormFields.Field,
 			     us.mn.state.health.lims.common.provider.validation.AccessionNumberValidatorFactory,
-			     us.mn.state.health.lims.common.provider.validation.ProgramAccessionValidator,
 			     us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator,
 			     us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-			     us.mn.state.health.lims.common.util.StringUtil" %>
-<%@ page import="us.mn.state.health.lims.common.util.*" %>
+			     us.mn.state.health.lims.common.util.StringUtil,
+			     us.mn.state.health.lims.common.util.*" %>
 
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>

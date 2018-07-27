@@ -15,10 +15,10 @@
 */
 package us.mn.state.health.lims.samplenewborn.valueholder;
 
+import java.sql.Timestamp;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.valueholder.BaseObject;
-
-import java.sql.Timestamp;
 
 public class SampleNewborn extends BaseObject {
 

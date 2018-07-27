@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants,
-                 us.mn.state.health.lims.common.util.SystemConfiguration,
                  us.mn.state.health.lims.common.formfields.FormFields,
                  us.mn.state.health.lims.common.formfields.FormFields.Field,
-                 us.mn.state.health.lims.common.util.StringUtil,
                  us.mn.state.health.lims.common.util.Versioning,
                  us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" %>
 

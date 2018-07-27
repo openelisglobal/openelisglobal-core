@@ -16,13 +16,13 @@
  */
 package us.mn.state.health.lims.common.services;
 
-import us.mn.state.health.lims.patient.valueholder.Patient;
-import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
-import us.mn.state.health.lims.person.valueholder.Person;
-
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+
+import us.mn.state.health.lims.patient.valueholder.Patient;
+import us.mn.state.health.lims.patientidentity.valueholder.PatientIdentity;
+import us.mn.state.health.lims.person.valueholder.Person;
 
 public interface IPatientService{
 

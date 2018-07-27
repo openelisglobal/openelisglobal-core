@@ -17,10 +17,16 @@
 package us.mn.state.health.lims.common.services;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.services.serviceBeans.ResultSaveBean;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -38,11 +44,6 @@ import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class ResultSaveService {
     private static final ResultDAO resultDAO = new ResultDAOImpl();

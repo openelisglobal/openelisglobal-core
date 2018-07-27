@@ -16,11 +16,18 @@
  */
 package us.mn.state.health.lims.reports.action;
 
+import java.util.HashMap;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.log.LogEvent;
@@ -28,11 +35,6 @@ import us.mn.state.health.lims.common.services.ReportTrackingService;
 import us.mn.state.health.lims.common.services.ReportTrackingService.ReportType;
 import us.mn.state.health.lims.reports.action.implementation.IReportCreator;
 import us.mn.state.health.lims.reports.action.implementation.ReportImplementationFactory;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 
 public class CommonReportPrintAction extends BaseAction {
 

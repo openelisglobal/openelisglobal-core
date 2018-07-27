@@ -1,8 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ page import="us.mn.state.health.lims.common.action.IActionConstants" %>
 
-<%@ page import="java.util.Calendar"  %>
-
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
 <%@ taglib uri="/tags/struts-logic"		prefix="logic" %>

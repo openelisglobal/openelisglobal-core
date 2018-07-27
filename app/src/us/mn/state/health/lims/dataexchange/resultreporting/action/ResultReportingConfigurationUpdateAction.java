@@ -32,7 +32,6 @@ import org.hibernate.Transaction;
 
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
-import us.mn.state.health.lims.dataexchange.MalariaSurveilance.MalariaSurveilanceJob;
 import us.mn.state.health.lims.dataexchange.resultreporting.beans.ReportingConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.scheduler.LateStartScheduler;

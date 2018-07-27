@@ -16,12 +16,21 @@
 
 package us.mn.state.health.lims.testconfiguration.action;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.DynaValidatorForm;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.TestService;
@@ -34,15 +43,6 @@ import us.mn.state.health.lims.panelitem.daoimpl.PanelItemDAOImpl;
 import us.mn.state.health.lims.panelitem.valueholder.PanelItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestComparator;
-import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
-import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 
 public class PanelTestAssignAction extends BaseAction {
     @Override  

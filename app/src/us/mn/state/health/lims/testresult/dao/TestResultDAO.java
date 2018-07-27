@@ -15,13 +15,13 @@
 */
 package us.mn.state.health.lims.testresult.dao;
 
+import java.util.List;
+
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-
-import java.util.List;
 
 /**
  * @author diane benz

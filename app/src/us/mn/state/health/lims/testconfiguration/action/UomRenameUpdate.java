@@ -15,24 +15,22 @@
  */
 package us.mn.state.health.lims.testconfiguration.action;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.localization.daoimpl.LocalizationDAOImpl;
-import us.mn.state.health.lims.localization.valueholder.Localization;
-import us.mn.state.health.lims.login.valueholder.UserSessionData;
 import us.mn.state.health.lims.unitofmeasure.dao.UnitOfMeasureDAO;
 import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class UomRenameUpdate extends BaseAction{
 

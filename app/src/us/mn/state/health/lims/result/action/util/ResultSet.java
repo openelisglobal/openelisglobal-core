@@ -16,14 +16,14 @@
 */
 package us.mn.state.health.lims.result.action.util;
 
+import java.util.List;
+import java.util.Map;
+
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.result.valueholder.ResultInventory;
 import us.mn.state.health.lims.result.valueholder.ResultSignature;
 import us.mn.state.health.lims.sample.valueholder.Sample;
-
-import java.util.List;
-import java.util.Map;
 
 public class ResultSet {
 	public final Result result;

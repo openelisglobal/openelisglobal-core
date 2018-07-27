@@ -16,15 +16,31 @@
  */
 package us.mn.state.health.lims.referral.action;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.IActionConstants;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
@@ -44,12 +60,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testresult.dao.TestResultDAO;
 import us.mn.state.health.lims.testresult.daoimpl.TestResultDAOImpl;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.common.services.TypeOfSampleService;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 public class ReferredOutAction extends BaseAction {
 

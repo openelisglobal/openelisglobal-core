@@ -16,14 +16,27 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.validator.GenericValidator;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.apache.commons.validator.GenericValidator;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.AnalysisService;
+import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.services.NoteService;
+import us.mn.state.health.lims.common.services.ResultService;
+import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
+import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 import us.mn.state.health.lims.common.util.StringUtil;
@@ -34,8 +47,6 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
-
-import java.util.*;
 
 public class PatientCILNSPClinical_vreduit extends PatientReport implements IReportCreator, IReportParameterSetter{
 

@@ -16,7 +16,19 @@
  */
 package us.mn.state.health.lims.common.services.historyservices;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
+
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.dao.AuditTrailDAO;
 import us.mn.state.health.lims.audittrail.daoimpl.AuditTrailDAOImpl;
@@ -32,12 +44,6 @@ import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.systemuser.dao.SystemUserDAO;
 import us.mn.state.health.lims.systemuser.daoimpl.SystemUserDAOImpl;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
 
 public abstract class HistoryService {
 

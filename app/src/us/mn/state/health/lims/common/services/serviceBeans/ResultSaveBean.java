@@ -16,8 +16,6 @@
 
 package us.mn.state.health.lims.common.services.serviceBeans;
 
-import org.apache.http.util.CharArrayBuffer;
-
 public class ResultSaveBean {
 
     private boolean hasQualifiedResult;

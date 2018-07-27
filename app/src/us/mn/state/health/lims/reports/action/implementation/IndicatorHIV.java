@@ -16,6 +16,14 @@
  */
 package us.mn.state.health.lims.reports.action.implementation;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
@@ -39,9 +47,6 @@ import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.samplehuman.dao.SampleHumanDAO;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
-
-import java.sql.Date;
-import java.util.*;
 
 public class IndicatorHIV extends IndicatorReport implements IReportCreator, IReportParameterSetter {
 

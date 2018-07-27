@@ -35,7 +35,6 @@ import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.localization.valueholder.Localization;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.valueholder.Panel;
 

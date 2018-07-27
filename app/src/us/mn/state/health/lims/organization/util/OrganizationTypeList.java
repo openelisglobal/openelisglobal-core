@@ -17,13 +17,20 @@
 */
 package us.mn.state.health.lims.organization.util;
 
-import java.util.*;
+import static us.mn.state.health.lims.organization.valueholder.OrganizationComparator.ORGANIZATION_NAME_COMPARATOR;
+import static us.mn.state.health.lims.organization.valueholder.OrganizationComparator.SHORTNAME_NUMERIC_COMPARATOR;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.organization.valueholder.Organization;
-import static us.mn.state.health.lims.organization.valueholder.OrganizationComparator.* ;
 
 /**
  * Well defined lists of organizations group by organization types and ordered by some column of choice.

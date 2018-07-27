@@ -16,10 +16,10 @@
 */
 package us.mn.state.health.lims.requester.dao;
 
+import java.util.List;
+
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.requester.valueholder.SampleRequester;
-
-import java.util.List;
 
 
 public interface SampleRequesterDAO{

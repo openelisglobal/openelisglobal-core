@@ -30,9 +30,9 @@ import org.apache.struts.config.ForwardConfig;
 import org.apache.struts.config.ModuleConfig;
 
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.log.LogEvent;
 
 public class LimsActionServlet extends ActionServlet {
 

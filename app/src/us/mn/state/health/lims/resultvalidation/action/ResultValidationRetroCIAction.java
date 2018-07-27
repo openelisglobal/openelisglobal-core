@@ -16,11 +16,18 @@
  */
 package us.mn.state.health.lims.resultvalidation.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -29,11 +36,6 @@ import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationPaging;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.resultvalidation.util.ResultsValidationRetroCIUtility;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResultValidationRetroCIAction extends BaseResultValidationRetroCIAction {
 

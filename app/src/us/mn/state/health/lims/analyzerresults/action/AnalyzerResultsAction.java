@@ -17,6 +17,16 @@
  */
 package us.mn.state.health.lims.analyzerresults.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
@@ -24,6 +34,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.hibernate.Transaction;
+
 import us.mn.state.health.lims.analysis.dao.AnalysisDAO;
 import us.mn.state.health.lims.analysis.daoimpl.AnalysisDAOImpl;
 import us.mn.state.health.lims.analysis.valueholder.Analysis;
@@ -37,8 +48,11 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.services.PluginMenuService;
+import us.mn.state.health.lims.common.services.QAService;
 import us.mn.state.health.lims.common.services.QAService.QAObservationType;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -66,10 +80,6 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleTestDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 public class AnalyzerResultsAction extends BaseAction {
 

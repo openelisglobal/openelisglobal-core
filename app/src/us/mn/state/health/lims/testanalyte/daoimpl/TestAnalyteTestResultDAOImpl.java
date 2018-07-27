@@ -28,14 +28,14 @@ import org.hibernate.Transaction;
 
 import us.mn.state.health.lims.common.daoimpl.BaseDAOImpl;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
+import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.SystemConfiguration;
-import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.testanalyte.dao.TestAnalyteTestResultDAO;
 import us.mn.state.health.lims.testanalyte.valueholder.TestAnalyte;
 import us.mn.state.health.lims.testresult.valueholder.TestResult;
-import us.mn.state.health.lims.hibernate.HibernateUtil;
 
 /**
  * @author diane benz

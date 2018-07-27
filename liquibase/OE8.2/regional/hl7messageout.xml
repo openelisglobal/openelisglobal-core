@@ -3,6 +3,11 @@
   <!--Me-->
   
     <changeSet author="csteele" id="1"  context="ci_regional,ci_general">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="hl7_message_out" schemaName="clinlims" />
+      </not>
+    </preConditions>
         <comment>create hl7 message out table</comment>
         <sql>
  
@@ -26,6 +31,9 @@
     </changeSet>
     
     <changeSet author="csteele" id="2"  context="ci_regional,ci_general">
+    <preConditions onFail="MARK_RAN">
+		<sqlCheck expectedResult="0">SELECT COUNT(*) FROM clinlims.reference_tables WHERE name = 'HL7_MESSAGE_OUT'</sqlCheck>
+	</preConditions>
         <comment>Enable audit trail to track changes to hl7 messages out</comment>
         <sql>
             INSERT INTO clinlims.reference_tables (id, name, keep_history, is_hl7_encoded)

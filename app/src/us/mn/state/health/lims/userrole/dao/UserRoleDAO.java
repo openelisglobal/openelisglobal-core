@@ -17,12 +17,12 @@
 */
 package us.mn.state.health.lims.userrole.dao;
 
+import java.util.Collection;
+import java.util.List;
+
 import us.mn.state.health.lims.common.dao.BaseDAO;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.userrole.valueholder.UserRole;
-
-import java.util.Collection;
-import java.util.List;
 
 public interface UserRoleDAO extends BaseDAO {
 

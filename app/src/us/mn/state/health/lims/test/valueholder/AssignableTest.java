@@ -15,13 +15,13 @@
 */
 package us.mn.state.health.lims.test.valueholder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author benzd1

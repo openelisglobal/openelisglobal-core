@@ -16,16 +16,16 @@
 */
 package us.mn.state.health.lims.common.util;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.log.LogEvent;
 import us.mn.state.health.lims.siteinformation.dao.SiteInformationDAO;
 import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
-
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DefaultConfigurationProperties extends ConfigurationProperties {
 

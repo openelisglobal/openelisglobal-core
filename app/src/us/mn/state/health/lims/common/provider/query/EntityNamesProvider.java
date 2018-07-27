@@ -15,24 +15,26 @@
  */
 package us.mn.state.health.lims.common.provider.query;
 
-import org.apache.commons.validator.GenericValidator;
-import org.json.simple.JSONObject;
-import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
-import us.mn.state.health.lims.localization.valueholder.Localization;
-import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
-import us.mn.state.health.lims.panel.valueholder.Panel;
-import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
-import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-import us.mn.state.health.lims.renametestsection.daoimpl.RenameTestSectionDAOImpl;
-import us.mn.state.health.lims.renametestsection.valueholder.RenameTestSection;
-import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
-import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
+import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.StringWriter;
+
+import org.apache.commons.validator.GenericValidator;
+import org.json.simple.JSONObject;
+
+import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
+import us.mn.state.health.lims.localization.valueholder.Localization;
+import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
+import us.mn.state.health.lims.panel.valueholder.Panel;
+import us.mn.state.health.lims.renametestsection.daoimpl.RenameTestSectionDAOImpl;
+import us.mn.state.health.lims.renametestsection.valueholder.RenameTestSection;
+import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
+import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
+import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
+import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
 
 public class EntityNamesProvider extends BaseQueryProvider {
     public static final String PANEL = "panel";

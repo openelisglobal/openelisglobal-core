@@ -1,14 +1,12 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="org.apache.struts.util.RequestUtils,org.apache.struts.action.*,org.apache.struts.Globals,java.util.Iterator,javax.servlet.jsp.JspException"
-	import="us.mn.state.health.lims.common.action.IActionConstants"
-	import="us.mn.state.health.lims.common.util.StringUtil"
-	import="us.mn.state.health.lims.common.util.resources.ResourceLocator"
+	import="org.apache.struts.action.*,
+			us.mn.state.health.lims.common.action.IActionConstants"
  %>
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
-<%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
+<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
 <%--action is set in BaseAction--%>
 

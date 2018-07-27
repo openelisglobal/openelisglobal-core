@@ -16,9 +16,16 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.json.simple.JSONObject;
+
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.dictionary.dao.DictionaryDAO;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
@@ -36,12 +43,6 @@ import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class ResultService {
 

@@ -15,6 +15,8 @@
 */
 package us.mn.state.health.lims.analysisqaeventaction.valueholder;
 
+import java.sql.Date;
+
 import us.mn.state.health.lims.action.valueholder.Action;
 import us.mn.state.health.lims.analysisqaevent.valueholder.AnalysisQaEvent;
 import us.mn.state.health.lims.common.util.DateUtil;
@@ -23,8 +25,6 @@ import us.mn.state.health.lims.common.valueholder.BaseObject;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
 import us.mn.state.health.lims.systemuser.valueholder.SystemUser;
-
-import java.sql.Date;
 
 public class AnalysisQaEventAction extends BaseObject {
 

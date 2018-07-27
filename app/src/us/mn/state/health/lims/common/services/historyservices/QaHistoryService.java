@@ -1,5 +1,10 @@
 package us.mn.state.health.lims.common.services.historyservices;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import us.mn.state.health.lims.audittrail.action.workers.AuditTrailItem;
 import us.mn.state.health.lims.audittrail.valueholder.History;
 import us.mn.state.health.lims.common.services.QAService;
@@ -9,11 +14,6 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO;
 import us.mn.state.health.lims.sampleqaevent.daoimpl.SampleQaEventDAOImpl;
 import us.mn.state.health.lims.sampleqaevent.valueholder.SampleQaEvent;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class QaHistoryService extends HistoryService {
 

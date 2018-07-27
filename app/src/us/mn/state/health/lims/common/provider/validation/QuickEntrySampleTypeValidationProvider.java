@@ -16,8 +16,6 @@
 package us.mn.state.health.lims.common.provider.validation;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.servlet.validation.AjaxServlet;
 import us.mn.state.health.lims.common.util.StringUtil;
-import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;

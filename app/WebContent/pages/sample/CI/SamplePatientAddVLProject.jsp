@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
          import="us.mn.state.health.lims.common.action.IActionConstants,
-			us.mn.state.health.lims.common.util.SystemConfiguration,
-			us.mn.state.health.lims.common.util.ConfigurationProperties,
-			us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
-	        us.mn.state.health.lims.common.formfields.FormFields,
-	        us.mn.state.health.lims.common.util.StringUtil,
-            us.mn.state.health.lims.common.util.Versioning,
-	        java.util.HashSet"%>
+				us.mn.state.health.lims.common.util.SystemConfiguration,
+				us.mn.state.health.lims.common.util.ConfigurationProperties,
+				us.mn.state.health.lims.common.util.ConfigurationProperties.Property,
+		        us.mn.state.health.lims.common.formfields.FormFields,
+	            us.mn.state.health.lims.common.util.Versioning,
+		        java.util.HashSet"%>
 
 <%@ taglib uri="/tags/struts-bean"		prefix="bean" %>
 <%@ taglib uri="/tags/struts-html"		prefix="html" %>
@@ -14,7 +13,6 @@
 <%@ taglib uri="/tags/labdev-view"		prefix="app" %>
 <%@ taglib uri="/tags/struts-tiles"     prefix="tiles" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
-<%@ taglib uri="/tags/globalOpenELIS" 	prefix="global"%>
 
 <bean:define id="formName"		value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
 <bean:define id="idSeparator"	value='<%=SystemConfiguration.getInstance().getDefaultIdSeparator()%>' />

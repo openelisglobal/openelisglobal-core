@@ -17,12 +17,11 @@ package us.mn.state.health.lims.renametestsection.valueholder;
 
 import java.sql.Timestamp;
 
-import us.mn.state.health.lims.common.services.TestSectionService;
 import us.mn.state.health.lims.common.valueholder.EnumValueItemImpl;
-import us.mn.state.health.lims.localization.valueholder.Localization;
-import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.localization.valueholder.Localization;
+import us.mn.state.health.lims.organization.valueholder.Organization;
 
 public class RenameTestSection extends EnumValueItemImpl {
 

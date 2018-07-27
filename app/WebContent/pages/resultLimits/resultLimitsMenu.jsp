@@ -1,9 +1,7 @@
 <%@ page language="java"
 	contentType="text/html; charset=utf-8"
-	import="java.util.Date,
-	java.util.Hashtable,
-	us.mn.state.health.lims.common.action.IActionConstants,
-	us.mn.state.health.lims.resultlimits.form.ResultLimitsLink" %>
+	import="us.mn.state.health.lims.common.action.IActionConstants,
+			us.mn.state.health.lims.resultlimits.form.ResultLimitsLink" %>
 
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>

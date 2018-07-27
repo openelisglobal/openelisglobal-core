@@ -16,9 +16,9 @@
 package us.mn.state.health.lims.provider.valueholder;
 
 import us.mn.state.health.lims.common.valueholder.BaseObject;
-import us.mn.state.health.lims.person.valueholder.Person;
 import us.mn.state.health.lims.common.valueholder.ValueHolder;
 import us.mn.state.health.lims.common.valueholder.ValueHolderInterface;
+import us.mn.state.health.lims.person.valueholder.Person;
 
 public class Provider extends BaseObject {
 

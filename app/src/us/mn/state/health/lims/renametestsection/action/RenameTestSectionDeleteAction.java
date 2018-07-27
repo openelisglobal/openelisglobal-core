@@ -30,13 +30,13 @@ import org.apache.struts.action.DynaActionForm;
 
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
-import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.common.log.LogEvent;
+import us.mn.state.health.lims.common.util.validator.ActionError;
+import us.mn.state.health.lims.hibernate.HibernateUtil;
+import us.mn.state.health.lims.login.valueholder.UserSessionData;
 import us.mn.state.health.lims.renametestsection.dao.RenameTestSectionDAO;
 import us.mn.state.health.lims.renametestsection.daoimpl.RenameTestSectionDAOImpl;
 import us.mn.state.health.lims.renametestsection.valueholder.RenameTestSection;
-import us.mn.state.health.lims.hibernate.HibernateUtil;
-import us.mn.state.health.lims.login.valueholder.UserSessionData;
 
 /**
  * @author diane benz

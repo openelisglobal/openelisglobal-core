@@ -16,9 +16,21 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.validator.GenericValidator;
-import us.mn.state.health.lims.common.util.*;
+
+import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
+import us.mn.state.health.lims.common.util.IdValuePair;
+import us.mn.state.health.lims.common.util.LocaleChangeListener;
+import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.common.util.SystemConfiguration;
 import us.mn.state.health.lims.dictionary.daoimpl.DictionaryDAOImpl;
 import us.mn.state.health.lims.dictionary.valueholder.Dictionary;
 import us.mn.state.health.lims.gender.daoimpl.GenderDAOImpl;
@@ -40,17 +52,12 @@ import us.mn.state.health.lims.test.daoimpl.TestSectionDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.test.valueholder.TestSection;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
-import us.mn.state.health.lims.typeofsample.dao.TypeOfSamplePanelDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
-import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSamplePanelDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
-import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSamplePanel;
 import us.mn.state.health.lims.typeoftestresult.daoimpl.TypeOfTestResultDAOImpl;
 import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
-
-import java.util.*;
 
 public class DisplayListService implements LocaleChangeListener {
 

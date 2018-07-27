@@ -1,5 +1,5 @@
-<%@ page import="java.lang.management.*" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.lang.management.*,
+				java.util.*" %>
 <html>
 <head>
   <title>JVM Memory Monitor</title>

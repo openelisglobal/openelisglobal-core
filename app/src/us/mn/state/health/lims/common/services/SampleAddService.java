@@ -16,11 +16,19 @@
  */
 package us.mn.state.health.lims.common.services;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import org.apache.commons.validator.GenericValidator;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
@@ -40,8 +48,6 @@ import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
 import us.mn.state.health.lims.test.valueholder.Test;
 import us.mn.state.health.lims.typeofsample.dao.TypeOfSampleDAO;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
-
-import java.util.*;
 
 public class SampleAddService {
 	private final String xml;

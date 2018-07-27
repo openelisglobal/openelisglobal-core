@@ -1,10 +1,15 @@
 package us.mn.state.health.lims.result.action.util;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionErrors;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 import us.mn.state.health.lims.common.action.IActionConstants;
 import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.formfields.FormFields.Field;
@@ -18,10 +23,6 @@ import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
 import us.mn.state.health.lims.test.beanItems.TestResultItem;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class ResultsValidation {
 
