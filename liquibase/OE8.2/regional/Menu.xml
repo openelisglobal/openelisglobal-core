@@ -23,7 +23,7 @@ where element_id ='menu_reports_export';
   </changeSet>
   
   
- <changeSet author="csteele" id="2"  context="ci_regional,ci_general">
+ <changeSet author="csteele" id="2"  context="ci_regional,ci_general" runAlways="true">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 select count(*) from clinlims.menu where element_id = 'menu_sample_eorder';
@@ -39,7 +39,7 @@ where element_id ='menu_reports_export';
     </changeSet>
 	
 	
-<changeSet author="CI OpenELIS developers group" id="2" >
+<changeSet author="CI OpenELIS developers group" id="2" runAlways="true">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 select count(*) from clinlims.menu where element_id = 'menu_help_user_manual';
