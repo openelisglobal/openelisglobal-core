@@ -27,6 +27,6 @@ public class IndicatorAllTestLNSP extends IndicatorAllTest implements IReportCre
 
 	@Override
 	protected String getLabNameLine2() {
-		return StringUtil.getContextualMessageForKey("report.labName.two");
+	return StringUtil.getContextualMessageForKey("report.labName.two");
 	}
 }
