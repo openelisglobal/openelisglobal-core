@@ -252,6 +252,11 @@
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Date de Réalisation du test:]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="215" y="1" width="76" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{vlPregnancy}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
