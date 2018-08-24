@@ -49,8 +49,8 @@ public class VLReportData {
 	private String servicename;
 	private String doctor;
 	private String compleationdate;
-	private String pregnancy;
-	private String suckle;
+	private String vlPregnancy;
+	private String vlSuckle;
 	private String PTME;
 	private String clinicDistrict;
 	private String clinic;
@@ -65,6 +65,7 @@ public class VLReportData {
 	private String allQaEvents=null;
 	private String receptionQaEvent=null;
 	
+		
 	private Map<String, String> previousResultMap = new HashMap<String, String>();
 
 	public String getSubjectno() {
@@ -182,18 +183,18 @@ public class VLReportData {
 		this.ampli2lo = ampli2lo;
 	}
 	
-	public String getpregnancy() {
-		return pregnancy;
+	public String getvlPregnancy() {
+		return vlPregnancy;
 	}
-	public void setpregnancy(String pregnancy) {
-		this.pregnancy = pregnancy;
+	public void setvlPregnancy(String vlPregnancy) {
+		this.vlPregnancy = vlPregnancy;
 	}
 	
-	public String getsuckle() {
-		return suckle;
+	public String getvlSuckle() {
+		return vlSuckle;
 	}
-	public void setsuckle(String suckle) {
-		this.suckle = suckle;
+	public void setvlSuckle(String vlSuckle) {
+		this.vlSuckle = vlSuckle;
 	}
 	
 	

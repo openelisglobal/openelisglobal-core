@@ -169,17 +169,24 @@ public class ForCIDashboard extends CSVSampleExportReport implements IReportPara
 		
 		       
         String workingResult = result.split("\\(")[0].trim();
-       // System.out.println("result=" + result + " / workingResult= " + workingResult);
         String[] splitLine = indicStr.split(":");
         String indic = splitLine[1];
         if (indic.equals("Unsuppressed VL"))
-            return workingResult.contains("Log7")|| !workingResult.contains("L") && !workingResult.contains("X") && !workingResult.contains("<") && workingResult.length()>0 
-                    && Double.parseDouble(workingResult) >= 1000;// workingResult.length()>=4 &&
-                                                                    // !workingResult.contains("L") &&
-                                                                    // !workingResult.contains("X") ;
+            return workingResult.contains("Log7")
+            		|| !workingResult.contains("L") 
+            		&& !workingResult.contains("X") 
+            		&& !workingResult.contains("<") 
+            		&& !workingResult.contains(">") 
+            		&& workingResult.length()>0 
+                    && Double.parseDouble(workingResult) >= 1000;
+                    
         else if (indic.equals("Suppressed VL"))
-            return workingResult.contains("L") || workingResult.contains("<") 
-                    || (workingResult.length()>0 && !workingResult.contains("X") && Double.parseDouble(workingResult) < 1000);
+            return workingResult.contains("L") 
+            		|| workingResult.contains("<") 
+                    || (workingResult.length()>0 
+                    && !workingResult.toUpperCase().contains("X") 
+                    && !workingResult.toLowerCase().contains("invalid") 
+                    && Double.parseDouble(workingResult) < 1000);
 
         return false;
     }

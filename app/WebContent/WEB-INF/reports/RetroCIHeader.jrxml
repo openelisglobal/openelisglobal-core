@@ -98,13 +98,6 @@
 				<reportElement x="449" y="1" width="100" height="80"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "rightLabLogo.jpg"]]></imageExpression>
 			</image>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="0" y="107" width="550" height="13" backcolor="#FFFFFF"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{labName2}]]></textFieldExpression>
-			</textField>
 		</band>
 	</detail>
 	<columnFooter>
