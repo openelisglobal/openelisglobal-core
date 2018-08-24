@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient_ARV_Followup_patient_info" pageWidth="552" pageHeight="802" columnWidth="552" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="5.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -24,6 +24,7 @@
 	</parameter>
 	<parameter name="compleationdate" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="studyName" class="java.lang.String"/>
+	<parameter name="vlPregnancy" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -140,7 +141,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{doctor}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-3" x="83" y="0" width="224" height="18"/>
+				<reportElement key="textField-3" x="83" y="0" width="108" height="18"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>

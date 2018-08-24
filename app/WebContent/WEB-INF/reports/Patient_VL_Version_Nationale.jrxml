@@ -2,9 +2,9 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient_VL_Version_Nationale" pageWidth="612" pageHeight="862" whenNoDataType="AllSectionsNoDetail" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="1041"/>
+	<property name="ireport.y" value="877"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -22,6 +22,7 @@
 	<parameter name="leftHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="rightHeaderImage" class="java.io.InputStream" isForPrompting="false"/>
 	<parameter name="imagesPath" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="vlPregnancy" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -44,6 +45,7 @@
 	<field name="receptionQaEvent" class="java.lang.String"/>
 	<field name="compleationdate" class="java.lang.String"/>
 	<field name="vih" class="java.lang.String"/>
+	<field name="vlPregnancy" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -893,14 +895,14 @@ HIV-1 P/N]]></text>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="12" y="38" width="275" height="19"/>
+				<reportElement x="12" y="38" width="534" height="19"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[Seuil de détection de la technique : 20 copies /mL]]></text>
+				<text><![CDATA[Seuil de détection de la technique (Tube EDTA): 20 copies /mL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="12" y="58" width="534" height="19"/>
+				<reportElement x="12" y="78" width="534" height="19"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
@@ -910,6 +912,13 @@ HIV-1 P/N]]></text>
 				<reportElement x="12" y="5" width="317" height="12"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "RefVal.jpg"]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="12" y="59" width="534" height="19"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Seuil de détection de la technique (Papier Buvard WHATMAN 903): 400 copies /mL]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>

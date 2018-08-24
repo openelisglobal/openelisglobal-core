@@ -33,7 +33,7 @@ public class Patient extends BaseObject {
 	private String race;
 
 	private String gender;
-
+	
 	private Timestamp birthDate;
 
 	private String birthDateForDisplay;
@@ -178,7 +178,8 @@ public class Patient extends BaseObject {
 		this.gender = gender;
 	}
 
-	public String getMedicaidId() {
+	
+		public String getMedicaidId() {
 		return medicaidId;
 	}
 
