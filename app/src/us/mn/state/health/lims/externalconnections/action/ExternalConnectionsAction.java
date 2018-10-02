@@ -31,7 +31,7 @@ public class ExternalConnectionsAction extends BaseMenuAction {
 	protected List createMenuList(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		AdminFormFields adminFields = AdminFormFields.getInstance();
-		List<URLForDisplay> menuList = new ArrayList<>();
+		List<URLForDisplay> menuList = new ArrayList<URLForDisplay>();
 		URLForDisplay url = new URLForDisplay();
 		if (adminFields.useField(Field.RESULT_REPORTING_CONFIGURATION)) {
 			url.setDisplayKey("resultreporting.browse.title");
