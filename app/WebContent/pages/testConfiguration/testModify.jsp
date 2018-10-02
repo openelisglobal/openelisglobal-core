@@ -1349,7 +1349,9 @@
                 	dictionary.qualified = "N";
                 	jsonObj.dictionary[i] = dictionary;
         		}
-            	
+            	if (referenceId == "null") {
+            		referenceId = null;
+            	}
             	jsonObj.dictionaryReference = referenceId;
         	}
         }
