@@ -778,6 +778,7 @@
         $jq("#panelRO").append(panelNames);
         $jq("#uomRO").empty();
         $jq("#uomRO").append($jq("#uomSelection  option:selected").text());
+        $jq("#loincRO").text($jq("#loinc").val());
         $jq("#resultTypeRO").text($jq("#resultTypeSelection  option:selected").text());
         $jq("#activeRO").text($jq("#active").attr("checked") ? "Y" : "N");
         $jq("#orderableRO").text($jq("#orderable").attr("checked") ? "Y" : "N");
@@ -794,6 +795,7 @@
         addJsonPanels(jsonObj);
         $jq("#panelSelection").val();
         jsonObj.uom = $jq("#uomSelection").val();
+        jsonObj.loinc = $jq("#loinc").val();
         jsonObj.resultType = $jq("#resultTypeSelection").val();
         jsonObj.orderable = $jq("#orderable").attr("checked") ? 'Y' : 'N';
         jsonObj.active = $jq("#active").attr("checked") ? 'Y' : 'N';
@@ -1051,6 +1053,8 @@
                         </option>
                         <% } %>
                     </select>
+                    <br/><br/><br/><br/><br/><bean:message key="label.loinc" />
+                    <br/><input type="text" id="loinc" onchange="checkReadyForNextStep()" />
                 </td>
                 <td width="25%" style="vertical-align: top; padding: 4px" id="panelSelectionCell">
                     <bean:message key="typeofsample.panel.panel"/><br/>
@@ -1108,6 +1112,9 @@
             <bean:message key="label.unitofmeasure"/>
             <div class="tab" id="uomRO"><bean:message key="label.none"/></div>
             <br/>
+			<bean:message key="label.loinc" />
+			<div class="tab" id="loincRO"><bean:message key="label.none" /></div>
+			<br />
             <bean:message key="result.resultType"/>
             <div class="tab" id="resultTypeRO"></div>
             <br/>

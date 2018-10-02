@@ -216,6 +216,7 @@ public class TestAddUpdate extends BaseAction {
             TestSet testSet = new TestSet();
             Test test = new Test();
             test.setUnitOfMeasure(uom);
+            test.setLoinc(testAddParams.loinc);
             test.setDescription(testAddParams.testNameEnglish + "(" + typeOfSample.getDescription() + ")");
             test.setTestName(testAddParams.testNameEnglish);
             test.setLocalCode(testAddParams.testNameEnglish);
@@ -298,6 +299,7 @@ public class TestAddUpdate extends BaseAction {
             testAddParams.dictionaryReferenceId = (String) obj.get("dictionaryReference");
             extractPanels(obj, parser, testAddParams);
             testAddParams.uomId = (String)obj.get("uom");
+            testAddParams.loinc = (String)obj.get("loinc");
             testAddParams.resultTypeId = (String)obj.get("resultType");
             extractSampleTypes(obj, parser, testAddParams);
             testAddParams.active = (String) obj.get("active");
@@ -313,7 +315,7 @@ public class TestAddUpdate extends BaseAction {
                 for( int i = 0; i < dictionaryArray.size(); i++){
                     DictionaryParams params = new DictionaryParams();
                     params.dictionaryId = (String)((JSONObject) dictionaryArray.get(i)).get("value");
-                    params.isQuantifiable = "Y".equals((String)((JSONObject) dictionaryArray.get(i)).get("qualified"));
+                    params.isQuantifiable = "Y".equals(((JSONObject) dictionaryArray.get(i)).get("qualified"));
                     testAddParams.dictionaryParamList.add(params);
                 }
             }
@@ -402,6 +404,7 @@ public class TestAddUpdate extends BaseAction {
         String testSectionId;
         ArrayList<String> panelList = new ArrayList<String>();
         String uomId;
+        String loinc;
         String resultTypeId;
         ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<SampleTypeListAndTestOrder>();
         String active;

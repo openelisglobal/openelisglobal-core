@@ -531,5 +531,15 @@
     	<put name="elementsBarCodes" value="/pages/barcode/elementsBarcodeConfig.jsp"/>
     	<put name="sizeBarCodes" value="/pages/barcode/sizeBarcodeConfig.jsp"/>
     </definition>
+    
+    
+    <definition name="externalConnectionsConfigMenuDefinition" extends="baseMenuDefinition">
+        <put name="body" value="externalConnectionsConfigMenuBody" />
+    </definition>
+    
+    <definition name="externalConnectionsConfigMenuBody"  path="/pages/menu/masterListsTab/masterListsPage.jsp">
+        <put name="left" value="/pages/menu/masterListsTab/masterListsPageLeft.jsp" />
+        <put name="right" value="/pages/externalconnections/connectionsAdminMenu.jsp" />
+    </definition>
 
 </tiles-definitions>

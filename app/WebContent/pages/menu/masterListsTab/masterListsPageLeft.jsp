@@ -15,7 +15,7 @@
 <%!String permissionBase = SystemConfiguration.getInstance()
 			.getPermissionAgent();
 	AdminFormFields adminFields = AdminFormFields.getInstance();
-	SiteInformation dataSubmission = (new SiteInformationDAOImpl()).getSiteInformationByName("Data Submission");%>
+%>
 <table cellpadding="0" cellspacing="1" width="100%" align="left">
 	<%--id is important for activating the menu tabs: see tabs.jsp from struts-menu for how masterListsSubMenu is used--%>
 	<%-- similar code will need to be added in the left panel and in tabs.jsp for any menu tab that has the submenu on the left hand side--%>
@@ -443,15 +443,6 @@
 		<%
 			}
 		%>
-		<%
-			if (adminFields.useField(Field.RESULT_REPORTING_CONFIGURATION)) {
-		%>
-		<li><html:link action="/ResultReportingConfiguration">
-				<bean:message key="resultreporting.browse.title" />
-			</html:link></li>
-		<%
-			}
-		%>
 		
 		<li><html:link action="/BarcodeConfiguration">
 				<bean:message key="barcodeconfiguration.browse.title" />
@@ -462,6 +453,16 @@
 		%>
 		<li><html:link action="/DataSubmission">
 				<bean:message key="datasubmission.browse.title" />
+		</html:link></li>
+		<%
+			}
+		%>
+		
+		<%
+			if (adminFields.useField(Field.ExternalConnections)) {
+		%>
+		<li><html:link action="/ExternalConnectionsConfigMenu">
+				<bean:message key="externalconnect.browse.title" />
 		</html:link></li>
 		<%
 			}

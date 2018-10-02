@@ -1947,6 +1947,11 @@
 				<bean:message key="label.none" />
 			</div>
 			<br />
+			<bean:message key="label.loinc" />
+			<div class="tab" id="loincRO">
+				<bean:message key="label.none" />
+			</div>
+			<br />
 			<bean:message key="result.resultType" />
 			<div class="tab" id="resultTypeRO"></div>
 			<br />

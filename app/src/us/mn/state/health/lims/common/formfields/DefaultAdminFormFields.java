@@ -35,6 +35,7 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.CountyMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.DictionaryMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.DictionaryCategoryMenu,  Boolean.FALSE);
+		defaultAttributes.put(Field.ExternalConnections,  Boolean.TRUE);
 		defaultAttributes.put(Field.LabelMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.MethodMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.OrganizationMenu,  Boolean.FALSE);
@@ -76,7 +77,7 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.SystemUserModuleMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.UnifiedSystemUserMenu,  Boolean.FALSE);
 		defaultAttributes.put(Field.TestUsageAggregatation, Boolean.FALSE);
-		defaultAttributes.put(Field.RESULT_REPORTING_CONFIGURATION, Boolean.FALSE);
+		defaultAttributes.put(Field.RESULT_REPORTING_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.PRINTED_REPORTS_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.WORKPLAN_CONFIGURATION, Boolean.TRUE);
 		defaultAttributes.put(Field.NON_CONFORMITY_CONFIGURATION, Boolean.TRUE);

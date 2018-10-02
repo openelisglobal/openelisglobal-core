@@ -17,7 +17,9 @@
     <changeSet author="csteele" id="2" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM clinlims.system_role WHERE name = 'Identifying Information Edit';
+                SELECT count(*) FROM clinlims.system_role_module
+				where system_module_id = (select "id" from clinlims.system_module where "name" = 'ElectronicOrderView')
+				and system_role_id = (SELECT "id" FROM clinlims.system_role WHERE "name" = 'Identifying Information Edit');
             </sqlCheck>
         </preConditions>
         <comment>Add permissions for ElectronicOrderView</comment>
@@ -30,7 +32,9 @@
     <changeSet author="csteele" id="3" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM clinlims.system_role WHERE name = 'Audit Trail';
+                SELECT count(*) FROM clinlims.system_role_module
+				where system_module_id = (select "id" from clinlims.system_module where "name" = 'ElectronicOrderView')
+				and system_role_id = (SELECT "id" FROM clinlims.system_role WHERE "name" = 'Audit Trail');
             </sqlCheck>
         </preConditions>
         <comment>Add permissions for ElectronicOrderView</comment>
@@ -43,7 +47,9 @@
     <changeSet author="csteele" id="4" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM clinlims.system_role WHERE name = 'Intake';
+                SELECT count(*) FROM clinlims.system_role_module
+				where system_module_id = (select "id" from clinlims.system_module where "name" = 'ElectronicOrderView')
+				and system_role_id = (SELECT "id" FROM clinlims.system_role WHERE "name" = 'Intake');
             </sqlCheck>
         </preConditions>
         <comment>Add permissions for ElectronicOrderView</comment>
@@ -56,7 +62,9 @@
     <changeSet author="csteele" id="5" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM clinlims.system_role WHERE name = 'Maintenance Admin';
+                SELECT count(*) FROM clinlims.system_role_module
+				where system_module_id = (select "id" from clinlims.system_module where "name" = 'ElectronicOrderView')
+				and system_role_id = (SELECT "id" FROM clinlims.system_role WHERE "name" = 'Maintenance Admin');
             </sqlCheck>
         </preConditions>
         <comment>Add permissions for ElectronicOrderView</comment>
@@ -69,7 +77,9 @@
     <changeSet author="csteele" id="6" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM clinlims.system_role WHERE name = 'Results entry';
+                SELECT count(*) FROM clinlims.system_role_module
+				where system_module_id = (select "id" from clinlims.system_module where "name" = 'ElectronicOrderView')
+				and system_role_id = (SELECT "id" FROM clinlims.system_role WHERE "name" = 'Results entry');
             </sqlCheck>
         </preConditions>
         <comment>Add permissions for ElectronicOrderView</comment>
@@ -82,7 +92,9 @@
     <changeSet author="csteele" id="7" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM clinlims.system_role WHERE name = 'Validator';
+                SELECT count(*) FROM clinlims.system_role_module
+				where system_module_id = (select "id" from clinlims.system_module where "name" = 'ElectronicOrderView')
+				and system_role_id = (SELECT "id" FROM clinlims.system_role WHERE "name" = 'Validator');
             </sqlCheck>
         </preConditions>
         <comment>Add permissions for ElectronicOrderView</comment>
@@ -95,7 +107,9 @@
     <changeSet author="csteele" id="8" context="ci_regional,ci_general">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM clinlims.system_role WHERE name = 'Results Admin';
+                SELECT count(*) FROM clinlims.system_role_module
+				where system_module_id = (select "id" from clinlims.system_module where "name" = 'ElectronicOrderView')
+				and system_role_id = (SELECT "id" FROM clinlims.system_role WHERE "name" = 'Results Admin');
             </sqlCheck>
         </preConditions>
         <comment>Add permissions for ElectronicOrderView</comment>
