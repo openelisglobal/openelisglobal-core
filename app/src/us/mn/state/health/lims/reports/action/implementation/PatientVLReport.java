@@ -121,7 +121,15 @@ public abstract class PatientVLReport extends RetroCIPatientReport {
 							double viralLoad = Double.parseDouble(baseValue);
 							data.setAmpli2lo(String.format("%.3g%n", Math.log10(viralLoad)));
 						}catch(NumberFormatException nfe){
-							data.setAmpli2lo("");
+							
+							if(data.getAmpli2().toLowerCase().contains("log")) {
+                                data.setAmpli2lo(data.getAmpli2());
+                                data.setAmpli2("");    
+                                
+                            }
+                            else
+                                data.setAmpli2lo("");
+
 						}
 					}
 					
