@@ -390,8 +390,25 @@ public class ConfigurationSideEffects {
 			Menu menuvalidationgeno= menuDAO.getMenuByElementId("menu_resultvalidation_genotyping");
 				if( menuvalidationgeno != null ){
 					menuvalidationgeno.setIsActive( active);
-					menuDAO.updateData(menuvalidationgeno); }		
+					menuDAO.updateData(menuvalidationgeno); }
 				
+				
+				//------csv export----	
+				
+				Menu menuvalidationExportGeneral= menuDAO.getMenuByElementId("menu_reports_export_general");
+				if( menuvalidationExportGeneral != null ){
+					menuvalidationExportGeneral.setIsActive( active);
+					menuDAO.updateData(menuvalidationExportGeneral); }	
+				
+				Menu menuvalidationExportSpecific= menuDAO.getMenuByElementId("menu_reports_export_specific");
+				if( menuvalidationExportSpecific != null ){
+					menuvalidationExportSpecific.setIsActive( active);
+					menuDAO.updateData(menuvalidationExportSpecific); }	
+				
+				Menu menuvalidationExportValid= menuDAO.getMenuByElementId("menu_reports_export_valid");
+				if( menuvalidationExportValid != null ){
+					menuvalidationExportValid.setIsActive( active);
+					menuDAO.updateData(menuvalidationExportValid); }	
 		
 			MenuUtil.forceRebuild();
 		}	

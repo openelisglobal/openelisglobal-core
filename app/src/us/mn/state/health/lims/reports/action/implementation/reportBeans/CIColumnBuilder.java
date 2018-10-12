@@ -162,7 +162,7 @@ appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
 
     protected void defineBasicColumns() {
         add("accession_number", "LABNO",    NONE);
-        add("status_id", "ECHSTAT", SAMPLE_STATUS);
+        add("status_id", "STATUT_ECH", SAMPLE_STATUS);
         add("national_id",      "SUJETNO",  NONE);
         add("project_id",        "ETUDE",    PROJECT );
         add("external_id",      "SUJETSIT", NONE);
@@ -172,8 +172,6 @@ appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
         add("organization_name", "NOM_SITE",  NONE);
         add("datim_org_code", "CODE_SITE_DATIM", NONE);
         add("datim_org_name", "NOM_SITE_DATIM",  NONE);
-       // add("last_name",        "NOM",      NONE);
-       // add("first_name",       "PRENOM",   NONE);
         add("gender",           "SEXE",     GENDER);
         add("birth_date",       "DATENAIS", DATE);
         add("collection_date",  "AGEANS",   AGE_YEARS); 

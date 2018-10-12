@@ -45,7 +45,7 @@ public class CI_GeneralFormFields implements IFormFieldsForImplementation {
 		settings.put(Field.OrganizationOrgId, Boolean.FALSE);
 		settings.put(Field.RequesterSiteList, Boolean.TRUE);
 		settings.put(Field.ADDRESS_CITY, Boolean.FALSE);
-		settings.put(Field.PatientRequired, Boolean.FALSE);
+		settings.put(Field.PatientRequired, Boolean.TRUE);
 		settings.put(Field.SampleCondition, Boolean.TRUE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST, Boolean.TRUE);
 		settings.put(Field.NON_CONFORMITY_SITE_LIST_USER_ADDABLE, Boolean.FALSE);

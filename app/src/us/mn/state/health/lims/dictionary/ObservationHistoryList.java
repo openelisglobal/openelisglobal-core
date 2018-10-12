@@ -48,6 +48,7 @@ public enum ObservationHistoryList {
 	YES_NO_UNKNOWN_NA_NOTSPEC(YES_NO_UNKNOWN_NA, "NotSpeced", true),
 	AIDS_STAGES("AIDS Stages"),
 	HIV_STATUSES("HIVResult"),
+	//HIV_STATUSES("HIVStatus"),
 	
 	ARV_DISEASES("ARV Disease", false),
 	ARV_DISEASES_SHORT(ARV_DISEASES, "DiarrheaC", false), /* same as ARV_DISEASES minus diarrhea */
