@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="1395"/>
+	<property name="ireport.y" value="162"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -143,8 +143,10 @@
 				<reportElement x="352" y="223" width="155" height="20"/>
 			</rectangle>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-20" x="119" y="113" width="368" height="15" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
-				<textElement/>
+				<reportElement key="textField-20" x="129" y="113" width="351" height="15" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{virologyVlQaEvent} == null ? "Normal" :  $F{virologyVlQaEvent}]]></textFieldExpression>
 			</textField>
 			<image onErrorType="Blank">
@@ -156,14 +158,14 @@
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "ciphiaLogo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="7" y="81" width="89" height="15"/>
+				<reportElement x="7" y="81" width="122" height="15"/>
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Type d’Examen : ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="7" y="97" width="115" height="15"/>
+				<reportElement x="7" y="97" width="122" height="15"/>
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
@@ -178,45 +180,52 @@
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="7" y="113" width="115" height="15"/>
+				<reportElement x="7" y="113" width="122" height="15"/>
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Etat de l’échantillon :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="7" y="129" width="115" height="15"/>
+				<reportElement x="7" y="129" width="122" height="15"/>
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Analyseur :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="7" y="148" width="115" height="15"/>
+				<reportElement x="7" y="148" width="122" height="15"/>
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Trousse commerciale:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="119" y="148" width="416" height="27"/>
-				<textElement/>
-				<text><![CDATA[COBAS Taqman/Ampliprep  HIV-1 tests,V2.0 Quantitative  (HI2CAP)/ COBAS 6800/8800
-HIV-1 P/N]]></text>
+				<reportElement x="129" y="148" width="423" height="15"/>
+				<textElement>
+					<font size="9" isItalic="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[COBAS Taqman / Ampliprep  HIV-1 tests,V2.0 Quantitative  (HI2CAP) / ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="119" y="129" width="356" height="15"/>
-				<textElement/>
-				<text><![CDATA[Cobas Ampliprep/Cobas Taqman Series/Cobas 6800 Roche Diagnostic]]></text>
+				<reportElement x="129" y="129" width="339" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Cobas Ampliprep / Cobas Taqman Series / Cobas 6800 Roche Diagnostic]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="119" y="97" width="301" height="15"/>
-				<textElement/>
+				<reportElement x="129" y="97" width="284" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<text><![CDATA[Sang total (plasma/EDTA) ; (Papier Buvard WHATMAN 903)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="119" y="81" width="431" height="15"/>
-				<textElement/>
+				<reportElement x="129" y="81" width="423" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<text><![CDATA[Recherche de l’ARN du virus HIV-1 par amplification génétique (PCR) et par quantification ]]></text>
 			</staticText>
 			<rectangle>
@@ -289,6 +298,13 @@ HIV-1 P/N]]></text>
 				<reportElement x="5" y="293" width="189" height="20"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "INTERPRETATIONS.jpg"]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="129" y="163" width="423" height="13"/>
+				<textElement>
+					<font size="9" isItalic="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[COBAS 6800/8800 HIV-1 P/N]]></text>
+			</staticText>
 		</band>
 		<band height="472">
 			<printWhenExpression><![CDATA[$F{virologyVlQaEvent}!=null]]></printWhenExpression>
@@ -902,7 +918,7 @@ HIV-1 P/N]]></text>
 				<text><![CDATA[Seuil de détection de la technique (Tube EDTA): 20 copies /mL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="12" y="59" width="534" height="19"/>
+				<reportElement x="12" y="60" width="534" height="19"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
@@ -913,7 +929,7 @@ HIV-1 P/N]]></text>
 				<imageExpression class="java.lang.String"><![CDATA[$P{imagesPath}+ "RefVal.jpg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="12" y="46" width="534" height="19"/>
+				<reportElement x="12" y="42" width="534" height="19"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>

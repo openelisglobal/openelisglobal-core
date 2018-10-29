@@ -67,7 +67,7 @@ public class ExportStudyProjectByDate extends CSVSampleExportReport implements I
 
 	protected String getReportNameForParameterPage() {
 		return StringUtil.getMessageForKey("reports.label.project.export") + " "
-				+ StringUtil.getContextualMessageForKey("sample.collectionDate");
+				+ StringUtil.getContextualMessageForKey("sample.EnteredDate");
 	}
 
 	protected void createReportParameters() {

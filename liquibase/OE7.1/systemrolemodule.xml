@@ -5,7 +5,7 @@
   <changeSet author="csteele" id="1" runAlways="true">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">
-        select count(*) from clinlims.system_role_module where system_module_id= '1800';
+        select count(*) from clinlims.system_role_module where id= '1800';
       </sqlCheck>
     </preConditions>
     <comment>Insert in clinlims new system role module</comment>
@@ -28,7 +28,7 @@
   <changeSet author="csteele" id="2" runAlways="true" >
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">
-        select count(*) from clinlims.system_role_module where system_module_id= '1804';
+        select count(*) from clinlims.system_role_module where id= '1804';
       </sqlCheck>
     </preConditions>
     <comment>Fix role responsibilities for Test Management Role</comment>
@@ -58,7 +58,7 @@
   <changeSet author="csteele" id="3" runAlways="true">
     <preConditions onFail="MARK_RAN">
       <sqlCheck expectedResult="0">
-        select count(*) from clinlims.system_role_module where system_module_id= '1809';
+        select count(*) from clinlims.system_role_module where id= '1809';
       </sqlCheck>
     </preConditions>
     <comment>Fix more role responsibilities for Test Management Role</comment>

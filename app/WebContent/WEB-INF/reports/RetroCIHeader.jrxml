@@ -62,10 +62,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 21 24 09 24 / email. cieba@aviso.ci]]></text>
+				<text><![CDATA[TEL: 21 24 09 24 / email: cirba@aviso.ci]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement key="textField-2" x="441" y="81" width="109" height="30"/>
+				<reportElement key="textField-2" x="441" y="81" width="109" height="17"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
