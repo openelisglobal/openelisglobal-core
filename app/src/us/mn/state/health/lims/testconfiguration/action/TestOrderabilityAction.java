@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -61,7 +62,20 @@ public class TestOrderabilityAction extends BaseAction {
             Collections.sort(tests, new Comparator<Test>() {
                 @Override
                 public int compare(Test o1, Test o2) {
-                    return Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
+                	//compare sort order
+                	if (NumberUtils.isNumber(o1.getSortOrder()) && NumberUtils.isNumber(o2.getSortOrder())) {
+                		return Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
+                    //if o2 has no sort order o1 does, o2 is assumed to be higher
+                	} else if (NumberUtils.isNumber(o1.getSortOrder())){
+                    	return -1;
+                    //if o1 has no sort order o2 does, o1 is assumed to be higher
+                    } else if (NumberUtils.isNumber(o2.getSortOrder())) {
+                    	return 1;
+                    //else they are considered equal
+                    } else {
+                    	return 0;
+                    }
+                    
                 }
             });
 
