@@ -17,6 +17,7 @@ package us.mn.state.health.lims.testconfiguration.action;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -105,7 +106,9 @@ public class TestModifyAction extends BaseAction {
             bean.setFrenchName(test.getLocalizedTestName().getFrench());
             bean.setEnglishReportName(test.getLocalizedReportingName().getEnglish());
             bean.setFrenchReportName(test.getLocalizedReportingName().getFrench());
-            bean.setTestSortOrder(Integer.parseInt(test.getSortOrder()));
+            if (NumberUtils.isNumber(test.getSortOrder())) {
+            	bean.setTestSortOrder(Integer.parseInt(test.getSortOrder()));
+            }
             bean.setTestUnit(testService.getTestSectionName());
             bean.setPanel(createPanelList(testService));
             bean.setResultType(resultType);

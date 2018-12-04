@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -87,7 +88,9 @@ public class TestCatalogAction extends BaseAction {
             bean.setFrenchName(test.getLocalizedTestName().getFrench());
             bean.setEnglishReportName(test.getLocalizedReportingName().getEnglish());
             bean.setFrenchReportName(test.getLocalizedReportingName().getFrench());
-            bean.setTestSortOrder(Integer.parseInt(test.getSortOrder()));
+            if (NumberUtils.isNumber(test.getSortOrder())) {
+            	bean.setTestSortOrder(Integer.parseInt(test.getSortOrder()));
+            }
             bean.setTestUnit(testService.getTestSectionName());
             bean.setPanel(createPanelList(testService));
             bean.setResultType(resultType);

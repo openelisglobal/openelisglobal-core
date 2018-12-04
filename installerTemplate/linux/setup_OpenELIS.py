@@ -79,7 +79,7 @@ def install_crosstab():
     # if tablefunc.so is not present in POSTGRES_LIB_DIR then copy it from CROSSTAB_DIR
     # the version in CROSSTAB_DIR is for 8.3 (assumes all new installs will be VM based)
     #if not os.path.exists(POSTGRES_LIB_DIR + "tablefunc.so") and "8.3" in POSTGRES_LIB_DIR:
-		if not os.path.exists(POSTGRES_LIB_DIR + "tablefunc.so"):
+    if not os.path.exists(POSTGRES_LIB_DIR + "tablefunc.so"):
         # copy the lib file to the lib directory
         shutil.copy(CROSSTAB_DIR + "tablefunc.so", POSTGRES_LIB_DIR)
         # run the installer

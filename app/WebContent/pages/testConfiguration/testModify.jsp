@@ -1349,7 +1349,9 @@
                 	dictionary.qualified = "N";
                 	jsonObj.dictionary[i] = dictionary;
         		}
-            	
+            	if (referenceId == "null") {
+            		referenceId = null;
+            	}
             	jsonObj.dictionaryReference = referenceId;
         	}
         }
@@ -1944,6 +1946,11 @@
 			<br />
 			<bean:message key="label.unitofmeasure" />
 			<div class="tab" id="uomRO">
+				<bean:message key="label.none" />
+			</div>
+			<br />
+			<bean:message key="label.loinc" />
+			<div class="tab" id="loincRO">
 				<bean:message key="label.none" />
 			</div>
 			<br />

@@ -1008,7 +1008,13 @@
 		
 		<form-bean name="uomManagementForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
 		<!-- blank form to ensure page has a name -->
-		</form-bean>		
+		</form-bean>
+    
+        <form-bean name="ExternalConnectionsConfigForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
+            <form-property name="lastupdated" type="java.lang.String" />
+            <form-property name="menuList" type="java.util.List" />
+			<form-property name="selectedIDs" type="java.lang.String[]" />
+        </form-bean>		
 
 	</form-beans>
 
@@ -2178,6 +2184,11 @@
 			<forward name="success" path="/BarcodeConfiguration.do" />
 			<forward name="fail" path="/BarcodeConfiguration.do" />
 		</action>
+        
+        <action path="/ExternalConnectionsConfigMenu" name="ExternalConnectionsConfigForm" type="us.mn.state.health.lims.externalconnections.action.ExternalConnectionsAction" >
+            <forward name="success" path="externalConnectionsConfigMenuDefinition" />
+            <forward name="fail" path="/MasterListsPage.do" redirect="true" />
+        </action>
 		
 	</action-mappings>
 </struts-config>
