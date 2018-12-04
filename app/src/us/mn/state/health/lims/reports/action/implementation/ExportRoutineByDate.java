@@ -180,21 +180,5 @@ public class ExportRoutineByDate extends CSVRoutineSampleExportReport implements
 	/**
 	 * @return a list of the correct projects for display
 	 */
-	/*protected List<Project> getProjectList() {
-		List<Project> projects = new ArrayList<Project>();
-		Project project = new Project();
-		project.setProjectName("Antiretroviral Study");
-		projects.add(projectDAO.getProjectByName(project, false, false));
-		project.setProjectName("Antiretroviral Followup Study");
-		projects.add(projectDAO.getProjectByName(project, false, false));
-		project.setProjectName("Routine HIV Testing");
-		projects.add(projectDAO.getProjectByName(project, false, false));
-		project.setProjectName("Early Infant Diagnosis for HIV Study");
-		projects.add(projectDAO.getProjectByName(project, false, false));
-		project.setProjectName("Viral Load Results");
-		projects.add(projectDAO.getProjectByName(project, false, false));
-		project.setProjectName("Indeterminate Results");
-		projects.add(projectDAO.getProjectByName(project, false, false));
-		return projects;
-	}*/
+	
 }

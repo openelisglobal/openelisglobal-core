@@ -37,6 +37,7 @@ import us.mn.state.health.lims.analyte.dao.AnalyteDAO;
 import us.mn.state.health.lims.analyte.daoimpl.AnalyteDAOImpl;
 import us.mn.state.health.lims.analyte.valueholder.Analyte;
 import us.mn.state.health.lims.common.services.StatusService;
+import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.OrderStatus;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.services.TypeOfTestResultService;
@@ -192,6 +193,7 @@ abstract public class CSVColumnBuilder {
         TEST_RESULT,
         GEND_CD4,
         SAMPLE_STATUS,
+        ANALYSIS_STATUS,
         PROJECT,
         LOG,        // results is a real number, but display the log of it.
         AGE_YEARS,
@@ -347,14 +349,38 @@ abstract public class CSVColumnBuilder {
 					return "?";
 				switch (orderStatus) {
 				case Entered:
-					return "E"; // entered, entr�e
+					return "Saisie"; // entered, entr�e
 				case Started:
-					return "C"; // commenced, commenc�
+					return "En Cours"; // commenced, commenc�
 				case Finished:
-					return "F"; // Finished, Finale
+					return "Fini"; // Finished, Finale
 				case NonConforming_depricated:
-					return "N"; // Non-conforming, Non-conformes
+					return "Non Conforme"; // Non-conforming, Non-conformes
 				}
+				
+			case ANALYSIS_STATUS:
+				AnalysisStatus analysisStatus = StatusService.getInstance().getAnalysisStatusForID(value);
+				if (analysisStatus == null)
+					return "?";
+				switch (analysisStatus) {
+				case NotStarted:
+					return "Not_Started"; // entered, entr�e
+				case Canceled:
+					return "Canceled"; // commenced, commenc�
+				case TechnicalAcceptance:
+					return "Validation_Technique"; // Finished, Finale
+				case TechnicalRejected:
+					return "Rejet - Technique"; // Non-conforming, Non-conformes
+				case BiologistRejected:
+					return "Rejet - Biologie"; // entered, entr�e
+				case NonConforming_depricated:
+					return "Non Conforme"; // commenced, commenc�
+				case Finalized:
+					return "Validation_Biologique"; // Finished, Finale
+				
+				
+				}
+				
 			case PROJECT:
 				return translateProjectId(value);
 			case DEBUG:

@@ -18,6 +18,9 @@ import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.TestService;
 import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.common.util.StringUtil;
+import us.mn.state.health.lims.observationhistory.dao.ObservationHistoryDAO;
+import us.mn.state.health.lims.observationhistory.daoimpl.ObservationHistoryDAOImpl;
+import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 import us.mn.state.health.lims.reports.action.implementation.reportBeans.VLReportData;
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
@@ -118,7 +121,15 @@ public abstract class PatientVLReport extends RetroCIPatientReport {
 							double viralLoad = Double.parseDouble(baseValue);
 							data.setAmpli2lo(String.format("%.3g%n", Math.log10(viralLoad)));
 						}catch(NumberFormatException nfe){
-							data.setAmpli2lo("");
+							
+							if(data.getAmpli2().toLowerCase().contains("log")) {
+                                data.setAmpli2lo(data.getAmpli2());
+                                data.setAmpli2("");    
+                                
+                            }
+                            else
+                                data.setAmpli2lo("");
+
 						}
 					}
 					
@@ -140,11 +151,21 @@ public abstract class PatientVLReport extends RetroCIPatientReport {
 		data.setStatus(atLeastOneAnalysisNotValidated ? StringUtil.getMessageForKey("report.status.partial") : StringUtil
 				.getMessageForKey("report.status.complete"));
 	}
+	
+
+	
+	
+
+	
 
 	protected void setPatientInfo(VLReportData data) {
-
+		
 		SampleOrganizationDAO orgDAO = new SampleOrganizationDAOImpl();
-
+		ObservationHistoryDAO oh = new ObservationHistoryDAOImpl();
+		ObservationHistory listhistory = oh.getObservationHistoriesBySampleIdAndType(reportSample.getId(), "135");
+		
+		
+		data.setvlPregnancy("non");
 		data.setSubjectno(reportPatient.getNationalId());
 		data.setSitesubjectno(reportPatient.getExternalId());
 		data.setBirth_date(reportPatient.getBirthDateForDisplay());

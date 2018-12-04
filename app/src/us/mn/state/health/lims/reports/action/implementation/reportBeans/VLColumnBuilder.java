@@ -60,7 +60,7 @@ public class VLColumnBuilder extends CIColumnBuilder {
         add("currentARVTreatmentINNs3", "CURRENT3",NONE );
         add("currentARVTreatmentINNs4", "CURRENT4",NONE );
         
-       // add("currentARVTreatment"           , "CURRENT_ART", DICT_RAW );
+     // add("currentARVTreatment"           , "CURRENT_ART", DICT_RAW );
      // add("vlReasonForRequest"         , "VL_REASON" );
         add("currentARVTreatment"           , "CURRENT_ART" );
         add("vlReasonForRequest"         , "VL_REASON", DICT_RAW );
@@ -95,6 +95,8 @@ public class VLColumnBuilder extends CIColumnBuilder {
 
 	public void makeSQL() {
 		String validStatusId = StatusService.getInstance().getStatusID(StatusService.AnalysisStatus.Finalized);
+		//String validStatusId2 = StatusService.getInstance().getStatusID(StatusService.AnalysisStatus.NotStarted);
+		
 		Test test = (Test)new TestDAOImpl().getActiveTestByName("Viral Load").get(0);
 		query = new StringBuilder();
 	    String lowDatePostgres =  postgresDateFormat.format(dateRange.getLowDate());
@@ -106,7 +108,8 @@ public class VLColumnBuilder extends CIColumnBuilder {
 	    // ordinary lab (sample and patient) tables
 	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +
 	    		", clinlims.sample_item as si, clinlims.analysis as a, clinlims.result as r ");
-	
+	  
+	 	//---------------------------
 	    // all observation history values
 	    appendObservationHistoryCrosstab(lowDatePostgres, highDatePostgres);
 	    // current ARV treatments
@@ -117,8 +120,8 @@ public class VLColumnBuilder extends CIColumnBuilder {
 	    // and finally the join that puts these all together. Each cross table should be listed here otherwise it's not in the result and you'll get a full join
 	    query.append( " WHERE "             
 	    + "\n a.test_id =" + test.getId()
-	    + (( validStatusId == null )?"":
-            " AND a.status_id = " + validStatusId)
+	   + (( validStatusId == null )?"":
+        " AND a.status_id = " + validStatusId)
 	    + "\n AND a.id=r.analysis_id"
 	    + "\n AND a.sampitem_id = si.id" 
 	    + "\n AND s.id = si.samp_id"
@@ -131,12 +134,14 @@ public class VLColumnBuilder extends CIColumnBuilder {
 	    + "\n AND s.id=demo.s_id"
 	    + "\n AND s.id = currentARVTreatmentINNs.samp_id"
 	    + "\n AND s.collection_date >= date('" + lowDatePostgres + "')" 
-	    + "\n AND s.collection_date <= date('" + highDatePostgres + "')"
+	    + "\n AND s.collection_date <= date('" + highDatePostgres + "')" 
+//--------------	    
+	   
+            
 	    
 	    + "\n ORDER BY s.accession_number;");
 	    /////////
 	    // no don't insert another crosstab or table here, go up before the main WHERE clause
-	
 	    return;
 	}
 

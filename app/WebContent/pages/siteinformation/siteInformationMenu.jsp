@@ -45,12 +45,13 @@
 	   		<% if( site.getValueType().equals("logoUpload")){ %>
 	   		<td class="textcontent">
                 <% if( site.getName().equals("headerLeftImage")){ %>
-                <img src="./images/leftLabLogo.jpg?ver=<%= Math.random() %>">  
+                <img src="./images/leftLabLogo.jpg?ver=<%= Math.random() %>" height="42" 
+	   		         width="42"  />  
                 <%}else{%>
-                <img src="./images/rightLabLogo.jpg?ver=<%= Math.random() %>">  
+                <img src="./images/rightLabLogo.jpg?ver=<%= Math.random() %>" height="42" 
+	   		         width="42"  /> 
                 <%}%>
-	   		         height="42" 
-	   		         width="42"  />
+	   		         
 	   		</td>
 	   		<% }else if("localization".equals(site.getTag())){
                 Localization localization = localizationDAO.getLocalizationById( site.getValue() );
