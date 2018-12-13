@@ -28,8 +28,8 @@
         </id>
 
         <version name="lastupdated" column="LASTUPDATED" type="timestamp" access="field"/>
-        <property name="description" column="description" type="java.lang.String" />
-        <property name="english" column="english" type="java.lang.String" />
-        <property name="french" column="french" type="java.lang.String" />
+        <property name="description" column="description" type="java.lang.String" lazy="false"/>
+        <property name="english" column="english" type="java.lang.String" lazy="false"/>
+        <property name="french" column="french" type="java.lang.String" lazy="false"/>
     </class>
 </hibernate-mapping>
