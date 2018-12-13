@@ -52,7 +52,8 @@ public abstract class IndicatorReport extends Report {
 		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
             reportParameters.put("headerName", "CILNSPHeader.jasper");
         }else{
-            reportParameters.put("headerName", "GeneralHeader.jasper");
+        	//reportParameters.put("headerName", getResponseHeaderName());
+        	        	reportParameters.put("headerName", "CILNSPHeader.jasper");
         }
 	}
 	

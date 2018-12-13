@@ -105,6 +105,7 @@ public abstract class Report implements IReportCreator {
 		reportParameters.put("localization", createLocalizationMap());
 		//reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
 		//reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
+		
 		reportParameters.put("REPORT_LOCALE", SystemConfiguration.getInstance()
 				.getDefaultLocale());
 	}

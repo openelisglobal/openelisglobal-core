@@ -98,7 +98,8 @@ public class DisplayListService implements LocaleChangeListener {
         UNIT_OF_MEASURE,
         UNIT_OF_MEASURE_ACTIVE,
         UNIT_OF_MEASURE_INACTIVE,
-        DICTIONARY_TEST_RESULTS
+        DICTIONARY_TEST_RESULTS,
+        DICTIONARY_HIV_STATUS
 	}
 
 	private static Map<ListType, List<IdValuePair>> typeToListMap = new HashMap<ListType, List<IdValuePair>>();
@@ -140,6 +141,7 @@ public class DisplayListService implements LocaleChangeListener {
         typeToListMap.put(ListType.UNIT_OF_MEASURE_ACTIVE, createUOMList());
         typeToListMap.put(ListType.UNIT_OF_MEASURE_INACTIVE, createUOMList());
         typeToListMap.put(ListType.DICTIONARY_TEST_RESULTS, createDictionaryTestResults());
+     //   typeToListMap.put(ListType.DICTIONARY_HIV_STATUS, createDictionaryHivStatus());
 
         SystemConfiguration.getInstance().addLocalChangeListener(instance);
 	}
@@ -162,7 +164,22 @@ public class DisplayListService implements LocaleChangeListener {
         return testResults;
     }
 
-
+/*
+    private static List<IdValuePair> createDictionaryHivStatus() {
+        List<IdValuePair> hivStatus = createFromDictionaryCategoryLocalizedSort("HIVResult");
+        hivStatus.addAll(createFromDictionaryCategoryLocalizedSort("HIVResult"));
+        Collections.sort(hivStatus, new Comparator<IdValuePair>() {
+            @Override
+            public int compare(IdValuePair o1, IdValuePair o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+        return hivStatus;
+    }   */
+    
+    
+    
+    
     @Override
     public void localeChanged(String locale) {
         //refreshes those lists which are dependent on local

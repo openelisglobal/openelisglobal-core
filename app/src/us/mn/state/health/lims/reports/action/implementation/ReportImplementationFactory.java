@@ -66,8 +66,10 @@ public class ReportImplementationFactory{
 				return new IndicatorAllTestLNSP();
 			}else if(report.equals("CISampleExport")){
 				return new ExportProjectByDate();
-			}else if(report.equals("ForCIDashboard")){
-					return new ForCIDashboard();
+			}else if(report.equals("Trends")){
+					return new ExportTrendsByDate();
+			}else if(report.equals("CIStudyExport")){
+				return new ExportStudyProjectByDate();
 			}else if(report.equals("CISampleRoutineExport")){
 				return new ExportRoutineByDate();
 			}else if(report.equals("referredOut")){
@@ -174,10 +176,12 @@ public class ReportImplementationFactory{
 			}else if(report.equals("CISampleExport")){
 			return new ExportProjectByDate();
 			}
-			else if(report.equals("ForCIDashboard")){
-				return new ForCIDashboard();
+			else if(report.equals("Trends")){
+				return new ExportTrendsByDate();
 				}
-			
+			else if(report.equals("CIStudyExport")){
+				return new ExportStudyProjectByDate();
+				}
 			else if(report.equals("CISampleRoutineExport")){
 				return new ExportRoutineByDate();
 			}else if(report.equals("referredOut")){

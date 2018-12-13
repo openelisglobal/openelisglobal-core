@@ -79,7 +79,7 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 		observationType = observationTypeDAO.getByName("whichPCR");
 		OBSERVATION_WHICH_PCR_ID = observationType.getId();
 		observationType = observationTypeDAO.getByName("underInvestigation");
-		OBSERVATION_UNDER_INVESTIGATION_ID = observationType.getId(); 
+		OBSERVATION_UNDER_INVESTIGATION_ID = observationType.getId();
 		
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
 		Analyte analyte = new Analyte();

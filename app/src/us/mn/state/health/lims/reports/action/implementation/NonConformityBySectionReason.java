@@ -49,7 +49,8 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
         if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
 			reportParameters.put("headerName", "CILNSPHeader.jasper");	
 		} else {
-			reportParameters.put("headerName", getHeaderName());
+			//reportParameters.put("headerName", getHeaderName());
+			reportParameters.put("headerName", "CILNSPHeader.jasper");
 		}
     }
 

@@ -76,7 +76,8 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
 		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.configurationName, "CI LNSP")){
 			reportParameters.put("headerName", "CILNSPHeader.jasper");	
 		} else {
-			reportParameters.put("headerName", getHeaderName());
+			//reportParameters.put("headerName", getHeaderName());
+			reportParameters.put("headerName", "CILNSPHeader.jasper");
 		}
 	}
 	
