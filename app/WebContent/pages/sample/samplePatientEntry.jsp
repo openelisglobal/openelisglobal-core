@@ -460,6 +460,15 @@ function parseRequester(requester) {
             $("providerWorkPhoneID").value = phone;
         }
     }
+
+    var siteId = requester.item(0).getElementsByTagName("siteId");
+    var siteName = requester.item(0).getElementsByTagName("siteName");
+    if (siteId.length > 0) {
+    	$jq("#requesterId").val(siteId[0].firstChild.nodeValue);
+    }
+    if (siteName.length > 0) {
+    	$jq("#comboboxID").val(siteName[0].firstChild.nodeValue);
+    }
     
     
     

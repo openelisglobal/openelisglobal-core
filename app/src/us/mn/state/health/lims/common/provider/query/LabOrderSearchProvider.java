@@ -36,7 +36,9 @@ import ca.uhn.hl7v2.model.v251.group.OML_O21_ORDER_PRIOR;
 import ca.uhn.hl7v2.model.v251.message.OML_O21;
 import ca.uhn.hl7v2.model.v251.segment.OBX;
 import ca.uhn.hl7v2.model.v251.segment.ORC;
+import ca.uhn.hl7v2.model.v251.segment.PID;
 import ca.uhn.hl7v2.parser.Parser;
+import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.ExternalOrderStatus;
@@ -45,6 +47,8 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.common.util.XMLUtil;
 import us.mn.state.health.lims.dataexchange.order.daoimpl.ElectronicOrderDAOImpl;
 import us.mn.state.health.lims.dataexchange.order.valueholder.ElectronicOrder;
+import us.mn.state.health.lims.organization.dao.OrganizationDAO;
+import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
@@ -74,6 +78,8 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 	private static final String PROVIDER_FIRST_NAME = "firstName";
 	private static final String PROVIDER_LAST_NAME = "lastName";
 	private static final String PROVIDER_PHONE = "phone";
+	private static final String REFERRING_SITE_ID = "siteId";
+	private static final String REFERRING_SITE_NAME = "siteName";
 
 	@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
@@ -151,6 +157,8 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 		XMLUtil.appendKeyValue(PROVIDER_FIRST_NAME, requesterValuesMap.get(PROVIDER_FIRST_NAME), xml);
 		XMLUtil.appendKeyValue(PROVIDER_LAST_NAME, requesterValuesMap.get(PROVIDER_LAST_NAME), xml);
 		XMLUtil.appendKeyValue(PROVIDER_PHONE, requesterValuesMap.get(PROVIDER_PHONE), xml);
+		XMLUtil.appendKeyValue(REFERRING_SITE_ID, requesterValuesMap.get(REFERRING_SITE_ID), xml);
+		XMLUtil.appendKeyValue(REFERRING_SITE_NAME, requesterValuesMap.get(REFERRING_SITE_NAME), xml);
 		xml.append("</requester>");
 	}
 
@@ -159,12 +167,23 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 		Parser p = context.getGenericParser();
 		try{
 			OML_O21 hapiMsg = (OML_O21)p.parse(orderMessage);
-
+			
+			PID patientSegment = hapiMsg.getPATIENT().getPID();
 			ORC commonOrderSegment = hapiMsg.getORDER().getORC();
 			
 			requesterValuesMap.put(PROVIDER_PHONE, commonOrderSegment.getCallBackPhoneNumber(0).getXtn12_UnformattedTelephoneNumber().getValue());
 			requesterValuesMap.put(PROVIDER_LAST_NAME, commonOrderSegment.getOrderingProvider(0).getFamilyName().getSurname().getValue());
 			requesterValuesMap.put(PROVIDER_FIRST_NAME, commonOrderSegment.getOrderingProvider(0).getGivenName().getValue());
+
+			String siteId = patientSegment.getPid2_PatientID().getCx6_AssigningFacility().getHd1_NamespaceID().getValue();
+			requesterValuesMap.put(REFERRING_SITE_ID, siteId);
+			
+			OrganizationDAO organizationDAO = new OrganizationDAOImpl();
+			try {
+				requesterValuesMap.put(REFERRING_SITE_NAME, organizationDAO.getOrganizationById(siteId).getOrganizationName());
+			} catch (LIMSRuntimeException e) {
+				e.printStackTrace();
+			}
 			
 			
 			OML_O21_OBSERVATION_REQUEST orderRequest = hapiMsg.getORDER().getOBSERVATION_REQUEST();

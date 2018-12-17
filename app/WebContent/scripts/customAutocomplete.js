@@ -1,4 +1,4 @@
-var autoCompId = ""; // the id for the autocomplete widget. This should be changed in scope and passed in with the constructor
+var autoCompId = "comboboxID"; // the id for the autocomplete widget. This should be changed in scope and passed in with the constructor
 var clearNonMatching = true;
 var capitialize = false;
 var resultCallBack = null; // the callback for onchange
