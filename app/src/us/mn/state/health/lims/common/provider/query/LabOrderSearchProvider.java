@@ -49,6 +49,7 @@ import us.mn.state.health.lims.dataexchange.order.daoimpl.ElectronicOrderDAOImpl
 import us.mn.state.health.lims.dataexchange.order.valueholder.ElectronicOrder;
 import us.mn.state.health.lims.organization.dao.OrganizationDAO;
 import us.mn.state.health.lims.organization.daoimpl.OrganizationDAOImpl;
+import us.mn.state.health.lims.organization.valueholder.Organization;
 import us.mn.state.health.lims.panel.dao.PanelDAO;
 import us.mn.state.health.lims.panel.daoimpl.PanelDAOImpl;
 import us.mn.state.health.lims.panel.valueholder.Panel;
@@ -78,6 +79,7 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 	private static final String PROVIDER_FIRST_NAME = "firstName";
 	private static final String PROVIDER_LAST_NAME = "lastName";
 	private static final String PROVIDER_PHONE = "phone";
+	private static final String PROVIDER_ID = "userId";
 	private static final String REFERRING_SITE_ID = "siteId";
 	private static final String REFERRING_SITE_NAME = "siteName";
 
@@ -157,6 +159,7 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 		XMLUtil.appendKeyValue(PROVIDER_FIRST_NAME, requesterValuesMap.get(PROVIDER_FIRST_NAME), xml);
 		XMLUtil.appendKeyValue(PROVIDER_LAST_NAME, requesterValuesMap.get(PROVIDER_LAST_NAME), xml);
 		XMLUtil.appendKeyValue(PROVIDER_PHONE, requesterValuesMap.get(PROVIDER_PHONE), xml);
+		XMLUtil.appendKeyValue(PROVIDER_ID, requesterValuesMap.get(PROVIDER_ID), xml);
 		XMLUtil.appendKeyValue(REFERRING_SITE_ID, requesterValuesMap.get(REFERRING_SITE_ID), xml);
 		XMLUtil.appendKeyValue(REFERRING_SITE_NAME, requesterValuesMap.get(REFERRING_SITE_NAME), xml);
 		xml.append("</requester>");
@@ -174,16 +177,20 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 			requesterValuesMap.put(PROVIDER_PHONE, commonOrderSegment.getCallBackPhoneNumber(0).getXtn12_UnformattedTelephoneNumber().getValue());
 			requesterValuesMap.put(PROVIDER_LAST_NAME, commonOrderSegment.getOrderingProvider(0).getFamilyName().getSurname().getValue());
 			requesterValuesMap.put(PROVIDER_FIRST_NAME, commonOrderSegment.getOrderingProvider(0).getGivenName().getValue());
+			requesterValuesMap.put(PROVIDER_ID, commonOrderSegment.getOrc2_PlacerOrderNumber().getEi1_EntityIdentifier().getValue());
 
 			String siteId = patientSegment.getPid2_PatientID().getCx6_AssigningFacility().getHd1_NamespaceID().getValue();
 			requesterValuesMap.put(REFERRING_SITE_ID, siteId);
 			
 			OrganizationDAO organizationDAO = new OrganizationDAOImpl();
 			try {
-				requesterValuesMap.put(REFERRING_SITE_NAME, organizationDAO.getOrganizationById(siteId).getOrganizationName());
+				Organization org = organizationDAO.getOrganizationById(siteId);
+				if (org != null) {
+					requesterValuesMap.put(REFERRING_SITE_NAME, org.getOrganizationName());
+				}
 			} catch (LIMSRuntimeException e) {
 				e.printStackTrace();
-			}
+			} 
 			
 			
 			OML_O21_OBSERVATION_REQUEST orderRequest = hapiMsg.getORDER().getOBSERVATION_REQUEST();
