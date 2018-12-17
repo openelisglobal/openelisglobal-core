@@ -439,6 +439,7 @@ function clearRequester() {
 }
 
 function parseRequester(requester) {
+	var defaultSiteName = "local EMR Link"
     var firstName = requester.item(0).getElementsByTagName("firstName");
     var first = "";
     if (firstName.length > 0) {
@@ -450,6 +451,10 @@ function parseRequester(requester) {
     if (lastName.length > 0) {
             last = lastName[0].firstChild.nodeValue;
             $("providerLastNameID").value = last;    
+    } else if ( requester.item(0).getElementsByTagName("userId")) {
+    	$jq('#providerLastNameID').val(requester.item(0).getElementsByTagName("userId")[0].firstChild.nodeValue);
+    } else {
+    	$jq('#providerLastNameID').val("---");
     }
     
     var phoneNum = requester.item(0).getElementsByTagName("providerWorkPhoneID");
@@ -468,6 +473,8 @@ function parseRequester(requester) {
     }
     if (siteName.length > 0) {
     	$jq("#comboboxID").val(siteName[0].firstChild.nodeValue);
+    } else {
+    	$jq("#comboboxID").val(defaultSiteName);
     }
     
     
