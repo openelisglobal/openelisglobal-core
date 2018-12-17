@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.DynaActionForm;
 
@@ -699,7 +700,12 @@ public class ResultsLoadUtility {
         }
 
         if( NUMERIC_RESULT_TYPE.equals( testResults.get( 0 ).getTestResultType()  )){
-            testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
+        	if (NumberUtils.isNumber(testResults.get(0).getSignificantDigits())) {
+        		testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
+        	} else {
+        		testItem.setSignificantDigits(0);
+        	}
+            
         }
 		return testItem;
 	}
