@@ -1,4 +1,4 @@
-<Context path="openElisGlobal-core">
+<Context path="openElisGlobal-core" logEffectiveWebXml="true">
     <Resource auth="Container" 
         driverClassName="org.postgresql.Driver" 
         maxActive="20" maxIdle="10" maxWait="-1" 
@@ -6,5 +6,18 @@
         password="clinlims" 
         type="javax.sql.DataSource" 
         url="jdbc:postgresql://localhost:5432/clinlims" 
-        username="clinlims"/>
+        username="clinlims"
+        allowLinking="false"
+        privileged="false"
+        crossContext="false"
+        enableLookups="false"/>
+		
+    <Valve
+        className="org.apache.catalina.valves.AccessLogValve"
+        directory="$CATALINA_HOME/logs/"
+        prefix="access_log"
+        fileDateFormat="yyyy-MM-dd.HH"
+        suffix=".log"
+        pattern="%t %H cookie:%{SESSIONID}c request:%{SESSIONID}r %m %U %s %q %r"
+     />
 </Context>
