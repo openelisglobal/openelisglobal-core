@@ -17,8 +17,8 @@
 %>
 
 <bean:define id="formName" value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
-<bean:define id="month" name="<%=formName%>" property="month"/>
-<bean:define id="year" name="<%=formName%>" property="year" />
+<bean:define id="month" name="<%=formName%>" property="month" type="java.lang.Integer"/>
+<bean:define id="year" name="<%=formName%>" property="year" type="java.lang.Integer"/>
 
 
 <script type="text/javascript">
@@ -65,7 +65,7 @@ function showsubmitting() {
 
 function confirmSentWarning() {
 	var sentIndicators = [];
-	var message = "<bean:message key="datasubmission.warning.sent" arg0="<%=DateUtil.getMonthFromInt((int) month, false)%>" arg1="<%=Integer.toString((int) year)%>"/>";
+	var message = "<bean:message key='datasubmission.warning.sent' arg0='<%=DateUtil.getMonthFromInt(month, false)%>' arg1='<%=Integer.toString(year)%>'/>";
 	$jq("span.<%=DataIndicator.SENT%>").each(function() {
 		sentIndicators.push(this.id);
 	});
