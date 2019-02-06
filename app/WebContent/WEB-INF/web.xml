@@ -1,44 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!DOCTYPE web-app
-  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
-  "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
-
-<web-app metadata-complete="true">
+<web-app version="3.1"
+  xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  metadata-complete="true">
+  
   <display-name>LIMS Application</display-name>
   
-  <!--bugzilla 1908 added resource-ref for Vietnam tomcat/linux-->
-  <resource-ref>
-   <description>Database connection</description>
-   <res-ref-name>jdbc/LimsDS</res-ref-name>
-   <res-type>javax.sql.DataSource</res-type>
-   <res-auth>Container</res-auth>
-  </resource-ref>
-  
-  <!--tomcat disallowed Http method configuration-->
-  <security-constraint>
-    <web-resource-collection>
-    <web-resource-name>Forbidden</web-resource-name>
-    <url-pattern>/*</url-pattern>
-      <http-method>PUT</http-method>
-      <http-method>DELETE</http-method>
-      <http-method>OPTIONS</http-method>
-      <http-method>TRACE</http-method>
-    </web-resource-collection>
-    <auth-constraint />
-  </security-constraint>
-  
-  <security-constraint>
-    <web-resource-collection>
-        <web-resource-name>securedapp</web-resource-name>
-        <url-pattern>/*</url-pattern>
-    </web-resource-collection>
-    <user-data-constraint>
-        <transport-guarantee>CONFIDENTIAL</transport-guarantee> <!-- set to CONFIDENTIAL for ssl -->
-    </user-data-constraint>
-</security-constraint>
-
-<filter>
+  <filter>
    <filter-name>UTF8Filter</filter-name>
    <filter-class>us.mn.state.health.lims.common.util.UTF8Filter</filter-class>
   </filter>
@@ -82,106 +53,106 @@
   </servlet>
   
   <servlet>
-    <servlet-name>ajaxText</servlet-name>
     <display-name>ajaxText</display-name> 
+    <servlet-name>ajaxText</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.validation.AjaxTextServlet</servlet-class>
     <load-on-startup>3</load-on-startup>
   </servlet>
   
   <servlet>
-    <servlet-name>ajaxXML</servlet-name>
     <display-name>ajaxXML</display-name> 
+    <servlet-name>ajaxXML</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.validation.AjaxXMLServlet</servlet-class>
     <load-on-startup>4</load-on-startup>
   </servlet>
   
    <servlet>
-    <servlet-name>ajaxQueryXML</servlet-name>
     <display-name>ajaxQueryXML</display-name> 
+    <servlet-name>ajaxQueryXML</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.query.AjaxQueryXMLServlet</servlet-class>
     <load-on-startup>5</load-on-startup>
   </servlet>
   
    <servlet>
-    <servlet-name>ajaxAutocompleteXML</servlet-name>
     <display-name>ajaxAutocompleteXML</display-name> 
+    <servlet-name>ajaxAutocompleteXML</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.autocomplete.AjaxXMLServlet</servlet-class>
     <load-on-startup>6</load-on-startup>
   </servlet>
   
   <servlet>
-    <servlet-name>ajaxSelectDropDownXML</servlet-name>
     <display-name>ajaxSelectDropDownXML</display-name> 
+    <servlet-name>ajaxSelectDropDownXML</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.selectdropdown.AjaxXMLServlet</servlet-class>
     <load-on-startup>7</load-on-startup>
   </servlet>
   
   <servlet>
-    <servlet-name>reportsServlet</servlet-name>
     <display-name>reportsServlet</display-name> 
+    <servlet-name>reportsServlet</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.reports.ReportsServlet</servlet-class>
     <load-on-startup>8</load-on-startup>
   </servlet>
 
   <servlet>
-    <servlet-name>ajaxPopup</servlet-name>
     <display-name>ajaxPopup</display-name> 
+    <servlet-name>ajaxPopup</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.popup.AjaxCityStateZipPopupXMLServlet</servlet-class>
     <load-on-startup>9</load-on-startup>
   </servlet>
   
    <servlet>
-    <servlet-name>ajaxDataXML</servlet-name>
     <display-name>ajaxDataXML</display-name> 
+    <servlet-name>ajaxDataXML</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.data.AjaxXMLServlet</servlet-class>
     <load-on-startup>10</load-on-startup>
   </servlet> 
  
   <servlet>
-    <servlet-name>importAnalyzer</servlet-name>
     <display-name>importAnalyzer</display-name> 
+    <servlet-name>importAnalyzer</servlet-name>
     <servlet-class>us.mn.state.health.lims.analyzerimport.action.AnalyzerImportServlet</servlet-class>
     <load-on-startup>11</load-on-startup>
   </servlet>
   
   <servlet>
-    <servlet-name>MetricServicesServlet</servlet-name>
     <display-name>MetricServicesServlet</display-name>
+    <servlet-name>MetricServicesServlet</servlet-name>
     <servlet-class>us.mn.state.health.lims.metricservice.action.MetricServicesServlet</servlet-class>
     <load-on-startup>12</load-on-startup>
   </servlet>
  
    <servlet>
-    <servlet-name>IndicatorAggregationServlet</servlet-name>
     <display-name>IndicatorAggregationServlet</display-name>
+    <servlet-name>IndicatorAggregationServlet</servlet-name>
     <servlet-class>us.mn.state.health.lims.dataexchange.aggregatereporting.IndicatorAggregationReportingServlet</servlet-class>
     <load-on-startup>13</load-on-startup>
   </servlet>
 
   <servlet>
-    <servlet-name>OrderRequestServlet</servlet-name>
     <display-name>OrderRequestServlet</display-name>
+    <servlet-name>OrderRequestServlet</servlet-name>
     <servlet-class>us.mn.state.health.lims.dataexchange.order.action.OrderServlet</servlet-class>
     <load-on-startup>14</load-on-startup>
   </servlet>
   
    <servlet>
-    <servlet-name>OrderRequestRawServlet</servlet-name>
     <display-name>OrderRequestRawServlet</display-name>
+    <servlet-name>OrderRequestRawServlet</servlet-name>
     <servlet-class>us.mn.state.health.lims.dataexchange.order.action.OrderRawServlet</servlet-class>
     <load-on-startup>15</load-on-startup>
   </servlet>
 
  <servlet>
-    <servlet-name>logoUpload</servlet-name>
     <display-name>logoUpload</display-name> 
+    <servlet-name>logoUpload</servlet-name>
     <servlet-class>us.mn.state.health.lims.common.servlet.reports.LogoUploadServlet</servlet-class>
     <load-on-startup>3</load-on-startup>
   </servlet>
   
   <servlet>
-  	<servlet-name>LabelMakerServlet</servlet-name>
   	<display-name>LabelMakerServlet</display-name>
+  	<servlet-name>LabelMakerServlet</servlet-name>
   	<servlet-class>us.mn.state.health.lims.common.servlet.barcode.LabelMakerServlet</servlet-class>
   	<load-on-startup>16</load-on-startup>
   </servlet>
@@ -265,7 +236,7 @@
   	<servlet-name>LabelMakerServlet</servlet-name>
   	<url-pattern>/LabelMakerServlet</url-pattern>	
  </servlet-mapping>
-
+  
   <!-- The Usual Welcome File List -->
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
@@ -281,6 +252,7 @@
   	<location>/pages/common/defaultNotFoundPage.jsp</location>
   </error-page>
 
+  <jsp-config>
   <!-- Struts Tag Library Descriptors -->
   <taglib>
     <taglib-uri>/tags/struts-bean</taglib-uri>
@@ -316,5 +288,37 @@
     <taglib-uri>/tags/sourceforge-ajax</taglib-uri>
     <taglib-location>/WEB-INF/taglib/ajaxtags.tld</taglib-location>
   </taglib>
+  </jsp-config>
+  
+  <!--bugzilla 1908 added resource-ref for Vietnam tomcat/linux-->
+  <resource-ref>
+   <description>Database connection</description>
+   <res-ref-name>jdbc/LimsDS</res-ref-name>
+   <res-type>javax.sql.DataSource</res-type>
+   <res-auth>Container</res-auth>
+  </resource-ref>
+  
+  <!--tomcat disallowed Http method configuration-->
+  <security-constraint>
+    <web-resource-collection>
+    <web-resource-name>Forbidden</web-resource-name>
+    <url-pattern>/*</url-pattern>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>TRACE</http-method>
+    </web-resource-collection>
+    <auth-constraint />
+  </security-constraint>
+  
+  <security-constraint>
+    <web-resource-collection>
+        <web-resource-name>securedapp</web-resource-name>
+        <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+        <transport-guarantee>NONE</transport-guarantee> <!-- set to CONFIDENTIAL for ssl -->
+    </user-data-constraint>
+</security-constraint>
 
 </web-app>
