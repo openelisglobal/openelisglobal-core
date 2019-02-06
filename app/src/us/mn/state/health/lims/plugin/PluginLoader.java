@@ -84,7 +84,7 @@ public class PluginLoader {
 		String[] version = System.getProperty("java.version").split("\\.");
 		JDK_VERSION_MAJOR = Integer.parseInt(version[0]);
 		JDK_VERSION_MINOR = Integer.parseInt(version[1]);
-		List<String> pluginList = new ArrayList<>();
+		List<String> pluginList = new ArrayList<String>();
 
 		File[] files = pluginDir.listFiles();
 
