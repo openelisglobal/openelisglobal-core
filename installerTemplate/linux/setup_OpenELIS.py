@@ -50,9 +50,9 @@ LOG_FILE = ''
 PRINT_TO_CONSOLE = True
 ACTION_TIME = ''
 TOMCAT_DIR = ''
-TOMCAT_BASE = '/opt/tomcat'
+TOMCAT_BASE = '/usr/share/tomcat'
 TOMCAT_VERSION = ''
-TOMCAT_INSTALL_DIR = '/opt/'
+TOMCAT_INSTALL_DIR = '/usr/share/'
 NO_PROMPT = False
 TOMCAT_INSTALLED_AS_SERVICE = False
 TOMCAT_AUTO_DEPLOY = True
@@ -156,7 +156,7 @@ def get_tomcat_directory():
             log("Found " + names[0], PRINT_TO_CONSOLE)
             log("Tomcat must be version 7.0 or later\n", PRINT_TO_CONSOLE)
             return None
-    return '/opt/tomcat'
+    return None
     
     
 def get_tomcat_install_info():
@@ -1009,8 +1009,8 @@ def get_os_tomcat_dir():
         TOMCAT_BASE = "/var/lib/tomcat"
         TOMCAT_INSTALL_DIR = "/var/lib/"
     if major >= 16:
-        TOMCAT_BASE = "/opt/tomcat"
-        TOMCAT_INSTALL_DIR = "/opt/"
+        TOMCAT_BASE = "/usr/share/tomcat"
+        TOMCAT_INSTALL_DIR = "/usr/share/"
 # Main entry point
 
 
