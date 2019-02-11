@@ -384,11 +384,11 @@ public class ProjectData implements Serializable {
 	}
 
 	// -------
-	public boolean getdbsvlTaken() {
+	public boolean getDbsvlTaken() {
 		return dbsvlTaken;
 	}
 
-	public void setdbsvlTaken(boolean dbsvlTaken) {
+	public void setDbsvlTaken(boolean dbsvlTaken) {
 		this.dbsvlTaken = dbsvlTaken;
 	}
 	
