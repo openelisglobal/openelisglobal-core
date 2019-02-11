@@ -926,7 +926,7 @@ function sampleTypeQualifierChanged(element){
 				<bean:message  key="sample.entry.project.title.specimen" />
 			</td>
 		</tr>
-		<tr>
+		<%-- <tr>
 			<td width="2%"></td>
 			<td width="38%"><bean:message key="sample.entry.project.ARV.dryTubeTaken" /></td>
 			<td width="60%">
@@ -936,7 +936,7 @@ function sampleTypeQualifierChanged(element){
 					   property="ProjectDataVL.dryTubeTaken"
 					   styleId="vl.dryTubeTaken"/>
 			</td>
-		</tr>
+		</tr> --%>
 		<tr>
 			<td></td>
 			<td><bean:message key="sample.entry.project.ARV.edtaTubeTaken" /></td>
@@ -953,9 +953,10 @@ function sampleTypeQualifierChanged(element){
 			<td><bean:message key="sample.entry.project.title.dryBloodSpot" /></td>
 			<td>
 				<html:checkbox name="<%=formName%>"
-					   property="ProjectData.dbsTaken"
-					   styleId="vl.dbsTaken"
-					   onchange="vl.checkSampleItem($('vl.dbsTaken'));" />
+						value="true"
+					   property="ProjectDataVL.dbsvlTaken"
+					   styleId="vl.dbsvlTaken"
+					   onchange="vl.checkSampleItem($('vl.dbsvlTaken'));" />
 			</td>
 		</tr>	
 		

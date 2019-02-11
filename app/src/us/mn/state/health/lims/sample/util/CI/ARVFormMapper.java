@@ -119,7 +119,7 @@ public class ARVFormMapper extends BaseProjectFormMapper implements IProjectForm
        }
 		
 		//Check for DBS Tubes Tests for Viral Load
-		if (projectData.getdbsvlTaken()){
+		if (projectData.getDbsvlTaken()){
 			testList = getEDTATubeTests(dynaForm);		
 			sItemTests.add( new TypeOfSampleTests(getTypeOfSample("DBS"), testList));
            }	

@@ -110,6 +110,7 @@ $jq(document).ready(function () {
 	<html:hidden property="observations.projectFormName" name="<%=formName%>" styleId="projectFormName"/>
 	<html:hidden name='<%=formName%>' property="ProjectData.viralLoadTest" styleId="ProjectData.vlTest"/>
 	<html:hidden name='<%=formName%>' property="ProjectData.edtaTubeTaken" styleId="ProjectData.edtaTube"/>
+	<html:hidden name='<%=formName%>' property="ProjectData.dbsvlTaken" styleId="ProjectData.dbsvlTaken"/>
 	<html:hidden name='<%=formName%>' property="ProjectData.dryTubeTaken" styleId="ProjectData.dryTube"/>
 	<html:hidden name='<%=formName%>' property="ProjectData.dbsTaken" styleId="ProjectData.dbsTaken"/>
 	<html:hidden name='<%=formName%>' property="ProjectData.dnaPCR" styleId="ProjectData.dnaPCR"/>
