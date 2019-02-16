@@ -162,7 +162,7 @@ appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
 
     protected void defineBasicColumns() {
         add("accession_number", "LABNO",    NONE);
-        add("status_id", "STATUT_ECH", SAMPLE_STATUS);
+        add("status_id", "SAMPLE_STATUS", SAMPLE_STATUS);
         add("national_id",      "SUJETNO",  NONE);
         add("project_id",        "ETUDE",    PROJECT );
         add("external_id",      "SUJETSIT", NONE);
