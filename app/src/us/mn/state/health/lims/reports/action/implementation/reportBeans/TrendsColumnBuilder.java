@@ -42,42 +42,9 @@ public class TrendsColumnBuilder extends CIColumnBuilder {
         add("started_date"     ,"STARTED_DATE", DATE_TIME);
         add("completed_date"     ,"COMPLETED_DATE", DATE_TIME);
         add("released_date"     ,"RELEASED_DATE", DATE_TIME);
-   //   add("patient_oe_id"     ,"PATIENT_OE_ID", NONE);
-             
-        /*  add("hivStatus"            , "STATVIH", DICT_RAW );
-        add("nameOfDoctor"         , "NOMMED", NONE );
-        add("nameOfSampler"         , "NOMPRELEV", NONE );
-    /*    add("arvTreatmentInitDate"         , "ARV_INIT_DATE", NONE );
-        add("arvTreatmentRegime"         , "ARVREG" );*/
-        
-    /*    add("currentARVTreatmentINNs1", "CURRENT1",NONE );
-        add("currentARVTreatmentINNs2", "CURRENT2",NONE );
-        add("currentARVTreatmentINNs3", "CURRENT3",NONE );
-        add("currentARVTreatmentINNs4", "CURRENT4",NONE );*/
-        
-       // add("currentARVTreatment"           , "CURRENT_ART", DICT_RAW );
-     // add("vlReasonForRequest"         , "VL_REASON" );
-   /*     add("currentARVTreatment"           , "CURRENT_ART" );
-        add("vlReasonForRequest"         , "VL_REASON", DICT_RAW );
-        add("vlOtherReasonForRequest"         , "REASON_OTHER", NONE );
-        
-        add("initcd4Count"         , "INITCD4_COUNT", NONE );
-        add("initcd4Percent"         , "INITCD4_PERCENT", NONE );
-        add("initcd4Date"         , "INITCD4_DATE", NONE );
-        
-        add("demandcd4Count"         , "DEMANDCD4_COUNT", NONE );
-        add("demandcd4Percent"         , "DEMANDCD4_PERCENT", NONE );
-        add("demandcd4Date"         , "DEMANDCD4_DATE", NONE );*/
-         
-       // add("vlBenefit"         , "PRIOR_VL_BENEFIT",NONE );
-    /*    add("vlBenefit"         , "PRIOR_VL_BENEFIT");
-        add("vlPregnancy"         , "VL_PREGNANCY");
-        add("vlSuckle"         , "VL_SUCKLE");
-        add("priorVLLab"         , "PRIOR_VL_Lab",NONE );
-        add("priorVLValue"         , "PRIOR_VL_Value",NONE );
-        add("priorVLDate"         , "PRIOR_VL_Date",NONE );*/
-        add("report_name"         , "report_name",NONE );
-        add("report_generation_time"         , "report_generation_time",DATE_TIME );
+   
+        add("report_name"         , "REPORT_NAME",NONE );
+        add("report_generation_time"         , "REPORT_PRINTED_DATE",DATE_TIME );
        // addAllResultsColumns();
         
         
