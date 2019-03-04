@@ -45,7 +45,7 @@ import us.mn.state.health.lims.sampleorganization.dao.SampleOrganizationDAO;
 import us.mn.state.health.lims.sampleorganization.daoimpl.SampleOrganizationDAOImpl;
 import us.mn.state.health.lims.sampleorganization.valueholder.SampleOrganization;
 
-public abstract class PatientARVReport extends RetroCIPatientReport{
+public abstract class PatientRTNReport extends RetroCIPatientReport{
 	private List<ARVReportData> reportItems;
 	private String invalidValue = StringUtil.getMessageForKey("report.test.status.inProgress");
 	protected void initializeReportItems(){
@@ -234,7 +234,7 @@ public abstract class PatientARVReport extends RetroCIPatientReport{
 				}
 			}
 
-		}else if(testName.equals("Murex") || testName.equals("Integral")){ //Serology must have one of these but not necessarily both
+		}else if(testName.equals("Murex") || testName.equals("Intgral")){ //Serology must have one of these but not necessarily both
 			data.setShowSerologie(Boolean.TRUE);
 			if(GenericValidator.isBlankOrNull(data.getVih())){
 				data.setVih(invalidValue);

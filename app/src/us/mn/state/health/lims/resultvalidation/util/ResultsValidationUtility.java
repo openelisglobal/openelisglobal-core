@@ -479,10 +479,20 @@ public class ResultsValidationUtility {
                 analysisResultItem.setResult( getFormattedResult( testResultItem ) );
             }
 
+            
             if( TypeOfTestResultService.ResultType.NUMERIC.matches( testResultItem.getResultType() )){
+            	if (result.getMinNormal() == null || result.getMaxNormal() == null) {
+            		analysisResultItem.setSignificantDigits(result.getSignificantDigits());
+            	} else {
+            		analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
+            	}
+            } 
+                       
+            
+          /*  if( TypeOfTestResultService.ResultType.NUMERIC.matches( testResultItem.getResultType() )){
             	// analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
             	 analysisResultItem.setSignificantDigits( result.getSignificantDigits());
-               	}
+               	} */
         }
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
