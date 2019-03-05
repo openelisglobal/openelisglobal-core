@@ -28,6 +28,8 @@ public class ReportImplementationFactory{
 		if(!GenericValidator.isBlankOrNull(report)){
 			if(report.equals("patientARV1")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.all"),null);
+			}else if(report.equals("patientRTN")){
+				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.RTN"),null);
 			}else if(report.equals("retroCINonConformityByLabno")){
 				return new ReportSpecificationParameters(Parameter.ACCESSION_RANGE, StringUtil.getMessageForKey("reports.label.patient.ARV.all"),null);
 			}else if(report.equals("patientARVInitial1")){
@@ -133,6 +135,8 @@ public class ReportImplementationFactory{
 		if(!GenericValidator.isBlankOrNull(report)){
 			if(report.equals("patientARV1")){
 				return new PatientARVVersion1Report();
+			}else if(report.equals("patientRTN")){
+				return new PatientRTNVersion1Report();
 			}else if(report.equals("retroCINonConformityByLabno")){
 				return new RetroCINonConformityByLabno();
 			}else if(report.equals("patientARVInitial1")){

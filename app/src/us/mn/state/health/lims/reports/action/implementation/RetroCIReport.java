@@ -41,11 +41,13 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 	protected static final String EID_STUDY = "Early Infant Diagnosis for HIV Study";
 	protected static final String INDETERMINATE_STUDY = "Indeterminate Results";
 	protected static final String SPECIAL_REQUEST_STUDY = "Special Request";
+	protected static final String RTN_STUDY = "Routine HIV Testing";
 	protected static String ANTIRETROVIRAL_STUDY_ID;
 	protected static String ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID;
 	protected static String EID_STUDY_ID;
 	protected static String VL_STUDY_ID;
 	protected static String SPECIAL_REQUEST_STUDY_ID;
+	protected static String RTN_STUDY_ID;
 	protected static String INDETERMINATE_STUDY_ID;
 	protected static String OBSERVATION_DOCTOR_ID;
 	protected static String OBSERVATION_REQUESTOR_ID;
@@ -106,12 +108,16 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
 				INDETERMINATE_STUDY_ID = project.getId();
 			}else if( SPECIAL_REQUEST_STUDY.equals(project.getProjectName())){
 				SPECIAL_REQUEST_STUDY_ID = project.getId();
+			}else if( RTN_STUDY.equals(project.getProjectName())){
+				RTN_STUDY_ID = project.getId();
 			}
 		}
+			
 		ANTIRETROVIRAL_ID.add(Integer.parseInt(ANTIRETROVIRAL_STUDY_ID));
 		ANTIRETROVIRAL_ID.add(Integer.parseInt(ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID));
 		ANTIRETROVIRAL_ID.add(Integer.parseInt(VL_STUDY_ID));
-	}
+		
+		}
 
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#initializeReport(us.mn.state.health.lims.common.action.BaseActionForm)

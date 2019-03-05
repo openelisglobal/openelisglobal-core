@@ -21,55 +21,37 @@ import java.util.List;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 
-public class PatientARVVersion1Report extends PatientARVReport implements  IReportCreator {
+public class PatientRTNVersion1Report extends PatientARVReport implements  IReportCreator {
 
 	@Override
 	protected void createReportParameters() {
 		super.createReportParameters();
 		reportParameters.put("showSerologie", Boolean.FALSE);
-		reportParameters.put("showVirologie", Boolean.TRUE);	
+		reportParameters.put("showVirologie", Boolean.TRUE);
 	}
 
 	@Override
     protected String reportFileName(){
-    	return "Patient_ARV_Version1";
+    	return "Patient_RTN";
     }
 
 	protected String getReportNameForReport(){
-		//assume that we'll not get this
-		return "Bilan-Suivi";
-			
+		return StringUtil.getMessageForKey("reports.label.patient.RTN");
 	}
 
 	protected boolean allowSample(){
 		List<ObservationHistory> historyList = observationHistoryDAO.getAll(reportPatient, reportSample, OBSERVATION_PROJECT_ID);
-		
+
 		for( ObservationHistory history : historyList){
-			if("FollowUpARV_Id".equals(history.getValue())){
-				reportParameters.put("studyName", StringUtil.getMessageForKey("reports.label.patient.ARV.followup"));
+			if( "RTN_Id".equals(history.getValue())){
 				return true;
-			}else if("InitialARV_Id".equals(history.getValue())){
-				reportParameters.put("studyName", StringUtil.getMessageForKey("reports.label.patient.ARV.initial"));	
-				return true;
-			}
-			else if("VL_Id".equals(history.getValue())){
-				reportParameters.put("studyName", StringUtil.getMessageForKey("reports.label.patient.VL"));	
-				return true;
-				
-			}else if("RTN_Id".equals(history.getValue())){
-				reportParameters.put("studyName", StringUtil.getMessageForKey("reports.label.patient.RTN"));	
-				return true;
-				
 			}
 		}
-		
-		
-		
+
 		return false;
 	}
 
 	protected String getProjectId() {
-		return ANTIRETROVIRAL_STUDY_ID+":"+ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID+":"+VL_STUDY_ID+":"+RTN_STUDY_ID;
+		return RTN_STUDY_ID;
 	}
-
 }
