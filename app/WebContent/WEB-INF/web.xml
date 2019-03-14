@@ -317,7 +317,7 @@
         <url-pattern>/*</url-pattern>
     </web-resource-collection>
     <user-data-constraint>
-        <transport-guarantee>NONE</transport-guarantee> <!-- set to CONFIDENTIAL for ssl -->
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee> <!-- set to CONFIDENTIAL for ssl -->
     </user-data-constraint>
 </security-constraint>
 
