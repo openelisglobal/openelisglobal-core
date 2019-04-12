@@ -27,7 +27,7 @@ import us.mn.state.health.lims.test.valueholder.Test;
  * @author pahill (pahill@uw.edu)
  * @since May 16, 2011
  */
-public class StudyEIDColumnBuilder extends CIColumnBuilder {
+public class StudyEIDColumnBuilder extends CIStudyColumnBuilder {
 
     /**
      * @param dateRange
@@ -113,8 +113,12 @@ public class StudyEIDColumnBuilder extends CIColumnBuilder {
 	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, a.status_id as analysis_status_id, r.value as \"DNA PCR\", demo.*, dt.name as report_name, dt.report_generation_time, dt.lastupdated as report_lastupdated ");
 	
 	    // ordinary lab (sample and patient) tables
-	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +
-	    		", clinlims.sample_item as si, clinlims.analysis as a, clinlims.document_track as dt, clinlims.result as r ");
+	   /* query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +
+	    		", clinlims.sample_item as si, clinlims.analysis as a, clinlims.document_track as dt, clinlims.result as r ");*/
+	    
+	    
+	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION);
+	    
 	   /*
 	 // Take account sample without result
 	    query.append( "LEFT JOIN  result as r on r.analysis_id = a.id ");
@@ -126,12 +130,25 @@ public class StudyEIDColumnBuilder extends CIColumnBuilder {
 	 //   appendRepeatingObservation("currentARVTreatmentINNs", 4,  lowDatePostgres, highDatePostgres);
 	    //result
 	  //  appendResultCrosstab(lowDatePostgres, highDatePostgres );
+	    
+	    query.append(",  clinlims.analysis as a \n");
+	    //-------------------------------------
+	    
+	    query.append( " LEFT JOIN  clinlims.result as r on r.analysis_id = a.id \n" + 
+	    		" LEFT JOIN  clinlims.sample_item as si on si.id = a.sampitem_id \n" + 
+	    		" LEFT JOIN  clinlims.sample as s on s.id = si.samp_id \n" + 
+	    		" LEFT JOIN  (select max(id)as id, row_id \n" + 
+	    		"		from clinlims.document_track \n" + 
+	    		"			group by (row_id ) \n" + 
+	    		"			order by row_id DESC) as dtr on dtr.row_id=s.id \n" + 
+	    		 " LEFT JOIN clinlims.document_track as dt on dtr.id=dt.id \n"
+	    		);
 	
 	    // and finally the join that puts these all together. Each cross table should be listed here otherwise it's not in the result and you'll get a full join
 	    query.append( " WHERE "             
 	    + "\n a.test_id =" + test.getId()
-	    + "\n AND dt.row_id=s.id"
-	    + "\n AND a.id=r.analysis_id"
+	  //  + "\n AND dt.row_id=s.id"
+	  //  + "\n AND a.id=r.analysis_id"
 	    + "\n AND a.sampitem_id = si.id" 
 	    + "\n AND s.id = si.samp_id"
 	    + "\n AND s.id=sh.samp_id" 

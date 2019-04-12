@@ -600,7 +600,8 @@ function /*boolean*/ handleEnterEvent(){
 								<% try{
 												Double value = Math.log10(Double.parseDouble(resultList.getResult()));
 												DecimalFormat twoDForm = new DecimalFormat("##.##");
-												out.print(Double.valueOf(twoDForm.format(value)));
+											//	out.print(Double.valueOf(twoDForm.format(value)));
+												out.print(twoDForm.format(value));
 												}catch(Exception e){
 													out.print("--");} %>		
 						</div> log
