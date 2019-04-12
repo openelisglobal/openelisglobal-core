@@ -655,9 +655,9 @@ def do_install():
     split_version = OS_VERSION[1].split('.')
     major = int(split_version[0])
     minor = int(split_version[1])
-    if major <= 16:
+    if major < 16:
         postgres_file = glob.glob(BIN_DIR + 'postgresql*3*')
-    if major > 16:
+    if major >= 16:
         postgres_file = glob.glob(BIN_DIR + 'postgresql*4*')
     cmd = 'cp ' + postgres_file[0] + ' ' + TOMCAT_DIR + '/lib/'
     os.system(cmd)
@@ -685,11 +685,7 @@ def create_postgres_password():
 def copy_tomcat_config_file():
     cmd = 'cp ' + STAGING_DIR + APP_NAME + '.xml ' + TOMCAT_DIR + '/conf/Catalina/localhost/'
     os.system(cmd)
-    
-	if TOMCAT_VERSION == "tomcat8.5":
-        cmd = 'chown tomcat:tomcat ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
-    else:
-        cmd = 'chown ' + TOMCAT_VERSION + ":" + TOMCAT_VERSION + ' ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
+    cmd = 'chown tomcat:tomcat ' + TOMCAT_DIR + '/conf/Catalina/localhost/' + APP_NAME + '.xml'
     os.system(cmd)
 
 
@@ -1009,10 +1005,10 @@ def get_os_tomcat_dir():
     major = int(split_version[0])
     minor = int(split_version[1])
 
-    if major <= 16:
+    if major < 16:
         TOMCAT_BASE = "/var/lib/tomcat"
         TOMCAT_INSTALL_DIR = "/var/lib/"
-    if major > 16:
+    if major >= 16:
         TOMCAT_BASE = "/usr/share/tomcat"
         TOMCAT_INSTALL_DIR = "/usr/share/"
 # Main entry point
