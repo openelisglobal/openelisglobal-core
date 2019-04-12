@@ -13,6 +13,7 @@ import re
 from time import gmtime, strftime
 from random import Random
 
+
 VERSION = "8.4"
 OS_VERSION = ''
 TEMPLATE_DIR = "./templates/"
