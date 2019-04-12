@@ -152,8 +152,7 @@ public class StudyVLColumnBuilder extends CIStudyColumnBuilder {
 
 //--------------	    
 	    + "\n ORDER BY s.accession_number;");
-	    System.out.println("requete : "+query);
-	   	    /////////
+	   	   	    /////////
 	    // no don't insert another crosstab or table here, go up before the main WHERE clause
 	    return;
 	}
