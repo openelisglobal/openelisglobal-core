@@ -25,12 +25,39 @@
 			set tool_tip_key='tooltip.export.specific'
 			where action_url='tooltip.export.cpecific';
 			
+			
+ </sql>
+  </changeSet>
+  
+   <changeSet author="CI OpenELIS developers group" id="2" runAlways="true">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_reports_RTN';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Add Routine Study report Menu</comment>
+    <sql>
+			INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, display_key, tool_tip_key, new_window, is_active)
+    VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_reports_patients'),4,'menu_reports_RTN','/Report.do?type=patient&amp;report=patientRTN',default,'openreports.patient.RTN','tooltip.reports.patient.RTN',default,default);
+
+					
+ </sql>
+  </changeSet>
+  
+  
+   
+   <changeSet author="CI OpenELIS developers group" id="3" runAlways="true">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">select count(*) from clinlims.menu where element_id = 'menu_reports_export_valid';
+    		</sqlCheck>
+    </preConditions>
+    <comment>Add new export report</comment>
+    <sql>
+			
 						
 			INSERT INTO clinlims.menu(id, parent_id, presentation_order, element_id, action_url, click_action, 
             display_key, tool_tip_key, new_window, is_active)
 			VALUES (nextval('clinlims.menu_seq'),(select id from clinlims.menu where element_id='menu_reports_export'),20,'menu_reports_export_valid','/Report.do?type=patient&amp;report=CISampleExport',default,'reports.export.valid','tooltip.export.valid',default,default);
-
-			
+		
  </sql>
   </changeSet>
   

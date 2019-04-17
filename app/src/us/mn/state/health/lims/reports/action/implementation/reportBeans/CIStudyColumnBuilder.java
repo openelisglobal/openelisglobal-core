@@ -23,7 +23,7 @@ import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
  * @author Paul A. Hill (pahill@uw.edu)
  * @since Jan 28, 2011
  */
-public abstract class CIColumnBuilder extends CSVColumnBuilder {
+public abstract class CIStudyColumnBuilder extends CSVColumnBuilder {
     
     /**
      *  The basic SQL SELECT to get start on finding a sample, sample_item, patient and organization  
@@ -44,14 +44,14 @@ public abstract class CIColumnBuilder extends CSVColumnBuilder {
      * the basic SQL FROM clause for the selection from basic lab tables for sample, sample_item, patient & organization
      */
     protected static final String FROM_SAMPLE_PATIENT_ORGANIZATION = 
-        " FROM sample as s, patient as pat, person as per, sample_human as sh, sample_projects AS sp, sample_organization AS so, organization AS o \n ";
+        " FROM patient as pat, person as per, sample_human as sh, sample_projects AS sp, sample_organization AS so, organization AS o \n ";
     protected DateRange dateRange;
     protected String projectStr;
 
     /**
      *
      */
-    public CIColumnBuilder(DateRange dateRange, String projectStr) {
+    public CIStudyColumnBuilder(DateRange dateRange, String projectStr) {
         super (StatusService.AnalysisStatus.Finalized);
         this.dateRange = dateRange;
         this.projectStr = projectStr;

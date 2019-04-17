@@ -22,16 +22,12 @@ import static us.mn.state.health.lims.reports.action.implementation.reportBeans.
 import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
 import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
 import us.mn.state.health.lims.test.valueholder.Test;
-import us.mn.state.health.lims.common.services.StatusService;
-import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
-import us.mn.state.health.lims.test.daoimpl.TestDAOImpl;
-import us.mn.state.health.lims.test.valueholder.Test;
 
 /**
  * @author pahill (pahill@uw.edu)
  * @since May 16, 2011
  */
-public class StudyEIDColumnBuilder extends CIColumnBuilder {
+public class StudyEIDColumnBuilder extends CIStudyColumnBuilder {
 
     /**
      * @param dateRange
@@ -48,7 +44,7 @@ public class StudyEIDColumnBuilder extends CIColumnBuilder {
         defineBasicColumns();
         
         add("DNA PCR"     ,"DNA PCR", TEST_RESULT);
-        add("analysis_status_id", "STATUT_ANALYSE", ANALYSIS_STATUS);
+        add("analysis_status_id", "ANALYSIS_STATUS", ANALYSIS_STATUS);
         add("started_date"     ,"STARTED_DATE", DATE_TIME);
         add("completed_date"     ,"COMPLETED_DATE", DATE_TIME);
         add("released_date"     ,"RELEASED_DATE", DATE_TIME);
@@ -66,7 +62,11 @@ public class StudyEIDColumnBuilder extends CIColumnBuilder {
         add("eidInfantsARV"           ,"eidInfantsARV"                  );     
         add("eidInfantCotrimoxazole"  ,"eidInfantCotrimoxazole"         );     
         add("eidHowChildFed"          ,"eidHowChildFed"                 );     
-        add("eidStoppedBreastfeeding" ,"eidStoppedBreastfeeding"        );   
+        add("eidStoppedBreastfeeding" ,"eidStoppedBreastfeeding"        ); 
+
+        add("report_name"         , "REPORT_NAME",NONE );
+        add("report_generation_time"         , "PRINTED_DATE",DATE_TIME );  
+        add("report_lastupdated"         , "LAST_REPORT_UPDATE",DATE_TIME );
        // addAllResultsColumns();
     }
     
@@ -110,15 +110,19 @@ public class StudyEIDColumnBuilder extends CIColumnBuilder {
 	    String highDatePostgres = postgresDateFormat.format(dateRange.getHighDate());
 	    query.append( SELECT_SAMPLE_PATIENT_ORGANIZATION );
 	    // all crosstab generated tables need to be listed in the following list and in the WHERE clause at the bottom
-	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, a.status_id as analysis_status_id, r.value as \"DNA PCR\", demo.* ");
+	    query.append("\n, pat.id AS patient_oe_id, a.started_date,a.completed_date,a.released_date,a.printed_date, a.status_id as analysis_status_id, r.value as \"DNA PCR\", demo.*, dt.name as report_name, dt.report_generation_time, dt.lastupdated as report_lastupdated ");
 	
 	    // ordinary lab (sample and patient) tables
-	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +
-	    		", sample_item as si, analysis as a ");
+	   /* query.append( FROM_SAMPLE_PATIENT_ORGANIZATION +
+	    		", clinlims.sample_item as si, clinlims.analysis as a, clinlims.document_track as dt, clinlims.result as r ");*/
 	    
+	    
+	    query.append( FROM_SAMPLE_PATIENT_ORGANIZATION);
+	    
+	   /*
 	 // Take account sample without result
 	    query.append( "LEFT JOIN  result as r on r.analysis_id = a.id ");
-	    
+	  */  
 	
 	    // all observation history values
 	    appendObservationHistoryCrosstab(lowDatePostgres, highDatePostgres);
@@ -126,10 +130,25 @@ public class StudyEIDColumnBuilder extends CIColumnBuilder {
 	 //   appendRepeatingObservation("currentARVTreatmentINNs", 4,  lowDatePostgres, highDatePostgres);
 	    //result
 	  //  appendResultCrosstab(lowDatePostgres, highDatePostgres );
+	    
+	    query.append(",  clinlims.analysis as a \n");
+	    //-------------------------------------
+	    
+	    query.append( " LEFT JOIN  clinlims.result as r on r.analysis_id = a.id \n" + 
+	    		" LEFT JOIN  clinlims.sample_item as si on si.id = a.sampitem_id \n" + 
+	    		" LEFT JOIN  clinlims.sample as s on s.id = si.samp_id \n" + 
+	    		" LEFT JOIN  (select max(id)as id, row_id \n" + 
+	    		"		from clinlims.document_track \n" + 
+	    		"			group by (row_id ) \n" + 
+	    		"			order by row_id DESC) as dtr on dtr.row_id=s.id \n" + 
+	    		 " LEFT JOIN clinlims.document_track as dt on dtr.id=dt.id \n"
+	    		);
 	
 	    // and finally the join that puts these all together. Each cross table should be listed here otherwise it's not in the result and you'll get a full join
 	    query.append( " WHERE "             
 	    + "\n a.test_id =" + test.getId()
+	  //  + "\n AND dt.row_id=s.id"
+	  //  + "\n AND a.id=r.analysis_id"
 	    + "\n AND a.sampitem_id = si.id" 
 	    + "\n AND s.id = si.samp_id"
 	    + "\n AND s.id=sh.samp_id" 
@@ -139,8 +158,8 @@ public class StudyEIDColumnBuilder extends CIColumnBuilder {
 	    + "\n AND so.org_id=o.id" 
 	    + "\n AND s.id = sp.samp_id" 
 	    + "\n AND s.id=demo.s_id"
-	    + "\n AND s.collection_date >= date('" + lowDatePostgres + "')" 
-	    + "\n AND s.collection_date <= date('" + highDatePostgres + "')"
+	    + "\n AND s.entered_date >= date('" + lowDatePostgres + "')" 
+	    + "\n AND s.entered_date <= date('" + highDatePostgres + "')"
 	    
 	    + "\n ORDER BY s.accession_number;");
 	    /////////
