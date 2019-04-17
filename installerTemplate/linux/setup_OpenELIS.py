@@ -547,7 +547,6 @@ def start_tomcat():
 
 
 def restart_tomcat():
-    #TO DO move to init.d script
     if TOMCAT_INSTALLED_AS_SERVICE:
         cmd = 'sudo systemctl restart tomcat'
         os.system(cmd)
