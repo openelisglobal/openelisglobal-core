@@ -528,8 +528,8 @@ def install():
 def stop_tomcat():
     try_count = 1
     if TOMCAT_INSTALLED_AS_SERVICE:
-        log('/etc/init.d/' + TOMCAT_VERSION + ' stop', PRINT_TO_CONSOLE)
-        cmd = '/etc/init.d/' + TOMCAT_VERSION + ' stop'
+        cmd = 'sudo systemctl stop tomcat'
+        log(cmd, PRINT_TO_CONSOLE)
         os.system(cmd)
     else:
         cmd = 'su -c "' + TOMCAT_DIR + '/bin/shutdown.sh" tomcat'
@@ -537,9 +537,8 @@ def stop_tomcat():
 
 
 def start_tomcat():
-    #TO DO move to init.d script
     if TOMCAT_INSTALLED_AS_SERVICE:
-        cmd = '/etc/init.d/' + TOMCAT_VERSION + ' start'
+        cmd = 'sudo systemctl start tomcat'
         os.system(cmd)
     else:
         cmd = 'su -c "' + TOMCAT_DIR + '/bin/startup.sh" tomcat'
@@ -549,7 +548,7 @@ def start_tomcat():
 def restart_tomcat():
     #TO DO move to init.d script
     if TOMCAT_INSTALLED_AS_SERVICE:
-        cmd = '/etc/init.d/' + TOMCAT_VERSION + ' restart'
+        cmd = 'sudo systemctl restart tomcat'
         os.system(cmd)
     else:
         cmd = 'su -c "' + TOMCAT_DIR + '/bin/shutdown.sh" tomcat'
