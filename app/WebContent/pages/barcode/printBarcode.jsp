@@ -275,7 +275,7 @@ function enableSearchButton(eventCode){
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
     var searchButton = $jq("#searchButton");
-    if( valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '<%=StringUtil.getMessageForKey("label.select.search.here")%>'){
+    if( valueElem.val() && criteriaElem.val() != "0"){
         searchButton.removeAttr("disabled");
         if( eventCode == 13 ){
             searchButton.click();
@@ -283,18 +283,10 @@ function enableSearchButton(eventCode){
     } else {
         searchButton.attr("disabled", "disabled");
     }
-    if(criteriaElem.val() == "5" ){
-        valueElem.attr("maxlength","<%=Integer.toString(accessionNumberValidator.getMaxAccessionLength())%>");
-    } else {
-        valueElem.attr("maxlength","120");
-    }
 }
 
 function handleSelectedPatient(){
-    var accessionNumber = "";
-    if($jq("#searchCriteria").val() == 5){//lab number
-        accessionNumber = $jq("#searchValue").val();
-    }
+    var accessionNumber = $jq("#searchValue").val();
 
     $("searchResultsDiv").style.display = "none";
     var form = document.forms[0];
@@ -304,41 +296,6 @@ function handleSelectedPatient(){
     }
     
     form.submit();
-}
-
-function firstClick(){
-    var searchValue = $jq("#searchValue");
-    searchValue.val("");
-    searchValue.removeAttr("onkeydown");
-}
-
-function messageRestore(element ){
-    if( !element.value ){
-        element.maxlength = 120;
-        element.value = '<%=StringUtil.getMessageForKey("label.select.search.here")%>';
-        element.onkeydown = firstClick;
-        setCaretPosition(element, 0);
-    }
-}
-
-function cursorAtFront(element){
-
-    if( element.onkeydown){
-        setCaretPosition( element, 0);
-    }
-}
-
-function setCaretPosition(ctrl, pos){
-    if(ctrl.setSelectionRange){
-        ctrl.focus();
-        ctrl.setSelectionRange(pos,pos);
-    } else if (ctrl.createTextRange) {
-        var range = ctrl.createTextRange();
-        range.collapse(true);
-        range.moveEnd('character', pos);
-        range.moveStart('character', pos);
-        range.select();
-    }
 }
 
 function printBarcode(button) {
@@ -402,12 +359,10 @@ function printBarcode(button) {
            maxlength="120"
            id="searchValue"
            class="patientSearch"
-           value='<%=StringUtil.getMessageForKey("label.select.search.here")%>'
+           placeholder='<%=StringUtil.getMessageForKey("label.select.search.here")%>'
            type="text"
-           onclick="cursorAtFront(this)"
-           onkeydown='firstClick();'
-           onkeyup="messageRestore(this);enableSearchButton(event.which);"
-            tabindex="2"/>
+           onkeyup="enableSearchButton(event.which);"
+           tabindex="2"/>
 
     <input type="button"
            name="searchButton"
