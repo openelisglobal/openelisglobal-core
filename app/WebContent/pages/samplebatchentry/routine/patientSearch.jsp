@@ -258,10 +258,13 @@ function /*void*/ doNothing() {
 
 function checkIndex(select) {
 	var indexVal = select.options[select.selectedIndex].value;
+    var valueElem = $jq("#searchValue");
 	if (indexVal == "5") {
 		$jq("#scanInstruction").show();
+        valueElem.attr("maxlength","<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>");
 	} else {
 		$jq("#scanInstruction").hide();
+        valueElem.attr("maxlength","120");
 	}
 }
 
@@ -269,19 +272,13 @@ function enableSearchButton(eventCode) {
     var valueElem = $jq("#searchValue");
     var criteriaElem  = $jq('#searchCriteria');
     var searchButton = $jq("#searchButton");
-    if (valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '<%=StringUtil.getMessageForKey("label.select.search.here")%>') {
+    if (valueElem.val() && criteriaElem.val() != "0" && valueElem.val() != '') {
         searchButton.removeAttr("disabled");
         if (eventCode == 13) {
             searchButton.click();
         }
     } else {
         searchButton.attr("disabled", "disabled");
-    }
-
-    if (criteriaElem.val() == "5") {
-        valueElem.attr("maxlength","<%= Integer.toString(accessionNumberValidator.getMaxAccessionLength()) %>");
-    } else {
-        valueElem.attr("maxlength","120");
     }
 }
 
@@ -299,40 +296,6 @@ function handleSelectedPatient() {
     }
     
     form.submit();
-}
-
-function firstClick() {
-    var searchValue = $jq("#searchValue");
-    searchValue.val("");
-    searchValue.removeAttr("onkeydown");
-}
-
-function messageRestore(element) {
-    if (!element.value) {
-        element.maxlength = 120;
-        element.value = '<%=StringUtil.getMessageForKey("label.select.search.here")%>';
-        element.onkeydown = firstClick;
-        setCaretPosition(element, 0);
-    }
-}
-
-function cursorAtFront(element) {
-    if (element.onkeydown) {
-        setCaretPosition(element, 0);
-    }
-}
-
-function setCaretPosition(ctrl, pos) {
-    if (ctrl.setSelectionRange) {
-        ctrl.focus();
-        ctrl.setSelectionRange(pos,pos);
-    } else if (ctrl.createTextRange) {
-        var range = ctrl.createTextRange();
-        range.collapse(true);
-        range.moveEnd('character', pos);
-        range.moveStart('character', pos);
-        range.select();
-    }
 }
 </script>
 
@@ -356,7 +319,7 @@ function setCaretPosition(ctrl, pos) {
            maxlength="120"
            id="searchValue"
            class="text patientSearch"
-           value='<%=StringUtil.getMessageForKey("label.select.search.here")%>'
+           placeholder='<%=StringUtil.getMessageForKey("label.select.search.here")%>'
            type="text"
            onclick="cursorAtFront(this)"
            onkeydown='firstClick();'
