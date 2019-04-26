@@ -92,7 +92,13 @@ public class PrintWorkplanReportAction extends BaseAction {
 				
 		//set Jasper report file name
 		String reportFileName = workplanReport.getFileName();
-		String reportFile = this.getServlet().getServletConfig().getServletContext().getRealPath("WEB-INF/reports/" + reportFileName + ".jasper");
+		LogEvent.logError("printWorkplanReportAction","performAction()", "String reportFileName = workplanReport.getFileName();");
+		LogEvent.logError("printWorkplanReportAction","performAction():reportFileName", reportFileName);
+		//String reportFile = this.getServlet().getServletConfig().getServletContext().getRealPath("WEB-INF/reports/" + reportFileName + ".jasper");
+		//String reportFile = this.getServlet().getServletContext().getRealPath("WEB-INF/reports/" + reportFileName + ".jasper");
+		String reportFile = getServlet().getServletContext().getRealPath("") + "/WEB-INF/reports/" + reportFileName + ".jasper";
+		LogEvent.logError("printWorkplanReportAction","performAction()", "String reportFile = getServlet().getServletContext().getRealPath(\"\") + \"/WEB-INF/reports/\" + reportFileName + \".jasper\";");
+		LogEvent.logError("printWorkplanReportAction","performAction():reportFileName", reportFile);
 						
 	    try {
 
