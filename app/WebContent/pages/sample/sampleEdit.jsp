@@ -279,6 +279,10 @@ function makeDirty(){
     window.onbeforeunload = formWarning;
 }
 
+$jq('body').on('change', 'input', function() {
+	makeDirty();
+});
+
 </script>
 
 <hr/>
