@@ -368,6 +368,7 @@ function makeDirty(){
 					   property='collectionDate'
 					   maxlength='10'
 					   size ='12'
+					   onkeyup="addDateSlashes(this, event);"
 					   onchange="checkValidEntryDate(this, 'past', true);"
 					   styleId='<%= "collectionDate_" + index %>'
 					   styleClass='<%= "text" + (isEditable? "" : " readOnly") %>'
