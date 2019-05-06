@@ -279,6 +279,10 @@ function makeDirty(){
     window.onbeforeunload = formWarning;
 }
 
+$jq('body').on('change', 'input', function() {
+	makeDirty();
+});
+
 </script>
 
 <hr/>
@@ -368,6 +372,7 @@ function makeDirty(){
 					   property='collectionDate'
 					   maxlength='10'
 					   size ='12'
+					   onkeyup="addDateSlashes(this, event);"
 					   onchange="checkValidEntryDate(this, 'past', true);"
 					   styleId='<%= "collectionDate_" + index %>'
 					   styleClass='<%= "text" + (isEditable? "" : " readOnly") %>'
