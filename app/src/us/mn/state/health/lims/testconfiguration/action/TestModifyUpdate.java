@@ -279,12 +279,20 @@ public class TestModifyUpdate extends BaseAction {
             if (typeOfSample == null) {
                 continue;
             }
-            TestSet testSet = new TestSet();
-            Test test = new Test();
+            
+           TypeOfSampleTestDAOImpl typeOfSampleTestDAOImpl = new TypeOfSampleTestDAOImpl();
+           TypeOfSampleTest typeOfSampleTestExists = typeOfSampleTestDAOImpl.getTypeOfSampleTestForTest(testAddParams.testId);
+          
+           TestSet testSet = new TestSet();
+           Test test = new Test();
            
-            if (i == 0) {
-            	test.setId(testAddParams.testId);
-            }
+           if ( typeOfSampleTestExists.getTypeOfSampleId().equals(typeOfSample.getId()) ) {
+        	   test.setId(testAddParams.testId);
+           }
+            
+//            Test testExists = new Test();
+//            TestDAOImpl testDAOImpl = new TestDAOImpl();
+//            testExists = testDAOImpl.getTestById(testAddParams.testId);
             
             test.setUnitOfMeasure(uom);
             test.setDescription(testAddParams.testNameEnglish + "(" + typeOfSample.getDescription() + ")");
