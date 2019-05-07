@@ -92,49 +92,20 @@ public class PrintWorkplanReportAction extends BaseAction {
 				
 		//set Jasper report file name
 		String reportFileName = workplanReport.getFileName();
-		LogEvent.logError("printWorkplanReportAction","performAction()", "String reportFileName = workplanReport.getFileName();");
-		LogEvent.logError("printWorkplanReportAction","performAction():reportFileName", reportFileName);
 		//String reportFile = this.getServlet().getServletConfig().getServletContext().getRealPath("WEB-INF/reports/" + reportFileName + ".jasper");
-		//String reportFile = this.getServlet().getServletContext().getRealPath("WEB-INF/reports/" + reportFileName + ".jasper");
 		String reportFile = getServlet().getServletContext().getRealPath("") + "/WEB-INF/reports/" + reportFileName + ".jasper";
-		LogEvent.logError("printWorkplanReportAction","performAction()", "String reportFile = getServlet().getServletContext().getRealPath(\"\") + \"/WEB-INF/reports/\" + reportFileName + \".jasper\";");
-		LogEvent.logError("printWorkplanReportAction","performAction():reportFileName", reportFile);
 						
 	    try {
 
-	    	LogEvent.logError("printWorkplanReportAction","performAction()", "byte[] bytes = null;");	
 	        byte[] bytes = null;
-	        
-	        LogEvent.logError("printWorkplanReportAction","performAction()", "JRDataSource dataSource = createReportDataSource(workplanRows);");
-	        LogEvent.logError("printWorkplanReportAction","performAction():workplanRows:", workplanRows.toString());
 			JRDataSource dataSource = createReportDataSource(workplanRows);
-			
-			LogEvent.logError("printWorkplanReportAction","performAction()", "bytes = JasperRunManager.runReportToPdf(reportFile, parameterMap, dataSource);");
-			LogEvent.logError("printWorkplanReportAction","performAction():reportFile:", reportFile.toString() ); 
-			LogEvent.logError("printWorkplanReportAction","performAction():parameterMap:", parameterMap.toString() );
-			LogEvent.logError("printWorkplanReportAction","performAction():dataSource:", dataSource.toString() );
 			bytes = JasperRunManager.runReportToPdf(reportFile, parameterMap, dataSource);
-			
-			LogEvent.logError("printWorkplanReportAction","performAction()", "ServletOutputStream servletOutputStream = response.getOutputStream();");	
 			ServletOutputStream servletOutputStream = response.getOutputStream();
-			
-			LogEvent.logError("printWorkplanReportAction","performAction()", "response.setContentType(\"application/pdf\");");
 			response.setContentType("application/pdf");
-			
-			LogEvent.logError("printWorkplanReportAction","performAction()", "response.setContentLength(bytes.length);");
-			LogEvent.logError("printWorkplanReportAction","performAction():bytes.length:", Integer.toString(bytes.length));
 			response.setContentLength(bytes.length);
-			
-			LogEvent.logError("printWorkplanReportAction","performAction()", "servletOutputStream.write(bytes, 0, bytes.length);");
-			//LogEvent.logError("printWorkplanReportAction","performAction():bytes:", new String(bytes));
 			servletOutputStream.write(bytes, 0, bytes.length);
-			
-			LogEvent.logError("printWorkplanReportAction","performAction()", "servletOutputStream.flush();");
 			servletOutputStream.flush();
-			
-			LogEvent.logError("printWorkplanReportAction","performAction()", "servletOutputStream.close();");
 			servletOutputStream.close();
-	
 	    }
 	    catch (JRException jre) {
 	    	LogEvent.logError("PrintWorkplanReportAction","processRequest()", jre.toString());

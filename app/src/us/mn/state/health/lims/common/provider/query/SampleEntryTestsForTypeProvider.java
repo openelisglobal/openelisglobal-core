@@ -67,8 +67,13 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 		String sampleType = request.getParameter("sampleType");
         isVariableTypeOfSample =  VARIABLE_SAMPLE_TYPE_ID.equals( sampleType );
         StringBuilder xml = new StringBuilder();
-
-		String result = createSearchResultXML(sampleType, xml);
+        
+		String result;
+		if( sampleType.equals("null") || sampleType.isEmpty() ) {
+			result = "";
+		} else {
+			result = createSearchResultXML(sampleType, xml);
+		}
 
 		ajaxServlet.sendData(xml.toString(), result, request, response);
 

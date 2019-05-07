@@ -75,7 +75,7 @@ public class TestAddUpdate extends BaseAction {
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String currentUserId = getSysUserId(request);
         String jsonString = ((DynaValidatorForm)form).getString("jsonWad");
-        System.out.println(jsonString);
+//        System.out.println(jsonString);
 
         JSONParser parser=new JSONParser();
 
