@@ -58,6 +58,19 @@ public class ConfigurationSideEffects {
 				}
 			}
 		}
+		
+		if ("Non Conformity tab".equals(siteInformation.getName())) {
+			MenuDAOImpl menuDAO = new MenuDAOImpl();
+			boolean active = "true".equals(siteInformation.getValue());
+
+			Menu parentMenu = menuDAO.getMenuByElementId("menu_nonconformity");
+			if( parentMenu != null ){
+				parentMenu.setIsActive(active);
+				menuDAO.updateData( parentMenu);
+			}
+			
+			MenuUtil.forceRebuild();
+		}
 
 //--------------------------
 		if("Patient management tab".equals(siteInformation.getName())){
