@@ -235,7 +235,7 @@ public class SampleOrderService {
 
 	private void createObservationHistoryArtifacts(SampleOrderItem sampleOrder, String currentUserId,
 			SampleOrderPersistenceArtifacts artifacts) {
-		List<ObservationHistory> observations = new ArrayList<>();
+		List<ObservationHistory> observations = new ArrayList<ObservationHistory>();
 		PatientService patientService = new PatientService(artifacts.getSample());
 		String patientId = patientService.getPatient().getId();
 
@@ -399,7 +399,7 @@ public class SampleOrderService {
 		private Person providerPerson;
 		private Organization providerOrganization;
 		private SampleRequester deletableSampleOrganizationRequester;
-		private List<ObservationHistory> observations = new ArrayList<>();
+		private List<ObservationHistory> observations = new ArrayList<ObservationHistory>();
 		private SampleRequester sampleOrganizationRequester;
 		private SampleRequester samplePersonRequester;
 
