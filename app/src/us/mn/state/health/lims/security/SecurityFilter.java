@@ -65,9 +65,8 @@ public class SecurityFilter implements Filter {
 			Enumeration<String> parameterNames = httpRequest.getParameterNames();
 			 while (parameterNames.hasMoreElements()) {
 				 String param = httpRequest.getParameter(parameterNames.nextElement());
-				 String paramValue = java.net.URLDecoder.decode(param, "UTF-8");
-				 paramValue = paramValue.replaceAll("\\s", "");
-				 if (paramValue.contains("<script>") || paramValue.contains("</script>")) {
+				 param = param.replaceAll("\\s", "");
+				 if (param.contains("<script>") || param.contains("</script>")) {
 					 suspectedAttack = true;
 					 attackList.add("XSS- " + param);
 				 }
