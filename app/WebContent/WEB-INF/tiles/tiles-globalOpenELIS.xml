@@ -81,8 +81,8 @@
     <put name="entryMethod" value="/pages/samplebatchentry/study/PrePrintedEntry.jsp" />
   </definition>
 
-	<definition name="batchEntryPatientManagementCore" path="/pages/samplebatchentry/patientManagement.jsp">
-		<put name="patientSearch"  value="/pages/samplebatchentry/patientSearch.jsp" />
+	<definition name="batchEntryPatientManagementCore" path="/pages/samplebatchentry/routine/patientManagement.jsp">
+		<put name="patientSearch"  value="/pages/samplebatchentry/routine/patientSearch.jsp" />
 	</definition>
   
 
