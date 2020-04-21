@@ -126,11 +126,6 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	private static final String RESULT_SUBJECT = "Result Note";
 	private static String REFERRAL_CONFORMATION_ID;
 
-    private boolean useTechnicianName = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
-	private boolean alwaysValidate = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ALWAYS_VALIDATE_RESULTS, "true");
-    private boolean supportReferrals = FormFields.getInstance().useField( Field.ResultsReferral );
-	private String statusRuleSet = ConfigurationProperties.getInstance().getPropertyValueUpperCase( Property.StatusRules );
-
 	static{
 		ReferralTypeDAO referralTypeDAO = new ReferralTypeDAOImpl();
 		ReferralType referralType = referralTypeDAO.getReferralTypeByName("Confirmation");
@@ -262,7 +257,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 		if(GenericValidator.isBlankOrNull(dynaForm.getString("logbookType"))){
 			return mapping.findForward(forward);
 		}else{
-			Map<String, String> params = new HashMap<String, String>();
+			Map<String, String> params = new HashMap<>();
 			params.put("type", dynaForm.getString("logbookType"));
 			params.put("forward", forward);
 			return getForwardWithParameters(mapping.findForward(forward), params);
@@ -291,7 +286,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	}
 
 	private List<TestReflexBean> convertToTestReflexBeanList(List<ResultSet> resultSetList){
-		List<TestReflexBean> reflexBeanList = new ArrayList<TestReflexBean>();
+		List<TestReflexBean> reflexBeanList = new ArrayList<>();
 
 		for(ResultSet resultSet : resultSetList){
 			TestReflexBean reflex = new TestReflexBean();
@@ -300,7 +295,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
             if( resultSet.triggersToSelectedReflexesMap.size() > 0 && resultSet.multipleResultsForAnalysis){
                 for( String trigger : resultSet.triggersToSelectedReflexesMap.keySet()){
                     if( trigger.equals( resultSet.result.getValue() )){
-                        HashMap<String, List<String>> reducedMap = new HashMap<String, List<String>>( 1 );
+                        HashMap<String, List<String>> reducedMap = new HashMap<>( 1 );
                         reducedMap.put( trigger, resultSet.triggersToSelectedReflexesMap.get( trigger ) );
                         reflex.setTriggersToSelectedReflexesMap( reducedMap );
                     }
@@ -321,7 +316,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	}
 
 	private void setSampleStatus(ResultsUpdateDataSet actionDataSet){
-		Set<Sample> sampleSet = new HashSet<Sample>();
+		Set<Sample> sampleSet = new HashSet<>();
 
 		for(ResultSet resultSet : actionDataSet.getNewResults()){
 			sampleSet.add(resultSet.sample);
@@ -400,7 +395,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
     private void handleReferrals( TestResultItem testResultItem, Analysis analysis, ResultsUpdateDataSet actionDataSet ){
 
-        if(supportReferrals){
+		if (FormFields.getInstance().useField(Field.ResultsReferral)) {
 
             Referral referral = null;
             // referredOut means the referral checkbox was checked, repeating
@@ -436,7 +431,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
 	protected boolean analysisShouldBeUpdated(TestResultItem testResultItem, Result result){
 		return result != null && !GenericValidator.isBlankOrNull(result.getValue())
-				|| (supportReferrals && ResultUtil.isReferred(testResultItem))
+				|| (FormFields.getInstance().useField(Field.ResultsReferral) && ResultUtil.isReferred(testResultItem))
 				|| ResultUtil.isForcedToAcceptance(testResultItem) || testResultItem.isShadowRejected();
 	}
 
@@ -446,7 +441,8 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
 		ResultSignature technicianResultSignature = null;
 
-		if(useTechnicianName && newAnalysisInLoop){
+		if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true")
+				&& newAnalysisInLoop) {
 			technicianResultSignature = createTechnicianSignatureFromResultItem(testResultItem);
 		}
 
@@ -465,7 +461,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
         SampleService sampleService = new SampleService( testResultItem.getAccessionNumber() );
         Patient patient = sampleService.getPatient();
 
-        Map<String,List<String>> triggersToReflexesMap = new HashMap<String, List<String>>(  );
+        Map<String,List<String>> triggersToReflexesMap = new HashMap<>(  );
 
         getSelectedReflexes( testResultItem.getReflexJSONResult(), triggersToReflexesMap );
 
@@ -489,7 +485,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
                 for(Object compoundReflexes : jsonResult.values()){
                     if( compoundReflexes != null){
                         String triggerIds = ( String ) ( ( JSONObject ) compoundReflexes ).get( "triggerIds" );
-                        List<String> selectedReflexIds = new ArrayList<String>();
+                        List<String> selectedReflexIds = new ArrayList<>();
                         JSONArray selectedReflexes = ( JSONArray ) ( ( JSONObject ) compoundReflexes ).get( "selected" );
                         for( Object selectedReflex : selectedReflexes ){
                             selectedReflexIds.add( ( ( String ) selectedReflex ) );
@@ -506,7 +502,8 @@ public class ResultsLogbookUpdateAction extends BaseAction {
     private String getStatusForTestResult(TestResultItem testResult){
         if (testResult.isShadowRejected()) {
             return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected);
-        }else if(alwaysValidate || !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)){
+		} else if (ConfigurationProperties.getInstance().isPropertyValueEqual(Property.ALWAYS_VALIDATE_RESULTS, "true")
+				|| !testResult.isValid() || ResultUtil.isForcedToAcceptance(testResult)) {
 			return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance);
 		}else if(noResults(testResult.getShadowResultValue(), testResult.getMultiSelectResultValues(), testResult.getResultType())){
 			return StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted);
@@ -559,7 +556,8 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
 		// This needs to be refactored -- part of the logic is in
 		// getStatusForTestResult. RetroCI over rides to whatever was set before
-		if(statusRuleSet.equals(IActionConstants.STATUS_RULES_RETROCI)){
+		if (ConfigurationProperties.getInstance().getPropertyValueUpperCase(Property.StatusRules)
+				.equals(IActionConstants.STATUS_RULES_RETROCI)) {
 			if( !StatusService.getInstance().getStatusID(AnalysisStatus.Canceled).equals(analysis.getStatusId() )){
 				analysis.setCompletedDate(DateUtil.convertStringDateToSqlDate(testDate));
 				analysis.setStatusId(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance));
@@ -597,8 +595,9 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
 	protected ActionForward getForward(ActionForward forward, String accessionNumber){
 		ActionRedirect redirect = new ActionRedirect(forward);
-		if(!StringUtil.isNullorNill(accessionNumber))
+		if(!StringUtil.isNullorNill(accessionNumber)) {
 			redirect.addParameter(ACCESSION_NUMBER, accessionNumber);
+		}
 
 		return redirect;
 
@@ -607,11 +606,13 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	@Override
 	protected ActionForward getForward(ActionForward forward, String accessionNumber, String analysisId){
 		ActionRedirect redirect = new ActionRedirect(forward);
-		if(!StringUtil.isNullorNill(accessionNumber))
+		if(!StringUtil.isNullorNill(accessionNumber)) {
 			redirect.addParameter(ACCESSION_NUMBER, accessionNumber);
+		}
 
-		if(!StringUtil.isNullorNill(analysisId))
+		if(!StringUtil.isNullorNill(analysisId)) {
 			redirect.addParameter(ANALYSIS_ID, analysisId);
+		}
 
 		return redirect;
 
