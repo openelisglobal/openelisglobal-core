@@ -36,6 +36,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import us.mn.state.health.lims.common.action.BaseAction;
+import us.mn.state.health.lims.common.services.DisplayListService;
 import us.mn.state.health.lims.common.services.LocalizationService;
 import us.mn.state.health.lims.common.services.TestSectionService;
 import us.mn.state.health.lims.common.services.TestService;
@@ -142,6 +143,8 @@ public class TestAddUpdate extends BaseAction {
         }
 
         TestService.refreshTestNames();
+		DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE);
+		DisplayListService.refreshList(DisplayListService.ListType.SAMPLE_TYPE_INACTIVE);
         TypeOfSampleService.clearCache();
         return mapping.findForward(FWD_SUCCESS);
     }
@@ -196,7 +199,7 @@ public class TestAddUpdate extends BaseAction {
         String significantDigits = testAddParams.significantDigits;
         boolean numericResults = TypeOfTestResultService.ResultType.isNumericById(testAddParams.resultTypeId);
         boolean dictionaryResults = TypeOfTestResultService.ResultType.isDictionaryVarientById(testAddParams.resultTypeId);
-        List<TestSet> testSets = new ArrayList<TestSet>();
+        List<TestSet> testSets = new ArrayList<>();
         UnitOfMeasure uom = null;
         if(!GenericValidator.isBlankOrNull(testAddParams.uomId) || "0".equals(testAddParams.uomId)) {
             uom = new UnitOfMeasureDAOImpl().getUnitOfMeasureById(testAddParams.uomId);
@@ -212,6 +215,11 @@ public class TestAddUpdate extends BaseAction {
             TypeOfSample typeOfSample = typeOfSampleDAO.getTypeOfSampleById(testAddParams.sampleList.get(i).sampleTypeId);
             if (typeOfSample == null) {
                 continue;
+			} else {
+				TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
+				typeOfSample.setIsActive(testAddParams.active.equals("Y"));
+				typeOfSample.setSysUserId(currentUserId);
+				typeOfSampleDAO.updateData(typeOfSample);
             }
             TestSet testSet = new TestSet();
             Test test = new Test();
@@ -257,7 +265,7 @@ public class TestAddUpdate extends BaseAction {
     }
 
     private ArrayList<ResultLimit> createDictionaryResultLimit(TestAddParams testAddParams) {
-        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        ArrayList<ResultLimit> resultLimits = new ArrayList<>();
         if( !GenericValidator.isBlankOrNull(testAddParams.dictionaryReferenceId)){
             ResultLimit limit = new ResultLimit();
             limit.setResultTypeId(testAddParams.resultTypeId);
@@ -269,7 +277,7 @@ public class TestAddUpdate extends BaseAction {
     }
 
     private ArrayList<ResultLimit> createResultLimits(Double lowValid, Double highValid, TestAddParams testAddParams) {
-        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        ArrayList<ResultLimit> resultLimits = new ArrayList<>();
         for( ResultLimitParams params : testAddParams.limits){
             ResultLimit limit = new ResultLimit();
             limit.setResultTypeId(testAddParams.resultTypeId);
@@ -402,24 +410,24 @@ public class TestAddUpdate extends BaseAction {
         String testReportNameEnglish;
         String testReportNameFrench;
         String testSectionId;
-        ArrayList<String> panelList = new ArrayList<String>();
+        ArrayList<String> panelList = new ArrayList<>();
         String uomId;
         String loinc;
         String resultTypeId;
-        ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<SampleTypeListAndTestOrder>();
+        ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<>();
         String active;
         String orderable;
         String lowValid;
         String highValid;
         String significantDigits;
         String dictionaryReferenceId;
-        ArrayList<ResultLimitParams> limits = new ArrayList<ResultLimitParams>();
-        ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<DictionaryParams>();
+        ArrayList<ResultLimitParams> limits = new ArrayList<>();
+        ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<>();
     }
 
     private class SampleTypeListAndTestOrder{
         String sampleTypeId;
-        ArrayList<String> orderedTests = new ArrayList<String>();
+        ArrayList<String> orderedTests = new ArrayList<>();
     }
 
     private class ResultLimitParams{
@@ -433,10 +441,10 @@ public class TestAddUpdate extends BaseAction {
     private class TestSet{
         Test test;
         TypeOfSampleTest sampleTypeTest;
-        ArrayList<Test> sortedTests = new ArrayList<Test>();
-        ArrayList<PanelItem> panelItems = new ArrayList<PanelItem>();
-        ArrayList<TestResult> testResults = new ArrayList<TestResult>();
-        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        ArrayList<Test> sortedTests = new ArrayList<>();
+        ArrayList<PanelItem> panelItems = new ArrayList<>();
+        ArrayList<TestResult> testResults = new ArrayList<>();
+        ArrayList<ResultLimit> resultLimits = new ArrayList<>();
     }
 
     private class DictionaryParams{
