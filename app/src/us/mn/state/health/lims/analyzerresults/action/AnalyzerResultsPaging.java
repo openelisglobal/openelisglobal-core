@@ -134,7 +134,7 @@ public class AnalyzerResultsPaging {
 			return allResults;
 		}
 
-		@Override
+		//@Override
 		public List<IdValuePair> createSearchToPageMapping(List<List<AnalyzerResultItem>> allPages) {
 			List<IdValuePair> mappingList = new ArrayList<IdValuePair>();
 

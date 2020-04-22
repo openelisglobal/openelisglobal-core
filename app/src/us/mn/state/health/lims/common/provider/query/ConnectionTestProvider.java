@@ -34,7 +34,7 @@ public class ConnectionTestProvider extends BaseQueryProvider {
 	 * @see us.mn.state.health.lims.common.provider.query.BaseQueryProvider#processRequest(javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	@Override
+	//@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ExchangeConfigurationService service = new ExchangeConfigurationService(request.getParameter("connectionId"));
 		String testResult = service.testConnection(request.getParameter("url"));

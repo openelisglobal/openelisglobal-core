@@ -116,7 +116,7 @@ public class NonConformityAction extends BaseAction{
 	private Sample sample;
 	private boolean useSiteList;
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception{
 
@@ -434,7 +434,7 @@ public class NonConformityAction extends BaseAction{
 
 	private void sortSections(List<TestSection> list){
 		Collections.sort(list, new Comparator<TestSection>(){
-			@Override
+			//@Override
 			public int compare(TestSection o1, TestSection o2){
 				return o1.getSortOrderInt() - o2.getSortOrderInt();
 			}
@@ -464,12 +464,12 @@ public class NonConformityAction extends BaseAction{
 		return sections;
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey(){
 		return "qaevent.add.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey(){
 		return "qaevent.add.title";
 	}

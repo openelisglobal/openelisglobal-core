@@ -54,7 +54,7 @@ public class ElisaWorkplanReport implements IWorkplanReport {
 		return workplanTests;
 	}
 
-    @Override
+    //@Override
     public void setReportPath(String reportPath) {
         this.reportPath = reportPath;
         

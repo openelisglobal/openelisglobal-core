@@ -77,7 +77,7 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 		SAMPLE_QA_EVENT_TABLE_ID = new ReferenceTablesDAOImpl().getReferenceTableByName("SAMPLE_QAEVENT").getId();
 	}
 	
-	@Override
+	//@Override
 	protected String reportFileName(){
 		return "RetroCI_FollowupRequired_ByLocation";
 	}
@@ -85,7 +85,7 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 	/**
 	 * @see us.mn.state.health.lims.reports.action.implementation.IReportParameterSetter#setRequestParameters(us.mn.state.health.lims.common.action.BaseActionForm)
 	 */
-	@Override
+	//@Override
 	public void setRequestParameters(BaseActionForm dynaForm) {
 		try {
 			PropertyUtils.setProperty(dynaForm, "reportName", getReportNameForParameterPage());
@@ -107,7 +107,7 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 	/**
 	 * @see us.mn.state.health.lims.reports.action.implementation.RetroCIReport#initializeReport(us.mn.state.health.lims.common.action.BaseActionForm)
 	 */
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm) {
 		super.initializeReport();
 		errorFound = false;
@@ -129,7 +129,7 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 		}
 	}
 
-	@Override
+	//@Override
 	protected void createReportParameters() {
 		super.createReportParameters();
 		reportParameters.put("reportTitle", getReportNameForParameterPage() + "  -  " + dateRange.toString());
@@ -303,7 +303,7 @@ public class RetroCIFollowupRequiredByLocation extends RetroCIReport implements 
 	/**
 	 * @see us.mn.state.health.lims.reports.action.implementation.Report#getReportDataSource()
 	 */
-	@Override
+	//@Override
 	public JRDataSource getReportDataSource() throws IllegalStateException {
 		return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
 	}

@@ -30,7 +30,7 @@ import us.mn.state.health.lims.menu.valueholder.Menu;
 public class MenuDAOImpl implements MenuDAO {
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Menu> getAllMenus() throws LIMSRuntimeException {
 
 		try {
@@ -48,7 +48,7 @@ public class MenuDAOImpl implements MenuDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Menu> getAllActiveMenus() throws LIMSRuntimeException {
 
 		try {
@@ -81,7 +81,7 @@ public class MenuDAOImpl implements MenuDAO {
 		
 	}
 
-	@Override
+	//@Override
 	public void updateData(Menu menu) throws LIMSRuntimeException {
 		try {
 			HibernateUtil.getSession().merge(menu);

@@ -217,7 +217,7 @@ public class ResultLimitDAOImpl extends BaseDAOImpl implements ResultLimitDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public ResultLimit getResultLimitById(String resultLimitId) throws LIMSRuntimeException {
 		try {
 			ResultLimit resultLimit = (ResultLimit) HibernateUtil.getSession().get(ResultLimit.class, resultLimitId);

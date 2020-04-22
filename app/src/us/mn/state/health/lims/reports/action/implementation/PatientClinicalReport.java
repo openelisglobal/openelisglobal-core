@@ -73,12 +73,12 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 		this.isLNSP = isLNSP;
 	}
 
-	@Override
+	//@Override
 	protected String reportFileName(){
 		return "PatientClinicalReport";
 	}
 
-	@Override
+	//@Override
 	protected void createReportItems(){
 		List<Analysis> analysisList = analysisDAO.getAnalysesBySampleIdAndStatusId(currentSampleService.getId(), analysisStatusIds);
 
@@ -197,7 +197,7 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 		data.setAccessionNumber(parentData.getAccessionNumber());
 	}
 
-	@Override
+	//@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
 			ClinicalPatientData reportItem = buildClinicalPatientData( false );
@@ -211,7 +211,7 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 
 	private void buildReport(){
 		Collections.sort(reportItems, new Comparator<ClinicalPatientData>(){
-			@Override
+			//@Override
 			public int compare(ClinicalPatientData o1, ClinicalPatientData o2){
 
 				String o1AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber(o1.getAccessionNumber());
@@ -299,7 +299,7 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 		}
 	}
 
-	@Override
+	//@Override
 	protected String getReportNameForParameterPage(){
 		return StringUtil.getMessageForKey("openreports.patientTestStatus");
 	}
@@ -312,34 +312,34 @@ public class PatientClinicalReport extends PatientReport implements IReportCreat
 		return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
 	}
 
-	@Override
+	//@Override
 	protected void initializeReportItems(){
 		super.initializeReportItems();
 		clinicalReportItems = new ArrayList<ClinicalPatientData>();
 	}
 
-	@Override
+	//@Override
 	protected void setReferredResult(ClinicalPatientData data, Result result){
 		data.setResult(data.getResult() );
 		data.setAlerts(getResultFlag(result, null));
 	}
 
-	@Override
+	//@Override
 	protected boolean appendUOMToRange(){
 		return false;
 	}
 
-	@Override
+	//@Override
 	protected boolean augmentResultWithFlag(){
 		return false;
 	}
 
-	@Override
+	//@Override
 	protected boolean useReportingDescription(){
 		return true;
 	}
 
-    @Override
+    //@Override
     protected String getHeaderName(){
         return "GeneralHeader.jasper";
     }

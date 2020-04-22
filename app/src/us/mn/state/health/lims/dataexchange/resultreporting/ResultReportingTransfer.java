@@ -82,7 +82,7 @@ public class ResultReportingTransfer {
 			this.reportingResults = reportingResults;
 		}
 
-		@Override
+		//@Override
 		public void handleResponse(int httpReturnStatus, List<String> errors, String msg) {
 			if (httpReturnStatus == HttpServletResponse.SC_OK) {
 				markFinalResultsAsSent();

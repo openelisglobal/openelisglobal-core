@@ -32,14 +32,14 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 	private static final long DAY_IN_MILLSEC = 1000L * 60L * 60L * 24L;
 	private final String TYPE_PARAM = "typeId";
 
-	@Override
+	//@Override
 	public List<ReportExternalExport> getRecalculateReportExports(String reportQueueTypeId) throws LIMSRuntimeException {
 		String sql = "from ReportExternalExport rq where rq.recalculate = true and rq.typeId = :" + TYPE_PARAM;
 
 		return handleListResultWithTypeId(sql, reportQueueTypeId);
 	}
 
-	@Override
+	//@Override
 	public List<ReportExternalExport> getUnsentReportExports(String reportQueueTypeId) throws LIMSRuntimeException {
 		String sql = "from ReportExternalExport rq where rq.send = true and rq.typeId = :" + TYPE_PARAM;
 
@@ -47,14 +47,14 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 
 	}
 
-	@Override
+	//@Override
 	public ReportExternalExport getLatestSentReportExport(String reportQueueTypeId) throws LIMSRuntimeException {
 		String sql = "from ReportExternalExport rq where rq.send = false and rq.typeId = :" + TYPE_PARAM + " order by rq.sentDate desc";
 
 		return handleMaxResultWithTypeId(reportQueueTypeId, sql);
 	}
 
-	@Override
+	//@Override
 	public ReportExternalExport getLatestEventReportExport(String reportQueueTypeId) throws LIMSRuntimeException {
 		String sql = "from ReportExternalExport rq where rq.typeId = :" + TYPE_PARAM + " order by rq.eventDate desc";
 
@@ -63,7 +63,7 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ReportExternalExport> getReportsInDateRange(Timestamp lower, Timestamp upper, String reportQueueTypeId)
 			throws LIMSRuntimeException {
 		String sql = "from ReportExternalExport rq where rq.sentDate >= :lower and rq.sentDate <= :upper";
@@ -84,7 +84,7 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 		return null;
 	}
 
-	@Override
+	//@Override
 	public void insertReportExternalExport(ReportExternalExport report) throws LIMSRuntimeException {
 		try {
 			String id = (String) HibernateUtil.getSession().save(report);
@@ -95,7 +95,7 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 		}
 	}
 
-	@Override
+	//@Override
 	public void updateReportExternalExport(ReportExternalExport report) throws LIMSRuntimeException {
 
 		try {
@@ -154,7 +154,7 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Timestamp getLastSentTimestamp() throws LIMSRuntimeException {
 		String sql = "From ReportExternalExport ree where ree.sentDate IS NOT NULL order by ree.sentDate DESC";
 
@@ -171,7 +171,7 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Timestamp getLastCollectedTimestamp() throws LIMSRuntimeException {
 		String sql = "From ReportExternalExport ree order by ree.collectionDate DESC";
 
@@ -188,7 +188,7 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 		return null;
 	}
 
-	@Override
+	//@Override
 	public ReportExternalExport getReportByEventDateAndType(ReportExternalExport report) throws LIMSRuntimeException {
 		String sql = "From ReportExternalExport ree where ree.eventDate >= :eventDate and ree.eventDate < :nextDay and ree.typeId = :typeId";
 
@@ -207,7 +207,7 @@ public class ReportExternalExportDAOImpl extends BaseDAOImpl implements ReportEx
 		return report;
 	}
 
-	@Override
+	//@Override
 	public ReportExternalExport loadReport(ReportExternalExport report) throws LIMSRuntimeException {
 		return readReportExternalExport(report.getId());
 	}

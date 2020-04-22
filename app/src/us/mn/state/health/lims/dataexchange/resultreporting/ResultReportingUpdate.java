@@ -29,12 +29,12 @@ import us.mn.state.health.lims.result.valueholder.Result;
 
 public class ResultReportingUpdate implements IResultUpdate {
 
-	@Override
+	//@Override
 	public void transactionalUpdate(IResultSaveService resultService) throws LIMSRuntimeException {
 		//no-op
 	}
 
-	@Override
+	//@Override
 	public void postTransactionalCommitUpdate(IResultSaveService resultService) {
 		ResultReportingCollator collator = new ResultReportingCollator();
 		List<Result> updatedResults = new ArrayList<Result>();

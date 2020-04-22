@@ -1262,7 +1262,7 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
         return getHistoryByRefIdAndRefTableId( history.getReferenceId(), history.getReferenceTable() );
     }
 
-    @Override
+    //@Override
     public List getHistoryByRefIdAndRefTableId( String refId, String tableId ) throws LIMSRuntimeException{
         List list;
 
@@ -1284,7 +1284,7 @@ public class AuditTrailDAOImpl extends BaseDAOImpl implements AuditTrailDAO {
     }
 
     @SuppressWarnings( "unchecked" )
-    @Override
+    //@Override
     public List<History> getHistoryByRefTableIdAndDateRange( String referenceTableId, Date start, Date end ) throws LIMSRuntimeException{
         String sql = "from History h where h.referenceTable = :tableId and (h.timestamp between :start and :end)  order by h.referenceId, h.timestamp desc";
 

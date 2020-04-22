@@ -158,7 +158,7 @@ public class ReferralDAOImpl extends BaseDAOImpl implements ReferralDAO {
      * @see us.mn.state.health.lims.referral.dao.ReferralDAO#getAllReferralsByOrganization(java.lang.String, java.sql.Date, java.sql.Date)
      */
     @SuppressWarnings("unchecked")
-	@Override
+	//@Override
     public List<Referral> getAllReferralsByOrganization(String organizationId, Date lowDate, Date highDate) {
         String sql = "FROM Referral r WHERE r.organization.id = :organizationId AND r.requestDate >= :lowDate AND r.requestDate <= :highDate";
 

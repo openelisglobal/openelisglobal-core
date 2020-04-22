@@ -117,12 +117,12 @@ public class DeletePatientTestDataAction extends BaseAction {
 		return mapping.findForward(FWD_SUCCESS);
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return null;
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return null;
 	}

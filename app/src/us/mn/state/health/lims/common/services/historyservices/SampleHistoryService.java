@@ -61,13 +61,13 @@ public class SampleHistoryService extends HistoryService {
 		newValueMap = new HashMap<String, String>();
 	}
 
-	@Override
+	//@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		identifier = sampleItemDAO.getData(history.getReferenceId()).getTypeOfSample().getDescription();
 		items.add(getCoreTrail(history));
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 		SampleItem item = sampleItemDAO.getData(history.getReferenceId());
 		String statusId = item.getStatusId();
@@ -78,7 +78,7 @@ public class SampleHistoryService extends HistoryService {
 		}
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("sample.entry.sampleList.label");
 	}

@@ -29,7 +29,7 @@ import us.mn.state.health.lims.requester.valueholder.RequesterType;
  */
 public class RequesterTypeDAOImpl extends BaseDAOImpl implements RequesterTypeDAO {
 
-	@Override
+	//@Override
 	public RequesterType getRequesterTypeByName(String typeName) throws LIMSRuntimeException {
 		String sql = "from RequesterType rt where rt.requesterType = :typeName";
 

@@ -754,7 +754,7 @@ public class DictionaryDAOImpl extends BaseDAOImpl implements DictionaryDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Dictionary getDataForId(String dictionaryId) throws LIMSRuntimeException {
 		String sql = "from Dictionary d where d.id = :id";
 		try {

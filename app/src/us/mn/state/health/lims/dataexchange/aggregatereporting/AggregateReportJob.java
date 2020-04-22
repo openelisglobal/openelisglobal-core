@@ -61,7 +61,7 @@ public class AggregateReportJob implements Job {
 		}
 	}
 
-	@Override
+	//@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		System.out.println("Reporting triggered: " + DateUtil.getCurrentDateAsText("dd-MM-yyyy hh:mm"));
 		LogEvent.logInfo("AggregateReportJob", "execute()", "Reporting triggered: " + DateUtil.getCurrentDateAsText("dd-MM-yyyy hh:mm"));
@@ -176,7 +176,7 @@ public class AggregateReportJob implements Job {
 			this.url = url;
 		}
 
-		@Override
+		//@Override
 		public void handleResponse(int httpReturnStatus, List<String> errors, String msg) {
 
 			switch (httpReturnStatus) {

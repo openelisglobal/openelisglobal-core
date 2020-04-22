@@ -85,12 +85,12 @@ public class DefaultAdminFormFields extends AAdminFormFields {
 		defaultAttributes.put(Field.AnalyzerTestNameMenu,  Boolean.TRUE);
 	}
 
-	@Override
+	//@Override
 	protected HashMap<Field, Boolean> getDefaultAttributes() {
 		return defaultAttributes;
 	}
 
-	@Override
+	//@Override
 	protected HashMap<Field, Boolean> getSetAttributes() {
 		String fieldSet = ConfigurationProperties.getInstance().getPropertyValueUpperCase(Property.FormFieldSet);
 

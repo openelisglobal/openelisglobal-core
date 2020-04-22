@@ -44,7 +44,7 @@ public class ScanGeneratorProvider extends BaseQueryProvider {
 		this.ajaxServlet = ajaxServlet;
 	}
 
-	@Override
+	//@Override
 	public void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 

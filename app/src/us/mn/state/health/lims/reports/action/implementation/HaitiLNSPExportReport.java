@@ -75,7 +75,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		ORGANIZTION_REFERRAL_TYPE_ID = orgTypeId == null ? -1L : Long.parseLong(orgTypeId);
 	}
 
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm){
 		super.initializeReport();
 
@@ -176,7 +176,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		testExportList.add(ts);
 	}
 
-	@Override
+	//@Override
 	protected String reportFileName(){
 		return "haitiLNSPExport";
 	}
@@ -184,7 +184,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 	/**
 	 * @see us.mn.state.health.lims.reports.action.implementation.Report#getContentType()
 	 */
-	@Override
+	//@Override
 	public String getContentType(){
 		if(errorFound){
 			return super.getContentType();
@@ -193,7 +193,7 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		}
 	}
 
-	@Override
+	//@Override
 	public byte[] runReport() throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append(TestSegmentedExportBean.getHeader());
@@ -207,12 +207,12 @@ public class HaitiLNSPExportReport extends CSVExportReport{
 		return builder.toString().getBytes();
 	}
 
-	@Override
+	//@Override
 	public String getResponseHeaderName(){
 		return "Content-Disposition";
 	}
 
-	@Override
+	//@Override
 	public String getResponseHeaderContent(){
 		return "attachment;filename=" + getReportFileName() + ".csv";
 	}

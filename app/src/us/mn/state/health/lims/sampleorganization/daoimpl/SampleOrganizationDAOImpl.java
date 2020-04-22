@@ -187,7 +187,7 @@ public class SampleOrganizationDAOImpl extends BaseDAOImpl implements SampleOrga
 
 	}
 
-	@Override
+	//@Override
 	public SampleOrganization getDataBySample(Sample sample) throws LIMSRuntimeException {
 		String sql = "From SampleOrganization so where so.sample.id = :sampleId";
 		try{

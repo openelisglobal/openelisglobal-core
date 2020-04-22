@@ -43,7 +43,7 @@ public class OrderServlet extends HohServlet{
 	private static final long serialVersionUID = -2572093053734971596L;
 
 	
-	@Override
+	//@Override
 	public void init(ServletConfig theConfig) throws ServletException{
 		setApplication(new OrderApplication());
 	}
@@ -62,7 +62,7 @@ public class OrderServlet extends HohServlet{
 		 *            A map containing additional information about the message,
 		 *            where it came from, etc.
 		 */
-		@Override
+		//@Override
 		public Message processMessage(Message message, Map theMetadata) throws ReceivingApplicationException, HL7Exception{
 			//LogEvent.logFatal("OrderServlet", "processMessage", message.encode());
 			// System.out.println("Received message:\n" + message.printStructure());
@@ -191,7 +191,7 @@ public class OrderServlet extends HohServlet{
 			orl.getMSA().parse(ack.getMSA().encode());
 			int errorCnt = 0;
 			for (ERR err : ack.getERRAll()) {
-				orl.insertERR(err, errorCnt++);;
+				orl.insertERR(err, errorCnt++);
 			}
 			
 			return orl;
@@ -220,7 +220,6 @@ public class OrderServlet extends HohServlet{
 		/**
 		 * {@inheritDoc}
 		 */
-		@Override
 		public boolean canProcess(Message theMessage){
 			return true;
 		}

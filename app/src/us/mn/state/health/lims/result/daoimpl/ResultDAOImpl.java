@@ -457,7 +457,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
         return null;
 	}
 
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public List<Result> getResultsForSample(Sample sample) throws LIMSRuntimeException {
 		String sql = "From Result r where r.analysis.sampleItem.sample.id = :sampleId";
@@ -475,7 +475,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public List<Result> getChildResults(String resultId) throws LIMSRuntimeException {
 		String sql = "From Result r where r.parentResult.id = :parentId";
@@ -493,7 +493,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
 		return null;
 	}
 
-    @Override
+    //@Override
     @SuppressWarnings( "unchecked" )
     public List<Result> getResultsForTestInDateRange( String testId, Date startDate, Date endDate ) throws LIMSRuntimeException{
         String sql = "FROM Result r WHERE r.analysis.test.id = :testId AND r.lastupdated BETWEEN :lowDate AND :highDate";
@@ -515,7 +515,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
         return null;
     }
 
-    @Override
+    //@Override
     @SuppressWarnings( "unchecked" )
     public List<Result> getResultsForPanelInDateRange( String panelId, Date lowDate, Date highDate ) throws LIMSRuntimeException{
         String sql = "FROM Result r WHERE r.analysis.panel.id = :panelId AND r.lastupdated BETWEEN :lowDate AND :highDate order by r.id";
@@ -537,7 +537,7 @@ public class ResultDAOImpl extends BaseDAOImpl implements ResultDAO {
         return null;
     }
 
-    @Override
+    //@Override
     @SuppressWarnings( "unchecked" )
     public List<Result> getResultsForTestSectionInDateRange( String testSectionId, Date lowDate, Date highDate ) throws LIMSRuntimeException{
         String sql = "FROM Result r WHERE r.analysis.testSection.id = :testSectionId AND r.lastupdated BETWEEN :lowDate AND :highDate";

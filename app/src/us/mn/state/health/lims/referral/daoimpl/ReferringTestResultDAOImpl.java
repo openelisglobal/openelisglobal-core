@@ -49,7 +49,7 @@ public class ReferringTestResultDAOImpl extends BaseDAOImpl implements Referring
 		return true;
 	}
 
-    @Override
+    //@Override
     @SuppressWarnings("unchecked")
     public List<ReferringTestResult> getReferringTestResultsForSampleItem(String sampleItemId) throws LIMSRuntimeException {
         String sql = "from ReferringTestResult rtr where rtr.sampleItemId = :sampleItemId";
@@ -65,7 +65,7 @@ public class ReferringTestResultDAOImpl extends BaseDAOImpl implements Referring
         return null;
     }
 
-    @Override
+    //@Override
     public List<ReferringTestResult> getResultsInDateRange(Date lowDate, Date highDate) throws LIMSRuntimeException {
         String sql = "from ReferringTestResult rtr where rtr.lastupdated BETWEEN :lowDate AND :highDate";
         try{

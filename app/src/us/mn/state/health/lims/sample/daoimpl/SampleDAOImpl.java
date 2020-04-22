@@ -48,7 +48,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 
 	private static final String ACC_NUMBER_SEQ_BEGIN = "000001";
 
-	@Override
+	//@Override
 	public void deleteData(List samples) throws LIMSRuntimeException {
 		// add to audit trail
 		try {
@@ -87,7 +87,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	}
 
 	//Note: the accession number is a business rule and should be externalized
-	@Override
+	//@Override
 	public boolean insertData(Sample sample) throws LIMSRuntimeException {
 
 		try {
@@ -119,7 +119,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	 *
 	 * @return boolean True if the insert was successful.
 	 */
-	@Override
+	//@Override
 	public boolean insertDataWithAccessionNumber(Sample sample)
 		throws LIMSRuntimeException
 	{
@@ -145,7 +145,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return true;
 	}
 
-	@Override
+	//@Override
 	public void updateData(Sample sample) throws LIMSRuntimeException {
 
 		Sample oldData = readSample(sample.getId());
@@ -177,7 +177,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		}
 	}
 
-	@Override
+	//@Override
 	public void getData(Sample sample) throws LIMSRuntimeException {
 		try {
 			Sample samp = (Sample) HibernateUtil.getSession().get(Sample.class, sample.getId());
@@ -205,7 +205,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		}
 	}
 
-    @Override
+    //@Override
 	public List getPageOfSamples(int startingRecNo) throws LIMSRuntimeException {
         List samples = new Vector();
         try {
@@ -241,7 +241,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
         return samples;
     }	
 	
-	@Override
+	//@Override
 	public void getSampleByAccessionNumber(Sample sample) throws LIMSRuntimeException {
 		try {
 			String sql = "from Sample s where s.accessionNumber = :param";
@@ -367,14 +367,14 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	}
 
 
-	@Override
+	//@Override
 	public List getNextSampleRecord(String id) throws LIMSRuntimeException {
 
 		return getNextRecord(id, "Sample", Sample.class);
 
 	}
 
-	@Override
+	//@Override
 	public List getPreviousSampleRecord(String id) throws LIMSRuntimeException {
 
 		return getPreviousRecord(id, "Sample", Sample.class);
@@ -388,7 +388,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	 * @return	Sample		The Sample for the specified accession number, or
 	 * 						null if the accession number does not exist.
 	 */
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public Sample getSampleByAccessionNumber(String accessionNumber)
 		throws LIMSRuntimeException
@@ -412,7 +412,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	//==============================================================
 
 
-	@Override
+	//@Override
 	public List getSamplesByStatusAndDomain(List statuses, String domain) throws LIMSRuntimeException {
 		List list = new Vector();
 		try {
@@ -434,7 +434,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return list;
 	}
 
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesWithPendingQaEvents(Sample sample, boolean filterByQaEventCategory, String qaEventCategoryId, boolean filterByDomain) throws LIMSRuntimeException {
 		List<Sample> list;
@@ -517,7 +517,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return list;
 	}
 
-	@Override
+	//@Override
 	public List<Sample> getSamplesReceivedOn(String receivedDate) throws LIMSRuntimeException {
 		//covers full day so handles time stamps
 		return getSamplesReceivedInDateRange(receivedDate, receivedDate);
@@ -527,7 +527,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
      * @see us.mn.state.health.lims.sample.dao.SampleDAO#getSamplesReceivedInDateRange(String, String) (java.lang.String, java.lang.String)
      */
     @SuppressWarnings("unchecked")
-    @Override
+    //@Override
     public List<Sample> getSamplesReceivedInDateRange(String receivedDateStart, String receivedDateEnd) throws LIMSRuntimeException {
         List<Sample> list;
 
@@ -557,7 +557,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
     }
 
 
-    @Override
+    //@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesCollectedOn(String collectionDate) throws LIMSRuntimeException {
 		List<Sample> list = null;
@@ -592,7 +592,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		calendar.setTime(date);
 		return calendar;
 	}
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(List<Integer> inclusiveProjectIdList, List<Integer> inclusiveStatusIdList, String minAccession,
 			String maxAccession) throws LIMSRuntimeException {
@@ -618,7 +618,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 
 		return null;
 	}
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByProjectAndStatusIDAndAccessionRange(String projectId, List<Integer> inclusiveStatusIdList, String minAccession,
 			String maxAccession) throws LIMSRuntimeException {
@@ -645,7 +645,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public List<Sample> getSamplesByAccessionRange(String minAccession,	String maxAccession) throws LIMSRuntimeException {
 
@@ -667,7 +667,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return null;
 	}
 
-    @Override
+    //@Override
 	public String getLargestAccessionNumber() throws LIMSRuntimeException {
         String greatestAccessionNumber = null;
 
@@ -685,7 +685,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
         return greatestAccessionNumber;
     }
 
-    @Override
+    //@Override
 	public String getLargestAccessionNumberWithPrefix(String prefix) throws LIMSRuntimeException {
         String greatestAccessionNumber = null;
 
@@ -702,7 +702,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
         return greatestAccessionNumber;
     }
 
-	@Override
+	//@Override
 	public String getLargestAccessionNumberMatchingPattern(String startingWith, int accessionSize) throws LIMSRuntimeException {
         String greatestAccessionNumber = null;
 
@@ -720,7 +720,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Sample> getSamplesWithPendingQaEventsByService(String serviceId) throws LIMSRuntimeException {
 		String sql = "Select sqa.sample From SampleQaEvent sqa where sqa.sample.id IN (select sa.sample.id from SampleOrganization sa where sa.organization.id = :serviceId) ";
 
@@ -736,7 +736,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return null;
 	}
 
-    @Override
+    //@Override
     @SuppressWarnings("unchecked")
     public List<Sample> getConfirmationSamplesReceivedInDateRange(Date receivedDateStart, Date receivedDateEnd) throws LIMSRuntimeException {
         String sql = "from Sample s where s.isConfirmation = true and s.receivedTimestamp BETWEEN :lowDate AND :highDate";
@@ -774,7 +774,7 @@ public class SampleDAOImpl extends BaseDAOImpl implements SampleDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Sample getSampleByReferringId(String referringId) throws LIMSRuntimeException {
 		
 		String sql = "from Sample s where s.referringId = :referringId";

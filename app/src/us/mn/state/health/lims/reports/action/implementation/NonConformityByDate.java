@@ -65,7 +65,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
 	private QaEvent qaEvent;
 	private List<SampleQaEvent> sampleQaEvents;
 
-	@Override
+	//@Override
 	protected void createReportParameters() throws IllegalStateException {
 		super.createReportParameters();
 		String nonConformity = StringUtil.getContextualMessageForKey("banner.menu.nonconformity");
@@ -81,7 +81,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
 		}
 	}
 	
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm) {
         super.initializeReport();
         lowDateStr = dynaForm.getString("lowerDateRange");
@@ -162,7 +162,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
         return sampleQaEventDAO.getSampleQaEventsBySample(sample);
     }
 
-	@Override
+	//@Override
 	public JRDataSource getReportDataSource() throws IllegalStateException {
         return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
 	}
@@ -179,7 +179,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          * left.get().compareTo(right.get());
          */
-        @Override
+        //@Override
         public int compare(NonConformityReportData left, NonConformityReportData right) {
             int compare = left.getAccessionNumber().compareTo(right.getAccessionNumber());
             if (compare != 0) return compare;
@@ -193,7 +193,7 @@ public abstract class NonConformityByDate extends Report implements IReportCreat
 
     }
 
-    @Override
+    //@Override
 	protected String reportFileName(){
 		return "NonConformityByReceivedDate";
 	}

@@ -32,7 +32,7 @@ import us.mn.state.health.lims.scheduler.valueholder.CronScheduler;
 
 public class CronSchedulerDAOImpl extends BaseDAOImpl implements CronSchedulerDAO {
 
-	@Override
+	//@Override
 	public List<CronScheduler> getAllCronSchedules() throws LIMSRuntimeException {
 		String sql = "from CronScheduler";
 		
@@ -49,7 +49,7 @@ public class CronSchedulerDAOImpl extends BaseDAOImpl implements CronSchedulerDA
 		return null;
 	}
 
-	@Override
+	//@Override
 	public CronScheduler getCronScheduleByJobName(String jobName) throws LIMSRuntimeException {
 		String sql = "from CronScheduler cs where cs.jobName = :jobName";
 		
@@ -66,7 +66,7 @@ public class CronSchedulerDAOImpl extends BaseDAOImpl implements CronSchedulerDA
 		return null;	
 	}
 
-	@Override
+	//@Override
 	public void insert(CronScheduler cronSchedule) throws LIMSRuntimeException {
 		try {
 			String id = (String) HibernateUtil.getSession().save(cronSchedule);
@@ -78,7 +78,7 @@ public class CronSchedulerDAOImpl extends BaseDAOImpl implements CronSchedulerDA
 		}
 	}
 
-	@Override
+	//@Override
 	public void update(CronScheduler cronSchedule) throws LIMSRuntimeException {
 		CronScheduler oldData = readCronScheduler(cronSchedule.getId());
 
@@ -109,7 +109,7 @@ public class CronSchedulerDAOImpl extends BaseDAOImpl implements CronSchedulerDA
 		return null;
 	}
 
-	@Override
+	//@Override
 	public CronScheduler getCronScheduleById(String schedulerId) throws LIMSRuntimeException {
 		String sql = "from CronScheduler cs where cs.id = :id";
 		

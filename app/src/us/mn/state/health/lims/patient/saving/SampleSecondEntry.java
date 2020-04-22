@@ -46,12 +46,12 @@ public class SampleSecondEntry extends SampleEntry implements IActionConstants {
     /**
      * @see us.mn.state.health.lims.patient.saving.PatientEntry#canAccession()
      */
-    @Override
+    //@Override
     public boolean canAccession() {
         return projectFormMapper.isSecondEntry(request) && InitialRegistration == statusSet.getSampleRecordStatus();
     }
     
-    @Override
+    //@Override
 	protected String getActionLabel() {
 		return StringUtil.getMessageForKey("banner.menu.createSample.Verify");
 	}

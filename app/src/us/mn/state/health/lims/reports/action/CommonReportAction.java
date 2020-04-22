@@ -31,7 +31,7 @@ import us.mn.state.health.lims.reports.action.implementation.ReportImplementatio
 
 public class CommonReportAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -49,12 +49,12 @@ public class CommonReportAction extends BaseAction {
 		return mapping.findForward(FWD_SUCCESS);
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "reports.add.params";
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "reports.add.params";
 	}

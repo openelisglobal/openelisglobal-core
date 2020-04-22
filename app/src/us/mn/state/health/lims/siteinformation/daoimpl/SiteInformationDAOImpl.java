@@ -188,7 +188,7 @@ public class SiteInformationDAOImpl extends BaseDAOImpl implements SiteInformati
 		return getPreviousRecord(id, "SiteInformation", SiteInformation.class);
 	}
 
-	@Override
+	//@Override
 	public SiteInformation getSiteInformationByName(String siteName) throws LIMSRuntimeException {
 		String sql = "From SiteInformation si where name = :name";
 		
@@ -206,7 +206,7 @@ public class SiteInformationDAOImpl extends BaseDAOImpl implements SiteInformati
 		return null;
 	}
 
-	@Override
+	//@Override
 	public int getCountForDomainName(String domainName) throws LIMSRuntimeException {
 		String sql = "select count(*) from SiteInformation si where si.domain.name = :domainName";
 		
@@ -222,7 +222,7 @@ public class SiteInformationDAOImpl extends BaseDAOImpl implements SiteInformati
 		return 0;
 	}
 
-	@Override
+	//@Override
 	public SiteInformation getSiteInformationById(String id) throws LIMSRuntimeException {
 		
 		try {

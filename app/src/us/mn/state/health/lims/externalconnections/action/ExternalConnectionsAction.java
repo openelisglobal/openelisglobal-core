@@ -17,17 +17,17 @@ import us.mn.state.health.lims.display.URLForDisplay;
 
 public class ExternalConnectionsAction extends BaseMenuAction {
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return StringUtil.getMessageForKey("externalconnect.browse.title");
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return StringUtil.getMessageForKey("externalconnect.browse.title");
 	}
 
-	@Override
+	//@Override
 	protected List createMenuList(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		AdminFormFields adminFields = AdminFormFields.getInstance();
@@ -41,7 +41,7 @@ public class ExternalConnectionsAction extends BaseMenuAction {
 		return menuList;
 	}
 
-	@Override
+	//@Override
 	protected String getDeactivateDisabled() {
 		// TODO Auto-generated method stub
 		return null;

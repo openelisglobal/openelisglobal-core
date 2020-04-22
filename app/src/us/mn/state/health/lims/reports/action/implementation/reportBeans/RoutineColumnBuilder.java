@@ -36,7 +36,7 @@ public class RoutineColumnBuilder extends CIRoutineColumnBuilder {
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.reportBeans.CIRoutineColumnBuilder#defineAllReportColumns()
      */
-    @Override
+    //@Override
     protected void defineAllReportColumns() {
         defineBasicColumns();
         addAllResultsColumns();
@@ -45,7 +45,7 @@ public class RoutineColumnBuilder extends CIRoutineColumnBuilder {
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.reportBeans.CIRoutineColumnBuilder#makeSQL()
      */
-    @Override
+    //@Override
     public void makeSQL() {
         query = new StringBuilder();
         String lowDatePostgres =  postgresDateFormat.format(dateRange.getLowDate());

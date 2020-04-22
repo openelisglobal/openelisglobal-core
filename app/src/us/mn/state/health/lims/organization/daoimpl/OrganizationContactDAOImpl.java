@@ -34,7 +34,7 @@ public class OrganizationContactDAOImpl extends BaseDAOImpl implements Organizat
 	private static AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<OrganizationContact> getListForOrganizationId(String orgId) throws LIMSRuntimeException {
 		String sql = "From OrganizationContact oc where oc.organizationId = :orgId";
 		try{
@@ -50,7 +50,7 @@ public class OrganizationContactDAOImpl extends BaseDAOImpl implements Organizat
 		return null;
 	}
 
-	@Override
+	//@Override
 	public void insert(OrganizationContact contact) throws LIMSRuntimeException {
 		try {
 			String id = (String)HibernateUtil.getSession().save(contact);

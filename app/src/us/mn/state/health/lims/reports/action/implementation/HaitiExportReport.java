@@ -31,7 +31,7 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Resourc
  */
 public class HaitiExportReport extends CSVSampleExportReport implements IReportParameterSetter {
 	
-	@Override
+	//@Override
 	protected String reportFileName(){
 		return "HaitiExportReport";
 	}
@@ -53,7 +53,7 @@ public class HaitiExportReport extends CSVSampleExportReport implements IReportP
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#initializeReport(us.mn.state.health.lims.common.action.BaseActionForm)
      */
-    @Override
+    //@Override
     public void initializeReport(BaseActionForm dynaForm) {
     	super.initializeReport();
         errorFound = false;

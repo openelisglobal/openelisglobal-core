@@ -37,7 +37,7 @@ import us.mn.state.health.lims.panel.valueholder.Panel;
 import us.mn.state.health.lims.panel.valueholder.PanelSortOrderComparator;
 
 public class PanelOrderAction extends BaseAction {
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
         PropertyUtils.setProperty(form, "panelList", DisplayListService.getList(DisplayListService.ListType.PANELS));
@@ -73,12 +73,12 @@ public class PanelOrderAction extends BaseAction {
     }
 
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

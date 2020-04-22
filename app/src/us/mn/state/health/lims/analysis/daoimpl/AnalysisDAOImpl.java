@@ -464,7 +464,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysesBySampleStatusIdExcludingByStatusId(String statusId, Set<Integer> statusIds)
 			throws LIMSRuntimeException {
 		if (statusIds == null || statusIds.isEmpty()) {
@@ -512,7 +512,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysesBySampleIdExcludedByStatusId(String id, Set<Integer> statusIds) throws LIMSRuntimeException {
 		if (statusIds == null || statusIds.isEmpty()) {
 			return getAnalysesBySampleId(id);
@@ -535,7 +535,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysesBySampleIdAndStatusId(String id, Set<Integer> statusIds) throws LIMSRuntimeException {
 		if (statusIds == null || statusIds.isEmpty()) {
 			return getAnalysesBySampleId(id);
@@ -1068,7 +1068,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisStartedOnExcludedByStatusId(Date collectionDate, Set<Integer> statusIds) throws LIMSRuntimeException {
 		if (statusIds == null || statusIds.isEmpty()) {
 			return getAnalysisStartedOn(collectionDate);
@@ -1111,7 +1111,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisCollectedOnExcludedByStatusId(Date collectionDate, Set<Integer> statusIds) throws LIMSRuntimeException {
 		if (statusIds == null || statusIds.isEmpty()) {
 			return getAnalysisStartedOn(collectionDate);
@@ -1270,7 +1270,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisStartedOnRangeByStatusId(Date lowDate, Date highDate, String statusID) throws LIMSRuntimeException {
 		String sql = "From Analysis a where a.statusId = :statusID and a.startedDate BETWEEN :lowDate AND :highDate";
 
@@ -1292,7 +1292,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisCompleteInRange(Timestamp lowDate, Timestamp highDate) throws LIMSRuntimeException {
 		String sql = "From Analysis a where a.completedDate >= :lowDate AND a.completedDate < :highDate";
 
@@ -1313,7 +1313,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisEnteredAfterDate(Timestamp date) throws LIMSRuntimeException {
 		String sql = "From Analysis a where a.enteredDate > :date";
 
@@ -1333,7 +1333,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisByAccessionAndTestId(String accessionNumber, String testId) throws LIMSRuntimeException {
 		if (GenericValidator.isBlankOrNull(accessionNumber) || GenericValidator.isBlankOrNull(testId)) {
 			return new ArrayList<Analysis>();
@@ -1355,7 +1355,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisByTestNamesAndCompletedDateRange(List<String> testNames, Date lowDate, Date highDate)
 			throws LIMSRuntimeException {
 		if (testNames.isEmpty()) {
@@ -1381,7 +1381,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public List<Analysis> getAnalysisByTestDescriptionAndCompletedDateRange(List<String> descriptions, Date lowDate, Date highDate)
 			throws LIMSRuntimeException {
 		if (descriptions.isEmpty()) {
@@ -1406,7 +1406,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 
 		return null;
 	}
-	@Override
+	//@Override
 	public List<Analysis> getAnalysesBySampleItemIdAndStatusId(String sampleItemId, String statusId) throws LIMSRuntimeException {
 		try {
 			String sql = "from Analysis a where a.sampleItem.id = :sampleItemId and a.statusId = :statusId";
@@ -1426,7 +1426,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 		return null; //will never get here
 	}
 
-	@Override
+	//@Override
 	public Analysis getAnalysisById(String analysisId) throws LIMSRuntimeException {
 		if(analysisId==null) return null;
 		try {
@@ -1441,7 +1441,7 @@ public class AnalysisDAOImpl extends BaseDAOImpl implements AnalysisDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Analysis> getAnalysesBySampleIdTestIdAndStatusId(List<Integer> sampleIdList, List<Integer> testIdList, List<Integer> statusIdList) throws LIMSRuntimeException {
 	
 		if (sampleIdList.isEmpty() || testIdList.isEmpty() || statusIdList.isEmpty()) {

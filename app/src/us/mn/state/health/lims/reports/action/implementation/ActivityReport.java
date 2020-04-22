@@ -44,12 +44,12 @@ public abstract class ActivityReport extends Report implements IReportCreator{
     protected String reportPath = "";
     protected DateRange dateRange;
 
-    @Override
+    //@Override
     public JRDataSource getReportDataSource() throws IllegalStateException{
         return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(testsResults);
     }
 
-    @Override
+    //@Override
     protected void createReportParameters() {
         reportParameters.put( "activityLabel", getActivityLabel() );
         reportParameters.put( "accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
@@ -71,7 +71,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
     protected abstract void buildReportContent( ReportSpecificationList testSelection );
 
 
-    @Override
+    //@Override
     public void initializeReport( BaseActionForm dynaForm ){
         initialized = true;
         ReportSpecificationList selection = ( ReportSpecificationList ) dynaForm.get( "selectList" );
@@ -141,7 +141,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         return item;
     }
 
-    @Override
+    //@Override
     protected String reportFileName(){
         return  "ActivityReport";
     }

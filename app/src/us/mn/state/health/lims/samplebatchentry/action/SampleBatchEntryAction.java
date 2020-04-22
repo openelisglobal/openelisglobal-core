@@ -37,7 +37,7 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 
 public class SampleBatchEntryAction extends BaseSampleEntryAction {
 
-  @Override
+  //@Override
   protected ActionForward performAction(ActionMapping mapping, ActionForm form,
           HttpServletRequest request, HttpServletResponse response) throws Exception {
     String forward = "success";
@@ -235,12 +235,12 @@ public class SampleBatchEntryAction extends BaseSampleEntryAction {
     }
   }
 
-  @Override
+  //@Override
   protected String getPageTitleKey() {
     return "sample.batchentry.title";
   }
 
-  @Override
+  //@Override
   protected String getPageSubtitleKey() {
     return "sample.batchentry.title";
   }

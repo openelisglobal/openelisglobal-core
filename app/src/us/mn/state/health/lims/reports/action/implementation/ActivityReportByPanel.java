@@ -33,7 +33,7 @@ import us.mn.state.health.lims.result.valueholder.Result;
 public class ActivityReportByPanel extends ActivityReport implements IReportCreator, IReportParameterSetter {
     private String panelName;
 
-    @Override
+    //@Override
     public void setRequestParameters( BaseActionForm dynaForm ){
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
                 StringUtil.getMessageForKey( "report.activity.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.panel" ),
@@ -42,12 +42,12 @@ public class ActivityReportByPanel extends ActivityReport implements IReportCrea
                                      StringUtil.getMessageForKey( "workplan.panel.types" ) ).setRequestParameters( dynaForm );
     }
 
-    @Override
+    //@Override
     protected String getActivityLabel(){
         return "Panel: " + panelName;
     }
 
-    @Override
+    //@Override
     protected void buildReportContent( ReportSpecificationList panelSelection ){
         panelName = panelSelection.getSelectionAsName();
         createReportParameters();
@@ -67,7 +67,7 @@ public class ActivityReportByPanel extends ActivityReport implements IReportCrea
         }
 
         Collections.sort( rawResults, new Comparator<ActivityReportBean>(){
-            @Override
+            //@Override
             public int compare( ActivityReportBean o1, ActivityReportBean o2 ){
                 return o1.getAccessionNumber().compareTo( o2.getAccessionNumber() );
             }

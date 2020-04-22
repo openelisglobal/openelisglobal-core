@@ -31,12 +31,12 @@ import us.mn.state.health.lims.result.valueholder.Result;
 public class ActivityReportByTest extends ActivityReport implements IReportCreator, IReportParameterSetter {
     private String testName = "";
 
-    @Override
+    //@Override
     protected boolean isReportByTest(){
         return true;
     }
 
-    @Override
+    //@Override
     public void setRequestParameters( BaseActionForm dynaForm ){
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
                 StringUtil.getMessageForKey( "report.activity.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.test" ),
@@ -45,7 +45,7 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
                                      StringUtil.getMessageForKey( "workplan.test.types" ) ).setRequestParameters( dynaForm );
     }
 
-    @Override
+    //@Override
     protected void buildReportContent( ReportSpecificationList testSelection ){
 
         testName = testSelection.getSelectionAsName();
@@ -69,7 +69,7 @@ public class ActivityReportByTest extends ActivityReport implements IReportCreat
     }
 
 
-    @Override
+    //@Override
     protected String getActivityLabel(){
         return "Test: " + testName;
     }

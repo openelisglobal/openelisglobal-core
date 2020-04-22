@@ -56,7 +56,7 @@ public class TestUsageBacklog extends Thread {
 		}
 	}
 
-	@Override
+	//@Override
 	public void run() {
 		if( ConfigurationProperties.getInstance().isPropertyValueEqual(Property.testUsageReporting, "true")){
 			handleBacklog();

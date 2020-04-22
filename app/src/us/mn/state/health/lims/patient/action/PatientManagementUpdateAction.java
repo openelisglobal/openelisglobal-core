@@ -102,7 +102,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		}
 	}
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -485,12 +485,12 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	}
 
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "patient.management.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "patient.management.title";
 	}

@@ -21,7 +21,7 @@ import us.mn.state.health.lims.statusofsample.valueholder.StatusOfSample;
 
 public class ElectronicOrderViewAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String forward = FWD_SUCCESS;
@@ -77,12 +77,12 @@ public class ElectronicOrderViewAction extends BaseAction {
 		return true;
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "eorder.browse.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "eorder.browse.title";
 	}

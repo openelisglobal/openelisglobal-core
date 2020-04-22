@@ -31,11 +31,11 @@ public class HL7MessageOut extends BaseObject{
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	@Override
+	//@Override
 	public Timestamp getLastupdated() {
 		return lastupdated;
 	}
-	@Override
+	//@Override
 	public void setLastupdated(Timestamp lastupdated) {
 		this.lastupdated = lastupdated;
 	}

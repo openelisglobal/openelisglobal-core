@@ -48,7 +48,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 
 	private static Map<String, String> ID_NAME_MAP = null;
 
-	@Override
+	//@Override
 	public void deleteData(List typeOfSamples) throws LIMSRuntimeException {
 		// add to audit trail
 		try {
@@ -92,7 +92,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		ID_NAME_MAP = null;
 	}
 
-	@Override
+	//@Override
 	public boolean insertData(TypeOfSample typeOfSample)
 			throws LIMSRuntimeException {
 
@@ -127,7 +127,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		return true;
 	}
 
-	@Override
+	//@Override
 	public void updateData(TypeOfSample typeOfSample)
 			throws LIMSRuntimeException {
 
@@ -158,7 +158,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		ID_NAME_MAP = null;
 	}
 
-	@Override
+	//@Override
 	public void getData(TypeOfSample typeOfSample) throws LIMSRuntimeException {
 		try {
 			TypeOfSample tos = (TypeOfSample) HibernateUtil.getSession().get(
@@ -177,7 +177,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		}
 	}
 
-	@Override
+	//@Override
 	public List getAllTypeOfSamples() throws LIMSRuntimeException {
 		List list = new Vector();
 		try {
@@ -198,7 +198,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		return list;
 	}
 
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	public List<TypeOfSample> getAllTypeOfSamplesSortOrdered() throws LIMSRuntimeException {
 		List<TypeOfSample> list = new ArrayList<TypeOfSample>();
@@ -218,7 +218,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		return list;
 	}
 
-	@Override
+	//@Override
 	public List getPageOfTypeOfSamples(int startingRecNo)
 			throws LIMSRuntimeException {
 		List list = new Vector();
@@ -266,7 +266,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 
 	// this is for autocomplete
 	// bugzilla 1387 added domain parm
-	@Override
+	//@Override
 	public List getTypes(String filter, String domain)
 			throws LIMSRuntimeException {
 		List list = new Vector();
@@ -301,7 +301,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 
 	}
 
-	@Override
+	//@Override
 	public List getTypesForDomain(SampleDomain domain) throws LIMSRuntimeException {
 		List list = new Vector();
 		String key = getKeyForDomain(domain);
@@ -325,7 +325,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<TypeOfSample> getTypesForDomainBySortOrder(SampleDomain domain) throws LIMSRuntimeException {
 		List<TypeOfSample> list = null;
 		String key = getKeyForDomain(domain);
@@ -349,7 +349,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 	
 	}
 
-    @Override
+    //@Override
     public TypeOfSample getTypeOfSampleByLocalAbbrevAndDomain( String localAbbrev, String domain ) throws LIMSRuntimeException{
         String sql = "From TypeOfSample tos where tos.localAbbreviation = :localAbbrev and tos.domain = :domain";
         try{
@@ -389,7 +389,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		return domainKey;
 	}
 
-	@Override
+	//@Override
 	public List getNextTypeOfSampleRecord(String id)
 			throws LIMSRuntimeException {
 
@@ -397,7 +397,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 
 	}
 
-	@Override
+	//@Override
 	public List getPreviousTypeOfSampleRecord(String id)
 			throws LIMSRuntimeException {
 
@@ -405,13 +405,13 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 	}
 
 	// bugzilla 1411
-	@Override
+	//@Override
 	public Integer getTotalTypeOfSampleCount() throws LIMSRuntimeException {
 		return getTotalCount("TypeOfSample", TypeOfSample.class);
 	}
 
 	// bugzilla 1427
-	@Override
+	//@Override
 	public List getNextRecord(String id, String table, Class clazz)
 			throws LIMSRuntimeException {
 		int currentId = (Integer.valueOf(id)).intValue();
@@ -447,7 +447,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 	}
 
 	// bugzilla 1427
-	@Override
+	//@Override
 	public List getPreviousRecord(String id, String table, Class clazz)
 			throws LIMSRuntimeException {
 		int currentId = (Integer.valueOf(id)).intValue();
@@ -483,7 +483,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 	}
 
 	// bugzilla 1367 also handles NO domain (then all domains are retrieved)
-	@Override
+	//@Override
 	public TypeOfSample getTypeOfSampleByDescriptionAndDomain(TypeOfSample tos,
 			boolean ignoreCase) throws LIMSRuntimeException {
 		try {
@@ -578,7 +578,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		}
 	}
 
-	@Override
+	//@Override
 	public String getNameForTypeOfSampleId(String id) {
 		if( ID_NAME_MAP == null){
 			List allTypes = getAllTypeOfSamples();
@@ -597,7 +597,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		return ID_NAME_MAP != null ? ID_NAME_MAP.get(id) : id;
 	}
 
-	@Override
+	//@Override
 	public TypeOfSample getTypeOfSampleById(String typeOfSampleId) throws LIMSRuntimeException {
 		try {
 			TypeOfSample tos = (TypeOfSample) HibernateUtil.getSession().get( TypeOfSample.class, typeOfSampleId);
@@ -610,7 +610,7 @@ public class TypeOfSampleDAOImpl extends BaseDAOImpl implements TypeOfSampleDAO 
 		return null;
 	}
 	
-	@Override
+	//@Override
 	public TypeOfSample getSampleTypeFromTest(Test test) {
 		String sql = "select tos from TypeOfSample tos, Test test, TypeOfSampleTest tost "
 				+ "where tost.testId = :id "

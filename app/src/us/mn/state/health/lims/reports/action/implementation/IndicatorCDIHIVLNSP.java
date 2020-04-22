@@ -54,24 +54,24 @@ public class IndicatorCDIHIVLNSP extends IndicatorHIV implements IReportCreator,
 		}
 	}
 	
-	@Override
+	//@Override
 	protected String getLabNameLine1() {
 		return StringUtil.getContextualMessageForKey("report.labName.one");
 	}
 
-	@Override
+	//@Override
 	protected String getLabNameLine2() {
 		return StringUtil.getContextualMessageForKey("report.labName.two");
 	}
 	
-	@Override
+	//@Override
 	protected boolean isPositive(String value) {
 		return HIV_POSITIVE1_ID.equals(value) ||
 			HIV_POSITIVE2_ID.equals(value) ||
 			HIV_POSITIVE12_ID.equals(value);
 	}
 	
-	@Override
+	//@Override
 	protected boolean isIndeterminate(String value) {
 		return HIV_INDETERMINATE_ID.equals(value);
 	}

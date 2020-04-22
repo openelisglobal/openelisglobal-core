@@ -35,7 +35,7 @@ import us.mn.state.health.lims.plugin.PluginLoader;
 
 public class ListPluginAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -52,12 +52,12 @@ public class ListPluginAction extends BaseAction {
 		return mapping.findForward(IActionConstants.FWD_SUCCESS);
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "plugin.installed.plugins";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "plugin.installed.plugins";
 	}

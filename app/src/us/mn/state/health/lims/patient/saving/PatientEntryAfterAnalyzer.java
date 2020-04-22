@@ -18,7 +18,7 @@
 */
 
 /**
- * Côte d'Ivoire
+ * Cï¿½te d'Ivoire
  * @author pahill
  * @since 2010-06-25
  */
@@ -44,7 +44,7 @@ public class PatientEntryAfterAnalyzer extends PatientEntry {
         this.newSampleStatus  = NotRegistered;
     }
     
-    @Override
+    //@Override
     public boolean canAccession() {
         return (NotRegistered == statusSet.getPatientRecordStatus()
              && NotRegistered == statusSet.getSampleRecordStatus());
@@ -54,7 +54,7 @@ public class PatientEntryAfterAnalyzer extends PatientEntry {
      * Find existing sampleHuman, so we can update it with our new patient when we fill in all IDs when we persist.
      * @see us.mn.state.health.lims.patient.saving.PatientEntry#populateSampleHuman()
      */
-    @Override
+    //@Override
     protected void populateSampleHuman() throws Exception {
         sampleHuman = new SampleHuman();
         sampleHuman.setSampleId(statusSet.getSampleId());
@@ -65,7 +65,7 @@ public class PatientEntryAfterAnalyzer extends PatientEntry {
      * Get rid of the links to the UNKNOWN_PATIENT, then insert a new one.
      * @see us.mn.state.health.lims.patient.saving.Accessioner#persistRecordStatus()
      */
-    @Override
+    //@Override
     protected void persistRecordStatus() {
         StatusService.getInstance().deleteRecordStatus(sample, PatientUtil.getUnknownPatient(), sysUserId);
         super.persistRecordStatus();

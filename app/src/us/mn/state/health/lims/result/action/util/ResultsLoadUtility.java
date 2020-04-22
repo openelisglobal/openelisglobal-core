@@ -124,9 +124,9 @@ public class ResultsLoadUtility {
     private PatientService patientService;
 	private Sample currSample;
 
-	private Set<Integer> excludedAnalysisStatus = new HashSet<>();
-	private List<Integer> analysisStatusList = new ArrayList<>();
-	private List<Integer> sampleStatusList = new ArrayList<>();
+	private Set<Integer> excludedAnalysisStatus = new HashSet<Integer>();
+	private List<Integer> analysisStatusList = new ArrayList<Integer>();
+	private List<Integer> sampleStatusList = new ArrayList<Integer>();
 
 	private List<InventoryKitItem> activeKits;
 
@@ -189,7 +189,7 @@ public class ResultsLoadUtility {
 
 		reflexGroup = 1;
 		activeKits = null;
-		samples = new ArrayList<>();
+		samples = new ArrayList<Sample>();
 
 		if (sample != null) {
 			samples.add(sample);
@@ -253,7 +253,7 @@ public class ResultsLoadUtility {
 		inventoryNeeded = false;
 		reflexGroup = 1;
 
-		List<TestResultItem> selectedTestList = new ArrayList<>();
+		List<TestResultItem> selectedTestList = new ArrayList<TestResultItem>();
 
 		for (Analysis analysis : filteredAnalysisList) {
             patientService = new PatientService( new SampleService( analysis.getSampleItem().getSample() ).getPatient() );
@@ -290,7 +290,6 @@ public class ResultsLoadUtility {
 
 	private void reverseSortByAccessionAndSequence(List<? extends ResultItem> selectedTest) {
 		Collections.sort(selectedTest, new Comparator<ResultItem>() {
-			@Override
 			public int compare(ResultItem a, ResultItem b) {
 				int accessionSort = b.getSequenceAccessionNumber().compareTo(a.getSequenceAccessionNumber());
 
@@ -314,7 +313,6 @@ public class ResultsLoadUtility {
 
 	public void sortByAccessionAndSequence(List<? extends ResultItem> selectedTest) {
 		Collections.sort(selectedTest, new Comparator<ResultItem>() {
-			@Override
 			public int compare(ResultItem a, ResultItem b) {
 				int accessionSort = a.getSequenceAccessionNumber().compareTo(b.getSequenceAccessionNumber());
 
@@ -365,7 +363,7 @@ public class ResultsLoadUtility {
 
 	private List<TestResultItem> getTestResultItemFromAnalysis(Analysis analysis, String patientName, String patientInfo, String nationalId)
 			throws LIMSRuntimeException {
-		List<TestResultItem> testResultList = new ArrayList<>();
+		List<TestResultItem> testResultList = new ArrayList<TestResultItem>();
 
 		SampleItem sampleItem = analysis.getSampleItem();
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
@@ -462,7 +460,7 @@ public class ResultsLoadUtility {
 
 	private List<TestResultItem> getGroupedTestsForSamples() {
 
-		List<TestResultItem> testList = new ArrayList<>();
+		List<TestResultItem> testList = new ArrayList<TestResultItem>();
 
 		TestResultItem[] tests = getSortedTestsFromSamples();
 
@@ -490,7 +488,7 @@ public class ResultsLoadUtility {
 
 	private TestResultItem[] getSortedTestsFromSamples() {
 
-		List<TestResultItem> testList = new ArrayList<>();
+		List<TestResultItem> testList = new ArrayList<TestResultItem>();
 
 		for (Sample sample : samples) {
 			currSample = sample;
@@ -523,12 +521,12 @@ public class ResultsLoadUtility {
 	private void addUserSelectionReflexes(List<TestResultItem> testList) {
 		TestReflexUtil reflexUtil = new TestReflexUtil();
 
-		Map<String, TestResultItem> groupedSibReflexMapping = new HashMap<>();
+		Map<String, TestResultItem> groupedSibReflexMapping = new HashMap<String, TestResultItem>();
 
 		for (TestResultItem resultItem : testList) {
 			//N.B. showSampleDetails should be renamed.  It means that it is the first result for that group of accession numbers
 			if (resultItem.isShowSampleDetails()) {
-				groupedSibReflexMapping = new HashMap<>();
+				groupedSibReflexMapping = new HashMap<String, TestResultItem>();
 				reflexGroup++;
 			}
 
@@ -748,10 +746,9 @@ public class ResultsLoadUtility {
 		Dictionary dictionary;
 
 		if (testResults != null && !testResults.isEmpty() && TypeOfTestResultService.ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
-			values = new ArrayList<>();
+			values = new ArrayList<IdValuePair>();
 
 			Collections.sort(testResults, new Comparator<TestResult>() {
-				@Override
 				public int compare(TestResult o1, TestResult o2) {
 					if (GenericValidator.isBlankOrNull(o1.getSortOrder())
 							|| GenericValidator.isBlankOrNull(o2.getSortOrder())) {
@@ -835,7 +832,7 @@ public class ResultsLoadUtility {
 		List<IdValuePair> values = null;
 
 		if (result != null && TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() )) {
-			values = new ArrayList<>();
+			values = new ArrayList<IdValuePair>();
 
 			Dictionary dictionaryValue = new Dictionary();
 			dictionaryValue.setId(result.getValue());

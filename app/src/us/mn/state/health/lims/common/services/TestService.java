@@ -84,7 +84,7 @@ public class TestService implements LocaleChangeListener{
         SystemConfiguration.getInstance().addLocalChangeListener( INSTANCE );
     }
 
-    @Override
+    //@Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;
         refreshTestNames();

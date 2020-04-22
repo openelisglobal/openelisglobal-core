@@ -33,14 +33,14 @@ import us.mn.state.health.lims.patient.action.bean.PatientSearch;
 
 
 /**
- * Action for Côte d'Ivoire study based patient edit.
+ * Action for Cï¿½te d'Ivoire study based patient edit.
  * @author pahill
  * @since 2010-04-16
  */
 public class PatientEditByProjectAction extends BasePatientEntryByProject {
 
 	
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

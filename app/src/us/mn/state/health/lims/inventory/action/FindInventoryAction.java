@@ -39,7 +39,7 @@ import us.mn.state.health.lims.organization.valueholder.Organization;
 
 public class FindInventoryAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -87,12 +87,12 @@ public class FindInventoryAction extends BaseAction {
 		return sources;
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "inventory.manage.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "inventory.manage.title";
 	}

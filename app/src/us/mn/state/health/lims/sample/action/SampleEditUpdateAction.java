@@ -116,7 +116,7 @@ public class SampleEditUpdateAction extends BaseAction {
 		CANCELED_SAMPLE_STATUS_ID = StatusService.getInstance().getStatusID(SampleStatus.Canceled);
 	}
 
-	@Override
+	//@Override
 	@SuppressWarnings("unchecked")
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -551,12 +551,12 @@ public class SampleEditUpdateAction extends BaseAction {
 		return new Analysis();
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return StringUtil.getContextualKeyForKey("sample.edit.title");
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return StringUtil.getContextualKeyForKey("sample.edit.subtitle");
 	}

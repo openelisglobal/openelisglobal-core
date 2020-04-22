@@ -59,7 +59,7 @@ public class PendingAnalysisForTestProvider extends BaseQueryProvider {
         NOT_VALIDATED.add(Integer.parseInt(statusService.getStatusID(StatusService.AnalysisStatus.TechnicalAcceptance)));
     }
 
-    @Override
+    //@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String testId = request.getParameter("testId");
@@ -114,12 +114,12 @@ public class PendingAnalysisForTestProvider extends BaseQueryProvider {
         jsonResult.put(tag, analysisArray);
     }
 
-    @Override
+    //@Override
 	public void setServlet(AjaxServlet as) {
 		this.ajaxServlet = as;
 	}
 
-	@Override
+	//@Override
 	public AjaxServlet getServlet() {
 		return this.ajaxServlet;
 	}

@@ -39,7 +39,7 @@ import us.mn.state.health.lims.test.beanItems.TestActivationBean;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 public class TestActivationAction extends BaseAction {
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         PropertyUtils.setProperty(form, "activeTestList", createTestList(true));
         PropertyUtils.setProperty(form, "inactiveTestList", createTestList(false));
@@ -66,7 +66,7 @@ public class TestActivationAction extends BaseAction {
 
             //initial ordering will be by display order.  Inactive tests will then be re-ordered alphabetically
             Collections.sort(tests, new Comparator<Test>() {
-                @Override
+                //@Override
                 public int compare(Test o1, Test o2) {
                 	//compare sort order
                 	if (NumberUtils.isNumber(o1.getSortOrder()) && NumberUtils.isNumber(o2.getSortOrder())) {
@@ -107,12 +107,12 @@ public class TestActivationAction extends BaseAction {
     }
 
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

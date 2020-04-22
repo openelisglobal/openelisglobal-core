@@ -90,7 +90,7 @@ public class AnalyzerDAOImpl extends BaseDAOImpl implements AnalyzerDAO {
 		}
 	}
 
-    @Override
+    //@Override
     public Analyzer getAnalyzerByName(String name) throws LIMSRuntimeException {
         String sql = "From Analyzer a where a.name = :name";
         try {

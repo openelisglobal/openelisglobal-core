@@ -56,7 +56,7 @@ public class UnitOfMeasureService implements LocaleChangeListener{
     public UnitOfMeasure getUnitOfMeasure(){
         return unitOfMeasure;
     }
-    @Override
+    //@Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;
         testNamesChanged();

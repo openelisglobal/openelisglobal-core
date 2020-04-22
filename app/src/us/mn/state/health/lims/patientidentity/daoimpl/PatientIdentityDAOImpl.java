@@ -161,7 +161,7 @@ public class PatientIdentityDAOImpl extends BaseDAOImpl implements PatientIdenti
 		}
 	}
 
-	@Override
+	//@Override
 	public PatientIdentity getPatitentIdentityForPatientAndType(String patientId, String identityTypeId)
 			throws LIMSRuntimeException {
 

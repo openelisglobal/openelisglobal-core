@@ -36,7 +36,7 @@ public class AllTestsForSampleTypeProvider extends BaseQueryProvider {
 
 	protected AjaxServlet ajaxServlet = null;
 
-    @Override
+    //@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String sampleTypeId = request.getParameter("sampleTypeId");
@@ -85,12 +85,12 @@ public class AllTestsForSampleTypeProvider extends BaseQueryProvider {
         return VALID;
     }
 
-	@Override
+	//@Override
 	public void setServlet(AjaxServlet as) {
 		this.ajaxServlet = as;
 	}
 
-	@Override
+	//@Override
 	public AjaxServlet getServlet() {
 		return this.ajaxServlet;
 	}

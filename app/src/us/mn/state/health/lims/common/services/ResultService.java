@@ -383,7 +383,7 @@ public class ResultService {
 
     public static String getJSONStringForMultiSelect( List<Result> resultList){
         Collections.sort( resultList, new Comparator<Result>(){
-            @Override
+            //@Override
             public int compare( Result o1, Result o2 ){
                 return o1.getGrouping() - o2.getGrouping();
             }

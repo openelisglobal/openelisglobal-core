@@ -120,7 +120,7 @@ public class FollowupRequiredData {
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        @Override
+        //@Override
         public int compare(FollowupRequiredData o1, FollowupRequiredData o2) {
             int orgCompare = StringUtil.compareWithNulls(o1.getOrgname(), o2.getOrgname());
             if( orgCompare != 0){

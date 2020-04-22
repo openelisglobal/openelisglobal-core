@@ -35,7 +35,7 @@ import us.mn.state.health.lims.patient.saving.PatientEntryAfterSampleEntry;
 import us.mn.state.health.lims.patient.saving.PatientSecondEntry;
 
 /***
- * Action controller for Côte d'Ivoire 
+ * Action controller for Cï¿½te d'Ivoire 
  * @author pahill
  * @since 2010-04-12
  */
@@ -50,7 +50,7 @@ public class PatientEntryByProjectUpdateAction extends BasePatientEntryByProject
 		return "patient.project.title";
 	}
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

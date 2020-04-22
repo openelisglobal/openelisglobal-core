@@ -62,12 +62,12 @@ public class SampleEntry extends Accessioner {
         this.newSampleStatus  = RecordStatus.InitialRegistration;
     }
     
-    @Override
+    //@Override
     public boolean canAccession() {
         return (statusSet.getPatientRecordStatus() == null && statusSet.getSampleRecordStatus() == null);
     }
     
-    @Override
+    //@Override
     protected void populateSampleData() throws Exception {
         Timestamp receivedDate = DateUtil.convertStringDateStringTimeToTimestamp(projectFormMapper.getReceivedDate(), projectFormMapper.getReceivedTime());
         Timestamp collectionDate = DateUtil.convertStringDateStringTimeToTimestamp(projectFormMapper.getCollectionDate(), projectFormMapper.getCollectionTime());
@@ -234,7 +234,7 @@ public class SampleEntry extends Accessioner {
     /**
      * @see us.mn.state.health.lims.patient.saving.Accessioner#persistSampleData()
      */
-    @Override
+    //@Override
     protected void persistSampleData() throws Exception {
         // TODO Auto-generated method stub
         super.persistSampleData();
@@ -247,12 +247,12 @@ public class SampleEntry extends Accessioner {
      *  
      * @see us.mn.state.health.lims.patient.saving.Accessioner#persistObservationHistoryLists()
      */
-    @Override
+    //@Override
     protected void persistObservationHistoryLists() {
         // do nothing.  See note above.  Do not delete this method.
     }
 
-	@Override
+	//@Override
 	protected String getActionLabel() {
 		return StringUtil.getMessageForKey("banner.menu.createSample.Initial");
 	}

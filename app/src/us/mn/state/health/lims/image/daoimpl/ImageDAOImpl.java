@@ -32,7 +32,7 @@ import us.mn.state.health.lims.image.valueholder.Image;
 
 public class ImageDAOImpl extends BaseDAOImpl implements ImageDAO{
 
-    @Override
+    //@Override
     public String saveImage( Image image ) throws LIMSRuntimeException{
         String id = image.getId();
         try{
@@ -52,7 +52,7 @@ public class ImageDAOImpl extends BaseDAOImpl implements ImageDAO{
         return id;
     }
 
-    @Override
+    //@Override
     public Image getImage( String imageId ) throws LIMSRuntimeException{
         try{
             Image image = ( Image ) HibernateUtil.getSession().get( Image.class, imageId );
@@ -65,7 +65,7 @@ public class ImageDAOImpl extends BaseDAOImpl implements ImageDAO{
         return null;
     }
 
-    @Override
+    //@Override
     public void deleteImage( Image image ) throws LIMSRuntimeException{
         try{
             HibernateUtil.getSession().delete( image );
@@ -75,7 +75,7 @@ public class ImageDAOImpl extends BaseDAOImpl implements ImageDAO{
         }
     }
 
-    @Override
+    //@Override
     public ByteArrayOutputStream retrieveImageOutputStream( String id ) throws LIMSRuntimeException{
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream( Image.MAX_MEMORY_SIZE );
         try{
@@ -99,7 +99,7 @@ public class ImageDAOImpl extends BaseDAOImpl implements ImageDAO{
         return outputStream;
     }
 
-    @Override
+    //@Override
     public ByteArrayInputStream retrieveImageInputStream( String id ) throws LIMSRuntimeException{
         return new ByteArrayInputStream( retrieveImageOutputStream( id ).toByteArray() );
     }

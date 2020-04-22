@@ -35,7 +35,7 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Rejecti
 public class RejectionReportByTestSection extends RejectionReport implements IReportCreator, IReportParameterSetter {
     private String unitName;
 
-    @Override
+    //@Override
     public void setRequestParameters( BaseActionForm dynaForm ){
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
                 StringUtil.getMessageForKey( "report.rejection.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.unit" ),
@@ -44,12 +44,12 @@ public class RejectionReportByTestSection extends RejectionReport implements IRe
                                      StringUtil.getMessageForKey( "workplan.unit.types" ) ).setRequestParameters( dynaForm );
     }
 
-    @Override
+    //@Override
     protected String getActivityLabel(){
         return StringUtil.getMessageForKey( "report.unit" ) + ": "+ unitName;
     }
 
-    @Override
+    //@Override
     protected void buildReportContent( ReportSpecificationList panelSelection ){
 
         unitName = getNameForId( panelSelection );
@@ -61,7 +61,7 @@ public class RejectionReportByTestSection extends RejectionReport implements IRe
         List<Note> testRejectionNotes = NoteService.getTestNotesInDateRangeByType( dateRange.getLowDate(), dateRange.getHighDate(), NoteService.NoteType.REJECTION_REASON );
 
         Collections.sort( testRejectionNotes, new Comparator<Note>(){
-            @Override
+            //@Override
             public int compare( Note o1, Note o2 ){
                 return o1.getReferenceId().compareTo( o2.getReferenceId() );
             }

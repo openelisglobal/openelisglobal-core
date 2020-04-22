@@ -77,7 +77,7 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 		excludedStatusIds.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Canceled)));
 	}
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -311,13 +311,13 @@ public class StatusResultsAction extends BaseAction implements Serializable {
 		return list;
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "banner.menu.results";
 
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "banner.menu.results";
 	}

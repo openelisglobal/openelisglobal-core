@@ -34,7 +34,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 public class ReportExternalImportDAOImpl extends BaseDAOImpl implements ReportExternalImportDAO {
 	
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ReportExternalImport> getReportsInDateRangeSorted(Timestamp lower, Timestamp upper) throws LIMSRuntimeException {
 		String sql = "from ReportExternalImport rq where rq.eventDate >= :lower and rq.eventDate <= :upper order by rq.sendingSite";
 		
@@ -55,7 +55,7 @@ public class ReportExternalImportDAOImpl extends BaseDAOImpl implements ReportEx
 		return null;
 	}
 
-	@Override
+	//@Override
 	public void insertReportExternalImport(ReportExternalImport report) throws LIMSRuntimeException {
 		try {
 			String id = (String) HibernateUtil.getSession().save(report);
@@ -67,7 +67,7 @@ public class ReportExternalImportDAOImpl extends BaseDAOImpl implements ReportEx
 		}
 	}
 
-	@Override
+	//@Override
 	public void updateReportExternalImport(ReportExternalImport report) throws LIMSRuntimeException {
 		ReportExternalImport oldData = readReportExternalImport(report.getId());
 
@@ -99,7 +99,7 @@ public class ReportExternalImportDAOImpl extends BaseDAOImpl implements ReportEx
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<String> getUniqueSites() throws LIMSRuntimeException {
 		String sql = "select distinct sending_site from clinlims.report_external_import ";
 		try{
@@ -115,7 +115,7 @@ public class ReportExternalImportDAOImpl extends BaseDAOImpl implements ReportEx
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ReportExternalImport> getReportsInDateRangeSortedForSite(Timestamp lower, Timestamp upper,  String site)
 			throws LIMSRuntimeException {
 	String sql = "from ReportExternalImport rq where rq.eventDate >= :lower and rq.eventDate <= :upper and rq.sendingSite = :site order by rq.sendingSite"; 
@@ -139,7 +139,7 @@ public class ReportExternalImportDAOImpl extends BaseDAOImpl implements ReportEx
 		return null;	}
 
     @SuppressWarnings( "unchecked" )
-    @Override
+    //@Override
 	public ReportExternalImport  getReportByEventDateSiteType(ReportExternalImport importReport) throws LIMSRuntimeException {
 		String sql = "from ReportExternalImport rei where rei.eventDate = :eventDate and rei.sendingSite = :site and rei.reportType = :type";
 		

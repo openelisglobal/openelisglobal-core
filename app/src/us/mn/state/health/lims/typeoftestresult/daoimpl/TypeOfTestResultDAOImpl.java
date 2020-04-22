@@ -339,7 +339,7 @@ public class TypeOfTestResultDAOImpl extends BaseDAOImpl implements TypeOfTestRe
 		return totr;
 	}
 
-    @Override
+    //@Override
     public TypeOfTestResult getTypeOfTestResultByType( String type ) throws LIMSRuntimeException{
         String sql ="from TypeOfTestResult ttr where ttr.testResultType = :type";
         try{

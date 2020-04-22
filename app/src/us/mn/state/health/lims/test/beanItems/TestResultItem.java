@@ -154,43 +154,33 @@ public class TestResultItem implements ResultItem, Serializable{
     public void setRejected(boolean rejected) {
         this.rejected = rejected;
     }
-	@Override
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
-	@Override
 	public void setAccessionNumber(String accessionNumber) {
 		this.accessionNumber = accessionNumber;
 	}
-	@Override
 	public String getSequenceNumber() {
 		return sequenceNumber;
 	}
-	@Override
 	public void setSequenceNumber(String sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
-	@Override
 	public boolean isShowSampleDetails() {
 		return showSampleDetails;
 	}
-	@Override
 	public void setShowSampleDetails(boolean showSampleDetails) {
 		this.showSampleDetails = showSampleDetails;
 	}
-	@Override
 	public boolean getIsGroupSeparator() {
 		return isGroupSeparator;
 	}
-	@Override
 	public void setIsGroupSeparator(boolean isGroupSeparator) {
 		this.isGroupSeparator = isGroupSeparator;
 	}
-	@Override
 	public int getSampleGroupingNumber() {
 		return sampleGroupingNumber;
 	}
-	@Override
 	public void setSampleGroupingNumber(int sampleGroupingNumber) {
 		this.sampleGroupingNumber = sampleGroupingNumber;
 	}
@@ -369,7 +359,6 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setTestMethod(Method method) {
 		testMethod = method == Method.AUTO ? "Auto" : "Manual";
 	}
-	@Override
 	public String getTestName() {
 		return testName;
 	}
@@ -445,7 +434,7 @@ public class TestResultItem implements ResultItem, Serializable{
 		this.dictionaryResults = dictonaryResults;
 	}
 	public List<IdValuePair> getDictionaryResults() {
-		return dictionaryResults == null ? new ArrayList<>() : dictionaryResults;
+		return dictionaryResults == null ? new ArrayList<IdValuePair>() : dictionaryResults;
 	}
 
 	public String getResultLimitId() {
@@ -570,11 +559,9 @@ public class TestResultItem implements ResultItem, Serializable{
 	public String getPastNotes() {
 		return pastNotes;
 	}
-	@Override
 	public String getSequenceAccessionNumber() {
 		return getAccessionNumber() + "-" + getSequenceNumber();
 	}
-	@Override
 	public String getTestSortOrder() {
 		return testSortOrder;
 	}

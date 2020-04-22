@@ -206,7 +206,7 @@ public class CobasC311Reader extends AnalyzerLineInserter {
 		return result;
 	}
 
-	@Override
+	//@Override
 	public String getError() {
 		return error;
 	}

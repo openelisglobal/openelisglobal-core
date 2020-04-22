@@ -39,7 +39,7 @@ import us.mn.state.health.lims.sample.daoimpl.SearchResultsDAOImp;
 public class PatientSearchLocalWorker extends PatientSearchWorker {
     private PatientDAO patientDAO = new PatientDAOImpl();
 
-	@Override
+	//@Override
 	public String createSearchResultXML(String lastName, String firstName, String STNumber, String subjectNumber, String nationalID,
 			String patientID, String guid, StringBuilder xml)  {
 

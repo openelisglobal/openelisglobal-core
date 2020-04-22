@@ -404,7 +404,7 @@ public abstract class PatientReport extends Report {
 		}
 	}
 
-	@Override
+	//@Override
 	protected void createReportParameters() {
 		super.createReportParameters();
 		reportParameters.put("siteId", ConfigurationProperties.getInstance().getPropertyValue(Property.SiteCode));
@@ -656,7 +656,7 @@ public abstract class PatientReport extends Report {
 					StringBuilder multiResult = new StringBuilder();
 
 					Collections.sort(resultList, new Comparator<Result>() {
-						@Override
+						//@Override
 						public int compare(Result o1, Result o2) {
 							if (o1.getGrouping() == o2.getGrouping()) {
 								return Integer.parseInt(o1.getId()) - Integer.parseInt(o2.getId());
@@ -931,7 +931,7 @@ public abstract class PatientReport extends Report {
 
 	}
 
-	@Override
+	//@Override
 	public List<String> getReportedOrders() {
 		return handledOrders;
 	}

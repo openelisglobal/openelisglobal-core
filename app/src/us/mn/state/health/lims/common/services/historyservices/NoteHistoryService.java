@@ -114,7 +114,7 @@ public class NoteHistoryService extends HistoryService {
     }
 
 
-    @Override
+    //@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		Note note = noteDAO.getData(history.getReferenceId());
 		identifier = noteIdToIndicatorMap.get(history.getReferenceId());
@@ -123,12 +123,12 @@ public class NoteHistoryService extends HistoryService {
 		items.add(audit);
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 		
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("note.note");
 	}

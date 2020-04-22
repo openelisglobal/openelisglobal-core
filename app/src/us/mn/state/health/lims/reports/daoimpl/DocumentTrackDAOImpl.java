@@ -34,7 +34,7 @@ public class DocumentTrackDAOImpl extends GenericDAOImpl<String, DocumentTrack >
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<DocumentTrack> getByTypeRecordAndTable(String typeId, String tableId, String recordId) throws LIMSRuntimeException {
 		String sql = "From DocumentTrack dt where dt.documentTypeId = :typeId and dt.tableId = :tableId and dt.recordId = :recordId order by dt.reportTime";
 		
@@ -54,7 +54,7 @@ public class DocumentTrackDAOImpl extends GenericDAOImpl<String, DocumentTrack >
 		return null;
 	}
 
-	@Override
+	//@Override
 	public List<DocumentTrack> getByTypeRecordAndTableAndName(String reportTypeId, String tableId, String recordId, String name) throws LIMSRuntimeException {
 		String sql = "From DocumentTrack dt where dt.documentTypeId = :typeId and dt.tableId = :tableId and dt.recordId = :recordId and dt.documentName = :name order by dt.reportTime";
 

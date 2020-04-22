@@ -154,7 +154,7 @@ public class EvolisReader extends AnalyzerLineInserter {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public String getError() {
 		return "Evolis analyzer unable to write to database";
 	}

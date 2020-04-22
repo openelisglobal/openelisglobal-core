@@ -31,7 +31,6 @@ public class DBOrderExistanceChecker implements IOrderExistanceChecker{
 
 	private static final ElectronicOrderDAO eOrderDAO = new ElectronicOrderDAOImpl();
 	
-	@Override
 	public CheckResult check(String orderId){
 		if( GenericValidator.isBlankOrNull(orderId)){
 			return CheckResult.NOT_FOUND;

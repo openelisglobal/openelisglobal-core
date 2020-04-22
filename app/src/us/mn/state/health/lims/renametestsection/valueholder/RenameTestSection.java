@@ -136,7 +136,7 @@ public class RenameTestSection extends EnumValueItemImpl {
 	}
 
 
-//	@Override
+//	//@Override
 //	protected String getDefaultLocalizedName() {
 //		return TestSectionService.getUserLocalizedTesSectionName(this);
 //	}

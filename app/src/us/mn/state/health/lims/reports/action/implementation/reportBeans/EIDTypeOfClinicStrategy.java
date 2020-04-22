@@ -47,7 +47,7 @@ public class EIDTypeOfClinicStrategy implements ICSVColumnCustomStrategy {
 		}
 	}
 
-	@Override
+	//@Override
 	public String translate(String value, String accessionNumber, String csvName, String dbName) {
 		if (CLINIC_OTHER_DICT_ID.equals(value)) { // clinic "other" was entered
 			Sample sample = new SampleDAOImpl().getSampleByAccessionNumber(accessionNumber);

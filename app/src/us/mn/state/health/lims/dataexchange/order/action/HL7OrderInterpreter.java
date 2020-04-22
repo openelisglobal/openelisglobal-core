@@ -97,7 +97,7 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 	private List<String> unsupportedPanels = new ArrayList<String>();
 	private ITestIdentityService testIdentityService;
 
-	@Override
+	//@Override
 	public List<InterpreterResults> interpret(Message orderMessage){
 		this.orderMessage = (OML_O21)orderMessage;
 //		try{
@@ -304,12 +304,12 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 		}*/
 	}
 
-	@Override
+	//@Override
 	public String getReferringOrderNumber(){
 		return labOrderNumber;
 	}
 
-	@Override
+	//@Override
 	public String getMessage(){
 		if(orderMessage == null){
 			return null;
@@ -324,27 +324,27 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 		return null;
 	}
 
-	@Override
+	//@Override
 	public MessagePatient getMessagePatient(){
 		return patient;
 	}
 
-	@Override
+	//@Override
 	public List<InterpreterResults> getResultStatus(){
 		return results;
 	}
 
-	@Override
+	//@Override
 	public OrderType getOrderType(){
 		return orderType;
 	}
 
-	@Override
+	//@Override
 	public List<String> getUnsupportedTests(){
 		return unsupportedTests;
 	}
 
-	@Override
+	//@Override
 	public List<String> getUnsupportedPanels(){
 		return unsupportedPanels;
 	}
@@ -361,7 +361,7 @@ public class HL7OrderInterpreter implements IOrderInterpreter{
 		this.testIdentityService = testIdentityService;
 	}
 	
-	@Override
+	//@Override
 	public Test getTest() {
 		return test;
 	}

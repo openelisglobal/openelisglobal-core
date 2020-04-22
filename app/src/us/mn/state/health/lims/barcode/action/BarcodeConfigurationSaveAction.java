@@ -30,7 +30,7 @@ import us.mn.state.health.lims.siteinformation.valueholder.SiteInformation;
  */
 public class BarcodeConfigurationSaveAction extends BaseAction {
 
-  @Override
+  //@Override
   protected ActionForward performAction(ActionMapping mapping, ActionForm form,
           HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -205,12 +205,12 @@ public class BarcodeConfigurationSaveAction extends BaseAction {
     ConfigurationProperties.forceReload();
   }
 
-  @Override
+  //@Override
   protected String getPageTitleKey() {
     return "barcodeconfiguration.browse.title";
   }
 
-  @Override
+  //@Override
   protected String getPageSubtitleKey() {
     return "barcodeconfiguration.browse.title";
   }

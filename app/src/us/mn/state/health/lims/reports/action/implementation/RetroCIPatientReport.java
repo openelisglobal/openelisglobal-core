@@ -61,7 +61,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 	}
 
 
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm) {
 		super.initializeReport();
 		errorFound = false;
@@ -86,7 +86,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 			}
 
 			Collections.sort(reportSampleList, new Comparator<Sample>(){
-				@Override
+				//@Override
 				public int compare(Sample o1, Sample o2) {
 					return o1.getAccessionNumber().compareTo(o2.getAccessionNumber());
 				}});
@@ -169,7 +169,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 		reportPatient = sampleHumanDAO.getPatientForSample(reportSample);
 	}
 
-	@Override
+	//@Override
 	protected void createReportParameters() {
 	    super.createReportParameters();
 		reportParameters.put("studyName", getReportNameForReport());
@@ -191,7 +191,7 @@ public abstract class RetroCIPatientReport extends RetroCIReport {
 		return observationList.size() > 0 ? observationList.get(0).getValue() : "";
 	}
 	
-	@Override
+	//@Override
 	public List<String> getReportedOrders(){
 	    	return handledOrders;
 	}

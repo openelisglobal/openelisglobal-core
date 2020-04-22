@@ -136,7 +136,7 @@ public class TestSection extends EnumValueItemImpl {
 		return this.selectedParentTestSectionId;
 	}
 
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName() {
 		return TestSectionService.getUserLocalizedTesSectionName(this);
 	}

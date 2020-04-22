@@ -20,7 +20,7 @@ import us.mn.state.health.lims.sample.form.ProjectData;
 
 public class SampleBatchEntrySetupAction extends BaseSampleEntryAction {
 
-  @Override
+  //@Override
   protected ActionForward performAction(ActionMapping mapping, ActionForm form,
           HttpServletRequest request, HttpServletResponse response) throws Exception {
     
@@ -54,12 +54,12 @@ public class SampleBatchEntrySetupAction extends BaseSampleEntryAction {
     return mapping.findForward(forward);
   }
 
-  @Override
+  //@Override
   protected String getPageTitleKey() {
     return "sample.batchentry.setup.title";
   }
 
-  @Override
+  //@Override
   protected String getPageSubtitleKey() {
     return "sample.batchentry.setup.title";
   }

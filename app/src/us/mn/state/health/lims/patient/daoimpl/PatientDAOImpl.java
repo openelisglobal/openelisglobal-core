@@ -129,7 +129,7 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
 		}
 	}
 
-	@Override
+	//@Override
 	public Patient getData(String patientId) throws LIMSRuntimeException {
 		try{
 		Patient pat = (Patient) HibernateUtil.getSession().get(	Patient.class, patientId );
@@ -291,7 +291,7 @@ public class PatientDAOImpl extends BaseDAOImpl implements PatientDAO {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Patient> getPatientsByNationalId(String nationalId) throws LIMSRuntimeException{
         try {
             String sql = "From Patient p where p.nationalId = :nationalId";

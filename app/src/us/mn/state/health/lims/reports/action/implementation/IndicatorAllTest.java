@@ -66,7 +66,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 		USER_TEST_SECTION_ID = new TestSectionDAOImpl().getTestSectionByName("user").getId();
 	}
 
-	@Override
+	//@Override
 	protected String reportFileName() {
 		return "LabAggregate";
 	}
@@ -301,7 +301,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 		}
 
 		Collections.sort(testBucketList, new Comparator<TestBucket>() {
-			@Override
+			//@Override
 			public int compare(TestBucket o1, TestBucket o2) {
 				int order = o1.sectionSort - o2.sectionSort;
 				
@@ -337,7 +337,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
         return testSectionMap;
     }
 
-    @Override
+    //@Override
 	protected String getNameForReportRequest() {
 		return StringUtil.getMessageForKey("openreports.all.tests.aggregate");
 	}
@@ -368,7 +368,7 @@ public abstract class IndicatorAllTest extends IndicatorReport implements IRepor
 		public int finishedCount = 0;
 	}
 
-	@Override
+	//@Override
 	protected String getNameForReport() {
 		return StringUtil.getContextualMessageForKey("openreports.all.tests.aggregate");
 	}

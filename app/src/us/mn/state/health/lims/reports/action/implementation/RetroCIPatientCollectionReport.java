@@ -20,7 +20,7 @@ public class RetroCIPatientCollectionReport extends CollectionReport implements 
 
 	private ObservationHistoryDAO ohDAO = new ObservationHistoryDAOImpl();
 	
-	@Override
+	//@Override
 	public void setRequestParameters(BaseActionForm dynaForm) {
         try {
 			PropertyUtils.setProperty(dynaForm, "reportName", StringUtil.getMessageForKey("patient.report.collection.name"));
@@ -35,7 +35,7 @@ public class RetroCIPatientCollectionReport extends CollectionReport implements 
 	}
 
 
-	@Override
+	//@Override
 	protected List<byte[]> generateReports() {
 		List<byte[]> byteList = new ArrayList<byte[]>();
 		

@@ -55,7 +55,7 @@ public class ReportSpecificationParameters implements IReportParameterSetter {
 
 
     }
-	@Override
+	//@Override
 	public void setRequestParameters(BaseActionForm dynaForm) {
 	        try {
                 PropertyUtils.setProperty(dynaForm, "reportName", reportTitle);

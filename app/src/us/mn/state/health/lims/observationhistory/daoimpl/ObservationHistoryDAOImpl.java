@@ -27,7 +27,7 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 	}
 
 
-    @Override
+    //@Override
     public void insertOrUpdateData( ObservationHistory observation ) throws LIMSRuntimeException{
         if(observation.getId() == null){
             insertData( observation );
@@ -83,7 +83,7 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ObservationHistory> getObservationHistoriesBySampleItemId(String sampleItemId) throws LIMSRuntimeException {
 		String sql = "from ObservationHistory oh where oh.sampleItemId = :sampleItemId";
 
@@ -103,7 +103,7 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ObservationHistory> getObservationHistoriesBySampleId(String sampleId) throws LIMSRuntimeException {
 		String sql = "from ObservationHistory oh where oh.sampleId = :sampleId";
 
@@ -122,7 +122,7 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 		return null;
 	}
 
-    @Override
+    //@Override
     public List<ObservationHistory> getObservationHistoriesByPatientIdAndType( String patientId, String observationHistoryTypeId ) throws LIMSRuntimeException{
         String sql = "from ObservationHistory oh where oh.patientId = :patientId and oh.observationHistoryTypeId = :ohTypeId order by oh.lastupdated desc";
 
@@ -144,7 +144,7 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
     }
 
 
-    @Override
+    //@Override
 	public ObservationHistory getObservationHistoriesBySampleIdAndType(String sampleId, String observationHistoryTypeId)
 			throws LIMSRuntimeException {
 		
@@ -167,7 +167,7 @@ public class ObservationHistoryDAOImpl extends GenericDAOImpl<String, Observatio
 		return null;
 	}
 
-    @Override
+    //@Override
     public List<ObservationHistory> getObservationHistoriesByValueAndType( String value, String typeId, String valueType ) throws LIMSRuntimeException{
         String sql = "from ObservationHistory oh where oh.value = :value and oh.observationHistoryTypeId = :typeId and oh.valueType = :valueType";
 

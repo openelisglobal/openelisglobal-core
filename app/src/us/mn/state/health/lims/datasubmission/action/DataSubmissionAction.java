@@ -28,7 +28,7 @@ import us.mn.state.health.lims.siteinformation.daoimpl.SiteInformationDAOImpl;
 
 public class DataSubmissionAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String forward = "success";
@@ -65,12 +65,12 @@ public class DataSubmissionAction extends BaseAction {
 		return mapping.findForward(forward);
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return StringUtil.getMessageForKey("datasubmission.browse.title");
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return StringUtil.getMessageForKey("datasubmission.browse.title");
 	}

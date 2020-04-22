@@ -34,7 +34,7 @@ public class TestNamesProvider extends BaseQueryProvider {
 
 	protected AjaxServlet ajaxServlet = null;
 
-    @Override
+    //@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String testId = request.getParameter("testId");
@@ -94,12 +94,12 @@ public class TestNamesProvider extends BaseQueryProvider {
         return INVALID;
     }
 
-	@Override
+	//@Override
 	public void setServlet(AjaxServlet as) {
 		this.ajaxServlet = as;
 	}
 
-	@Override
+	//@Override
 	public AjaxServlet getServlet() {
 		return this.ajaxServlet;
 	}

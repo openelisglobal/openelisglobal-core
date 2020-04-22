@@ -37,18 +37,18 @@ public class BlankLabel extends Label {
     setCode(code);
   }
 
-  @Override
+  //@Override
   public int getNumTextRowsBefore() {
     Iterable<LabelField> fields = getAboveFields();
     return getNumRows(fields);
   }
 
-  @Override
+  //@Override
   public int getNumTextRowsAfter() {
     return 0;
   }
 
-  @Override
+  //@Override
   public int getMaxNumLabels() {
     return 10;
   }

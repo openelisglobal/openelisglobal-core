@@ -44,7 +44,7 @@ public abstract class BaseMenuAction extends BaseAction implements IActionConsta
 		return SystemConfiguration.getInstance().getDefaultPageSize();
 	}
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 

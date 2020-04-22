@@ -216,7 +216,7 @@ public class SystemModuleDAOImpl extends BaseDAOImpl implements SystemModuleDAO 
 		return getTotalCount("SystemModule", SystemModule.class);
 	}
 
-    @Override
+    //@Override
     public SystemModule getSystemModuleByName( String name ) throws LIMSRuntimeException{
         String sql = "From SystemModule sm where sm.systemModuleName = :name";
 

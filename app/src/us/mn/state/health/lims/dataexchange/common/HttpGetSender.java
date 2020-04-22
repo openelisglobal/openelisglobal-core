@@ -34,7 +34,7 @@ public class HttpGetSender extends HttpSender  {
 	 * @see
 	 * us.mn.state.health.lims.dataexchange.IExternalSender#sendMessage()
 	 */
-	@Override
+	//@Override
 	public boolean sendMessage() {
 
 		errors = new ArrayList<String>();

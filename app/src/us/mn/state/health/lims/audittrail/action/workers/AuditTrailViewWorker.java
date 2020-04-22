@@ -278,7 +278,7 @@ public class AuditTrailViewWorker {
 
 	private void sortItems(List<AuditTrailItem> items) {
 		Collections.sort(items, new Comparator<AuditTrailItem>() {
-			@Override
+			//@Override
 			public int compare(AuditTrailItem o1, AuditTrailItem o2) {
 				int sort = o1.getIdentifier().compareTo(o2.getIdentifier());
 				if (sort != 0) {
@@ -297,7 +297,7 @@ public class AuditTrailViewWorker {
 	
 	private void sortItemsByTime(List<AuditTrailItem> items) {
 		Collections.sort(items, new Comparator<AuditTrailItem>() {
-			@Override
+			//@Override
 			public int compare(AuditTrailItem o1, AuditTrailItem o2) {
 				return o1.getTimeStamp().compareTo(o2.getTimeStamp());
 			}

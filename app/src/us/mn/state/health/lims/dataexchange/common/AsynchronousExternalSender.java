@@ -33,7 +33,7 @@ public class AsynchronousExternalSender implements Runnable {
 		thread.start();
 	}
 		
-	@Override
+	//@Override
 	public void run() {
 		sender.sendMessage();
 

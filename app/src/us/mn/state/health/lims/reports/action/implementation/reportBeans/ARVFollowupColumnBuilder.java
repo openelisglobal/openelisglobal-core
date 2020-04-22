@@ -28,7 +28,7 @@ public class ARVFollowupColumnBuilder extends ARVColumnBuilder {
 		super(dateRange, projectStr);
 	}
 
-	@Override
+	//@Override
 	protected void defineAllReportColumns() {
         defineBasicColumns();
         

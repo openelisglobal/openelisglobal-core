@@ -27,17 +27,17 @@ import org.apache.struts.action.ActionMapping;
  * The purpose of this class is so that BaseAction can capture access permissions
  */
 public class PermissionAction extends BaseAction{
-    @Override
+    //@Override
     protected ActionForward performAction( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception{
         return mapping.findForward(FWD_SUCCESS);
     }
 
-    @Override
+    //@Override
     protected String getPageTitleKey(){
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey(){
         return null;
     }

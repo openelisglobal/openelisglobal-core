@@ -137,7 +137,7 @@ public class SampleQaEventDAOImpl extends BaseDAOImpl implements SampleQaEventDA
 		}
 	}
 
-	@Override
+	//@Override
 	public SampleQaEvent getData(String sampleQaEventId) throws LIMSRuntimeException {
 		try{
 			SampleQaEvent data = (SampleQaEvent)HibernateUtil.getSession().get(SampleQaEvent.class, sampleQaEventId);
@@ -258,7 +258,7 @@ public class SampleQaEventDAOImpl extends BaseDAOImpl implements SampleQaEventDA
     /**
      * @see us.mn.state.health.lims.sampleqaevent.dao.SampleQaEventDAO#getSampleQaEventsByUpdatedDate(java.sql.Date, java.sql.Date)
      */
-    @Override
+    //@Override
     @SuppressWarnings("unchecked")
     public List<SampleQaEvent> getSampleQaEventsByUpdatedDate(Date lowDate, Date highDate) throws LIMSRuntimeException {
         List<SampleQaEvent> sampleQaEvents = null;
@@ -279,7 +279,7 @@ public class SampleQaEventDAOImpl extends BaseDAOImpl implements SampleQaEventDA
     }
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<SampleQaEvent> getAllUncompleatedEvents() throws LIMSRuntimeException {
 		String sql = "From SampleQaEvent sqa where sqa.completedDate is null";
 		

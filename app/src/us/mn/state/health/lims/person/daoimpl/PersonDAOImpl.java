@@ -239,7 +239,7 @@ public class PersonDAOImpl extends BaseDAOImpl implements PersonDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Person getPersonById(String personId) throws LIMSRuntimeException {
 		String sql = "From Person p where id = :personId";
 		try{

@@ -26,12 +26,12 @@ public class IndicatorHIVLNSP extends IndicatorHIV implements IReportCreator, IR
 		HIV_TESTS.add("Test Rapide VIH");
 	}
 	
-	@Override
+	//@Override
 	protected String getLabNameLine1() {
 		return StringUtil.getContextualMessageForKey("report.labName.one");
 	}
 
-	@Override
+	//@Override
 	protected String getLabNameLine2() {
 		return StringUtil.getContextualMessageForKey("report.labName.two");
 	}

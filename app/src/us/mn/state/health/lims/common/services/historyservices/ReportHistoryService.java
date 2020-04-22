@@ -55,14 +55,14 @@ public class ReportHistoryService extends HistoryService {
 		}
 	}
 
-	@Override
+	//@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		identifier = new ReportTrackingService().getDocumentForId(history.getReferenceId()).getDocumentName();
 		AuditTrailItem item = getCoreTrail(history);
 		items.add(item);
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 		String status = extractStatus(changes);
 		if (status != null) {
@@ -74,7 +74,7 @@ public class ReportHistoryService extends HistoryService {
 		}
 	}
 	
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("banner.menu.reports");
 	}

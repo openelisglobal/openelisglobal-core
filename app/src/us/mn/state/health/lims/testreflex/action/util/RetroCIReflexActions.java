@@ -128,7 +128,7 @@ public class RetroCIReflexActions extends ReflexAction {
 	}
 
 
-	@Override
+	//@Override
 	protected void handleScriptletAction(Scriptlet scriptlet) {
 		if (scriptlet != null && INTERPERET_TYPE.equals(scriptlet.getCodeType())) {
 			String action = scriptlet.getCodeSource();

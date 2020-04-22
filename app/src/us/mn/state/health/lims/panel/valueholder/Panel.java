@@ -59,7 +59,7 @@ public class Panel extends EnumValueItemImpl {
 		this.description = description;
 	}
 
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName() {
 		return LocalizationService.getLocalizedValueById(getLocalization().getId());
 	}

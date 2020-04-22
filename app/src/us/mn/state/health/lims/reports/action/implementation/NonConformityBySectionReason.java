@@ -35,12 +35,12 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
     List<SampleQaEvent> sampleQaEvents = null;
     SampleQaEventDAO sampleQaEventDAO = new SampleQaEventDAOImpl();
     
-    @Override
+    //@Override
 	protected String reportFileName(){
 		return "NonConformityByGroupCategory";
 	}
 
-    @Override
+    //@Override
     protected void createReportParameters() {
         super.createReportParameters();
         reportParameters.put("reportTitle", StringUtil.getMessageForKey("reports.nonConformity.bySectionReason.title"));
@@ -56,7 +56,7 @@ public abstract class NonConformityBySectionReason extends NonConformityBy {
 
     protected abstract String getHeaderName();
     
-    @Override
+    //@Override
     void createReportItems() {
         sampleQaEvents = sampleQaEventDAO.getSampleQaEventsByUpdatedDate(dateRange.getLowDate(), DateUtil.addDaysToSQLDate(dateRange.getHighDate(), 1));
         reportItems = new ArrayList<CountReportItem>();

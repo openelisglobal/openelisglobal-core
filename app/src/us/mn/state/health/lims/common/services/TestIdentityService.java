@@ -81,12 +81,12 @@ public class TestIdentityService implements ITestIdentityService{
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.ITestIdentityService#doesTestExist(java.lang.String)
 	 */
-	@Override
+	//@Override
 	public boolean doesTestExist(String name){
 		return testDAO.getTestByName(name) != null;
 	}
 	
-	@Override
+	//@Override
 	public boolean doesActiveTestExist(String name){
 		return !testDAO.getActiveTestByName(name).isEmpty();
 	}
@@ -94,17 +94,17 @@ public class TestIdentityService implements ITestIdentityService{
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.ITestIdentityService#doesPanelExist(java.lang.String)
 	 */
-	@Override
+	//@Override
 	public boolean doesPanelExist(String name){
 		return panelDAO.getIdForPanelName(name) != null;
 	}
 	
-	@Override
+	//@Override
 	public boolean doesTestExistForLoinc(String loincCode) {
 		return testDAO.getTestsByLoincCode(loincCode) != null && testDAO.getTestsByLoincCode(loincCode).size() > 0;
 	}
 
-	@Override
+	//@Override
 	public boolean doesActiveTestExistForLoinc(String loincCode) {
 		return testDAO.getActiveTestsByLoinc(loincCode) != null && testDAO.getActiveTestsByLoinc(loincCode).size() > 0;
 	}

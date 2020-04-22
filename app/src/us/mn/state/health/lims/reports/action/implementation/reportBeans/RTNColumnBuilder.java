@@ -45,7 +45,7 @@ public class RTNColumnBuilder extends CIColumnBuilder {
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.reportBeans.CIColumnBuilder#defineAllReportColumns()
      */
-    @Override
+    //@Override
     protected void defineAllReportColumns() {
         defineBasicColumns();
         add("hivStatus", "STATVIH", DICT_RAW );
@@ -63,7 +63,7 @@ public class RTNColumnBuilder extends CIColumnBuilder {
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.reportBeans.CIColumnBuilder#makeSQL()
      */
-    @Override
+    //@Override
     public void makeSQL() {
         query = new StringBuilder();
         String lowDatePostgres =  postgresDateFormat.format(dateRange.getLowDate());

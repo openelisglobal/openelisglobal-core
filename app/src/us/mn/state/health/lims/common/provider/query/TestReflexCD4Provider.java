@@ -69,7 +69,7 @@ public class TestReflexCD4Provider extends BaseQueryProvider {
 		
 	}
 	
-	@Override
+	//@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String resultIds = request.getParameter("results");
@@ -181,12 +181,12 @@ public class TestReflexCD4Provider extends BaseQueryProvider {
 		XMLUtil.appendKeyValue("testId", testReflex.getAddedTestId(), xml);
 	}
 
-	@Override
+	//@Override
 	public void setServlet(AjaxServlet as) {
 		this.ajaxServlet = as;
 	}
 
-	@Override
+	//@Override
 	public AjaxServlet getServlet() {
 		return this.ajaxServlet;
 	}

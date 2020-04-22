@@ -33,7 +33,7 @@ import us.mn.state.health.lims.common.util.DateUtil;
 import us.mn.state.health.lims.patient.saving.Accessioner;
 
 /**
- * Action for Côte d'Ivoire study based patient entry.
+ * Action for Cï¿½te d'Ivoire study based patient entry.
  * @author pahill
  * @since 2010-04-16
  */
@@ -69,7 +69,7 @@ public class PatientEntryByProjectAction extends BasePatientEntryByProject {
 
 
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

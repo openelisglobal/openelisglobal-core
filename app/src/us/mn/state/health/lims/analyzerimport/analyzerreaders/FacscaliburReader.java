@@ -220,7 +220,7 @@ public class FacscaliburReader extends AnalyzerLineInserter {
 		return month + ".";
 	}
 
-	@Override
+	//@Override
 	public String getError() {
 		return "Facscalibur analyzer unable to write to database";
 	}

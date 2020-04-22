@@ -42,7 +42,7 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 
 public class SampleTypeOrderUpdate extends BaseAction {
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String changeList = ((DynaValidatorForm) form).getString("jsonChangeList");
 
@@ -101,12 +101,12 @@ public class SampleTypeOrderUpdate extends BaseAction {
         return list;
     }
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

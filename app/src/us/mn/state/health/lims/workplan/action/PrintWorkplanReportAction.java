@@ -143,12 +143,12 @@ public class PrintWorkplanReportAction extends BaseAction {
 	}
 	
 		
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "workplan.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "workplan.title";
 	}

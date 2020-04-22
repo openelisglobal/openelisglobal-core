@@ -90,7 +90,7 @@ public class OrderLabel extends Label {
   /* (non-Javadoc)
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsBefore()
    */
-  @Override
+  //@Override
   public int getNumTextRowsBefore() {
     int numRows = 0;
     int curColumns = 0;
@@ -125,7 +125,7 @@ public class OrderLabel extends Label {
   /* (non-Javadoc)
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsAfter()
    */
-  @Override
+  //@Override
   public int getNumTextRowsAfter() {
     return 0;
   }
@@ -133,7 +133,7 @@ public class OrderLabel extends Label {
   /* (non-Javadoc)
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getMaxNumLabels()
    */
-  @Override
+  //@Override
   public int getMaxNumLabels() {
     int max = 0;
     try {

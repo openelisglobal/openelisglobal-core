@@ -48,12 +48,12 @@ public abstract class RejectionReport extends Report implements IReportCreator{
     protected String reportPath = "";
     protected DateRange dateRange;
 
-    @Override
+    //@Override
     public JRDataSource getReportDataSource() throws IllegalStateException{
         return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource( rejections );
     }
 
-    @Override
+    //@Override
     protected void createReportParameters() {
         super.createReportParameters();
         reportParameters.put( "activityLabel", getActivityLabel() );
@@ -74,7 +74,7 @@ public abstract class RejectionReport extends Report implements IReportCreator{
 
     protected abstract void buildReportContent( ReportSpecificationList testSelection );
 
-    @Override
+    //@Override
     public void initializeReport( BaseActionForm dynaForm ){
         initialized = true;
         ReportSpecificationList selection = ( ReportSpecificationList ) dynaForm.get( "selectList" );
@@ -151,7 +151,7 @@ public abstract class RejectionReport extends Report implements IReportCreator{
         return item;
     }
 
-    @Override
+    //@Override
     protected String reportFileName(){
         return  "RejectionReport";
     }
@@ -182,7 +182,7 @@ public abstract class RejectionReport extends Report implements IReportCreator{
 
     protected void injectPatientLineAndCopyToFinalList( ArrayList<RejectionReportBean> rawResults ){
         Collections.sort( rawResults, new Comparator<RejectionReportBean>(){
-            @Override
+            //@Override
             public int compare( RejectionReportBean o1, RejectionReportBean o2 ){
                 int sortResult = o1.getAccessionNumber().compareTo( o2.getAccessionNumber() );
                 return sortResult == 0 ? o1.getPatientOrTestName().compareTo( o2.getPatientOrTestName() ) : sortResult;

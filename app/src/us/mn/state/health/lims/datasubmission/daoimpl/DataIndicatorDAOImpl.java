@@ -18,7 +18,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 
 public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 	
-	@Override
+	//@Override
 	public void getData(DataIndicator indicator) throws LIMSRuntimeException {
 		try{
 			DataIndicator indicatorClone = (DataIndicator)HibernateUtil.getSession().get(DataIndicator.class, indicator.getId());
@@ -36,7 +36,7 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public DataIndicator getIndicator(String id) throws LIMSRuntimeException {
 		try{
 			DataIndicator indicator = (DataIndicator)HibernateUtil.getSession().get(DataIndicator.class, id);
@@ -50,7 +50,7 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public DataIndicator getIndicatorByTypeYearMonth(TypeOfDataIndicator type, int year, int month) throws LIMSRuntimeException {
 		String sql = "From DataIndicator di where di.typeOfIndicator.id = :todiid and di.year = :year and di.month = :month";
 		try{
@@ -71,7 +71,7 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public List<DataIndicator> getIndicatorsByStatus(String status) throws LIMSRuntimeException {
 		String sql = "From DataIndicator di where di.status = :status";
 		try{
@@ -87,7 +87,7 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public boolean insertData(DataIndicator dataIndicator) throws LIMSRuntimeException{
 		try{ 
 			String id = (String)HibernateUtil.getSession().save(dataIndicator);
@@ -110,7 +110,7 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 		return true;
 	}
 
-	@Override
+	//@Override
 	public void updateData(DataIndicator dataIndicator) throws LIMSRuntimeException{
 
 		DataIndicator oldData = getIndicator(dataIndicator.getId());
@@ -140,19 +140,19 @@ public class DataIndicatorDAOImpl implements DataIndicatorDAO {
 	}
 	
 
-	@Override
+	//@Override
 	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	//@Override
 	public List getPreviousRecord(String id, String table, Class clazz) throws LIMSRuntimeException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Integer getTotalCount(String table, Class clazz) throws LIMSRuntimeException {
 		// TODO Auto-generated method stub
 		return null;

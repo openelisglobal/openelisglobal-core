@@ -44,17 +44,17 @@ public class RoleModule extends PermissionModule {
 		return roleId;
 	}
 
-	@Override
+	//@Override
 	public String getPermissionAgentId() {
 		return getRoleId();
 	}
 
-	@Override
+	//@Override
 	public PermissionAgent getPermissionAgent() {
 		return getRole();
 	}
 
-	@Override
+	//@Override
 	public void setPermissionAgent(PermissionAgent agent) {
 		setRole((Role)agent);		
 	}	

@@ -61,7 +61,7 @@ public class UnitOfMeasure extends EnumValueItemImpl {
 		return description;
 	}
 
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName(){
 		return getUnitOfMeasureName();
 	}

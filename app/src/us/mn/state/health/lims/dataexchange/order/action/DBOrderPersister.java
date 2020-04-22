@@ -221,7 +221,6 @@ public class DBOrderPersister implements IOrderPersister{
 		return !GenericValidator.isBlankOrNull(orderPatientValue) && StringUtil.compareWithNulls(currentPatientValue, orderPatientValue) != 0;
 	}
 
-	@Override
 	public void persist(MessagePatient orderPatient, ElectronicOrder eOrder){
 		Transaction tx = HibernateUtil.getSession().beginTransaction();
 
@@ -235,12 +234,10 @@ public class DBOrderPersister implements IOrderPersister{
 		}
 	}
 
-	@Override
 	public String getServiceUserId(){
 		return SERVICE_USER_ID;
 	}
 
-	@Override
 	public void cancelOrder(String referringOrderNumber){
 		if(!GenericValidator.isBlankOrNull(referringOrderNumber)){
 			List<ElectronicOrder> eOrders = eOrderDAO.getElectronicOrdersByExternalId(referringOrderNumber);

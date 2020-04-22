@@ -143,7 +143,7 @@ public class CobasTaqmanReader extends AnalyzerLineInserter{
 		return result;
 	}
 
-	@Override
+	//@Override
 	public String getError(){
 		return "Cobas Taqman unable to write to database";
 	}

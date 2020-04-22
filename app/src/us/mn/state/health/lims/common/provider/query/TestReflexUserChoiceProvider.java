@@ -62,7 +62,7 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
     private static final TestResultDAO TEST_RESULT_DAO = new TestResultDAOImpl();
     private static final ResultDAO RESULT_DAO = new ResultDAOImpl();
 
-    @Override
+    //@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String resultIds = request.getParameter("resultIds");
@@ -270,12 +270,12 @@ public class TestReflexUserChoiceProvider extends BaseQueryProvider {
 
         jsonResult.put( "selections", jsonArray );
     }
-	@Override
+	//@Override
 	public void setServlet(AjaxServlet as) {
 		this.ajaxServlet = as;
 	}
 
-	@Override
+	//@Override
 	public AjaxServlet getServlet() {
 		return this.ajaxServlet;
 	}

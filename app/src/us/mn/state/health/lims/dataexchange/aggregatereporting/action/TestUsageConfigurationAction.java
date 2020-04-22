@@ -48,7 +48,7 @@ public class TestUsageConfigurationAction extends BaseAction {
 	private static SiteInformationDAO siteInfoDAO = new SiteInformationDAOImpl();
 	private static ReportExternalExportDAO reportDAO = new ReportExternalExportDAOImpl();
 	
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		
@@ -129,12 +129,12 @@ public class TestUsageConfigurationAction extends BaseAction {
 		
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "testusageconfiguration.browse.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "testusageconfiguration.browse.title";
 	}

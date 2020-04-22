@@ -576,7 +576,7 @@ public class AnalyzerResultsAction extends BaseAction {
 
 	}
 
-	@Override
+	//@Override
 	protected String getActualMessage( String messageKey){
 		String actualMessage = null;
 		if( messageKey != null){

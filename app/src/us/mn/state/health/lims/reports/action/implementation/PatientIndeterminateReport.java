@@ -169,12 +169,12 @@ public abstract class PatientIndeterminateReport extends RetroCIPatientReport {
 		}
 	}
 
-	@Override
+	//@Override
 	protected void initializeReportItems() {
 		reportItems = new ArrayList<IndeterminateReportData>();
 	}
 
-	@Override
+	//@Override
 	protected String getProjectId() {
 		return INDETERMINATE_STUDY_ID;
 	}

@@ -112,12 +112,12 @@ public class Test extends EnumValueItemImpl {
 
     private String guid;
 	
-	@Override
+	//@Override
 	public String getSortOrder() {
 		return sortOrder;
 	}
 
-	@Override
+	//@Override
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
@@ -204,7 +204,7 @@ public class Test extends EnumValueItemImpl {
 		this.description = description;
 	}
 
-	@Override
+	//@Override
 	public String getIsActive() {
 		return isActive;
 	}
@@ -212,7 +212,7 @@ public class Test extends EnumValueItemImpl {
 	public boolean isActive(){
 		return "Y".equals(isActive);
 	}
-	@Override
+	//@Override
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}
@@ -455,7 +455,7 @@ public class Test extends EnumValueItemImpl {
 		this.alternateTestDisplayValue = alternateTestDisplayValue;
 	}
 
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName() {
 		return TestService.getUserLocalizedTestName(this);
     }

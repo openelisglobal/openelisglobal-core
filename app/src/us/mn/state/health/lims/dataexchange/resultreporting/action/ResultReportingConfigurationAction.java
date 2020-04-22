@@ -33,7 +33,7 @@ import us.mn.state.health.lims.common.services.ExchangeConfigurationService.Conf
 
 public class ResultReportingConfigurationAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -55,12 +55,12 @@ public class ResultReportingConfigurationAction extends BaseAction {
 
 
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "resultreporting.browse.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "resultreporting.browse.title";
 	}

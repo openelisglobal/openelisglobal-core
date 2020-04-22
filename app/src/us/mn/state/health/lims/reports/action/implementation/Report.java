@@ -54,12 +54,12 @@ public abstract class Report implements IReportCreator {
 
 	protected boolean initialized = false;
 	protected boolean errorFound = false;
-	protected List<ErrorMessages> errorMsgs = new ArrayList<>();
+	protected List<ErrorMessages> errorMsgs = new ArrayList<ErrorMessages>();
 	protected HashMap<String, Object> reportParameters = null;
 	protected String requestedReport;
 	private String fullReportFilename;
 
-	@Override
+	//@Override
 	public void setRequestedReport(String report) {
 		requestedReport = report;
 	}
@@ -68,12 +68,12 @@ public abstract class Report implements IReportCreator {
 		initialized = true;
 	}
 
-	@Override
+	//@Override
 	public String getResponseHeaderName() {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public String getResponseHeaderContent() {
 		return null;
 	}
@@ -81,7 +81,7 @@ public abstract class Report implements IReportCreator {
 	/**
 	 * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#getContentType()
 	 */
-	@Override
+	//@Override
 	public String getContentType() {
 		return "application/pdf; charset=UTF-8";
 	}
@@ -94,7 +94,7 @@ public abstract class Report implements IReportCreator {
 	 */
 	protected void createReportParameters() {
 		reportParameters = (reportParameters != null) ? reportParameters
-				: new HashMap<>();
+				: new HashMap<String, Object>();
 		reportParameters.put("directorName", ConfigurationProperties
 				.getInstance().getPropertyValue(Property.labDirectorName));
 		reportParameters.put("siteName", ConfigurationProperties.getInstance()
@@ -130,7 +130,7 @@ public abstract class Report implements IReportCreator {
 	 */
 	@Deprecated
 	protected Map<String, String> createLocalizationMap() {
-		HashMap<String, String> localizationMap = new HashMap<>();
+		HashMap<String, String> localizationMap = new HashMap<String, String>();
 		localizationMap.put("requestOrderNumber",
 				StringUtil.getMessageForKey("report.requestOrderNumber"));
 		localizationMap.put("confirmationOrderNumber",
@@ -304,7 +304,6 @@ public abstract class Report implements IReportCreator {
 		return localizationMap;
 	}
 
-	@Override
 	public byte[] runReport() throws Exception {
 		return JasperRunManager.runReportToPdf(fullReportFilename,
 				getReportParameters(), getReportDataSource());
@@ -313,14 +312,13 @@ public abstract class Report implements IReportCreator {
 	public abstract JRDataSource getReportDataSource()
 			throws IllegalStateException;
 
-	@Override
 	public HashMap<String, ?> getReportParameters()
 			throws IllegalStateException {
 		if (!initialized) {
 			throw new IllegalStateException("initializeReport not called first");
 		}
 		return reportParameters != null ? reportParameters
-				: new HashMap<>();
+				: new HashMap<String, Object>();
 	}
 
 	/**
@@ -464,7 +462,7 @@ public abstract class Report implements IReportCreator {
 			return true;
 		}
 
-		@Override
+		//@Override
 		public String toString() {
 			String range = lowDateStr;
 			try {
@@ -488,14 +486,12 @@ public abstract class Report implements IReportCreator {
 		}
 	}
 
-	@Override
 	public void setReportPath(String path) {
 		fullReportFilename = path + getReportFileName() + ".jasper";
 	}
 
-	@Override
 	public List<String> getReportedOrders() {
-		return new ArrayList<>();
+		return new ArrayList<String>();
 	}
 
 	protected abstract String reportFileName();

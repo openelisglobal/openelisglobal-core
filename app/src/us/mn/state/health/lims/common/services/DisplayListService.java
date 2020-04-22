@@ -156,7 +156,7 @@ public class DisplayListService implements LocaleChangeListener {
         testResults.addAll(createFromDictionaryCategoryLocalizedSort("HIVResult"));
 
         Collections.sort(testResults, new Comparator<IdValuePair>() {
-            @Override
+            //@Override
             public int compare(IdValuePair o1, IdValuePair o2) {
                 return o1.getValue().compareTo(o2.getValue());
             }
@@ -169,7 +169,7 @@ public class DisplayListService implements LocaleChangeListener {
         List<IdValuePair> hivStatus = createFromDictionaryCategoryLocalizedSort("HIVResult");
         hivStatus.addAll(createFromDictionaryCategoryLocalizedSort("HIVResult"));
         Collections.sort(hivStatus, new Comparator<IdValuePair>() {
-            @Override
+            //@Override
             public int compare(IdValuePair o1, IdValuePair o2) {
                 return o1.getValue().compareTo(o2.getValue());
             }
@@ -180,7 +180,7 @@ public class DisplayListService implements LocaleChangeListener {
     
     
     
-    @Override
+    //@Override
     public void localeChanged(String locale) {
         //refreshes those lists which are dependent on local
     	typeToListMap.put(ListType.SAMPLE_TYPE, createTypeOfSampleList());
@@ -456,7 +456,7 @@ public class DisplayListService implements LocaleChangeListener {
         }
 
         Collections.sort( tests, new Comparator<IdValuePair>(){
-            @Override
+            //@Override
             public int compare( IdValuePair o1, IdValuePair o2 ){
                 return o1.getValue().compareTo( o2.getValue() );
             }
@@ -473,7 +473,7 @@ public class DisplayListService implements LocaleChangeListener {
             tests.add( new IdValuePair( test.getId(), TestService.getLocalizedTestNameWithType( test ) ) );
 
             Collections.sort( tests, new Comparator<IdValuePair>(){
-                @Override
+                //@Override
                 public int compare( IdValuePair o1, IdValuePair o2 ){
                     return o1.getValue().compareTo( o2.getValue() );
                 }
@@ -561,7 +561,7 @@ public class DisplayListService implements LocaleChangeListener {
 		boolean sortList = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.QA_SORT_EVENT_LIST, "true");
 		if( sortList ){
 			Collections.sort(qaEventList, new Comparator<QaEvent>() {
-				@Override
+				//@Override
 				public int compare(QaEvent o1, QaEvent o2) {
 					return o1.getLocalizedName().compareTo(o2.getLocalizedName());
 				}

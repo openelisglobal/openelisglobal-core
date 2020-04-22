@@ -122,6 +122,6 @@ public abstract class RetroCIReport extends Report implements IReportCreator {
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#initializeReport(us.mn.state.health.lims.common.action.BaseActionForm)
      */
-    @Override
+    //@Override
     abstract public void initializeReport(BaseActionForm dynaForm);
 }

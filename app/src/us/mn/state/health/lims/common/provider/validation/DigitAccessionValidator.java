@@ -90,7 +90,7 @@ public class DigitAccessionValidator implements IAccessionNumberValidator {
 		}
 	}
 
-    @Override
+    //@Override
     public String getInvalidFormatMessage( ValidationResults results ){
         return StringUtil.getMessageForKey("sample.entry.invalid.accession.number.format.corrected", getFormatPattern(), getFormatExample());
     }
@@ -149,17 +149,17 @@ public class DigitAccessionValidator implements IAccessionNumberValidator {
 		return results;
 	}
 
-	@Override
+	//@Override
 	public int getInvarientLength() {
 		return 0;
 	}
 
-	@Override
+	//@Override
 	public int getChangeableLength() {
 		return maxLength;
 	}
 
-    @Override
+    //@Override
     public String getPrefix(){
         return null;   //no fixed prefix
     }

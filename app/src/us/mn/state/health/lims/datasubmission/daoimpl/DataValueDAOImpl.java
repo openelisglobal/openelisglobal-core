@@ -15,7 +15,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 
 public class DataValueDAOImpl implements DataValueDAO {
 	
-	@Override
+	//@Override
 	public void getData(DataValue dataValue) throws LIMSRuntimeException {
 		try{
 			DataValue dataValueClone = (DataValue)HibernateUtil.getSession().get(DataValue.class, dataValue.getId());
@@ -33,7 +33,7 @@ public class DataValueDAOImpl implements DataValueDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public DataValue getDataValue(String id) throws LIMSRuntimeException {
 		try{
 			DataValue dataValue = (DataValue)HibernateUtil.getSession().get(DataValue.class, id);
@@ -47,7 +47,7 @@ public class DataValueDAOImpl implements DataValueDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public boolean insertData(DataValue dataValue) throws LIMSRuntimeException{
 
 		try{ 
@@ -71,7 +71,7 @@ public class DataValueDAOImpl implements DataValueDAO {
 		return true;
 	}
 
-	@Override
+	//@Override
 	public void updateData(DataValue dataValue) throws LIMSRuntimeException{
 
 		DataValue oldData = getDataValue(dataValue.getId());
@@ -101,19 +101,19 @@ public class DataValueDAOImpl implements DataValueDAO {
 	}
 	
 
-	@Override
+	//@Override
 	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	//@Override
 	public List getPreviousRecord(String id, String table, Class clazz) throws LIMSRuntimeException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Integer getTotalCount(String table, Class clazz) throws LIMSRuntimeException {
 		// TODO Auto-generated method stub
 		return null;

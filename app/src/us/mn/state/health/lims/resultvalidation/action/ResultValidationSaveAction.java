@@ -124,7 +124,7 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		RESULT_REPORT_ID = new DocumentTypeDAOImpl().getDocumentTypeByName("resultExport").getId();
 	}
 	
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception{
 
@@ -548,17 +548,17 @@ public class ResultValidationSaveAction extends BaseResultValidationAction imple
 		sampleFinishedStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.NonConforming_depricated)));
 	}
 
-	@Override
+	//@Override
 	public String getCurrentUserId(){
 		return currentUserId;
 	}
 
-	@Override
+	//@Override
 	public List<ResultSet> getNewResults(){
 		return newResultSet;
 	}
 
-	@Override
+	//@Override
 	public List<ResultSet> getModifiedResults(){
 		return modifiedResultSet;
 	}

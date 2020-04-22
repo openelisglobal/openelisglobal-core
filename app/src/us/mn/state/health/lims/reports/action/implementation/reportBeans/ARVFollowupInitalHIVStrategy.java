@@ -40,7 +40,7 @@ public class ARVFollowupInitalHIVStrategy implements ICSVColumnCustomStrategy {
 	private static ObservationHistoryDAO ohDAO = new ObservationHistoryDAOImpl();
 	private static DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 
-	@Override
+	//@Override
 	public String translate(String value, String accessionNumber, String csvName, String dbName) {
 		Sample sample = sampleDAO.getSampleByAccessionNumber(accessionNumber);
 		

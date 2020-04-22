@@ -28,7 +28,7 @@ import us.mn.state.health.lims.testcodes.valueholder.OrganizationHL7Schema;
 
 public class OrgHL7SchemaDAOImpl extends BaseDAOImpl implements OrgHL7SchemaDAO {
 
-	@Override
+	//@Override
 	public OrganizationHL7Schema getOrganizationHL7SchemaByOrgId(String orgId) throws LIMSRuntimeException {
 		String sql = "from OrganizationHL7Schema hs where hs.compoundId.organizationId = :id";
 		

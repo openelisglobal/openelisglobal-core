@@ -43,11 +43,11 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.ErrorMe
 public abstract class CollectionReport implements IReportCreator {
 	protected String requestedReport;
 
-	@Override
+	//@Override
 	public void setRequestedReport(String report){
 		requestedReport = report;
 	}
-	@Override
+	//@Override
 	public String getContentType() {
 		return "application/pdf; charset=UTF-8";
 	}
@@ -56,28 +56,28 @@ public abstract class CollectionReport implements IReportCreator {
 	protected BaseActionForm dynaForm;
 	protected Set<String> handledOrders;
 
-	@Override
+	//@Override
 	public String getResponseHeaderName() {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public String getResponseHeaderContent() {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm) {
 		handledOrders = new HashSet<String>();
 		this.dynaForm = dynaForm;
 	}
 
-	@Override
+	//@Override
 	public HashMap<String, ?> getReportParameters() throws IllegalStateException {
 		return new HashMap<String, String>();
 	}
 
-	@Override
+	//@Override
 	public byte[] runReport() throws Exception {
 		List<byte[]> byteList = generateReports();
 		if (byteList.isEmpty()) {
@@ -95,7 +95,7 @@ public abstract class CollectionReport implements IReportCreator {
 		}
 	}
 
-	@Override
+	//@Override
 	public void setReportPath(String path) {
 		reportPath = path;
 	}

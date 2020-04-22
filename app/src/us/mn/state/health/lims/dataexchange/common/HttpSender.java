@@ -29,27 +29,27 @@ abstract public class HttpSender implements IExternalSender {
 	
 	abstract public boolean sendMessage();
 
-	@Override
+	//@Override
 	public void setTargetName(String name) {
 		serviceTargetName = name != null ? name : "";
 	}
 
-	@Override
+	//@Override
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
-	@Override
+	//@Override
 	public void setURI(String url) {
 		this.url = url;
 	}
 
-	@Override
+	//@Override
 	public List<String> getErrors() {
 		return errors;
 	}
 
-	@Override
+	//@Override
 	public int getSendResponse() {
 			return returnStatus;
 	}

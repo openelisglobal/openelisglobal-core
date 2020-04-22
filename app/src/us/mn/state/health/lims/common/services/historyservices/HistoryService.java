@@ -77,7 +77,7 @@ public abstract class HistoryService {
 	
 	private void reverseSortByTime(List<History> list) {
 		Collections.sort(list, new Comparator<History>() {
-			@Override
+			//@Override
 			public int compare(History o1, History o2) {
 				return o2.getTimestamp().compareTo(o1.getTimestamp());
 			}

@@ -17,7 +17,7 @@
 */
 
 /**
- * Côte d'Ivoire
+ * Cï¿½te d'Ivoire
  * @author pahill
  * @since 2010-06-15
  **/
@@ -43,7 +43,7 @@ public class PatientEntryAfterSampleEntry extends PatientEntry {
     /**
      * An existing not registered patient with the sample already somewhere else  
      */
-    @Override
+    //@Override
     public boolean canAccession() {
         return (NotRegistered == statusSet.getPatientRecordStatus() &&
                 NotRegistered != statusSet.getSampleRecordStatus());

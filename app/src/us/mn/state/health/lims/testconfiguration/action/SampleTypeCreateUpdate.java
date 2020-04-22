@@ -43,7 +43,7 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 public class SampleTypeCreateUpdate extends BaseAction {
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         RoleDAO roleDAO = new RoleDAOImpl();
         RoleModuleDAOImpl roleModuleDAO = new RoleModuleDAOImpl();
@@ -146,12 +146,12 @@ public class SampleTypeCreateUpdate extends BaseAction {
     }
 
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

@@ -57,7 +57,7 @@ public class PatientSearchLocalAndClinicWorker extends PatientSearchWorker {
 	/**
 	 * @see us.mn.state.health.lims.common.provider.query.workerObjects.PatientSearchWorker#createSearchResultXML(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.StringBuilder)
 	 */
-	@Override
+	//@Override
 	public String createSearchResultXML(String lastName, String firstName,
 			String STNumber, String subjectNumber, String nationalID, String patientID, String guid, StringBuilder xml) {
 

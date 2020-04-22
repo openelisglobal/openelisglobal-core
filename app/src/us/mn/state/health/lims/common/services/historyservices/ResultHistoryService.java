@@ -55,14 +55,14 @@ public class ResultHistoryService extends HistoryService {
 		}
 	}
 
-	@Override
+	//@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		AuditTrailItem item = getCoreTrail(history);
 		item.setNewValue(newValueMap.get(VALUE_ATTRIBUTE));
 		items.add(item);
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 		String value = extractSimple(changes, "value");
 		if (value != null) {
@@ -76,12 +76,12 @@ public class ResultHistoryService extends HistoryService {
 
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("sample.entry.project.result");
 	}
 
-	@Override
+	//@Override
 	protected boolean showAttribute() {
 		return true;
 	}

@@ -56,7 +56,7 @@ public class MalariaResultExporter extends Thread {
 		resultReportTypeId = new ReportQueueTypeDAOImpl().getReportQueueTypeByName("malariaCase").getId();
 	}
 
-	@Override
+	//@Override
 	public void run() {
 
 		while (running) {
@@ -101,7 +101,7 @@ public class MalariaResultExporter extends Thread {
 			externalExportRowId = rowId;
 		}
 
-		@Override
+		//@Override
 		public void handleResponse(int httpReturnStatus, List<String> errors, String msg) {
 
 			if (httpReturnStatus == HttpServletResponse.SC_OK) {

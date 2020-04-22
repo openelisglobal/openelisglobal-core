@@ -54,7 +54,7 @@ public class TestCatalogAction extends BaseAction {
     private DictionaryDAO dictionaryDAO = new DictionaryDAOImpl();
 
 
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         DynaValidatorForm dynaForm = (DynaValidatorForm)form;
         List<TestCatalogBean> testList = createTestList();
@@ -114,7 +114,7 @@ public class TestCatalogAction extends BaseAction {
         }
 
         Collections.sort(beanList, new Comparator<TestCatalogBean>() {
-            @Override
+            //@Override
             public int compare(TestCatalogBean o1, TestCatalogBean o2) {
                 //sort by test section, sample type, panel, sort order
                 int comparison = o1.getTestUnit().compareTo(o2.getTestUnit());
@@ -145,7 +145,7 @@ public class TestCatalogAction extends BaseAction {
         List<ResultLimit> resultLimitList = ResultLimitService.getResultLimits(test);
 
         Collections.sort(resultLimitList, new Comparator<ResultLimit>() {
-            @Override
+            //@Override
             public int compare(ResultLimit o1, ResultLimit o2) {
                 return (int) (o1.getMinAge() - o2.getMinAge());
             }
@@ -223,12 +223,12 @@ public class TestCatalogAction extends BaseAction {
     }
 
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

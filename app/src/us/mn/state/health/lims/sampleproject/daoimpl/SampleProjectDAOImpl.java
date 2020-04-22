@@ -215,7 +215,7 @@ public class SampleProjectDAOImpl extends BaseDAOImpl implements SampleProjectDA
 	}
 	
     @SuppressWarnings("unchecked")
-    @Override
+    //@Override
     public List<SampleProject> getByOrganizationProjectAndReceivedOnRange(String organizationId, String projectName, Date lowReceivedDate, Date highReceivedDate) throws LIMSRuntimeException {
         List<SampleProject> list = null;
         try {          

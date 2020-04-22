@@ -54,7 +54,7 @@ public class Gender extends BaseObject {
 		this.genderType = genderType;
 	}
 	
-	@Override
+	//@Override
 	public String getDefaultLocalizedName() {
 		return this.description;
 	}

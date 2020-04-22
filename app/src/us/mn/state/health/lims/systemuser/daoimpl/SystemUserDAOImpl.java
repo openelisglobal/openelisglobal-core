@@ -370,7 +370,7 @@ public class SystemUserDAOImpl extends BaseDAOImpl implements SystemUserDAO {
 		return list.size() > 0 ? list.get(0) : null;
 	}
 
-	@Override
+	//@Override
 	public SystemUser getUserById(String userId) throws LIMSRuntimeException {
 		try {
 			SystemUser sysUser = (SystemUser)HibernateUtil.getSession().get(SystemUser.class, userId);

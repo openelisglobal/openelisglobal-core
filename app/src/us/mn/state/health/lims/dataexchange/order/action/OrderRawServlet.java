@@ -29,12 +29,12 @@ import us.mn.state.health.lims.common.log.LogEvent;
 public class OrderRawServlet extends HttpServlet {
 	
 	
-	@Override
+	//@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	@Override
+	//@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 //		LogEvent.logFatal("IndicatorAggregationReportingServlet", "size", String.valueOf(request.getContentLength()));

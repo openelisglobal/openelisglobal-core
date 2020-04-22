@@ -24,12 +24,12 @@ import us.mn.state.health.lims.common.util.StringUtil;
 public abstract class ResultsLogbookBaseAction extends BaseAction {
 
 	private String titleKey = "";
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return titleKey;
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return titleKey;
 	}

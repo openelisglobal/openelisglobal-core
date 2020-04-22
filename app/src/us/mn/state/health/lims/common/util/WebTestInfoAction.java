@@ -36,7 +36,7 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 
 public class WebTestInfoAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -103,12 +103,12 @@ public class WebTestInfoAction extends BaseAction {
 		
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return null;
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return null;
 	}

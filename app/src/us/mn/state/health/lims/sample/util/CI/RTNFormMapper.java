@@ -72,7 +72,7 @@ public class RTNFormMapper extends BaseProjectFormMapper implements IProjectForm
 	 * No lists of repeating answers in RTN
 	 * @see us.mn.state.health.lims.sample.util.CI.BaseProjectFormMapper#readObservationHistoryLists(us.mn.state.health.lims.patient.valueholder.ObservationData)
 	 */
-	@Override
+	//@Override
 	public Map<String, List<ObservationHistory>> readObservationHistoryLists(ObservationData od) {
 	    Map<String, List<ObservationHistory>> historyLists = new HashMap<String, List<ObservationHistory>>();
 	    // do nothing
@@ -82,7 +82,7 @@ public class RTNFormMapper extends BaseProjectFormMapper implements IProjectForm
     /**
      * @see us.mn.state.health.lims.sample.util.CI.BaseProjectFormMapper#getSampleCenterCode()
      */
-    @Override
+    //@Override
     public String getSampleCenterCode() {
         return ORGANIZATION_ID_NONE;
     }	

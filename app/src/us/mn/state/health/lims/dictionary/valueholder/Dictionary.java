@@ -127,12 +127,12 @@ public class Dictionary extends BaseObject{
 	}
 	
 
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName() {
 		return dictEntry;
 	}
 
-	@Override
+	//@Override
 	public String toString() {
 		return "Dictionary [id=" + id + ", localAbbreviation="
 				+ localAbbreviation + ", nameKey=" + nameKey + "]";

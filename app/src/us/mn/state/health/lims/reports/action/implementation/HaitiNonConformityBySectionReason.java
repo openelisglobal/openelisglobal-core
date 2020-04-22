@@ -25,12 +25,12 @@ public class HaitiNonConformityBySectionReason extends NonConformityBySectionRea
 
 	}
 
-	@Override
+	//@Override
 	protected String getHeaderName() {
 		return "GeneralHeader.jasper";
 	}
 
-	@Override
+	//@Override
 	protected void createReportParameters() throws IllegalStateException {
 		super.createReportParameters();
 		reportParameters.put("supportStudy", "false");

@@ -108,7 +108,7 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 	private ElectronicOrderDAO electronicOrderDAO = new ElectronicOrderDAOImpl();
 	private PatientDAO patientDAO = new PatientDAOImpl();
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -393,12 +393,12 @@ public class SamplePatientEntrySaveAction extends BaseAction {
 		return analysis;
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "sample.entry.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "sample.entry.title";
 	}

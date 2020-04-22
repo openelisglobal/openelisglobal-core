@@ -40,7 +40,7 @@ public class ConnectionTest {
 	public class TestFailHandler implements ITransmissionResponseHandler {
 		private String response;
 
-		@Override
+		//@Override
 		public void handleResponse(int httpReturnStatus, List<String> errors, String msg) {
 
 			if (httpReturnStatus == HttpServletResponse.SC_OK) {

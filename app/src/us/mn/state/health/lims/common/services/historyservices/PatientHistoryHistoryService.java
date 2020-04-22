@@ -87,7 +87,7 @@ public class PatientHistoryHistoryService extends HistoryService {
      //   ObservationHistoryService historyService = new ObservationHistoryService();
 	}
 
-	@Override
+	//@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		ObservationHistory observation = new ObservationHistory();
 		observation.setId(history.getReferenceId());
@@ -103,7 +103,7 @@ public class PatientHistoryHistoryService extends HistoryService {
 		}
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 
 		String status = extractStatus(changes);
@@ -140,7 +140,7 @@ public class PatientHistoryHistoryService extends HistoryService {
 		return value;
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("patient.history");
 	}

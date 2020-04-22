@@ -148,7 +148,7 @@ public class SampleItemDAOImpl extends BaseDAOImpl implements SampleItemDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public SampleItem getData(String sampleItemId) throws LIMSRuntimeException {
 		try {
 			SampleItem sampleItem = (SampleItem)HibernateUtil.getSession().get(SampleItem.class, sampleItemId);
@@ -313,7 +313,7 @@ public class SampleItemDAOImpl extends BaseDAOImpl implements SampleItemDAO {
         }
    }
 
-	@Override
+	//@Override
 	public List<SampleItem> getSampleItemsBySampleIdAndStatus(String id, Set<Integer> includedStatusList) throws LIMSRuntimeException {
 		if( includedStatusList.isEmpty()){
 			return new ArrayList<SampleItem>();

@@ -33,7 +33,7 @@ public class TrendsColumnBuilder extends CIColumnBuilder {
 		super(dateRange, projectStr);
 	}
 
-	@Override
+	//@Override
 	protected void defineAllReportColumns() {
         defineBasicColumns();
         add("Viral Load", "Viral Load", NONE );

@@ -179,7 +179,7 @@ appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
         add("collection_date",  "AGESEMS",  AGE_WEEKS);
     }
     
-    @Override
+    //@Override
     protected void addAllResultsColumns() {
         super.addAllResultsColumns();
         add("Viral Load", "Viral Load log", LOG );

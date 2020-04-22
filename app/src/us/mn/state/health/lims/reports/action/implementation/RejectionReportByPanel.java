@@ -35,7 +35,7 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Rejecti
 public class RejectionReportByPanel extends RejectionReport implements IReportCreator, IReportParameterSetter {
     private String panelName;
 
-    @Override
+    //@Override
     public void setRequestParameters( BaseActionForm dynaForm ){
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
                 StringUtil.getMessageForKey( "report.rejection.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.panel" ),
@@ -44,12 +44,12 @@ public class RejectionReportByPanel extends RejectionReport implements IReportCr
                                      StringUtil.getMessageForKey( "workplan.panel.types" ) ).setRequestParameters( dynaForm );
     }
 
-    @Override
+    //@Override
     protected String getActivityLabel(){
         return "Panel: " + panelName;
     }
 
-    @Override
+    //@Override
     protected void buildReportContent( ReportSpecificationList panelSelection ){
 
         panelName = getNameForId( panelSelection );
@@ -61,7 +61,7 @@ public class RejectionReportByPanel extends RejectionReport implements IReportCr
         List<Note> testRejectionNotes = NoteService.getTestNotesInDateRangeByType( dateRange.getLowDate(), dateRange.getHighDate(), NoteService.NoteType.REJECTION_REASON );
 
         Collections.sort( testRejectionNotes, new Comparator<Note>(){
-            @Override
+            //@Override
             public int compare( Note o1, Note o2 ){
                 return o1.getReferenceId().compareTo( o2.getReferenceId() );
             }

@@ -84,12 +84,12 @@ public class Result extends EnumValueItemImpl {
 		this.resultType = resultType;
 	}
 
-	@Override
+	//@Override
 	public String getSortOrder() {
 		return sortOrder;
 	}
 
-	@Override
+	//@Override
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}

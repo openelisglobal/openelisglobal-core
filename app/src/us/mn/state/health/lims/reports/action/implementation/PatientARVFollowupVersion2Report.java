@@ -22,7 +22,7 @@ import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory;
 
 public class PatientARVFollowupVersion2Report extends PatientARVReport implements IReportCreator {
-	@Override
+	//@Override
     protected String reportFileName(){
     	return "Patient_ARV_Version2"; 
     }
@@ -47,7 +47,7 @@ public class PatientARVFollowupVersion2Report extends PatientARVReport implement
 		return ANTIRETROVIRAL_FOLLOW_UP_STUDY_ID;
 	}
 	
-	@Override
+	//@Override
 	protected void createReportParameters() {
 	    super.createReportParameters();
 	    reportParameters.put("contact", "CHU de Treichville, 01 BP 1712 Tel : 21-21-42-50/21-25-4189 Fax : 21-24-29-69/ 21-25-10-63");

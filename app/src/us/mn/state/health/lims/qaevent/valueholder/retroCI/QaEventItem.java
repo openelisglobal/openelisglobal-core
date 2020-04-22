@@ -86,7 +86,7 @@ public class QaEventItem implements Serializable {
 	public void setRecordNumber(String recordNumber) {
 		this.recordNumber = recordNumber;
 	}
-	@Override
+	//@Override
     public String toString() {
         return "QaEventValue [id=" + id + ", qaEvent=" + qaEvent + ", sampleType=" + sampleType + ", authorizer=" + authorizer
         + ", note=" + note + ", remove=" + remove + ", section=" + section + "]";

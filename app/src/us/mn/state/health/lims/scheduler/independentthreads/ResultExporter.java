@@ -58,7 +58,7 @@ public class ResultExporter extends Thread {
 		resultReportTypeId = new ReportQueueTypeDAOImpl().getReportQueueTypeByName("Results").getId();
 	}
 
-	@Override
+	//@Override
 	public void run() {
 
 		while (running) {
@@ -103,7 +103,7 @@ public class ResultExporter extends Thread {
 			externalExportRowId = rowId;
 		}
 
-		@Override
+		//@Override
 		public void handleResponse(int httpReturnStatus, List<String> errors, String msg) {
 
 			if (httpReturnStatus == HttpServletResponse.SC_OK) {

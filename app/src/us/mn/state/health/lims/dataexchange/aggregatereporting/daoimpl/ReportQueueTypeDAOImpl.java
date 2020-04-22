@@ -27,7 +27,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 
 public class ReportQueueTypeDAOImpl extends BaseDAOImpl implements ReportQueueTypeDAO {
 
-	@Override
+	//@Override
 	public ReportQueueType getReportQueueTypeByName(String name) throws LIMSRuntimeException {
 		String sql = "from ReportQueueType rqt where rqt.name = :name";
 		

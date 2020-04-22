@@ -226,7 +226,7 @@ public class GenderDAOImpl extends BaseDAOImpl implements GenderDAO {
 		return getNextRecord(id, "Gender", Gender.class);
 	}
 
-    @Override
+    //@Override
     public Gender getGenderByType( String type ) throws LIMSRuntimeException{
         String sql = "From Gender g where g.genderType = :type";
         try{

@@ -37,7 +37,7 @@ import us.mn.state.health.lims.common.util.IdValuePair;
 import us.mn.state.health.lims.test.valueholder.Test;
 
 public class TestSectionTestAssignAction extends BaseAction {
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
         List<IdValuePair> testSections = DisplayListService.getListWithLeadingBlank(DisplayListService.ListType.TEST_SECTION);
@@ -65,12 +65,12 @@ public class TestSectionTestAssignAction extends BaseAction {
     }
 
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

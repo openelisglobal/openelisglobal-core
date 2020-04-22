@@ -35,7 +35,7 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.Rejecti
 public class RejectionReportByTest extends RejectionReport implements IReportCreator, IReportParameterSetter {
     private String testName = "";
 
-    @Override
+    //@Override
     public void setRequestParameters( BaseActionForm dynaForm ){
         new ReportSpecificationParameters( ReportSpecificationParameters.Parameter.DATE_RANGE,
                 StringUtil.getMessageForKey( "report.rejection.report.base" ) + " " + StringUtil.getMessageForKey( "report.by.test" ),
@@ -44,7 +44,7 @@ public class RejectionReportByTest extends RejectionReport implements IReportCre
                                      StringUtil.getMessageForKey( "workplan.test.types" ) ).setRequestParameters( dynaForm );
     }
 
-    @Override
+    //@Override
     protected void buildReportContent( ReportSpecificationList testSelection ){
 
         testName = getNameForId( testSelection );
@@ -76,19 +76,19 @@ public class RejectionReportByTest extends RejectionReport implements IReportCre
         }
 
         Collections.sort( rejections, new Comparator<RejectionReportBean>(){
-            @Override
+            //@Override
             public int compare( RejectionReportBean o1, RejectionReportBean o2 ){
                 return o1.getAccessionNumber().compareTo( o2.getAccessionNumber() );
             }
         } );
     }
 
-    @Override
+    //@Override
     protected boolean isReportByTest(){
         return Boolean.TRUE;
     }
 
-    @Override
+    //@Override
     protected String getActivityLabel(){
         return "Test: " + testName;
     }

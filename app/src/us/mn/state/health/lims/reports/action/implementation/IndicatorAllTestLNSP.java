@@ -20,12 +20,12 @@ import us.mn.state.health.lims.common.util.StringUtil;
 
 public class IndicatorAllTestLNSP extends IndicatorAllTest implements IReportCreator, IReportParameterSetter {
 
-	@Override
+	//@Override
 	protected String getLabNameLine1() {
 		return StringUtil.getContextualMessageForKey("report.labName.one");
 	}
 
-	@Override
+	//@Override
 	protected String getLabNameLine2() {
 	return StringUtil.getContextualMessageForKey("report.labName.two");
 	}

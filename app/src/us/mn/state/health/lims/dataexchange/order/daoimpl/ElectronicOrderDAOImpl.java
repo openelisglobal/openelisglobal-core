@@ -34,7 +34,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 
 public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrderDAO{
 
-	@Override
+	//@Override
 	public List<ElectronicOrder> getElectronicOrdersByExternalId(String id) throws LIMSRuntimeException{
 		String sql = "from ElectronicOrder eo where eo.externalId = :externalid order by id";
 
@@ -52,7 +52,7 @@ public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrd
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ElectronicOrder> getElectronicOrdersByPatientId(String id) throws LIMSRuntimeException{
 		String sql = "from ElectronicOrder eo where eo.patient.id = :patientid";
 
@@ -70,7 +70,7 @@ public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrd
 		return null;
 	}
 
-	@Override
+	//@Override
 	public void insertData(ElectronicOrder eOrder) throws LIMSRuntimeException{
 		try{
 			String id = (String)HibernateUtil.getSession().save(eOrder);
@@ -84,7 +84,7 @@ public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrd
 		}
 	}
 
-	@Override
+	//@Override
 	public void updateData(ElectronicOrder eOrder) throws LIMSRuntimeException {
 
 		ElectronicOrder oldOrder = readOrder(eOrder.getId());
@@ -116,7 +116,7 @@ public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrd
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ElectronicOrder> getAllElectronicOrders() {
 		List<ElectronicOrder> list = new Vector<ElectronicOrder>();
 		try {
@@ -134,7 +134,7 @@ public class ElectronicOrderDAOImpl extends BaseDAOImpl implements ElectronicOrd
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ElectronicOrder> getAllElectronicOrdersOrderedBy(String order) {
 		List<ElectronicOrder> list = new Vector<ElectronicOrder>();
 		try {

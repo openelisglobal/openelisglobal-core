@@ -215,7 +215,7 @@ public class Organization extends EnumValueItemImpl implements SimpleBaseEntity<
 	    return this.shortName + " = " + this.organizationName;
 	}
 
-    @Override
+    //@Override
     public String toString() {
         return "Organization [id=" + id + ", isActive=" + isActive + ", organizationName=" + organizationName
                         + ", organizationLocalAbbreviation=" + organizationLocalAbbreviation + ", shortName="

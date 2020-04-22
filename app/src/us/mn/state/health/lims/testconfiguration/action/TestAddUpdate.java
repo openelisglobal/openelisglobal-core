@@ -73,7 +73,7 @@ import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
 public class TestAddUpdate extends BaseAction {
 	private TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String currentUserId = getSysUserId(request);
@@ -205,7 +205,7 @@ public class TestAddUpdate extends BaseAction {
 		boolean numericResults = TypeOfTestResultService.ResultType.isNumericById(testAddParams.resultTypeId);
 		boolean dictionaryResults = TypeOfTestResultService.ResultType
 				.isDictionaryVarientById(testAddParams.resultTypeId);
-		List<TestSet> testSets = new ArrayList<>();
+		List<TestSet> testSets = new ArrayList<TestSet>();
 		UnitOfMeasure uom = null;
 		if (!GenericValidator.isBlankOrNull(testAddParams.uomId) || "0".equals(testAddParams.uomId)) {
 			uom = new UnitOfMeasureDAOImpl().getUnitOfMeasureById(testAddParams.uomId);
@@ -272,7 +272,7 @@ public class TestAddUpdate extends BaseAction {
 	}
 
 	private ArrayList<ResultLimit> createDictionaryResultLimit(TestAddParams testAddParams) {
-		ArrayList<ResultLimit> resultLimits = new ArrayList<>();
+		ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
 		if (!GenericValidator.isBlankOrNull(testAddParams.dictionaryReferenceId)) {
 			ResultLimit limit = new ResultLimit();
 			limit.setResultTypeId(testAddParams.resultTypeId);
@@ -284,7 +284,7 @@ public class TestAddUpdate extends BaseAction {
 	}
 
 	private ArrayList<ResultLimit> createResultLimits(Double lowValid, Double highValid, TestAddParams testAddParams) {
-		ArrayList<ResultLimit> resultLimits = new ArrayList<>();
+		ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
 		for (ResultLimitParams params : testAddParams.limits) {
 			ResultLimit limit = new ResultLimit();
 			limit.setResultTypeId(testAddParams.resultTypeId);
@@ -402,12 +402,12 @@ public class TestAddUpdate extends BaseAction {
 		}
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return null;
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return null;
 	}
@@ -418,24 +418,24 @@ public class TestAddUpdate extends BaseAction {
 		String testReportNameEnglish;
 		String testReportNameFrench;
 		String testSectionId;
-		ArrayList<String> panelList = new ArrayList<>();
+		ArrayList<String> panelList = new ArrayList<String>();
 		String uomId;
 		String loinc;
 		String resultTypeId;
-		ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<>();
+		ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<SampleTypeListAndTestOrder>();
 		String active;
 		String orderable;
 		String lowValid;
 		String highValid;
 		String significantDigits;
 		String dictionaryReferenceId;
-		ArrayList<ResultLimitParams> limits = new ArrayList<>();
-		ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<>();
+		ArrayList<ResultLimitParams> limits = new ArrayList<ResultLimitParams>();
+		ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<DictionaryParams>();
 	}
 
 	private class SampleTypeListAndTestOrder {
 		String sampleTypeId;
-		ArrayList<String> orderedTests = new ArrayList<>();
+		ArrayList<String> orderedTests = new ArrayList<String>();
 	}
 
 	private class ResultLimitParams {
@@ -450,10 +450,10 @@ public class TestAddUpdate extends BaseAction {
 	private class TestSet {
 		Test test;
 		TypeOfSampleTest sampleTypeTest;
-		ArrayList<Test> sortedTests = new ArrayList<>();
-		ArrayList<PanelItem> panelItems = new ArrayList<>();
-		ArrayList<TestResult> testResults = new ArrayList<>();
-		ArrayList<ResultLimit> resultLimits = new ArrayList<>();
+		ArrayList<Test> sortedTests = new ArrayList<Test>();
+		ArrayList<PanelItem> panelItems = new ArrayList<PanelItem>();
+		ArrayList<TestResult> testResults = new ArrayList<TestResult>();
+		ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
 	}
 
 	private class DictionaryParams {

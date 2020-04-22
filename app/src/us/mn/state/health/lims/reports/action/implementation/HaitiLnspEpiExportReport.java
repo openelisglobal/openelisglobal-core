@@ -19,7 +19,7 @@ import us.mn.state.health.lims.reports.action.implementation.reportBeans.TestSeg
 
 public class HaitiLnspEpiExportReport extends HaitiLNSPExportReport{
 
-    @Override
+    //@Override
     public byte[] runReport() throws Exception{
         StringBuilder builder = new StringBuilder();
         builder.append( TestSegmentedExportBean.getHeader());

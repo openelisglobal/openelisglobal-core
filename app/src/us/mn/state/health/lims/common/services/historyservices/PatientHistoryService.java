@@ -78,7 +78,7 @@ public class PatientHistoryService extends HistoryService {
 		}
 	}
 
-	@Override
+	//@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		setAndAddIfValueNotNull(items, history, DOB_ATTRIBUTE);
 		setAndAddIfValueNotNull(items, history, GENDER_ATTRIBUTE);
@@ -92,7 +92,7 @@ public class PatientHistoryService extends HistoryService {
 
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 		// System.out.println( changes );
 		// this may get more complicated
@@ -105,7 +105,7 @@ public class PatientHistoryService extends HistoryService {
 
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("sample.entry.patient");
 	}

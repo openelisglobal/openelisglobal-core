@@ -259,7 +259,7 @@ public class TypeOfSampleTestDAOImpl extends BaseDAOImpl implements TypeOfSample
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<TypeOfSampleTest> getTypeOfSampleTestsForTest(String testId) throws LIMSRuntimeException {
 		String sql = "from TypeOfSampleTest tt where tt.testId = :testId";
 

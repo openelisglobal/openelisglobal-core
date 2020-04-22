@@ -156,7 +156,7 @@ public class ResultsValidationRetroCIUtility {
 				testList = getUnValidatedElisaResultItemsInTestSection(testSectionId);
 
 				Collections.sort(testList, new Comparator<ResultValidationItem>() {
-					@Override
+					//@Override
 					public int compare(ResultValidationItem o1, ResultValidationItem o2) {
 						return o1.getAccessionNumber().compareTo(o2.getAccessionNumber());
 					}

@@ -254,7 +254,7 @@ public class RoleDAOImpl extends BaseDAOImpl implements RoleDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public Role getRoleById(String roleId) throws LIMSRuntimeException {
 		String sql = "from Role r where r.id = :id";
 

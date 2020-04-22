@@ -240,7 +240,7 @@ public boolean insert(List<String> lines, String currentUserId) {
       createVLResultFromEntry(lines,entry, results);
     }
      Collections.sort(results, new Comparator<AnalyzerResults>(){
-		@Override
+		//@Override
 		public int compare(AnalyzerResults o1, AnalyzerResults o2) {
 			return o1.getAccessionNumber().compareTo(o2.getAccessionNumber());
 	}});

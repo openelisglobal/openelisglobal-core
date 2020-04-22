@@ -431,7 +431,7 @@ public class PanelItemDAOImpl extends BaseDAOImpl implements PanelItemDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<PanelItem> getPanelItemByTestId(String testId) throws LIMSRuntimeException {
 		String sql = "From PanelItem pi where pi.test.id = :testId";
 		
@@ -450,7 +450,7 @@ public class PanelItemDAOImpl extends BaseDAOImpl implements PanelItemDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<PanelItem> getPanelItemsForPanelAndItemList(String panelId, List<Integer> testList) throws LIMSRuntimeException{
 		String sql = "From PanelItem pi where pi.panel.id = :panelId and pi.test.id in (:testList)";
 		try{

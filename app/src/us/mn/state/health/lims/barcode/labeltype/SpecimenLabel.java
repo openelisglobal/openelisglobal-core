@@ -150,7 +150,7 @@ public class SpecimenLabel extends Label {
   /* (non-Javadoc)
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsBefore()
    */
-  @Override
+  //@Override
   public int getNumTextRowsBefore() {
     Iterable<LabelField> fields = getAboveFields();
     return getNumRows(fields);
@@ -159,7 +159,7 @@ public class SpecimenLabel extends Label {
   /* (non-Javadoc)
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsAfter()
    */
-  @Override
+  //@Override
   public int getNumTextRowsAfter() {
     Iterable<LabelField> fields = getBelowFields();
     return getNumRows(fields);
@@ -168,7 +168,7 @@ public class SpecimenLabel extends Label {
   /* (non-Javadoc)
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getMaxNumLabels()
    */
-  @Override
+  //@Override
   public int getMaxNumLabels() {
     int max = 0;
     try {

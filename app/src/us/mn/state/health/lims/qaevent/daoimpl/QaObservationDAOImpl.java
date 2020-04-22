@@ -31,7 +31,7 @@ import us.mn.state.health.lims.qaevent.valueholder.QaObservation;
 
 public class QaObservationDAOImpl extends BaseDAOImpl implements QaObservationDAO {
 
-	@Override
+	//@Override
 	public void insertData(QaObservation qaObservation) throws LIMSRuntimeException {
 		try {
 			
@@ -47,7 +47,7 @@ public class QaObservationDAOImpl extends BaseDAOImpl implements QaObservationDA
 		}
 	}
 
-	@Override
+	//@Override
 	public void updateData(QaObservation qaObservation) throws LIMSRuntimeException {
 		QaObservation oldData = readQaObservation(qaObservation.getId());
 
@@ -70,7 +70,7 @@ public class QaObservationDAOImpl extends BaseDAOImpl implements QaObservationDA
 		}
 	}
 
-	@Override
+	//@Override
 	public QaObservation getQaObservationByTypeAndObserved(String typeName, String observedType, String observedId)
 			throws LIMSRuntimeException {
 		String sql = "FROM QaObservation o where o.observationType.name = :observationName and o.observedType = :observedType and o.observedId = :observedId ";

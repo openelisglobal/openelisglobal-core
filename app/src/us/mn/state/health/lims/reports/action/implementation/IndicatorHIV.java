@@ -144,7 +144,7 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 		ANALYTE_CONCULSION_ID = analyte.getId();
 	}
 
-	@Override
+	//@Override
 	protected String reportFileName() {
 		return "HIVSummary";
 	}
@@ -367,22 +367,22 @@ public class IndicatorHIV extends IndicatorReport implements IReportCreator, IRe
 		}
 	}
 
-	@Override
+	//@Override
 	protected String getNameForReportRequest() {
 		return StringUtil.getContextualMessageForKey("openreports.hiv.aggregate");
 	}
 
-	@Override
+	//@Override
 	protected String getNameForReport() {
 		return StringUtil.getMessageForKey("openreports.hiv.aggregate");
 	}
 
-	@Override
+	//@Override
 	protected String getLabNameLine1() {
 		return ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName);
 	}
 
-	@Override
+	//@Override
 	protected String getLabNameLine2() {
 		return "";
 	}

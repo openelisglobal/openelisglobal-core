@@ -49,7 +49,7 @@ public class OrganizationType extends BaseObject {
 		this.description = description;
 	}
 	
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName() {
 			return name;
 	}

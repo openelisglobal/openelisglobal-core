@@ -103,7 +103,7 @@ public class OrderHistoryService extends HistoryService {
         }
     }
 
-    @Override
+    //@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
         AuditTrailItem item = getCoreTrail( history );
         if( history.getReferenceTable().equals( SAMPLE_REQUESTER_TABLE_ID)){
@@ -118,7 +118,7 @@ public class OrderHistoryService extends HistoryService {
 		items.add( item );
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 		String status = extractStatus(changes);
 		if (status != null) {
@@ -144,12 +144,12 @@ public class OrderHistoryService extends HistoryService {
 
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("auditTrail.order");
 	}
 
-	@Override
+	//@Override
 	protected boolean showAttribute() {
 		return false;
 	}

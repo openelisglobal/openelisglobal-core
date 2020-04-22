@@ -71,13 +71,13 @@ public class TestUsageUpdate implements IResultUpdate {
 
 	}
 
-	@Override
+	//@Override
 	public void transactionalUpdate(IResultSaveService resultService) throws LIMSRuntimeException {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	//@Override
 	public void postTransactionalCommitUpdate(IResultSaveService resultSaveService) {
 		Map<String, Map<String, Integer>> dateTestMap = new HashMap<String, Map<String, Integer>>();
 		List<ReportExternalExport> exports = new ArrayList<ReportExternalExport>();

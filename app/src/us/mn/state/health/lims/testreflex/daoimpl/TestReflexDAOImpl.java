@@ -508,7 +508,7 @@ public class TestReflexDAOImpl extends BaseDAOImpl implements TestReflexDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<TestReflex> getFlaggedTestReflexesByTestResult(TestResult testResult, String flag) throws LIMSRuntimeException {
 		if( GenericValidator.isBlankOrNull(flag)){
 			return new ArrayList<TestReflex>();

@@ -49,12 +49,12 @@ public class IndicatorAggregationReportingServlet extends HttpServlet {
 	private final String DATE_PATTERN = "yyyy-MM-dd";
 	
 
-	@Override
+	//@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	@Override
+	//@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 //		LogEvent.logFatal("IndicatorAggregationReportingServlet", "size", String.valueOf(request.getContentLength()));

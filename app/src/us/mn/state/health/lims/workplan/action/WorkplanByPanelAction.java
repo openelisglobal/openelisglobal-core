@@ -64,7 +64,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 	private final PanelDAO panelDAO = new PanelDAOImpl();
 	private final PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -138,7 +138,7 @@ public class WorkplanByPanelAction extends BaseWorkplanAction {
 			}
 			
 			Collections.sort(workplanTestList, new Comparator<TestResultItem>(){
-				@Override
+				//@Override
 				public int compare(TestResultItem o1, TestResultItem o2) {
 					return o1.getAccessionNumber().compareTo(o2.getAccessionNumber());
 				}

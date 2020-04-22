@@ -47,7 +47,7 @@ public class TestUsageConfigurationUpdateAction extends BaseAction {
 	private static CronSchedulerDAO cronScheduleDAO = new CronSchedulerDAOImpl();
 	private static SiteInformationDAO siteInformationDAO = new SiteInformationDAOImpl();
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -158,12 +158,12 @@ public class TestUsageConfigurationUpdateAction extends BaseAction {
 		return sendScheduler;
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "testusageconfiguration.browse.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "testusageconfiguration.browse.title";
 	}

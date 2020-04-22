@@ -593,7 +593,7 @@ public class OrganizationDAOImpl extends GenericDAOImpl<String, Organization> im
 		return null;
 	}
 
-    @Override
+    //@Override
     public void insertOrUpdateData( Organization organization ) throws LIMSRuntimeException{
         if(organization.getId() == null){
             insertData( organization );
@@ -604,7 +604,7 @@ public class OrganizationDAOImpl extends GenericDAOImpl<String, Organization> im
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<Organization> getOrganizationsByParentId(String parentId) throws LIMSRuntimeException {
 		if( GenericValidator.isBlankOrNull(parentId)){
 			return new ArrayList<Organization>();

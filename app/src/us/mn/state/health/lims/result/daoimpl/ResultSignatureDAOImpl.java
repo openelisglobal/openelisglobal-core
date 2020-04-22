@@ -184,7 +184,7 @@ public class ResultSignatureDAOImpl extends BaseDAOImpl implements ResultSignatu
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<ResultSignature> getResultSignaturesByResults(List<Result> resultList) throws LIMSRuntimeException {
 		if( resultList.isEmpty()){
 			return new ArrayList<ResultSignature>();

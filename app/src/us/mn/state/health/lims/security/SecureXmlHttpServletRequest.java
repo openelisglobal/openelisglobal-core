@@ -11,7 +11,7 @@ public class SecureXmlHttpServletRequest extends HttpServletRequestWrapper {
 		super(request);
 	}
 	
-	@Override
+	//@Override
 	public String getParameter(String name) {
 		String param = super.getParameter(name);
 		if (param == null)

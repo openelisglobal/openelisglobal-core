@@ -61,7 +61,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
         VARIABLE_SAMPLE_TYPE_ID = TypeOfSampleService.getTypeOfSampleIdForLocalAbbreviation("Variable");
 	}
 
-	@Override
+	//@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 
 		String sampleType = request.getParameter("sampleType");
@@ -86,7 +86,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 		List<Test> tests = TypeOfSampleService.getActiveTestsBySampleTypeId(sampleType, true);
 
 		Collections.sort(tests, new Comparator<Test>(){
-			@Override
+			//@Override
 			public int compare(Test t1, Test t2){
 				if(GenericValidator.isBlankOrNull(t1.getSortOrder()) || GenericValidator.isBlankOrNull(t2.getSortOrder())){
 					return TestService.getUserLocalizedTestName( t1 ).compareTo(TestService.getUserLocalizedTestName( t2 ));
@@ -177,7 +177,7 @@ public class SampleEntryTestsForTypeProvider extends BaseQueryProvider{
 	private List<PanelTestMap> sortPanels(List<PanelTestMap> panelMap){
 
 		Collections.sort(panelMap, new Comparator<PanelTestMap>(){
-			@Override
+			//@Override
 			public int compare(PanelTestMap o1, PanelTestMap o2){
 				return o1.getPanelOrder() - o2.getPanelOrder();
 			}

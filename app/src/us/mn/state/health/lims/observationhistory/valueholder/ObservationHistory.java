@@ -23,7 +23,7 @@ import us.mn.state.health.lims.common.valueholder.SimpleBaseEntity;
 /**
  * Entities which represent facts about a patient and a sample that has entered the lab.
  * Often taken from a demographic survey form filled out by the doctor, but sometimes something which is generated in the lab like various statuses of a sample.
- * Originally for Côte d'Ivoire RetroCI Project
+ * Originally for Cï¿½te d'Ivoire RetroCI Project
  * @author Paul A. Hill
  * @since 2010-04-16
  */
@@ -142,7 +142,7 @@ public class ObservationHistory extends BaseObject implements SimpleBaseEntity<S
 		return valueType;
 	}
 
-	@Override
+	//@Override
 	public String toString() {
 		return "ObservationHistory [ObservationHistoryTypeId="
 				+ observationHistoryTypeId + ", id=" + id + ", patientId="
@@ -150,7 +150,7 @@ public class ObservationHistory extends BaseObject implements SimpleBaseEntity<S
 				+ ", valueType=" + valueType + "]";
 	}
 
-    @Override
+    //@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -162,7 +162,7 @@ public class ObservationHistory extends BaseObject implements SimpleBaseEntity<S
         return result;
     }
 
-    @Override
+    //@Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;

@@ -28,7 +28,7 @@ import us.mn.state.health.lims.testcodes.valueholder.TestCodeType;
 
 public class TestCodeTypeDAOImpl extends BaseDAOImpl implements TestCodeTypeDAO {
 
-	@Override
+	//@Override
 	public TestCodeType getTestCodeTypeByName(String name) throws LIMSRuntimeException {
 		String sql = "from TestCodeType et where et.schemaName = :name";
 		
@@ -44,7 +44,7 @@ public class TestCodeTypeDAOImpl extends BaseDAOImpl implements TestCodeTypeDAO 
 		return null;
 	}
 
-	@Override
+	//@Override
 	public TestCodeType getTestCodeTypeById(String id) throws LIMSRuntimeException {
 		String sql = "from TestCodeType et where et.id = :id";
 		

@@ -178,7 +178,7 @@ public class CobasReader extends AnalyzerLineInserter {
 	}
 
 	
-	@Override
+	//@Override
 	public String getError() {
 			return "Cobas Intgra 400 error writting to database";
 	}

@@ -134,7 +134,7 @@ public class ExchangeConfigurationService {
 				domain.getSiteDomain());
 
 		Collections.sort(informationList, new Comparator<SiteInformation>() {
-			@Override
+			//@Override
 			public int compare(SiteInformation o1, SiteInformation o2) {
 				return o1.getGroup() - o2.getGroup();
 			}

@@ -27,7 +27,7 @@ import us.mn.state.health.lims.siteinformation.valueholder.SiteInformationDomain
 
 public class SiteInformationDomainDAOImpl extends BaseDAOImpl implements SiteInformationDomainDAO {
 
-	@Override
+	//@Override
 	public SiteInformationDomain getByName(String name) throws LIMSRuntimeException {
 		String sql = "from SiteInformationDomain sid where sid.name = :name";
 		

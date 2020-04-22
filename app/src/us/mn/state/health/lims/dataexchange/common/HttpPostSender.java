@@ -30,7 +30,7 @@ import us.mn.state.health.lims.common.log.LogEvent;
 
 public class HttpPostSender extends HttpSender {
 
-	@Override
+	//@Override
 	public boolean sendMessage() {
 	
 		errors = new ArrayList<String>();

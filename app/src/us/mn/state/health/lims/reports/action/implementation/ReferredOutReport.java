@@ -59,14 +59,14 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
     OrganizationDAO organizationDAO = new OrganizationDAOImpl();
     private Organization reportLocation;
 
-    @Override
+    //@Override
     protected String reportFileName(){
     	return "ReferredOutBySite";
     }
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportParameterSetter#setRequestParameters(us.mn.state.health.lims.common.action.BaseActionForm)
      */
-    @Override
+    //@Override
     public void setRequestParameters(BaseActionForm dynaForm) {
         try {
             List<Organization> list = organizationDAO.getOrganizationsByTypeName("organizationName", "referralLab");
@@ -84,7 +84,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#initializeReport(us.mn.state.health.lims.common.action.BaseActionForm)
      */
-    @Override
+    //@Override
     public void initializeReport(BaseActionForm dynaForm) {
         super.initializeReport();
         lowDateStr = dynaForm.getString("lowerDateRange");
@@ -115,7 +115,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          * left.get().compareTo(right.get());
          */
-        @Override
+        //@Override
         public int compare(ClinicalPatientData left, ClinicalPatientData right) {
             int compare = left.getAccessionNumber().compareTo(right.getAccessionNumber());
             if (compare != 0) return compare;
@@ -148,12 +148,12 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
 		reportParameters.put("labName2", StringUtil.getContextualMessageForKey("report.labName.two"));
     }
 
-    @Override
+    //@Override
     protected String getHeaderName(){
         return "GeneralHeader.jasper";
     }
 
-    @Override
+    //@Override
     protected void createReportItems() {
         List<Referral> referrals =  referralDao.getAllReferralsByOrganization(locationId,
         																	  dateRange.getLowDate(),
@@ -216,7 +216,7 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
     /**
      * @see PatientReport#getReportNameForParameterPage()
      */
-    @Override
+    //@Override
     protected String getReportNameForParameterPage() {
         return StringUtil.getMessageForKey("openreports.referredOutHaitiReport");
     }
@@ -229,12 +229,12 @@ public class ReferredOutReport extends PatientReport implements IReportParameter
          return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
     }
 
-	@Override
+	//@Override
 	protected void postSampleBuild() {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	//@Override
 	protected void setReferredResult(ClinicalPatientData data, Result result) {
 		data.setResult(data.getResult() );
 	}

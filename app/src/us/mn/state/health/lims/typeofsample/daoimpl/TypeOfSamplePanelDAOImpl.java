@@ -246,7 +246,7 @@ public class TypeOfSamplePanelDAOImpl extends BaseDAOImpl implements TypeOfSampl
 		}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<TypeOfSamplePanel> getTypeOfSamplePanelsForPanel(String panelId) throws LIMSRuntimeException{
 		String sql = "from TypeOfSamplePanel tosp where tosp.panelId = :panelId";
 		

@@ -59,12 +59,12 @@ public class AnalysisHistoryService extends HistoryService {
 		}
 	}
 
-	@Override
+	//@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		items.add(getCoreTrail(history));
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history, Map<String, String> changeMap, String changes) {
 		String status = extractStatus(changes);
 		if (status != null) {
@@ -72,12 +72,12 @@ public class AnalysisHistoryService extends HistoryService {
 		}
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getContextualMessageForKey("sample.entry.test");
 	}
 
-	@Override
+	//@Override
 	protected boolean showAttribute() {
 		return true;
 	}

@@ -85,7 +85,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 		ORG_REQUESTER_TYPE_ID = Long.parseLong(requesterTypeDAO.getRequesterTypeByName("organization").getId());
 	}
 
-	@Override
+	//@Override
 	protected String reportFileName() {
 		return "ConfirmationSummary";
 	}
@@ -122,7 +122,7 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 
 		Collections.sort(reportItems, new Comparator<ConfirmationData>() {
 
-			@Override
+			//@Override
 			public int compare(ConfirmationData o1, ConfirmationData o2) {
 				int orgCompare = o1.getOrganizationName().compareTo(o2.getOrganizationName());
 				if (orgCompare == 0) {
@@ -276,22 +276,22 @@ public class ConfirmationReport extends IndicatorReport implements IReportCreato
 		return DateUtil.convertSqlDateToStringDate(analysis.getCompletedDate());
 	}
 
-	@Override
+	//@Override
 	protected String getNameForReportRequest() {
 		return StringUtil.getMessageForKey("report.confirmation.request");
 	}
 
-	@Override
+	//@Override
 	protected String getNameForReport() {
 		return StringUtil.getContextualMessageForKey("report.confirmation.title");
 	}
 
-	@Override
+	//@Override
 	protected String getLabNameLine1() {
 		return ConfigurationProperties.getInstance().getPropertyValue(Property.SiteName);
 	}
 
-	@Override
+	//@Override
 	protected String getLabNameLine2() {
 		return "";
 	}

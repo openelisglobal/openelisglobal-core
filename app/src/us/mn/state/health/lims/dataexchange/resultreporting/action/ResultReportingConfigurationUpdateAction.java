@@ -50,7 +50,7 @@ public class ResultReportingConfigurationUpdateAction extends BaseAction {
 	private static final String CRON_POSTFIX = "? * *";
 	private static final String CRON_PREFIX = "0 ";
 	
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -145,12 +145,12 @@ public class ResultReportingConfigurationUpdateAction extends BaseAction {
 		return siteInformation;
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "resultreporting.browse.title";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "resultreporting.browse.title";
 	}

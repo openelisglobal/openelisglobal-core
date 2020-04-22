@@ -278,7 +278,7 @@ public class Project extends BaseObject {
 		this.localAbbreviation = localAbbreviation;
 	}
 
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName() {
 		return projectName;
 	}

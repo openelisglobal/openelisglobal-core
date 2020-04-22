@@ -18,7 +18,7 @@ package us.mn.state.health.lims.reports.action.implementation;
 
 
 public class PatientIndeterminateVersion1Report extends PatientIndeterminateReport implements IReportCreator {
-	@Override
+	//@Override
 	protected String reportFileName(){
 		return "Patient_Indeterminate_Version1";
 	}

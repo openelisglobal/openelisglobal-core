@@ -58,7 +58,7 @@ public class TestSectionService implements LocaleChangeListener{
     public TestSection getTestSection(){
         return testSection;
     }
-    @Override
+    //@Override
     public void localeChanged( String locale ){
         LANGUAGE_LOCALE = locale;
         testNamesChanged();

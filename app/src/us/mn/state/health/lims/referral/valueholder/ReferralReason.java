@@ -46,7 +46,7 @@ public class ReferralReason extends BaseObject implements SimpleBaseEntity<Strin
 		this.description = description;
 	}
 
-	@Override
+	//@Override
 	public String getDefaultLocalizedName(){
 		return name;
 	}

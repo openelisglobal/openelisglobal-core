@@ -84,12 +84,12 @@ public class MalariaReportingUpdate implements IResultUpdate {
 		}
 	}
 
-	@Override
+	//@Override
 	public void transactionalUpdate(IResultSaveService resultSaveService) throws LIMSRuntimeException {
 		// no-op
 	}
 
-	@Override
+	//@Override
 	public void postTransactionalCommitUpdate(IResultSaveService resultSaveService) {
 		ResultReportingCollator collator = new ResultReportingCollator();
 

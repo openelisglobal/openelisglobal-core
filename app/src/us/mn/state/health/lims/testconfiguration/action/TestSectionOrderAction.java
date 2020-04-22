@@ -29,7 +29,7 @@ import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.services.DisplayListService;
 
 public class TestSectionOrderAction extends BaseAction {
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
         PropertyUtils.setProperty(form, "testSectionList", DisplayListService.getList(DisplayListService.ListType.TEST_SECTION));
@@ -38,12 +38,12 @@ public class TestSectionOrderAction extends BaseAction {
     }
 
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

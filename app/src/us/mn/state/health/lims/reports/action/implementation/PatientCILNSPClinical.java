@@ -73,13 +73,13 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		super();
 	}
 
-	@Override
+	//@Override
 	protected String reportFileName(){
 			return "PatientReportCDI";
 		//return "PatientClinicalReport";
 	}
 
-    @Override
+    //@Override
     protected void createReportParameters(){
         super.createReportParameters();
         reportParameters.put( "billingNumberLabel", LocalizationService.getLocalizedValueById( ConfigurationProperties.getInstance().getPropertyValue( Property.BILLING_REFERENCE_NUMBER_LABEL ) ) );
@@ -94,12 +94,12 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
         }
     }
 
-    @Override
+    //@Override
     protected String getHeaderName(){
         return "CDIHeader.jasper";
     }
 
-    @Override
+    //@Override
 	protected void createReportItems(){
         Set<SampleItem> sampleSet = new HashSet<SampleItem>(  );
 
@@ -141,7 +141,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		setCollectionTime( sampleSet, currentSampleReportItems, true );
 	}
 
-    @Override
+    //@Override
     protected void setEmptyResult( ClinicalPatientData data ){
         data.setAnalysisStatus( StringUtil.getMessageForKey( "report.test.status.inProgress" )  );
     }
@@ -245,7 +245,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		data.setLabOrderType(parentData.getLabOrderType());
 	}
 
-	@Override
+	//@Override
 	protected void postSampleBuild(){
 		if(reportItems.isEmpty()){
 			ClinicalPatientData reportItem = buildClinicalPatientData( false );
@@ -259,7 +259,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 
     private void buildReport(){
         Collections.sort( reportItems, new Comparator<ClinicalPatientData>(){
-            @Override
+            //@Override
             public int compare( ClinicalPatientData o1, ClinicalPatientData o2 ){
                 String o1AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber( o1.getAccessionNumber() );
                 String o2AccessionNumber = AccessionNumberUtil.getAccessionNumberFromSampleItemAccessionNumber( o2.getAccessionNumber() );
@@ -342,7 +342,7 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
         }
     }
 
-	@Override
+	//@Override
 	protected String getReportNameForParameterPage(){
 		return StringUtil.getMessageForKey("openreports.patientTestStatus");
 	}
@@ -355,27 +355,27 @@ public class PatientCILNSPClinical extends PatientReport implements IReportCreat
 		return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
 	}
 
-	@Override
+	//@Override
 	protected void initializeReportItems(){
 		super.initializeReportItems();
 		clinicalReportItems = new ArrayList<ClinicalPatientData>();
 	}
 
-	@Override
+	//@Override
 	protected void setReferredResult(ClinicalPatientData data, Result result){
 		data.setResult(data.getResult() );
 		data.setAlerts(getResultFlag(result, null));
 	}
 
-	@Override
+	//@Override
 	protected boolean appendUOMToRange(){
 		return false;
 	}
-	@Override
+	//@Override
 	protected boolean augmentResultWithFlag(){
 		return false;
 	}
-	@Override
+	//@Override
 	protected boolean useReportingDescription(){
 		return true;
 	}

@@ -80,7 +80,7 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 		return "SiteTestCount";
 	}
 	
-	@Override
+	//@Override
 	public void setRequestParameters(BaseActionForm dynaForm) {
 		try {
 			PropertyUtils.setProperty(dynaForm, "usePredefinedDateRanges", Boolean.TRUE);
@@ -118,7 +118,7 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 		return pairList;
 	}
 
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm) {
 		super.initializeReport();
 		createReportParameters();
@@ -253,7 +253,7 @@ public class IndicatorHaitiSiteTestCountReport extends CSVExportReport implement
 		buffer.write(getColumnNamesLine().getBytes("windows-1252"));
 
 		Collections.sort(reportList, new Comparator<TestSiteYearReport>() {
-			@Override
+			//@Override
 			public int compare(TestSiteYearReport o1, TestSiteYearReport o2) {
 				int compare = o1.getSiteName().compareTo(o2.getSiteName());
 

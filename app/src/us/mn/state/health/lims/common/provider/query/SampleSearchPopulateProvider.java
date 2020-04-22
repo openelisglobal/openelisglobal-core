@@ -51,7 +51,7 @@ public class SampleSearchPopulateProvider extends BaseQueryProvider {
      * @see us.mn.state.health.lims.common.provider.query.BaseQueryProvider#processRequest(javax.servlet.http.HttpServletRequest,
      *      javax.servlet.http.HttpServletResponse)
      */
-    @Override
+    //@Override
     public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException,
                     IOException {
         String patientID = (String) request.getParameter("patientKey");

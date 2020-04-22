@@ -36,7 +36,7 @@ import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 
 public class SampleTypeCreateAction extends BaseAction {
     public static final String NAME_SEPARATOR = "$";
-    @Override
+    //@Override
     protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         ((DynaValidatorForm)form).initialize(mapping);
         PropertyUtils.setProperty(form, "existingSampleTypeList", DisplayListService.getList(DisplayListService.ListType.SAMPLE_TYPE_ACTIVE));
@@ -60,12 +60,12 @@ public class SampleTypeCreateAction extends BaseAction {
     }
 
 
-    @Override
+    //@Override
     protected String getPageTitleKey() {
         return null;
     }
 
-    @Override
+    //@Override
     protected String getPageSubtitleKey() {
         return null;
     }

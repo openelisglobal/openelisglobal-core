@@ -336,7 +336,7 @@ public class SysmexReader extends AnalyzerLineInserter {
 		 */
 	}
 
-	@Override
+	//@Override
 	public boolean insert(List<String> lines, String currentUserId) {
 
 		boolean successful = true;
@@ -430,7 +430,7 @@ public class SysmexReader extends AnalyzerLineInserter {
 		results.addAll(readOnlyResults);
 	}
 
-	@Override
+	//@Override
 	public String getError() {
 		return "Sysmex analyzer unable to write to database";
 	}

@@ -51,7 +51,7 @@ public class ReferralType extends BaseObject {
 		this.displayKey = displayKey;
 	}
 
-	@Override
+	//@Override
 	public String getDefaultLocalizedName(){
 		return name;
 	}

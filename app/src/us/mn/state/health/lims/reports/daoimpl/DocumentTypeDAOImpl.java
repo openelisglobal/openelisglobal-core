@@ -27,7 +27,7 @@ import us.mn.state.health.lims.reports.valueholder.DocumentType;
 
 public class DocumentTypeDAOImpl extends BaseDAOImpl implements DocumentTypeDAO {
 
-	@Override
+	//@Override
 	public DocumentType getDocumentTypeByName(String name) throws LIMSRuntimeException {
 		String sql = "Select from DocumentType dt where name = :name";
 		

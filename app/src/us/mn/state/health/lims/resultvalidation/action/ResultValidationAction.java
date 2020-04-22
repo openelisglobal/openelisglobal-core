@@ -44,7 +44,7 @@ import us.mn.state.health.lims.test.valueholder.TestSection;
 
 public class ResultValidationAction extends BaseResultValidationAction {
 
-    @Override
+    //@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 

@@ -75,7 +75,7 @@ public class OrganizationOrganizationTypeDAOImpl extends BaseDAOImpl implements 
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<String> getTypeIdsForOrganizationId(String organizationId) throws LIMSRuntimeException {
 		List<String> orgIdList = null;
 		String sql = "select cast(org_type_id AS varchar) from organization_organization_type where org_id = :orgId";

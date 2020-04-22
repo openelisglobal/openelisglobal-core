@@ -17,7 +17,7 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties.Property;
 
 public class BarcodeConfigurationAction extends BaseAction {
 
-  @Override
+  //@Override
   protected ActionForward performAction(ActionMapping mapping, ActionForm form,
           HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -81,12 +81,12 @@ public class BarcodeConfigurationAction extends BaseAction {
     PropertyUtils.setProperty(dynaForm, "patientSexCheck", patientSexCheck);
   }
 
-  @Override
+  //@Override
   protected String getPageTitleKey() {
     return "barcodeconfiguration.browse.title";
   }
 
-  @Override
+  //@Override
   protected String getPageSubtitleKey() {
     return "barcodeconfiguration.browse.title";
   }

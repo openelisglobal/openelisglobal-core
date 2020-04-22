@@ -17,7 +17,7 @@ public class SampleEntryAfterPatientEntry extends SampleEntry {
         this.newSampleStatus  = RecordStatus.InitialRegistration;
     }
     
-    @Override
+    //@Override
     public boolean canAccession() {
         return (NotRegistered       == statusSet.getSampleRecordStatus());
     }
@@ -26,7 +26,7 @@ public class SampleEntryAfterPatientEntry extends SampleEntry {
      * Find existing sampleHuman, so we can update it with our new patient when we fill in all IDs when we persist.
      * @see us.mn.state.health.lims.patient.saving.PatientEntry#populateSampleHuman()
      */
-    @Override
+    //@Override
     protected void populateSampleHuman() throws Exception {
         sampleHuman = new SampleHuman();
         sampleHuman.setSampleId(statusSet.getSampleId());

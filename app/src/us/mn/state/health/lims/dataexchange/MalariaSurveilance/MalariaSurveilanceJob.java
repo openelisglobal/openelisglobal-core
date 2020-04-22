@@ -135,7 +135,7 @@ public class MalariaSurveilanceJob implements Job {
 		}
 	}
 
-	@Override
+	//@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		System.out.println("MalariaSurveilance triggered: " + DateUtil.getCurrentDateAsText("dd-MM-yyyy hh:mm"));
 		LogEvent.logInfo("MalariaSurveilance", "execute()", "Gathering triggered: " + DateUtil.getCurrentDateAsText("dd-MM-yyyy hh:mm"));
@@ -269,7 +269,7 @@ public class MalariaSurveilanceJob implements Job {
 			this.runTime = runTime;
 		}
 		
-		@Override
+		//@Override
 		public void handleResponse(int httpReturnStatus, List<String> errors, String msg) {
 			if( httpReturnStatus == HttpServletResponse.SC_OK){
 				

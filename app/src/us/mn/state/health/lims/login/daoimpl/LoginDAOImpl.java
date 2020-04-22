@@ -249,7 +249,7 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 		return getTotalCount("Login", Login.class);
 	}
 
-	@Override
+	//@Override
 	public List getNextRecord(String id, String table, Class clazz) throws LIMSRuntimeException {
 		int currentId = (Integer.valueOf(id)).intValue();
 		String tablePrefix = getTablePrefix(table);
@@ -276,7 +276,7 @@ public class LoginDAOImpl extends BaseDAOImpl implements LoginDAO {
 		return list;
 	}
 
-	@Override
+	//@Override
 	public List getPreviousRecord(String id, String table, Class clazz) throws LIMSRuntimeException {
 		int currentId = (Integer.valueOf(id)).intValue();
 		String tablePrefix = getTablePrefix(table);

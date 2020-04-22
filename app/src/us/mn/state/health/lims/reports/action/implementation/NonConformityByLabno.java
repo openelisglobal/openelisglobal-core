@@ -77,7 +77,7 @@ public abstract class NonConformityByLabno extends Report implements IReportCrea
 	private QaEvent qaEvent;
 	private List<SampleQaEvent> sampleQaEvents;
 
-	@Override
+	//@Override
 	protected void createReportParameters() throws IllegalStateException {
 		super.createReportParameters();
 		String nonConformity = StringUtil.getContextualMessageForKey("banner.menu.nonconformity");
@@ -92,7 +92,7 @@ public abstract class NonConformityByLabno extends Report implements IReportCrea
 		}
 	}
 	
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm) {
         super.initializeReport();
         lowerNumber = dynaForm.getString( "accessionDirect" );
@@ -201,7 +201,7 @@ public abstract class NonConformityByLabno extends Report implements IReportCrea
         return sampleQaEventDAO.getSampleQaEventsBySample(sample);
     }
 
-	@Override
+	//@Override
 	public JRDataSource getReportDataSource() throws IllegalStateException {
         return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(reportItems);
 	}
@@ -211,7 +211,7 @@ public abstract class NonConformityByLabno extends Report implements IReportCrea
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          * left.get().compareTo(right.get());
          */
-        @Override
+        //@Override
         public int compare(ARVReportData left, ARVReportData right) {
             int compare = left.getLabNo().compareTo(right.getLabNo());
             if (compare != 0) return compare;
@@ -225,7 +225,7 @@ public abstract class NonConformityByLabno extends Report implements IReportCrea
 
     }
 
-    @Override
+    //@Override
 	protected String reportFileName(){
 		return "retroCINonConformityByLabno";
 	}

@@ -53,7 +53,7 @@ public class PatientSecondEntry extends PatientEntry implements IActionConstants
     /**
      * @see us.mn.state.health.lims.patient.saving.PatientEntry#canAccession()
      */
-    @Override
+    //@Override
     public boolean canAccession() {
         return projectFormMapper.isSecondEntry(request) && InitialRegistration == statusSet.getPatientRecordStatus();
     }

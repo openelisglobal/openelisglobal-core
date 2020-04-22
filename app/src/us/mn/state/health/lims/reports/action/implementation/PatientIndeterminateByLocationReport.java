@@ -40,7 +40,7 @@ public class PatientIndeterminateByLocationReport extends PatientIndeterminateRe
     private String locationStr;
     private DateRange dateRange;
 
-    @Override
+    //@Override
     protected String reportFileName(){
         return "Patient_Indeterminate_ByLocation";
     }
@@ -90,7 +90,7 @@ public class PatientIndeterminateByLocationReport extends PatientIndeterminateRe
     /**
      * @see us.mn.state.health.lims.reports.action.implementation.PatientIndeterminateReport#createReportItems()
      */
-    @Override
+    //@Override
     protected void createReportItems() {
         SampleProjectDAO dao = new SampleProjectDAOImpl();
         List<SampleProject> sampleProject = dao.getByOrganizationProjectAndReceivedOnRange(locationStr, "Indeterminate Results", dateRange.getLowDate(), dateRange.getHighDate());
@@ -122,7 +122,7 @@ public class PatientIndeterminateByLocationReport extends PatientIndeterminateRe
     }
     
 
-	@Override
+	//@Override
 	protected void createReportParameters() {
 	    super.createReportParameters();
 		reportParameters.put("contact", "CHU de Treichville, 01 BP 1712 Tel : 21-21-42-50/21-25-4189 Fax : 21-24-29-69/ 21-25-10-63");

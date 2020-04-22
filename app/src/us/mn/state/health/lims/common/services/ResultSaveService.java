@@ -136,7 +136,7 @@ public class ResultSaveService {
         }
 
         Collections.sort(deletableResults, new Comparator<Result>() {
-            @Override
+            //@Override
             public int compare(Result o1, Result o2) {
                 return (o1.getParentResult() != null && o2.getId().equals(o1.getParentResult().getId()))
                         ? -1 : 0;

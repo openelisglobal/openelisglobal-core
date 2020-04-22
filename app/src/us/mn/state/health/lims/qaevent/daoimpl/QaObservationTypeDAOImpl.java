@@ -27,7 +27,7 @@ import us.mn.state.health.lims.qaevent.valueholder.QaObservationType;
 
 public class QaObservationTypeDAOImpl extends BaseDAOImpl implements QaObservationTypeDAO {
 
-	@Override
+	//@Override
 	public QaObservationType getQaObservationTypeByName(String typeName) throws LIMSRuntimeException {
 		String sql = "FROM QaObservationType where name = :name";
 		

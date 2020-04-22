@@ -308,11 +308,11 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	public String getTestId() {
 		return testId;
 	}
-	@Override
+	//@Override
 	public String getSequenceAccessionNumber() {
 		return getAccessionNumber() + "-" + getSequenceNumber();
 	}
-	@Override
+	//@Override
 	public String getTestSortOrder() {
 		return null;
 	}

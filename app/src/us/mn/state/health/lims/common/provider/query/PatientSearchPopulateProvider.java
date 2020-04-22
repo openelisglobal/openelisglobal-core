@@ -67,7 +67,7 @@ public class PatientSearchPopulateProvider extends BaseQueryProvider {
 	}
 
 
-	@Override
+	//@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 

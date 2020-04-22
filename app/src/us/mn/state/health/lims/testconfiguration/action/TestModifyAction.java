@@ -135,7 +135,7 @@ public class TestModifyAction extends BaseAction {
         }
 
         Collections.sort(beanList, new Comparator<TestCatalogBean>() {
-            @Override
+            //@Override
             public int compare(TestCatalogBean o1, TestCatalogBean o2) {
                 //sort by test section, sample type, panel, sort order
                 int comparison = o1.getTestUnit().compareTo(o2.getTestUnit());
@@ -166,7 +166,7 @@ public class TestModifyAction extends BaseAction {
         List<ResultLimit> resultLimitList = ResultLimitService.getResultLimits(test);
 
         Collections.sort(resultLimitList, new Comparator<ResultLimit>() {
-            @Override
+            //@Override
             public int compare(ResultLimit o1, ResultLimit o2) {
                 return (int) (o1.getMinAge() - o2.getMinAge());
             }
@@ -313,7 +313,7 @@ public class TestModifyAction extends BaseAction {
         List<TestResult> testResults = new TestResultDAOImpl().getAllTestResults();
 
         Collections.sort(testResults, new Comparator<TestResult>() {
-            @Override
+            //@Override
             public int compare(TestResult o1, TestResult o2) {
                 int result = o1.getTest().getId().compareTo(o2.getTest().getId());
 
@@ -369,7 +369,7 @@ public class TestModifyAction extends BaseAction {
         }
 
         Collections.sort(groups, new Comparator<List<IdValuePair>>() {
-            @Override
+            //@Override
             public int compare(List<IdValuePair> o1, List<IdValuePair> o2) {
                 return o1.size() - o2.size();
             }

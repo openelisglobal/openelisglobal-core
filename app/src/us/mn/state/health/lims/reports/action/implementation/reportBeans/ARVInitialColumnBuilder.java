@@ -30,7 +30,7 @@ public class ARVInitialColumnBuilder extends ARVColumnBuilder {
 		super(dateRange, projectStr);
 	}
 
-	@Override
+	//@Override
 	protected void defineAllReportColumns() {
         defineBasicColumns();
         

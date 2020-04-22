@@ -86,7 +86,7 @@ public class PanelDAOImpl extends BaseDAOImpl implements PanelDAO {
 		clearIDMaps();
 	}
 	
-    @Override
+    //@Override
     public void insert(Panel panel) throws LIMSRuntimeException {
         try {
             String id = (String) HibernateUtil.getSession().save(panel);
@@ -450,7 +450,7 @@ public class PanelDAOImpl extends BaseDAOImpl implements PanelDAO {
 		return ID_NAME_MAP != null ? ID_NAME_MAP.get(id) : id;
 	}
 	
-	@Override
+	//@Override
 	public String getDescriptionForPanelId(String id) {
 		if( ID_DESCRIPTION_MAP == null){
 			loadMaps();
@@ -459,7 +459,7 @@ public class PanelDAOImpl extends BaseDAOImpl implements PanelDAO {
 		return ID_DESCRIPTION_MAP != null ? ID_DESCRIPTION_MAP.get(id) : id;
 	}
 	
-	@Override
+	//@Override
 	public String getIdForPanelName(String name) {
 		if( NAME_ID_MAP == null){
 			loadMaps();
@@ -490,7 +490,7 @@ public class PanelDAOImpl extends BaseDAOImpl implements PanelDAO {
 		ID_DESCRIPTION_MAP = null;
 	}
 
-	@Override
+	//@Override
 	public Panel getPanelByName(String panelName) {
 		try {
 			String sql = "from Panel p where p.panelName = :name";

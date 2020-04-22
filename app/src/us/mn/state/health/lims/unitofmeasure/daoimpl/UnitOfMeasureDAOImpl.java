@@ -146,7 +146,7 @@ public class UnitOfMeasureDAOImpl extends BaseDAOImpl implements UnitOfMeasureDA
 	}
 
 
-	@Override
+	//@Override
 	public UnitOfMeasure getUnitOfMeasureById(String uomId) throws LIMSRuntimeException {
 		String sql = "from UnitOfMeasure uom where id = :id";
 		try{

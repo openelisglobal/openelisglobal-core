@@ -84,7 +84,7 @@ public class  IPCIRealisationReport  extends Report {
 	}
 
 	
-	@Override
+	//@Override
 	public void initializeReport(BaseActionForm dynaForm) {
 		super.initializeReport();
 		errorFound = false;	
@@ -215,7 +215,7 @@ public class  IPCIRealisationReport  extends Report {
 			   BIOLOGIST_REJECT_ID.equals(analysis.getStatusId());
 	}
 	
-	@Override
+	//@Override
 	protected void createReportParameters() {
 		super.createReportParameters();
 
@@ -226,13 +226,13 @@ public class  IPCIRealisationReport  extends Report {
 
 	}
 
-	@Override
+	//@Override
 	public JRDataSource getReportDataSource() throws IllegalStateException {
 		return errorFound ? new JRBeanCollectionDataSource(errorMsgs)
 		: new JRBeanCollectionDataSource(reportItems);
 	}
  
-	@Override
+	//@Override
 	protected String reportFileName() {
 		 
 		return "IPCIRealisationTest";

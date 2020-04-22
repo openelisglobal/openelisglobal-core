@@ -89,7 +89,7 @@ public class TestWorkplanReport implements IWorkplanReport {
 		return includedTests;
 	}
 
-    @Override
+    //@Override
     public void setReportPath(String reportPath) {
         this.reportPath = reportPath;
         

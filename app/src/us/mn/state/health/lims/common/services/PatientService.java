@@ -220,7 +220,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getGUID()
 	 */
-	@Override
+	//@Override
 	public String getGUID(){
         return getIdentityInfo(PATIENT_GUID_IDENTITY);
 	}
@@ -228,7 +228,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getNationalId()
 	 */
-	@Override
+	//@Override
 	public String getNationalId(){
 		if( patient == null){
 			return "";
@@ -244,7 +244,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getSTNumber()
 	 */
-	@Override
+	//@Override
 	public String getSTNumber(){
 		return getIdentityInfo(PATIENT_ST_IDENTITY);
 	}
@@ -252,7 +252,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getSubjectNumber()
 	 */
-	@Override
+	//@Override
 	public String getSubjectNumber(){
 		return getIdentityInfo(PATIENT_SUBJECT_IDENTITY);
 	}
@@ -273,7 +273,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getFirstName()
 	 */
-	@Override
+	//@Override
 	public String getFirstName(){
 		return personService.getFirstName();
 	}
@@ -281,7 +281,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getLastName()
 	 */
-	@Override
+	//@Override
 	public String getLastName(){
 		return personService.getLastName();
 	}
@@ -289,19 +289,19 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getLastFirstName()
 	 */
-	@Override
+	//@Override
 	public String getLastFirstName(){
 		return personService.getLastFirstName();
 	}
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getGender()
 	 */
-	@Override
+	//@Override
 	public String getGender(){
 		return patient != null ? patient.getGender() : "";
 	}
 
-    @Override
+    //@Override
     public String getLocalizedGender(){
         String genderType = getGender();
 
@@ -317,7 +317,7 @@ public class PatientService implements IPatientService {
     /* (non-Javadoc)
          * @see us.mn.state.health.lims.common.services.IPatientService#getAddressComponents()
          */
-	@Override
+	//@Override
 	public Map<String, String> getAddressComponents(){
 		return personService.getAddressComponents();
 	}
@@ -325,12 +325,12 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getEnteredDOB()
 	 */
-	@Override
+	//@Override
 	public String getEnteredDOB(){
 			return patient != null ? patient.getBirthDateForDisplay() : "";
 	}
 
-	@Override
+	//@Override
 	public Timestamp getDOB() {
 		return patient != null ? patient.getBirthDate() : null;
 	}
@@ -338,7 +338,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getPhone()
 	 */
-	@Override
+	//@Override
 	public String getPhone(){
 		return personService.getPhone();
 	}
@@ -346,7 +346,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getPerson()
 	 */
-	@Override
+	//@Override
 	public Person getPerson(){
 		return personService.getPerson();
 	}
@@ -354,7 +354,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getPatientId()
 	 */
-	@Override
+	//@Override
 	public String getPatientId(){
 		return patient != null ? patient.getId() : null;
 	}
@@ -362,7 +362,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getBirthdayForDisplay()
 	 */
-	@Override
+	//@Override
 	public String getBirthdayForDisplay(){
 		return patient != null ? DateUtil.convertTimestampToStringDate(patient.getBirthDate()) : "";
 	}
@@ -370,7 +370,7 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getIdentityList()
 	 */
-	@Override
+	//@Override
 	public List<PatientIdentity> getIdentityList(){
 		return patient != null ? PatientUtil.getIdentityListForPatient(patient) : new ArrayList<PatientIdentity>();
 	}
@@ -381,67 +381,67 @@ public class PatientService implements IPatientService {
 	/* (non-Javadoc)
 	 * @see us.mn.state.health.lims.common.services.IPatientService#getPatient()
 	 */
-	@Override
+	//@Override
 	public Patient getPatient(){
 		return patient;
 	}
 
-    @Override
+    //@Override
     public String getAKA(){
         return getIdentityInfo(PATIENT_AKA_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getMother(){
         return getIdentityInfo(PATIENT_MOTHER_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getInsurance(){
         return getIdentityInfo(PATIENT_INSURANCE_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getOccupation(){
         return getIdentityInfo(PATIENT_OCCUPATION_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getOrgSite(){
         return getIdentityInfo(PATIENT_ORG_SITE_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getMothersInitial(){
         return getIdentityInfo(PATIENT_MOTHERS_INITIAL_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getEducation(){
         return getIdentityInfo(PATIENT_EDUCATION_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getMaritalStatus(){
         return getIdentityInfo(PATIENT_MARITAL_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getHealthDistrict(){
         return getIdentityInfo(PATIENT_HEALTH_DISTRICT_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getHealthRegion(){
         return getIdentityInfo(PATIENT_HEALTH_REGION_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getObNumber(){
         return getIdentityInfo(PATIENT_OB_NUMBER_IDENTITY);
     }
 
-    @Override
+    //@Override
     public String getPCNumber(){
         return getIdentityInfo(PATIENT_PC_NUMBER_IDENTITY);
     }

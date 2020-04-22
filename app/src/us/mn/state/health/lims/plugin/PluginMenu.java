@@ -23,12 +23,12 @@ public class PluginMenu extends Menu {
 	private static final long serialVersionUID = -2874772316504828792L;
 	private Menu parentMenu;
 	
-	@Override
+	//@Override
 	public Menu getParent() {
 		return parentMenu;
 	}
 
-	@Override
+	//@Override
 	public void setParent(Menu parentMenu) {
 		this.parentMenu = parentMenu;
 	}

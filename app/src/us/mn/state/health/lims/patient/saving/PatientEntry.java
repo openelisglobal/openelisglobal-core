@@ -54,14 +54,14 @@ public class PatientEntry extends Accessioner {
         this.newSampleStatus  = RecordStatus.NotRegistered;
     }
 
-    @Override
+    //@Override
     public boolean canAccession() {
         return (statusSet.getPatientRecordStatus() == null && statusSet.getSampleRecordStatus() == null);
     }
 
 
 
-    @Override
+    //@Override
     protected void populateSampleData() throws Exception {
     	Timestamp receivedDate = DateUtil.convertStringDatePreserveStringTimeToTimestamp(sample.getReceivedDateForDisplay(), sample.getReceived24HourTimeForDisplay( ),
     																					 projectFormMapper.getReceivedDate(), projectFormMapper.getReceivedTime());
@@ -73,7 +73,7 @@ public class PatientEntry extends Accessioner {
         populateSampleOrganization(projectFormMapper.getOrganizationId());
     }
 
-	@Override
+	//@Override
 	protected String getActionLabel() {
 		return StringUtil.getMessageForKey("banner.menu.createPatient.Initial");
 	}   

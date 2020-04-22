@@ -50,7 +50,7 @@ public class PatientEditUpdate extends PatientEntry {
     /**
      * @see us.mn.state.health.lims.patient.saving.PatientEntry#canAccession()
      */
-    @Override
+    //@Override
     public boolean canAccession() {
         String type = request.getParameter("type");
         if (RequestType.valueOfAsUpperCase(type) == RequestType.READWRITE) {
@@ -59,7 +59,7 @@ public class PatientEditUpdate extends PatientEntry {
         return false;
     }
     
-    @Override
+    //@Override
 	protected String getActionLabel() {
 		return StringUtil.getMessageForKey("banner.menu.editPatient.ReadWrite");
 	} 

@@ -39,18 +39,18 @@ public class QaHistoryService extends HistoryService {
 		newValueMap = new HashMap<String, String>();
 	}
 
-	@Override
+	//@Override
 	protected void addInsertion(History history, List<AuditTrailItem> items) {
 		identifier =  sampleQaEventDAO.getData(history.getReferenceId()).getQaEvent().getLocalizedName();
 		items.add(getCoreTrail(history));
 	}
 
-	@Override
+	//@Override
 	protected String getObjectName() {
 		return StringUtil.getMessageForKey("qaevent.browse.title");
 	}
 
-	@Override
+	//@Override
 	protected void getObservableChanges(History history,	Map<String, String> changeMap, String changes) {
 			changeMap.put(STATUS_ATTRIBUTE, "Gail");
 

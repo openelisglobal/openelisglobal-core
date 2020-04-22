@@ -47,7 +47,7 @@ public class MenuItem {
 	public void sortChildren(){
 		Collections.sort(childMenus, new Comparator<MenuItem>(){
 
-			@Override
+			//@Override
 			public int compare(MenuItem o1, MenuItem o2) {
 				return o1.getMenu().getPresentationOrder() - o2.getMenu().getPresentationOrder(); 
 			}});

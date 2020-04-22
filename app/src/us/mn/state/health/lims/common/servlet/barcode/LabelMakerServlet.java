@@ -38,7 +38,7 @@ public class LabelMakerServlet extends HttpServlet implements IActionConstants{
 
   private static final long serialVersionUID = 4756240897909804141L;
 
-  @Override
+  //@Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
           throws IOException, ServletException {
     

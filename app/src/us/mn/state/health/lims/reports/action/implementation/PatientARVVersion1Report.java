@@ -23,14 +23,14 @@ import us.mn.state.health.lims.observationhistory.valueholder.ObservationHistory
 
 public class PatientARVVersion1Report extends PatientARVReport implements  IReportCreator {
 
-	@Override
+	//@Override
 	protected void createReportParameters() {
 		super.createReportParameters();
 		reportParameters.put("showSerologie", Boolean.FALSE);
 		reportParameters.put("showVirologie", Boolean.TRUE);	
 	}
 
-	@Override
+	//@Override
     protected String reportFileName(){
     	return "Patient_ARV_Version1";
     }

@@ -94,7 +94,7 @@ public class TestSectionWorkplanReport implements IWorkplanReport {
 		return includedTests;
 	}
 
-    @Override
+    //@Override
     public void setReportPath(String reportPath) {
         this.reportPath = reportPath;
         

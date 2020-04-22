@@ -35,7 +35,7 @@ public class PersonAddressDAOImpl extends BaseDAOImpl implements PersonAddressDA
 	private static AuditTrailDAO auditDAO = new AuditTrailDAOImpl();
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<PersonAddress> getAddressPartsByPersonId(String personId) throws LIMSRuntimeException {
 		String sql = "from PersonAddress pa where pa.compoundId.targetId = :personId";
 
@@ -52,7 +52,7 @@ public class PersonAddressDAOImpl extends BaseDAOImpl implements PersonAddressDA
 		return null;
 	}
 
-	@Override
+	//@Override
 	public void insert(PersonAddress personAddress) throws LIMSRuntimeException {
 	try {
 			HibernateUtil.getSession().save(personAddress);
@@ -63,7 +63,7 @@ public class PersonAddressDAOImpl extends BaseDAOImpl implements PersonAddressDA
 		}
 	}
 
-	@Override
+	//@Override
 	public void update(PersonAddress personAddress) throws LIMSRuntimeException {
 
 		PersonAddress oldData = readPersonAddress(personAddress);
@@ -93,7 +93,7 @@ public class PersonAddressDAOImpl extends BaseDAOImpl implements PersonAddressDA
 		return null;
 	}
 
-	@Override
+	//@Override
 	public PersonAddress getByPersonIdAndPartId(String personId, String addressPartId) throws LIMSRuntimeException {
 		String sql = "from PersonAddress pa where pa.compoundId.targetId = :personId and pa.compoundId.addressPartId = :partId";
 

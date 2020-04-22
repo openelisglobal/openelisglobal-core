@@ -18,7 +18,7 @@ public class TypeOfDataIndicator extends BaseObject {
 			return value;
 		}
 		
-		@Override
+		//@Override
 		public String toString() {
 			return this.getValue();
 		}

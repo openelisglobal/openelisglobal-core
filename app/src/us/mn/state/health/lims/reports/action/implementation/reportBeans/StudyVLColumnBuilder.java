@@ -41,7 +41,7 @@ public class StudyVLColumnBuilder extends CIStudyColumnBuilder {
 		super(dateRange, projectStr);
 	}
 
-	@Override
+	//@Override
 	protected void defineAllReportColumns() {
         defineBasicColumns();
         add("Viral Load", "VIRAL LOAD", NONE );

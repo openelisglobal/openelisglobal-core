@@ -186,7 +186,7 @@ public class FACSCantoReader extends AnalyzerLineInserter {
 		}
 	}
 
-	@Override
+	//@Override
 	public String getError() {
 		return "FacsCANTO analyzer unable to write to database";
 	}

@@ -51,7 +51,7 @@ public class SampleRequesterDAOImpl extends BaseDAOImpl implements SampleRequest
             return true;
         }
 
-    @Override
+    //@Override
     public void updateData( SampleRequester sampleRequester ) throws LIMSRuntimeException{
         SampleRequester oldData = (SampleRequester) readOld(sampleRequester.getSampleId(), sampleRequester.getRequesterTypeId());
 
@@ -79,7 +79,7 @@ public class SampleRequesterDAOImpl extends BaseDAOImpl implements SampleRequest
     }
 
 
-    @Override
+    //@Override
     public void insertOrUpdateData( SampleRequester samplePersonRequester ) throws LIMSRuntimeException{
         if( samplePersonRequester.getLastupdated() == null){
             insertData( samplePersonRequester );
@@ -88,7 +88,7 @@ public class SampleRequesterDAOImpl extends BaseDAOImpl implements SampleRequest
         }
     }
 
-    @Override
+    //@Override
     public void delete( SampleRequester sampleRequester ) throws LIMSRuntimeException{
         HibernateUtil.getSession().delete(sampleRequester);
         closeSession();
@@ -96,7 +96,7 @@ public class SampleRequesterDAOImpl extends BaseDAOImpl implements SampleRequest
 
 
     @SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<SampleRequester> getRequestersForSampleId(String sampleId) throws LIMSRuntimeException {
 		String sql = "From SampleRequester sr where sr.sampleId = :sampleId";
 

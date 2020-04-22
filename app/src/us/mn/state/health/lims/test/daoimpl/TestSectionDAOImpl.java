@@ -477,7 +477,7 @@ public class TestSectionDAOImpl extends BaseDAOImpl implements TestSectionDAO {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public TestSection getTestSectionByName(String testSection) throws LIMSRuntimeException {
 		try {
 			String sql = "from TestSection t where t.testSectionName = :name order by t.sortOrderInt";
@@ -499,7 +499,7 @@ public class TestSectionDAOImpl extends BaseDAOImpl implements TestSectionDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public TestSection getTestSectionById(String testSectionId) {
 		try {
 			TestSection testSection = (TestSection)HibernateUtil.getSession().get(TestSection.class, testSectionId);

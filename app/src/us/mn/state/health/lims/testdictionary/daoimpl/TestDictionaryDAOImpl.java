@@ -27,7 +27,7 @@ import us.mn.state.health.lims.testdictionary.valueholder.TestDictionary;
 
 public class TestDictionaryDAOImpl extends BaseDAOImpl implements TestDictionaryDAO{
 
-    @Override
+    //@Override
     public TestDictionary getTestDictionaryForTestId( String testId ) throws LIMSRuntimeException{
         String sql = "FROM TestDictionary td where td.testId = :testId";
         try{

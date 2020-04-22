@@ -35,7 +35,7 @@ import us.mn.state.health.lims.common.action.IActionConstants;
 
 public class AuditTrailViewAction extends BaseAction {
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -55,12 +55,12 @@ public class AuditTrailViewAction extends BaseAction {
 		return mapping.findForward(IActionConstants.FWD_SUCCESS);
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey() {
 		return "reports.auditTrail";
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey() {
 		return "reports.auditTrail";
 	}

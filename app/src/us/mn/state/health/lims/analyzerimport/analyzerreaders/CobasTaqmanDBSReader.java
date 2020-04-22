@@ -189,7 +189,7 @@ public class CobasTaqmanDBSReader extends AnalyzerLineInserter {
 	}
 
 
-	@Override
+	//@Override
 	public String getError() {
 		return error;
 	}

@@ -30,7 +30,7 @@ import us.mn.state.health.lims.hibernate.HibernateUtil;
 public class AddressPartDAOImpl extends BaseDAOImpl implements AddressPartDAO {
 
 	@SuppressWarnings("unchecked")
-	@Override
+	//@Override
 	public List<AddressPart> getAll() throws LIMSRuntimeException {
 		String sql = "from AddressPart";
 		try{
@@ -48,7 +48,7 @@ public class AddressPartDAOImpl extends BaseDAOImpl implements AddressPartDAO {
 		return null;
 	}
 
-	@Override
+	//@Override
 	public AddressPart getAddresPartByName(String name) throws LIMSRuntimeException{
 		String sql = "from AddressPart ap where ap.partName = :name";
 		

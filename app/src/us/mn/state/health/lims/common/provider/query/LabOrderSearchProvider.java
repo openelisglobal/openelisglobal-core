@@ -75,7 +75,7 @@ public class LabOrderSearchProvider extends BaseQueryProvider{
 	private static final String PROVIDER_LAST_NAME = "lastName";
 	private static final String PROVIDER_PHONE = "phone";
 
-	@Override
+	//@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 
 		String orderNumber = request.getParameter("orderNumber");

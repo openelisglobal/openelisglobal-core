@@ -73,7 +73,7 @@ public class TypeOfSample extends BaseObject {
 		return domain;
 	}
 
-	@Override
+	//@Override
 	protected String getDefaultLocalizedName() {
 		return LocalizationService.getLocalizedValue(getLocalization());
 	}

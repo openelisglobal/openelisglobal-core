@@ -48,7 +48,7 @@ public class AnalyzerLineReader extends AnalyzerReader {
     public static void registerAnalyzerPlugin( AnalyzerImporterPlugin plugin){
         analyzerPlugins.add(plugin);
     }
-	@Override
+	//@Override
 	public boolean readStream(InputStreamReader reader) {
 		error = null;
 		inserter = null;
@@ -134,7 +134,7 @@ public class AnalyzerLineReader extends AnalyzerReader {
 		lines = testLines;
 	}
 
-	@Override
+	//@Override
 	public boolean insertAnalyzerData(String systemUserId) {
 		if( inserter == null){
 			error = "Unable to understand which analyzer sent the file";
@@ -150,7 +150,7 @@ public class AnalyzerLineReader extends AnalyzerReader {
 
 	}
 
-	@Override
+	//@Override
 	public String getError() {
 		return error;
 	}

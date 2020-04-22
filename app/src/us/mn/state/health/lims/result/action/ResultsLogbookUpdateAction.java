@@ -134,7 +134,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 		}
 	}
 
-	@Override
+	//@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception{
 
@@ -257,7 +257,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 		if(GenericValidator.isBlankOrNull(dynaForm.getString("logbookType"))){
 			return mapping.findForward(forward);
 		}else{
-			Map<String, String> params = new HashMap<>();
+			Map<String, String> params = new HashMap<String, String>();
 			params.put("type", dynaForm.getString("logbookType"));
 			params.put("forward", forward);
 			return getForwardWithParameters(mapping.findForward(forward), params);
@@ -286,7 +286,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	}
 
 	private List<TestReflexBean> convertToTestReflexBeanList(List<ResultSet> resultSetList){
-		List<TestReflexBean> reflexBeanList = new ArrayList<>();
+		List<TestReflexBean> reflexBeanList = new ArrayList<TestReflexBean>();
 
 		for(ResultSet resultSet : resultSetList){
 			TestReflexBean reflex = new TestReflexBean();
@@ -295,7 +295,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
             if( resultSet.triggersToSelectedReflexesMap.size() > 0 && resultSet.multipleResultsForAnalysis){
                 for( String trigger : resultSet.triggersToSelectedReflexesMap.keySet()){
                     if( trigger.equals( resultSet.result.getValue() )){
-                        HashMap<String, List<String>> reducedMap = new HashMap<>( 1 );
+						HashMap<String, List<String>> reducedMap = new HashMap<String, List<String>>(1);
                         reducedMap.put( trigger, resultSet.triggersToSelectedReflexesMap.get( trigger ) );
                         reflex.setTriggersToSelectedReflexesMap( reducedMap );
                     }
@@ -316,7 +316,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	}
 
 	private void setSampleStatus(ResultsUpdateDataSet actionDataSet){
-		Set<Sample> sampleSet = new HashSet<>();
+		Set<Sample> sampleSet = new HashSet<Sample>();
 
 		for(ResultSet resultSet : actionDataSet.getNewResults()){
 			sampleSet.add(resultSet.sample);
@@ -461,7 +461,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
         SampleService sampleService = new SampleService( testResultItem.getAccessionNumber() );
         Patient patient = sampleService.getPatient();
 
-        Map<String,List<String>> triggersToReflexesMap = new HashMap<>(  );
+		Map<String, List<String>> triggersToReflexesMap = new HashMap<String, List<String>>();
 
         getSelectedReflexes( testResultItem.getReflexJSONResult(), triggersToReflexesMap );
 
@@ -485,7 +485,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
                 for(Object compoundReflexes : jsonResult.values()){
                     if( compoundReflexes != null){
                         String triggerIds = ( String ) ( ( JSONObject ) compoundReflexes ).get( "triggerIds" );
-                        List<String> selectedReflexIds = new ArrayList<>();
+						List<String> selectedReflexIds = new ArrayList<String>();
                         JSONArray selectedReflexes = ( JSONArray ) ( ( JSONObject ) compoundReflexes ).get( "selected" );
                         for( Object selectedReflex : selectedReflexes ){
                             selectedReflexIds.add( ( ( String ) selectedReflex ) );
@@ -603,7 +603,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
 	}
 
-	@Override
+	//@Override
 	protected ActionForward getForward(ActionForward forward, String accessionNumber, String analysisId){
 		ActionRedirect redirect = new ActionRedirect(forward);
 		if(!StringUtil.isNullorNill(accessionNumber)) {
@@ -618,12 +618,12 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 
 	}
 
-	@Override
+	//@Override
 	protected String getPageSubtitleKey(){
 		return "banner.menu.results";
 	}
 
-	@Override
+	//@Override
 	protected String getPageTitleKey(){
 		return "banner.menu.results";
 	}
