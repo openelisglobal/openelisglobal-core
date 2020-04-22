@@ -54,7 +54,7 @@ public abstract class Report implements IReportCreator {
 
 	protected boolean initialized = false;
 	protected boolean errorFound = false;
-	protected List<ErrorMessages> errorMsgs = new ArrayList<ErrorMessages>();
+	protected List<ErrorMessages> errorMsgs = new ArrayList<>();
 	protected HashMap<String, Object> reportParameters = null;
 	protected String requestedReport;
 	private String fullReportFilename;
@@ -68,10 +68,12 @@ public abstract class Report implements IReportCreator {
 		initialized = true;
 	}
 
+	@Override
 	public String getResponseHeaderName() {
 		return null;
 	}
 
+	@Override
 	public String getResponseHeaderContent() {
 		return null;
 	}
@@ -79,6 +81,7 @@ public abstract class Report implements IReportCreator {
 	/**
 	 * @see us.mn.state.health.lims.reports.action.implementation.IReportCreator#getContentType()
 	 */
+	@Override
 	public String getContentType() {
 		return "application/pdf; charset=UTF-8";
 	}
@@ -91,7 +94,7 @@ public abstract class Report implements IReportCreator {
 	 */
 	protected void createReportParameters() {
 		reportParameters = (reportParameters != null) ? reportParameters
-				: new HashMap<String, Object>();
+				: new HashMap<>();
 		reportParameters.put("directorName", ConfigurationProperties
 				.getInstance().getPropertyValue(Property.labDirectorName));
 		reportParameters.put("siteName", ConfigurationProperties.getInstance()
@@ -105,7 +108,7 @@ public abstract class Report implements IReportCreator {
 		reportParameters.put("localization", createLocalizationMap());
 		//reportParameters.put("leftHeaderImage", getImage("headerLeftImage"));
 		//reportParameters.put("rightHeaderImage", getImage("headerRightImage"));
-		
+
 		reportParameters.put("REPORT_LOCALE", SystemConfiguration.getInstance()
 				.getDefaultLocale());
 	}
@@ -118,7 +121,7 @@ public abstract class Report implements IReportCreator {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return map
 	 * @deprecated The correct way to localize JasperReports is to us $R{key}.
 	 *             This was put in before the correct way was understood. Do not
@@ -127,7 +130,7 @@ public abstract class Report implements IReportCreator {
 	 */
 	@Deprecated
 	protected Map<String, String> createLocalizationMap() {
-		HashMap<String, String> localizationMap = new HashMap<String, String>();
+		HashMap<String, String> localizationMap = new HashMap<>();
 		localizationMap.put("requestOrderNumber",
 				StringUtil.getMessageForKey("report.requestOrderNumber"));
 		localizationMap.put("confirmationOrderNumber",
@@ -138,6 +141,7 @@ public abstract class Report implements IReportCreator {
 				StringUtil.getMessageForKey("report.reception"));
 		localizationMap.put("initialResults",
 				StringUtil.getMessageForKey("report.initialResults"));
+		localizationMap.put("results", StringUtil.getMessageForKey("report.results"));
 		localizationMap.put("confirmationResults",
 				StringUtil.getMessageForKey("report.confirmationResult"));
 		localizationMap.put("requesterContact",
@@ -309,19 +313,20 @@ public abstract class Report implements IReportCreator {
 	public abstract JRDataSource getReportDataSource()
 			throws IllegalStateException;
 
+	@Override
 	public HashMap<String, ?> getReportParameters()
 			throws IllegalStateException {
 		if (!initialized) {
 			throw new IllegalStateException("initializeReport not called first");
 		}
 		return reportParameters != null ? reportParameters
-				: new HashMap<String, Object>();
+				: new HashMap<>();
 	}
 
 	/**
 	 * Utility routine for a sequence done in many places. Adds a message to the
 	 * errorMsgs
-	 * 
+	 *
 	 * @param messageId
 	 *            - name of resource
 	 */
@@ -335,7 +340,7 @@ public abstract class Report implements IReportCreator {
 	/**
 	 * Utility routine for a sequence done in many places. Adds a message to the
 	 * errorMsgs
-	 * 
+	 *
 	 * @param messageId
 	 *            - name of resource
 	 */
@@ -349,7 +354,7 @@ public abstract class Report implements IReportCreator {
 	/**
 	 * Checks a given date to make sure it is ok, filling in with a default if
 	 * not found, logging a message, if there is a problem.
-	 * 
+	 *
 	 * @param checkDateStr
 	 *            - date to check
 	 * @param defaultDateStr
@@ -419,7 +424,7 @@ public abstract class Report implements IReportCreator {
 		 * If you need to compare a Date which started as a date string to a
 		 * bunch of timestamps, you should move it from 00:00 at the beginning
 		 * of the day to the end of the day at 23:59:59.999.
-		 * 
+		 *
 		 * @return the high date with time set to the end of the day.
 		 */
 		public Date getHighDateAtEndOfDay() {
@@ -438,7 +443,7 @@ public abstract class Report implements IReportCreator {
 		 * <li>High date picks up low date if it ain't filled in,
 		 * <li>they can't both be empty
 		 * <li>they have to be well formed.
-		 * 
+		 *
 		 * @return true if valid, false otherwise
 		 */
 		public boolean validateHighLowDate(String missingDateMessage) {
@@ -459,6 +464,7 @@ public abstract class Report implements IReportCreator {
 			return true;
 		}
 
+		@Override
 		public String toString() {
 			String range = lowDateStr;
 			try {
@@ -482,12 +488,14 @@ public abstract class Report implements IReportCreator {
 		}
 	}
 
+	@Override
 	public void setReportPath(String path) {
 		fullReportFilename = path + getReportFileName() + ".jasper";
 	}
 
+	@Override
 	public List<String> getReportedOrders() {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 	protected abstract String reportFileName();
