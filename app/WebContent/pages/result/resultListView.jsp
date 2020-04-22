@@ -845,7 +845,13 @@ function updateShadowResult(source, index){
 			        <%=testResult.isReadOnly()? "disabled=\'true\'" : "" %> >
 					<option value="0"></option>
 					<logic:iterate id="optionValue" name="testResult" property="dictionaryResults" type="IdValuePair" >
-						<option value='<%=optionValue.getId()%>'  <%if(optionValue.getId().equals(testResult.getResultValue())) out.print("selected"); %>  >
+						<option value='<%=optionValue.getId()%>'  
+						  <%if(optionValue.getId().equals(testResult.getResultValue()) || optionValue.getId().equals(testResult.getDefaultTestResultId()) && GenericValidator.isBlankOrNull(testResult.getResultValue())) { 
+							  request.getSession().setAttribute("saveDisabled", "false");  
+						  %>
+							  selected='selected'
+						  <% } %>
+						>
 							<bean:write name="optionValue" property="value"/>
 						</option>
 					</logic:iterate>

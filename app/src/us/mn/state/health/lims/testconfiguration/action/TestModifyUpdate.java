@@ -16,6 +16,13 @@
 
 package us.mn.state.health.lims.testconfiguration.action;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.validator.GenericValidator;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -27,8 +34,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 import us.mn.state.health.lims.common.action.BaseAction;
-import us.mn.state.health.lims.common.services.*;
+import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.LocalizationService;
+import us.mn.state.health.lims.common.services.TestSectionService;
+import us.mn.state.health.lims.common.services.TestService;
+import us.mn.state.health.lims.common.services.TypeOfSampleService;
+import us.mn.state.health.lims.common.services.TypeOfTestResultService;
 import us.mn.state.health.lims.common.util.StringUtil;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.localization.dao.LocalizationDAO;
@@ -54,16 +67,8 @@ import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleDAOImpl;
 import us.mn.state.health.lims.typeofsample.daoimpl.TypeOfSampleTestDAOImpl;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSample;
 import us.mn.state.health.lims.typeofsample.valueholder.TypeOfSampleTest;
-import us.mn.state.health.lims.typeoftestresult.valueholder.TypeOfTestResult;
 import us.mn.state.health.lims.unitofmeasure.daoimpl.UnitOfMeasureDAOImpl;
 import us.mn.state.health.lims.unitofmeasure.valueholder.UnitOfMeasure;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class TestModifyUpdate extends BaseAction {
     private TypeOfSampleDAO typeOfSampleDAO = new TypeOfSampleDAOImpl();
@@ -77,75 +82,75 @@ public class TestModifyUpdate extends BaseAction {
 
         JSONObject obj = (JSONObject)parser.parse(jsonString);
         TestAddParams testAddParams = extractTestAddParms(obj, parser);
-        
+
         List<TestSet> testSets = createTestSets(testAddParams);
         Localization nameLocalization = createNameLocalization(testAddParams);
         Localization reportingNameLocalization = createReportingNameLocalization(testAddParams);
-        
+
         LocalizationDAO localizationDAO = new LocalizationDAOImpl();
         TestDAO testDAO = new TestDAOImpl();
-        
+
         TypeOfSampleTestDAO typeOfSampleTestDAO = new TypeOfSampleTestDAOImpl();
         PanelItemDAO panelItemDAO = new PanelItemDAOImpl();
-        
+
         TestResultDAO testResultDAO = new TestResultDAOImpl();
         ResultLimitDAO resultLimitDAO = new ResultLimitDAOImpl();
 
         Transaction tx = HibernateUtil.getSession().beginTransaction();
         try{
-        
-        	
+
+
             List<TypeOfSampleTest> typeOfSampleTest = typeOfSampleTestDAO.getTypeOfSampleTestsForTest(testAddParams.testId);
             String[] typeOfSamplesTestIDs = new String[typeOfSampleTest.size()];
             for ( int i = 0; i < typeOfSampleTest.size(); i++) {
             	typeOfSamplesTestIDs[i] = typeOfSampleTest.get(i).getId();
             }
             typeOfSampleTestDAO.deleteData(typeOfSamplesTestIDs, currentUserId);
-            
+
             List<PanelItem> panelItems = panelItemDAO.getPanelItemByTestId(testAddParams.testId);
         	for( PanelItem item : panelItems){
         		item.setSysUserId(currentUserId);
         	}
             panelItemDAO.deleteData(panelItems);
-            
+
             List<ResultLimit> resultLimitItems = resultLimitDAO.getAllResultLimitsForTest(testAddParams.testId);
             for( ResultLimit item : resultLimitItems){
         		item.setSysUserId(currentUserId);
         	}
             resultLimitDAO.deleteData(resultLimitItems);
-            
+
             nameLocalization.setSysUserId(currentUserId);
             localizationDAO.insert(nameLocalization);
             reportingNameLocalization.setSysUserId(currentUserId);
             localizationDAO.insert(reportingNameLocalization);
-        	
+
             for( TestSet set : testSets){
                 set.test.setSysUserId(currentUserId);
                 set.test.setLocalizedTestName(nameLocalization);
                 set.test.setLocalizedReportingName(reportingNameLocalization);
-                
+
                 // gnr: test for existance of test(sampleType), if not insert
-               
+
                 if (set.test.getId() == null) {
                 	testDAO.insertData(set.test);
                 	set.sortedTests.add(set.test);
                 }
-                
-//	gnr: based on testAddUpdate, 
+
+//	gnr: based on testAddUpdate,
 //  added existing testId to process in createTestSets using testAddParams.testId, delete then insert to modify for most elements
-              
+
                 for( Test test :set.sortedTests){
                     test.setSysUserId(currentUserId);
                     testDAO.updateData(test);
                 }
-                
+
             	updateTestNames(testAddParams.testId, nameLocalization.getEnglish(), nameLocalization.getFrench(), reportingNameLocalization.getEnglish(), reportingNameLocalization.getFrench(), currentUserId);
             	updateTestEntities(testAddParams.testId, testAddParams.loinc, currentUserId);
 
                 set.sampleTypeTest.setSysUserId(currentUserId);
                 set.sampleTypeTest.setTestId(set.test.getId());
                	typeOfSampleTestDAO.insertData(set.sampleTypeTest);
-               	
+
                	for( PanelItem item : set.panelItems){
                     item.setSysUserId(currentUserId);
                     Test nonTransiantTest = testDAO.getTestById(set.test.getId());
@@ -178,7 +183,7 @@ public class TestModifyUpdate extends BaseAction {
         TypeOfSampleService.clearCache();
         return mapping.findForward(FWD_SUCCESS);
     }
-    
+
     private void updateTestEntities( String testId, String loinc, String userId) {
     	 Test test = new TestService( testId ).getTest();
 
@@ -188,7 +193,7 @@ public class TestModifyUpdate extends BaseAction {
         	 new TestDAOImpl().updateData ( test );
          }
     }
-    
+
     private void updateTestNames( String testId, String nameEnglish, String nameFrench, String reportNameEnglish, String reportNameFrench, String userId ){
         Test test = new TestService( testId ).getTest();
 
@@ -241,6 +246,7 @@ public class TestModifyUpdate extends BaseAction {
                 sortOrder += 10;
                 testResult.setIsActive(true);
                 testResult.setValue( params.dictionaryId);
+				testResult.setIsDefault(params.isDefault);
                 testResult.setIsQuantifiable(params.isQuantifiable);
                 testResults.add(testResult);
             }
@@ -262,7 +268,7 @@ public class TestModifyUpdate extends BaseAction {
         String significantDigits = testAddParams.significantDigits;
         boolean numericResults = TypeOfTestResultService.ResultType.isNumericById(testAddParams.resultTypeId);
         boolean dictionaryResults = TypeOfTestResultService.ResultType.isDictionaryVarientById(testAddParams.resultTypeId);
-        List<TestSet> testSets = new ArrayList<TestSet>();
+        List<TestSet> testSets = new ArrayList<>();
         UnitOfMeasure uom = null;
         if(!GenericValidator.isBlankOrNull(testAddParams.uomId) || "0".equals(testAddParams.uomId)) {
             uom = new UnitOfMeasureDAOImpl().getUnitOfMeasureById(testAddParams.uomId);
@@ -279,21 +285,21 @@ public class TestModifyUpdate extends BaseAction {
             if (typeOfSample == null) {
                 continue;
             }
-            
+
            TypeOfSampleTestDAOImpl typeOfSampleTestDAOImpl = new TypeOfSampleTestDAOImpl();
            TypeOfSampleTest typeOfSampleTestExists = typeOfSampleTestDAOImpl.getTypeOfSampleTestForTest(testAddParams.testId);
-          
+
            TestSet testSet = new TestSet();
            Test test = new Test();
-           
+
            if ( typeOfSampleTestExists.getTypeOfSampleId().equals(typeOfSample.getId()) ) {
         	   test.setId(testAddParams.testId);
            }
-            
+
 //            Test testExists = new Test();
 //            TestDAOImpl testDAOImpl = new TestDAOImpl();
 //            testExists = testDAOImpl.getTestById(testAddParams.testId);
-            
+
             test.setUnitOfMeasure(uom);
             test.setDescription(testAddParams.testNameEnglish + "(" + typeOfSample.getDescription() + ")");
             test.setTestName(testAddParams.testNameEnglish);
@@ -335,7 +341,7 @@ public class TestModifyUpdate extends BaseAction {
     }
 
     private ArrayList<ResultLimit> createDictionaryResultLimit(TestAddParams testAddParams) {
-        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        ArrayList<ResultLimit> resultLimits = new ArrayList<>();
         if( !GenericValidator.isBlankOrNull(testAddParams.dictionaryReferenceId)){
             ResultLimit limit = new ResultLimit();
             limit.setResultTypeId(testAddParams.resultTypeId);
@@ -347,7 +353,7 @@ public class TestModifyUpdate extends BaseAction {
     }
 
     private ArrayList<ResultLimit> createResultLimits(Double lowValid, Double highValid, TestAddParams testAddParams) {
-        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        ArrayList<ResultLimit> resultLimits = new ArrayList<>();
         for( ResultLimitParams params : testAddParams.limits){
             ResultLimit limit = new ResultLimit();
             limit.setResultTypeId(testAddParams.resultTypeId);
@@ -394,7 +400,8 @@ public class TestModifyUpdate extends BaseAction {
                 for( int i = 0; i < dictionaryArray.size(); i++){
                     DictionaryParams params = new DictionaryParams();
                     params.dictionaryId = (String)((JSONObject) dictionaryArray.get(i)).get("value");
-                    params.isQuantifiable = "Y".equals((String)((JSONObject) dictionaryArray.get(i)).get("qualified"));
+                    params.isQuantifiable = "Y".equals(((JSONObject) dictionaryArray.get(i)).get("qualified"));
+					params.isDefault = params.dictionaryId.equals(obj.get("defaultTestResult"));
                     testAddParams.dictionaryParamList.add(params);
                 }
             }
@@ -482,24 +489,24 @@ public class TestModifyUpdate extends BaseAction {
         String testReportNameEnglish;
         String testReportNameFrench;
         String testSectionId;
-        ArrayList<String> panelList = new ArrayList<String>();
+        ArrayList<String> panelList = new ArrayList<>();
         String uomId;
         String loinc;
         String resultTypeId;
-        ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<SampleTypeListAndTestOrder>();
+        ArrayList<SampleTypeListAndTestOrder> sampleList = new ArrayList<>();
         String active;
         String orderable;
         String lowValid;
         String highValid;
         String significantDigits;
         String dictionaryReferenceId;
-        ArrayList<ResultLimitParams> limits = new ArrayList<ResultLimitParams>();
-        ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<DictionaryParams>();
+        ArrayList<ResultLimitParams> limits = new ArrayList<>();
+        ArrayList<DictionaryParams> dictionaryParamList = new ArrayList<>();
     }
 
     private class SampleTypeListAndTestOrder{
         String sampleTypeId;
-        ArrayList<String> orderedTests = new ArrayList<String>();
+        ArrayList<String> orderedTests = new ArrayList<>();
     }
 
     private class ResultLimitParams{
@@ -513,14 +520,15 @@ public class TestModifyUpdate extends BaseAction {
     private class TestSet{
         Test test;
         TypeOfSampleTest sampleTypeTest;
-        ArrayList<Test> sortedTests = new ArrayList<Test>();
-        ArrayList<PanelItem> panelItems = new ArrayList<PanelItem>();
-        ArrayList<TestResult> testResults = new ArrayList<TestResult>();
-        ArrayList<ResultLimit> resultLimits = new ArrayList<ResultLimit>();
+        ArrayList<Test> sortedTests = new ArrayList<>();
+        ArrayList<PanelItem> panelItems = new ArrayList<>();
+        ArrayList<TestResult> testResults = new ArrayList<>();
+        ArrayList<ResultLimit> resultLimits = new ArrayList<>();
     }
 
     private class DictionaryParams{
-        String dictionaryId;
+		public boolean isDefault;
+		String dictionaryId;
         boolean isQuantifiable = false;
     }
 }

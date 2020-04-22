@@ -124,9 +124,9 @@ public class ResultsLoadUtility {
     private PatientService patientService;
 	private Sample currSample;
 
-	private Set<Integer> excludedAnalysisStatus = new HashSet<Integer>();
-	private List<Integer> analysisStatusList = new ArrayList<Integer>();
-	private List<Integer> sampleStatusList = new ArrayList<Integer>();
+	private Set<Integer> excludedAnalysisStatus = new HashSet<>();
+	private List<Integer> analysisStatusList = new ArrayList<>();
+	private List<Integer> sampleStatusList = new ArrayList<>();
 
 	private List<InventoryKitItem> activeKits;
 
@@ -148,7 +148,7 @@ public class ResultsLoadUtility {
 	private boolean useTechSignature =  ConfigurationProperties.getInstance().isPropertyValueEqual(Property.resultTechnicianName, "true");
 	private static boolean supportReferrals = FormFields.getInstance().useField(Field.ResultsReferral);
 	private static boolean useInitialSampleCondition = FormFields.getInstance().useField(Field.InitialSampleCondition);
-	private boolean useCurrentUserAsTechDefault = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameUser, "true"); 
+	private boolean useCurrentUserAsTechDefault = ConfigurationProperties.getInstance().isPropertyValueEqual(Property.autoFillTechNameUser, "true");
 	private String currentUserName = "";
 	private ReferralDAO referralDAO = new ReferralDAOImpl();
 	private int reflexGroup = 1;
@@ -189,7 +189,7 @@ public class ResultsLoadUtility {
 
 		reflexGroup = 1;
 		activeKits = null;
-		samples = new ArrayList<Sample>();
+		samples = new ArrayList<>();
 
 		if (sample != null) {
 			samples.add(sample);
@@ -253,7 +253,7 @@ public class ResultsLoadUtility {
 		inventoryNeeded = false;
 		reflexGroup = 1;
 
-		List<TestResultItem> selectedTestList = new ArrayList<TestResultItem>();
+		List<TestResultItem> selectedTestList = new ArrayList<>();
 
 		for (Analysis analysis : filteredAnalysisList) {
             patientService = new PatientService( new SampleService( analysis.getSampleItem().getSample() ).getPatient() );
@@ -290,6 +290,7 @@ public class ResultsLoadUtility {
 
 	private void reverseSortByAccessionAndSequence(List<? extends ResultItem> selectedTest) {
 		Collections.sort(selectedTest, new Comparator<ResultItem>() {
+			@Override
 			public int compare(ResultItem a, ResultItem b) {
 				int accessionSort = b.getSequenceAccessionNumber().compareTo(a.getSequenceAccessionNumber());
 
@@ -313,6 +314,7 @@ public class ResultsLoadUtility {
 
 	public void sortByAccessionAndSequence(List<? extends ResultItem> selectedTest) {
 		Collections.sort(selectedTest, new Comparator<ResultItem>() {
+			@Override
 			public int compare(ResultItem a, ResultItem b) {
 				int accessionSort = a.getSequenceAccessionNumber().compareTo(b.getSequenceAccessionNumber());
 
@@ -363,7 +365,7 @@ public class ResultsLoadUtility {
 
 	private List<TestResultItem> getTestResultItemFromAnalysis(Analysis analysis, String patientName, String patientInfo, String nationalId)
 			throws LIMSRuntimeException {
-		List<TestResultItem> testResultList = new ArrayList<TestResultItem>();
+		List<TestResultItem> testResultList = new ArrayList<>();
 
 		SampleItem sampleItem = analysis.getSampleItem();
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
@@ -460,7 +462,7 @@ public class ResultsLoadUtility {
 
 	private List<TestResultItem> getGroupedTestsForSamples() {
 
-		List<TestResultItem> testList = new ArrayList<TestResultItem>();
+		List<TestResultItem> testList = new ArrayList<>();
 
 		TestResultItem[] tests = getSortedTestsFromSamples();
 
@@ -488,7 +490,7 @@ public class ResultsLoadUtility {
 
 	private TestResultItem[] getSortedTestsFromSamples() {
 
-		List<TestResultItem> testList = new ArrayList<TestResultItem>();
+		List<TestResultItem> testList = new ArrayList<>();
 
 		for (Sample sample : samples) {
 			currSample = sample;
@@ -521,12 +523,12 @@ public class ResultsLoadUtility {
 	private void addUserSelectionReflexes(List<TestResultItem> testList) {
 		TestReflexUtil reflexUtil = new TestReflexUtil();
 
-		Map<String, TestResultItem> groupedSibReflexMapping = new HashMap<String, TestResultItem>();
+		Map<String, TestResultItem> groupedSibReflexMapping = new HashMap<>();
 
 		for (TestResultItem resultItem : testList) {
 			//N.B. showSampleDetails should be renamed.  It means that it is the first result for that group of accession numbers
 			if (resultItem.isShowSampleDetails()) {
-				groupedSibReflexMapping = new HashMap<String, TestResultItem>();
+				groupedSibReflexMapping = new HashMap<>();
 				reflexGroup++;
 			}
 
@@ -686,10 +688,11 @@ public class ResultsLoadUtility {
 		testItem.setChildReflex(analysisService.getTriggeredReflex() && analysisService.resultIsConclusion( result ));
         testItem.setPastNotes( notes );
         testItem.setDisplayResultAsLog(hasLogValue(testService));
-        testItem.setNonconforming( analysisService.isParentNonConforming() || 
+        testItem.setNonconforming( analysisService.isParentNonConforming() ||
                 StatusService.getInstance().matches(analysisService.getStatusId(), AnalysisStatus.TechnicalRejected ));
-        if(FormFields.getInstance().useField(Field.QaEventsBySection) )
-        	testItem.setNonconforming(getQaEventByTestSection(analysisService.getAnalysis()));
+        if(FormFields.getInstance().useField(Field.QaEventsBySection) ) {
+			testItem.setNonconforming(getQaEventByTestSection(analysisService.getAnalysis()));
+		}
 
         Result quantifiedResult = analysisService.getQuantifiedResult();
         if( quantifiedResult != null){
@@ -701,7 +704,17 @@ public class ResultsLoadUtility {
         if( NUMERIC_RESULT_TYPE.equals( testResults.get( 0 ).getTestResultType()  )){
             testItem.setSignificantDigits( Integer.parseInt( testResults.get( 0 ).getSignificantDigits() ));
         }
+		setDefaultResult(testItem, testResults);
+
 		return testItem;
+	}
+
+	private void setDefaultResult(TestResultItem testItem, List<TestResult> testResults) {
+		for (TestResult testResult : testResults) {
+			if (testResult.getIsDefault()) {
+				testItem.setDefaultTestResultId(testResult.getValue());
+			}
+		}
 	}
 
 	private boolean isReadOnly(boolean isConclusion, boolean isCD4Conclusion) {
@@ -735,7 +748,7 @@ public class ResultsLoadUtility {
 		Dictionary dictionary;
 
 		if (testResults != null && !testResults.isEmpty() && TypeOfTestResultService.ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
-			values = new ArrayList<IdValuePair>();
+			values = new ArrayList<>();
 
 			Collections.sort(testResults, new Comparator<TestResult>() {
 				@Override
@@ -748,7 +761,7 @@ public class ResultsLoadUtility {
 					return Integer.parseInt(o1.getSortOrder()) - Integer.parseInt(o2.getSortOrder());
 				}
 			});
-			
+
 			String qualifiedDictionaryIds = "";
 			for (TestResult testResult : testResults) {
 				if ( TypeOfTestResultService.ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
@@ -771,7 +784,7 @@ public class ResultsLoadUtility {
 					}
 				}
 			}
-			
+
 			if( !GenericValidator.isBlankOrNull( qualifiedDictionaryIds )){
 				testItem.setQualifiedDictionaryId( "[" + qualifiedDictionaryIds + "]" );
 			}
@@ -810,7 +823,7 @@ public class ResultsLoadUtility {
 //			} catch (NumberFormatException e) {
 //				return false;
 //			}
-			
+
 		//	return true;
 		//}
 
@@ -822,7 +835,7 @@ public class ResultsLoadUtility {
 		List<IdValuePair> values = null;
 
 		if (result != null && TypeOfTestResultService.ResultType.isDictionaryVariant( result.getResultType() )) {
-			values = new ArrayList<IdValuePair>();
+			values = new ArrayList<>();
 
 			Dictionary dictionaryValue = new Dictionary();
 			dictionaryValue.setId(result.getValue());
@@ -938,14 +951,15 @@ public class ResultsLoadUtility {
 	}
 
 	private boolean getQaEventByTestSection(Analysis analysis){
-		
+
 		if (analysis.getTestSection()!=null && analysis.getSampleItem().getSample()!=null) {
 			Sample sample=analysis.getSampleItem().getSample();
 			List<SampleQaEvent> sampleQaEventsList=getSampleQaEvents(sample);
 			for(SampleQaEvent event : sampleQaEventsList){
 				QAService qa = new QAService(event);
-				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey()))
-					 return true;				
+				if(!GenericValidator.isBlankOrNull(qa.getObservationValue( QAObservationType.SECTION )) && qa.getObservationValue( QAObservationType.SECTION ).equals(analysis.getTestSection().getNameKey())) {
+					return true;
+				}
 			}
 		}
 		return false;

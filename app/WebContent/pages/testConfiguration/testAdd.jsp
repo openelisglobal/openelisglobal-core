@@ -147,6 +147,9 @@
 
                 option = createOption(data.value, dictionaryName, false);
                 $jq("#referenceSelection").append(option);
+                
+                option = createOption(data.value, dictionaryName, false);
+                $jq("#defaultTestResultSelection").append(option);
             } else {
                 $jq("#dictionaryNameSortUI li[value=" + data.value + "]").remove();
 
@@ -155,6 +158,7 @@
                 $jq("#dictionaryQualify").append(qualifiyList);
                 augmentMultiselects("#dictionaryQualify");
                 $jq("#referenceSelection option[value=" + data.value + "]").remove();
+                $jq("#defaultTestResultSelection option[value=" + data.value + "]").remove();
             }
         }
     }
@@ -177,6 +181,8 @@
         $jq("#dictionaryNameSortUI li").remove();
         $jq("#referenceSelection option").remove();
         $jq("#referenceSelection").append(createOption("0", "", false));
+        $jq("#defaultTestResultSelection option").remove();
+        $jq("#defaultTestResultSelection").append(createOption("0", "", false));
     }
     function createOption(id, name, isActive) {
         var option = $jq('<option/>');
@@ -617,6 +623,8 @@
             buildVerifyDictionaryList();
             $jq("#dictionaryVerifyId").show();
             $jq("#referenceValue").text($jq("#referenceSelection option:selected").text());
+            $jq("#defaultTestResultValue").text($jq("#defaultTestResultSelection option:selected").text());
+            //TODO
             $jq(".selectListConfirm").show();
             $jq(".confirmShow").show();
             $jq(".selectShow").hide();
@@ -889,6 +897,9 @@
             if ($jq("#referenceSelection option:selected[value=" + value.value + "]").length == 1) {
                 jsonObj.dictionaryReference = value.value;
             }
+            if ($jq("#defaultTestResultSelection option:selected[value=" + value.value + "]").length == 1) {
+                jsonObj.defaultTestResult = value.value;
+            }
             dictionary = {};
             dictionary.value = value.value;
             dictionary.qualified = $jq("#qualifierSelection option:selected[value=" + value.value + "]").length == 1 ? "Y" : "N";
@@ -1156,6 +1167,7 @@
                     </ul>
                     </span>
                     <span><bean:message key="label.reference.value" /><br><ul><li id="referenceValue"></li></ul></span>
+                    <span><bean:message key="label.default.result" /><br><ul><li id="defaultTestResultValue"></li></ul></span>
                 </div>
                 <div id="sortDictionaryDiv" align="center" class="dictionarySelect"
                      style="padding:10px;float:left; width:33%; display:none;"><bean:message key="label.result.order" />
@@ -1168,6 +1180,13 @@
                     <div id="dictionaryReference">
                         <bean:message key="label.reference.value" /><br/>
                         <select id='referenceSelection'>
+                            <option value="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                        </select>
+                    </div>
+                    <br>
+					<div id="defaultTestResult">
+                        <bean:message key="label.default.result" /><br/>
+                        <select id='defaultTestResultSelection'>
                             <option value="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                         </select>
                     </div>

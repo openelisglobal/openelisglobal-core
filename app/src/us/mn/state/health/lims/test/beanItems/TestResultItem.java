@@ -45,7 +45,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	 * Used for inserting Patient Names/o into lists of TestResultItems
 	 */
 	private boolean isServingAsTestGroupIdentifier = false;
-	
+
     private static String NO = "no";
 	@SuppressWarnings("unused")
 	private static String YES = "yes";
@@ -106,11 +106,11 @@ public class TestResultItem implements ResultItem, Serializable{
 	private boolean readOnly = false;
 	private boolean referredOut = false;
 	private boolean referralCanceled = false;
-    
+
 	//This is the workaround for the checkbox stickiness issue
     private boolean shadowReferredOut = false;
     private boolean shadowRejected = false;
-    
+
 	private String referralId = "";
 	private String referralReasonId = "";
 	private String multiSelectResultValues;
@@ -133,7 +133,9 @@ public class TestResultItem implements ResultItem, Serializable{
     private boolean rejected = false;
     private String rejectReasonId;
     private String considerRejectReason;
-	
+
+	private String defaultTestResultId;
+
     public String getConsiderRejectReason() {
         return considerRejectReason;
     }
@@ -152,33 +154,43 @@ public class TestResultItem implements ResultItem, Serializable{
     public void setRejected(boolean rejected) {
         this.rejected = rejected;
     }
+	@Override
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
+	@Override
 	public void setAccessionNumber(String accessionNumber) {
 		this.accessionNumber = accessionNumber;
 	}
+	@Override
 	public String getSequenceNumber() {
 		return sequenceNumber;
 	}
+	@Override
 	public void setSequenceNumber(String sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
+	@Override
 	public boolean isShowSampleDetails() {
 		return showSampleDetails;
 	}
+	@Override
 	public void setShowSampleDetails(boolean showSampleDetails) {
 		this.showSampleDetails = showSampleDetails;
 	}
+	@Override
 	public boolean getIsGroupSeparator() {
 		return isGroupSeparator;
 	}
+	@Override
 	public void setIsGroupSeparator(boolean isGroupSeparator) {
 		this.isGroupSeparator = isGroupSeparator;
 	}
+	@Override
 	public int getSampleGroupingNumber() {
 		return sampleGroupingNumber;
 	}
+	@Override
 	public void setSampleGroupingNumber(int sampleGroupingNumber) {
 		this.sampleGroupingNumber = sampleGroupingNumber;
 	}
@@ -205,14 +217,14 @@ public class TestResultItem implements ResultItem, Serializable{
     public void setShadowReferredOut( boolean shadowReferredOut ){
         this.shadowReferredOut = shadowReferredOut;
     }
-    
+
     public boolean isShadowRejected() {
         return shadowRejected;
     }
     public void setShadowRejected(boolean shadowRejected) {
         this.shadowRejected = shadowRejected;
     }
-    
+
     public String getTechnicianSignatureId() {
 		return technicianSignatureId;
 	}
@@ -298,7 +310,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setLowerAbnormalRange(double lowerAbnormalRange) {
 		this.lowerAbnormalRange = lowerAbnormalRange;
 	}
-	
+
 	public String getReportable() {
 		return reportable ? "Y" : "N";
 	}
@@ -357,6 +369,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	public void setTestMethod(Method method) {
 		testMethod = method == Method.AUTO ? "Auto" : "Manual";
 	}
+	@Override
 	public String getTestName() {
 		return testName;
 	}
@@ -432,9 +445,9 @@ public class TestResultItem implements ResultItem, Serializable{
 		this.dictionaryResults = dictonaryResults;
 	}
 	public List<IdValuePair> getDictionaryResults() {
-		return dictionaryResults == null ? new ArrayList<IdValuePair>() : dictionaryResults;
+		return dictionaryResults == null ? new ArrayList<>() : dictionaryResults;
 	}
-	
+
 	public String getResultLimitId() {
 		return resultLimitId;
 	}
@@ -482,7 +495,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	public Result getResult() {
 		return result;
 	}
-	
+
 	public void setUserChoiceReflex(boolean isUserChoiceReflex) {
 		this.isUserChoiceReflex = isUserChoiceReflex;
 	}
@@ -561,6 +574,7 @@ public class TestResultItem implements ResultItem, Serializable{
 	public String getSequenceAccessionNumber() {
 		return getAccessionNumber() + "-" + getSequenceNumber();
 	}
+	@Override
 	public String getTestSortOrder() {
 		return testSortOrder;
 	}
@@ -673,6 +687,14 @@ public class TestResultItem implements ResultItem, Serializable{
     public void setNationalId(String nationalId) {
         this.nationalId = nationalId;
     }
+
+	public String getDefaultTestResultId() {
+		return defaultTestResultId;
+	}
+
+	public void setDefaultTestResultId(String defaultTestResultId) {
+		this.defaultTestResultId = defaultTestResultId;
+	}
 
 
 }

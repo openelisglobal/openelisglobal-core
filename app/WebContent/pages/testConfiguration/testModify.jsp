@@ -424,6 +424,9 @@
 
                 option = createOption(data.value, dictionaryName, false);
                 $jq("#referenceSelection").append(option);
+                
+                option = createOption(data.value, dictionaryName, false);
+                $jq("#defaultTestResultSelection").append(option);
             } else {
                 $jq("#dictionaryNameSortUI li[value=" + data.value + "]").remove();
 
@@ -432,6 +435,7 @@
                 $jq("#dictionaryQualify").append(qualifiyList);
                 augmentMultiselects("#dictionaryQualify");
                 $jq("#referenceSelection option[value=" + data.value + "]").remove();
+                $jq("#defaultTestResultSelection option[value=" + data.value + "]").remove();
             }
         }
     }
@@ -476,6 +480,8 @@
         $jq("#dictionaryNameSortUI li").remove();
         $jq("#referenceSelection option").remove();
         $jq("#referenceSelection").append(createOption("0", "", false));
+        $jq("#defaultTestResultSelection option").remove();
+        $jq("#defaultTestResultSelection").append(createOption("0", "", false));
     }
     function createOption(id, name, isActive) {
         var option = $jq('<option/>');
@@ -999,8 +1005,11 @@
             	referenceValue = $jq(elem).attr("fReferenceValue")
             	referenceId = $jq(elem).attr("fReferenceId")
             });
-            
-            $jq("#referenceValue").text($jq(referenceValue).text());
+            if (referenceValue == "n/a") {
+                $jq("#referenceValue").text(referenceValue);
+            } else {
+            	$jq("#referenceValue").text($jq(referenceValue).text());
+        	}
             $jq("#referenceId").text($jq(referenceId).text());
             
         } else if (step == "step3Dictionary") {
@@ -1029,6 +1038,8 @@
             	$jq("#referenceValue").text($jq("#referenceSelection option:selected").text());
             	buildVerifyDictionaryList();
             }
+            
+            $jq("#defaultTestResultValue").text($jq("#defaultTestResultSelection option:selected").text());
 
             $jq("#dictionaryVerifyId").show();
             $jq(".selectListConfirm").show();
@@ -1495,6 +1506,9 @@
         $jq("#dictionarySelection option:selected").each(function (index, value) {
             if ($jq("#referenceSelection option:selected[value=" + value.value + "]").length == 1) {
                 jsonObj.dictionaryReference = value.value;
+            }
+            if ($jq("#defaultTestResultSelection option:selected[value=" + value.value + "]").length == 1) {
+                jsonObj.defaultTestResult = value.value;
             }
             dictionary = {};
             dictionary.value = value.value;
@@ -2023,6 +2037,7 @@
 					<ul>
 							<li id="referenceValue"></li>
 						</ul></span>
+                    <span><bean:message key="label.default.result" /><br><ul><li id="defaultTestResultValue"></li></ul></span>
 				</div>
 				<div id="sortDictionaryDiv" align="center" class="dictionarySelect"
 					style="padding: 10px; float: left; width: 33%; display: none;">
@@ -2042,6 +2057,13 @@
 						</select>
 					</div>
 					<br>
+					<div id="defaultTestResult">
+                        <bean:message key="label.default.result" /><br/>
+                        <select id='defaultTestResultSelection'>
+                            <option value="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                        </select>
+                    </div>
+                    <br>
 
 					<div id="dictionaryQualify" class="dictionaryMultiSelect">
 						<bean:message key="label.qualifiers" />

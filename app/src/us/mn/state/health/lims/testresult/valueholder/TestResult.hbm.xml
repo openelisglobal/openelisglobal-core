@@ -44,6 +44,7 @@
         </property>
         <property name="isQuantifiable"  type="java.lang.Boolean" column="is_quantifiable" />
         <property name="isActive" type="java.lang.Boolean" column="is_active" />
+        <property name="isDefault" type="java.lang.Boolean" column="default_result" />
 
     </class>
 </hibernate-mapping>
