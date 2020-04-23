@@ -512,7 +512,7 @@ function /*boolean*/ handleEnterEvent(){
 			           			id='<%= "qualifiedDict_" + index %>'
 			           			style = '<%= "display:" + (resultList.isHasQualifiedResult() ? "inline" : "none") %>'
 					   			<%= resultList.isReadOnly() ? "disabled='disabled'" : ""%> />
-                    <bean:write name="resultList" property="units"/>
+<%--                     <bean:write name="resultList" property="units"/> --%>
 					<% }else  if( TypeOfTestResultService.ResultType.MULTISELECT.matches(resultList.getResultType())){%>
                     <!-- multiple results -->
                     <select name="<%="resultList[" + index + "].multiSelectResultValues" %>"
