@@ -762,10 +762,12 @@ function updateShadowResult(source, index){
 		<logic:notEqual name="testResult" property="resultDisplayType" value="HIV"><logic:notEqual name="testResult" property="resultDisplayType" value="SYPHILIS">
 			<td style="vertical-align:middle" class="ruled">
                 <%= testResult.getTestName() %>
-				<logic:notEmpty  name="testResult"  property="normalRange" >
-					<br/><bean:write name="testResult" property="normalRange"/>&nbsp;
-					<bean:write name="testResult" property="unitsOfMeasure"/>
-				</logic:notEmpty>
+                <logic:notEqual name="testResult" property="resultType" value="D"> 
+					<logic:notEmpty  name="testResult"  property="normalRange" >
+						<br/><bean:write name="testResult" property="normalRange"/>&nbsp;
+						<bean:write name="testResult" property="unitsOfMeasure"/>
+					</logic:notEmpty>
+                </logic:notEqual>
 			</td>
 		</logic:notEqual></logic:notEqual>
 
