@@ -135,6 +135,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	}
 
 	//@Override
+	@Override
 	protected ActionForward performAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
 			throws Exception{
 
@@ -509,7 +510,9 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 			return StatusService.getInstance().getStatusID(AnalysisStatus.NotStarted);
 		}else{
 			ResultLimit resultLimit = resultLimitDAO.getResultLimitById(testResult.getResultLimitId());
-			if(resultLimit != null && resultLimit.isAlwaysValidate()){
+			if (resultLimit != null && (resultLimit.isAlwaysValidate()
+					|| (TypeOfTestResultService.ResultType.DICTIONARY.matches(testResult.getResultType())
+							&& !testResult.getResultValue().equals(resultLimit.getDictionaryNormalId())))) {
 				return StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalAcceptance);
 			}
 
@@ -604,6 +607,7 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	}
 
 	//@Override
+	@Override
 	protected ActionForward getForward(ActionForward forward, String accessionNumber, String analysisId){
 		ActionRedirect redirect = new ActionRedirect(forward);
 		if(!StringUtil.isNullorNill(accessionNumber)) {
@@ -619,11 +623,13 @@ public class ResultsLogbookUpdateAction extends BaseAction {
 	}
 
 	//@Override
+	@Override
 	protected String getPageSubtitleKey(){
 		return "banner.menu.results";
 	}
 
 	//@Override
+	@Override
 	protected String getPageTitleKey(){
 		return "banner.menu.results";
 	}
