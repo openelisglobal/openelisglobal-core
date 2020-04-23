@@ -201,6 +201,9 @@ function toggleSelectAll( element ) {
 	} else if (element.id == "selectAllReject" ) {
 		checkboxes = $$(".rejected");
 		matchedCheckboxes = $$(".accepted");
+	} else if (element.id == "selectNormalAccept" ) {
+		checkboxes = $$(".normalAccepted");
+		matchedCheckboxes = $$(".rejected");
 	}
 
 	if (element.checked == true ) {
@@ -369,8 +372,18 @@ function /*boolean*/ handleEnterEvent(){
 <logic:notEqual name="resultCount" value="0">
 <Table style="width:80%" >
     <tr>
-		<th colspan="3" style="background-color: white;width:15%;">
+		<th colspan="2" style="background-color: white;width:15%;">
 			<img src="./images/nonconforming.gif" /> = <%= StringUtil.getContextualMessageForKey("result.nonconforming.item")%>
+		</th>
+		<th style="text-align:center;width:3%;" style="background-color: white">&nbsp;
+				<bean:message key="validation.accept.normal" />
+			<input type="checkbox"
+				name="selectNormalAccept"
+				value="on"
+				onclick="toggleSelectAll(this);"
+				onchange="markUpdated(); makeDirty();"
+				id="selectNormalAccept"
+				class="accepted acceptNormal">
 		</th>
 		<th style="text-align:center;width:3%;" style="background-color: white">&nbsp;
 				<bean:message key="validation.accept.all" />
@@ -442,7 +455,7 @@ function /*boolean*/ handleEnterEvent(){
 					<html:checkbox styleId='<%="sampleAccepted_" + resultList.getSampleGroupingNumber() %>'
 								   name="resultList"
 								   property="isAccepted"
-								   styleClass="accepted"
+								   styleClass='<%= "accepted "%>'
 								   indexed="true"
 								   onchange="markUpdated(); makeDirty();" 
 								   onclick='<%="acceptSample( this, \'" + resultList.getSampleGroupingNumber() + "\');" %>' />
@@ -612,7 +625,7 @@ function /*boolean*/ handleEnterEvent(){
 					<html:checkbox styleId='<%="accepted_" + index %>'
 								   name="resultList"
 								   property="isAccepted"
-								   styleClass='<%= "accepted accepted_" + resultList.getSampleGroupingNumber() %>'
+								   styleClass='<%= "accepted accepted_" + resultList.getSampleGroupingNumber() + (resultList.isNormal() ? " normalAccepted" : "")%>'
 								   indexed="true"
 								   onchange="markUpdated(); makeDirty();"
 								   onclick='<%="enableDisableCheckboxes(\'rejected_" + index + "\', \'" + resultList.getSampleGroupingNumber() + "\');" %>' />

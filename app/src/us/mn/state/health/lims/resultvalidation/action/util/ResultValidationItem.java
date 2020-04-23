@@ -42,7 +42,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	private boolean isGroupSeparator = false;
 	private int sampleGroupingNumber = 1;  //display only -- groups like samples together
 
-	
+
 	private static String NO = "no";
 
 	private String noteId;
@@ -53,7 +53,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	private String analysisMethod;
 	private String testName;
 	private String testId;
-	
+
 	private String resultValue;
 	private String remarks;
 
@@ -84,6 +84,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	private String qualifiedResultValue = "";
     private String qualificationResultId;
     private boolean hasQualifiedResult = false;
+	private boolean isNormalResult = true;
 
 	public String getAccessionNumber() {
 		return accessionNumber;
@@ -202,7 +203,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	public List<IdValuePair> getDictionaryResults() {
 		return dictionaryResults == null ? new ArrayList<IdValuePair>() : dictionaryResults;
 	}
-	
+
 	public String getResultLimitId() {
 		return resultLimitId;
 	}
@@ -264,7 +265,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	public boolean isReadOnly() {
 		return readOnly;
 	}
-	
+
 	public void setMultiSelectResultValues(String newMultiSelectResults) {
 		this.multiSelectResultValues = newMultiSelectResults;
 	}
@@ -322,7 +323,7 @@ public class ResultValidationItem implements ResultItem, Serializable{
 	public void setReflexGroup(boolean isReflexGroup) {
 		this.isReflexGroup = isReflexGroup;
 	}
-	
+
 	public boolean isChildReflex() {
 		return isChildReflex;
 	}
@@ -371,4 +372,12 @@ public class ResultValidationItem implements ResultItem, Serializable{
     public void setAnalysis( Analysis analysis ){
         this.analysis = analysis;
     }
+
+	public boolean isNormalResult() {
+		return isNormalResult;
+	}
+
+	public void setNormalResult(boolean isNormalResult) {
+		this.isNormalResult = isNormalResult;
+	}
 }

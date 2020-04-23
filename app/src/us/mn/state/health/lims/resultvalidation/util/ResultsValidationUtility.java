@@ -2,15 +2,15 @@
  * The contents of this file are subject to the Mozilla Public License
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/ 
- * 
+ * http://www.mozilla.org/MPL/
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations under
  * the License.
- * 
+ *
  * The Original Code is OpenELIS code.
- * 
+ *
  * Copyright (C) CIRG, University of Washington, Seattle WA.  All Rights Reserved.
  *               I-TECH, University of Washington, Seattle WA.
  */
@@ -36,7 +36,9 @@ import us.mn.state.health.lims.common.exception.LIMSRuntimeException;
 import us.mn.state.health.lims.common.services.AnalysisService;
 import us.mn.state.health.lims.common.services.NoteService;
 import us.mn.state.health.lims.common.services.NoteService.NoteType;
+import us.mn.state.health.lims.common.services.PatientService;
 import us.mn.state.health.lims.common.services.QAService;
+import us.mn.state.health.lims.common.services.ResultLimitService;
 import us.mn.state.health.lims.common.services.ResultService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
@@ -60,6 +62,7 @@ import us.mn.state.health.lims.observationhistorytype.valueholder.ObservationHis
 import us.mn.state.health.lims.result.dao.ResultDAO;
 import us.mn.state.health.lims.result.daoimpl.ResultDAOImpl;
 import us.mn.state.health.lims.result.valueholder.Result;
+import us.mn.state.health.lims.resultlimits.valueholder.ResultLimit;
 import us.mn.state.health.lims.resultvalidation.action.util.ResultValidationItem;
 import us.mn.state.health.lims.resultvalidation.bean.AnalysisItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
@@ -77,7 +80,6 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
 
 public class ResultsValidationUtility {
 
-	
 	protected static String ANALYTE_CD4_CT_GENERATED_ID;
 
 	protected static String CONCLUSION_ID;
@@ -97,7 +99,7 @@ public class ResultsValidationUtility {
 	protected Map<String, Boolean> accessionToValidMap;
 	protected String totalTestName = "";
 
-    static {
+	static {
 		notValidStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.Finalized)));
 		notValidStatus.add(Integer.parseInt(StatusService.getInstance().getStatusID(AnalysisStatus.TechnicalRejected)));
 		AnalyteDAO analyteDAO = new AnalyteDAOImpl();
@@ -110,27 +112,27 @@ public class ResultsValidationUtility {
 		ANALYTE_CD4_CT_GENERATED_ID = analyte == null ? "" : analyte.getId();
 
 		TestDAO testDAO = new TestDAOImpl();
-		
+
 		Test test = testDAO.getTestByName("CD4 absolute count");
-		if( test != null){
+		if (test != null) {
 			CD4_COUNT_SORT_NUMBER = test.getSortOrder();
 		}
 
 		ObservationHistoryTypeDAO ohTypeDAO = new ObservationHistoryTypeDAOImpl();
 		ObservationHistoryType oht = ohTypeDAO.getByName("SampleRecordStatus");
-		if( oht != null){
+		if (oht != null) {
 			SAMPLE_STATUS_OBSERVATION_HISTORY_TYPE_ID = oht.getId();
 		}
 	}
 
 	protected final AnalysisDAO analysisDAO = new AnalysisDAOImpl();
 
-	public List<AnalysisItem> getResultValidationList( List<Integer> statusList, String testSectionId) {
+	public List<AnalysisItem> getResultValidationList(List<Integer> statusList, String testSectionId) {
 
 		List<AnalysisItem> resultList = new ArrayList<AnalysisItem>();
 
 		if (!GenericValidator.isBlankOrNull(testSectionId)) {
-            List<ResultValidationItem> testList = getUnValidatedTestResultItemsInTestSection(testSectionId, statusList);
+			List<ResultValidationItem> testList = getUnValidatedTestResultItemsInTestSection(testSectionId, statusList);
 			resultList = testResultListToAnalysisItemList(testList);
 			sortByAccessionNumberAndOrder(resultList);
 			setGroupingNumbers(resultList);
@@ -140,18 +142,20 @@ public class ResultsValidationUtility {
 
 	}
 
-    @SuppressWarnings("unchecked")
-	public final List<ResultValidationItem> getUnValidatedTestResultItemsInTestSection(String sectionId, List<Integer> statusList) {
+	@SuppressWarnings("unchecked")
+	public final List<ResultValidationItem> getUnValidatedTestResultItemsInTestSection(String sectionId,
+			List<Integer> statusList) {
 
 		List<Analysis> analysisList = analysisDAO.getAllAnalysisByTestSectionAndStatus(sectionId, statusList, false);
 		return getGroupedTestsForAnalysisList(analysisList, !StatusRules.useRecordStatusForValidation());
 	}
-	
+
 	protected final void sortByAccessionNumberAndOrder(List<AnalysisItem> resultItemList) {
 		Collections.sort(resultItemList, new Comparator<AnalysisItem>() {
 			public final int compare(AnalysisItem a, AnalysisItem b) {
 				int accessionComp = a.getAccessionNumber().compareTo(b.getAccessionNumber());
-				return ((accessionComp == 0) ? Integer.parseInt(a.getTestSortNumber()) - Integer.parseInt(b.getTestSortNumber())
+				return ((accessionComp == 0)
+						? Integer.parseInt(a.getTestSortNumber()) - Integer.parseInt(b.getTestSortNumber())
 						: accessionComp);
 			}
 		});
@@ -176,14 +180,14 @@ public class ResultsValidationUtility {
 			analysisResultItem.setSampleGroupingNumber(groupingCount);
 		}
 	}
-	
+
 	/*
-	 * N.B. The ignoreRecordStatus is an abomination and should be removed. It
-	 * is a quick and dirty fix for workplan and validation using the same code
-	 * but having different rules
+	 * N.B. The ignoreRecordStatus is an abomination and should be removed. It is a
+	 * quick and dirty fix for workplan and validation using the same code but
+	 * having different rules
 	 */
-	public final List<ResultValidationItem> getGroupedTestsForAnalysisList(Collection<Analysis> filteredAnalysisList, boolean ignoreRecordStatus)
-			throws LIMSRuntimeException {
+	public final List<ResultValidationItem> getGroupedTestsForAnalysisList(Collection<Analysis> filteredAnalysisList,
+			boolean ignoreRecordStatus) throws LIMSRuntimeException {
 
 		List<ResultValidationItem> selectedTestList = new ArrayList<ResultValidationItem>();
 		Dictionary dictionary;
@@ -192,27 +196,29 @@ public class ResultsValidationUtility {
 
 			if (ignoreRecordStatus || sampleReadyForValidation(analysis.getSampleItem().getSample())) {
 				List<ResultValidationItem> testResultItemList = getResultItemFromAnalysis(analysis);
-				//NB.  The resultValue is filled in during getResultItemFromAnalysis as a side effect of setResult
+				// NB. The resultValue is filled in during getResultItemFromAnalysis as a side
+				// effect of setResult
 				for (ResultValidationItem validationItem : testResultItemList) {
-					if (TypeOfTestResultService.ResultType.isDictionaryVariant( validationItem.getResultType() )) {
+					if (TypeOfTestResultService.ResultType.isDictionaryVariant(validationItem.getResultType())) {
 						dictionary = new Dictionary();
 						String resultValue = null;
 						try {
 							dictionary.setId(validationItem.getResultValue());
 							dictionaryDAO.getData(dictionary);
-							resultValue = GenericValidator.isBlankOrNull(dictionary.getLocalAbbreviation()) ? dictionary.getDictEntry()
+							resultValue = GenericValidator.isBlankOrNull(dictionary.getLocalAbbreviation())
+									? dictionary.getDictEntry()
 									: dictionary.getLocalAbbreviation();
 						} catch (Exception e) {
-                            //no-op
+							// no-op
 						}
 
 						validationItem.setResultValue(resultValue);
 
 					}
 
-                    validationItem.setAnalysis( analysis );
-					validationItem.setNonconforming( QAService.isAnalysisParentNonConforming( analysis ) ||
-                            StatusService.getInstance().matches( analysis.getStatusId(), AnalysisStatus.TechnicalRejected ) );
+					validationItem.setAnalysis(analysis);
+					validationItem.setNonconforming(QAService.isAnalysisParentNonConforming(analysis) || StatusService
+							.getInstance().matches(analysis.getStatusId(), AnalysisStatus.TechnicalRejected));
 					selectedTestList.add(validationItem);
 				}
 			}
@@ -221,15 +227,12 @@ public class ResultsValidationUtility {
 		return selectedTestList;
 	}
 
+	protected final boolean sampleReadyForValidation(Sample sample) {
 
-    protected final boolean sampleReadyForValidation(Sample sample) {
-
-    	
 		Boolean valid = accessionToValidMap.get(sample.getAccessionNumber());
-		
 
 		if (valid == null) {
-			valid = getSampleRecordStatus( sample ) != RecordStatus.NotRegistered;
+			valid = getSampleRecordStatus(sample) != RecordStatus.NotRegistered;
 			accessionToValidMap.put(sample.getAccessionNumber(), valid);
 		}
 
@@ -240,8 +243,9 @@ public class ResultsValidationUtility {
 		List<ResultValidationItem> testResultList = new ArrayList<ResultValidationItem>();
 
 		List<Result> resultList = resultDAO.getResultsByAnalysis(analysis);
-        NoteType[] noteTypes = { NoteType.EXTERNAL, NoteType.INTERNAL, NoteType.REJECTION_REASON, NoteType.NON_CONFORMITY};
-        String notes = new NoteService( analysis ).getNotesAsString( true, true, "<br/>", noteTypes, false );
+		NoteType[] noteTypes = { NoteType.EXTERNAL, NoteType.INTERNAL, NoteType.REJECTION_REASON,
+				NoteType.NON_CONFORMITY };
+		String notes = new NoteService(analysis).getNotesAsString(true, true, "<br/>", noteTypes, false);
 
 		if (resultList == null) {
 			return testResultList;
@@ -259,73 +263,94 @@ public class ResultsValidationUtility {
 
 		ResultValidationItem parentItem = null;
 		for (Result result : resultList) {
-			if( parentItem != null && result.getParentResult() != null && parentItem.getResultId().equals(result.getParentResult().getId())){
+			if (parentItem != null && result.getParentResult() != null
+					&& parentItem.getResultId().equals(result.getParentResult().getId())) {
 				parentItem.setQualifiedResultValue(result.getValue());
-				parentItem.setHasQualifiedResult( true );
-                parentItem.setQualificationResultId(result.getId());
+				parentItem.setHasQualifiedResult(true);
+				parentItem.setQualificationResultId(result.getId());
+
 				continue;
 			}
-			
-			ResultValidationItem resultItem = createTestResultItem(analysis, analysis.getTest(), analysis.getSampleItem().getSortOrder(),
-					result, analysis.getSampleItem().getSample().getAccessionNumber(), notes);
 
-            notes = null;//we only want it once
-			if( resultItem.getQualifiedDictionaryId() != null){
+			ResultValidationItem resultItem = createTestResultItem(analysis, analysis.getTest(),
+					analysis.getSampleItem().getSortOrder(), result,
+					analysis.getSampleItem().getSample().getAccessionNumber(), notes);
+
+			notes = null;// we only want it once
+			if (resultItem.getQualifiedDictionaryId() != null) {
 				parentItem = resultItem;
 			}
-			
+
 			testResultList.add(resultItem);
 		}
 
 		return testResultList;
 	}
 
-	protected final ResultValidationItem createTestResultItem(Analysis analysis, Test test, String sequenceNumber, Result result,
-			String accessionNumber, String notes) {
+	protected final ResultValidationItem createTestResultItem(Analysis analysis, Test test, String sequenceNumber,
+			Result result, String accessionNumber, String notes) {
 
 		List<TestResult> testResults = getPossibleResultsForTest(test);
 
-		String displayTestName = TestService.getLocalizedTestNameWithType( test );
+		String displayTestName = TestService.getLocalizedTestNameWithType(test);
 //		displayTestName = augmentTestNameWithRange(displayTestName, result);
-		
+
 		ResultValidationItem testItem = new ResultValidationItem();
 
 		testItem.setAccessionNumber(accessionNumber);
-        testItem.setAnalysis( analysis );
+		testItem.setAnalysis(analysis);
 		testItem.setSequenceNumber(sequenceNumber);
 		testItem.setTestName(displayTestName);
 		testItem.setTestId(test.getId());
 		testItem.setAnalysisMethod(analysis.getAnalysisType());
 		testItem.setResult(result);
 		testItem.setDictionaryResults(getAnyDictonaryValues(testResults));
-		testItem.setResultType(getTestResultType(testResults ));
+		testItem.setResultType(getTestResultType(testResults));
 		testItem.setTestSortNumber(test.getSortOrder());
 		testItem.setReflexGroup(analysis.getTriggeredReflex());
 		testItem.setChildReflex(analysis.getTriggeredReflex() && isConclusion(result, analysis));
 		testItem.setQualifiedDictionaryId(getQualifiedDictionaryId(testResults));
-        testItem.setPastNotes( notes );
+		testItem.setPastNotes(notes);
+
+		boolean normalResult = false;
+		PatientService patientService = new PatientService(analysis.getSampleItem().getSample());
+		ResultLimit resultLimit = new ResultLimitService().getResultLimitForTestAndPatient(analysis.getTest(),
+				patientService.getPatient());
+		if (resultLimit != null) {
+			if (TypeOfTestResultService.ResultType.DICTIONARY.matches(result.getResultType())
+					&& result.getValue().equals(resultLimit.getDictionaryNormalId())) {
+				normalResult = true;
+			} else if (!TypeOfTestResultService.ResultType.DICTIONARY.matches(result.getResultType())
+					&& (resultLimit.getHighNormal() >= Double.parseDouble(result.getValue())
+							&& resultLimit.getLowNormal() <= Double.parseDouble(result.getValue()))) {
+				normalResult = true;
+			}
+		}
+		testItem.setNormalResult(normalResult);
 
 		return testItem;
 	}
 
-	protected final String getQualifiedDictionaryId(List<TestResult> testResults){
-	    String qualDictionaryIds = "";
-	    for( TestResult testResult : testResults){
-			if( testResult.getIsQuantifiable()){
-                if( !"".equals(qualDictionaryIds )){
-                    qualDictionaryIds += ",";
-                }
-                qualDictionaryIds += testResult.getValue();
+	protected final String getQualifiedDictionaryId(List<TestResult> testResults) {
+		String qualDictionaryIds = "";
+		for (TestResult testResult : testResults) {
+			if (testResult.getIsQuantifiable()) {
+				if (!"".equals(qualDictionaryIds)) {
+					qualDictionaryIds += ",";
+				}
+				qualDictionaryIds += testResult.getValue();
 			}
 		}
-		return  "".equals(qualDictionaryIds) ?  null : "[" + qualDictionaryIds + "]";
+		return "".equals(qualDictionaryIds) ? null : "[" + qualDictionaryIds + "]";
 	}
 
-	protected final String augmentUOMWithRange(String uom,	Result result) {
-        if( result == null){return uom;}
-        String range = new ResultService( result ).getDisplayReferenceRange( true );
-        uom = StringUtil.blankIfNull( uom );
-        return GenericValidator.isBlankOrNull( range ) ? uom : (uom + " ( " + range + " )");
+	protected final String augmentUOMWithRange(String uom, Result result) {
+		if (result == null) {
+			return uom;
+		}
+		String range = new ResultService(result).getDisplayReferenceRange(true);
+		uom = StringUtil.blankIfNull(uom);
+		return GenericValidator.isBlankOrNull(range) ? uom : (uom + " ( " + range + " )");
 	}
 
 	protected final boolean isConclusion(Result testResult, Analysis analysis) {
@@ -346,28 +371,31 @@ public class ResultsValidationUtility {
 
 		return true;
 	}
-    @SuppressWarnings("unchecked")
+
+	@SuppressWarnings("unchecked")
 	protected final List<TestResult> getPossibleResultsForTest(Test test) {
-		return testResultDAO.getAllActiveTestResultsPerTest( test );
+		return testResultDAO.getAllActiveTestResultsPerTest(test);
 	}
 
 	protected final List<IdValuePair> getAnyDictonaryValues(List<TestResult> testResults) {
 		List<IdValuePair> values = null;
 		Dictionary dictionary;
 
-		if (testResults != null && testResults.size() > 0 && TypeOfTestResultService.ResultType.isDictionaryVariant( testResults.get( 0 ).getTestResultType() )) {
+		if (testResults != null && testResults.size() > 0
+				&& TypeOfTestResultService.ResultType.isDictionaryVariant(testResults.get(0).getTestResultType())) {
 			values = new ArrayList<IdValuePair>();
 			values.add(new IdValuePair("0", ""));
 
 			for (TestResult testResult : testResults) {
 				// Note: result group use to be a criteria but was removed, if
 				// results are not as expected investigate
-				if ( TypeOfTestResultService.ResultType.isDictionaryVariant( testResult.getTestResultType() )) {
+				if (TypeOfTestResultService.ResultType.isDictionaryVariant(testResult.getTestResultType())) {
 					dictionary = dictionaryDAO.getDataForId(testResult.getValue());
 					String displayValue = dictionary.getLocalizedName();
 
 					if ("unknown".equals(displayValue)) {
-						displayValue = GenericValidator.isBlankOrNull(dictionary.getLocalAbbreviation()) ? dictionary.getDictEntry()
+						displayValue = GenericValidator.isBlankOrNull(dictionary.getLocalAbbreviation())
+								? dictionary.getDictEntry()
 								: dictionary.getLocalAbbreviation();
 					}
 					values.add(new IdValuePair(testResult.getValue(), displayValue));
@@ -377,7 +405,6 @@ public class ResultsValidationUtility {
 
 		return values;
 	}
-
 
 	protected final String getTestResultType(List<TestResult> testResults) {
 		String testResultType = TypeOfTestResultService.ResultType.NUMERIC.getCharacterValue();
@@ -389,39 +416,38 @@ public class ResultsValidationUtility {
 		return testResultType;
 	}
 
-
-
-
 	public final List<AnalysisItem> testResultListToAnalysisItemList(List<ResultValidationItem> testResultList) {
 		List<AnalysisItem> analysisResultList = new ArrayList<AnalysisItem>();
 
-        /*
-        The issue with multiselect results is that each selection is one ResultValidationItem but they all need to
-        be condensed into one AnalysisItem.  There is a many to one mapping.  The first multiselect result we have gets rolled into
-        one AnalysisItem and the rest are skipped but we want to capture any qualified results
-         */
-        boolean multiResultEntered = false;
-        String currentAccession = null;
-        AnalysisItem currentMultiSelectAnalysisItem = null;
+		/*
+		 * The issue with multiselect results is that each selection is one
+		 * ResultValidationItem but they all need to be condensed into one AnalysisItem.
+		 * There is a many to one mapping. The first multiselect result we have gets
+		 * rolled into one AnalysisItem and the rest are skipped but we want to capture
+		 * any qualified results
+		 */
+		boolean multiResultEntered = false;
+		String currentAccession = null;
+		AnalysisItem currentMultiSelectAnalysisItem = null;
 		for (ResultValidationItem testResultItem : testResultList) {
-            if( !testResultItem.getAccessionNumber().equals(currentAccession)){
-                currentAccession = testResultItem.getAccessionNumber();
-                currentMultiSelectAnalysisItem = null;
-                multiResultEntered = false;
-            }
-            if( !multiResultEntered){
-                AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
-                analysisResultList.add(convertedItem);
-                if( TypeOfTestResultService.ResultType.isMultiSelectVariant( testResultItem.getResultType() )){
-                    multiResultEntered = true;
-                    currentMultiSelectAnalysisItem = convertedItem;
-                }
-            }
-            if(currentMultiSelectAnalysisItem != null && testResultItem.isHasQualifiedResult() ){
-                currentMultiSelectAnalysisItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
-                currentMultiSelectAnalysisItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
-                currentMultiSelectAnalysisItem.setHasQualifiedResult(true);
-            }
+			if (!testResultItem.getAccessionNumber().equals(currentAccession)) {
+				currentAccession = testResultItem.getAccessionNumber();
+				currentMultiSelectAnalysisItem = null;
+				multiResultEntered = false;
+			}
+			if (!multiResultEntered) {
+				AnalysisItem convertedItem = testResultItemToAnalysisItem(testResultItem);
+				analysisResultList.add(convertedItem);
+				if (TypeOfTestResultService.ResultType.isMultiSelectVariant(testResultItem.getResultType())) {
+					multiResultEntered = true;
+					currentMultiSelectAnalysisItem = convertedItem;
+				}
+			}
+			if (currentMultiSelectAnalysisItem != null && testResultItem.isHasQualifiedResult()) {
+				currentMultiSelectAnalysisItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
+				currentMultiSelectAnalysisItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
+				currentMultiSelectAnalysisItem.setHasQualifiedResult(true);
+			}
 		}
 
 		return analysisResultList;
@@ -429,7 +455,8 @@ public class ResultsValidationUtility {
 
 	protected final RecordStatus getSampleRecordStatus(Sample sample) {
 
-		List<ObservationHistory> ohList = observationHistoryDAO.getAll(null, sample, SAMPLE_STATUS_OBSERVATION_HISTORY_TYPE_ID);
+		List<ObservationHistory> ohList = observationHistoryDAO.getAll(null, sample,
+				SAMPLE_STATUS_OBSERVATION_HISTORY_TYPE_ID);
 
 		if (ohList.isEmpty()) {
 			return null;
@@ -443,9 +470,9 @@ public class ResultsValidationUtility {
 		String testUnits = getUnitsByTestId(testResultItem.getTestId());
 		String testName = testResultItem.getTestName();
 		String sortOrder = testResultItem.getTestSortNumber();
-        Result result = testResultItem.getResult();
+		Result result = testResultItem.getResult();
 
-        if (result != null && result.getAnalyte() != null
+		if (result != null && result.getAnalyte() != null
 				&& ANALYTE_CD4_CT_GENERATED_ID.equals(testResultItem.getResult().getAnalyte().getId())) {
 			testUnits = "";
 			testName = StringUtil.getMessageForKey("result.conclusion.cd4");
@@ -458,8 +485,7 @@ public class ResultsValidationUtility {
 			analysisResultItem.setIsHighlighted(!"100.0".equals(testResultItem.getResult().getValue()));
 		}
 
-		testUnits = augmentUOMWithRange(testUnits,	testResultItem.getResult());
-
+		testUnits = augmentUOMWithRange(testUnits, testResultItem.getResult());
 
 		analysisResultItem.setAccessionNumber(testResultItem.getAccessionNumber());
 		analysisResultItem.setTestName(testName);
@@ -471,49 +497,55 @@ public class ResultsValidationUtility {
 		analysisResultItem.setTestId(testResultItem.getTestId());
 		analysisResultItem.setTestSortNumber(sortOrder);
 		analysisResultItem.setDictionaryResults(testResultItem.getDictionaryResults());
-		analysisResultItem.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
-        if( result != null){
-            if( TypeOfTestResultService.ResultType.isMultiSelectVariant( testResultItem.getResultType() ) ){
-                analysisResultItem.setMultiSelectResultValues( new AnalysisService( testResultItem.getAnalysis() ).getJSONMultiSelectResults() );
-            }else{
-                analysisResultItem.setResult( getFormattedResult( testResultItem ) );
-            }
+		analysisResultItem
+				.setDisplayResultAsLog(TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()));
+		analysisResultItem.setNormal(testResultItem.isNormalResult());
+		if (result != null) {
+			if (TypeOfTestResultService.ResultType.isMultiSelectVariant(testResultItem.getResultType())) {
+				analysisResultItem.setMultiSelectResultValues(
+						new AnalysisService(testResultItem.getAnalysis()).getJSONMultiSelectResults());
+			} else {
+				analysisResultItem.setResult(getFormattedResult(testResultItem));
+			}
 
-            
-            if( TypeOfTestResultService.ResultType.NUMERIC.matches( testResultItem.getResultType() )){
-            	if (result.getMinNormal() == null || result.getMaxNormal() == null) {
-            		analysisResultItem.setSignificantDigits(result.getSignificantDigits());
-            	} else {
-            		analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
-            	}
-            } 
-                       
-            
-          /*  if( TypeOfTestResultService.ResultType.NUMERIC.matches( testResultItem.getResultType() )){
-            	// analysisResultItem.setSignificantDigits( result.getMinNormal().equals( result.getMaxNormal())? -1 : result.getSignificantDigits());
-            	 analysisResultItem.setSignificantDigits( result.getSignificantDigits());
-               	} */
-        }
+			if (TypeOfTestResultService.ResultType.NUMERIC.matches(testResultItem.getResultType())) {
+				if (result.getMinNormal() == null || result.getMaxNormal() == null) {
+					analysisResultItem.setSignificantDigits(result.getSignificantDigits());
+				} else {
+					analysisResultItem.setSignificantDigits(
+							result.getMinNormal().equals(result.getMaxNormal()) ? -1 : result.getSignificantDigits());
+				}
+			}
+
+			/*
+			 * if( TypeOfTestResultService.ResultType.NUMERIC.matches(
+			 * testResultItem.getResultType() )){ //
+			 * analysisResultItem.setSignificantDigits( result.getMinNormal().equals(
+			 * result.getMaxNormal())? -1 : result.getSignificantDigits());
+			 * analysisResultItem.setSignificantDigits( result.getSignificantDigits()); }
+			 */
+		}
 		analysisResultItem.setReflexGroup(testResultItem.isReflexGroup());
 		analysisResultItem.setChildReflex(testResultItem.isChildReflex());
-		analysisResultItem.setNonconforming( testResultItem.isNonconforming() ||
-                StatusService.getInstance().matches( testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected ));
+		analysisResultItem.setNonconforming(testResultItem.isNonconforming() || StatusService.getInstance()
+				.matches(testResultItem.getAnalysis().getStatusId(), AnalysisStatus.TechnicalRejected));
 		analysisResultItem.setQualifiedDictionaryId(testResultItem.getQualifiedDictionaryId());
 		analysisResultItem.setQualifiedResultValue(testResultItem.getQualifiedResultValue());
-        analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
-        analysisResultItem.setHasQualifiedResult( testResultItem.isHasQualifiedResult() );
+		analysisResultItem.setQualifiedResultId(testResultItem.getQualificationResultId());
+		analysisResultItem.setHasQualifiedResult(testResultItem.isHasQualifiedResult());
 
 		return analysisResultItem;
 
 	}
 
 	protected final String getFormattedResult(ResultValidationItem testResultItem) {
-        String result = testResultItem.getResult().getValue();
-		if( TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId()) && !GenericValidator.isBlankOrNull(result)){
+		String result = testResultItem.getResult().getValue();
+		if (TestIdentityService.isTestNumericViralLoad(testResultItem.getTestId())
+				&& !GenericValidator.isBlankOrNull(result)) {
 			return result.split("\\(")[0].trim();
-		}else{
-            return new ResultService(testResultItem.getResult()).getResultValue( false );
-        }
+		} else {
+			return new ResultService(testResultItem.getResult()).getResultValue(false);
+		}
 	}
 
 	public final String getUnitsByTestId(String testId) {
@@ -539,12 +571,9 @@ public class ResultsValidationUtility {
 
 	}
 
-
 	protected final String getTestId(String testName) {
 		Test test = testDAO.getTestByName(testName);
 		return test.getId();
 	}
-
-
 
 }
