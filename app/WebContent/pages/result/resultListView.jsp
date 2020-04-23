@@ -171,7 +171,9 @@ $jq(document).ready( function() {
             $jq(".asmContainer").css("display","inline-block");
             disableRejectedResults();
             showCachedRejectionReasonRows();
-			});
+            
+            $jq(".testResultSelectList").change();
+	});
 
 
 function /*void*/ makeDirty(){
@@ -836,9 +838,10 @@ function updateShadowResult(source, index){
 						                " updateShadowResult(this, " + index + ");"%>'
 						  />
 			</logic:equal>
-			<% if( "D".equals(testResult.getResultType())  ){ %>
+			<% if( "D".equals(testResult.getResultType()) ){  %>
 			<!-- dictionary results -->
 			<select name="<%="testResult[" + index + "].resultValue" %>"
+					class="testResultSelectList"
 			        onchange="<%="markUpdated(" + index + ", " + testResult.isUserChoiceReflex() +  ", \'" + testResult.getSiblingReflexKey() + "\');"   +
 						               ((noteRequired && !"".equals(testResult.getResultValue()) )? "showNote( " + index + ");" : "") +
 						               (testResult.getQualifiedDictionaryId() != null ? "showQuanitiy( this, "+ index + ", " + testResult.getQualifiedDictionaryId() + ", 'D');" :"") +
@@ -848,9 +851,7 @@ function updateShadowResult(source, index){
 					<option value="0"></option>
 					<logic:iterate id="optionValue" name="testResult" property="dictionaryResults" type="IdValuePair" >
 						<option value='<%=optionValue.getId()%>'  
-						  <%if(optionValue.getId().equals(testResult.getResultValue()) || optionValue.getId().equals(testResult.getDefaultTestResultId()) && GenericValidator.isBlankOrNull(testResult.getResultValue())) { 
-							  request.getSession().setAttribute("saveDisabled", "false");  
-						  %>
+						  <%if(optionValue.getId().equals(testResult.getResultValue()) || optionValue.getId().equals(testResult.getDefaultTestResultId()) && GenericValidator.isBlankOrNull(testResult.getResultValue())) {  %>
 							  selected='selected'
 						  <% } %>
 						>
