@@ -142,7 +142,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="24" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.globalLabReport}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{openreports.all.tests.aggregate}]]></textFieldExpression>
 			</textField>
 			<subreport isUsingCache="true">
 				<reportElement x="0" y="0" width="573" height="136"/>

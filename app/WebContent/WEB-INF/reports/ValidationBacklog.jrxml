@@ -94,7 +94,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{testSection}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.laboratory.unit}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="177" y="0" width="46" height="18"/>

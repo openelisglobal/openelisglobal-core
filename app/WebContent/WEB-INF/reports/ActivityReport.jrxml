@@ -153,7 +153,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("date")+" "+$P{localization}.get("from")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("date")+" "+$P{localization}.get("of")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="122" y="15" width="60" height="15">
@@ -173,7 +173,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("date")+" "+$P{localization}.get("to")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{localization}.get("date")+" "+$P{localization}.get("of")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="16" width="66" height="15"/>

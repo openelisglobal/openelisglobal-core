@@ -254,6 +254,7 @@ public abstract class Report implements IReportCreator {
 				StringUtil.getMessageForKey("report.activity"));
 		localizationMap.put("from", StringUtil.getMessageForKey("report.from"));
 		localizationMap.put("to", StringUtil.getMessageForKey("report.to"));
+		localizationMap.put("of", StringUtil.getMessageForKey("report.of"));
 		localizationMap.put("printed",
 				StringUtil.getMessageForKey("report.printed"));
 		localizationMap.put("techId",
@@ -463,6 +464,7 @@ public abstract class Report implements IReportCreator {
 		}
 
 		//@Override
+		@Override
 		public String toString() {
 			String range = lowDateStr;
 			try {

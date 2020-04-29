@@ -132,7 +132,7 @@
 			<staticText>
 				<reportElement x="349" y="4" width="90" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<text><![CDATA[Date du rapport :]]></text>
+				<text><![CDATA[Rreport Date :]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement mode="Transparent" x="144" y="68" width="331" height="33" backcolor="#C0C0C0"/>

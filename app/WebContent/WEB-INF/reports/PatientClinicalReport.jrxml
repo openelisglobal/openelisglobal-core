@@ -80,7 +80,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<text><![CDATA[Nom, Prénom]]></text>
+					<text><![CDATA[Last Name, First Name]]></text>
 				</staticText>
 				<textField isBlankWhenNull="true">
 					<reportElement x="87" y="0" width="317" height="14"/>
@@ -92,7 +92,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{patientName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{patientName}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement x="297" y="78" width="254" height="14"/>
@@ -104,7 +104,7 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA["No d'ordre: " + $F{accessionNumber}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["No d'ordre: " + $F{accessionNumber}]]></textFieldExpression>
 				</textField>
 				<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
 					<reportElement x="0" y="78" width="297" height="14" isPrintWhenDetailOverflows="true"/>
@@ -116,7 +116,7 @@
 						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA["Date & heure de demande: " + $F{orderDate}]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Date & heure de demande: " + $F{orderDate}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="404" y="0" width="50" height="14" backcolor="#CCCCCC"/>
@@ -154,7 +154,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{age}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{age}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement x="68" y="14" width="336" height="14">
@@ -168,7 +168,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{stNumber}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{stNumber}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="404" y="14" width="50" height="14" backcolor="#CCCCCC"/>
@@ -194,7 +194,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{gender}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement x="454" y="14" width="97" height="14"/>
@@ -206,7 +206,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{nationalId}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nationalId}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="487" y="0" width="39" height="14" backcolor="#CCCCCC"/>
@@ -242,7 +242,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{contactInfo}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{contactInfo}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="220" y="28" width="67" height="14" backcolor="#CCCCCC"/>
@@ -278,7 +278,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{dept}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{dept}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="287" y="28" width="264" height="14"/>
@@ -290,7 +290,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{commune}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{commune}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="0" y="14" width="120" height="14" backcolor="#CCCCCC">
@@ -318,7 +318,7 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{patientSiteNumber}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{patientSiteNumber}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="0" y="56" width="89" height="14" backcolor="#CCCCCC"/>
@@ -342,12 +342,12 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{siteInfo}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{siteInfo}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement x="-1" y="92" width="553" height="20" isPrintWhenDetailOverflows="true"/>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA["Date & heure de prélèvement: " + ($F{collectionDateTime} != null ? $F{collectionDateTime}: "" )]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Date & heure de prélèvement: " + ($F{collectionDateTime} != null ? $F{collectionDateTime}: "" )]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -401,7 +401,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{testSection}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{testSection}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="280" y="14" width="50" height="29" isPrintWhenDetailOverflows="true" backcolor="#CCCCCC"/>
@@ -459,7 +459,7 @@
 					<subreportParameterExpression><![CDATA[$F{completeFlag}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
-				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + $P{headerName}]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + $P{headerName}]]></subreportExpression>
 			</subreport>
 			<staticText>
 				<reportElement mode="Transparent" x="0" y="134" width="552" height="22" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
@@ -502,7 +502,7 @@
 						<pen lineWidth="0.0"/>
 					</graphicElement>
 				</rectangle>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="163" y="0" width="117" height="18">
 						<printWhenExpression><![CDATA[!$F{abnormalResult}]]></printWhenExpression>
 					</reportElement>
@@ -515,9 +515,9 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
 						<font fontName="SansSerif" size="10" isBold="false" isItalic="false" isUnderline="false" pdfFontName="Helvetica" isPdfEmbedded="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{result}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{result}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true">
+				<textField textAdjust="StretchHeight">
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="162" height="18" isPrintWhenDetailOverflows="true"/>
 					<box topPadding="2" leftPadding="4" bottomPadding="2">
 						<pen lineStyle="Solid" lineColor="#000000"/>
@@ -527,7 +527,7 @@
 						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement verticalAlignment="Middle" markup="html"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{testName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{testName}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="330" y="0" width="144" height="18"/>
@@ -538,9 +538,9 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{testRefRange}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{testRefRange}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="280" y="0" width="50" height="18" backcolor="#FFFFFF"/>
 					<box>
 						<leftPen lineWidth="0.5"/>
@@ -549,7 +549,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
 						<font fontName="SansSerif" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{alerts}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{alerts}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="474" y="0" width="78" height="18"/>
@@ -560,9 +560,9 @@
 						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{uom}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{uom}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="163" y="0" width="117" height="18" forecolor="#000000" backcolor="#F0F0F0">
 						<printWhenExpression><![CDATA[$F{abnormalResult}]]></printWhenExpression>
 					</reportElement>
@@ -575,7 +575,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
 						<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" pdfFontName="Helvetica" isPdfEmbedded="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{result}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{result}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<textField>
@@ -592,9 +592,9 @@
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{panelName} == null ? "Les tests qui ne font pas partie d'un panel" : "Panel: " + $F{panelName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{panelName} == null ? "Les tests qui ne font pas partie d'un panel" : "Panel: " + $F{panelName}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement positionType="Float" mode="Opaque" x="10" y="36" width="542" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F5F5F5">
 					<printWhenExpression><![CDATA[$F{note} != null]]></printWhenExpression>
 				</reportElement>
@@ -606,7 +606,7 @@
 					<rightPen lineWidth="0.5" lineColor="#000000"/>
 				</box>
 				<textElement markup="styled"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{note}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -621,7 +621,6 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement/>
 				<text><![CDATA[Remarques générales du laboratoire]]></text>
 			</staticText>
 			<staticText>
@@ -633,7 +632,6 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement/>
 				<text><![CDATA[Signature / Validation]]></text>
 			</staticText>
 			<staticText>
@@ -661,24 +659,24 @@
 					<printWhenExpression><![CDATA[$P{usePageNumbers}.equals("true")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" sur"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" sur"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Group" evaluationGroup="Accession Number">
 				<reportElement x="509" y="4" width="40" height="20">
 					<printWhenExpression><![CDATA[$P{usePageNumbers}.equals("true")]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="6" y="4" width="104" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<text><![CDATA[Date du rapport: ]]></text>
+				<text><![CDATA[Report Date: ]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="110" y="4" width="100" height="20"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

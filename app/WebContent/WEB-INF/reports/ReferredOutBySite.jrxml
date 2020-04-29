@@ -211,7 +211,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.test}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.test.requested}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" mode="Opaque" x="138" y="24" width="206" height="19" backcolor="#CCCCCC"/>
@@ -239,14 +239,14 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.other}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{referral.reason.date}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="695" y="24" width="57" height="20" backcolor="#CCCCCC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="true" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.report}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{report.results.received.date}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="FixRelativeToBottom" x="575" y="5" width="74" height="19"/>
