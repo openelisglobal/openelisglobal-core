@@ -963,7 +963,7 @@
 				<textElement verticalAlignment="Middle" lineSpacing="Single">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Transparent" x="2" y="2" width="100" height="20"/>

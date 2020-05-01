@@ -128,7 +128,7 @@
 		<groupExpression><![CDATA[$F{accessionNumber}]]></groupExpression>
 		<groupHeader>
 			<band height="113" splitType="Prevent">
-				<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
+				<textField pattern="" isBlankWhenNull="true">
 					<reportElement mode="Opaque" x="0" y="84" width="553" height="29" isRemoveLineWhenBlank="true" forecolor="#000000" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 					</reportElement>
@@ -809,7 +809,7 @@
 						<pen lineWidth="0.0"/>
 					</graphicElement>
 				</rectangle>
-				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="146" y="0" width="117" height="18"/>
 					<box topPadding="2" bottomPadding="2" rightPadding="4">
 						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
@@ -822,7 +822,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{result}]]></textFieldExpression>
 				</textField>
-				<textField textAdjust="StretchHeight">
+				<textField>
 					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="111" height="18" isPrintWhenDetailOverflows="true"/>
 					<box topPadding="2" leftPadding="4" bottomPadding="2">
 						<pen lineStyle="Solid" lineColor="#000000"/>
@@ -849,7 +849,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{testRefRange}]]></textFieldExpression>
 				</textField>
-				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="323" y="0" width="34" height="18" backcolor="#FFFFFF"/>
 					<box>
 						<leftPen lineWidth="0.5"/>
@@ -880,7 +880,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{analysisStatus}]]></textFieldExpression>
 				</textField>
-				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement stretchType="RelativeToTallestObject" x="111" y="0" width="35" height="18" isPrintWhenDetailOverflows="true"/>
 					<box topPadding="2" leftPadding="4" bottomPadding="2">
 						<pen lineStyle="Solid" lineColor="#000000"/>
@@ -895,7 +895,7 @@
 					<textFieldExpression><![CDATA[$F{sampleSortOrder}]]></textFieldExpression>
 				</textField>
 			</frame>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement positionType="Float" mode="Opaque" x="10" y="18" width="543" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#F5F5F5">
 					<printWhenExpression><![CDATA[$F{note} != null]]></printWhenExpression>
 				</reportElement>

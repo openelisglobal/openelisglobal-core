@@ -2,15 +2,15 @@
  * The contents of this file are subject to the Mozilla Public License
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/ 
- * 
+ * http://www.mozilla.org/MPL/
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations under
  * the License.
- * 
+ *
  * The Original Code is OpenELIS code.
- * 
+ *
  * Copyright (C) ITECH, University of Washington, Seattle WA.  All Rights Reserved.
  *
  */
@@ -161,7 +161,7 @@ public class ResultService {
 		}
 
 		if (TypeOfTestResultService.ResultType.DICTIONARY.matches(getTestType())) {
-		    
+
 		    if (!printable) {
 		        return result.getValue();
 		    }
@@ -189,7 +189,7 @@ public class ResultService {
                             reportResult += separator + quantification.getValue();
                         }
                     }
-	            }   
+	            }
 	        }
 
             if( includeUOM && !GenericValidator.isBlankOrNull( reportResult )){
@@ -247,10 +247,116 @@ public class ResultService {
 		}
 	}
 
+	public String getResultValueForDisplay(String separator, boolean printable, boolean includeUOM) {
+		if (GenericValidator.isBlankOrNull(result.getValue())) {
+			return "";
+		}
+
+		if (TypeOfTestResultService.ResultType.DICTIONARY.matches(getTestType())) {
+
+			if (!printable) {
+				return result.getValue();
+			}
+			String reportResult = "";
+			List<Result> resultList = resultDAO.getResultsByAnalysis(result.getAnalysis());
+			if (!resultList.isEmpty()) {
+				if (resultList.size() == 1) {
+					reportResult = getDictValueForDisplay();
+				} else {
+					// If dictionary result it can also have a quantified result
+					List<Result> dictionaryResults = new ArrayList<Result>();
+					Result quantification = null;
+					for (Result sibResult : resultList) {
+						if (TypeOfTestResultService.ResultType.DICTIONARY.matches(sibResult.getResultType())) {
+							dictionaryResults.add(sibResult);
+						} else if (TypeOfTestResultService.ResultType.ALPHA.matches(sibResult.getResultType())
+								&& sibResult.getParentResult() != null) {
+							quantification = sibResult;
+						}
+					}
+
+					for (Result sibResult : dictionaryResults) {
+						Dictionary dictionary = dictionaryDAO.getDictionaryById(sibResult.getValue());
+						reportResult = (dictionary != null && dictionary.getId() != null)
+								? dictionary.getLocalizedName()
+								: "";
+						if (quantification != null
+								&& quantification.getParentResult().getId().equals(sibResult.getId())) {
+							reportResult += separator + quantification.getValue();
+						}
+					}
+				}
+			}
+
+			if (includeUOM && !GenericValidator.isBlankOrNull(reportResult)) {
+				String uom = getUOM();
+				if (!GenericValidator.isBlankOrNull(uom)) {
+					reportResult += " " + uom;
+				}
+			}
+
+			return StringEscapeUtils.escapeHtml(reportResult);
+		} else if (TypeOfTestResultService.ResultType.isMultiSelectVariant(getTestType())) {
+			StringBuilder buffer = new StringBuilder();
+			boolean firstPass = true;
+
+			List<Result> results = new ResultDAOImpl().getResultsByAnalysis(result.getAnalysis());
+
+			for (Result multiResult : results) {
+				if (!GenericValidator.isBlankOrNull(multiResult.getValue())
+						&& TypeOfTestResultService.ResultType.isMultiSelectVariant(multiResult.getResultType())) {
+					if (firstPass) {
+						firstPass = false;
+					} else {
+						buffer.append(separator);
+					}
+					buffer.append(dictionaryDAO.getDataForId(multiResult.getValue()).getDictEntry());
+				}
+			}
+			return buffer.toString();
+		} else if (TypeOfTestResultService.ResultType.NUMERIC.matches(getTestType())) {
+			int significantPlaces = result.getSignificantDigits();
+			if (significantPlaces == -1) {
+				return result.getValue() + appendUOM(includeUOM);
+			}
+			if (significantPlaces == 0) {
+				return result.getValue().split("\\.")[0] + appendUOM(includeUOM);
+			}
+			StringBuilder value = new StringBuilder();
+			value.append(result.getValue());
+			int startFill = 0;
+
+			if (!result.getValue().contains(".")) {
+				value.append(".");
+			} else {
+				startFill = result.getValue().length() - result.getValue().lastIndexOf(".") - 1;
+			}
+
+			for (int i = startFill; i < significantPlaces; i++) {
+				value.append("0");
+			}
+
+			return value.toString() + appendUOM(includeUOM);
+		} else if (TypeOfTestResultService.ResultType.ALPHA.matches(result.getResultType())
+				&& !GenericValidator.isBlankOrNull(result.getValue())) {
+			return result.getValue().split("\\(")[0].trim();
+		} else {
+			return result.getValue();
+		}
+	}
+
     private String getDictEntry(  ){
         Dictionary dictionary = dictionaryDAO.getDataForId( result.getValue() );
         return dictionary != null ? dictionary.getDictEntry() : "";
     }
+
+	private String getDictValueForDisplay() {
+		Dictionary dictionary = dictionaryDAO.getDataForId(result.getValue());
+		if (dictionary != null) {
+			return dictionary.getLocalizedName() == null ? dictionary.getDictEntry() : dictionary.getLocalizedName();
+		}
+		return "";
+	}
 
     private String appendUOM( boolean includeUOM ){
         if( includeUOM && result.getAnalysis().getTest().getUnitOfMeasure() != null ){
@@ -300,7 +406,7 @@ public class ResultService {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return true if any of the result limits for this test have a gender
 	 *         specification
 	 */

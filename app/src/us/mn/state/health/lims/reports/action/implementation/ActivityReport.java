@@ -45,12 +45,14 @@ public abstract class ActivityReport extends Report implements IReportCreator{
     protected DateRange dateRange;
 
     //@Override
-    public JRDataSource getReportDataSource() throws IllegalStateException{
+    @Override
+	public JRDataSource getReportDataSource() throws IllegalStateException{
         return errorFound ? new JRBeanCollectionDataSource(errorMsgs) : new JRBeanCollectionDataSource(testsResults);
     }
 
     //@Override
-    protected void createReportParameters() {
+    @Override
+	protected void createReportParameters() {
         reportParameters.put( "activityLabel", getActivityLabel() );
         reportParameters.put( "accessionPrefix", AccessionNumberUtil.getAccessionNumberValidator().getPrefix() );
         reportParameters.put( "labNumberTitle", StringUtil.getContextualMessageForKey( "quick.entry.accession.number" ) );
@@ -78,7 +80,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         String lowDateStr = dynaForm.getString( "lowerDateRange" );
         String highDateStr = dynaForm.getString( "upperDateRange" );
         dateRange = new DateRange( lowDateStr, highDateStr );
-       
+
         super.createReportParameters();
         errorFound = !validateSubmitParameters(selection);
         if ( errorFound ) {
@@ -115,7 +117,7 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         ResultService resultService = new ResultService( result );
         SampleService sampleService = new SampleService( result.getAnalysis().getSampleItem().getSample() );
         PatientService patientService = new PatientService( sampleService.getSample() );
-        item.setResultValue( resultService.getResultValue( "\n", true, true ) );
+		item.setResultValue(resultService.getResultValueForDisplay("\n", true, true));
         item.setTechnician( resultService.getSignature() );
         item.setAccessionNumber( sampleService.getAccessionNumber().substring( PREFIX_LENGTH ) );
         item.setReceivedDate( sampleService.getReceivedDateWithTwoYearDisplay() );
@@ -125,12 +127,12 @@ public abstract class ActivityReport extends Report implements IReportCreator{
         List<String> values = new ArrayList<String>();
         values.add(patientService.getLastName() == null ? "" : patientService.getLastName().toUpperCase());
         values.add(patientService.getNationalId());
-        
+
         String referringPatientId = ObservationHistoryService.getValueForSample( ObservationType.REFERRERS_PATIENT_ID, sampleService.getSample().getId() );
         values.add( referringPatientId == null ? "" : referringPatientId);
 
         String name = StringUtil.buildDelimitedStringFromList(values, " / ", true);
-        
+
         if( useTestName ){
             item.setPatientOrTestName( resultService.getReportingTestName() );
             item.setNonPrintingPatient( name );
@@ -142,7 +144,8 @@ public abstract class ActivityReport extends Report implements IReportCreator{
     }
 
     //@Override
-    protected String reportFileName(){
+    @Override
+	protected String reportFileName(){
         return  "ActivityReport";
     }
 
