@@ -24,11 +24,11 @@ import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
  * @since Jan 28, 2011
  */
 public abstract class CIStudyColumnBuilder extends CSVColumnBuilder {
-    
+
     /**
-     *  The basic SQL SELECT to get start on finding a sample, sample_item, patient and organization  
+     *  The basic SQL SELECT to get start on finding a sample, sample_item, patient and organization
      */
-    protected static final String SELECT_SAMPLE_PATIENT_ORGANIZATION = 
+    protected static final String SELECT_SAMPLE_PATIENT_ORGANIZATION =
         "SELECT DISTINCT s.id as sample_id, s.accession_number, s.entered_date, s.received_date, s.collection_date, s.status_id " +
              "\n, pat.national_id, pat.external_id, pat.birth_date, per.first_name, per.last_name, pat.gender " +
              "\n, o.short_name as organization_code, o.name AS organization_name, sp.proj_id as project_id " +
@@ -37,13 +37,13 @@ public abstract class CIStudyColumnBuilder extends CSVColumnBuilder {
     /**
      * The column select which puts all demographic and result columns in the result set.
      */
-    protected static final String SELECT_ALL_DEMOGRAPHIC_AND_RESULTS =     
+    protected static final String SELECT_ALL_DEMOGRAPHIC_AND_RESULTS =
         "\n, demo.*, result.*" +
         "\n ";
     /**
      * the basic SQL FROM clause for the selection from basic lab tables for sample, sample_item, patient & organization
      */
-    protected static final String FROM_SAMPLE_PATIENT_ORGANIZATION = 
+    protected static final String FROM_SAMPLE_PATIENT_ORGANIZATION =
         " FROM patient as pat, person as per, sample_human as sh, sample_projects AS sp, sample_organization AS so, organization AS o \n ";
     protected DateRange dateRange;
     protected String projectStr;
@@ -62,8 +62,9 @@ public abstract class CIStudyColumnBuilder extends CSVColumnBuilder {
     }
 
     protected abstract void defineAllReportColumns();
-    
-    public abstract void makeSQL();    
+
+    @Override
+	public abstract void makeSQL();
 
     /**
      * Useful when building the SQL String
@@ -88,7 +89,7 @@ public abstract class CIStudyColumnBuilder extends CSVColumnBuilder {
     protected void appendRepeatingObservation(String aOhTypeName, int maxCols, String lowDatePostgres,
                     String highDatePostgres) {
         appendCrosstabPreamble(aOhTypeName);
-        
+
         query.append( " crosstab( "
                     + "' SELECT s.id as s_id, type, value FROM Sample AS s "
                     + " LEFT JOIN"
@@ -109,9 +110,9 @@ public abstract class CIStudyColumnBuilder extends CSVColumnBuilder {
         query.append( " )\n ");
         appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
     }
-    
+
  //----------------------------
-    
+
     protected void appendRepeatingObservation(String aOhTypeName, int maxCols, String lowDatePostgres,
             String highDatePostgres, String byDate) {
 appendCrosstabPreamble(aOhTypeName);
@@ -137,10 +138,10 @@ for (int col = 1; col <= maxCols; col++) {
 query.append( " )\n ");
 appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
 }
-    
-    
-    
-    
+
+
+
+
  //------------------------------------
 
     protected void appendOtherDiseaseCrosstab(String lowDatePostgres, String highDatePostgres,
@@ -163,24 +164,25 @@ appendCrosstabPostfix(lowDatePostgres, highDatePostgres, aOhTypeName);
     protected void defineBasicColumns() {
         add("accession_number", "LABNO",    NONE);
         add("status_id", "SAMPLE_STATUS", SAMPLE_STATUS);
-        add("national_id",      "SUJETNO",  NONE);
-        add("project_id",        "ETUDE",    PROJECT );
-        add("external_id",      "SUJETSIT", NONE);
+		add("national_id", "SUBJECTNO", NONE);
+		add("project_id", "STUDY", PROJECT);
+		add("external_id", "SUBJECTID", NONE);
         add("received_date",    "DRCPT",    DATE_TIME );      // reception date
         add("collection_date",  "DINTV",    DATE_TIME );      // interview date
         add("organization_code", "CODE_SITE", NONE);
-        add("organization_name", "NOM_SITE",  NONE);
+		add("organization_name", "NAME_SITE", NONE);
         add("datim_org_code", "CODE_SITE_DATIM", NONE);
-        add("datim_org_name", "NOM_SITE_DATIM",  NONE);
-        add("gender",           "SEXE",     GENDER);
-        add("birth_date",       "DATENAIS", DATE);
-        add("collection_date",  "AGEANS",   AGE_YEARS); 
-        add("collection_date",  "AGEMOIS",  AGE_MONTHS); 
-        add("collection_date",  "AGESEMS",  AGE_WEEKS);
+		add("datim_org_name", "NAME_SITE_DATIM", NONE);
+		add("gender", "SEX", GENDER);
+		add("birth_date", "DATEBORN", DATE);
+		add("collection_date", "AGEYEARS", AGE_YEARS);
+		add("collection_date", "AGEMONTHS", AGE_MONTHS);
+		add("collection_date", "AGEWEEKS", AGE_WEEKS);
     }
-    
+
     //@Override
-    protected void addAllResultsColumns() {
+    @Override
+	protected void addAllResultsColumns() {
         super.addAllResultsColumns();
         add("Viral Load", "Viral Load log", LOG );
     }

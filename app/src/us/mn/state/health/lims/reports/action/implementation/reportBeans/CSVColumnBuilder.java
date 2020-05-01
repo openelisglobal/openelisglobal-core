@@ -3,14 +3,14 @@
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations under
  * the License.
- * 
+ *
  * The Original Code is OpenELIS code.
- * 
+ *
  * Copyright (C) The Minnesota Department of Health.  All Rights Reserved.
  *
  * Contributor(s): CIRG, University of Washington, Seattle WA.
@@ -64,7 +64,7 @@ import us.mn.state.health.lims.testresult.valueholder.TestResult;
  */
 abstract public class CSVColumnBuilder {
 	/**
-     * 
+     *
      */
 	public CSVColumnBuilder(StatusService.AnalysisStatus validStatusFilter) {
 		// we'll round up everything via hibernate first.
@@ -116,11 +116,11 @@ abstract public class CSVColumnBuilder {
 	protected String eol = System.getProperty("line.separator");
 
 	protected ResultDAO resultDAO = new ResultDAOImpl();
-	
+
 	//This is the largest value possible for a postgres column name.  The code will convert the
 	//test description to a column name so we need to truncate
-	//It's actually 63 but UTF_8 makes 59 safer.  
-	private static final int MAX_POSTGRES_COL_NAME = 59; 
+	//It's actually 63 but UTF_8 makes 59 safer.
+	private static final int MAX_POSTGRES_COL_NAME = 59;
 	/**
 	 * the test have to be sorted by the name, because they have to match the
 	 * pivot table order in the results
@@ -177,7 +177,7 @@ abstract public class CSVColumnBuilder {
 
 	/**
 	 * The various ways that columns are converted for CSV export
-	 * 
+	 *
 	 * @author Paul A. Hill (pahill@uw.edu)
 	 * @since Feb 1, 2011
 	 */
@@ -240,8 +240,8 @@ abstract public class CSVColumnBuilder {
             return value;
         }
     }
-	
-	
+
+
 	public String getValue(CSVColumn column, String accessionNumber) throws Exception {
 		String value;
 		// look in the data source for a value
@@ -269,7 +269,7 @@ abstract public class CSVColumnBuilder {
 			return name;
 		}else{
 			return name.substring(0, MAX_POSTGRES_COL_NAME);
-		}		
+		}
 	}
 
 	public void add(String dbName, String csvTitle) {
@@ -307,7 +307,7 @@ abstract public class CSVColumnBuilder {
 			this.dbName = dbName;
 			this.strategy = strategy;
 		}
-		
+
 		public CSVColumn(String dbName, String csvName, Strategy strategy, ICSVColumnCustomStrategy customStrategy) {
 			this.csvName = csvName;
 			this.dbName = dbName;
@@ -345,23 +345,25 @@ abstract public class CSVColumnBuilder {
 				return isBlankOrNull(value) ? "" : translateLog(value);
 			case SAMPLE_STATUS:
 				OrderStatus orderStatus = StatusService.getInstance().getOrderStatusForID(value);
-				if (orderStatus == null)
+				if (orderStatus == null) {
 					return "?";
+				}
 				switch (orderStatus) {
 				case Entered:
-					return "Saisie"; // entered, entr�e
+					return "Enteered"; // entered, entr�e
 				case Started:
-					return "En Cours"; // commenced, commenc�
+					return "Started"; // commenced, commenc�
 				case Finished:
-					return "Fini"; // Finished, Finale
+					return "Finished"; // Finished, Finale
 				case NonConforming_depricated:
-					return "Non Conforme"; // Non-conforming, Non-conformes
+					return "Non-Conforming"; // Non-conforming, Non-conformes
 				}
-				
+
 			case ANALYSIS_STATUS:
 				AnalysisStatus analysisStatus = StatusService.getInstance().getAnalysisStatusForID(value);
-				if (analysisStatus == null)
+				if (analysisStatus == null) {
 					return "?";
+				}
 				switch (analysisStatus) {
 				case NotStarted:
 					return "Not_Started"; // entered, entr�e
@@ -370,17 +372,17 @@ abstract public class CSVColumnBuilder {
 				case TechnicalAcceptance:
 					return "Validation_Technique"; // Finished, Finale
 				case TechnicalRejected:
-					return "Rejet - Technique"; // Non-conforming, Non-conformes
+					return "Rejected - Technical"; // Non-conforming, Non-conformes
 				case BiologistRejected:
-					return "Rejet - Biologie"; // entered, entr�e
+					return "Rejected - Biologist"; // entered, entr�e
 				case NonConforming_depricated:
-					return "Non Conforme"; // commenced, commenc�
+					return "Non-Conforming"; // commenced, commenc�
 				case Finalized:
-					return "Validation_Biologique"; // Finished, Finale
-				
-				
+					return "Validated Bioligist"; // Finished, Finale
+
+
 				}
-				
+
 			case PROJECT:
 				return translateProjectId(value);
 			case DEBUG:
@@ -467,9 +469,9 @@ abstract public class CSVColumnBuilder {
 				multi.append(ResourceTranslator.DictionaryTranslator.getInstance().translateRaw(result.getValue()));
                 multi.append( "," );
 			}
-			
+
 			if( multi.length() > 0){
-				multi.setLength(multi.length() - 1);				
+				multi.setLength(multi.length() - 1);
 			}
 
 			return multi.toString();
@@ -487,7 +489,7 @@ abstract public class CSVColumnBuilder {
 	/**
 	 * For every sample, one row per sample item, one column per test result for
 	 * that sample item.
-	 * 
+	 *
 	 * @param lowDatePostgres
 	 * @param highDatePostgres
 	 */
@@ -502,7 +504,7 @@ abstract public class CSVColumnBuilder {
 
 		// Begin cross tab / pivot table
         query.append(
-               " crosstab( " 
+               " crosstab( "
 				+ "\n 'SELECT si.id, t.description, r.value "
 				+ "\n FROM clinlims.result AS r, clinlims.analysis AS a, clinlims.sample_item AS si, clinlims.sample AS s, clinlims.test AS t, clinlims.test_result AS tr "
                     + "\n WHERE "
@@ -514,11 +516,11 @@ abstract public class CSVColumnBuilder {
                            " AND a.status_id = " + validStatusId)
                     + "\n AND a.id = r.analysis_id "
                     + "\n AND r.test_result_id = tr.id"
-                    + "\n AND tr.test_id = t.id       "                  
+                    + "\n AND tr.test_id = t.id       "
 				// + (( excludeAnalytes == null)?"":
 				// " AND r.analyte_id NOT IN ( " + excludeAnalytes) + ")"
 				// + " AND a.test_id = t.id "
-				+ "\n ORDER BY 1, 2 " 
+				+ "\n ORDER BY 1, 2 "
                 + "\n ', 'SELECT description FROM test where description != ''CD4'' AND is_active = ''Y'' ORDER BY 1' ) ");
 		// end of cross tab
 
@@ -542,7 +544,7 @@ abstract public class CSVColumnBuilder {
         query.append(
                         "\n ON si.id = " + listName + ".si_id "             // the inner use a few lines above
                       + "\n ORDER BY si.samp_id, si.id "
-                      + "\n) AS " + listName + "\n " );     // outer re-use the list name to name this sparse matrix of results.        
+                      + "\n) AS " + listName + "\n " );     // outer re-use the list name to name this sparse matrix of results.
 	}
 
 	/**
@@ -606,7 +608,7 @@ abstract public class CSVColumnBuilder {
             + "\n) AS " + listName + "\n " );
 	}
 
-        
+
 	protected Object pad20(Object translate) {
 		// uncomment the following lines to help make everything line up when
 		// debugging output.
@@ -632,7 +634,7 @@ abstract public class CSVColumnBuilder {
 	/**
 	 * Useful for the 1st line of a CSV files. This produces a completely
 	 * escaped for MSExcel comma separated list of columns.
-	 * 
+	 *
 	 * @return one string with all names.
 	 */
 	public String getColumnNamesLine() {
@@ -674,7 +676,7 @@ abstract public class CSVColumnBuilder {
 
 	/**
 	 * @throws SQLException
-	 * 
+	 *
 	 */
 	public void closeResultSet() throws SQLException {
 		resultSet.close();

@@ -8,9 +8,9 @@ import static us.mn.state.health.lims.reports.action.implementation.reportBeans.
 //import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.GENDER;
 //import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.LOG;
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.NONE;
+import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.PROGRAM;
 //import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.PROJECT;
 import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.SAMPLE_STATUS;
-import static us.mn.state.health.lims.reports.action.implementation.reportBeans.CSVRoutineColumnBuilder.Strategy.PROGRAM;
 
 //import org.apache.commons.validator.GenericValidator;
 
@@ -25,11 +25,11 @@ import us.mn.state.health.lims.reports.action.implementation.Report.DateRange;
  * @since Jan 28, 2011
  */
 public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
-    
+
     /**
-     *  The basic SQL SELECT to get start on finding a sample, sample_item, patient and organization  
+     *  The basic SQL SELECT to get start on finding a sample, sample_item, patient and organization
      */
-    protected static final String SELECT_SAMPLE_PATIENT_ORGANIZATION = 
+    protected static final String SELECT_SAMPLE_PATIENT_ORGANIZATION =
         "SELECT DISTINCT s.id as sample_id, s.accession_number, s.entered_date, s.received_date, s.collection_date, s.status_id " +
              "\n, pat.national_id, pat.external_id, pat.birth_date, per.first_name, per.last_name, pat.gender " +
              "\n, o.short_name as organization_code, o.name AS organization_name " +
@@ -37,13 +37,13 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
     /**
      * The column select which puts all demographic and result columns in the result set.
      */
-    protected static final String SELECT_ALL_DEMOGRAPHIC_AND_RESULTS =     
+    protected static final String SELECT_ALL_DEMOGRAPHIC_AND_RESULTS =
         "\n, demo.*, result.*" +
         "\n ";
     /**
      * the basic SQL FROM clause for the selection from basic lab tables for sample, sample_item, patient & organization
      */
-    protected static final String FROM_SAMPLE_PATIENT_ORGANIZATION = 
+    protected static final String FROM_SAMPLE_PATIENT_ORGANIZATION =
         " FROM sample as s, patient as pat, person as per, sample_human as sh, requester_type AS rq, sample_requester AS sq, organization AS o \n ";
     protected DateRange dateRange;
    // protected String projectStr;
@@ -62,8 +62,9 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
     }
 
     protected abstract void defineAllReportColumns();
-    
-    public abstract void makeSQL();    
+
+    @Override
+	public abstract void makeSQL();
 
     /**
      * Useful when building the SQL String
@@ -88,7 +89,7 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
     protected void appendRepeatingObservation(String aOhTypeName, int maxCols, String lowDatePostgres,
                     String highDatePostgres) {
         appendCrosstabPreamble(aOhTypeName);
-        
+
         query.append( " crosstab( "
                     + "' SELECT s.id as s_id, type, value FROM Sample AS s "
                     + " LEFT JOIN"
@@ -129,30 +130,31 @@ public abstract class CIRoutineColumnBuilder extends CSVRoutineColumnBuilder {
 
     protected void defineBasicColumns() {
         add("accession_number", "LABNO",    NONE);
-        add("national_id",      "IDENTIFIANT",  NONE);
-        add("gender",           "SEXE",     NONE);
-        add("birth_date",       "DATENAIS", DATE);
-        add("entered_date",  "AGEANS",   AGE_YEARS); 
-        add("entered_date",  "AGEMOIS",  AGE_MONTHS); 
-        add("entered_date",  "AGESEMS",  AGE_WEEKS);
+		add("national_id", "IDENTIFIER", NONE);
+		add("gender", "SEX", NONE);
+		add("birth_date", "BIRTHDATE", DATE);
+		add("entered_date", "AGEYEARS", AGE_YEARS);
+		add("entered_date", "AGEMONTHS", AGE_MONTHS);
+		add("entered_date", "AGEWEEKS", AGE_WEEKS);
         add("received_date",    "DATERECPT",    DATE_TIME );      // reception date
-        add("entered_date",  "DATESAISIE",    DATE_TIME );      // interview date
+		add("entered_date", "DATEENTERED", DATE_TIME); // interview date
         add("collection_date",  "DATECOLLECT",    DATE_TIME );      // collection date
         //add("released_date",  "DATEVALIDATION",    DATE_TIME );      // validation date
-        add("organization_code", "CODEREFERANT", NONE);
-        add("organization_name", "REFERANT",  NONE);
-        add("program",        "PROGRAMME", PROGRAM );
+		add("organization_code", "CODEREFERER", NONE);
+		add("organization_name", "REFERER", NONE);
+		add("program", "PROGRAM", PROGRAM);
         add("status_id", "STATUT", SAMPLE_STATUS);
        // add("external_id",      "SUJETSIT", NONE);
        //add("last_name",        "NOM",      NONE);
        //add("first_name",       "PRENOM",   NONE);
-        
-        
+
+
     }
-    
+
     //@Override
-    protected void addAllResultsColumns() {
+    @Override
+	protected void addAllResultsColumns() {
         super.addAllResultsColumns();
-        
+
     }
 }
