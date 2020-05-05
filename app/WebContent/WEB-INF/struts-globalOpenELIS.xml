@@ -982,6 +982,34 @@
             <form-property name="searchCriteria" type="java.lang.String" />
             <form-property name="existingTests" type="java.util.Collection"/>
             <form-property name="patientSearch" type="us.mn.state.health.lims.patient.action.bean.PatientSearch" />
+		
+			<!--new for pre printing barcodes -->
+            <form-property name="currentDate" type="java.lang.String" initial="" />
+            <form-property name="currentTime" type="java.lang.String" initial="" />
+            <form-property name="project" type="java.lang.String" initial="" />
+            <form-property name="projects" type="java.util.Collection" />
+            <form-property name="sampleTypes" type="java.util.List" />
+            <form-property name="sampleXML" type="java.lang.String" initial="" />
+            <form-property name="sampleOrderItems" type="us.mn.state.health.lims.sample.bean.SampleOrderItem" />
+            <form-property name="initialSampleConditionList" type="java.util.Collection" />
+            <form-property name="testSectionList"  type="java.util.Collection" />
+            <form-property name="patientInfoCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="facilityIDCheck" type="java.lang.Boolean"  initial="Boolean.FALSE" />
+            <form-property name="facilityID" type="java.lang.String" />
+            <form-property name="method" type="java.lang.String" />
+            <form-property name="study" type="java.lang.String" />
+            
+            <form-property name="labNo" type="java.lang.String" />
+            <form-property name="patientProperties" type="us.mn.state.health.lims.patient.action.bean.PatientManagementInfo" />
+            
+            <form-property name="programCode" type="java.lang.String" />
+            <form-property name="ProjectDataVL" type="us.mn.state.health.lims.sample.form.ProjectData" />
+            <form-property name="ProjectDataEID" type="us.mn.state.health.lims.sample.form.ProjectData" />  
+            <form-property name="ProjectData" type="us.mn.state.health.lims.sample.form.ProjectData" />  
+            <form-property name="observations" type="us.mn.state.health.lims.patient.valueholder.ObservationData"/>
+            <form-property name="organizationTypeLists" type="java.util.Map"/>
+            <form-property name="receivedDateForDisplay" type="java.lang.String" />
+            <form-property name="receivedTimeForDisplay" type="java.lang.String"/>
 		</form-bean>
 		
 		<form-bean name="BarcodeConfigurationForm" type="us.mn.state.health.lims.common.action.BaseActionForm">
@@ -1014,8 +1042,8 @@
             <form-property name="lastupdated" type="java.lang.String" />
             <form-property name="menuList" type="java.util.List" />
 			<form-property name="selectedIDs" type="java.lang.String[]" />
-        </form-bean>		
-
+        </form-bean>	
+    
 	</form-beans>
 
 

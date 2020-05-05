@@ -22,14 +22,83 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.person.valueholder.Person;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.sampleitem.valueholder.SampleItem;
+import us.mn.state.health.lims.test.valueholder.Test;
 
 /**
  * Stores values and formatting for Specimen Labels
- * 
+ *
  * @author Caleb
  *
  */
 public class SpecimenLabel extends Label {
+
+	public SpecimenLabel(String labNumber, String facilityName, List<Test> testsForSample) {
+		// adding fields above bar code
+		aboveFields = new ArrayList<LabelField>();
+//	    aboveFields.add(new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientname"),
+//	            patientName, 6));
+//	    aboveFields.add(
+//	            new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientdob"), dob, 4));
+//	    aboveFields.add(getAvailableIdField(patient));
+		LabelField siteField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.site"),
+				StringUtils.substring(facilityName, 0, 20), 4);
+		siteField.setDisplayFieldName(true);
+		aboveFields.add(siteField);
+
+		// getting fields for below bar code
+//	    Timestamp timestamp = sampleItem.getCollectionDate();
+//	    String collectionDate = DateUtil.convertTimestampToStringDate(timestamp);
+//	    String collectionTime = DateUtil.convertTimestampToStringTime(timestamp);
+//	    AnalysisDAO analysisDAO = new AnalysisDAOImpl();
+//	    String collector = sampleItem.getCollector();
+		StringBuilder tests = new StringBuilder();
+		String seperator = ""; // separator for appending tests to each other
+//	    List<Analysis> analysisList = analysisDAO.getAnalysesBySampleItem(sampleItem);
+		for (Test test : testsForSample) {
+			tests.append(seperator);
+			tests.append(TestService.getUserLocalizedTestName(test));
+			seperator = ", ";
+		}
+
+		// adding fields below bar code
+		belowFields = new ArrayList<LabelField>();
+		String useDateTime = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_FIELD_DATE);
+		String useSex = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_FIELD_SEX);
+		String useTests = ConfigurationProperties.getInstance().getPropertyValue(Property.SPECIMEN_FIELD_TESTS);
+		if ("true".equals(useSex)) {
+			LabelField sexField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientsex"),
+					"", 2);
+			sexField.setDisplayFieldName(true);
+			sexField.setUnderline(true);
+			belowFields.add(sexField);
+		}
+		if ("true".equals(useDateTime)) {
+			LabelField dateField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.collectiondate"), "",
+					3);
+			dateField.setDisplayFieldName(true);
+			dateField.setUnderline(true);
+			belowFields.add(dateField);
+			dateField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.collectiontime"), "", 2);
+			dateField.setUnderline(true);
+			belowFields.add(dateField);
+		}
+		LabelField collectorField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.collectorid"),
+				StringUtils.substring("", 0, 15), 3);
+		collectorField.setDisplayFieldName(true);
+		collectorField.setUnderline(true);
+		belowFields.add(collectorField);
+		if ("true".equals(useTests)) {
+			LabelField testsField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.tests"),
+					StringUtil.replaceNullWithEmptyString(tests.toString()), 10);
+			testsField.setStartNewline(true);
+			belowFields.add(testsField);
+		}
+
+		// add code
+//		String sampleCode = sampleItem.getSortOrder();
+//		setCode(labNo + "." + sampleCode);
+		setCode(labNumber);
+	}
 
   /**
    * @param patient     Who include on specimen label
@@ -59,7 +128,7 @@ public class SpecimenLabel extends Label {
     }
     patientName = StringUtils.substring(patientName.replaceAll("( )+", " "), 0, 30);
     String dob = StringUtil.replaceNullWithEmptyString(patient.getBirthDateForDisplay());
-    
+
     // adding fields above bar code
     aboveFields = new ArrayList<LabelField>();
     aboveFields.add(new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientname"),
@@ -86,7 +155,7 @@ public class SpecimenLabel extends Label {
       tests.append(TestService.getUserLocalizedTestName(analysis.getTest()));
       seperator = ", ";
     }
-    
+
     // adding fields below bar code
     belowFields = new ArrayList<LabelField>();
     String useDateTime = ConfigurationProperties.getInstance()
@@ -137,13 +206,15 @@ public class SpecimenLabel extends Label {
   private LabelField getAvailableIdField(Patient patient) {
     PatientService service = new PatientService(patient);
     String patientId = service.getSubjectNumber();
-    if (!StringUtil.isNullorNill(patientId))
-      return new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientid"),
-              StringUtils.substring(patientId, 0, 25), 6);
+    if (!StringUtil.isNullorNill(patientId)) {
+		return new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientid"),
+		          StringUtils.substring(patientId, 0, 25), 6);
+	}
     patientId = service.getNationalId();
-    if (!StringUtil.isNullorNill(patientId))
-      return new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientid"),
-              StringUtils.substring(patientId, 0, 25), 6);
+    if (!StringUtil.isNullorNill(patientId)) {
+		return new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientid"),
+		          StringUtils.substring(patientId, 0, 25), 6);
+	}
     return new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientid"), "", 6);
   }
 
@@ -151,7 +222,8 @@ public class SpecimenLabel extends Label {
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsBefore()
    */
   //@Override
-  public int getNumTextRowsBefore() {
+  @Override
+public int getNumTextRowsBefore() {
     Iterable<LabelField> fields = getAboveFields();
     return getNumRows(fields);
   }
@@ -160,7 +232,8 @@ public class SpecimenLabel extends Label {
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsAfter()
    */
   //@Override
-  public int getNumTextRowsAfter() {
+  @Override
+public int getNumTextRowsAfter() {
     Iterable<LabelField> fields = getBelowFields();
     return getNumRows(fields);
   }
@@ -169,7 +242,8 @@ public class SpecimenLabel extends Label {
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getMaxNumLabels()
    */
   //@Override
-  public int getMaxNumLabels() {
+  @Override
+public int getMaxNumLabels() {
     int max = 0;
     try {
       max = Integer.parseInt(ConfigurationProperties.getInstance()
@@ -177,7 +251,7 @@ public class SpecimenLabel extends Label {
     } catch (Exception e) {
       LogEvent.logError("SpecimenLabel", "SpecimenLabel getMaxNumLabels()", e.toString());
     }
-    
+
     return max;
   }
 

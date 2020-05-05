@@ -14,6 +14,8 @@
 <%@ taglib uri="/tags/struts-logic"		prefix="logic" %>
 <%@ taglib uri="/tags/labdev-view"		prefix="app" %>
 <%@ taglib uri="/tags/sourceforge-ajax" prefix="ajax"%>
+
+<%@ taglib uri="/tags/struts-tiles"     prefix="tiles" %>
 <%@ taglib prefix="nested" uri="http://jakarta.apache.org/struts/tags-nested" %>
 
 <bean:define id="formName"	value='<%=(String) request.getAttribute(IActionConstants.FORM_NAME)%>' />
@@ -338,13 +340,19 @@ function printBarcode(button) {
     }
 </script>
 
+<!-- new for pre-printing -->
+<tiles:insert attribute="prePrinting"/>
+
+<!-- end new for pre-printing -->
+
+
 <input type="hidden" id="searchLabNumber">
 <html:hidden name="<%=formName%>" property="accessionNumber"/>
 <html:hidden name="<%=formName%>" property="patientId"/>
 
 <div id="PatientPage" class=" patientSearch" style="display:inline;" >
 
-	<h2><bean:message key="sample.entry.search"/></h2>
+	<h2>Print Barcodes for Existing Orders</h2>
     <logic:present property="warning" name="<%=formName%>" >
         <h3 class="important-text"><bean:message key="order.modify.search.warning" /></h3>
     </logic:present>

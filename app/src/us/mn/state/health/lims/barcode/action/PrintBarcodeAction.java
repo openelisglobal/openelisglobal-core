@@ -26,9 +26,13 @@ import us.mn.state.health.lims.analysis.valueholder.Analysis;
 import us.mn.state.health.lims.common.action.BaseAction;
 import us.mn.state.health.lims.common.action.BaseActionForm;
 import us.mn.state.health.lims.common.action.IActionConstants;
+import us.mn.state.health.lims.common.formfields.FormFields;
 import us.mn.state.health.lims.common.provider.validation.IAccessionNumberValidator;
+import us.mn.state.health.lims.common.services.DisplayListService;
+import us.mn.state.health.lims.common.services.DisplayListService.ListType;
 import us.mn.state.health.lims.common.services.IPatientService;
 import us.mn.state.health.lims.common.services.PatientService;
+import us.mn.state.health.lims.common.services.SampleOrderService;
 import us.mn.state.health.lims.common.services.StatusService;
 import us.mn.state.health.lims.common.services.StatusService.AnalysisStatus;
 import us.mn.state.health.lims.common.services.StatusService.SampleStatus;
@@ -41,6 +45,7 @@ import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.sample.bean.SampleEditItem;
 import us.mn.state.health.lims.sample.dao.SampleDAO;
 import us.mn.state.health.lims.sample.daoimpl.SampleDAOImpl;
+import us.mn.state.health.lims.sample.form.ProjectData;
 import us.mn.state.health.lims.sample.util.AccessionNumberUtil;
 import us.mn.state.health.lims.sample.valueholder.Sample;
 import us.mn.state.health.lims.samplehuman.daoimpl.SampleHumanDAOImpl;
@@ -77,7 +82,8 @@ public class PrintBarcodeAction extends BaseAction {
   }
 
 
-  protected ActionForward performAction(ActionMapping mapping, ActionForm form,
+  @Override
+protected ActionForward performAction(ActionMapping mapping, ActionForm form,
           HttpServletRequest request, HttpServletResponse response) throws Exception {
 
     String forward = FWD_SUCCESS;
@@ -94,6 +100,7 @@ public class PrintBarcodeAction extends BaseAction {
     String patientId = request.getParameter("patientId");
     BaseActionForm dynaForm = (BaseActionForm) form;
     dynaForm.initialize(mapping);
+
     // if accession provided, data collected for display
     if (!GenericValidator.isBlankOrNull(accessionNumber)) {
       PropertyUtils.setProperty(dynaForm, "accessionNumber", accessionNumber);
@@ -114,12 +121,29 @@ public class PrintBarcodeAction extends BaseAction {
             StringUtil.getMessageForKey("label.patient.search.select"));
     PropertyUtils.setProperty(form, "patientSearch", patientSearch);
 
+		SampleOrderService sampleOrderService = new SampleOrderService();
+		PropertyUtils.setProperty(dynaForm, "sampleOrderItems", sampleOrderService.getSampleOrderItem());
+		PropertyUtils.setProperty(dynaForm, "sampleTypes", DisplayListService.getList(ListType.SAMPLE_TYPE_ACTIVE));
+		PropertyUtils.setProperty(dynaForm, "testSectionList", DisplayListService.getList(ListType.TEST_SECTION));
+		PropertyUtils.setProperty(dynaForm, "currentDate", DateUtil.getCurrentDateAsText());
+		PropertyUtils.setProperty(dynaForm, "currentTime", DateUtil.getCurrentTimeAsText());
+		PropertyUtils.setProperty(dynaForm, "sampleOrderItems.receivedTime", DateUtil.getCurrentTimeAsText());
+		PropertyUtils.setProperty(dynaForm, "ProjectDataVL", new ProjectData());
+		PropertyUtils.setProperty(dynaForm, "ProjectDataEID", new ProjectData());
+
+//	addProjectList(dynaForm);
+
+		if (FormFields.getInstance().useField(FormFields.Field.InitialSampleCondition)) {
+			PropertyUtils.setProperty(dynaForm, "initialSampleConditionList",
+					DisplayListService.getList(ListType.INITIAL_SAMPLE_CONDITION));
+		}
+
     return mapping.findForward(forward);
   }
 
   /**
    * Validate the request to ensure all parameters are correct
-   * @param request   The incoming request should be empty of parameters or have 
+   * @param request   The incoming request should be empty of parameters or have
    *                  accession number and patient id
    * @return          All errors that the parameters may generate
    */
@@ -162,12 +186,12 @@ public class PrintBarcodeAction extends BaseAction {
 
   /**
    * Get list of SampleItems belonging to a sample
-   * @param sample    Containing all the individual sample items 
+   * @param sample    Containing all the individual sample items
    * @return          The list of sample items belonging to sample
    */
   private List<SampleItem> getSampleItems(Sample sample) {
     SampleItemDAO sampleItemDAO = new SampleItemDAOImpl();
-    
+
     return sampleItemDAO.getSampleItemsBySampleIdAndStatus(sample.getId(),
             ENTERED_STATUS_SAMPLE_LIST);
   }
@@ -177,7 +201,7 @@ public class PrintBarcodeAction extends BaseAction {
    * Get list of tests corresponding to sample items
    * @param sampleItemList      The list of sample items to fetch corresponding tests
    * @param accessionNumber     The accession number corresponding to the sample
-   * @param allowedToCancelAll  
+   * @param allowedToCancelAll
    * @return list of corresponding tests
    * @throws IllegalAccessException
    * @throws InvocationTargetException
@@ -186,7 +210,7 @@ public class PrintBarcodeAction extends BaseAction {
   private List<SampleEditItem> getCurrentTestInfo(List<SampleItem> sampleItemList,
           String accessionNumber, boolean allowedToCancelAll)
           throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    
+
     List<SampleEditItem> currentTestList = new ArrayList<SampleEditItem>();
     for (SampleItem sampleItem : sampleItemList) {
       addCurrentTestsToList(sampleItem, currentTestList, accessionNumber, allowedToCancelAll);
@@ -260,12 +284,14 @@ public class PrintBarcodeAction extends BaseAction {
   }
 
 
-  protected String getPageTitleKey() {
+  @Override
+protected String getPageTitleKey() {
     return "barcode.print.title";
   }
 
 
-  protected String getPageSubtitleKey() {
+  @Override
+protected String getPageSubtitleKey() {
     return "barcode.print.title";
   }
 

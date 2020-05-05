@@ -516,8 +516,12 @@
     </definition>
     
     <definition name="PrintBarcodeDefinition" extends="baseDefinition">
-    	<put name="body" value="/pages/barcode/printBarcode.jsp" />
+    	<put name="body" value="PrintBarcodeCoreDefinition" />
     	<put name="footer" value="/pages/common/finishFooterButton.jsp" />
+    </definition>
+    
+    <definition name="PrintBarcodeCoreDefinition"  path="/pages/barcode/printBarcode.jsp">
+    	<put name="prePrinting" value="batchPrePrintParcodeBodyDefinition" />
     </definition>
     
     <definition name="BarcodeConfigurationDefinition" extends="baseDefinition">
@@ -540,6 +544,10 @@
     <definition name="externalConnectionsConfigMenuBody"  path="/pages/menu/masterListsTab/masterListsPage.jsp">
         <put name="left" value="/pages/menu/masterListsTab/masterListsPageLeft.jsp" />
         <put name="right" value="/pages/externalconnections/connectionsAdminMenu.jsp" />
+    </definition>
+    
+    <definition name="batchPrePrintParcodeBodyDefinition"  path="/pages/barcode/bulkPrePrint.jsp">
+		<put name="sampleAdd" value="/pages/samplebatchentry/setup/sampleAdd.jsp"/>
     </definition>
 
 </tiles-definitions>

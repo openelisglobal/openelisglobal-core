@@ -17,7 +17,7 @@ import us.mn.state.health.lims.sample.valueholder.Sample;
 
 /**
  * Stores values and formatting for Order Labels
- * 
+ *
  * @author Caleb
  *
  */
@@ -28,50 +28,82 @@ public class OrderLabel extends Label {
    * @param sample    What to include on order label
    * @param labNo     Code to include in bar code
    */
-  public OrderLabel(Patient patient, Sample sample, String labNo) {
-    // set dimensions
-    try {
-      width = Float.parseFloat(
-              ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_WIDTH));
-      height = Float.parseFloat(ConfigurationProperties.getInstance()
-              .getPropertyValue(Property.ORDER_BARCODE_HEIGHT));
-    } catch (Exception e) {
-      LogEvent.logError("OrderLabel", "OrderLabel OrderLabel()", e.toString());
-    }
-    // get information to display above bar code
-    Person person = patient.getPerson();
-    SampleOrderService sampleOrderService = new SampleOrderService(sample);
-    String referringFacility = StringUtil.replaceNullWithEmptyString(
-            sampleOrderService.getSampleOrderItem().getReferringSiteName());
-    String patientName = StringUtil.replaceNullWithEmptyString(person.getLastName()) + ", "
-            + StringUtil.replaceNullWithEmptyString(person.getFirstName());
-    if (patientName.trim().equals(",")) {
-      patientName = " ";
-    }
-    patientName = StringUtils.substring(patientName.replaceAll("( )+", " "), 0, 30);
-    String dob = StringUtil.replaceNullWithEmptyString(patient.getBirthDateForDisplay());
+	public OrderLabel(String labNo, String facility) {
+		// set dimensions
+		try {
+			width = Float
+					.parseFloat(ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_WIDTH));
+			height = Float
+					.parseFloat(ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_HEIGHT));
+		} catch (Exception e) {
+			LogEvent.logError("OrderLabel", "OrderLabel OrderLabel()", e.toString());
+		}
 
-    // adding fields above bar code
-    aboveFields = new ArrayList<LabelField>();
-    aboveFields.add(new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientname"),
-            patientName, 6));
-    aboveFields.add(
-            new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientdob"), dob, 4));
-    aboveFields.add(getAvailableIdField(patient));
-    LabelField siteField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.site"),
-            StringUtils.substring(referringFacility, 0, 20), 4);
-    siteField.setDisplayFieldName(true);
-    aboveFields.add(siteField);
-    
-    // adding bar code
-    setCode(labNo);
-  }
+		// adding fields above bar code
+		aboveFields = new ArrayList<LabelField>();
+		LabelField labelField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientname"), "", 6);
+		labelField.setDisplayFieldName(true);
+		labelField.setUnderline(true);
+		aboveFields.add(labelField);
 
-  /**
-   * Get first available id to identify a patient (Subject Number > National Id)
-   * @param patient   Who to find identification for
-   * @return          label field containing patient id
-   */
+		labelField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientdob"), "", 4);
+		labelField.setDisplayFieldName(true);
+		labelField.setUnderline(true);
+		aboveFields.add(labelField);
+
+//	    aboveFields.add(getAvailableIdField(patient));
+		LabelField siteField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.site"),
+				StringUtils.substring(facility, 0, 20), 4);
+		siteField.setDisplayFieldName(true);
+		aboveFields.add(siteField);
+
+		// adding bar code
+		setCode(labNo);
+	}
+
+	public OrderLabel(Patient patient, Sample sample, String labNo) {
+		// set dimensions
+		try {
+			width = Float
+					.parseFloat(ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_WIDTH));
+			height = Float
+					.parseFloat(ConfigurationProperties.getInstance().getPropertyValue(Property.ORDER_BARCODE_HEIGHT));
+		} catch (Exception e) {
+			LogEvent.logError("OrderLabel", "OrderLabel OrderLabel()", e.toString());
+		}
+		// get information to display above bar code
+		Person person = patient.getPerson();
+		SampleOrderService sampleOrderService = new SampleOrderService(sample);
+		String referringFacility = StringUtil
+				.replaceNullWithEmptyString(sampleOrderService.getSampleOrderItem().getReferringSiteName());
+		String patientName = StringUtil.replaceNullWithEmptyString(person.getLastName()) + ", "
+				+ StringUtil.replaceNullWithEmptyString(person.getFirstName());
+		if (patientName.trim().equals(",")) {
+			patientName = " ";
+		}
+		patientName = StringUtils.substring(patientName.replaceAll("( )+", " "), 0, 30);
+		String dob = StringUtil.replaceNullWithEmptyString(patient.getBirthDateForDisplay());
+
+		// adding fields above bar code
+		aboveFields = new ArrayList<LabelField>();
+		aboveFields.add(new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientname"), patientName, 6));
+		aboveFields.add(new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientdob"), dob, 4));
+		aboveFields.add(getAvailableIdField(patient));
+		LabelField siteField = new LabelField(StringUtil.getMessageForKey("barcode.label.info.site"),
+				StringUtils.substring(referringFacility, 0, 20), 4);
+		siteField.setDisplayFieldName(true);
+		aboveFields.add(siteField);
+
+		// adding bar code
+		setCode(labNo);
+	}
+
+	/**
+	 * Get first available id to identify a patient (Subject Number > National Id)
+	 *
+	 * @param patient Who to find identification for
+	 * @return label field containing patient id
+	 */
   private LabelField getAvailableIdField(Patient patient) {
     PatientService service = new PatientService(patient);
     String patientId = service.getSubjectNumber();
@@ -86,12 +118,13 @@ public class OrderLabel extends Label {
     }
     return new LabelField(StringUtil.getMessageForKey("barcode.label.info.patientid"), "", 6);
   }
-  
+
   /* (non-Javadoc)
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsBefore()
    */
   //@Override
-  public int getNumTextRowsBefore() {
+  @Override
+public int getNumTextRowsBefore() {
     int numRows = 0;
     int curColumns = 0;
     boolean completeRow = true;
@@ -126,7 +159,8 @@ public class OrderLabel extends Label {
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getNumTextRowsAfter()
    */
   //@Override
-  public int getNumTextRowsAfter() {
+  @Override
+public int getNumTextRowsAfter() {
     return 0;
   }
 
@@ -134,7 +168,8 @@ public class OrderLabel extends Label {
    * @see us.mn.state.health.lims.barcode.labeltype.Label#getMaxNumLabels()
    */
   //@Override
-  public int getMaxNumLabels() {
+  @Override
+public int getMaxNumLabels() {
     int max = 0;
     try {
       max = Integer.parseInt(
