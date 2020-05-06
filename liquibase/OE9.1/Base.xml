@@ -19,6 +19,7 @@
   <include file="OE9.1/Menu_Study.xml" />
   <include file="OE9.1/siteinformation.xml" />
   <include file="OE9.1/defaultTest.xml" />
+  <include file="OE9.1/patientContact.xml" />
   
   
  

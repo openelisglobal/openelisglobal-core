@@ -49,6 +49,7 @@ public class PatientSearchProvider extends BaseQueryProvider{
 	protected AjaxServlet ajaxServlet = null;
 
 	//@Override
+	@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 
 		String lastName = request.getParameter("lastName");
@@ -133,11 +134,13 @@ public class PatientSearchProvider extends BaseQueryProvider{
 	}
 
 	//@Override
+	@Override
 	public void setServlet(AjaxServlet as){
 		this.ajaxServlet = as;
 	}
 
 	//@Override
+	@Override
 	public AjaxServlet getServlet(){
 		return this.ajaxServlet;
 	}

@@ -274,6 +274,8 @@
             resource="us/mn/state/health/lims/datasubmission/valueholder/DataValue.hbm.xml"/>
     <mapping
             resource="us/mn/state/health/lims/datasubmission/valueholder/TypeOfDataIndicator.hbm.xml"/>
+    <mapping
+            resource="us/mn/state/health/lims/patient/valueholder/Contact.hbm.xml"/>
 
 </session-factory>
 

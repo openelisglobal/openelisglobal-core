@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+<changeSet author="csteele" id="1">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="contact" schemaName="clinlims" />
+      </not>
+    </preConditions>
+	<comment>create contact table</comment>
+  <sql>
+    CREATE TABLE clinlims.contact (
+      "id" NUMERIC (20),
+      "name" VARCHAR (60),
+      "email" VARCHAR (60),
+      "phone" VARCHAR (25),
+      "lastupdated" timestamp without time zone NOT NULL,
+      PRIMARY KEY ("id")
+    );
+
+    ALTER TABLE clinlims.contact OWNER TO clinlims;
+    
+    CREATE SEQUENCE clinlims.contact_seq START 1; 
+
+    ALTER SEQUENCE clinlims.contact_seq OWNER TO clinlims;
+	
+    INSERT INTO clinlims.reference_tables (id, name, keep_history, is_hl7_encoded)
+    VALUES (nextval('clinlims.reference_tables_seq'), 'CONTACT', 'Y', 'N');
+
+  </sql>
+</changeSet>
+  
+<changeSet author="csteele" id="1">
+    <preConditions onFail="MARK_RAN">
+		<sqlCheck expectedResult="0">SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='clinlims' AND table_name='patient' AND column_name='contact_id');</sqlCheck>
+	</preConditions>
+	<comment>add patient contact</comment>
+  <sql>
+    ALTER TABLE clinlims.patient
+    ADD COLUMN contact_id numeric(10);
+  </sql>
+</changeSet>  
+
+</databaseChangeLog>

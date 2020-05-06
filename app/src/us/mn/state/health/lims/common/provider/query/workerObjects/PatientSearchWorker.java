@@ -63,6 +63,9 @@ abstract public class PatientSearchWorker {
 		XMLUtil.appendKeyValue("dataSourceName", result.getDataSourceName(), xml);
 		XMLUtil.appendKeyValue("id", result.getPatientID(), xml);
         XMLUtil.appendKeyValue( "referralPatientId", result.getReferringSitePatientId(), xml );
+		XMLUtil.appendKeyValue("contactName", result.getContactName(), xml);
+		XMLUtil.appendKeyValue("contactPhone", result.getContactPhone(), xml);
+		XMLUtil.appendKeyValue("contactEmail", result.getContactEmail(), xml);
 	}
 
 	private List<PatientIdentity> getIdentityListForPatient(String patientId) {
@@ -89,7 +92,7 @@ abstract public class PatientSearchWorker {
 				if( GenericValidator.isBlankOrNull(o1.getFirstName()) && GenericValidator.isBlankOrNull(o2.getFirstName())){
 					return 0;
 				}
-				
+
 
 				String oneName = (o1.getFirstName() == null)?" ":o1.getFirstName();
 				String twoName = (o2.getFirstName() == null)?" ":o2.getFirstName();

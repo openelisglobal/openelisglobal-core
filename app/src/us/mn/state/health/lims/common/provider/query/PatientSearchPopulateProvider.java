@@ -68,12 +68,13 @@ public class PatientSearchPopulateProvider extends BaseQueryProvider {
 
 
 	//@Override
+	@Override
 	public void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 
-		String nationalId = (String) request.getParameter("nationalID");
-        String externalId = (String) request.getParameter("externalID");
-		String patientKey = (String) request.getParameter("personKey");
+		String nationalId = request.getParameter("nationalID");
+        String externalId = request.getParameter("externalID");
+		String patientKey = request.getParameter("personKey");
 		StringBuilder xml = new StringBuilder();
 		String result = null;
 		if (nationalId != null) {
@@ -147,7 +148,7 @@ public class PatientSearchPopulateProvider extends BaseQueryProvider {
 		XMLUtil.appendKeyValue("commune", getAddress(person, ADDRESS_PART_COMMUNE_ID), xml);
 		XMLUtil.appendKeyValue("addressDept", getAddress(person, ADDRESS_PART_DEPT_ID), xml);
 		XMLUtil.appendKeyValue("motherInitial", identityMap.getIdentityValue(identityList, "MOTHERS_INITIAL"), xml);
-		XMLUtil.appendKeyValue("externalID", patient.getExternalId(), xml);		
+		XMLUtil.appendKeyValue("externalID", patient.getExternalId(), xml);
 		XMLUtil.appendKeyValue("education", identityMap.getIdentityValue(identityList, "EDUCATION"), xml);
 		XMLUtil.appendKeyValue("maritialStatus", identityMap.getIdentityValue(identityList, "MARITIAL"), xml);
 		XMLUtil.appendKeyValue("nationality", identityMap.getIdentityValue(identityList, "NATIONALITY"), xml);
@@ -155,7 +156,10 @@ public class PatientSearchPopulateProvider extends BaseQueryProvider {
 		XMLUtil.appendKeyValue("healthDistrict", identityMap.getIdentityValue(identityList, "HEALTH DISTRICT"), xml);
 		XMLUtil.appendKeyValue("healthRegion", identityMap.getIdentityValue(identityList, "HEALTH REGION"), xml);
 		XMLUtil.appendKeyValue("guid", identityMap.getIdentityValue(identityList, "GUID"), xml);
-	
+		XMLUtil.appendKeyValue("contactName", patient.getContact().getName(), xml);
+		XMLUtil.appendKeyValue("contactPhone", patient.getContact().getPhone(), xml);
+		XMLUtil.appendKeyValue("contactEmail", patient.getContact().getEmail(), xml);
+		XMLUtil.appendKeyValue("contactPK", patient.getContact().getId(), xml);
 
 
 		if (patient.getLastupdated() != null) {
