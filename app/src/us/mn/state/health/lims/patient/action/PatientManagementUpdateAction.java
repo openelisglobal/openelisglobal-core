@@ -338,9 +338,9 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 		ContactDAO contactDAO = new ContactDAOImpl();
 
 		Contact contact = patient.getContact();
-		if (patientUpdateStatus == PatientUpdateStatus.ADD) {
+		if (GenericValidator.isBlankOrNull(contact.getId())) {
 			contactDAO.insertData(contact);
-		} else if (patientUpdateStatus == PatientUpdateStatus.UPDATE) {
+		} else {
 			contactDAO.updateData(contact);
 		}
 		patient.setContact(contact);
