@@ -30,7 +30,7 @@
   </sql>
 </changeSet>
   
-<changeSet author="csteele" id="1">
+<changeSet author="csteele" id="2">
     <preConditions onFail="MARK_RAN">
 		<sqlCheck expectedResult="0">SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='clinlims' AND table_name='patient' AND column_name='contact_id');</sqlCheck>
 	</preConditions>
