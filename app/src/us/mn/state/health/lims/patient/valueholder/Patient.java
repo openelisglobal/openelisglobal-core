@@ -72,7 +72,7 @@ public class Patient extends BaseObject {
 
 	private String chartNumber;
 
-	private ValueHolderInterface contact;
+//	private ValueHolderInterface contact;
 
 	public String getChartNumber() {
 		return chartNumber;
@@ -85,7 +85,7 @@ public class Patient extends BaseObject {
 	public Patient() {
 		super();
 		person = new ValueHolder();
-		contact = new ValueHolder();
+//		contact = new ValueHolder();
 
 	}
 
@@ -276,11 +276,11 @@ public class Patient extends BaseObject {
 		return this.selectedPersonId;
 	}
 
-	public Contact getContact() {
-		return (Contact) this.contact.getValue();
-	}
-
-	public void setContact(Contact contact) {
-		this.contact.setValue(contact);
-	}
+//	public Contact getContact() {
+//		return (Contact) this.contact.getValue();
+//	}
+//
+//	public void setContact(Contact contact) {
+//		this.contact.setValue(contact);
+//	}
 }

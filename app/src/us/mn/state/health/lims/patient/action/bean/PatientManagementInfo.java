@@ -71,10 +71,10 @@ public class PatientManagementInfo implements Serializable {
     private boolean readOnly = false;
     private String age;
 
-	private String contactPK;
-	private String contactName;
-	private String contactPhone;
-	private String contactEmail;
+//	private String contactPK;
+//	private String contactName;
+//	private String contactPhone;
+//	private String contactEmail;
 
 	public String getCurrentDate() {
 		return currentDate;
@@ -342,35 +342,35 @@ public class PatientManagementInfo implements Serializable {
         this.age = age;
     }
 
-	public String getContactName() {
-		return contactName;
-	}
-
-	public void setContactName(String contactName) {
-		this.contactName = contactName;
-	}
-
-	public String getContactPhone() {
-		return contactPhone;
-	}
-
-	public void setContactPhone(String contactPhone) {
-		this.contactPhone = contactPhone;
-	}
-
-	public String getContactEmail() {
-		return contactEmail;
-	}
-
-	public void setContactEmail(String contactEmail) {
-		this.contactEmail = contactEmail;
-	}
-
-	public String getContactPK() {
-		return contactPK;
-	}
-
-	public void setContactPK(String contactPK) {
-		this.contactPK = contactPK;
-	}
+//	public String getContactName() {
+//		return contactName;
+//	}
+//
+//	public void setContactName(String contactName) {
+//		this.contactName = contactName;
+//	}
+//
+//	public String getContactPhone() {
+//		return contactPhone;
+//	}
+//
+//	public void setContactPhone(String contactPhone) {
+//		this.contactPhone = contactPhone;
+//	}
+//
+//	public String getContactEmail() {
+//		return contactEmail;
+//	}
+//
+//	public void setContactEmail(String contactEmail) {
+//		this.contactEmail = contactEmail;
+//	}
+//
+//	public String getContactPK() {
+//		return contactPK;
+//	}
+//
+//	public void setContactPK(String contactPK) {
+//		this.contactPK = contactPK;
+//	}
 }

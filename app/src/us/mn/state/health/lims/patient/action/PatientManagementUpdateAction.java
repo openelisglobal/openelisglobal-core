@@ -49,11 +49,8 @@ import us.mn.state.health.lims.common.util.ConfigurationProperties;
 import us.mn.state.health.lims.common.util.validator.ActionError;
 import us.mn.state.health.lims.hibernate.HibernateUtil;
 import us.mn.state.health.lims.patient.action.bean.PatientManagementInfo;
-import us.mn.state.health.lims.patient.dao.ContactDAO;
 import us.mn.state.health.lims.patient.dao.PatientDAO;
-import us.mn.state.health.lims.patient.daoimpl.ContactDAOImpl;
 import us.mn.state.health.lims.patient.daoimpl.PatientDAOImpl;
-import us.mn.state.health.lims.patient.valueholder.Contact;
 import us.mn.state.health.lims.patient.valueholder.Patient;
 import us.mn.state.health.lims.patientidentity.dao.PatientIdentityDAO;
 import us.mn.state.health.lims.patientidentity.daoimpl.PatientIdentityDAOImpl;
@@ -313,12 +310,12 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 
 	private void copyFormBeanToValueHolders(PatientManagementInfo patientInfo) throws IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
-		Contact patientContact = new Contact();
-		patientContact.setId(patientInfo.getContactPK());
-		patientContact.setName(patientInfo.getContactName());
-		patientContact.setPhone(patientInfo.getContactPhone());
-		patientContact.setEmail(patientInfo.getContactEmail());
-		patient.setContact(patientContact);
+//		Contact patientContact = new Contact();
+//		patientContact.setId(patientInfo.getContactPK());
+//		patientContact.setName(patientInfo.getContactName());
+//		patientContact.setPhone(patientInfo.getContactPhone());
+//		patientContact.setEmail(patientInfo.getContactEmail());
+//		patient.setContact(patientContact);
 
 		PropertyUtils.copyProperties(patient, patientInfo);
 		PropertyUtils.copyProperties(person, patientInfo);
@@ -326,7 +323,7 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 
 	private void setSystemUserID() {
 		patient.setSysUserId(currentUserId);
-		patient.getContact().setSysUserId(currentUserId);
+//		patient.getContact().setSysUserId(currentUserId);
 		person.setSysUserId(currentUserId);
 
 		for (PatientIdentity identity : patientIdentities) {
@@ -335,15 +332,15 @@ public class PatientManagementUpdateAction extends BaseAction implements IPatien
 	}
 
 	public void persistPatientData(PatientManagementInfo patientInfo) throws LIMSRuntimeException {
-		ContactDAO contactDAO = new ContactDAOImpl();
+//		ContactDAO contactDAO = new ContactDAOImpl();
 
-		Contact contact = patient.getContact();
-		if (GenericValidator.isBlankOrNull(contact.getId())) {
-			contactDAO.insertData(contact);
-		} else {
-			contactDAO.updateData(contact);
-		}
-		patient.setContact(contact);
+//		Contact contact = patient.getContact();
+//		if (GenericValidator.isBlankOrNull(contact.getId())) {
+//			contactDAO.insertData(contact);
+//		} else {
+//			contactDAO.updateData(contact);
+//		}
+//		patient.setContact(contact);
 
 		PersonDAO personDAO = new PersonDAOImpl();
 

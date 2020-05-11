@@ -35,9 +35,9 @@ public class PatientSearchResults {
 	private String mothersName;
 	private String dataSourceName;
 	private String dataSourceId;
-	private String contactName;
-	private String contactEmail;
-	private String contactPhone;
+//	private String contactName;
+//	private String contactEmail;
+//	private String contactPhone;
 
 	public PatientSearchResults(){}
 
@@ -176,28 +176,28 @@ public class PatientSearchResults {
         this.referringSitePatientId = referringSitePatientId;
     }
 
-	public String getContactName() {
-		return contactName;
-	}
-
-	public void setContactName(String contactName) {
-		this.contactName = contactName;
-	}
-
-	public String getContactEmail() {
-		return contactEmail;
-	}
-
-	public void setContactEmail(String contactEmail) {
-		this.contactEmail = contactEmail;
-	}
-
-	public String getContactPhone() {
-		return contactPhone;
-	}
-
-	public void setContactPhone(String contactPhone) {
-		this.contactPhone = contactPhone;
-	}
+//	public String getContactName() {
+//		return contactName;
+//	}
+//
+//	public void setContactName(String contactName) {
+//		this.contactName = contactName;
+//	}
+//
+//	public String getContactEmail() {
+//		return contactEmail;
+//	}
+//
+//	public void setContactEmail(String contactEmail) {
+//		this.contactEmail = contactEmail;
+//	}
+//
+//	public String getContactPhone() {
+//		return contactPhone;
+//	}
+//
+//	public void setContactPhone(String contactPhone) {
+//		this.contactPhone = contactPhone;
+//	}
 }
 

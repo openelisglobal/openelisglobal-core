@@ -157,12 +157,12 @@ public class PatientSearchPopulateProvider extends BaseQueryProvider {
 		XMLUtil.appendKeyValue("healthDistrict", identityMap.getIdentityValue(identityList, "HEALTH DISTRICT"), xml);
 		XMLUtil.appendKeyValue("healthRegion", identityMap.getIdentityValue(identityList, "HEALTH REGION"), xml);
 		XMLUtil.appendKeyValue("guid", identityMap.getIdentityValue(identityList, "GUID"), xml);
-		if (patient.getContact() != null) {
-			XMLUtil.appendKeyValue("contactName", patient.getContact().getName(), xml);
-			XMLUtil.appendKeyValue("contactPhone", patient.getContact().getPhone(), xml);
-			XMLUtil.appendKeyValue("contactEmail", patient.getContact().getEmail(), xml);
-			XMLUtil.appendKeyValue("contactPK", patient.getContact().getId(), xml);
-		}
+//		if (patient.getContact() != null) {
+//			XMLUtil.appendKeyValue("contactName", patient.getContact().getName(), xml);
+//			XMLUtil.appendKeyValue("contactPhone", patient.getContact().getPhone(), xml);
+//			XMLUtil.appendKeyValue("contactEmail", patient.getContact().getEmail(), xml);
+//			XMLUtil.appendKeyValue("contactPK", patient.getContact().getId(), xml);
+//		}
 
 		if (patient.getLastupdated() != null) {
 			String updateAsString = patient.getLastupdated().toString();

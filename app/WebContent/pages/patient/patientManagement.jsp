@@ -548,10 +548,10 @@ function  /*void*/ processSearchPopulateSuccess(xhr)
 	var healthRegion = getSelectIndexByTextFor( "healthRegionID", getXMLValue(response, "healthRegion"));
 	var healthDistrict = getXMLValue(response, "healthDistrict");
 	var guid = getXMLValue( response, "guid");
-	var contactName = getXMLValue( response, "contactName");
-	var contactPhone = getXMLValue( response, "contactPhone");
-	var contactEmail = getXMLValue( response, "contactEmail");
-	var contactPK = getXMLValue( response, "contactPK");
+// 	var contactName = getXMLValue( response, "contactName");
+// 	var contactPhone = getXMLValue( response, "contactPhone");
+// 	var contactEmail = getXMLValue( response, "contactEmail");
+// 	var contactPK = getXMLValue( response, "contactPK");
 
 	setPatientInfo( nationalIDValue,
 					STValue,
@@ -578,11 +578,8 @@ function  /*void*/ processSearchPopulateSuccess(xhr)
 					maritialStatus,
 					healthRegion,
 					healthDistrict,
-					guid,
-					contactName,
-					contactPhone,
-					contactEmail,
-					contactPK);
+					guid
+					);
 
 }
 
@@ -620,7 +617,7 @@ function /*void*/ clearErrors(){
 
 function  /*void*/ setPatientInfo(nationalID, ST_ID, subjectNumber, lastName, firstName, aka, mother, street, city, dob, gender,
 		patientType, insurance, occupation, patientUpdated, personUpdated, motherInitial, commune, addressDept, educationId, nationalId, nationalOther,
-		maritialStatusId, healthRegionId, healthDistrictId, guid, contactName, contactPhone, contactEmail, contactPK ) {
+		maritialStatusId, healthRegionId, healthDistrictId, guid) {
 
 	clearErrors();
 
@@ -682,10 +679,10 @@ function  /*void*/ setPatientInfo(nationalID, ST_ID, subjectNumber, lastName, fi
 	document.getElementById("genderID").selectedIndex = gender == undefined ? 0 : gender;
 	if(supportPatientType){document.getElementById("patientTypeID").selectedIndex = patientType == undefined ? 0 : patientType; }
 
-	$("contactNameID").value = contactName == undefined ? "" : contactName;
-	$("contactPhoneID").value = contactPhone == undefined ? "" : contactPhone;
-	$("contactEmailID").value = contactEmail == undefined ? "" : contactEmail;
-	$("contactPK_ID").value = contactPK == undefined ? "" : contactPK;
+// 	$("contactNameID").value = contactName == undefined ? "" : contactName;
+// 	$("contactPhoneID").value = contactPhone == undefined ? "" : contactPhone;
+// 	$("contactEmailID").value = contactEmail == undefined ? "" : contactEmail;
+// 	$("contactPK_ID").value = contactPK == undefined ? "" : contactPK;
 	
 	// run this b/c dynamically populating the fields does not constitute an onchange event to populate the patmgmt tile
 	// this is the fx called by the onchange event if manually changing the fields
@@ -862,7 +859,7 @@ function  processSubjectNumberSuccess(xhr){
 
 	<nested:hidden name='<%=formName%>' property="patientProperties.patientProcessingStatus" styleId="processingStatus" value="add" />
 	<nested:hidden name='<%=formName%>' property="patientProperties.patientPK" styleId="patientPK_ID" />
-	<nested:hidden name='<%=formName%>' property="patientProperties.contactPK" styleId="contactPK_ID" />
+<%-- 	<nested:hidden name='<%=formName%>' property="patientProperties.contactPK" styleId="contactPK_ID" /> --%>
 	<nested:hidden name='<%=formName%>' property="patientProperties.guid" styleId="patientGUID_ID" />
     <logic:equal value="false" name="<%=formName%>" property="patientProperties.readOnly" >
 	<br/>
@@ -1030,53 +1027,53 @@ function  processSubjectNumberSuccess(xhr){
 		</td>
 	</tr>
 	<%} %>
-	<tr class="spacerRow" ><td colspan="2">&nbsp;</td></tr>
-	<tr>
-		<td style="width: 220px">
-			<bean:message key="patient.contact" />
-		</td>
-		<td style="text-align:right;">
-			<bean:message key="patient.contactName" />:
-		</td>
-		<td >
-			<nested:text name='<%=formName%>'
-					  property="patientProperties.contactName"
-					  styleClass="text"
-				      size="60"
-				      onchange="updatePatientEditStatus();"
-				      styleId="contactNameID"/>
-		</td>
-		<td style="text-align:right;">
-			<bean:message key="patient.contactPhone" />:
-		</td>
-		<td >
-			<nested:text name='<%=formName%>'
-					  property="patientProperties.contactPhone"
-					  styleClass="text"
-					  size="25"
-					  onchange="updatePatientEditStatus();"
-					  styleId="contactPhoneID"/>
-		</td>
-	</tr>
-	<tr>
-		<td style="width: 220px">
-		</td>
-		<td style="text-align:right;">
-			<bean:message key="patient.contactEmail" />:
-		</td>
-		<td >
-			<nested:text name='<%=formName%>'
-					  property="patientProperties.contactEmail"
-					  styleClass="text"
-				      size="60"
-				      onchange="updatePatientEditStatus();validateEmail( this );"
-				      styleId="contactEmailID"/>
-		</td>
-		<td style="text-align:right;">
-		</td>
-		<td >
-		</td>
-	</tr>
+<!-- 	<tr class="spacerRow" ><td colspan="2">&nbsp;</td></tr> -->
+<!-- 	<tr> -->
+<!-- 		<td style="width: 220px"> -->
+<%-- 			<bean:message key="patient.contact" /> --%>
+<!-- 		</td> -->
+<!-- 		<td style="text-align:right;"> -->
+<%-- 			<bean:message key="patient.contactName" />: --%>
+<!-- 		</td> -->
+<!-- 		<td > -->
+<%-- 			<nested:text name='<%=formName%>' --%>
+<%-- 					  property="patientProperties.contactName" --%>
+<%-- 					  styleClass="text" --%>
+<%-- 				      size="60" --%>
+<%-- 				      onchange="updatePatientEditStatus();" --%>
+<%-- 				      styleId="contactNameID"/> --%>
+<!-- 		</td> -->
+<!-- 		<td style="text-align:right;"> -->
+<%-- 			<bean:message key="patient.contactPhone" />: --%>
+<!-- 		</td> -->
+<!-- 		<td > -->
+<%-- 			<nested:text name='<%=formName%>' --%>
+<%-- 					  property="patientProperties.contactPhone" --%>
+<%-- 					  styleClass="text" --%>
+<%-- 					  size="25" --%>
+<%-- 					  onchange="updatePatientEditStatus();" --%>
+<%-- 					  styleId="contactPhoneID"/> --%>
+<!-- 		</td> -->
+<!-- 	</tr> -->
+<!-- 	<tr> -->
+<!-- 		<td style="width: 220px"> -->
+<!-- 		</td> -->
+<!-- 		<td style="text-align:right;"> -->
+<%-- 			<bean:message key="patient.contactEmail" />: --%>
+<!-- 		</td> -->
+<!-- 		<td > -->
+<%-- 			<nested:text name='<%=formName%>' --%>
+<%-- 					  property="patientProperties.contactEmail" --%>
+<%-- 					  styleClass="text" --%>
+<%-- 				      size="60" --%>
+<%-- 				      onchange="updatePatientEditStatus();validateEmail( this );" --%>
+<%-- 				      styleId="contactEmailID"/> --%>
+<!-- 		</td> -->
+<!-- 		<td style="text-align:right;"> -->
+<!-- 		</td> -->
+<!-- 		<td > -->
+<!-- 		</td> -->
+<!-- 	</tr> -->
 
 	<tr class="spacerRow" ><td colspan="2">&nbsp;</td></tr>
 	<tr>

@@ -15,9 +15,9 @@
         <many-to-one name="person" class="us.mn.state.health.lims.person.valueholder.Person" fetch="select">
             <column name="PERSON_ID" precision="10" scale="0" not-null="true" />
         </many-to-one>
-        <many-to-one name="contact" class="us.mn.state.health.lims.patient.valueholder.Contact" fetch="select">
+        <!--<many-to-one name="contact" class="us.mn.state.health.lims.patient.valueholder.Contact" fetch="select">
             <column name="CONTACT_ID" precision="10" scale="0" not-null="true" />
-        </many-to-one>
+        </many-to-one>-->
         <property name="race" type="java.lang.String">
             <column name="RACE" length="5" />
         </property>
