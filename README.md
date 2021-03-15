@@ -3,4 +3,4 @@ openelisglobal-core
 
 Global OpenELIS (Enterprise Laboratory Information System) is an initiative to provide laboratory information systems for resource-constrained international clinical and reference laboratories.
 
-For installation instructions, please see: https://bit.ly/2vJLL8U
+This is OpenELIS 1.x and is end of life, please find OpenELIS Global 2.x [Here](https://github.com/I-TECH-UW/OpenELIS-Global-2)
