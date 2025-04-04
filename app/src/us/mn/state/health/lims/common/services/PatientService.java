@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.validation.ValidationException;
 
 import org.apache.commons.validator.GenericValidator;
 
@@ -186,6 +187,18 @@ public class PatientService implements IPatientService {
 		}
 		personService = new PersonService(patient.getPerson());
 
+	}
+
+	/**
+	 * NEW: Constructor for Dependency Injection.
+	 * Allows injecting a custom PersonService instance (used for testing).
+	 *
+	 * @param patient        Patient entity
+	 * @param personService  PersonService instance to inject
+	 */
+	public PatientService(Patient patient, PersonService personService) {
+		this.patient = patient;
+		this.personService = personService;
 	}
 	
 	/**
@@ -445,4 +458,12 @@ public class PatientService implements IPatientService {
     public String getPCNumber(){
         return getIdentityInfo(PATIENT_PC_NUMBER_IDENTITY);
     }
+
+
+	public void validatePhoneNumber() {
+		String phone = getPhone();
+		if (phone != null && !phone.matches("\\d{10}")) {
+			throw new ValidationException("Phone number must be exactly 10 digits.");
+		}
+	}
 }
